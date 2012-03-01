@@ -16,8 +16,8 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
-		<imagej.groupId>${project.groupId}</imagej.groupId>
-		<imagej.version>${project.version}</imagej.version>
+		<imagej.groupId>net.imagej</imagej.groupId>
+		<imagej.version>2.0-SNAPSHOT</imagej.version>
 		<imagej1.version>[1.45p,)</imagej1.version>
 		<imglib1.groupId>mpicbg</imglib1.groupId>
 		<imglib1.version>2.0-SNAPSHOT</imglib1.version>
