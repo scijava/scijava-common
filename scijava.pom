@@ -7,7 +7,7 @@
 
 	<groupId>com.github.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -18,13 +18,16 @@
 	<properties>
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0-SNAPSHOT</imagej.version>
-		<imagej1.version>[1.45p,)</imagej1.version>
+		<imagej1.version>[1.45s,)</imagej1.version>
 		<imglib1.groupId>mpicbg</imglib1.groupId>
 		<imglib1.version>2.0-SNAPSHOT</imglib1.version>
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
 		<imglib2.version>2.0-SNAPSHOT</imglib2.version>
 		<jetty.version>8.0.0.M1</jetty.version>
 		<junit.version>4.8.1</junit.version>
+		<mpicbg.groupId>mpicbg</mpicbg.groupId>
+		<mpicbg.version>20111128</mpicbg.version>
+		<nar.version>2.1-SNAPSHOT</nar.version>
 		<scifio.groupId>loci</scifio.groupId>
 		<scifio.version>4.4-SNAPSHOT</scifio.version>
 		<sezpoz.version>1.9</sezpoz.version>
@@ -48,6 +51,10 @@
 		</extensions>
 		<plugins>
 			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
@@ -68,6 +75,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0</version>
+			</plugin>
+			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 				<executions>
@@ -77,10 +88,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
 			</plugin>
 			<!-- Enable support for the Maven graph plugin.
 			     Generate a dependency graph using "mvn graph:reactor" -->
@@ -155,6 +162,11 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
+		</pluginRepository>
+		<!-- NB: for maven-nar-plugin -->
+		<pluginRepository>
+			<id>imagej.snapshots</id>
+			<url>http://maven.imagej.net/content/repositories/snapshots</url>
 		</pluginRepository>
 	</pluginRepositories>
 
