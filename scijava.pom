@@ -7,7 +7,7 @@
 
 	<groupId>com.github.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.2</version>
+	<version>1.3</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -89,6 +89,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<argLine>-Xms512m -Xms512m</argLine>
+				</configuration>
+			</plugin>
 			<!-- Enable support for the Maven graph plugin.
 			     Generate a dependency graph using "mvn graph:reactor" -->
 			<plugin>
@@ -163,10 +170,13 @@
 				<enabled>true</enabled>
 			</releases>
 		</pluginRepository>
-		<!-- NB: for maven-nar-plugin -->
+		<!-- NB: for maven-nar-plugin, cppwrap-maven-plugin -->
 		<pluginRepository>
 			<id>imagej.snapshots</id>
 			<url>http://maven.imagej.net/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
 
