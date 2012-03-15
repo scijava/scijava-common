@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.scijava</groupId>
+	<artifactId>pom-scijava</artifactId>
+	<version>1.4</version>
+	<packaging>pom</packaging>
+
+	<name>SciJava Projects</name>
+	<description>SciJava aims to provide an overview of available Java libraries for scientific computing. This POM provides a parent from which participating projects can declare their build configurations. It ensures that projects all use a compatible build environment, including Java version, as well as versions of dependencies and plugins.</description>
+	<url>http://scijava.github.com/</url>
+	<inceptionYear>2011</inceptionYear>
+
+	<properties>
+		<imagej.groupId>net.imagej</imagej.groupId>
+		<imagej.version>2.0-SNAPSHOT</imagej.version>
+		<imagej1.version>[1.45s,)</imagej1.version>
+		<imglib1.groupId>mpicbg</imglib1.groupId>
+		<imglib1.version>2.0-SNAPSHOT</imglib1.version>
+		<imglib2.groupId>net.imglib2</imglib2.groupId>
+		<imglib2.version>2.0-SNAPSHOT</imglib2.version>
+		<jetty.version>8.0.0.M1</jetty.version>
+		<junit.version>4.8.1</junit.version>
+		<mpicbg.groupId>mpicbg</mpicbg.groupId>
+		<mpicbg.version>20111128</mpicbg.version>
+		<nar.version>2.1-SNAPSHOT</nar.version>
+		<scifio.groupId>loci</scifio.groupId>
+		<scifio.version>4.4-SNAPSHOT</scifio.version>
+		<sezpoz.version>1.9</sezpoz.version>
+
+		<!-- NB: Avoid platform encoding warning when copying resources. -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<build>
+		<!-- It is nice for "mvn" with no arguments to do something reasonable. -->
+		<defaultGoal>install</defaultGoal>
+
+		<!-- We use wagon-webdav-jackrabbit 1.0 for deploys, since it is
+		     compatible with both Maven 2.2.x and Maven 3.0.x cross-platform. -->
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.4.1</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<!-- Require the Java 6 platform. -->
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+					<!-- Always add classpath to JAR manifests. -->
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-plugin-plugin</artifactId>
+					<version>2.9</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+					<!-- Build source JARs in addition to binary ones. -->
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.9</version>
+					<!-- Make sure unit tests run with sufficient RAM allocated. -->
+					<configuration>
+						<argLine>-Xms512m -Xms512m</argLine>
+					</configuration>
+				</plugin>
+
+				<!-- Enable support for the Maven exec plugin. -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2.1</version>
+				</plugin>
+
+				<!-- Enable support for the Maven versions plugin.
+				     Check for new plugin versions using
+				     "mvn versions:display-plugin-updates" -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>1.3.1</version>
+				</plugin>
+
+				<!-- Enable support for the Maven graph plugin.
+				     Generate a dependency graph using "mvn graph:reactor" -->
+				<plugin>
+					<groupId>org.fusesource.mvnplugins</groupId>
+					<artifactId>maven-graph-plugin</artifactId>
+					<version>1.0</version>
+					<configuration>
+						<hideScopes>runtime,test</hideScopes>
+						<label>Dependency Graph for ${project.name}</label>
+						<target>${project.build.directory}/dependency-graph.dot</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<reporting>
+		<plugins>
+			<!-- Generate javadocs as part of site generation. -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<maxmemory>1024m</maxmemory>
+					<!-- Workaround for javadoc bug when classes in the default
+					     package access classes from non-default packages. See:
+					     http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5101868 -->
+					<use>false</use>
+					<links>
+						<link>https://pivot.apache.org/2.0.1/docs/api/</link>
+						<link>http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/</link>
+					</links>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<organization>
+		<name>SciJava</name>
+		<url>http://scijava.github.com/</url>
+	</organization>
+
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+
+	<!-- The following configuration enables access to dependencies
+	     from a number of useful third-party Maven repositories.
+
+	     In general, it is considered bad practice to include repository URLs
+	     within a pom.xml: http://bit.ly/8aN6NZ
+
+	     However, the article does mention one exception:
+	     "If however, you have artifacts that may exist only in your repository
+	     (think snapshots of your parent POMs), or other third party repos, then
+	     developers will have a hard time building your source. Only in this case
+	     does it make sense to add repository entries to your POMs."
+
+	     This is precisely the rationale for why we include the entries here.
+	     -->
+	<repositories>
+		<!-- LOCI projects -->
+		<repository>
+			<id>loci.releases</id>
+			<url>http://dev.loci.wisc.edu/maven2/releases</url>
+		</repository>
+		<repository>
+			<id>loci.snapshots</id>
+			<url>http://dev.loci.wisc.edu/maven2/snapshots</url>
+		</repository>
+
+		<!-- Various dependencies -->
+		<repository>
+			<id>imagej.thirdparty</id>
+			<url>http://maven.imagej.net/content/repositories/thirdparty</url>
+		</repository>
+
+		<!-- SezPoz -->
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<!-- maven-graph-plugin -->
+		<pluginRepository>
+			<id>mvnplugins.fusesource.org</id>
+			<url>http://mvnplugins.fusesource.org/repo/release</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+
+		<!-- maven-nar-plugin, cppwrap-maven-plugin -->
+		<pluginRepository>
+			<id>imagej.releases</id>
+			<url>http://maven.imagej.net/content/repositories/releasese</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>imagej.snapshots</id>
+			<url>http://maven.imagej.net/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- The following configuration allows authorized developers
+	     to deploy artifacts to the ImageJ Maven repository. -->
+	<distributionManagement>
+		<repository>
+			<id>imagej.releases</id>
+			<name>ImageJ Releases Repository</name>
+			<url>dav:http://maven.imagej.net/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>imagej.snapshots</id>
+			<name>ImageJ Snapshots Repository</name>
+			<url>dav:http://maven.imagej.net/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
