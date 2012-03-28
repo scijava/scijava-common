@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.8</version>
+	<version>1.9</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -254,7 +254,7 @@
 		<!-- maven-nar-plugin, cppwrap-maven-plugin -->
 		<pluginRepository>
 			<id>imagej.releases</id>
-			<url>http://maven.imagej.net/content/repositories/releasese</url>
+			<url>http://maven.imagej.net/content/repositories/releases</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>imagej.snapshots</id>
@@ -262,6 +262,10 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>imagej.thirdparty</id>
+			<url>http://maven.imagej.net/content/repositories/thirdparty</url>
 		</pluginRepository>
 	</pluginRepositories>
 
