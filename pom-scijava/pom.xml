@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.12</version>
+	<version>1.13</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -99,6 +99,10 @@
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 							</manifest>
+							<manifestEntries>
+								<!-- Add SCM revision from buildnumber plugin, if available. -->
+								<Implementation-Build>${buildNumber}</Implementation-Build>
+							</manifestEntries>
 						</archive>
 					</configuration>
 				</plugin>
@@ -137,6 +141,26 @@
 					<!-- Make sure unit tests run with sufficient RAM allocated. -->
 					<configuration>
 						<argLine>-Xms512m -Xmx512m</argLine>
+					</configuration>
+				</plugin>
+
+				<!-- Enable support for the Maven buildnumber plugin. -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.1</version>
+					<!-- Record SCM revision in manifest. -->
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+						<revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
 					</configuration>
 				</plugin>
 
