@@ -7,12 +7,12 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.11</version>
+	<version>1.12</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
 	<description>SciJava aims to provide an overview of available Java libraries for scientific computing. This POM provides a parent from which participating projects can declare their build configurations. It ensures that projects all use a compatible build environment, including Java version, as well as versions of dependencies and plugins.</description>
-	<url>http://scijava.github.com/</url>
+	<url>http://www.scijava.org/</url>
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
@@ -203,7 +203,7 @@
 
 	<organization>
 		<name>SciJava</name>
-		<url>http://scijava.github.com/</url>
+		<url>http://www.scijava.org/</url>
 	</organization>
 
 	<prerequisites>
