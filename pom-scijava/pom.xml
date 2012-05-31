@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.14</version>
+	<version>1.15</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -175,8 +175,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
-					<!-- NB: Use dev version of the plugin until 1.1 is released. -->
-					<version>1.1-20120328</version>
+					<version>1.1</version>
 				</plugin>
 
 				<!-- Enable support for the Maven versions plugin.
