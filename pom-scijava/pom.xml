@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.15</version>
+	<version>1.16</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -197,6 +197,58 @@
 						<hideScopes>runtime,test</hideScopes>
 						<label>Dependency Graph for ${project.name}</label>
 						<target>${project.build.directory}/dependency-graph.dot</target>
+					</configuration>
+				</plugin>
+				<!--
+				  With a recent version of m2e, Eclipse's Maven binding, it is no longer enough to configure
+				  plugins, they will be ignored by default. But we really want the buildnumber and the jar
+				  plugin to do their job. So now we have to add lifecycle mappings in addition to configuring
+				  the plugins.
+
+				  Let's hope that m2e remains the only IDE Maven binding that requires such a lot of additional
+				  work just to get the same result as plain Maven would produce out of the box.
+				  -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>buildnumber-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>create</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnIncremental>true</runOnIncremental>
+											<runOnConfiguration>true</runOnConfiguration>
+										</execute>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-jar-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>jar</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+											<runOnIncremental>true</runOnIncremental>
+											<runOnConfiguration>true</runOnConfiguration>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
 			</plugins>
