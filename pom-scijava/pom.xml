@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.18</version>
+	<version>1.19</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -35,6 +35,9 @@
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- NB: Controls formatting of the maven.build.timestamp property. -->
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
 	</properties>
 
 	<build>
@@ -102,6 +105,8 @@
 							<manifestEntries>
 								<!-- Add SCM revision from buildnumber plugin, if available. -->
 								<Implementation-Build>${buildNumber}</Implementation-Build>
+								<!-- Add a formatted timestamp for the build. -->
+								<Implementation-Date>${maven.build.timestamp}</Implementation-Date>
 							</manifestEntries>
 						</archive>
 					</configuration>
