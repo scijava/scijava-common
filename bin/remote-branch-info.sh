@@ -26,6 +26,7 @@ for ref in $(git for-each-ref refs/remotes/$remote --format='%(refname)')
 do
 
   refname=${ref#refs/remotes/$remote/}
+  case "$refname" in contrib|master) continue;; esac
   unmerged_count=$(git cherry master $ref | grep '^+' | wc -l)
   info=$(git log -n 1 --format='%an - %ar' $ref)
   echo $refname - $info - $unmerged_count unmerged
