@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.19</version>
+	<version>1.20</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -36,8 +36,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- NB: Controls formatting of the maven.build.timestamp property. -->
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+		<!-- NB: Specify formatting of the maven.build.timestamp property. -->
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
 	</properties>
 
 	<build>
