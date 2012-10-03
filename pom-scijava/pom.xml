@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.20</version>
+	<version>1.21</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -273,7 +273,7 @@
 					     http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5101868 -->
 					<use>false</use>
 					<links>
-						<link>https://pivot.apache.org/2.0.1/docs/api/</link>
+						<link>https://pivot.apache.org/2.0.2/docs/api/</link>
 						<link>http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/</link>
 						<link>http://docs.oracle.com/javase/6/docs/api/</link>
 						<link>http://download.java.net/media/java3d/javadoc/1.5.2/</link>
