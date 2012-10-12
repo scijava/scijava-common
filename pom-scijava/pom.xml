@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.21</version>
+	<version>1.22</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -199,20 +199,22 @@
 					<artifactId>maven-graph-plugin</artifactId>
 					<version>1.26</version>
 					<configuration>
-						<hideScopes>runtime,test</hideScopes>
+						<hideScopes>provided,runtime,system,test</hideScopes>
+						<hideTransitive>true</hideTransitive>
 						<label>Dependency Graph for ${project.name}</label>
 						<target>${project.build.directory}/dependency-graph.dot</target>
 					</configuration>
 				</plugin>
-				<!--
-				  With a recent version of m2e, Eclipse's Maven binding, it is no longer enough to configure
-				  plugins, they will be ignored by default. But we really want the buildnumber and the jar
-				  plugin to do their job. So now we have to add lifecycle mappings in addition to configuring
-				  the plugins.
 
-				  Let's hope that m2e remains the only IDE Maven binding that requires such a lot of additional
-				  work just to get the same result as plain Maven would produce out of the box.
-				  -->
+				<!-- With a recent version of m2e, Eclipse's Maven binding, it is no
+				     longer enough to configure plugins, they will be ignored by
+				     default. But we really want the buildnumber and the jar plugin to
+				     do their job. So now we have to add lifecycle mappings in addition
+				     to configuring the plugins.
+
+				     Let's hope that m2e remains the only IDE Maven binding that
+				     requires such a lot of additional work just to get the same result
+				     as plain Maven would produce out of the box. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
