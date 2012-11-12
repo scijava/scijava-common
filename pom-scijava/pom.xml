@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.22</version>
+	<version>1.23</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -279,6 +279,9 @@
 						<link>http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/</link>
 						<link>http://docs.oracle.com/javase/6/docs/api/</link>
 						<link>http://download.java.net/media/java3d/javadoc/1.5.2/</link>
+						<link>http://hudson.openmicroscopy.org.uk/job/BIOFORMATS-trunk/javadoc/</link>
+						<link>http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/html/</link>
+						<link>http://www.randelshofer.ch/oop/jhotdraw/JavaDoc/</link>
 					</links>
 				</configuration>
 			</plugin>
