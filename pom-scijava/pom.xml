@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.23</version>
+	<version>1.24</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -29,7 +29,7 @@
 		<mpicbg.version>20111128</mpicbg.version>
 		<nar.version>2.1-SNAPSHOT</nar.version>
 		<scifio.groupId>loci</scifio.groupId>
-		<scifio.version>4.4-SNAPSHOT</scifio.version>
+		<scifio.version>4.5-SNAPSHOT</scifio.version>
 		<sezpoz.version>1.9</sezpoz.version>
 
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
