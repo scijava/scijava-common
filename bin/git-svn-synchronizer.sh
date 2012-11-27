@@ -42,7 +42,7 @@ then
 fi
 
 # initialize the Subversion URL
-if ! test -d .git/svn || test "a$SVN_URL" != "$(git config svn-remote.svn.url)"
+if ! test -d .git/svn || test "a$SVN_URL" != "a$(git config svn-remote.svn.url)"
 then
 	# Try standard trunk/branches/tags setup first
 	if ! git svn init -s "$SVN_URL" &&
