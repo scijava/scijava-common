@@ -61,20 +61,17 @@ cvs2git () {
 
 if test -n "$RSYNC_URL"
 then
+	rsync -va "$RSYNC_URL/$CVSMODULE" cvs-mirror
+	mkdir -p cvs-mirror/CVSROOT
 	test -d .git || {
 		git init
 		mkdir -p .git/info
 		echo /cvs-mirror/ >> .git/info/exclude
 	}
-	rsync -va "$RSYNC_URL/$CVSMODULE" cvs-mirror
-	rsync -va "$RSYNC_URL/CVSROOT" cvs-mirror
 	cvs2git
 elif cvsclone -d "$CVSROOT" "$CVSMODULE"
 then
-	test -d cvs-mirror/CVSROOT || {
-		mkdir -p cvs-mirror/CVSROOT
-		cvs -d "$(pwd)"/cvs-mirror/CVSROOT init
-	}
+	mkdir -p cvs-mirror/CVSROOT
 	test -d .git || {
 		git init
 		mkdir -p .git/info
