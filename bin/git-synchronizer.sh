@@ -249,6 +249,16 @@ do
 			fi
 		done)
 	test -z "$pushopts" && continue
+	case "${url#*=}" in
+	git://*)
+		case "$pushopts" in
+		*+*)
+			add_error "Diverging $url: ${pushopts#*+}"
+			;;
+		esac
+		continue
+		;;
+	esac
 	git push $name $pushopts ||
 	add_error "Could not push to $url"
 done
