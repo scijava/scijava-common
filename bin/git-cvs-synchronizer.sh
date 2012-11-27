@@ -53,8 +53,14 @@ cvs2git () {
 		test -d "$CVS2SVN" ||
 		git clone git://fiji.sc/cvs2svn "$CVS2SVN"
 	}
+	ENCODING=
+	case "$CVSMODULE" in
+	oprofile)
+		ENCODING=--encoding=iso-8859-1
+		;;
+	esac
 	"$CVS2SVN"/cvs2git  --blobfile=cvs.blobs --dumpfile=cvs.dump \
-	        --username=git-synchronizer cvs-mirror/
+	        --username=git-synchronizer $ENCODING cvs-mirror/
 	cat cvs.blobs cvs.dump |
 	git fast-import
 }
