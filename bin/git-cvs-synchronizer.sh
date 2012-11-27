@@ -11,6 +11,13 @@
 # Example: git-cvs-synchronizer.sh \
 #   :pserver:anonymous@tcljava.cvs.sourceforge.net:/cvsroot/tcljava:tcljava \
 #   fiji.sc:/srv/git/tcljava/.git
+#
+# It uses either rsync (in the case of Sourceforge repositories) or cvsclone
+# to mirror the ,v files making up the CVS repository first and then calls
+# cvs2git (of the cvs2svn package by Michael Haggerty) to convert the full
+# repository into a Git one. This is both faster and more precise than git
+# cvsimport, but it comes at the price of being non-incremental (hence the
+# need to rsync or cvsclone, to make everything a bit faster).
 
 if test $# -lt 2
 then
