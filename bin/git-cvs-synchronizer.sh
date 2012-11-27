@@ -27,6 +27,19 @@ shift
 RSYNC_URL="$(echo "$CVSROOT" |
 	sed -n 's/^:pserver:anonymous@\([^:]*\.cvs\.\(sourceforge\|sf\)\.net\):\/\(cvsroot\/.*\)/\1::\3/p')"
 
+cvsclone () {
+	mkdir -p cvs-mirror/
+	(cd cvs-mirror &&
+	 test -d "$CVSCLONE" || {
+		CVSCLONE=../../../cvsclone
+		test -d "$CVSCLONE" ||
+		git clone git://repo.or.cz/cvsclone.git "$CVSCLONE"
+	 }
+	 test -x "$CVSCLONE"/cvsclone ||
+	 (cd "$CVSCLONE" && make)
+	 "$CVSCLONE"/cvsclone "$@")
+}
+
 cvs2git () {
 	test -d "$CVS2SVN" || {
 		CVS2SVN=../../cvs2svn
@@ -49,8 +62,20 @@ then
 	rsync -va "$RSYNC_URL/$CVSMODULE" cvs-mirror
 	rsync -va "$RSYNC_URL/CVSROOT" cvs-mirror
 	cvs2git
+elif cvsclone -d "$CVSROOT" "$CVSMODULE"
+then
+	test -d cvs-mirror/CVSROOT || {
+		mkdir -p cvs-mirror/CVSROOT
+		cvs -d "$(pwd)"/cvs-mirror/CVSROOT init
+	}
+	test -d .git || {
+		git init
+		mkdir -p .git/info
+		echo /cvs-mirror/ >> .git/info/exclude
+	}
+	cvs2git
 else
-	# TODO: try cvsclone (git://repo.or.cz/cvsclone.git)
+	# fall back to cvsimport
 	cvs -d "$CVSROOT" co "$CVSMODULE"
 	cd "$CVSMODULE"
 	case "$CVSROOT" in
