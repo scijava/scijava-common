@@ -156,8 +156,9 @@ for ref in $(echo "$remote_branches" |
 	uniq)
 do
 	echo "$todo" | grep "	$ref$" > /dev/null 2>&1 && continue
+	quoted_ref="$(echo "$ref" | sed 's/\./\\&/g')"
 	sha1="$(echo "$remote_branches" |
-		sed -n "s|^[^ ]* \([^ ]*\) [^ ]* $ref$|\1|p" |
+		sed -n "s|^[^ ]* \([^ ]*\) [^ ]* $quoted_ref$|\1|p" |
 		sort |
 		uniq)"
 	sha1=$(eval get_common_fast_forward $sha1)
