@@ -76,13 +76,12 @@ fi
 if ! test -d .git/svn || test "a$SVN_URL" != "a$(git config svn-remote.svn.url)"
 then
 	# Try standard trunk/branches/tags setup first
-	if ! git svn init -s "$SVN_URL" &&
-		! git svn fetch &&
-		! git rev-parse refs/remotes/trunk
-	then
+	git svn init -s "$SVN_URL" &&
+	git svn fetch &&
+	git rev-parse refs/remotes/trunk || {
 		git svn init "$SVN_URL" &&
 		git svn fetch
-	fi
+	}
 else
 	git svn fetch
 fi
