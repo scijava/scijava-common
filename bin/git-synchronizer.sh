@@ -250,7 +250,7 @@ do
 			fi
 		done)
 	test -z "$pushopts" && continue
-	case "${url#*=}" in
+	case "$(git config "remote.$name.pushurl"; git config "remote.$name.url")" in
 	git://*)
 		case "$pushopts" in
 		*+*)
