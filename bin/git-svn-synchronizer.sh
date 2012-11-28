@@ -15,10 +15,38 @@
 #	github.com:openspim/micromanager \
 #	fiji.sc:/srv/git/micromanager1.4/.git \
 
+usage () {
+	echo "Usage: $0 [--force] [--reset] <Subversion-URL> <Git-push-URL>..." >&2
+	exit 1
+}
+
+force=
+reset=
+while test $# -gt 0
+do
+	case "$1" in
+	--force)
+		force=--force
+		;;
+	--reset)
+		git branch -D -r $(git branch -r)
+		rm -rf .git/svn
+		git config --remove-section svn-remote.svn
+		reset=t
+		;;
+	-*)
+		usage
+		;;
+	*)
+		break
+		;;
+	esac
+	shift
+done
+
 if test $# -lt 2
 then
-	echo "Usage: $0 <Subversion-URL> <Git-push-URL>..." >&2
-	exit 1
+	usage
 fi
 
 set -e
@@ -31,14 +59,17 @@ if ! test -d .git
 then
 	git init &&
 	git config core.bare true &&
-	git remote add -f tmp "$1" &&
-	# read from remote repository to prevent unnecessary git-svn cloning
-	git for-each-ref --format '%(refname)' refs/remotes/tmp/svn/ |
-	while read ref
-	do
-		git push . $ref:refs/remotes/${ref#refs/remotes/tmp/svn/}
-	done &&
-	git remote rm tmp
+	if test -z "$reset"
+	then
+		git remote add -f tmp "$1" &&
+		# read from remote repository to prevent unnecessary git-svn cloning
+		git for-each-ref --format '%(refname)' refs/remotes/tmp/svn/ |
+		while read ref
+		do
+			git push . $ref:refs/remotes/${ref#refs/remotes/tmp/svn/}
+		done &&
+		git remote rm tmp
+	fi
 fi
 
 # initialize the Subversion URL
@@ -63,5 +94,5 @@ args="$(git for-each-ref --shell --format '%(refname)' refs/remotes/ |
 
 for remote
 do
-        eval git push \"$remote\" $args
+	eval git push $force \"$remote\" $args
 done
