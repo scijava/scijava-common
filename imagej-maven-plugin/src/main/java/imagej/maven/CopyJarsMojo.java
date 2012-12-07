@@ -168,6 +168,9 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 			for (final DependencyNode dependencyNode : (List<DependencyNode>)visitor.getNodes()) {
 				if (dependencyNode.getState() == DependencyNode.INCLUDED) {
 					final Artifact artifact = dependencyNode.getArtifact();
+					final String scope = artifact.getScope();
+					if (scope != null && !scope.equals(Artifact.SCOPE_COMPILE) && !scope.equals(Artifact.SCOPE_RUNTIME))
+						continue;
 					try {
 						installArtifact(artifact, false);
 					} catch (Exception e) {
