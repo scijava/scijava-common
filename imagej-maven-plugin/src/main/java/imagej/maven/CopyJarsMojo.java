@@ -163,18 +163,18 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 	                artifactFilter, artifactCollector);
 
 			CollectingDependencyNodeVisitor visitor = new CollectingDependencyNodeVisitor();
-	        rootNode.accept(visitor);
+			rootNode.accept(visitor);
 
-	        for (final DependencyNode dependencyNode : (List<DependencyNode>)visitor.getNodes()) {
-	            if (dependencyNode.getState() == DependencyNode.INCLUDED) {
-	            	final Artifact artifact = dependencyNode.getArtifact();
-	            	try {
-	            		installArtifact(artifact, false);
+			for (final DependencyNode dependencyNode : (List<DependencyNode>)visitor.getNodes()) {
+				if (dependencyNode.getState() == DependencyNode.INCLUDED) {
+					final Artifact artifact = dependencyNode.getArtifact();
+					try {
+						installArtifact(artifact, false);
 					} catch (Exception e) {
 						throw new MojoExecutionException("Could not copy " + artifact + " to " + imagejDirectory, e);
 					}
-            	}
-	        }
+				}
+			}
 		} catch (DependencyTreeBuilderException e) {
 			throw new MojoExecutionException("Could not get the dependencies for " + project.getArtifactId(), e);
 		}
