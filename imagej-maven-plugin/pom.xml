@@ -3,6 +3,12 @@
 ttp://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>1.24</version>
+	</parent>
+
 	<groupId>net.imagej</groupId>
 	<artifactId>imagej-maven-plugin</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
@@ -49,5 +55,17 @@ Therefore, Fiji introduced the split between plugins/ and jars/, where third-par
 			<version>3.0</version>
 		</dependency>
 	</dependencies>
+
+	<!-- NB: for project parent -->
+	<repositories>
+		<repository>
+			<id>imagej.releases</id>
+			<url>http://maven.imagej.net/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>imagej.snapshots</id>
+			<url>http://maven.imagej.net/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
 
 </project>
