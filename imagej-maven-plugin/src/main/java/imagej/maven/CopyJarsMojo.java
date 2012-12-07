@@ -169,7 +169,7 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 	            if (dependencyNode.getState() == DependencyNode.INCLUDED) {
 	            	final Artifact artifact = dependencyNode.getArtifact();
 	            	try {
-	            		installArtifact(artifact, artifact == project.getArtifact());
+	            		installArtifact(artifact, false);
 					} catch (Exception e) {
 						throw new MojoExecutionException("Could not copy " + artifact + " to " + imagejDirectory, e);
 					}
