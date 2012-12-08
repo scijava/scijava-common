@@ -72,7 +72,7 @@ import org.codehaus.plexus.util.FileUtils;
 public class CopyJarsMojo extends AbstractAnalyzeMojo {
 
 	/**
-	 * The greeting to display.
+	 * The ImageJ.app/ directory.
 	 *
 	 * @parameter
 	 * @required
