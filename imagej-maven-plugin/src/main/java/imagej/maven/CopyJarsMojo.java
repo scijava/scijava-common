@@ -192,14 +192,15 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 
 		final File source = artifact.getFile();
 		final File targetDirectory = new File(imagejDirectory, isIJ1Plugin(source) ? "plugins" : "jars");
-		final File target = new File(targetDirectory, source.getName());
+		final String fileName = "Fiji_Updater".equals(artifact.getArtifactId()) ? artifact.getArtifactId() + ".jar" : source.getName();
+		final File target = new File(targetDirectory, fileName);
 
 		if (!force && target.exists() && target.lastModified() > source.lastModified()) {
-			getLog().info("Dependency " + target.getName() + " is already there; skipping");
+			getLog().info("Dependency " + fileName + " is already there; skipping");
 			return;
 		}
 
-		getLog().info("Copying " + target.getName() + " to " + targetDirectory);
+		getLog().info("Copying " + fileName + " to " + targetDirectory);
 		FileUtils.copyFile(source, target);
 	}
 
