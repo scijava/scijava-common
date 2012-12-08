@@ -86,23 +86,23 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 	 */
 	private MavenProject project;
 
-    /**
-     * List of Remote Repositories used by the resolver
-     * 
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
-     */
-    protected List<String> remoteRepositories;
+	/**
+	 * List of Remote Repositories used by the resolver
+	 * 
+	 * @parameter expression="${project.remoteArtifactRepositories}"
+	 * @readonly
+	 * @required
+	 */
+	protected List<String> remoteRepositories;
 
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
-     */
-    protected ArtifactRepository localRepository;
+	/**
+	 * Location of the local repository.
+	 * 
+	 * @parameter expression="${localRepository}"
+	 * @readonly
+	 * @required
+	 */
+	protected ArtifactRepository localRepository;
 
 	/**
 	 * @component role="org.apache.maven.artifact.metadata.ArtifactMetadataSource"
@@ -126,23 +126,23 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 	 */
 	private DependencyTreeBuilder treeBuilder;
 
-    /**
-     * Used to look up Artifacts in the remote repository.
-     * 
-     * @component
-     * @required
-     * @readonly
-     */
-    protected ArtifactFactory artifactFactory;
+	/**
+	 * Used to look up Artifacts in the remote repository.
+	 * 
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	protected ArtifactFactory artifactFactory;
 
-    /**
-     * Used to look up Artifacts in the remote repository.
-     * 
-     * @component
-     * @required
-     * @readonly
-     */
-    protected ArtifactResolver artifactResolver;
+	/**
+	 * Used to look up Artifacts in the remote repository.
+	 * 
+	 * @component
+	 * @required
+	 * @readonly
+	 */
+	protected ArtifactResolver artifactResolver;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -159,8 +159,8 @@ public class CopyJarsMojo extends AbstractAnalyzeMojo {
 		try {
 			ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
 			DependencyNode rootNode = treeBuilder.buildDependencyTree(project,
-	                localRepository, artifactFactory, artifactMetadataSource,
-	                artifactFilter, artifactCollector);
+					localRepository, artifactFactory, artifactMetadataSource,
+					artifactFilter, artifactCollector);
 
 			CollectingDependencyNodeVisitor visitor = new CollectingDependencyNodeVisitor();
 			rootNode.accept(visitor);
