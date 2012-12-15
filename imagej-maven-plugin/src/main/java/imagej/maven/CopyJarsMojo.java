@@ -52,8 +52,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.dependency.AbstractAnalyzeMojo;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
@@ -69,7 +69,7 @@ import org.codehaus.plexus.util.FileUtils;
  * @goal copy-jars
  * @phase install
  */
-public class CopyJarsMojo extends AbstractAnalyzeMojo {
+public class CopyJarsMojo extends AbstractMojo {
 
 	/**
 	 * The ImageJ.app/ directory.
