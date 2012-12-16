@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.24</version>
+	<version>1.25</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -43,6 +43,32 @@
 	<build>
 		<!-- It is nice for "mvn" with no arguments to do something reasonable. -->
 		<defaultGoal>install</defaultGoal>
+
+		<plugins>
+			<!-- Enable copying the artifacts and dependencies by setting
+			     the 'imagej.app.directory' property to a valid directory -->
+			<plugin>
+				<groupId>net.imagej</groupId>
+				<artifactId>imagej-maven-plugin</artifactId>
+				<version>0.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-jars</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-jars</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>set-rootdir</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>set-rootdir</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 
 		<!-- We use wagon-webdav-jackrabbit 1.0 for deploys, since it is
 		     compatible with both Maven 2.2.x and Maven 3.0.x cross-platform. -->
