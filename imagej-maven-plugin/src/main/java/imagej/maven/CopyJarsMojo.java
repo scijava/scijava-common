@@ -55,6 +55,8 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.interpolation.ModelInterpolator;
+import org.apache.maven.project.interpolation.ModelInterpolationException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
@@ -72,12 +74,14 @@ import org.codehaus.plexus.util.FileUtils;
 public class CopyJarsMojo extends AbstractMojo {
 
 	/**
-	 * The ImageJ.app/ directory.
+	 * The name of the property pointing to the ImageJ.app/ directory.
 	 *
-	 * @parameter
-	 * @required
+	 * If no property of that name exists, or if it is not a directory,
+	 * no .jar files are copied.
+	 *
+	 * @parameter default-value="imagej.app.directory"
 	 */
-	private File imagejDirectory;
+	private String imagejDirectoryProperty;
 
 	/**
 	 * @parameter expression="${project}"
@@ -144,16 +148,31 @@ public class CopyJarsMojo extends AbstractMojo {
 	 */
 	protected ArtifactResolver artifactResolver;
 
+	/**
+	 * @component
+	 * @required
+	 */
+	private ModelInterpolator modelInterpolator;
+
+	private File imagejDirectory;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() throws MojoExecutionException {
-		if (imagejDirectory == null)
-			throw new MojoExecutionException(this, "Missing imagejDirectory setting", "This goal requires the imagejDirectory setting to point to an ImageJ.app/ directory.");
+		if (imagejDirectoryProperty == null) {
+			getLog().info("No property name for the ImageJ.app/ directory location was specified; Skipping");
+			return;
+		}
+		final String path = project.getProperties().getProperty(imagejDirectoryProperty);
+		if (path == null) {
+			getLog().info("Property '" + imagejDirectoryProperty + "' unset; Skipping copy-jars");
+			return;
+		}
+		final String interpolated = interpolate(path);
+		imagejDirectory = new File(interpolated);
 		if (!imagejDirectory.isDirectory()) {
-			if (imagejDirectory.mkdirs())
-				getLog().warn("Initialized ImageJ directory at " + imagejDirectory);
-			else
-				throw new MojoExecutionException(this, "Could not create " + imagejDirectory, "Error occurred while trying to create the ImageJ directory at " + imagejDirectory);
+			getLog().warn("'" + imagejDirectory + "'" + (interpolated.equals(path) ? "" : " (" + path + ")") + "is not an ImageJ.app/ directory; Skipping copy-jars");
+			return;
 		}
 
 		try {
@@ -180,6 +199,18 @@ public class CopyJarsMojo extends AbstractMojo {
 			}
 		} catch (DependencyTreeBuilderException e) {
 			throw new MojoExecutionException("Could not get the dependencies for " + project.getArtifactId(), e);
+		}
+	}
+
+	private String interpolate(final String original) throws MojoExecutionException {
+		if (original == null || original.indexOf("${") < 0)
+			return original;
+		try {
+			return modelInterpolator.interpolate(original,
+				project.getModel(), project.getBasedir(),
+				project.getProjectBuilderConfiguration(), false);
+		} catch (ModelInterpolationException e) {
+			throw new MojoExecutionException("Could not interpolate '" + original + "'", e);
 		}
 	}
 

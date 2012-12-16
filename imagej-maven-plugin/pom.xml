@@ -20,7 +20,7 @@ ttp://maven.apache.org/xsd/maven-4.0.0.xsd">
 Therefore, Fiji introduced the split between plugins/ and jars/, where third-party libraries are expected to live in jars/. ImageJ2 uses the same structure since it is backwards compatible.</description>
 
 	<properties>
-		<maven.version>2.0</maven.version>
+		<maven.version>2.1.0</maven.version>
 	</properties>
 
 	<dependencies>
@@ -32,6 +32,11 @@ Therefore, Fiji introduced the split between plugins/ and jars/, where third-par
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-artifact</artifactId>
+			<version>${maven.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
 			<version>${maven.version}</version>
 		</dependency>
 		<dependency>
