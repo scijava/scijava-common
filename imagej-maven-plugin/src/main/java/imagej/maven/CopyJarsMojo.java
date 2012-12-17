@@ -163,7 +163,9 @@ public class CopyJarsMojo extends AbstractMojo {
 			getLog().info("No property name for the ImageJ.app/ directory location was specified; Skipping");
 			return;
 		}
-		final String path = project.getProperties().getProperty(imagejDirectoryProperty);
+		String path = System.getProperty(imagejDirectoryProperty);
+		if (path == null)
+			path = project.getProperties().getProperty(imagejDirectoryProperty);
 		if (path == null) {
 			getLog().info("Property '" + imagejDirectoryProperty + "' unset; Skipping copy-jars");
 			return;
