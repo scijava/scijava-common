@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.25</version>
+	<version>1.26</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -340,12 +340,12 @@
 	<repositories>
 		<!-- LOCI projects -->
 		<repository>
-			<id>loci.releases</id>
-			<url>http://dev.loci.wisc.edu/maven2/releases</url>
+			<id>imagej.releases</id>
+			<url>http://maven.imagej.net/content/repositories/releases</url>
 		</repository>
 		<repository>
-			<id>loci.snapshots</id>
-			<url>http://dev.loci.wisc.edu/maven2/snapshots</url>
+			<id>imagej.snapshots</id>
+			<url>http://maven.imagej.net/content/repositories/snapshots</url>
 		</repository>
 
 		<!-- Various dependencies -->
