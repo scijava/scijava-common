@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.26</version>
+	<version>1.27</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -278,6 +278,19 @@
 											<runOnIncremental>true</runOnIncremental>
 											<runOnConfiguration>true</runOnConfiguration>
 										</execute>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>net.imagej</groupId>
+										<artifactId>imagej-maven-plugin</artifactId>
+										<versionRange>[0.1.0,)</versionRange>
+										<goals>
+											<goal>set-rootdir</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
