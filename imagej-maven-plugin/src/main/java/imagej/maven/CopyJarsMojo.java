@@ -37,6 +37,7 @@ package imagej.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -52,15 +53,21 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.interpolation.ModelInterpolator;
-import org.apache.maven.project.interpolation.ModelInterpolationException;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.dependency.tree.traversal.CollectingDependencyNodeVisitor;
+import org.codehaus.plexus.interpolation.EnvarBasedValueSource;
+import org.codehaus.plexus.interpolation.ObjectBasedValueSource;
+import org.codehaus.plexus.interpolation.PrefixAwareRecursionInterceptor;
+import org.codehaus.plexus.interpolation.PrefixedValueSourceWrapper;
+import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
+import org.codehaus.plexus.interpolation.RecursionInterceptor;
+import org.codehaus.plexus.interpolation.RegexBasedInterpolator;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -89,6 +96,13 @@ public class CopyJarsMojo extends AbstractMojo {
 	 * @readonly
 	 */
 	private MavenProject project;
+
+    /**
+     * Session
+     *
+     * @parameter expression="${session}
+     */
+    private MavenSession session;
 
 	/**
 	 * List of Remote Repositories used by the resolver
@@ -148,11 +162,6 @@ public class CopyJarsMojo extends AbstractMojo {
 	 */
 	protected ArtifactResolver artifactResolver;
 
-	/**
-	 * @component
-	 * @required
-	 */
-	private ModelInterpolator modelInterpolator;
 
 	private File imagejDirectory;
 
@@ -208,10 +217,26 @@ public class CopyJarsMojo extends AbstractMojo {
 		if (original == null || original.indexOf("${") < 0)
 			return original;
 		try {
-			return modelInterpolator.interpolate(original,
-				project.getModel(), project.getBasedir(),
-				project.getProjectBuilderConfiguration(), false);
-		} catch (ModelInterpolationException e) {
+			RegexBasedInterpolator interpolator = new RegexBasedInterpolator();
+
+			interpolator.addValueSource(new EnvarBasedValueSource());
+			interpolator.addValueSource(new PropertiesBasedValueSource(System.getProperties()));
+
+			List<String> synonymPrefixes = new ArrayList<String>();
+			synonymPrefixes.add( "project." );
+			synonymPrefixes.add( "pom." );
+
+			PrefixedValueSourceWrapper modelWrapper = new PrefixedValueSourceWrapper(new ObjectBasedValueSource(project.getModel() ), synonymPrefixes, true);
+			interpolator.addValueSource(modelWrapper);
+
+			PrefixedValueSourceWrapper pomPropertyWrapper = new PrefixedValueSourceWrapper(new PropertiesBasedValueSource(project.getModel().getProperties()), synonymPrefixes, true);
+			interpolator.addValueSource(pomPropertyWrapper);
+
+			interpolator.addValueSource(new PropertiesBasedValueSource(session.getExecutionProperties()));
+
+			RecursionInterceptor recursionInterceptor = new PrefixAwareRecursionInterceptor(synonymPrefixes, true);
+			return interpolator.interpolate(original, recursionInterceptor);
+		} catch (Exception e) {
 			throw new MojoExecutionException("Could not interpolate '" + original + "'", e);
 		}
 	}

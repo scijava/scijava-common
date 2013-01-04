@@ -5,7 +5,7 @@ ttp://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<groupId>net.imagej</groupId>
 	<artifactId>imagej-maven-plugin</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>A plugin helping with installing ImageJ 1.x plugins and dependencies</name>
@@ -14,7 +14,7 @@ ttp://maven.apache.org/xsd/maven-4.0.0.xsd">
 Therefore, Fiji introduced the split between plugins/ and jars/, where third-party libraries are expected to live in jars/. ImageJ2 uses the same structure since it is backwards compatible.</description>
 
 	<properties>
-		<maven.version>2.1.0</maven.version>
+		<maven.version>2.0</maven.version>
 	</properties>
 
 	<build>
@@ -57,6 +57,11 @@ Therefore, Fiji introduced the split between plugins/ and jars/, where third-par
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
 			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-interpolation</artifactId>
+			<version>1.14</version>
 		</dependency>
 	</dependencies>
 
