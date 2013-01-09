@@ -17,7 +17,7 @@ for pom in $(git ls-files \*pom.xml)
 do
 	dir=${pom%pom.xml}
 	test -n "$dir" || dir=.
-	gav="$("$helper" gav-from-pom "$pom")" &&
+	gav="$(sh "$helper" gav-from-pom "$pom")" &&
 	case "$gav" in
 	net.imagej:ij-launcher:*|\
 	sc.fiji:pom-ffmpeg-io:*|\
@@ -27,13 +27,13 @@ do
 		continue;;
 	esac &&
 	test -n "$gav" &&
-	case "$("$helper" packaging-from-pom "$pom")" in
+	case "$(sh "$helper" packaging-from-pom "$pom")" in
 	pom)
 		aggregate_poms="$aggregate_poms $pom"
 		;;
 	jar)
 		test -d "$dir/target" || continue
-		commit="$("$helper" commit "$gav")" &&
+		commit="$(sh "$helper" commit "$gav")" &&
 		test -n "$commit" &&
 		git diff --quiet "$commit".. -- "$dir" || {
 			jar_poms="$jar_poms $pom" &&
