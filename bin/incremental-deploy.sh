@@ -10,6 +10,9 @@ set -e
 bin_dir="$(cd "$(dirname "$0")" && pwd)"
 helper="$bin_dir/maven-helper.sh"
 
+jar_poms=
+aggregate_poms=
+
 for pom in $(git ls-files \*pom.xml)
 do
 	dir=${pom%pom.xml}
@@ -24,10 +27,31 @@ do
 		continue;;
 	esac &&
 	test -n "$gav" &&
-	commit="$("$helper" commit "$gav")" &&
-	test -n "$commit" &&
-	git diff --quiet "$commit".. -- "$dir" ||
-	(cd "$dir" &&
-	 echo "Deploying $dir" &&
-	 mvn -N deploy)
+	case "$("$helper" packaging-from-pom "$pom")" in
+	pom)
+		aggregate_poms="$aggregate_poms $pom"
+		;;
+	jar)
+		test -d "$dir/target" || continue
+		commit="$("$helper" commit "$gav")" &&
+		test -n "$commit" &&
+		git diff --quiet "$commit".. -- "$dir" || {
+			jar_poms="$jar_poms $pom" &&
+			echo "Deploying $dir" &&
+			mvn -N -f "$pom" deploy
+		}
+		;;
+	esac
+done
+
+# Deploy aggregate POMs only if a child has been deployed
+for pom in $aggregate_poms
+do
+echo "pom: $pom;  ${pom%pom.xml}; $aggregate_poms"
+	case "$jar_poms" in
+	*" ${pom%pom.xml}"*)
+		echo "Deploying aggregate $pom" &&
+		mvn -N -f "$pom" deploy
+		;;
+	esac
 done
