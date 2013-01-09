@@ -46,6 +46,24 @@ extract_tag () {
 	esac
 }
 
+# Given an xml, skip all <tag> sections
+
+skip_tag () {
+	result="$2"
+	while true
+	do
+		case "$result" in
+		*"<$1>"*)
+			result="${result%%<$1>*}${result#*</$1>}"
+			;;
+		*)
+			break
+			;;
+		esac
+	done
+	echo "$result"
+}
+
 # Given a GAV parameter, determine the base URL of the project
 
 project_url () {
@@ -97,10 +115,10 @@ pom_url () {
 gav_from_pom () {
 	pom="$(cat "$1")"
 	parent="$(extract_tag parent "$pom")"
-	pom="${pom#*$parent}"
-	pom="${pom%$(extract_tag dependencies "$pom")*}"
-	pom="${pom%$(extract_tag profiles "$pom")*}"
-	pom="${pom%$(extract_tag build "$pom")*}"
+	pom="$(skip_tag parent "$pom")"
+	pom="$(skip_tag dependencies "$pom")"
+	pom="$(skip_tag profiles "$pom")"
+	pom="$(skip_tag build "$pom")"
 	groupId="$(extract_tag groupId "$pom")"
 	test -n "$groupId" || groupId="$(extract_tag groupId "$parent")"
 	artifactId="$(extract_tag artifactId "$pom")"
