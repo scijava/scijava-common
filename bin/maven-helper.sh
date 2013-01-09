@@ -127,6 +127,18 @@ gav_from_pom () {
 	echo "$groupId:$artifactId:$version"
 }
 
+# Given a POM file, extract its packaging
+
+packaging_from_pom () {
+	pom="$(cat "$1")"
+	pom="$(skip_tag parent "$pom")"
+	pom="$(skip_tag dependencies "$pom")"
+	pom="$(skip_tag profiles "$pom")"
+	pom="$(skip_tag build "$pom")"
+	packaging="$(extract_tag packaging "$pom")"
+	echo "${packaging:-jar}"
+}
+
 # Given a GAV parameter possibly lacking a version, determine the latest version
 
 latest_version () {
@@ -325,6 +337,9 @@ latest-version)
 gav-from-pom)
 	gav_from_pom "$2"
 	;;
+packaging-from-pom)
+	packaging_from_pom "$2"
+	;;
 install)
 	install_jar "$2"
 	;;
@@ -350,6 +365,9 @@ latest-version <groupId>:<artifactId>[:<version>]
 
 gav-from-pom <pom.xml>
 	Prints the GAV parameter described in the given pom.xml file.
+
+packaging-from-pom <pom.xml>
+	Prints the packaging type of the given project.
 
 install <groupId>:<artifactId>:<version>
 	Installs the given artifact and all its dependencies; if the artifact
