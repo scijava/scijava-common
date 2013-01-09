@@ -47,7 +47,6 @@ done
 # Deploy aggregate POMs only if a child has been deployed
 for pom in $aggregate_poms
 do
-echo "pom: $pom;  ${pom%pom.xml}; $aggregate_poms"
 	case "$jar_poms" in
 	*" ${pom%pom.xml}"*)
 		echo "Deploying aggregate $pom" &&
