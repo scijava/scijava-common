@@ -283,8 +283,16 @@ get_jar () {
 is_jar_installed () {
 	artifactId="$(artifactId "$1")"
 	version="$(version "$1")"
-	test -f "$artifactId-$version.jar" ||
-	test -f "../plugins/$artifactId-$version.jar"
+	file=$artifactId-$version.jar
+	test -f "$file" || file=../plugins/$file
+	test -f "$file" || return 1
+	case "$version" in
+	*-SNAPSHOT)
+		# is the file younger than a day?
+		mtime="$(stat -c %Y $file)"
+		test "$(($mtime-$(date +%s)))" -gt -86400
+		;;
+	esac
 }
 
 # Given a .jar file, determine whether it is an ImageJ 1.x plugin
