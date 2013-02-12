@@ -13,6 +13,18 @@ die () {
 	exit 1
 }
 
+# Helper (thanks, BSD!)
+
+get_mtime () {
+	stat -c %Y "$1"
+}
+if test Darwin = "$(uname -s 2> /dev/null)"
+then
+	get_mtime () {
+		stat -f %m "$1"
+	}
+fi
+
 # Parse <groupId>:<artifactId>:<version> triplets (i.e. GAV parameters)
 
 groupId () {
@@ -289,7 +301,7 @@ is_jar_installed () {
 	case "$version" in
 	*-SNAPSHOT)
 		# is the file younger than a day?
-		mtime="$(stat -c %Y $file)"
+		mtime="$(get_mtime "$file")"
 		test "$(($mtime-$(date +%s)))" -gt -86400
 		;;
 	esac
