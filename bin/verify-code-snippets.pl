@@ -44,8 +44,9 @@ sub processURL($) {
 
 	# decode encoded HTML characters (e.g., '&amp;' -> '&')
 	for (my $pageIndex = 0; $pageIndex < @page; $pageIndex++) {
-		# HACK: decode '&nbsp;' -> ' ' (not 0xa0)
+		# HACK: decode '&nbsp;' and '&#160;' to ' ' (not 0xa0 or similar)
 		$page[$pageIndex] =~ s/&nbsp;/ /g;
+		$page[$pageIndex] =~ s/&#160;/ /g;
 
 		$page[$pageIndex] = decode_entities($page[$pageIndex]);
 	}
