@@ -59,6 +59,9 @@ sub processURL($) {
 			debug("Downloading $codeURL");
 			my @code = `curl -s $codeURL`;
 
+			# HACK: strip off leading copyright header comment
+			while ($code[0] =~ /^[\/ ]\*/ || $code[0] =~ /^$/) { shift @code; }
+
 			# search for matching first line of code within a few lines
 			my $codeOffset = findMatch(\@page, $code[0], $pageIndex);
 
