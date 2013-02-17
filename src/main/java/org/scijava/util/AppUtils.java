@@ -43,14 +43,14 @@ import java.util.regex.Pattern;
 
 
 /**
- * Useful methods for obtaining details of the ImageJ application environment.
+ * Useful methods for obtaining details of the SciJava application environment.
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
 public final class AppUtils {
 
-	private static final String mainClass;
+	private static final Class<?> mainClass;
 
 	static {
 		// Get the class whose main method launched the application. The heuristic
@@ -66,7 +66,7 @@ public final class AppUtils {
 			className = element.getClassName();
 			break;
 		}
-		mainClass = className;
+		mainClass = ClassUtils.loadClass(className);
 	}
 
 	private AppUtils() {
@@ -74,33 +74,41 @@ public final class AppUtils {
 	}
 
 	/**
-	 * Gets the name of the class whose main method launched the application.
+	 * Gets the class whose main method launched the application.
 	 * 
-	 * @return The name of the launching class, or null if the main method
-	 *         terminated before the {@code AppUtils} class was loaded.
+	 * @return The launching class, or null if the main method terminated before
+	 *         the {@code AppUtils} class was loaded.
 	 */
-	public static String getMainClass() {
+	public static Class<?> getMainClass() {
 		return mainClass;
 	}
 
 	/**
-	 * Gets the ImageJ root directory. If the {@code ij.dir} property is set, it
-	 * is used. Otherwise, we scan up the tree from this class for a suitable
-	 * directory.
+	 * Gets the application root directory. If the given system property is set,
+	 * it is used. Otherwise, we scan up the tree from the given class for a
+	 * suitable directory.
 	 * 
-	 * @see #getBaseDirectory(File, String)
+	 * @param sysProp System property which may point at the root directory. If
+	 *          this is set to a valid directory, it is used.
+	 * @param c The class from which the base directory should be derived.
+	 * @param baseSubdirectory A hint for what to expect for a directory structure
+	 *          beneath the application base directory. If this value is null
+	 *          (i.e., no hint is given), the heuristic scans up the directory
+	 *          tree looking for the topmost pom.xml file.
+	 * @see AppUtils#getBaseDirectory(File, String)
 	 */
-	public static File getBaseDirectory() {
-		final String property = System.getProperty("ij.dir");
+	public static File getBaseDirectory(final String sysProp, final Class<?> c,
+		final String baseSubdirectory)
+	{
+		final String property = System.getProperty(sysProp);
 		if (property != null) {
 			final File dir = new File(property);
 			if (dir.isDirectory()) return dir;
 		}
 
 		// look for valid base directory relative to this class
-		final File corePath =
-			getBaseDirectory(AppUtils.class.getName(), "core/core");
-		if (corePath != null) return corePath;
+		final File basePath = AppUtils.getBaseDirectory(c, baseSubdirectory);
+		if (basePath != null) return basePath;
 
 		// NB: Look for valid base directory relative to the main class which
 		// launched this environment. We will reach this logic, e.g., if the
@@ -109,7 +117,7 @@ public final class AppUtils {
 		// repository cache (~/.m2/repository), so the corePath will be null.
 		// However, the classes of the launching project will be located in
 		// target/classes, so we search up the tree from one of those.
-		final File appPath = getBaseDirectory(getMainClass());
+		final File appPath = AppUtils.getBaseDirectory(AppUtils.getMainClass());
 		if (appPath != null) return appPath;
 
 		// last resort: use current working directory
@@ -119,27 +127,25 @@ public final class AppUtils {
 	/**
 	 * Gets the base file system directory containing the given class file.
 	 * 
-	 * @param className The fully qualified name of the class from which the base
-	 *          directory should be derived.
+	 * @param c The class from which the base directory should be derived.
 	 * @see #getBaseDirectory(File, String)
 	 */
-	public static File getBaseDirectory(final String className) {
-		return getBaseDirectory(className, null);
+	public static File getBaseDirectory(final Class<?> c) {
+		return getBaseDirectory(c, null);
 	}
 
 	/**
 	 * Gets the base file system directory containing the given class file.
 	 * 
-	 * @param className The fully qualified name of the class from which the base
-	 *          directory should be derived.
+	 * @param c The class from which the base directory should be derived.
 	 * @param baseSubdirectory A hint for what to expect for a directory structure
 	 *          beneath the application base directory.
 	 * @see #getBaseDirectory(File, String)
 	 */
-	public static File getBaseDirectory(final String className,
+	public static File getBaseDirectory(final Class<?> c,
 		final String baseSubdirectory)
 	{
-		final URL location = ClassUtils.getLocation(className);
+		final URL location = ClassUtils.getLocation(c);
 		final File baseFile = FileUtils.urlToFile(location);
 		return getBaseDirectory(baseFile, baseSubdirectory);
 	}
@@ -156,12 +162,12 @@ public final class AppUtils {
 	 * {@code target/classes} folder of a given component. In this case, the class
 	 * files reside directly on the file system (not in a JAR file). The base
 	 * directory is defined as the toplevel Maven directory for the multi-module
-	 * project. For example, if you have checked out {@code imagej.git} to
-	 * {@code ~/code/imagej}, the {@code imagej.ImageJ} class will be located at
-	 * {@code ~/code/imagej/core/core/target/classes/imagej/ImageJ.class}. Asking
-	 * for the base directory for that class will yield {@code ~/code/imagej}, as
-	 * long as you correctly specify {@code core/core} for the
-	 * {@code  baseSubdirectory}.</li>
+	 * project. For example, if you have checked out {@code scijava-common.git} to
+	 * {@code ~/sjc}, the {@code org.scijava.Context} class will be located at
+	 * {@code ~/sjc/scijava-common/target/classes/org/scijava/Context.class}.
+	 * Asking for the base directory for that class will yield
+	 * {@code ~/sjc/scijava-common}, as long as you correctly specify
+	 * {@code scijava-common} for the {@code baseSubdirectory}.</li>
 	 * <li><b>Within a JAR file in the Maven local repository cache.</b> Typically
 	 * this cache is located in {@code ~/.m2/repository}. The location will be
 	 * {@code groupId/artifactId/version/artifactId-version.jar} where
@@ -197,12 +203,12 @@ public final class AppUtils {
 	 * itself will reside <b>in its Maven build directory</b>. So as long as you
 	 * ask for the base directory relative to a class
 	 * <em>of the executed project</em> it will be found.</li>
-	 * <li><b>Running the ImageJ application bundle.</b> Typically this means
-	 * downloading ImageJ from the web site, unpacking it and running the ImageJ
-	 * launcher (double-clicking ImageJ-win32.exe on Windows, double-clicking the
-	 * {@code ImageJ.app} on OS X, etc.). In this case, all components reside in
-	 * the {@code jars} folder of the application bundle, and the base directory
-	 * will be found one level above that.</li>
+	 * <li><b>Running as an application bundle (e.g., ImageJ).</b> Typically this
+	 * means downloading ImageJ from the web site, unpacking it and running the
+	 * ImageJ launcher (double-clicking ImageJ-win32.exe on Windows,
+	 * double-clicking the {@code ImageJ.app} on OS X, etc.). In this case, all
+	 * components reside in the {@code jars} folder of the application bundle, and
+	 * the base directory will be found one level above that.</li>
 	 * </ol>
 	 * 
 	 * @param classLocation The location from which the base directory should be

@@ -508,27 +508,4 @@ public final class FileUtils {
 		return result;
 	}
 
-	// -- Deprecated methods --
-
-	/** @deprecated Use {@link AppUtils#getBaseDirectory()} instead. */
-	@Deprecated
-	public static File getBaseDirectory() {
-		return AppUtils.getBaseDirectory();
-	}
-
-	/** @deprecated Use {@link AppUtils#getBaseDirectory(String)} instead. */
-	@Deprecated
-	public static String getBaseDirectory(final String className) {
-		final File baseDir = AppUtils.getBaseDirectory(className);
-		return baseDir == null ? null : baseDir.getAbsolutePath();
-	}
-
-	/** @deprecated Use {@link ProcessUtils#exec} instead. */
-	@Deprecated
-	public static String exec(final File workingDirectory, final PrintStream err,
-		final PrintStream out, final String... args)
-	{
-		return ProcessUtils.exec(workingDirectory, err, out, args);
-	}
-
 }
