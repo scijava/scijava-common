@@ -61,7 +61,7 @@ public @interface Plugin {
 	String CONTEXT_MENU_ROOT = "context";
 
 	/** The type of plugin; e.g., {@link org.scijava.service.Service}. */
-	Class<?> type();
+	Class<? extends SciJavaPlugin> type();
 
 	/** The name of the plugin. */
 	String name() default "";
