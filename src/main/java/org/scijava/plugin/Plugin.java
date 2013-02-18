@@ -147,9 +147,6 @@ public @interface Plugin {
 	/** When false, the plugin is not displayed in the user interface. */
 	boolean visible() default true;
 
-	/** When false, the user interface will not provide a cancel button. */
-	boolean cancelable() default true;
-
 	/**
 	 * Provides a "hint" as to whether the plugin would behave correctly in a
 	 * headless context.
