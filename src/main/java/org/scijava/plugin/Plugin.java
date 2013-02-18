@@ -69,7 +69,7 @@ public @interface Plugin {
 	/** The human-readable label to use (e.g., in the menu structure). */
 	String label() default "";
 
-	/** A longer description of the plugin (e.g., for use a tool tip). */
+	/** A longer description of the plugin (e.g., for use as a tool tip). */
 	String description() default "";
 
 	/**
@@ -151,7 +151,7 @@ public @interface Plugin {
 	boolean cancelable() default true;
 
 	/**
-	 * Provides a "hint" as to whether the plugin would execute correctly in a
+	 * Provides a "hint" as to whether the plugin would behave correctly in a
 	 * headless context.
 	 * <p>
 	 * Plugin developers should not specify {@code headless = true} unless the
