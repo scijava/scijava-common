@@ -229,19 +229,6 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return loadClass().getResource(iconPath);
 	}
 
-	/** Gets whether tool is always active, rather than part of the toolbar. */
-	public boolean isAlwaysActive() {
-		return getAnnotation().alwaysActive();
-	}
-
-	/**
-	 * Gets whether the tool receives input events when the main application frame
-	 * has the focus.
-	 */
-	public boolean isActiveInAppFrame() {
-		return getAnnotation().activeInAppFrame();
-	}
-
 	// -- Object methods --
 
 	@Override

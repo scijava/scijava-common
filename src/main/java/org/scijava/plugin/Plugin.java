@@ -170,16 +170,6 @@ public @interface Plugin {
 	/** Defines a function that is called to initialize the plugin in some way. */
 	String initializer() default "";
 
-	/** When true, tool has no button but rather is active all the time. */
-	boolean alwaysActive() default false;
-
-	/**
-	 * When true, tool receives events when the main ImageJ application frame is
-	 * active. When false, tool only receives events when a display window is
-	 * active.
-	 */
-	boolean activeInAppFrame() default false;
-
 	/**
 	 * A list of additional attributes which can be used to extend this annotation
 	 * beyond its built-in capabilities.
