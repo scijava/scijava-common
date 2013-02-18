@@ -1,0 +1,4 @@
+#Fri Feb 15 15:28:28 CST 2013
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=target/classes
+org.eclipse.jdt.apt.reconcileEnabled=false
