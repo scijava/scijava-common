@@ -40,7 +40,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 
-
 /**
  * Implementation of {@link LogService} using the standard error stream.
  * 

@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  * Useful methods for obtaining details of the SciJava application environment.
  * 

@@ -37,7 +37,6 @@ package org.scijava.plugin;
 
 import java.util.List;
 
-
 /**
  * Interface for mechanisms that define how SciJava plugins are discovered.
  * 

@@ -45,7 +45,6 @@ import javax.activation.CommandInfo;
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 
-
 /**
  * An annotation for indicating a field is an input or output parameter. This
  * annotation is a useful way for plugins to declare their inputs and outputs
