@@ -109,7 +109,8 @@ public class FileUtilsTest {
 		assertEquals(jarPath, jarFile.getPath());
 
 		// verify that OSGi 'bundleresource:' URL fails
-		final String bundleURL = "bundleresource://346.fwk2106232034:4/imagej/ImageJ.class";
+		final String bundleURL =
+			"bundleresource://346.fwk2106232034:4/imagej/ImageJ.class";
 		try {
 			final File bundleFile = FileUtils.urlToFile(bundleURL);
 			fail("Expected exception not thrown; result=" + bundleFile);

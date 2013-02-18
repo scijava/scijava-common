@@ -58,23 +58,23 @@ public interface EventService extends Service {
 	 * of a stack. For example:
 	 * </p>
 	 * <ol>
-	 * <li>{@link imagej.module.event.ModulesUpdatedEvent} is published with
+	 * <li>@{code imagej.module.event.ModulesUpdatedEvent} is published with
 	 * {@link #publish}.</li>
-	 * <li>{@link imagej.menu.DefaultMenuService} receives the event and handles
-	 * it, publishing {@link imagej.menu.event.MenusUpdatedEvent} in response.</li>
+	 * <li>{@code imagej.menu.DefaultMenuService} receives the event and handles
+	 * it, publishing {@code imagej.menu.event.MenusUpdatedEvent} in response.</li>
 	 * <li>A third party that subscribes to both
-	 * {@link imagej.module.event.ModulesUpdatedEvent} and
-	 * {@link imagej.menu.event.MenusUpdatedEvent} will receive the latter before
+	 * {@code imagej.module.event.ModulesUpdatedEvent} and
+	 * {@code imagej.menu.event.MenusUpdatedEvent} will receive the latter before
 	 * the former.</li>
 	 * </ol>
 	 * That said, the behavior of {@link #publish} depends on the thread from
 	 * which it is called: if called from a thread identified as a dispatch thread
-	 * by {@link imagej.thread.ThreadService#isDispatchThread()}, it will publish
-	 * immediately; otherwise, it will be queued for publication on a dispatch
-	 * thread, and block the calling thread until publication is complete. This
-	 * means that a chain of events published with a mixture of {@link #publish}
-	 * and {@link #publishLater} may result in event delivery in an unintuitive
-	 * order.
+	 * by {@link org.scijava.thread.ThreadService#isDispatchThread()}, it will
+	 * publish immediately; otherwise, it will be queued for publication on a
+	 * dispatch thread, and block the calling thread until publication is
+	 * complete. This means that a chain of events published with a mixture of
+	 * {@link #publish} and {@link #publishLater} may result in event delivery in
+	 * an unintuitive order.
 	 */
 	<E extends SciJavaEvent> void publish(E e);
 
@@ -88,13 +88,13 @@ public interface EventService extends Service {
 	 * resemble that of a queue. For example:
 	 * </p>
 	 * <ol>
-	 * <li>{@link imagej.module.event.ModulesUpdatedEvent} is published with
+	 * <li>{@code imagej.module.event.ModulesUpdatedEvent} is published with
 	 * {@link #publishLater}.</li>
-	 * <li>{@link imagej.menu.DefaultMenuService} receives the event and handles
-	 * it, publishing {@link imagej.menu.event.MenusUpdatedEvent} in response.</li>
+	 * <li>{@code imagej.menu.DefaultMenuService} receives the event and handles
+	 * it, publishing {@code imagej.menu.event.MenusUpdatedEvent} in response.</li>
 	 * <li>A third party that subscribes to both
-	 * {@link imagej.module.event.ModulesUpdatedEvent} and
-	 * {@link imagej.menu.event.MenusUpdatedEvent} will receive the former first,
+	 * {@code imagej.module.event.ModulesUpdatedEvent} and
+	 * {@code imagej.menu.event.MenusUpdatedEvent} will receive the former first,
 	 * since it was already queued by the time the latter was published.</li>
 	 * </ol>
 	 */

@@ -44,18 +44,18 @@ import org.scijava.service.Service;
  */
 public interface StatusService extends Service {
 
-	/** Updates ImageJ's progress bar. */
+	/** Updates the progress bar. */
 	void showProgress(int value, int maximum);
 
-	/** Updates ImageJ's status message. */
+	/** Updates the status message. */
 	void showStatus(String message);
 
-	/** Updates ImageJ's status message and progress bar. */
+	/** Updates the status message and progress bar. */
 	void showStatus(int progress, int maximum, String message);
 
 	/**
-	 * Updates ImageJ's status message and progress bar, optionally flagging the
-	 * status notification as a warning.
+	 * Updates the status message and progress bar, optionally flagging the status
+	 * notification as a warning.
 	 * 
 	 * @param progress New progress value
 	 * @param maximum New progress maximum
@@ -67,7 +67,7 @@ public interface StatusService extends Service {
 	/** Issues a warning message. */
 	void warn(String message);
 
-	/** Clears ImageJ's status message. */
+	/** Clears the status message. */
 	void clearStatus();
 
 }

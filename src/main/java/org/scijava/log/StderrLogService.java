@@ -53,7 +53,7 @@ public class StderrLogService extends AbstractService implements LogService {
 	private int level;
 
 	public StderrLogService() {
-		// check ImageJ log level system property for initial logging level
+		// check SciJava log level system property for initial logging level
 		final String logProp = System.getProperty(LOG_LEVEL_PROPERTY);
 		if (logProp != null) {
 			// check whether it's a string label (e.g., "debug")
@@ -233,7 +233,7 @@ public class StderrLogService extends AbstractService implements LogService {
 
 	@Override
 	public void initialize() {
-		// HACK: Dirty, because every time a new ImageJ context is created with a
+		// HACK: Dirty, because every time a new SciJava context is created with a
 		// StderrLogService, it will "steal" the default exception handling.
 		DefaultUncaughtExceptionHandler.install(this);
 	}

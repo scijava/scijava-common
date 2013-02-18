@@ -38,7 +38,7 @@ package org.scijava.event;
 import org.scijava.AbstractContextual;
 
 /**
- * Base class for all ImageJ events.
+ * Base class for all SciJava events.
  * 
  * @author Curtis Rueden
  */
@@ -46,7 +46,7 @@ public abstract class SciJavaEvent extends AbstractContextual {
 
 	private boolean consumed;
 
-	// -- ImageJEvent methods --
+	// -- SciJavaEvent methods --
 
 	public boolean isConsumed() {
 		return consumed;

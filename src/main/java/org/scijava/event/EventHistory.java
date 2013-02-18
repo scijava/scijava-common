@@ -41,7 +41,7 @@ import java.util.Set;
 import org.scijava.service.Service;
 
 /**
- * Interface for service that keeps a history of ImageJ events.
+ * Interface for service that keeps a history of SciJava events.
  * 
  * @author Curtis Rueden
  */

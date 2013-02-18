@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -127,8 +126,9 @@ public final class FileUtils {
 
 	/**
 	 * A regular expression to match filenames containing version information.
-	 * 
-	 * Keep this synchronized with imagej.updater.core.FileObject.
+	 * <p>
+	 * This is kept synchronized with {@code imagej.updater.core.FileObject}.
+	 * </p>
 	 */
 	private final static Pattern versionPattern =
 		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+|\\.GA)*)?(\\.jar(-[a-z]*)?)");

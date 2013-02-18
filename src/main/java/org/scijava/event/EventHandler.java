@@ -49,7 +49,7 @@ import java.lang.annotation.Target;
  * EventBus's {@link org.bushe.swing.event.annotation.EventSubscriber}
  * annotation, recapitulating a subset of the same functionality. We do this to
  * avoid third party code depending directly on EventBus. That is, we do not
- * wish to require ImageJ developers to {@code import org.bushe.swing.event.*}
+ * wish to require SciJava developers to {@code import org.bushe.swing.event.*}
  * or similar. In this way, EventBus is isolated as only a transitive dependency
  * of downstream code, rather than a direct dependency. Unfortunately, because
  * Java annotation interfaces cannot utilize inheritance, we have to

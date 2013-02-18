@@ -53,7 +53,7 @@ import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
 /**
- * Default service for publishing and subscribing to ImageJ events.
+ * Default service for publishing and subscribing to SciJava events.
  * 
  * @author Curtis Rueden
  * @author Grant Harris
@@ -208,7 +208,7 @@ public class DefaultEventService extends AbstractService implements
 	 * <p>
 	 * Recapitulates some logic from {@link BaseProxySubscriber}, because that
 	 * class implements {@link org.bushe.swing.event.EventSubscriber} as a raw
-	 * type, which is incompatible with this class implementing ImageJ's
+	 * type, which is incompatible with this class implementing SciJava's
 	 * {@link EventSubscriber} as a typed interface; it becomes impossible to
 	 * implement both {@code onEvent(Object)} and {@code onEvent(E)}.
 	 * </p>

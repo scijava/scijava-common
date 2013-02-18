@@ -39,13 +39,13 @@ import java.util.List;
 
 
 /**
- * Interface for mechanisms that define how ImageJ plugins are discovered.
+ * Interface for mechanisms that define how SciJava plugins are discovered.
  * 
  * @author Curtis Rueden
  */
 public interface PluginFinder {
 
-	/** Populates the given list with all available ImageJ plugins. */
+	/** Populates the given list with all available SciJava plugins. */
 	void findPlugins(List<PluginInfo<?>> plugins);
 
 }

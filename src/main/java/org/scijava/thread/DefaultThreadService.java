@@ -35,7 +35,6 @@
 
 package org.scijava.thread;
 
-
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
@@ -48,7 +47,7 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 
 /**
- * Default service for managing active ImageJ threads.
+ * Default service for managing active threads.
  * 
  * @author Curtis Rueden
  */
@@ -110,7 +109,7 @@ public final class DefaultThreadService extends AbstractService implements
 	public Thread newThread(final Runnable r) {
 		final String contextHash = Integer.toHexString(getContext().hashCode());
 		final String threadName =
-			"ImageJ-" + contextHash + "-Thread-" + nextThread++;
+			"SciJava-" + contextHash + "-Thread-" + nextThread++;
 		return new Thread(r, threadName);
 	}
 

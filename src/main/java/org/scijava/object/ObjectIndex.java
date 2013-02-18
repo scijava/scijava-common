@@ -109,12 +109,12 @@ public class ObjectIndex<E> implements Collection<E> {
 
 		// We cannot use Object.class, since interface type hierarchies do not
 		// extend Object. In particular, PluginIndex classifies objects beneath the
-		// ImageJPlugin type hierarchy, which does not extend Object.
+		// SciJavaPlugin type hierarchy, which does not extend Object.
 
 		// And we cannot use getBaseClass() because the actual base class of the
 		// objects stored in the index may differ from the type hierarchy beneath
 		// which they are classified. In particular, PluginIndex classifies its
-		// PluginInfo objects beneath the ImageJPlugin type hierarchy, and not that
+		// PluginInfo objects beneath the SciJavaPlugin type hierarchy, and not that
 		// of PluginInfo.
 		return get(All.class);
 	}

@@ -44,7 +44,7 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 
 /**
- * Default service for keeping a history of ImageJ events.
+ * Default service for keeping a history of SciJava events.
  * 
  * @author Curtis Rueden
  */

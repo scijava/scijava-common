@@ -43,20 +43,21 @@ import org.scijava.object.SortedObjectIndex;
 /**
  * Data structure for managing registered plugins.
  * <p>
- * The plugin index is a special type of {@link org.scijava.object.ObjectIndex} that
- * classifies each {@link PluginInfo} object into a type hierarchy compatible
- * with its associated <em>plugin</em> type (i.e.,
+ * The plugin index is a special type of {@link org.scijava.object.ObjectIndex}
+ * that classifies each {@link PluginInfo} object into a type hierarchy
+ * compatible with its associated <em>plugin</em> type (i.e.,
  * {@link PluginInfo#getPluginType()}), rather than {@link PluginInfo}'s type
  * hierarchy (i.e., {@link PluginInfo}, {@link org.scijava.UIDetails},
  * {@link org.scijava.Instantiable}, etc.).
  * </p>
  * <p>
  * NB: This type hierarchy will typically <em>not</em> include the plugin class
- * itself; for example, the {@code imagej.core.plugins.app.AboutImageJ} command
- * has a plugin type of {@link imagej.command.Command}, and hence will be
- * categorized beneath {@code Command.class}, not {@code AboutImageJ.class}. The
+ * itself; for example, the {@link org.scijava.plugin.DefaultPluginService } has
+ * a plugin type of {@link org.scijava.service.Service }, and hence will be
+ * categorized beneath {@code Service.class}, not
+ * {@code DefaultPluginService.class} or {@code PluginService.class}. The
  * rationale is that to fully classify each plugin including its own class, said
- * class would need to be loaded, which ImageJ makes an effort not to do until
+ * class would need to be loaded, which SciJava makes an effort not to do until
  * the plugin is actually executed for the first time.
  * </p>
  * 

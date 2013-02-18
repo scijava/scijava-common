@@ -38,7 +38,7 @@ package org.scijava;
 import org.scijava.Context;
 
 /**
- * An object that belongs to an ImageJ application context.
+ * An object that belongs to a SciJava application context.
  * 
  * @author Lee Kamentsky
  * @author Curtis Rueden

@@ -47,11 +47,11 @@ import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
 /**
- * An {@link org.bushe.swing.event.EventService} implementation for ImageJ.
+ * An {@link org.bushe.swing.event.EventService} implementation for SciJava.
  * <p>
  * It is called "DefaultEventBus" rather than "DefaultEventService" to avoid a
  * name clash with {@link DefaultEventService}, which is not an
- * {@link org.bushe.swing.event.EventService} but rather an ImageJ
+ * {@link org.bushe.swing.event.EventService} but rather a SciJava
  * {@link Service} implementation.
  * </p>
  * 
