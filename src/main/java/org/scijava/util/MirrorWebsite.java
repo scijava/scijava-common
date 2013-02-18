@@ -33,7 +33,7 @@
  * #L%
  */
 
-package org.scijava;
+package org.scijava.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -57,6 +57,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This program mirrors a given website.
+ * <p>
+ * Its primary purpose is to provide the code necessary to keep <a href="http://mirror.imagej.net/">ImageJ Mirror</a> up-to-date.
+ * </p>
+ *
+ * @author Johannes Schindelin
+ */
 public class MirrorWebsite {
 	public final static int THREAD_COUNT = 20;
 	public final static long DELAY_IN_MICROSECONDS = 0;
