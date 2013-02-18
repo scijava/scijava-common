@@ -9,7 +9,7 @@ Maven-based SciJava code, including:
 * [ImgLib](https://github.com/imagej/imglib)
 * [LOCI](https://github.com/uw-loci/pom-loci)
 * [SCIFIO](https://github.com/imagej/minimal-ij1-plugin)
-* [SciJava Common](https://github.com/scijava/scijava-common/tree/master/scijava-common)
+* [SciJava Common](https://github.com/scijava/scijava-common)
 
 This POM is intended for use as the parent of your own Maven-based code.
 See these examples for guidance:
