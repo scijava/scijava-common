@@ -180,4 +180,10 @@ public @interface Plugin {
 	 */
 	boolean activeInAppFrame() default false;
 
+	/**
+	 * A list of additional attributes which can be used to extend this annotation
+	 * beyond its built-in capabilities.
+	 */
+	Attr[] attrs() default {};
+
 }

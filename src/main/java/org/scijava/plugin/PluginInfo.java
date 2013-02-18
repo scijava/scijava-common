@@ -36,6 +36,8 @@
 package org.scijava.plugin;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.scijava.AbstractUIDetails;
 import org.scijava.Instantiable;
@@ -73,6 +75,9 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/** Type of this entry's plugin; e.g., {@link org.scijava.service.Service}. */
 	private Class<PT> pluginType;
+
+	/** Table of extra key/value pairs. */
+	private Map<String, String> values = new HashMap<String, String>();
 
 	/** Annotation describing the plugin. */
 	private Plugin annotation;
@@ -198,6 +203,16 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return pluginType;
 	}
 
+	/** Returns true iff the the given key is defined by the metadata. */
+	public boolean is(final String key) {
+		return values.containsKey(key);
+	}
+
+	/** Returns the value of the given key, or null if undefined. */
+	public String get(final String key) {
+		return values.get(key);
+	}
+
 	/** Gets the associated @{@link Plugin} annotation. */
 	public Plugin getAnnotation() {
 		return annotation;
@@ -320,6 +335,13 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 			if (menuIconPath == null || menuIconPath.isEmpty()) {
 				menuLeaf.setIconPath(iconPath);
 			}
+		}
+
+		// populate extra attributes
+		for (final Attr attr : ann.attrs()) {
+			final String name = attr.name();
+			final String value = attr.value();
+			values.put(name, value);
 		}
 	}
 
