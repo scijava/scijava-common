@@ -60,8 +60,14 @@ public class Context {
 	// FIXME
 	/** @deprecated Use {@link Context#getVersion()} instead. */
 	@Deprecated
-	public static final String VERSION =
-		POM.getPOM(Context.class, "org.scijava", "scijava-common").getVersion();
+	public static final String VERSION = getStaticVersion();
+
+	/** @deprecated DO NOT USE */
+	@Deprecated
+	private static String getStaticVersion() {
+		final POM pom = POM.getPOM(Context.class, "org.scijava", "scijava-common");
+		return pom == null ? "Unknown" : pom.getVersion();
+  }
 
 	private static boolean sezpozNeedsToRun = true;
 
@@ -87,7 +93,7 @@ public class Context {
 		this(false);
 	}
 
-	/**
+  /**
 	 * Creates a new SciJava application context.
 	 * 
 	 * @param empty If true, the context will be empty; otherwise, it will be
