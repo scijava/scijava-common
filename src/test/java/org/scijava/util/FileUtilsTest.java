@@ -36,11 +36,13 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import org.junit.Test;
 import org.scijava.util.FileUtils;
@@ -162,6 +164,25 @@ public class FileUtilsTest {
 			"\\\\server\\p1\\p2\\p3\\p4\\p5\\p6", 20));
 		assertEquals("http://www...pb.html", FileUtils.limitPath(
 			"http://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html", 20));
+	}
+
+	@Test
+	public void testListContents() {
+		File nonExisting;
+		int i = 0;
+		for (;;) {
+			nonExisting = new File("" + i);
+			if (!nonExisting.exists()) break;
+			i++;
+		}
+
+		try {
+			Collection<URL> urls = FileUtils.listContents(nonExisting.toURI().toURL());
+			assertNotNull(urls);
+			assertEquals(0, urls.size());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

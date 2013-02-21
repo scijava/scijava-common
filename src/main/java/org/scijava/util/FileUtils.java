@@ -467,17 +467,20 @@ public final class FileUtils {
 			catch (Exception e) {
 				dir = new File(directory.getPath());
 			}
-			for (final File file : dir.listFiles()) {
-				try {
-					if (file.isFile()) {
-						result.add(file.toURI().toURL());
+			final File[] list = dir.listFiles();
+			if (list != null) {
+				for (final File file : list) {
+					try {
+						if (file.isFile()) {
+							result.add(file.toURI().toURL());
+						}
+						else if (file.isDirectory()) {
+							appendContents(result, file.toURI().toURL());
+						}
 					}
-					else if (file.isDirectory()) {
-						appendContents(result, file.toURI().toURL());
+					catch (MalformedURLException e) {
+						e.printStackTrace();
 					}
-				}
-				catch (MalformedURLException e) {
-					e.printStackTrace();
 				}
 			}
 		}
