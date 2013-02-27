@@ -33,38 +33,19 @@
  * #L%
  */
 
-package org.scijava.service;
-
-import org.scijava.plugin.SortablePlugin;
+package org.scijava;
 
 /**
- * Abstract superclass of {@link Service} implementations.
+ * An object that knows how to clean up after itself.
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractService extends SortablePlugin implements
-	Service
-{
+public interface Disposable {
 
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		// NB: Do nothing by default.
-	}
-
-	// -- Disposable methods --
-
-	@Override
-	public void dispose() {
-		// NB: Do nothing by default.
-	}
-
-	// -- Object methods --
-
-	@Override
-	public String toString() {
-		return getClass().getName() + " [priority = " + getPriority() + "]";
-	}
+	/**
+	 * Performs any needed cleanup of the object's services, in preparation for
+	 * the object being retired (e.g., to make garbage collection possible).
+	 */
+	void dispose();
 
 }

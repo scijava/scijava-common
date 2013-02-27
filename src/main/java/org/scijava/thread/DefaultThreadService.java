@@ -42,6 +42,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -55,6 +57,9 @@ import org.scijava.service.Service;
 public final class DefaultThreadService extends AbstractService implements
 	ThreadService
 {
+
+	@Parameter
+	private LogService log;
 
 	private ExecutorService executor;
 
@@ -101,6 +106,13 @@ public final class DefaultThreadService extends AbstractService implements
 	@Override
 	public void initialize() {
 		executor = Executors.newCachedThreadPool(this);
+	}
+
+	// -- Disposable methods --
+
+	@Override
+	public void dispose() {
+		executor.shutdown();
 	}
 
 	// -- ThreadFactory methods --

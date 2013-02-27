@@ -137,6 +137,13 @@ public class DefaultEventService extends AbstractService implements
 		eventBus = new DefaultEventBus(threadService, log);
 	}
 
+	// -- Disposable methods --
+
+	@Override
+	public void dispose() {
+		eventBus.clearAllSubscribers();
+	}
+
 	// -- Helper methods --
 
 	/**

@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
@@ -55,7 +56,7 @@ import org.scijava.util.POM;
  * @author Curtis Rueden
  * @see Service
  */
-public class Context {
+public class Context implements Disposable {
 
 	// FIXME
 	/** @deprecated Use {@link Context#getVersion()} instead. */
@@ -275,6 +276,19 @@ public class Context {
 		if (c.getContext() == this) return true;
 		c.setContext(this);
 		return true;
+	}
+
+	// -- Disposable methods --
+
+	@Override
+	public void dispose() {
+		// NB: Dispose services in reverse order.
+		// This may or may not actually be necessary, but seems safer, since
+		// dependent services will be disposed *before* their dependencies.
+		final List<Service> services = serviceIndex.getAll();
+		for (int s = services.size() - 1; s >= 0; s--) {
+			services.get(s).dispose();
+		}
 	}
 
 }
