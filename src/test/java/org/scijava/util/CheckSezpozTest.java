@@ -110,6 +110,7 @@ public class CheckSezpozTest {
 			+ "\tpublic int compareTo(final Prioritized other) { return 0; }\n"
 			+ "\tpublic Context getContext() { return null; }\n"
 			+ "\tpublic void setContext(final Context context) { }\n"
+			+ "\tpublic void dispose() { }\n"
 			+ "}\n");
 		writer.close();
 
