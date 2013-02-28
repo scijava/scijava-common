@@ -65,7 +65,7 @@ public final class AppUtils {
 			className = element.getClassName();
 			break;
 		}
-		mainClass = ClassUtils.loadClass(className);
+		mainClass = className == null ? null : ClassUtils.loadClass(className);
 	}
 
 	private AppUtils() {
