@@ -157,6 +157,8 @@ public class Context implements Disposable {
 
 		serviceIndex = new ServiceIndex();
 
+		// FIXME: Best would be if it is possible to completely
+		// disable plugin discovery (i.e., turn off SezPoz).
 		pluginIndex = new PluginIndex();
 		pluginIndex.discover();
 
