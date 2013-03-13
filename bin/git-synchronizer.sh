@@ -66,10 +66,10 @@ fetch_from () {
 			add_error "Could not add remote $name ($url)"
 			return 1
 		}
-		test -n "$pushurl" &&
-		test "$pushurl" != "$url" &&
-		git config remote.$name.pushURL "$pushurl"
 	fi
+	test -n "$pushurl" &&
+	test "$pushurl" != "$url" &&
+	git config remote.$name.pushURL "$pushurl"
 	previous="$(get_remote_branches $name)"
 	git fetch --prune $name >&2 || {
 		add_error "Could not fetch $name"
