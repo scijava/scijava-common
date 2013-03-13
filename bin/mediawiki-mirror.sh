@@ -77,7 +77,7 @@ pages="$(pages_with_changes_since $ORIGINAL $since |
 	sed -e "s/^'//" -e "s/',$//" -e "s/ /%20/g" |
 	tr '\n' ' ')"
 
-test -n "$pages" || exit
+test -n "$pages" || exit 0
 
 # export from the original Wiki
 
