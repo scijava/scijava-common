@@ -70,6 +70,12 @@ public class ServiceHelper extends AbstractContextual {
 	/** Classes to instantiate as services. */
 	private final List<Class<? extends Service>> serviceClasses;
 
+	/** Class list of lazy services. */
+	private final List<Class<? extends Service>> lazyPoolList;
+
+	/** Whether this ServiceHelper will load lazy services. */
+	private boolean loadLazy;
+
 	/**
 	 * Creates a new service helper for discovering and instantiating services.
 	 * 
@@ -87,12 +93,13 @@ public class ServiceHelper extends AbstractContextual {
 	 * @param serviceClasses The service classes to instantiate.
 	 */
 	public ServiceHelper(final Context context,
-		final Collection<Class<? extends Service>> serviceClasses)
+			final Collection<Class<? extends Service>> serviceClasses)
 	{
 		setContext(context);
 		classPoolMap = new HashMap<Class<? extends Service>, Double>();
 		classPoolList = new ArrayList<Class<? extends Service>>();
-		findServiceClasses(classPoolMap, classPoolList);
+		lazyPoolList = new ArrayList<Class<? extends Service>>();
+		findServiceClasses(classPoolMap, classPoolList, lazyPoolList);
 		this.serviceClasses = new ArrayList<Class<? extends Service>>();
 		if (serviceClasses == null) {
 			// load all discovered services
@@ -102,6 +109,8 @@ public class ServiceHelper extends AbstractContextual {
 			// load only the services that were explicitly specified
 			this.serviceClasses.addAll(serviceClasses);
 		}
+
+		loadLazy = false;
 	}
 
 	// -- ServiceHelper methods --
@@ -115,8 +124,12 @@ public class ServiceHelper extends AbstractContextual {
 			loadService(serviceClass);
 		}
 		final EventService eventService =
-			getContext().getService(EventService.class);
+				getContext().getService(EventService.class);
 		if (eventService != null) eventService.publish(new ServicesLoadedEvent());
+
+		// All non-lazy services should be loaded at this point, 
+		// so lazy services can now be loaded
+		loadLazy = true;
 	}
 
 	/**
@@ -129,18 +142,18 @@ public class ServiceHelper extends AbstractContextual {
 	 */
 	public <S extends Service> S loadService(final Class<S> c) {
 		// if a compatible service already exists, return it
-		final S service = getContext().getServiceIndex().getService(c);
+		S service = getContext().getServiceIndex().getService(c);
 		if (service != null) return service;
 
 		// scan the class pool for a suitable match
-		for (final Class<? extends Service> serviceClass : classPoolList) {
-			if (c.isAssignableFrom(serviceClass)) {
-				// found a match; now instantiate it
-				@SuppressWarnings("unchecked")
-				final S result = (S) createExactService(serviceClass);
-				return result;
-			}
-		}
+		service = this.<S>searchListForService(c, classPoolList);
+
+		// scan the lazy class pool for a suitable match if necessary
+		if (service == null && canLoadLazy())
+			service = this.<S>searchListForService(c, lazyPoolList);
+
+		// found a match, return it.
+		if (service != null) return service;
 
 		return createExactService(c);
 	}
@@ -164,12 +177,23 @@ public class ServiceHelper extends AbstractContextual {
 		}
 		return null;
 	}
+	
+	/**
+	 * Returns whether or not lazy services will be loaded by this ServiceHelper.
+	 * {@link #loadServices()} should be run once before any lazy services
+	 * can be loaded.
+	 * 
+	 * @return true if this ServiceHelper will load lazy services
+	 */
+	public boolean canLoadLazy() {
+		return loadLazy ;
+	}
 
 	// -- Helper methods --
 
 	/** Instantiates a service using the given constructor. */
 	private <S extends Service> S createService(final Class<S> c)
-		throws InstantiationException, IllegalAccessException
+			throws InstantiationException, IllegalAccessException
 	{
 		final S service = c.newInstance();
 		service.setContext(getContext());
@@ -180,7 +204,7 @@ public class ServiceHelper extends AbstractContextual {
 
 		// populate service parameters
 		final List<Field> fields =
-			ClassUtils.getAnnotatedFields(c, Parameter.class);
+				ClassUtils.getAnnotatedFields(c, Parameter.class);
 		for (final Field f : fields) {
 			f.setAccessible(true); // expose private fields
 
@@ -202,21 +226,51 @@ public class ServiceHelper extends AbstractContextual {
 		return service;
 	}
 
+	/**
+	 * Iterates over the provided list, looking for classes
+	 * that can be cast to the specified baseClass, and attempting
+	 * to instantiate these classes until successful or the list is exhausted.
+	 */
+	@SuppressWarnings("unchecked")
+	private <S extends Service> S searchListForService(
+			Class<? extends Service> baseClass,
+			List<Class<? extends Service>> serviceList) 
+	{
+		for (Class<? extends Service> testClass : serviceList) {
+			if (baseClass.isAssignableFrom(testClass)) {
+				// found a match; now instantiate it
+				return (S) createExactService(testClass);
+			}
+		}
+
+		return null;
+	}
+
 	/** Asks the plugin index for all available service implementations. */
 	private void findServiceClasses(
-		final Map<Class<? extends Service>, Double> serviceMap,
-		final List<Class<? extends Service>> serviceList)
+			final Map<Class<? extends Service>, Double> serviceMap,
+			final List<Class<? extends Service>> serviceList,
+			List<Class<? extends Service>> lazyServiceList)
 	{
 		// ask the plugin index for the (sorted) list of available services
 		final List<PluginInfo<Service>> services =
-			getContext().getPluginIndex().getPlugins(Service.class);
+				getContext().getPluginIndex().getPlugins(Service.class);
 
 		for (final PluginInfo<Service> info : services) {
 			try {
 				final Class<? extends Service> c = info.loadClass();
 				final double priority = info.getPriority();
 				serviceMap.put(c, priority);
-				serviceList.add(c);
+
+				// If the service is annotated as lazy, add it to the lazy list
+				// for later loading. Otherwise, it can be added to the list of
+				// available services immediately.
+				if (info.getAnnotation().lazy()) {
+					lazyServiceList.add(c);
+				}
+				else {
+					serviceList.add(c);
+				}
 			}
 			catch (final Throwable e) {
 				error("Invalid service: " + info, e);
@@ -241,5 +295,4 @@ public class ServiceHelper extends AbstractContextual {
 		final LogService log = getContext().getService(LogService.class);
 		if (log != null) log.debug(msg);
 	}
-
 }

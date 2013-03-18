@@ -163,6 +163,16 @@ public @interface Plugin {
 	 * </p>
 	 */
 	boolean headless() default false;
+	
+	/**
+	 * When true, if this plugin is an {@link org.scijava.service.Service},
+	 * the context will not try to load this service unless explicitly requested.
+	 * <p>
+	 * NB: Annotating a service field the {@link org.scijava.plugin.Parameter}
+	 * annotation will cause that service to be loaded.
+	 * </p>
+	 */
+	boolean lazy() default false;
 
 	/** Defines a function that is called to initialize the plugin in some way. */
 	String initializer() default "";
