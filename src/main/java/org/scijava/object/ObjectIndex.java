@@ -122,12 +122,14 @@ public class ObjectIndex<E> implements Collection<E> {
 	/**
 	 * Gets a list of registered objects compatible with the given type.
 	 * 
-	 * @return Read-only list of registered objects of the given type, or an empty
+	 * @return New list of registered objects of the given type, or an empty
 	 *         list if no such objects exist (this method never returns null).
 	 */
 	public List<E> get(final Class<?> type) {
-		final List<E> list = retrieveList(type);
-		return Collections.unmodifiableList(list);
+		List<E> list = retrieveList(type);
+		// NB: Return a copy of the data, to facilitate thread safety.
+		list = new ArrayList<E>(list);
+		return list;
 	}
 
 	// -- Collection methods --
