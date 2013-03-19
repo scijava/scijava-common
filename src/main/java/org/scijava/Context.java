@@ -79,6 +79,9 @@ public class Context implements Disposable {
 
 	/** Index of the application context's services. */
 	private final ServiceIndex serviceIndex;
+	
+	/** Helper class for loading services. */
+	private final ServiceHelper serviceHelper;
 
 	/** Master index of all plugins known to the application context. */
 	private final PluginIndex pluginIndex;
@@ -166,8 +169,7 @@ public class Context implements Disposable {
 		pom = POM.getPOM(Context.class, "org.scijava", "scijava-common");
 		manifest = Manifest.getManifest(Context.class);
 
-		final ServiceHelper serviceHelper =
-			new ServiceHelper(this, serviceClasses);
+		serviceHelper = new ServiceHelper(this, serviceClasses);
 		serviceHelper.loadServices();
 	}
 
@@ -244,7 +246,15 @@ public class Context implements Disposable {
 
 	/** Gets the service of the given class. */
 	public <S extends Service> S getService(final Class<S> c) {
-		return serviceIndex.getService(c);
+		S service = serviceIndex.getService(c);
+		
+		if (service == null && serviceHelper != null &&
+		    serviceHelper.canLoadLazy())
+		{
+		  service = serviceHelper.loadService(c);
+		}
+		  
+		return service;
 	}
 
 	/** Gets the service of the given class name (useful for scripts). */
