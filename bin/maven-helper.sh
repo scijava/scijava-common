@@ -291,6 +291,16 @@ get_jar () {
 	echo "$tmpfile"
 }
 
+# Given a GAV parameter, get the commit from the manifest of the deployed .jar
+
+commit_from_gav () {
+	jar="$(get_jar "$1")"
+	unzip -p "$jar" META-INF/MANIFEST.MF |
+	sed -n -e 's/^Implementation-Build: *//pi' |
+	tr -d '\r'
+	rm "$jar"
+}
+
 # Given a GAV parameter, determine whether the .jar file is already in plugins/
 # or jars/
 
@@ -339,11 +349,7 @@ install_jar () {
 
 case "$1" in
 commit)
-	jar="$(get_jar "$2")"
-	unzip -p "$jar" META-INF/MANIFEST.MF |
-	sed -n -e 's/^Implementation-Build: *//pi' |
-	tr -d '\r'
-	rm "$jar"
+	commit_from_gav "$2"
 	;;
 deps|dependencies)
 	get_dependencies "$2"
