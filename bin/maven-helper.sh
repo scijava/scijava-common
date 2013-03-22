@@ -345,6 +345,17 @@ install_jar () {
 	done
 }
 
+# Determine whether a local project (specified as pom.xml) needs to be deployed
+
+is_deployed () {
+	gav="$(gav_from_pom "$1")" &&
+	commit="$(commit_from_gav "$gav")" &&
+	test -n "$commit" &&
+	dir="$(dirname "$gav")" &&
+	(cd "$dir" &&
+	 git diff --quiet "$commit".. -- .)
+}
+
 # The main part
 
 case "$1" in
@@ -370,6 +381,9 @@ packaging-from-pom)
 	;;
 install)
 	install_jar "$2"
+	;;
+is-deployed)
+	is_deployed "$2"
 	;;
 *)
 	die "Usage: $0 [command] [argument...]"'
@@ -402,6 +416,10 @@ install <groupId>:<artifactId>:<version>
 	or dependency to install is an ImageJ 1.x plugin and the parent
 	directory contains a subdirectory called "plugins", it will be
 	installed there, otherwise into the current directory.
+
+is-deployed <pom.xml>
+	Tests whether the specified project is deployed alright. Fails
+	with exit code 1 if not.
 '
 	;;
 esac
