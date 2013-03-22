@@ -285,6 +285,8 @@ get_jar () {
 	url="$(jar_url "$1")"
 	tmpfile="$(tmpfile .jar)"
 	curl -s "$url" > "$tmpfile"
+	test "<html" != "$(head -c 5 "$tmpfile")" ||
+	curl -s "${url%.jar}.nar" > "$tmpfile"
 	test PK = "$(head -c 2 "$tmpfile")"
 	echo "$tmpfile"
 }
