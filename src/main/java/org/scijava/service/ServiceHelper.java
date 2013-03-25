@@ -229,24 +229,34 @@ public class ServiceHelper extends AbstractContextual {
 	private void info(final String msg) {
 		final LogService log = getContext().getService(LogService.class);
 		if (log != null) log.info(msg);
+		else System.err.println("[INFO] " + msg);
 	}
 	
 	/** Logs the given warning, if a {@link LogService} is available. */ 
 	private void warn(final String msg) {
 		final LogService log = getContext().getService(LogService.class);
 		if (log != null) log.warn(msg);
+		else System.err.println("[WARNING] " + msg);
 	}
 
 	/** Logs the given error, if a {@link LogService} is available. */
 	private void error(final String msg, final Throwable t) {
 		final LogService log = getContext().getService(LogService.class);
 		if (log != null) log.error(msg, t);
+		else {
+			System.err.println("[ERROR] " + msg);
+			if (t != null) t.printStackTrace();
+		}
 	}
 
 	/** Logs the given debug message, if a {@link LogService} is available. */
 	private void debug(final String msg, final Throwable t) {
 		final LogService log = getContext().getService(LogService.class);
 		if (log != null) log.debug(msg, t);
+		else {
+			System.err.println("[DEBUG] " + msg);
+			if (t != null) t.printStackTrace();
+		}
 	}
 
 }
