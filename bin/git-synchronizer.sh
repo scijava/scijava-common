@@ -28,6 +28,7 @@ url2remotename () {
 
 nullsha1=0000000000000000000000000000000000000000
 find_deleted () {
+	test -n "$2" || return
 	printf '%s\n%s\n%s\n' "$1" "$2" "$2" |
 	sort -k 3 |
 	uniq -u -f 2 |
