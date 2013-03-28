@@ -351,7 +351,7 @@ is_deployed () {
 	gav="$(gav_from_pom "$1")" &&
 	commit="$(commit_from_gav "$gav")" &&
 	test -n "$commit" &&
-	dir="$(dirname "$gav")" &&
+	dir="$(dirname "$1")" &&
 	(cd "$dir" &&
 	 git diff --quiet "$commit".. -- .)
 }
