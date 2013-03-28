@@ -238,8 +238,8 @@ public class DefaultPluginService extends AbstractService implements
 			Priority.inject(p, info.getPriority());
 			return p;
 		}
-		catch (final InstantiableException exc) {
-			log.error("Cannot create plugin: " + info);
+		catch (final Throwable t) {
+			log.error("Cannot create plugin: " + info, t);
 		}
 		return null;
 	}

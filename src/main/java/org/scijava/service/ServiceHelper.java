@@ -160,7 +160,7 @@ public class ServiceHelper extends AbstractContextual {
 			return service;
 		}
 		catch (final Throwable t) {
-			warn("Invalid service: " + c.getName());
+			warn("Invalid service: " + c.getName(), t);
 			debug("Invalid service: " + c.getName(), t);
 		}
 		return null;
@@ -233,10 +233,13 @@ public class ServiceHelper extends AbstractContextual {
 	}
 	
 	/** Logs the given warning, if a {@link LogService} is available. */ 
-	private void warn(final String msg) {
+	private void warn(final String msg, final Throwable t) {
 		final LogService log = getContext().getService(LogService.class);
-		if (log != null) log.warn(msg);
-		else System.err.println("[WARNING] " + msg);
+		if (log != null) log.warn(msg, t);
+		else {
+			System.err.println("[WARN] " + msg);
+			if (t != null) t.printStackTrace();
+		}
 	}
 
 	/** Logs the given error, if a {@link LogService} is available. */
