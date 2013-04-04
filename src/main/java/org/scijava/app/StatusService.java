@@ -33,60 +33,52 @@
  * #L%
  */
 
-package org.scijava.event;
+package org.scijava.app;
 
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.AbstractService;
+import org.scijava.app.event.StatusEvent;
 import org.scijava.service.Service;
 
 /**
- * Default service for status notifications.
+ * Interface for the status notification service.
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class)
-public class DefaultStatusService extends AbstractService implements
-	StatusService
-{
+public interface StatusService extends Service {
 
-	@Parameter
-	private EventService eventService;
+	/** Updates the progress bar. */
+	void showProgress(int value, int maximum);
 
-	// -- StatusService methods --
+	/** Updates the status message. */
+	void showStatus(String message);
 
-	@Override
-	public void showProgress(final int value, final int maximum) {
-		eventService.publish(new StatusEvent(value, maximum));
-	}
+	/** Updates the status message and progress bar. */
+	void showStatus(int progress, int maximum, String message);
 
-	@Override
-	public void showStatus(final String message) {
-		eventService.publish(new StatusEvent(message));
-	}
+	/**
+	 * Updates the status message and progress bar, optionally flagging the status
+	 * notification as a warning.
+	 * 
+	 * @param progress New progress value
+	 * @param maximum New progress maximum
+	 * @param message New status message
+	 * @param warn Whether or not this notification constitutes a warning
+	 */
+	void showStatus(int progress, int maximum, String message, boolean warn);
 
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message));
-	}
+	/** Issues a warning message. */
+	void warn(String message);
 
-	@Override
-	public void warn(final String message) {
-		eventService.publish(new StatusEvent(message, true));
-	}
+	/** Clears the status message. */
+	void clearStatus();
 
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message, final boolean warn)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message, warn));
-	}
-
-	@Override
-	public void clearStatus() {
-		eventService.publish(new StatusEvent(""));
-	}
+	/**
+	 * Gets the status message of the given event. In the case of the empty string
+	 * (""), an alternative default string (such as application version
+	 * information) may be returned instead.
+	 * 
+	 * @see StatusEvent#getStatusMessage()
+	 * @see AppService#getInfo(boolean)
+	 */
+	String getStatusMessage(StatusEvent statusEvent);
 
 }

@@ -33,41 +33,84 @@
  * #L%
  */
 
-package org.scijava.event;
+package org.scijava.app.event;
 
-import org.scijava.service.Service;
+import org.scijava.event.SciJavaEvent;
 
 /**
- * Interface for the status notification service.
+ * An event indicating a status update.
  * 
  * @author Curtis Rueden
  */
-public interface StatusService extends Service {
+public class StatusEvent extends SciJavaEvent {
 
-	/** Updates the progress bar. */
-	void showProgress(int value, int maximum);
+	/** Current progress value. */
+	private final int progress;
 
-	/** Updates the status message. */
-	void showStatus(String message);
+	/** Current progress maximum. */
+	private final int maximum;
 
-	/** Updates the status message and progress bar. */
-	void showStatus(int progress, int maximum, String message);
+	/** Current status message. */
+	private final String status;
 
-	/**
-	 * Updates the status message and progress bar, optionally flagging the status
-	 * notification as a warning.
-	 * 
-	 * @param progress New progress value
-	 * @param maximum New progress maximum
-	 * @param message New status message
-	 * @param warn Whether or not this notification constitutes a warning
-	 */
-	void showStatus(int progress, int maximum, String message, boolean warn);
+	/** Whether or not this is a warning event. */
+	private final boolean warning;
 
-	/** Issues a warning message. */
-	void warn(String message);
+	public StatusEvent(final String message) {
+		this(-1, -1, message);
+	}
 
-	/** Clears the status message. */
-	void clearStatus();
+	public StatusEvent(final String message, final boolean warn) {
+		this(-1, -1, message, warn);
+	}
+
+	public StatusEvent(final int progress, final int maximum) {
+		this(progress, maximum, null);
+	}
+
+	public StatusEvent(final int progress, final int maximum,
+		final String message)
+	{
+		this(progress, maximum, message, false);
+	}
+
+	public StatusEvent(final int progress, final int maximum,
+		final String message, final boolean warn)
+	{
+		this.progress = progress;
+		this.maximum = maximum;
+		status = message;
+		warning = warn;
+	}
+
+	// -- StatusEvent methods --
+
+	/** Gets progress value. Returns -1 if progress is unknown. */
+	public int getProgressValue() {
+		return progress;
+	}
+
+	/** Gets progress maximum. Returns -1 if progress is unknown. */
+	public int getProgressMaximum() {
+		return maximum;
+	}
+
+	/** Gets status message, or null for no change. */
+	public String getStatusMessage() {
+		return status;
+	}
+
+	/** Returns whether or not this is a warning event. */
+	public boolean isWarning() {
+		return warning;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return super.toString() + "\n\tprogress = " + progress + "\n\tmaximum = " +
+			maximum + "\n\tstatus = " + status + "\n\twarning = " + warning;
+	}
 
 }

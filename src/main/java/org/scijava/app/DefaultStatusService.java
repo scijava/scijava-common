@@ -33,82 +33,72 @@
  * #L%
  */
 
-package org.scijava.event;
+package org.scijava.app;
+
+import org.scijava.app.event.StatusEvent;
+import org.scijava.event.EventService;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.service.AbstractService;
+import org.scijava.service.Service;
 
 /**
- * An event indicating a status update.
+ * Default service for status notifications.
  * 
  * @author Curtis Rueden
  */
-public class StatusEvent extends SciJavaEvent {
+@Plugin(type = Service.class)
+public class DefaultStatusService extends AbstractService implements
+	StatusService
+{
 
-	/** Current progress value. */
-	private final int progress;
+	@Parameter
+	private EventService eventService;
 
-	/** Current progress maximum. */
-	private final int maximum;
+	@Parameter
+	private AppService appService;
 
-	/** Current status message. */
-	private final String status;
-
-	/** Whether or not this is a warning event. */
-	private final boolean warning;
-
-	public StatusEvent(final String message) {
-		this(-1, -1, message);
-	}
-
-	public StatusEvent(final String message, final boolean warn) {
-		this(-1, -1, message, warn);
-	}
-
-	public StatusEvent(final int progress, final int maximum) {
-		this(progress, maximum, null);
-	}
-
-	public StatusEvent(final int progress, final int maximum,
-		final String message)
-	{
-		this(progress, maximum, message, false);
-	}
-
-	public StatusEvent(final int progress, final int maximum,
-		final String message, final boolean warn)
-	{
-		this.progress = progress;
-		this.maximum = maximum;
-		status = message;
-		warning = warn;
-	}
-
-	// -- StatusEvent methods --
-
-	/** Gets progress value. Returns -1 if progress is unknown. */
-	public int getProgressValue() {
-		return progress;
-	}
-
-	/** Gets progress maximum. Returns -1 if progress is unknown. */
-	public int getProgressMaximum() {
-		return maximum;
-	}
-
-	/** Gets status message, or null for no change. */
-	public String getStatusMessage() {
-		return status;
-	}
-
-	/** Returns whether or not this is a warning event. */
-	public boolean isWarning() {
-		return warning;
-	}
-
-	// -- Object methods --
+	// -- StatusService methods --
 
 	@Override
-	public String toString() {
-		return super.toString() + "\n\tprogress = " + progress + "\n\tmaximum = " +
-			maximum + "\n\tstatus = " + status + "\n\twarning = " + warning;
+	public void showProgress(final int value, final int maximum) {
+		eventService.publish(new StatusEvent(value, maximum));
+	}
+
+	@Override
+	public void showStatus(final String message) {
+		eventService.publish(new StatusEvent(message));
+	}
+
+	@Override
+	public void showStatus(final int progress, final int maximum,
+		final String message)
+	{
+		eventService.publish(new StatusEvent(progress, maximum, message));
+	}
+
+	@Override
+	public void warn(final String message) {
+		eventService.publish(new StatusEvent(message, true));
+	}
+
+	@Override
+	public void showStatus(final int progress, final int maximum,
+		final String message, final boolean warn)
+	{
+		eventService.publish(new StatusEvent(progress, maximum, message, warn));
+	}
+
+	@Override
+	public void clearStatus() {
+		eventService.publish(new StatusEvent(""));
+	}
+
+	@Override
+	public String getStatusMessage(final StatusEvent statusEvent) {
+		final String message = statusEvent.getStatusMessage();
+		if (!"".equals(message)) return message;
+		return appService.getInfo(false);
 	}
 
 }
