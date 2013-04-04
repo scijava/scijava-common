@@ -58,7 +58,9 @@ import org.scijava.util.POM;
 public class Context implements Disposable {
 
 	// FIXME
-	/** @deprecated Use {@link Context#getVersion()} instead. */
+	/**
+	 * @deprecated Use {@link org.scijava.app.AppService#getVersion()} instead.
+	 */
 	@Deprecated
 	public static final String VERSION = getStaticVersion();
 
