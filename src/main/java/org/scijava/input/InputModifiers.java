@@ -36,7 +36,7 @@
 package org.scijava.input;
 
 /**
- * A UI-independent representation of keyboard modifier key states.
+ * A UI-independent representation of keyboard and mouse modifier states.
  * 
  * @author Curtis Rueden
  */
