@@ -132,6 +132,26 @@ public class Context implements Disposable {
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
+		this(serviceClasses, new PluginIndex());
+	}
+
+	/**
+	 * Creates a new SciJava application context with the specified services (and
+	 * any required service dependencies). Service dependency candidates are
+	 * selected from those discovered by the given {@link PluginIndex}'s
+	 * associated {@link org.scijava.plugin.PluginFinder}.
+	 * 
+	 * @param serviceClasses A collection of types that implement the
+	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @param pluginIndex The plugin index to use when discovering and indexing
+	 *          plugins. If you wish to completely control how services are
+	 *          discovered (i.e., use your own
+	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
+	 *          can pass a custom {@link PluginIndex} here.
+	 */
+	public Context(final Collection<Class<? extends Service>> serviceClasses,
+		final PluginIndex pluginIndex)
+	{
 		if (sezpozNeedsToRun) {
 			// First context! Check that annotations were generated properly.
 			try {
@@ -149,9 +169,7 @@ public class Context implements Disposable {
 
 		serviceIndex = new ServiceIndex();
 
-		// FIXME: Best would be if it is possible to completely
-		// disable plugin discovery (i.e., turn off SezPoz).
-		pluginIndex = new PluginIndex();
+		this.pluginIndex = pluginIndex;
 		pluginIndex.discover();
 
 		final ServiceHelper serviceHelper =

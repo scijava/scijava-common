@@ -65,23 +65,36 @@ import org.scijava.object.SortedObjectIndex;
  */
 public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/**
+	 * The plugin finder which will be used to discover plugins.
+	 * 
+	 * @see #discover()
+	 */
+	private final PluginFinder pluginFinder;
+
+	/**
+	 * Constructs a new plugin index which uses a {@link DefaultPluginFinder} to
+	 * discover plugins.
+	 */
 	public PluginIndex() {
+		this(new DefaultPluginFinder());
+	}
+ 
+	/**
+	 * Constructs a new plugin index which uses the given {@link PluginFinder} to
+	 * discover plugins.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public PluginIndex(final PluginFinder pluginFinder) {
 		// NB: See: http://stackoverflow.com/questions/4765520/
 		super((Class) PluginInfo.class);
+		this.pluginFinder = pluginFinder;
 	}
 
 	// -- PluginIndex methods --
 
 	/** Discovers plugins available on the classpath. */
 	public void discover() {
-		discover(new DefaultPluginFinder());
-	}
-
-	/**
-	 * Discovers available plugins, using the given {@link PluginFinder} instance.
-	 */
-	public void discover(final PluginFinder pluginFinder) {
 		final ArrayList<PluginInfo<?>> plugins = new ArrayList<PluginInfo<?>>();
 		pluginFinder.findPlugins(plugins);
 		addAll(plugins);
