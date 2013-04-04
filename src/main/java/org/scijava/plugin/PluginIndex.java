@@ -52,13 +52,13 @@ import org.scijava.object.SortedObjectIndex;
  * </p>
  * <p>
  * NB: This type hierarchy will typically <em>not</em> include the plugin class
- * itself; for example, the {@link org.scijava.plugin.DefaultPluginService } has
- * a plugin type of {@link org.scijava.service.Service }, and hence will be
+ * itself; for example, the {@link org.scijava.plugin.DefaultPluginService} has
+ * a plugin type of {@link org.scijava.service.Service}, and hence will be
  * categorized beneath {@code Service.class}, not
  * {@code DefaultPluginService.class} or {@code PluginService.class}. The
  * rationale is that to fully classify each plugin including its own class, said
  * class would need to be loaded, which SciJava makes an effort not to do until
- * the plugin is actually executed for the first time.
+ * the plugin is actually needed for the first time.
  * </p>
  * 
  * @author Curtis Rueden
