@@ -249,6 +249,13 @@ public class DefaultPluginService extends AbstractService implements
 	@Override
 	public void initialize() {
 		pluginIndex = getContext().getPluginIndex();
+
+		log.info("Found " + pluginIndex.size() + " plugins.");
+		if (log.isDebug()) {
+			for (final PluginInfo<?> info : pluginIndex) {
+				log.debug("- " + info);
+			}
+		}
 	}
 
 	// -- Utility methods --

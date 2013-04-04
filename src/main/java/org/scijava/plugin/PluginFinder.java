@@ -36,6 +36,7 @@
 package org.scijava.plugin;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for mechanisms that define how SciJava plugins are discovered.
@@ -44,7 +45,14 @@ import java.util.List;
  */
 public interface PluginFinder {
 
-	/** Populates the given list with all available SciJava plugins. */
-	void findPlugins(List<PluginInfo<?>> plugins);
+	/**
+	 * Populates the given list with all available SciJava plugins.
+	 * 
+	 * @return A table of exceptions which occurred during plugin discovery. Keys
+	 *         correspond to plugin name in some fashion (e.g., a class name),
+	 *         while values correspond to the exception which occurred when
+	 *         attempting to create the associated {@link PluginInfo} object.
+	 */
+	Map<String, Throwable> findPlugins(List<PluginInfo<?>> plugins);
 
 }
