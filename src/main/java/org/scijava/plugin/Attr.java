@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  * A name/value attribute pair, used to extend the @{@link Plugin} annotation.
  * 
  * @author Curtis Rueden
- * @see Plugin
+ * @see Plugin#attrs()
  * @see PluginInfo#get(String)
  * @see PluginInfo#is(String)
  */
