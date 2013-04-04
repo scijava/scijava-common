@@ -46,7 +46,6 @@ import org.scijava.service.Service;
 import org.scijava.service.ServiceHelper;
 import org.scijava.service.ServiceIndex;
 import org.scijava.util.CheckSezpoz;
-import org.scijava.util.Manifest;
 import org.scijava.util.POM;
 
 /**
@@ -74,20 +73,11 @@ public class Context implements Disposable {
 
 	// -- Fields --
 
-	/** Title of the application context. */
-	private String title = "SciJava"; // FIXME
-
 	/** Index of the application context's services. */
 	private final ServiceIndex serviceIndex;
 
 	/** Master index of all plugins known to the application context. */
 	private final PluginIndex pluginIndex;
-
-	/** Maven POM with metadata about SciJava. */
-	private final POM pom;
-
-	/** JAR manifest with metadata about SciJava. */
-	private final Manifest manifest;
 
 	/** Creates a new SciJava application context with all available services. */
 	public Context() {
@@ -162,77 +152,12 @@ public class Context implements Disposable {
 		pluginIndex = new PluginIndex();
 		pluginIndex.discover();
 
-		// FIXME: version of scijava-common is probably not what is desired...
-		pom = POM.getPOM(Context.class, "org.scijava", "scijava-common");
-		manifest = Manifest.getManifest(Context.class);
-
 		final ServiceHelper serviceHelper =
 			new ServiceHelper(this, serviceClasses);
 		serviceHelper.loadServices();
 	}
 
 	// -- Context methods --
-
-	/**
-	 * Gets the title of the application context. The default value is "SciJava"
-	 * but it can be overridden by calling {@link #setTitle(String)}.
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/** Overrides the title of the application context. */
-	public void setTitle(final String title) {
-		this.title = title;
-	}
-
-	/**
-	 * Gets the version of the application. SciJava conforms to the <a
-	 * href="http://semver.org/">Semantic Versioning</a> specification.
-	 * 
-	 * @return The application version, in {@code major.minor.micro} format.
-	 */
-	public String getVersion() {
-		return pom.getVersion();
-	}
-
-	/** Gets the Maven POM containing metadata about the application context. */
-	public POM getPOM() {
-		return pom;
-	}
-
-	/**
-	 * Gets the manifest containing metadata about the application context.
-	 * <p>
-	 * NB: This metadata may be null if run in a development environment.
-	 * </p>
-	 */
-	public Manifest getManifest() {
-		return manifest;
-	}
-
-	/**
-	 * Gets a string with information about the application context.
-	 * 
-	 * @param mem If true, memory usage information is included.
-	 */
-	public String getInfo(final boolean mem) {
-		final String appTitle = getTitle();
-		final String appVersion = getVersion();
-		final String javaVersion = System.getProperty("java.version");
-		final String osArch = System.getProperty("os.arch");
-		final long maxMem = Runtime.getRuntime().maxMemory();
-		final long totalMem = Runtime.getRuntime().totalMemory();
-		final long freeMem = Runtime.getRuntime().freeMemory();
-		final long usedMem = totalMem - freeMem;
-		final long usedMB = usedMem / 1048576;
-		final long maxMB = maxMem / 1048576;
-		final StringBuilder sb = new StringBuilder();
-		sb.append(appTitle + " " + appVersion);
-		sb.append("; Java " + javaVersion + " [" + osArch + "]");
-		if (mem) sb.append("; " + usedMB + "MB of " + maxMB + "MB");
-		return sb.toString();
-	}
 
 	public ServiceIndex getServiceIndex() {
 		return serviceIndex;
