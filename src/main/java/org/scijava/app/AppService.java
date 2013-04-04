@@ -33,32 +33,49 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.app;
 
-import java.lang.annotation.Target;
+import org.scijava.service.Service;
+import org.scijava.util.Manifest;
+import org.scijava.util.POM;
 
 /**
- * A name/value attribute pair, used to extend the @{@link Plugin} annotation.
+ * Interface for application-level functionality.
  * 
  * @author Curtis Rueden
- * @see Plugin#attrs()
- * @see PluginInfo#get(String)
- * @see PluginInfo#is(String)
  */
-@Target({})
-public @interface Attr {
+public interface AppService extends Service {
 
-	/** Name of the attribute. */
-	String name();
+	/** Gets the title of the application. */
+	String getTitle();
 
 	/**
-	 * The attribute's value, if applicable.
+	 * Gets the version of the application.
 	 * <p>
-	 * If set, the method {@link PluginInfo#get(String)} with the attribute's name
-	 * will retrieve the value; in any case, the method
-	 * {@link PluginInfo#is(String)} will return true.
+	 * SciJava conforms to the <a href="http://semver.org/">Semantic
+	 * Versioning</a> specification.
+	 * </p>
+	 * 
+	 * @return The application version, in {@code major.minor.micro} format.
+	 */
+	String getVersion();
+
+	/** Gets the Maven POM containing metadata about the application. */
+	POM getPOM();
+
+	/**
+	 * Gets the manifest containing metadata about the application.
+	 * <p>
+	 * NB: This metadata may be null if run in a development environment.
 	 * </p>
 	 */
-	String value() default "";
+	Manifest getManifest();
+
+	/**
+	 * Gets a string with information about the application context.
+	 * 
+	 * @param mem If true, memory usage information is included.
+	 */
+	String getInfo(boolean mem);
 
 }
