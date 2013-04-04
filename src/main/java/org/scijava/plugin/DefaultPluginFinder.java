@@ -70,16 +70,18 @@ public class DefaultPluginFinder implements PluginFinder {
 
 	@Override
 	public void findPlugins(final List<PluginInfo<?>> plugins) {
-		final Index<Plugin, SciJavaPlugin> pluginIndex;
+		// load the SezPoz index
+		final Index<Plugin, SciJavaPlugin> sezPozIndex;
 		if (classLoader == null) {
-			pluginIndex = Index.load(Plugin.class, SciJavaPlugin.class);
+			sezPozIndex = Index.load(Plugin.class, SciJavaPlugin.class);
 		}
 		else {
-			pluginIndex = Index.load(Plugin.class, SciJavaPlugin.class, classLoader);
+			sezPozIndex = Index.load(Plugin.class, SciJavaPlugin.class, classLoader);
 		}
 
+		// create a PluginInfo object for each item in the index
 		final int oldSize = plugins.size();
-		for (final IndexItem<Plugin, SciJavaPlugin> item : pluginIndex) {
+		for (final IndexItem<Plugin, SciJavaPlugin> item : sezPozIndex) {
 			try {
 				final PluginInfo<?> info = createInfo(item);
 				plugins.add(info);
