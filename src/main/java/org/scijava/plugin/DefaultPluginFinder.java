@@ -79,11 +79,14 @@ public class DefaultPluginFinder implements PluginFinder {
 		}
 
 		final int oldSize = plugins.size();
-		for (final IndexItem<Plugin, SciJavaPlugin> item : pluginIndex) try {
-			final PluginInfo<?> info = createInfo(item);
-			plugins.add(info);
-		} catch (Throwable t) {
-			Log.debug(t);
+		for (final IndexItem<Plugin, SciJavaPlugin> item : pluginIndex) {
+			try {
+				final PluginInfo<?> info = createInfo(item);
+				plugins.add(info);
+			}
+			catch (final Throwable t) {
+				Log.debug(t);
+			}
 		}
 		final int newSize = plugins.size();
 
@@ -104,7 +107,8 @@ public class DefaultPluginFinder implements PluginFinder {
 		final Plugin plugin = item.annotation();
 
 		@SuppressWarnings("unchecked")
-		final Class<SciJavaPlugin> pluginType = (Class<SciJavaPlugin>) plugin.type();
+		final Class<SciJavaPlugin> pluginType =
+			(Class<SciJavaPlugin>) plugin.type();
 
 		return new PluginInfo<SciJavaPlugin>(className, pluginType, plugin);
 	}
