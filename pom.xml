@@ -69,6 +69,24 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<canUpdateCopyright>true</canUpdateCopyright>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>1.9</version>
+				<configuration>
+					<includeDependencies />
+					<includeJavaHome>false</includeJavaHome>
+				</configuration>
+				<executions>
+					<execution>
+						<id>animal-sniffer</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
