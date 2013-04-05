@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -54,7 +53,7 @@ import org.scijava.service.Service;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = Service.class)
 public class DefaultAppService extends AbstractService implements AppService {
 
 	@Parameter
