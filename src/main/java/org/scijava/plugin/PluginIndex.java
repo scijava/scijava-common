@@ -37,6 +37,7 @@ package org.scijava.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.object.SortedObjectIndex;
 
@@ -72,6 +73,9 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	 */
 	private final PluginFinder pluginFinder;
 
+	/** Exception table from last invocation of {@link #discover()}. */
+	private Map<String, Throwable> exceptions;
+
 	/**
 	 * Constructs a new plugin index which uses a {@link DefaultPluginFinder} to
 	 * discover plugins.
@@ -96,8 +100,16 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	/** Discovers plugins available on the classpath. */
 	public void discover() {
 		final ArrayList<PluginInfo<?>> plugins = new ArrayList<PluginInfo<?>>();
-		pluginFinder.findPlugins(plugins);
+		exceptions = pluginFinder.findPlugins(plugins);
 		addAll(plugins);
+	}
+
+	/**
+	 * Gets the exceptions which occurred during the last invocation of
+	 * {@link #discover()}.
+	 */
+	public Map<String, Throwable> getExceptions() {
+		return exceptions;
 	}
 
 	/**

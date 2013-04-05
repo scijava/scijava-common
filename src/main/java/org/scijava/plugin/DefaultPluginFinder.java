@@ -35,12 +35,11 @@
 
 package org.scijava.plugin;
 
+import java.util.HashMap;
 import java.util.List;
 
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
-
-import org.scijava.util.Log;
 
 /**
  * Default SciJava plugin discovery mechanism.
@@ -69,7 +68,12 @@ public class DefaultPluginFinder implements PluginFinder {
 	// -- PluginFinder methods --
 
 	@Override
-	public void findPlugins(final List<PluginInfo<?>> plugins) {
+	public HashMap<String, Throwable> findPlugins(
+		final List<PluginInfo<?>> plugins)
+	{
+		final HashMap<String, Throwable> exceptions =
+			new HashMap<String, Throwable>();
+
 		// load the SezPoz index
 		final Index<Plugin, SciJavaPlugin> sezPozIndex;
 		if (classLoader == null) {
@@ -80,24 +84,17 @@ public class DefaultPluginFinder implements PluginFinder {
 		}
 
 		// create a PluginInfo object for each item in the index
-		final int oldSize = plugins.size();
 		for (final IndexItem<Plugin, SciJavaPlugin> item : sezPozIndex) {
 			try {
 				final PluginInfo<?> info = createInfo(item);
 				plugins.add(info);
 			}
 			catch (final Throwable t) {
-				Log.debug(t);
+				exceptions.put(item.className(), t);
 			}
 		}
-		final int newSize = plugins.size();
 
-		Log.info("Found " + (newSize - oldSize) + " plugins.");
-		if (Log.isDebug()) {
-			for (int i = oldSize; i < newSize; i++) {
-				Log.debug("- " + plugins.get(i));
-			}
-		}
+		return exceptions;
 	}
 
 	// -- Helper methods --

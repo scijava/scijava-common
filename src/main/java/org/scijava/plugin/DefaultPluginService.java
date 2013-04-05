@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.InstantiableException;
 import org.scijava.Priority;
@@ -104,6 +105,8 @@ public class DefaultPluginService extends AbstractService implements
 		if (newPlugins.size() > 0) {
 			eventService.publish(new PluginsAddedEvent(newPlugins));
 		}
+
+		logExceptions();
 	}
 
 	@Override
@@ -249,6 +252,15 @@ public class DefaultPluginService extends AbstractService implements
 	@Override
 	public void initialize() {
 		pluginIndex = getContext().getPluginIndex();
+
+		log.info("Found " + pluginIndex.size() + " plugins.");
+		if (log.isDebug()) {
+			for (final PluginInfo<?> info : pluginIndex) {
+				log.debug("- " + info);
+			}
+		}
+
+		logExceptions();
 	}
 
 	// -- Utility methods --
@@ -343,6 +355,21 @@ public class DefaultPluginService extends AbstractService implements
 			catch (InstantiableException exc) {
 				log.debug(exc);
 				iter.remove();
+			}
+		}
+	}
+
+	/** Logs any exceptions that occurred during the last plugin discovery. */
+	private void logExceptions() {
+		final Map<String, Throwable> exceptions = pluginIndex.getExceptions();
+		final int excCount = exceptions.size();
+		if (excCount > 0) {
+			log.warn(excCount + " exceptions occurred during plugin discovery.");
+			if (log.isDebug()) {
+				for (final String name : exceptions.keySet()) {
+					final Throwable t = exceptions.get(name);
+					log.debug(name, t);
+				}
 			}
 		}
 	}
