@@ -46,7 +46,6 @@ import org.scijava.service.Service;
 import org.scijava.service.ServiceHelper;
 import org.scijava.service.ServiceIndex;
 import org.scijava.util.CheckSezpoz;
-import org.scijava.util.POM;
 
 /**
  * Top-level SciJava application context, which initializes and maintains a list
@@ -56,20 +55,6 @@ import org.scijava.util.POM;
  * @see Service
  */
 public class Context implements Disposable {
-
-	// FIXME
-	/**
-	 * @deprecated Use {@link org.scijava.app.AppService#getApp(String)} instead.
-	 */
-	@Deprecated
-	public static final String VERSION = getStaticVersion();
-
-	/** @deprecated DO NOT USE */
-	@Deprecated
-	private static String getStaticVersion() {
-		final POM pom = POM.getPOM(Context.class, "org.scijava", "scijava-common");
-		return pom == null ? "Unknown" : pom.getVersion();
-  }
 
 	private static boolean sezpozNeedsToRun = true;
 
