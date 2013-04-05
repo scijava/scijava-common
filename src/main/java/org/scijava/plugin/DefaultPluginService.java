@@ -234,7 +234,9 @@ public class DefaultPluginService extends AbstractService implements
 	}
 
 	@Override
-	public <PT extends SciJavaPlugin> PT createInstance(final PluginInfo<PT> info) {
+	public <PT extends SciJavaPlugin> PT
+		createInstance(final PluginInfo<PT> info)
+	{
 		try {
 			final PT p = info.createInstance();
 			getContext().inject(p);
