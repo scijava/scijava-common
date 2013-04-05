@@ -35,72 +35,65 @@
 
 package org.scijava.app;
 
-import org.scijava.app.event.StatusEvent;
-import org.scijava.event.EventService;
-import org.scijava.plugin.Parameter;
+import org.scijava.Contextual;
+import org.scijava.Prioritized;
 import org.scijava.plugin.Plugin;
-import org.scijava.service.AbstractService;
-import org.scijava.service.Service;
+import org.scijava.plugin.SciJavaPlugin;
+import org.scijava.util.Manifest;
+import org.scijava.util.POM;
 
 /**
- * Default service for status notifications.
+ * Metadata about a SciJava-based application, used by the {@link AppService}.
+ * <p>
+ * Applications discoverable at runtime must implement this interface and be
+ * annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
+ * {@link App}.class. While it possible to create an application merely by
+ * implementing this interface, it is encouraged to instead extend
+ * {@link AbstractApp}, for convenience.
+ * </p>
  * 
  * @author Curtis Rueden
+ * @see Plugin
+ * @see AppService
  */
-@Plugin(type = Service.class)
-public class DefaultStatusService extends AbstractService implements
-	StatusService
-{
+public interface App extends SciJavaPlugin, Contextual, Prioritized {
 
-	@Parameter
-	private EventService eventService;
+	/** Gets the title of the application. */
+	String getTitle();
 
-	@Parameter
-	private AppService appService;
+	/**
+	 * Gets the version of the application.
+	 * <p>
+	 * SciJava conforms to the <a href="http://semver.org/">Semantic
+	 * Versioning</a> specification.
+	 * </p>
+	 * 
+	 * @return The application version, in {@code major.minor.micro} format.
+	 */
+	String getVersion();
 
-	// -- StatusService methods --
+	/** The Maven {@code groupId} of the application. */
+	String getGroupId();
 
-	@Override
-	public void showProgress(final int value, final int maximum) {
-		eventService.publish(new StatusEvent(value, maximum));
-	}
+	/** The Maven {@code artifactId} of the application. */
+	String getArtifactId();
 
-	@Override
-	public void showStatus(final String message) {
-		eventService.publish(new StatusEvent(message));
-	}
+	/** Gets the Maven POM containing metadata about the application. */
+	POM getPOM();
 
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message));
-	}
+	/**
+	 * Gets the manifest containing metadata about the application.
+	 * <p>
+	 * NB: This metadata may be null if run in a development environment.
+	 * </p>
+	 */
+	Manifest getManifest();
 
-	@Override
-	public void warn(final String message) {
-		eventService.publish(new StatusEvent(message, true));
-	}
-
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message, final boolean warn)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message, warn));
-	}
-
-	@Override
-	public void clearStatus() {
-		eventService.publish(new StatusEvent(""));
-	}
-
-	@Override
-	public String getStatusMessage(final String appName,
-		final StatusEvent statusEvent)
-	{
-		final String message = statusEvent.getStatusMessage();
-		if (!"".equals(message)) return message;
-		return appService.getApp(appName).getInfo(false);
-	}
+	/**
+	 * Gets a string with information about the application.
+	 * 
+	 * @param mem If true, memory usage information is included.
+	 */
+	String getInfo(boolean mem);
 
 }

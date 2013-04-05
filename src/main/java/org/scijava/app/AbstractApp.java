@@ -35,72 +35,63 @@
 
 package org.scijava.app;
 
-import org.scijava.app.event.StatusEvent;
-import org.scijava.event.EventService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.AbstractService;
-import org.scijava.service.Service;
+import org.scijava.plugin.SortablePlugin;
+import org.scijava.util.Manifest;
+import org.scijava.util.POM;
 
 /**
- * Default service for status notifications.
+ * Abstract superclass of {@link App} implementations.
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class)
-public class DefaultStatusService extends AbstractService implements
-	StatusService
-{
+public abstract class AbstractApp extends SortablePlugin implements App {
 
-	@Parameter
-	private EventService eventService;
+	/** Maven POM with metadata about the application. */
+	private POM pom;
 
-	@Parameter
-	private AppService appService;
-
-	// -- StatusService methods --
+	/** JAR manifest with metadata about the application. */
+	private Manifest manifest;
 
 	@Override
-	public void showProgress(final int value, final int maximum) {
-		eventService.publish(new StatusEvent(value, maximum));
+	public String getVersion() {
+		return getPOM() == null ? "Unknown" : getPOM().getVersion();
 	}
 
 	@Override
-	public void showStatus(final String message) {
-		eventService.publish(new StatusEvent(message));
+	public POM getPOM() {
+		if (pom == null) {
+			// load the POM lazily
+			pom = POM.getPOM(getClass(), getGroupId(), getArtifactId());
+		}
+		return pom;
 	}
 
 	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message));
+	public Manifest getManifest() {
+		if (manifest == null) {
+			// load the manifest lazily
+			manifest = Manifest.getManifest(getClass());
+		}
+		return manifest;
 	}
 
 	@Override
-	public void warn(final String message) {
-		eventService.publish(new StatusEvent(message, true));
-	}
-
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message, final boolean warn)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message, warn));
-	}
-
-	@Override
-	public void clearStatus() {
-		eventService.publish(new StatusEvent(""));
-	}
-
-	@Override
-	public String getStatusMessage(final String appName,
-		final StatusEvent statusEvent)
-	{
-		final String message = statusEvent.getStatusMessage();
-		if (!"".equals(message)) return message;
-		return appService.getApp(appName).getInfo(false);
+	public String getInfo(boolean mem) {
+		final String appTitle = getTitle();
+		final String appVersion = getVersion();
+		final String javaVersion = System.getProperty("java.version");
+		final String osArch = System.getProperty("os.arch");
+		final long maxMem = Runtime.getRuntime().maxMemory();
+		final long totalMem = Runtime.getRuntime().totalMemory();
+		final long freeMem = Runtime.getRuntime().freeMemory();
+		final long usedMem = totalMem - freeMem;
+		final long usedMB = usedMem / 1048576;
+		final long maxMB = maxMem / 1048576;
+		final StringBuilder sb = new StringBuilder();
+		sb.append(appTitle + " " + appVersion);
+		sb.append("; Java " + javaVersion + " [" + osArch + "]");
+		if (mem) sb.append("; " + usedMB + "MB of " + maxMB + "MB");
+		return sb.toString();
 	}
 
 }

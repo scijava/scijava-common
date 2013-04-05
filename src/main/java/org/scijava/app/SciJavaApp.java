@@ -35,72 +35,32 @@
 
 package org.scijava.app;
 
-import org.scijava.app.event.StatusEvent;
-import org.scijava.event.EventService;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.service.AbstractService;
-import org.scijava.service.Service;
 
 /**
- * Default service for status notifications.
+ * Application metadata about SciJava Common.
  * 
  * @author Curtis Rueden
+ * @see AppService
  */
-@Plugin(type = Service.class)
-public class DefaultStatusService extends AbstractService implements
-	StatusService
-{
+@Plugin(type = App.class, name = SciJavaApp.NAME)
+public class SciJavaApp extends AbstractApp {
 
-	@Parameter
-	private EventService eventService;
-
-	@Parameter
-	private AppService appService;
-
-	// -- StatusService methods --
+	public static final String NAME = "SciJava";
 
 	@Override
-	public void showProgress(final int value, final int maximum) {
-		eventService.publish(new StatusEvent(value, maximum));
+	public String getTitle() {
+		return NAME;
 	}
 
 	@Override
-	public void showStatus(final String message) {
-		eventService.publish(new StatusEvent(message));
+	public String getGroupId() {
+		return "org.scijava";
 	}
 
 	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message));
-	}
-
-	@Override
-	public void warn(final String message) {
-		eventService.publish(new StatusEvent(message, true));
-	}
-
-	@Override
-	public void showStatus(final int progress, final int maximum,
-		final String message, final boolean warn)
-	{
-		eventService.publish(new StatusEvent(progress, maximum, message, warn));
-	}
-
-	@Override
-	public void clearStatus() {
-		eventService.publish(new StatusEvent(""));
-	}
-
-	@Override
-	public String getStatusMessage(final String appName,
-		final StatusEvent statusEvent)
-	{
-		final String message = statusEvent.getStatusMessage();
-		if (!"".equals(message)) return message;
-		return appService.getApp(appName).getInfo(false);
+	public String getArtifactId() {
+		return "scijava-common";
 	}
 
 }

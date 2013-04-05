@@ -73,12 +73,12 @@ public interface StatusService extends Service {
 
 	/**
 	 * Gets the status message of the given event. In the case of the empty string
-	 * (""), an alternative default string (such as application version
-	 * information) may be returned instead.
+	 * (""), an alternative default string will be returned instead using the
+	 * application version of the given application.
 	 * 
 	 * @see StatusEvent#getStatusMessage()
-	 * @see AppService#getInfo(boolean)
+	 * @see App#getInfo(boolean)
 	 */
-	String getStatusMessage(StatusEvent statusEvent);
+	String getStatusMessage(String appName, StatusEvent statusEvent);
 
 }

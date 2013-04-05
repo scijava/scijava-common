@@ -35,9 +35,9 @@
 
 package org.scijava.app;
 
+import java.util.Map;
+
 import org.scijava.service.Service;
-import org.scijava.util.Manifest;
-import org.scijava.util.POM;
 
 /**
  * Interface for application-level functionality.
@@ -46,36 +46,14 @@ import org.scijava.util.POM;
  */
 public interface AppService extends Service {
 
-	/** Gets the title of the application. */
-	String getTitle();
+	/** Gets an application by name. */
+	App getApp(final String name);
 
 	/**
-	 * Gets the version of the application.
-	 * <p>
-	 * SciJava conforms to the <a href="http://semver.org/">Semantic
-	 * Versioning</a> specification.
-	 * </p>
+	 * Gets the table of associated applications, keyed by name.
 	 * 
-	 * @return The application version, in {@code major.minor.micro} format.
+	 * @see org.scijava.plugin.Plugin#name()
 	 */
-	String getVersion();
-
-	/** Gets the Maven POM containing metadata about the application. */
-	POM getPOM();
-
-	/**
-	 * Gets the manifest containing metadata about the application.
-	 * <p>
-	 * NB: This metadata may be null if run in a development environment.
-	 * </p>
-	 */
-	Manifest getManifest();
-
-	/**
-	 * Gets a string with information about the application context.
-	 * 
-	 * @param mem If true, memory usage information is included.
-	 */
-	String getInfo(boolean mem);
+	Map<String, App> getApps();
 
 }

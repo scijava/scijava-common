@@ -59,7 +59,7 @@ public class Context implements Disposable {
 
 	// FIXME
 	/**
-	 * @deprecated Use {@link org.scijava.app.AppService#getVersion()} instead.
+	 * @deprecated Use {@link org.scijava.app.AppService#getApp(String)} instead.
 	 */
 	@Deprecated
 	public static final String VERSION = getStaticVersion();

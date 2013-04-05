@@ -35,12 +35,19 @@
 
 package org.scijava.app;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.scijava.Priority;
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.PluginService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
-import org.scijava.util.Manifest;
-import org.scijava.util.POM;
 
 /**
  * Default service for application-level functionality.
@@ -50,65 +57,53 @@ import org.scijava.util.POM;
 @Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
 public class DefaultAppService extends AbstractService implements AppService {
 
-	/** Maven POM with metadata about the application. */
-	private POM pom;
+	@Parameter
+	private LogService log;
 
-	/** JAR manifest with metadata about the application. */
-	private Manifest manifest;
+	@Parameter
+	private PluginService pluginService;
+
+	/** Read-only table of SciJava applications. */
+	private Map<String, App> apps;
 
 	// -- AppService methods --
 
 	@Override
-	public String getTitle() {
-		return "SciJava";
+	public App getApp(final String name) {
+		return apps.get(name);
 	}
 
 	@Override
-	public String getVersion() {
-		return pom == null ? "Unknown" : pom.getVersion();
-	}
-
-	@Override
-	public POM getPOM() {
-		return pom;
-	}
-
-	@Override
-	public Manifest getManifest() {
-		return manifest;
-	}
-
-	@Override
-	public String getInfo(final boolean mem) {
-		final String appTitle = getTitle();
-		final String appVersion = getVersion();
-		final String javaVersion = System.getProperty("java.version");
-		final String osArch = System.getProperty("os.arch");
-		final long maxMem = Runtime.getRuntime().maxMemory();
-		final long totalMem = Runtime.getRuntime().totalMemory();
-		final long freeMem = Runtime.getRuntime().freeMemory();
-		final long usedMem = totalMem - freeMem;
-		final long usedMB = usedMem / 1048576;
-		final long maxMB = maxMem / 1048576;
-		final StringBuilder sb = new StringBuilder();
-		sb.append(appTitle + " " + appVersion);
-		sb.append("; Java " + javaVersion + " [" + osArch + "]");
-		if (mem) sb.append("; " + usedMB + "MB of " + maxMB + "MB");
-		return sb.toString();
+	public Map<String, App> getApps() {
+		return apps;
 	}
 
 	// -- Service methods --
 
 	@Override
 	public void initialize() {
-		pom = loadPOM();
-		manifest = Manifest.getManifest(getClass());
+		apps = Collections.unmodifiableMap(discoverApps());
+		log.info("Found " + apps.size() + " applications.");
 	}
 
-	// -- Internal methods --
+	// -- Helper methods --
 
-	protected POM loadPOM() {
-		return POM.getPOM(getClass(), "org.scijava", "scijava-common");
+	/** Discovers applications. */
+	private HashMap<String, App> discoverApps() {
+		final HashMap<String, App> map = new HashMap<String, App>();
+
+		final List<PluginInfo<App>> infos =
+			pluginService.getPluginsOfType(App.class);
+		for (final PluginInfo<App> info : infos) {
+			final App app = pluginService.createInstance(info);
+			if (app == null) continue;
+			final String name = info.getName();
+			if (!map.containsKey(name)) {
+				// no (higher-priority) app with the same name exists
+				map.put(name, app);
+			}
+		}
+		return map;
 	}
 
 }
