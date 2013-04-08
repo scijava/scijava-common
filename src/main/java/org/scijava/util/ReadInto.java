@@ -82,14 +82,11 @@ public class ReadInto extends Thread {
 	public void run() {
 		try {
 			for (;;) {
-				while (!reader.ready()) {
-					if (done) return;
-					Thread.sleep(500);
-				}
 				final String line = reader.readLine();
 				if (line == null) break;
 				if (out != null) out.println(line);
 				else buffer.append(line).append("\n");
+				if (done) break;
 				Thread.sleep(0);
 			}
 		}
@@ -98,11 +95,21 @@ public class ReadInto extends Thread {
 		try {
 			reader.close();
 		}
-		catch (final IOException e) { /* just stop */}
+		catch (final IOException e) { /* just stop */ }
 	}
 
-	public void done() {
+	@Override
+	public void interrupt() {
+		try {
+			done();
+		} catch (IOException e) { /* just stop */ }
+		super.interrupt();
+	}
+
+	public void done() throws IOException {
+		if (done) return;
 		done = true;
+		reader.close();
 	}
 
 	/**

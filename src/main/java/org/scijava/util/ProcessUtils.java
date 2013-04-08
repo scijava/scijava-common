@@ -79,14 +79,14 @@ public final class ProcessUtils {
 			final ReadInto outThread = new ReadInto(process.getInputStream(), out);
 			try {
 				process.waitFor();
-				errThread.done();
 				errThread.join();
-				outThread.done();
 				outThread.join();
 			}
 			catch (final InterruptedException e) {
 				process.destroy();
+				errThread.done();
 				errThread.interrupt();
+				outThread.done();
 				outThread.interrupt();
 				err.println("Interrupted!");
 				throw new RuntimeException(e);
