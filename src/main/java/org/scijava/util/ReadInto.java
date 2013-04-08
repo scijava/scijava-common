@@ -56,7 +56,7 @@ public class ReadInto extends Thread {
 	protected BufferedReader reader;
 	protected PrintStream out;
 	protected StringBuilder buffer = new StringBuilder();
-	protected boolean done;
+	protected boolean done, closeOnEOF;
 
 	/**
 	 * Construct a ReadInto thread and start it right away.
@@ -66,8 +66,21 @@ public class ReadInto extends Thread {
 	 *          method will have the output instead
 	 */
 	public ReadInto(final InputStream in, final PrintStream out) {
+		this(in, out, false);
+	}
+
+	/**
+	 * Construct a ReadInto thread and start it right away.
+	 * 
+	 * @param in the stream to read
+	 * @param out the stream to print to; if it is null, the {@link #toString()}
+	 *          method will have the output instead
+	 */
+	public ReadInto(final InputStream in, final PrintStream out, final boolean closeOnEOF) {
 		reader = new BufferedReader(new InputStreamReader(in));
 		this.out = out;
+		this.closeOnEOF = closeOnEOF;
+		if (out == null && closeOnEOF) throw new IllegalArgumentException("Cannot close null output");
 		start();
 	}
 
@@ -92,6 +105,9 @@ public class ReadInto extends Thread {
 		}
 		catch (final InterruptedException e) { /* just stop */}
 		catch (final IOException e) { /* just stop */}
+		if (closeOnEOF) {
+			out.close();
+		}
 		try {
 			reader.close();
 		}
