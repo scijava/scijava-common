@@ -11,8 +11,11 @@ die "Usage: $0 <release-version>"
 test refs/heads/master = "$(git rev-parse --symbolic-full-name HEAD)" ||
 die "Not on 'master' branch"
 
+HEAD="$(git rev-parse HEAD)" &&
 git fetch origin master &&
-test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)" ||
+FETCH_HEAD="$(git rev-parse FETCH_HEAD)" &&
+test $FETCH_HEAD = HEAD ||
+test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
