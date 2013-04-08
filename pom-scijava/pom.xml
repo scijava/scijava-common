@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.31</version>
+	<version>1.32</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -69,6 +69,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.1</version>
 			</plugin>
 		</plugins>
 
@@ -298,6 +303,10 @@
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
