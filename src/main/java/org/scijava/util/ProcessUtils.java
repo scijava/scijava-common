@@ -37,6 +37,7 @@ package org.scijava.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 
@@ -71,19 +72,58 @@ public final class ProcessUtils {
 	public static String exec(final File workingDirectory,
 		final PrintStream err, final PrintStream out, final String... args)
 	{
+		return exec(workingDirectory, null, err, out, args);
+	}
+
+	/**
+	 * Executes a program. This is a convenience method mainly to be able to catch
+	 * the output of programs as shell scripts can do by wrapping calls in $(...).
+	 * 
+	 * @param workingDirectory the directory in which to execute the program
+	 * @param in the {@link InputStream} which gets fed to the program as standard input;
+	 * @param err the {@link PrintStream} to print the program's error stream to;
+	 *          if null is passed, the error goes straight to Nirvana (not the
+	 *          band, though).
+	 * @param out the {@link PrintStream} to print the program's output to; if
+	 *          null is passed, the output will be accumulated into a
+	 *          {@link String} and returned upon exit.
+	 * @param args the command-line to execute, split into components
+	 * @return the output of the program if {@code out} is null, otherwise an
+	 *         empty {@link String}
+	 * @throws RuntimeException if interrupted or the program failed to execute
+	 *           successfully.
+	 */
+	public static String exec(final File workingDirectory,
+		final InputStream in, final PrintStream err, final PrintStream out,
+		final String... args)
+	{
 		try {
 			final Process process =
 				Runtime.getRuntime().exec(args, null, workingDirectory);
-			process.getOutputStream().close();
+
+			final ReadInto inThread;
+			if (in == null) {
+				inThread = null;
+				process.getOutputStream().close();
+			} else {
+				final PrintStream print = new PrintStream(process.getOutputStream());
+				inThread = new ReadInto(in, print, true);
+			}
+
 			final ReadInto errThread = new ReadInto(process.getErrorStream(), err);
 			final ReadInto outThread = new ReadInto(process.getInputStream(), out);
 			try {
 				process.waitFor();
+				if (inThread != null) {
+					inThread.done();
+					inThread.join();
+				}
 				errThread.join();
 				outThread.join();
 			}
 			catch (final InterruptedException e) {
 				process.destroy();
+				if (inThread != null) inThread.interrupt();
 				errThread.done();
 				errThread.interrupt();
 				outThread.done();

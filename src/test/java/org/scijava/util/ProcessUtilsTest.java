@@ -62,6 +62,15 @@ public class ProcessUtilsTest {
 		assertNotNull(thread.getResult());
 	}
 
+	@Test
+	public void testStdin() {
+		assumePOSIX();
+		final String value = "Hello, World!\n";
+		final InputStream input = new ByteArrayInputStream(value.getBytes());
+		final String result = ProcessUtils.exec(null, input, null, null, "cat");
+		assertEquals(value, result);
+	}
+
 	private void assumePOSIX() {
 		final String osName = System.getProperty("os.name");
 		assumeTrue(osName.equals("Linux") || osName.equals("Mac OS X"));
