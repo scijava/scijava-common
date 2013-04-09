@@ -26,6 +26,18 @@ do
 	shift
 done
 
+commit_and_push () {
+	test f = "$skip_commit" || {
+		git commit -s -m "$@" &&
+		remote="(none)" &&
+		upstream="$(git rev-parse --symbolic-full-name HEAD@{u})" &&
+		remote="${upstream#refs/remotes/}" &&
+		remote="${remote%%/*}"
+		git push "$remote" HEAD ||
+		die "Could not commit and push to $remote"
+	}
+}
+
 test -z "$bump_parent" || {
 	test -f pom.xml ||
 	die "Not found: pom.xml"
@@ -64,10 +76,7 @@ test -z "$bump_parent" || {
 	mv -f pom.xml.new pom.xml ||
 	die "Could not edit pom.xml"
 
-	test f = "$skip_commit" || {
-		git commit -s -m "Bump to pom-scijava $latest" pom.xml &&
-		git push origin HEAD
-	}
+	commit_and_push "Bump to pom-scijava $latest" pom.xml
 
 	exit
 }
@@ -106,8 +115,5 @@ die "Failed to increase version of $pom"
 rm $pom.new ||
 die "Failed to remove intermediate $pom.new"
 
-test f = "$skip_commit" || {
-	git commit -s -m "Increase pom-scijava version to $new_version" \
-		-m "This changed the property '$1' to '$2'." $pom &&
-	git push origin HEAD
-}
+commit_and_push "Increase pom-scijava version to $new_version" \
+	-m "This changed the property '$1' to '$2'." $pom
