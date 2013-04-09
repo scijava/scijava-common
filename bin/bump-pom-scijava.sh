@@ -26,19 +26,34 @@ do
 	shift
 done
 
+require_clean_worktree () {
+	test -z "$skip_commit" ||
+	return
+
+	git rev-parse HEAD@{u} > /dev/null 2>&1 ||
+	die "No upstream configured for the current branch"
+
+	git update-index -q --refresh &&
+	git diff-files --quiet --ignore-submodules &&
+	git diff-index --cached --quiet --ignore-submodules HEAD -- ||
+	die "There are uncommitted changes!"
+}
+
 commit_and_push () {
 	test f = "$skip_commit" || {
-		git commit -s -m "$@" &&
 		remote="(none)" &&
 		upstream="$(git rev-parse --symbolic-full-name HEAD@{u})" &&
 		remote="${upstream#refs/remotes/}" &&
-		remote="${remote%%/*}"
+		remote="${remote%%/*}" &&
+		git commit -s -m "$@" &&
 		git push "$remote" HEAD ||
 		die "Could not commit and push to $remote"
 	}
 }
 
 test -z "$bump_parent" || {
+	require_clean_worktree
+
 	test -f pom.xml ||
 	die "Not found: pom.xml"
 
@@ -88,6 +103,8 @@ pom=pom-scijava/pom.xml
 cd "$(dirname "$0")/.." &&
 test -f $pom ||
 die "Could not switch to scijava-common's root directory"
+
+require_clean_worktree
 
 sed_quote () {
         echo "$1" | sed "s/[]\/\"\'\\\\(){}[\!\$  ;]/\\\\&/g"
