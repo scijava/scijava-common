@@ -155,7 +155,8 @@ packaging_from_pom () {
 
 latest_version () {
 	metadata="$(curl -s "$(project_url "$1")"/maven-metadata.xml)"
-	latest="$(extract_tag latest "$metadata")"
+	latest="$(extract_tag release "$metadata")"
+	test -n "$latest" || latest="$(extract_tag latest "$metadata")"
 	test -n "$latest" || latest="$(extract_tag version "$metadata")"
 	echo "$latest"
 }
