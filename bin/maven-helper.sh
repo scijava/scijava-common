@@ -139,6 +139,17 @@ gav_from_pom () {
 	echo "$groupId:$artifactId:$version"
 }
 
+# Given a POM file, find its parent's GAV
+
+parent_gav_from_pom () {
+	pom="$(cat "$1")"
+	parent="$(extract_tag parent "$pom")"
+	groupId="$(extract_tag groupId "$parent")"
+	artifactId="$(extract_tag artifactId "$parent")"
+	version="$(extract_tag version "$parent")"
+	echo "$groupId:$artifactId:$version"
+}
+
 # Given a POM file, extract its packaging
 
 packaging_from_pom () {
@@ -377,6 +388,9 @@ latest-version)
 gav-from-pom)
 	gav_from_pom "$2"
 	;;
+parent-gav-from-pom)
+	parent_gav_from_pom "$2"
+	;;
 packaging-from-pom)
 	packaging_from_pom "$2"
 	;;
@@ -408,6 +422,9 @@ latest-version <groupId>:<artifactId>[:<version>]
 
 gav-from-pom <pom.xml>
 	Prints the GAV parameter described in the given pom.xml file.
+
+parent-gav-from-pom <pom.xml>
+	Prints the GAV parameter of the parent project of the pom.xml file.
 
 packaging-from-pom <pom.xml>
 	Prints the packaging type of the given project.
