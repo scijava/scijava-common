@@ -8,6 +8,11 @@ die () {
 test $# = 1 ||
 die "Usage: $0 <release-version>"
 
+git update-index -q --refresh &&
+git diff-files --quiet --ignore-submodules &&
+git diff-index --cached --quiet --ignore-submodules HEAD -- ||
+die "There are uncommitted changes!"
+
 test refs/heads/master = "$(git rev-parse --symbolic-full-name HEAD)" ||
 die "Not on 'master' branch"
 
