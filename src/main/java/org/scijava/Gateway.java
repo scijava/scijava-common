@@ -45,6 +45,42 @@ import org.scijava.service.Service;
  * while throwing {@link NoSuchServiceException} if the requested
  * {@link Service} is not found.
  * </p>
+ * <h3>Sample implementation</h3>
+ * <p>
+ * Let's say we have a {@code Kraken} service and a {@code Cow} service. Using
+ * the {@code Context} directly, the code would look like:
+ * </p>
+ * <pre>
+ * Context context = new Context();
+ * context.getService(Cow.class).feedToKraken();
+ * context.getService(Kraken.class).burp();</pre>
+ * <p>
+ * To perform these actions, you have to know <em>a priori</em> to ask for a
+ * {@code Cow} and a {@code Kraken}; i.e., your IDE's code completion will not
+ * give you a hint. Further, if either service is unavailable, a
+ * {@link NullPointerException} is thrown.
+ * </p>
+ * <p>
+ * But if we create a {@code Gateway} class called {@code Animals} with the
+ * following signatures:
+ * </p>
+ * <pre>
+ * public Cow cow() { return get(Cow.class); }
+ * public Kraken kraken() { return get(Kraken.class); }</pre>
+ * <p>
+ * We can now access our services through the new {@code Animals} gateway:
+ * </p>
+ * <pre>
+ * Animals animals = new Animals();
+ * animals.cow().feedToKraken();
+ * animals.kraken().burp();</pre>
+ * <p>
+ * This provides succinct yet explicit access to the {@code Cow} and
+ * {@code Kraken} services; it is a simple two-layer access to functionality,
+ * which an IDE can auto-complete. And if one of the services is not available,
+ * a {@link NoSuchServiceException} is thrown, which facilitates appropriate
+ * (but optional) handling of missing services.
+ * </p>
  * 
  * @see Context
  * @author Mark Hiner
