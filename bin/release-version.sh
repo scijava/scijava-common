@@ -32,6 +32,13 @@ git reset --soft HEAD^^ &&
 git commit -s -m "Bump to next development cycle" &&
 
 # push the current branch and the tag
+tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
+test -n "$tag" &&
 git push origin HEAD &&
-git push origin $(sed -n 's/^scm.tag=//p' < release.properties) ||
+git push origin $tag ||
 exit
+
+git checkout $tag &&
+mvn clean verify &&
+mvn deploy &&
+git checkout @{-1}
