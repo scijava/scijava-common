@@ -54,6 +54,8 @@ import org.scijava.util.FileUtils;
  * @author Grant Harris
  */
 public class FileUtilsTest {
+	private final static boolean isWindows =
+		System.getProperty("os.name").startsWith("Win");
 
 	@Test
 	public void testGetPath() {
@@ -81,34 +83,40 @@ public class FileUtilsTest {
 	@Test
 	public void testURLToFile() throws MalformedURLException {
 		// verify that 'file:' URL works
-		final String filePath = "/Users/jqpublic/imagej/ImageJ.class";
-		final String fileURL = "file:" + filePath;
+		final String jqpublic;
+		if (isWindows) {
+			jqpublic = "C:/Users/jqpublic/";
+		} else {
+			jqpublic = "/Users/jqpublic/";
+		}
+		final String filePath = jqpublic + "imagej/ImageJ.class";
+		final String fileURL = new File(filePath).toURI().toURL().toString();
 		final File fileFile = FileUtils.urlToFile(fileURL);
-		assertEquals(filePath, fileFile.getPath());
+		assertEqualsPath(filePath, fileFile.getPath());
 
 		// verify that file path with spaces works
 		final File spaceFileOriginal =
-			new File("/Users/Spaceman Spiff/stun/Blaster.class");
+			new File(jqpublic.replace("jqpublic", "Spaceman Spiff") + "stun/Blaster.class");
 		final URL spaceURL = spaceFileOriginal.toURI().toURL();
 		final File spaceFileResult = FileUtils.urlToFile(spaceURL);
-		assertEquals(spaceFileOriginal.getPath(), spaceFileResult.getPath());
+		assertEqualsPath(spaceFileOriginal.getPath(), spaceFileResult.getPath());
 
 		// verify that file path with various characters works
 		final String alphaLo = "abcdefghijklmnopqrstuvwxyz";
 		final String alphaHi = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		final String numbers = "1234567890";
 		final String special = "_~!@#$%^&*()+`-=";
-		final File specialFileOriginal = new File("/Users/" + alphaLo + "/" +
+		final File specialFileOriginal = new File(jqpublic.replace("jqpublic", alphaLo) +
 			alphaHi + "/" + numbers + "/" + special + "/foo/Bar.class");
 		final URL specialURL = specialFileOriginal.toURI().toURL();
 		final File specialFileResult = FileUtils.urlToFile(specialURL);
-		assertEquals(specialFileOriginal.getPath(), specialFileResult.getPath());
+		assertEqualsPath(specialFileOriginal.getPath(), specialFileResult.getPath());
 
 		// verify that 'jar:' URL works
 		final String jarPath = "/Users/jqpublic/imagej/ij-core.jar";
 		final String jarURL = "jar:file:" + jarPath + "!/imagej/ImageJ.class";
 		final File jarFile = FileUtils.urlToFile(jarURL);
-		assertEquals(jarPath, jarFile.getPath());
+		assertEqualsPath(jarPath, jarFile.getPath());
 
 		// verify that OSGi 'bundleresource:' URL fails
 		final String bundleURL =
@@ -182,6 +190,14 @@ public class FileUtilsTest {
 			assertEquals(0, urls.size());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void assertEqualsPath(final String a, final String b) {
+		if (isWindows) {
+			assertEquals(a.replace('\\', '/'), b.replace('\\', '/'));
+		} else {
+			assertEquals(a, b);
 		}
 	}
 
