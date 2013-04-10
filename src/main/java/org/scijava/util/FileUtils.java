@@ -489,10 +489,10 @@ public final class FileUtils {
 				final String url = directory.toString();
 				final int bang = url.indexOf("!/");
 				if (bang < 0) return result;
-				final String prefix = url.substring(bang + 1);
+				final String prefix = url.substring(bang + 2);
 
 				final JarURLConnection connection =
-					(JarURLConnection) directory.openConnection();
+					(JarURLConnection) new URL(url.substring(0, bang + 2)).openConnection();
 				final JarFile jar = connection.getJarFile();
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
 					if (entry.getName().startsWith(prefix)) {

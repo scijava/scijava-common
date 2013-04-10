@@ -37,12 +37,17 @@ package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 import org.junit.Test;
 import org.scijava.util.FileUtils;
@@ -175,7 +180,7 @@ public class FileUtilsTest {
 	}
 
 	@Test
-	public void testListContents() {
+	public void testListContents() throws IOException {
 		File nonExisting;
 		int i = 0;
 		for (;;) {
@@ -191,6 +196,32 @@ public class FileUtilsTest {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+
+		// list items inside a .jar file
+		final File jarFile = File.createTempFile("listFileContentsTest", ".jar");
+		final FileOutputStream out = new FileOutputStream(jarFile);
+		final JarOutputStream jarOut = new JarOutputStream(out);
+		try {
+			jarOut.putNextEntry(new JarEntry("subdirectory/hello.txt"));
+			jarOut.write("world".getBytes());
+			jarOut.closeEntry();
+			jarOut.putNextEntry(new JarEntry("subdirectory/rock.txt"));
+			jarOut.write("roll".getBytes());
+			jarOut.closeEntry();
+			jarOut.close();
+		} finally {
+			out.close();
+		}
+
+		final String url = "jar:" + jarFile.toURI().toURL() + "!/subdirectory/";
+		final Collection<URL> set = FileUtils.listContents(new URL(url));
+		final URL[] list = set.toArray(new URL[set.size()]);
+
+		assertEquals(2, list.length);
+		assertEquals(new URL(url + "hello.txt"), list[0]);
+		assertEquals(new URL(url + "rock.txt"), list[1]);
+
+		assertTrue(jarFile.delete());
 	}
 
 	private static void assertEqualsPath(final String a, final String b) {
