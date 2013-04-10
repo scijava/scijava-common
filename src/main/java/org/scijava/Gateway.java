@@ -45,6 +45,28 @@ import org.scijava.service.Service;
  * while throwing {@link NoSuchServiceException} if the requested
  * {@link Service} is not found.
  * </p>
+ * <p>
+ * Sample implementation: let's say we have a {@code Kraken} Service and 
+ * a {@code Cow} Service. Using an existing Context, the code would look like:
+ * </p>
+ * <pre>
+ * context.getService(Cow.class).moo();
+ * context.getService(Kraken.class).rawr();</pre>
+ * <p>
+ * But if we create an AnimalGateway class with the following signatures:
+ * </p>
+ * <pre>
+ * public Cow cow() { return get(Cow.class); }
+ * public Kraken kraken() { return get(Kraken.class); }</pre>
+ * <p>
+ * We can now access our Services through the new Gateway:
+ * </p>
+ * <pre>
+ * AnimalGateway.cow().feedToKraken();
+ * AnimalGateway.kraken().burp();</pre>
+ * <p>
+ * Note that this also hides the dependencies on the Cow and Kraken services.
+ * </p>
  * 
  * @see Context
  * @author Mark Hiner
