@@ -44,7 +44,7 @@ require_clean_worktree () {
 }
 
 commit_and_push () {
-	test f = "$skip_commit" || {
+	test -n "$skip_commit" || {
 		remote="(none)" &&
 		upstream="$(git rev-parse --symbolic-full-name HEAD@{u})" &&
 		remote="${upstream#refs/remotes/}" &&
