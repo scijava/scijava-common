@@ -127,9 +127,11 @@ gav="$(sh bin/maven-helper.sh gav-from-pom $pom)"
 old_version=${gav##*:}
 new_version=${old_version%.*}.$((1 + ${old_version##*.}))
 
+message=
 while test $# -ge 2
 do
 	must_change=t
+	latest_message=
 	if test "a--latest" = "a$2"
 	then
 		must_change=
@@ -153,6 +155,7 @@ do
 			die "Unknown GAV for $1"
 			;;
 		esac
+		latest_message=" (latest $ga)"
 		set "$1" "$(sh "$maven_helper" latest-version "$ga")"
 	fi
 
@@ -168,6 +171,8 @@ do
 	mv $pom.new $pom ||
 	die "Failed to set property $1 = $2"
 
+	message="$(printf '%s\t%s = %s%s\n' \
+		"$message" "$1" "$2" "$latest_message")"
 	shift
 	shift
 done
@@ -189,7 +194,7 @@ rm $pom.new ||
 die "Failed to remove intermediate $pom.new"
 
 commit_and_push "Increase pom-scijava version to $new_version" \
-	-m "This changed the property '$1' to '$2'." $pom
+	-m "The following changes were made:" -m "$message" $pom
 
 test -n "$skip_commit" ||
 (cd pom-scijava &&
