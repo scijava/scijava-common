@@ -117,12 +117,39 @@ new_version=${old_version%.*}.$((1 + ${old_version##*.}))
 
 while test $# -ge 2
 do
+	must_change=t
+	if test "a--latest" = "a$2"
+	then
+		must_change=
+		case "$1" in
+		imagej1.version)
+			ga=net.imagej:ij
+			;;
+		scijava-common.version)
+			ga=org.scijava:scijava-common
+			;;
+		imagej.version)
+			ga=net.imagej:ij-core
+			;;
+		imglib2.version)
+			ga=net.imglib2:imglib2
+			;;
+		scifio.version)
+			ga=loci:scifio
+			;;
+		*)
+			die "Unknown GAV for $1"
+			;;
+		esac
+		set "$1" "$(sh "$maven_helper" latest-version "$ga")"
+	fi
+
 	property="$(sed_quote "$1")"
 	value="$(sed_quote "$2")"
 	sed \
 	  -e "/<properties>/,/<\/properties>/s/\(<$property>\)[^<]*\(<\/$property>\)/\1$value\2/" \
 	  $pom > $pom.new &&
-	if git diff --quiet --no-index $pom $pom.new
+	if test -n "$must_change" && git diff --quiet --no-index $pom $pom.new
 	then
 		die "Property $1 not found in $pom"
 	fi &&
