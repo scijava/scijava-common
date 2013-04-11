@@ -51,17 +51,17 @@ commit_and_push () {
 	}
 }
 
+maven_helper="$(cd "$(dirname "$0")" && pwd)/maven-helper.sh" &&
+test -f "$maven_helper" ||
+die "Could not find maven-helper.sh"
+
 test -z "$bump_parent" || {
 	require_clean_worktree
 
 	test -f pom.xml ||
 	die "Not found: pom.xml"
 
-	helper="$(cd "$(dirname "$0")" && pwd)/maven-helper.sh" &&
-	test -f "$helper" ||
-	die "Could not find maven-helper.sh"
-
-	gav="$(sh "$helper" gav-from-pom pom.xml)" ||
+	gav="$(sh "$maven_helper" gav-from-pom pom.xml)" ||
 	die "Could not extract GAV from pom.xml"
 
 	case "$gav" in
@@ -72,12 +72,12 @@ test -z "$bump_parent" || {
 		;;
 	esac
 
-	gav="$(sh "$helper" parent-gav-from-pom pom.xml)" &&
+	gav="$(sh "$maven_helper" parent-gav-from-pom pom.xml)" &&
 	version="${gav#org.scijava:pom-scijava:}" &&
 	test "$version" != "$gav" ||
 	die "Parent is not pom-scijava: $gav"
 
-	latest="$(sh "$helper" latest-version org.scijava:pom-scijava)" &&
+	latest="$(sh "$maven_helper" latest-version org.scijava:pom-scijava)" &&
 	test -n "$latest" ||
 	die "Could not determine latest pom-scijava version"
 
