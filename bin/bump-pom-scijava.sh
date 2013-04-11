@@ -96,8 +96,9 @@ test -z "$bump_parent" || {
 	exit
 }
 
-test $# = 2 ||
-die "Usage: $0 [--skip-commit] (--parent | <key> <value>)"
+test $# -ge 2 &&
+test 0 = $(($#%2)) ||
+die "Usage: $0 [--skip-commit] (--parent | <key> <value>...)"
 
 pom=pom-scijava/pom.xml
 cd "$(dirname "$0")/.." &&
@@ -114,16 +115,25 @@ gav="$(sh bin/maven-helper.sh gav-from-pom $pom)"
 old_version=${gav##*:}
 new_version=${old_version%.*}.$((1 + ${old_version##*.}))
 
-property="$(sed_quote "$1")"
-value="$(sed_quote "$2")"
-sed \
-  -e "/<properties>/,/<\/properties>/s/\(<$property>\)[^<]*\(<\/$property>\)/\1$value\2/" \
-  $pom > $pom.new ||
-die "Failed to set property $1 = $2"
+while test $# -ge 2
+do
+	property="$(sed_quote "$1")"
+	value="$(sed_quote "$2")"
+	sed \
+	  -e "/<properties>/,/<\/properties>/s/\(<$property>\)[^<]*\(<\/$property>\)/\1$value\2/" \
+	  $pom > $pom.new &&
+	if git diff --quiet --no-index $pom $pom.new
+	then
+		die "Property $1 not found in $pom"
+	fi &&
+	mv $pom.new $pom ||
+	die "Failed to set property $1 = $2"
 
-git diff --quiet --no-index $pom $pom.new &&
-die "Property $1 not found in $pom"
+	shift
+	shift
+done
 
+mv $pom $pom.new &&
 sed \
   -e "s/^\(\\t<version>\)$old_version\(<\/version>\)/\1$new_version\2/" \
   $pom.new > $pom ||
