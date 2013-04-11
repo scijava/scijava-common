@@ -40,5 +40,5 @@ exit
 
 git checkout $tag &&
 mvn clean verify &&
-mvn deploy &&
+mvn -DupdateReleaseInfo=true deploy &&
 git checkout @{-1}
