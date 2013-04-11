@@ -16,6 +16,10 @@ do
 	--bump-parent)
 		bump_parent=t
 		;;
+	--default-properties)
+		# handle later
+		break
+		;;
 	-*)
 		die "Unknown option: $1"
 		;;
@@ -96,9 +100,17 @@ test -z "$bump_parent" || {
 	exit
 }
 
+test "a--default-properties" != "a$*" ||
+set imagej1.version --latest \
+	scijava-common.version --latest
+# TODO:
+#	imagej.version --latest \
+#	imglib2.version --latest \
+#	scifio.version --latest \
+
 test $# -ge 2 &&
 test 0 = $(($#%2)) ||
-die "Usage: $0 [--skip-commit] (--parent | <key> <value>...)"
+die "Usage: $0 [--skip-commit] (--parent | --default-properties | <key> <value>...)"
 
 pom=pom-scijava/pom.xml
 cd "$(dirname "$0")/.." &&
