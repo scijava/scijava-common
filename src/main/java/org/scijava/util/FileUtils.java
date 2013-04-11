@@ -499,6 +499,7 @@ public final class FileUtils {
 						result.add(new URL(url.substring(0, bang + 2) + entry.getName()));
 					}
 				}
+				jar.close();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
