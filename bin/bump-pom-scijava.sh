@@ -134,3 +134,6 @@ die "Failed to remove intermediate $pom.new"
 
 commit_and_push "Increase pom-scijava version to $new_version" \
 	-m "This changed the property '$1' to '$2'." $pom
+
+test -n "$skip_commit" ||
+mvn deploy
