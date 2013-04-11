@@ -172,6 +172,12 @@ do
 	shift
 done
 
+! git diff --quiet $pom || {
+	echo "No properties changed!" >&2
+	# help detect when no commit is required by --default-properties
+	exit 128
+}
+
 mv $pom $pom.new &&
 sed \
   -e "s/^\(\\t<version>\)$old_version\(<\/version>\)/\1$new_version\2/" \
