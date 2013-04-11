@@ -110,7 +110,7 @@ set imagej1.version --latest \
 
 test $# -ge 2 &&
 test 0 = $(($#%2)) ||
-die "Usage: $0 [--skip-commit] (--parent | --default-properties | <key> <value>...)"
+die "Usage: $0 [--skip-commit] (--bump-parent | --default-properties | <key> <value>...)"
 
 pom=pom-scijava/pom.xml
 cd "$(dirname "$0")/.." &&
