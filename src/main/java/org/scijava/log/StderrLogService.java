@@ -66,8 +66,7 @@ public class StderrLogService extends AbstractLogService {
 	@Override
 	protected void log(final Throwable t) {
 		t.printStackTrace();
-		final Throwable cause = t.getCause();
-		if (cause != null) {
+		for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
 			log(cause);
 		}
 	}
