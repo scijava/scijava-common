@@ -53,7 +53,7 @@ import net.java.sezpoz.IndexItem;
 public class DefaultPluginFinder implements PluginFinder {
 
 	/** Class loader to use when querying SezPoz. */
-	private final ClassLoader classLoader;
+	private final ClassLoader customClassLoader;
 
 	// -- Constructors --
 
@@ -62,7 +62,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	}
 
 	public DefaultPluginFinder(final ClassLoader classLoader) {
-		this.classLoader = classLoader;
+		customClassLoader = classLoader;
 	}
 
 	// -- PluginFinder methods --
@@ -75,18 +75,14 @@ public class DefaultPluginFinder implements PluginFinder {
 			new HashMap<String, Throwable>();
 
 		// load the SezPoz index
-		final Index<Plugin, SciJavaPlugin> sezPozIndex;
-		if (classLoader == null) {
-			sezPozIndex = Index.load(Plugin.class, SciJavaPlugin.class);
-		}
-		else {
-			sezPozIndex = Index.load(Plugin.class, SciJavaPlugin.class, classLoader);
-		}
+		final ClassLoader classLoader = getClassLoader();
+		final Index<Plugin, SciJavaPlugin> sezPozIndex =
+			Index.load(Plugin.class, SciJavaPlugin.class, classLoader);
 
 		// create a PluginInfo object for each item in the index
 		for (final IndexItem<Plugin, SciJavaPlugin> item : sezPozIndex) {
 			try {
-				final PluginInfo<?> info = createInfo(item);
+				final PluginInfo<?> info = createInfo(item, classLoader);
 				plugins.add(info);
 			}
 			catch (final Throwable t) {
@@ -100,7 +96,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	// -- Helper methods --
 
 	private PluginInfo<SciJavaPlugin> createInfo(
-		final IndexItem<Plugin, SciJavaPlugin> item)
+		final IndexItem<Plugin, SciJavaPlugin> item, final ClassLoader classLoader)
 	{
 		final String className = item.className();
 		final Plugin plugin = item.annotation();
@@ -109,7 +105,12 @@ public class DefaultPluginFinder implements PluginFinder {
 		final Class<SciJavaPlugin> pluginType =
 			(Class<SciJavaPlugin>) plugin.type();
 
-		return new PluginInfo<SciJavaPlugin>(className, pluginType, plugin);
+		return new PluginInfo<SciJavaPlugin>(className, pluginType, plugin, classLoader);
+	}
+
+	private ClassLoader getClassLoader() {
+		if (customClassLoader != null) return customClassLoader;
+		return Thread.currentThread().getContextClassLoader();
 	}
 
 }
