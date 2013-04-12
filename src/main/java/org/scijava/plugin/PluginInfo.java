@@ -45,6 +45,7 @@ import org.scijava.InstantiableException;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.input.Accelerator;
+import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
 
 /**
@@ -82,6 +83,9 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	/** Annotation describing the plugin. */
 	private Plugin annotation;
 
+	/** Class loader to use when loading the class with {@link #loadClass()}. */
+	private ClassLoader classLoader;
+
 	/**
 	 * Creates a new plugin metadata object.
 	 * 
@@ -91,7 +95,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 *          See {@link SciJavaPlugin} for a list of common plugin types.
 	 */
 	public PluginInfo(final String className, final Class<PT> pluginType) {
-		this(className, null, pluginType, null);
+		this(className, null, pluginType, null, null);
 	}
 
 	/**
@@ -107,7 +111,26 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	public PluginInfo(final String className, final Class<PT> pluginType,
 		final Plugin annotation)
 	{
-		this(className, null, pluginType, annotation);
+		this(className, null, pluginType, annotation, null);
+	}
+
+	/**
+	 * Creates a new plugin metadata object.
+	 * 
+	 * @param className The name of the class, which must implement
+	 *          {@link SciJavaPlugin}.
+	 * @param pluginType The <em>type</em> of plugin described by this metadata.
+	 *          See {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param annotation The @{@link Plugin} annotation to associate with this
+	 *          metadata object.
+	 * @param classLoader The {@link ClassLoader} to use when loading the class
+	 *          via {@link #loadClass()}, or null to use the current thread's
+	 *          context class loader by default.
+	 */
+	public PluginInfo(final String className, final Class<PT> pluginType,
+		final Plugin annotation, final ClassLoader classLoader)
+	{
+		this(className, null, pluginType, annotation, classLoader);
 	}
 
 	/**
@@ -121,7 +144,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	public PluginInfo(final Class<? extends PT> pluginClass,
 		final Class<PT> pluginType)
 	{
-		this(null, pluginClass, pluginType, null);
+		this(null, pluginClass, pluginType, null, null);
 	}
 
 	/**
@@ -137,12 +160,12 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	public PluginInfo(final Class<? extends PT> pluginClass,
 		final Class<PT> pluginType, final Plugin annotation)
 	{
-		this(null, pluginClass, pluginType, annotation);
+		this(null, pluginClass, pluginType, annotation, null);
 	}
 
 	protected PluginInfo(final String className,
 		final Class<? extends PT> pluginClass, final Class<PT> pluginType,
-		final Plugin annotation)
+		final Plugin annotation, final ClassLoader classLoader)
 	{
 		if (pluginClass != null) {
 			if (className != null) {
@@ -161,6 +184,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 			this.annotation = annotation;
 			populateValues();
 		}
+		this.classLoader = classLoader;
 	}
 
 	// -- PluginInfo methods --
@@ -251,12 +275,9 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	@Override
 	public Class<? extends PT> loadClass() throws InstantiableException {
 		if (pluginClass == null) {
-			final Class<?> c;
-			try {
-				c = Class.forName(className);
-			}
-			catch (final ClassNotFoundException e) {
-				throw new InstantiableException("Class not found: " + className, e);
+			final Class<?> c = ClassUtils.loadClass(className, classLoader);
+			if (c == null) {
+				throw new InstantiableException("Class not found: " + className);
 			}
 			@SuppressWarnings("unchecked")
 			final Class<? extends PT> typedClass = (Class<? extends PT>) c;
