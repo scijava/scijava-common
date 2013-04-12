@@ -101,6 +101,9 @@ public class ServiceHelper extends AbstractContextual {
 		classPoolMap = new HashMap<Class<? extends Service>, Double>();
 		classPoolList = new ArrayList<Class<? extends Service>>();
 		findServiceClasses(classPoolMap, classPoolList);
+		if (classPoolList.isEmpty()) {
+			log.warn("Class pool is empty: forgot to call Thread#setClassLoader?");
+		}
 		this.serviceClasses = new ArrayList<Class<? extends Service>>();
 		if (serviceClasses == null) {
 			// load all discovered services
