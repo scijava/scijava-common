@@ -46,6 +46,7 @@ import org.scijava.AbstractContextual;
 import org.scijava.Context;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
+import org.scijava.log.StderrLogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.service.event.ServicesLoadedEvent;
@@ -57,6 +58,11 @@ import org.scijava.util.ClassUtils;
  * @author Curtis Rueden
  */
 public class ServiceHelper extends AbstractContextual {
+
+	/**
+	 * For logging.
+	 */
+	private LogService log;
 
 	/**
 	 * Classes to scan when searching for dependencies. Data structure is a map
@@ -90,6 +96,8 @@ public class ServiceHelper extends AbstractContextual {
 		final Collection<Class<? extends Service>> serviceClasses)
 	{
 		setContext(context);
+		log = context.getService(LogService.class);
+		if (log == null) log = new StderrLogService();
 		classPoolMap = new HashMap<Class<? extends Service>, Double>();
 		classPoolList = new ArrayList<Class<? extends Service>>();
 		findServiceClasses(classPoolMap, classPoolList);
@@ -113,6 +121,10 @@ public class ServiceHelper extends AbstractContextual {
 	public void loadServices() {
 		for (final Class<? extends Service> serviceClass : serviceClasses) {
 			loadService(serviceClass);
+			if (serviceClass == LogService.class) {
+				final LogService logService = getContext().getService(LogService.class);
+				if (logService != null) log = logService;
+			}
 		}
 		final EventService eventService =
 			getContext().getService(EventService.class);
@@ -152,15 +164,15 @@ public class ServiceHelper extends AbstractContextual {
 	 *         instantiated
 	 */
 	public <S extends Service> S createExactService(final Class<S> c) {
-		debug("Creating service: " + c.getName(), null);
+		log.debug("Creating service: " + c.getName(), null);
 		try {
 			final S service = createService(c);
 			getContext().getServiceIndex().add(service);
-			info("Created service: " + c.getName());
+			log.info("Created service: " + c.getName());
 			return service;
 		}
 		catch (final Throwable t) {
-			warn("Invalid service: " + c.getName(), t);
+			log.warn("Invalid service: " + c.getName(), t);
 		}
 		return null;
 	}
@@ -219,45 +231,8 @@ public class ServiceHelper extends AbstractContextual {
 				serviceList.add(c);
 			}
 			catch (final Throwable e) {
-				error("Invalid service: " + info, e);
+				log.error("Invalid service: " + info, e);
 			}
-		}
-	}
-
-	/** Logs the given message, if a {@link LogService} is available. */
-	private void info(final String msg) {
-		final LogService log = getContext().getService(LogService.class);
-		if (log != null) log.info(msg);
-		else System.err.println("[INFO] " + msg);
-	}
-	
-	/** Logs the given warning, if a {@link LogService} is available. */ 
-	private void warn(final String msg, final Throwable t) {
-		final LogService log = getContext().getService(LogService.class);
-		if (log != null) log.warn(msg, t);
-		else {
-			System.err.println("[WARN] " + msg);
-			if (t != null) t.printStackTrace();
-		}
-	}
-
-	/** Logs the given error, if a {@link LogService} is available. */
-	private void error(final String msg, final Throwable t) {
-		final LogService log = getContext().getService(LogService.class);
-		if (log != null) log.error(msg, t);
-		else {
-			System.err.println("[ERROR] " + msg);
-			if (t != null) t.printStackTrace();
-		}
-	}
-
-	/** Logs the given debug message, if a {@link LogService} is available. */
-	private void debug(final String msg, final Throwable t) {
-		final LogService log = getContext().getService(LogService.class);
-		if (log != null) log.debug(msg, t);
-		else {
-			System.err.println("[DEBUG] " + msg);
-			if (t != null) t.printStackTrace();
 		}
 	}
 
