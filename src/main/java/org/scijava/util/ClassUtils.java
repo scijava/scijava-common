@@ -275,14 +275,7 @@ public final class ClassUtils {
 	public static boolean hasClass(final String className,
 		final ClassLoader classLoader)
 	{
-		try {
-			if (classLoader == null) Class.forName(className);
-			else classLoader.loadClass(className);
-			return true;
-		}
-		catch (final ClassNotFoundException e) {
-			return false;
-		}
+		return loadClass(className, classLoader) != null;
 	}
 
 	/**
