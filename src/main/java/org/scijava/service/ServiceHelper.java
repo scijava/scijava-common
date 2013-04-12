@@ -154,6 +154,10 @@ public class ServiceHelper extends AbstractContextual {
 			}
 		}
 
+		if (c.isInterface()) {
+			throw new IllegalArgumentException("No class found that implements " + c);
+		}
+
 		return createExactService(c);
 	}
 
