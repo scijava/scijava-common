@@ -84,8 +84,7 @@ public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 	/**
 	 * Returns a copy of the primitive-array array.
 	 * <p>
-	 * The returned array is guaranteed to have {@link PrimitiveArray#size()}
-	 * elements.
+	 * The returned array is guaranteed to have {@link #size()} elements.
 	 * </p>
 	 * 
 	 * @return the fixed-size array
