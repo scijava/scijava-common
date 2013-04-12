@@ -179,7 +179,11 @@ public class ServiceHelper extends AbstractContextual {
 			return service;
 		}
 		catch (final Throwable t) {
-			log.warn("Invalid service: " + c.getName(), t);
+			if (log.isDebug()) {
+				log.debug("Invalid service: " + c.getName(), t);
+			} else {
+				log.warn("Invalid service: " + c.getName());
+			}
 		}
 		return null;
 	}
