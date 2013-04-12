@@ -256,8 +256,10 @@ public final class ClassUtils {
 		final ClassLoader classLoader)
 	{
 		try {
-			if (classLoader == null) return Class.forName(className);
-			return classLoader.loadClass(className);
+			final ClassLoader cl =
+				classLoader == null ? Thread.currentThread().getContextClassLoader()
+					: classLoader;
+			return cl.loadClass(className);
 		}
 		catch (final ClassNotFoundException e) {
 			return null;
