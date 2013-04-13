@@ -163,6 +163,14 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		this(null, pluginClass, pluginType, annotation, null);
 	}
 
+	@Deprecated
+	protected PluginInfo(final String className,
+		final Class<? extends PT> pluginClass, final Class<PT> pluginType,
+		final Plugin annotation)
+	{
+		this(className, pluginClass, pluginType, annotation, null);
+	}
+
 	protected PluginInfo(final String className,
 		final Class<? extends PT> pluginClass, final Class<PT> pluginType,
 		final Plugin annotation, final ClassLoader classLoader)
