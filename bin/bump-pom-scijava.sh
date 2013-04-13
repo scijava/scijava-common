@@ -189,7 +189,7 @@ mv $pom $pom.new &&
 sed \
   -e "s/^\(\\t<version>\)$old_version\(<\/version>\)/\1$new_version\2/" \
   $pom.new > $pom &&
-! git diff --quiet --no-index $pom $pom.new ||
+! cmp $pom $pom.new ||
 die "Failed to increase version of $pom"
 
 rm $pom.new ||
