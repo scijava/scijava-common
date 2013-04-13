@@ -132,10 +132,12 @@ while test $# -ge 2
 do
 	must_change=t
 	latest_message=
-	if test "a--latest" = "a$2"
+	property="$1"
+	value="$2"
+	if test "a--latest" = "a$value"
 	then
 		must_change=
-		case "$1" in
+		case "$property" in
 		imagej1.version)
 			ga=net.imagej:ij
 			;;
@@ -156,23 +158,23 @@ do
 			;;
 		esac
 		latest_message=" (latest $ga)"
-		set "$1" "$(sh "$maven_helper" latest-version "$ga")"
+		value="$(sh "$maven_helper" latest-version "$ga")"
 	fi
 
-	property="$(sed_quote "$1")"
-	value="$(sed_quote "$2")"
+	p="$(sed_quote "$property")"
+	v="$(sed_quote "$value")"
 	sed \
-	  -e "/<properties>/,/<\/properties>/s/\(<$property>\)[^<]*\(<\/$property>\)/\1$value\2/" \
+	 -e "/<properties>/,/<\/properties>/s/\(<$p>\)[^<]*\(<\/$p>\)/\1$v\2/" \
 	  $pom > $pom.new &&
 	if test -n "$must_change" && git diff --quiet --no-index $pom $pom.new
 	then
-		die "Property $1 not found in $pom"
+		die "Property $property not found in $pom"
 	fi &&
 	mv $pom.new $pom ||
-	die "Failed to set property $1 = $2"
+	die "Failed to set property $property = $value"
 
 	message="$(printf '%s\t%s = %s%s\n' \
-		"$message" "$1" "$2" "$latest_message")"
+		"$message" "$property" "$value" "$latest_message")"
 	shift
 	shift
 done
