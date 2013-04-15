@@ -127,7 +127,7 @@ gav="$(sh bin/maven-helper.sh gav-from-pom $pom)"
 old_version=${gav##*:}
 new_version=${old_version%.*}.$((1 + ${old_version##*.}))
 
-message=
+message="$(printf "%s\n" "The following changes were made:")"
 while test $# -ge 2
 do
 	must_change=t
@@ -168,7 +168,7 @@ do
 	  $pom > $pom.new &&
 	if ! git diff --quiet --no-index $pom $pom.new
 	then
-		message="$(printf '%s\t%s = %s%s\n' \
+		message="$(printf '%s\n\t%s = %s%s' \
 			"$message" "$property" "$value" "$latest_message")"
 	elif test -n "$must_change"
 	then
@@ -198,7 +198,7 @@ rm $pom.new ||
 die "Failed to remove intermediate $pom.new"
 
 commit_and_push "Increase pom-scijava version to $new_version" \
-	-m "The following changes were made:" -m "$message" $pom
+	-m "$message" $pom
 
 test -n "$skip_commit" ||
 (cd pom-scijava &&
