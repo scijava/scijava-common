@@ -43,7 +43,7 @@ import org.scijava.service.AbstractService;
  * @author Johannes Schindelin
  */
 public abstract class AbstractLogService extends AbstractService implements LogService {
-	private int currentLevel = WARN;
+	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
 
 	// -- abstract methods --
 
