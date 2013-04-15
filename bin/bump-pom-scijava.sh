@@ -166,15 +166,17 @@ do
 	sed \
 	 -e "/<properties>/,/<\/properties>/s/\(<$p>\)[^<]*\(<\/$p>\)/\1$v\2/" \
 	  $pom > $pom.new &&
-	if test -n "$must_change" && git diff --quiet --no-index $pom $pom.new
+	if ! git diff --quiet --no-index $pom $pom.new
+	then
+		message="$(printf '%s\t%s = %s%s\n' \
+			"$message" "$property" "$value" "$latest_message")"
+	elif test -n "$must_change"
 	then
 		die "Property $property not found in $pom"
 	fi &&
 	mv $pom.new $pom ||
 	die "Failed to set property $property = $value"
 
-	message="$(printf '%s\t%s = %s%s\n' \
-		"$message" "$property" "$value" "$latest_message")"
 	shift
 	shift
 done
