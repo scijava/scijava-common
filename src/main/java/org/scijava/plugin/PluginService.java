@@ -92,8 +92,8 @@ public interface PluginService extends Service {
 	/**
 	 * Gets the first available plugin of the given class, or null if none.
 	 * 
-	 * @param <PT> The <em>type</em> of the plugin to look up. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of the plugin to look up; e.g.,
+	 *          {@code Service.class}.
 	 * @param <P> The <em>class</em> of the plugin to look up.
 	 */
 	<PT extends SciJavaPlugin, P extends PT> PluginInfo<PT>
@@ -108,8 +108,8 @@ public interface PluginService extends Service {
 	 * Gets the list of plugins of the given type (e.g.,
 	 * {@link org.scijava.service.Service}).
 	 * 
-	 * @param <PT> The <em>type</em> of plugins to look up. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
+	 *          {@code Service.class}.
 	 */
 	<PT extends SciJavaPlugin> List<PluginInfo<PT>>
 		getPluginsOfType(Class<PT> type);
@@ -145,8 +145,8 @@ public interface PluginService extends Service {
 	 * they can be compared with the given one.
 	 * </p>
 	 * 
-	 * @param <PT> The <em>type</em> of plugins to look up. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
+	 *          {@code Service.class}.
 	 * @param <P> The <em>class</em> of plugins to look up.
 	 * @param pluginClass The class for which to obtain the list of matching
 	 *          plugins.
@@ -175,8 +175,8 @@ public interface PluginService extends Service {
 	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
 	 * </p>
 	 * 
-	 * @param <PT> The <em>type</em> of plugins to look up. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
+	 *          {@code Service.class}.
 	 * @param className The class name for which to obtain the list of matching
 	 *          plugins.
 	 * @param type The <em>type</em> of plugins to which the search should be
@@ -193,8 +193,8 @@ public interface PluginService extends Service {
 	 * auto-populated, initializers will not be executed, etc.
 	 * </p>
 	 * 
-	 * @param <PT> The <em>type</em> of plugins to instantiate. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugins to instantiate; e.g.,
+	 *          {@code Service.class}.
 	 */
 	<PT extends SciJavaPlugin> List<PT> createInstancesOfType(Class<PT> type);
 
@@ -212,8 +212,8 @@ public interface PluginService extends Service {
 	 * auto-populated, initializers will not be executed, etc.
 	 * </p>
 	 * 
-	 * @param <PT> The <em>type</em> of plugins to instantiate. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugins to instantiate; e.g.,
+	 *          {@code Service.class}.
 	 */
 	<PT extends SciJavaPlugin> List<PT>
 		createInstances(List<PluginInfo<PT>> infos);
@@ -232,8 +232,8 @@ public interface PluginService extends Service {
 	 * auto-populated, initializers will not be executed, etc.
 	 * </p>
 	 * 
-	 * @param <PT> The <em>type</em> of plugin to instantiate. See
-	 *          {@link SciJavaPlugin} for a list of common plugin types.
+	 * @param <PT> The <em>type</em> of plugin to instantiate; e.g.,
+	 *          {@code Service.class}.
 	 */
 	<PT extends SciJavaPlugin> PT createInstance(PluginInfo<PT> info);
 
