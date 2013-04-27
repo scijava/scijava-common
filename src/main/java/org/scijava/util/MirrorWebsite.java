@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class MirrorWebsite {
 	private String basePath; // the local directory for file:// baseURL, otherwise null
 	private File localDirectory;
 	private Map<String, String> linkMap = new HashMap<String, String>();
+	private Set<String> missingLinks = new LinkedHashSet<String>();
 	private ExecutorService executorService;
 	private Map<String, MirrorJob> jobs;
 	private Set<String> done;
@@ -361,6 +363,15 @@ public class MirrorWebsite {
 		return path;
 	}
 
+	private void reportMissingLinks() {
+		if (missingLinks.size() == 0) return;
+		System.err.println("Found broken links:");
+		for (final String path : missingLinks) {
+			final String source = linkMap.get(path);
+			System.err.println(path + (source == null ? "" : " (linked from " + source + ")"));
+		}
+	}
+
 	private class MirrorJob implements Runnable {
 		private String path;
 
@@ -382,7 +393,7 @@ public class MirrorWebsite {
 			catch (FileNotFoundException e) {
 				String source = linkMap.get(path);
 				System.err.println("" + e + (source == null ? "" : " (linked from " + source + ")"));
-				e.printStackTrace();
+				missingLinks.add(path);
 			}
 			catch (Throwable e) {
 				System.err.println("Error while trying to mirror " + path);
@@ -397,6 +408,7 @@ public class MirrorWebsite {
 				done.add(path);
 				if (done.size() == jobs.size()) {
 					executorService.shutdown();
+					reportMissingLinks();
 				}
 			}
 		}
