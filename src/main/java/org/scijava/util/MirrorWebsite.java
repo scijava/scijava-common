@@ -313,6 +313,9 @@ public class MirrorWebsite {
 			for (;;) {
 				path2 = path2.substring(0, path2.lastIndexOf('/') + 1);
 				rewritten = rewritten.replaceAll(baseURL + path2, replacement);
+				// special-case rewriting from a local mirror
+				if (basePath != null) {
+					rewritten = rewritten.replaceAll("http://imagej.nih.gov/ij/" + path2, replacement);
 				}
 				if (path2.equals(""))
 					break;
