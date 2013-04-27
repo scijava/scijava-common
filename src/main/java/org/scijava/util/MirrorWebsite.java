@@ -48,6 +48,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,7 +253,7 @@ public class MirrorWebsite {
 			remoteLastModified = upToDate(path);
 			if (remoteLastModified == 0) {
 				if (!isHTML(path))
-					return new ArrayList<String>();
+					return Collections.emptyList();
 				copyStream(new FileInputStream(file), string, null);
 				return getLinks(relativePath, path, string.toString());
 			}
@@ -305,7 +306,7 @@ public class MirrorWebsite {
 			file.setLastModified(remoteLastModified);
 
 		if (!isHTML(path))
-			return new ArrayList<String>();
+			return Collections.emptyList();
 		return getLinks(relativePath, path, string.toString());
 	}
 
