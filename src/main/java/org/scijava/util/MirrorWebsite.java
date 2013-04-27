@@ -60,9 +60,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * This program mirrors a given website.
  * <p>
- * Its primary purpose is to provide the code necessary to keep <a href="http://mirror.imagej.net/">ImageJ Mirror</a> up-to-date.
+ * Its primary purpose is to provide the code necessary to keep <a
+ * href="http://mirror.imagej.net/">ImageJ Mirror</a> up-to-date.
  * </p>
- *
+ * 
  * @author Johannes Schindelin
  */
 public class MirrorWebsite {
