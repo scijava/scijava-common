@@ -313,6 +313,7 @@ public class MirrorWebsite {
 			for (;;) {
 				path2 = path2.substring(0, path2.lastIndexOf('/') + 1);
 				rewritten = rewritten.replaceAll(baseURL + path2, replacement);
+				}
 				if (path2.equals(""))
 					break;
 				// strip trailing slash
@@ -367,7 +368,7 @@ public class MirrorWebsite {
 		@Override
 		public void run() {
 			try {
-				System.err.println("Looking at " + path);
+				System.err.println("Looking at " + path + " (" + (1 + done.size()) + "/" + jobs.size() + ")");
 				for (String path2 : ensureUptodate(path)) try {
 					mirror(path2);
 				}
