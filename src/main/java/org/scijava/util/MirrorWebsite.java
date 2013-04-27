@@ -50,6 +50,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,9 +75,10 @@ public class MirrorWebsite {
 	private String basePath; // the local directory for file:// baseURL, otherwise null
 	private File localDirectory;
 	private Map<String, String> linkMap = new HashMap<String, String>();
-	private ExecutorService mirrorJobs;
+	private ExecutorService executorService;
+	private Map<String, MirrorJob> jobs;
 	private Set<String> done;
-	private int activeCount, threadCount;
+	private int threadCount;
 	private long delay;
 
 	public MirrorWebsite(final String baseURL, final File localDirectory,
@@ -90,23 +92,30 @@ public class MirrorWebsite {
 
 	public void run() throws InterruptedException {
 		synchronized (this) {
-			if (activeCount != 0)
+			if (jobs != null)
 				throw new RuntimeException("Mirroring already in progress!");
 
-			mirrorJobs = Executors.newFixedThreadPool(threadCount);
+			executorService = Executors.newFixedThreadPool(threadCount);
 			done = new TreeSet<String>();
-			activeCount = 0;
+			jobs = new LinkedHashMap<String, MirrorJob>();
 
 			mirror("index.html");
 		}
-		mirrorJobs.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 	}
 
 	public void mirror(String path) {
+		final MirrorJob job;
+		synchronized (this) {
+			if (jobs.containsKey(path)) return;
+			job = new MirrorJob(path);
+			jobs.put(path, job);
+		}
 		try {
-			mirrorJobs.execute(new MirrorJob(path));
+			executorService.execute(job);
 		} catch (Throwable t) {
 			t.printStackTrace();
+			done.add(path);
 		}
 	}
 
@@ -352,27 +361,17 @@ public class MirrorWebsite {
 		private String path;
 
 		public MirrorJob(String path) {
-			synchronized (MirrorWebsite.this) {
-				activeCount++;
-			}
 			this.path = path;
 		}
 
 		@Override
 		public void run() {
-			synchronized(MirrorWebsite.this) {
-				if (done.contains(path)) {
-					--activeCount;
-					return;
-				}
-				done.add(path);
-			}
 			try {
 				System.err.println("Looking at " + path);
 				for (String path2 : ensureUptodate(path)) try {
 					mirror(path2);
 				}
-				catch (Exception e) {
+				catch (Throwable e) {
 					System.err.println("" + e);
 				}
 			}
@@ -381,7 +380,7 @@ public class MirrorWebsite {
 				System.err.println("" + e + (source == null ? "" : " (linked from " + source + ")"));
 				e.printStackTrace();
 			}
-			catch (Exception e) {
+			catch (Throwable e) {
 				System.err.println("Error while trying to mirror " + path);
 				e.printStackTrace();
 			}
@@ -391,8 +390,10 @@ public class MirrorWebsite {
 				// ignore
 			}
 			synchronized (MirrorWebsite.this) {
-				if (--activeCount == 0)
-					mirrorJobs.shutdown();
+				done.add(path);
+				if (done.size() == jobs.size()) {
+					executorService.shutdown();
+				}
 			}
 		}
 	}
