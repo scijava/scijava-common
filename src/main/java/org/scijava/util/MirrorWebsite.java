@@ -71,6 +71,7 @@ public class MirrorWebsite {
 	public final static int THREAD_COUNT = 20;
 	public final static long DELAY_IN_MICROSECONDS = 0;
 	private String baseURL;
+	private String basePath; // the local directory for file:// baseURL, otherwise null
 	private File localDirectory;
 	private Map<String, String> linkMap = new HashMap<String, String>();
 	private ExecutorService mirrorJobs;
@@ -81,6 +82,7 @@ public class MirrorWebsite {
 	public MirrorWebsite(final String baseURL, final File localDirectory,
 			final int threadCount, final long delay) {
 		this.baseURL = baseURL + (baseURL.endsWith("/") ? "" : "/");
+		this.basePath = baseURL.startsWith("file:") ? baseURL.substring(5) : null;
 		this.localDirectory = localDirectory;
 		this.threadCount = threadCount;
 		this.delay = delay;
@@ -247,6 +249,19 @@ public class MirrorWebsite {
 		StringBuffer string = new StringBuffer();
 		String relativePath = path.substring(0, path.lastIndexOf('/') + 1);
 		File file = new File(localDirectory, path);
+
+		// special-case local case: file:/.../ does not list the directory contents
+		if (basePath != null && ("/" + path).endsWith("/index.html") && !new File(basePath + path).exists()) {
+			final String directory = path.substring(0, path.length() - 10);
+			final File[] list = new File(basePath + directory).listFiles();
+			if (list == null) return Collections.emptyList();
+			final List<String> result = new ArrayList<String>();
+			for (final File item : list) {
+				if (item.isDirectory()) result.add(directory + item.getName() + "/index.html");
+				else result.add(directory + item.getName());
+			}
+			return result;
+		}
 
 		long remoteLastModified;
 		try {
