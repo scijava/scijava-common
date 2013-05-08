@@ -166,7 +166,7 @@ do
 	sed \
 	 -e "/<properties>/,/<\/properties>/s/\(<$p>\)[^<]*\(<\/$p>\)/\1$v\2/" \
 	  $pom > $pom.new &&
-	if ! git diff --quiet --no-index $pom $pom.new
+	if ! cmp $pom $pom.new
 	then
 		message="$(printf '%s\n\t%s = %s%s' \
 			"$message" "$property" "$value" "$latest_message")"
