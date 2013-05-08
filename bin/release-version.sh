@@ -8,6 +8,8 @@ die () {
 test $# = 1 ||
 die "Usage: $0 <release-version>"
 
+REMOTE="${REMOTE:-origin}"
+
 git update-index -q --refresh &&
 git diff-files --quiet --ignore-submodules &&
 git diff-index --cached --quiet --ignore-submodules HEAD -- ||
@@ -17,7 +19,7 @@ test refs/heads/master = "$(git rev-parse --symbolic-full-name HEAD)" ||
 die "Not on 'master' branch"
 
 HEAD="$(git rev-parse HEAD)" &&
-git fetch origin master &&
+git fetch "$REMOTE" master &&
 FETCH_HEAD="$(git rev-parse FETCH_HEAD)" &&
 test $FETCH_HEAD = HEAD ||
 test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
@@ -34,8 +36,8 @@ git commit -s -m "Bump to next development cycle" &&
 # push the current branch and the tag
 tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
 test -n "$tag" &&
-git push origin HEAD &&
-git push origin $tag ||
+git push "$REMOTE" HEAD &&
+git push "$REMOTE" $tag ||
 exit
 
 git checkout $tag &&
