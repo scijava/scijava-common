@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.40</version>
+	<version>1.41</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -18,7 +18,7 @@
 	<properties>
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
-		<imagej1.version>1.47p</imagej1.version>
+		<imagej1.version>1.47q</imagej1.version>
 		<imglib1.groupId>mpicbg</imglib1.groupId>
 		<imglib1.version>2.0.0-SNAPSHOT</imglib1.version>
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
@@ -31,7 +31,7 @@
 		<scifio.groupId>loci</scifio.groupId>
 		<scifio.version>4.5-SNAPSHOT</scifio.version>
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
-		<scijava-common.version>1.3.1</scijava-common.version>
+		<scijava-common.version>1.3.2</scijava-common.version>
 		<sezpoz.version>1.9-imagej</sezpoz.version>
 
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
