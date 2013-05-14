@@ -37,7 +37,7 @@ package org.scijava.plugin;
 
 /**
  * A object with associated {@link PluginInfo} metadata. Typically the object is
- * also a typically a {@link SciJavaPlugin}, but this is not a hard requirement.
+ * also a {@link SciJavaPlugin}, but it is not a hard requirement.
  * 
  * @author Curtis Rueden
  */

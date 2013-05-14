@@ -42,16 +42,22 @@ import org.scijava.Priority;
 import org.scijava.util.ClassUtils;
 
 /**
- * Abstract base class for {@link Contextual}, {@link Prioritized} plugins.
+ * Abstract base class for {@link Contextual}, {@link Prioritized} plugins that
+ * retain access to their associated {@link PluginInfo} metadata via the
+ * {@link HasPluginInfo} interface. This class is intended as a convenient
+ * extension point for plugin type implementations.
  * 
  * @author Curtis Rueden
  */
 public abstract class SortablePlugin extends AbstractContextual implements
-	Prioritized, SciJavaPlugin
+	Prioritized, HasPluginInfo, SciJavaPlugin
 {
 
 	/** The priority of the plugin. */
 	private double priority = Priority.NORMAL_PRIORITY;
+
+	/** The metadata associated with the plugin. */
+	private PluginInfo<?> info;
 
 	// -- Prioritized methods --
 
@@ -63,6 +69,18 @@ public abstract class SortablePlugin extends AbstractContextual implements
 	@Override
 	public void setPriority(final double priority) {
 		this.priority = priority;
+	}
+
+	// -- HasPluginInfo methods --
+
+	@Override
+	public PluginInfo<?> getInfo() {
+		return info;
+	}
+
+	@Override
+	public void setInfo(final PluginInfo<?> info) {
+		this.info = info;
 	}
 
 	// -- Comparable methods --
