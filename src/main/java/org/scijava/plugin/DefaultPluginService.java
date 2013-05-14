@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.scijava.InstantiableException;
-import org.scijava.Priority;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.event.PluginsAddedEvent;
@@ -240,8 +239,6 @@ public class DefaultPluginService extends AbstractService implements
 		try {
 			final PT p = info.createInstance();
 			getContext().inject(p);
-			Priority.inject(p, info.getPriority());
-			info.inject(p);
 			return p;
 		}
 		catch (final Throwable t) {

@@ -44,6 +44,7 @@ import org.scijava.Instantiable;
 import org.scijava.InstantiableException;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
+import org.scijava.Priority;
 import org.scijava.input.Accelerator;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
@@ -317,6 +318,8 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		final PT instance;
 		try {
 			instance = c.newInstance();
+			inject(instance);
+			Priority.inject(instance, getPriority());
 		}
 		catch (final InstantiationException e) {
 			throw new InstantiableException(e);
