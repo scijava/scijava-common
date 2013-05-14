@@ -241,6 +241,7 @@ public class DefaultPluginService extends AbstractService implements
 			final PT p = info.createInstance();
 			getContext().inject(p);
 			Priority.inject(p, info.getPriority());
+			info.inject(p);
 			return p;
 		}
 		catch (final Throwable t) {

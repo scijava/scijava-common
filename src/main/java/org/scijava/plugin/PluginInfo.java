@@ -261,6 +261,20 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return loadClass().getResource(iconPath);
 	}
 
+	/**
+	 * Injects the metadata into the given object. Note that this is only possible
+	 * if the given object implements the {@link HasPluginInfo} interface.
+	 * 
+	 * @param o The object to which the metadata should be assigned.
+	 * @return true If the metadata was successfully injected.
+	 */
+	public boolean inject(final Object o) {
+		if (!(o instanceof HasPluginInfo)) return false;
+		final HasPluginInfo hi = (HasPluginInfo) o;
+		hi.setInfo(this);
+		return true;
+	}
+
 	// -- Object methods --
 
 	@Override
