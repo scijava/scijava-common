@@ -42,6 +42,8 @@ package org.scijava;
  */
 public class InstantiableException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	public InstantiableException() {
 		super();
 	}
