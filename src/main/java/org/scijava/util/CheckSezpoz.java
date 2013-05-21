@@ -57,6 +57,7 @@ import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.tools.ToolProvider;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -366,7 +367,7 @@ public class CheckSezpoz {
 		final Method aptProcess;
 		try {
 			final Class<?> aptClass =
-				CheckSezpoz.class.getClassLoader().loadClass("com.sun.tools.apt.Main");
+				ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
 			aptProcess =
 				aptClass.getMethod("process", new Class[] { String[].class });
 		}
