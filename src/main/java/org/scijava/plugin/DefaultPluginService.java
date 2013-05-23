@@ -226,8 +226,13 @@ public class DefaultPluginService extends AbstractService implements
 	{
 		final ArrayList<PT> list = new ArrayList<PT>();
 		for (final PluginInfo<? extends PT> info : infos) {
-			final PT p = createInstance(info);
-			if (p != null) list.add(p);
+			try {
+				final PT p = createInstance(info);
+				if (p != null) list.add(p);
+			}
+			catch (Throwable e) {
+				log.debug(e);
+			}
 		}
 		return list;
 	}
