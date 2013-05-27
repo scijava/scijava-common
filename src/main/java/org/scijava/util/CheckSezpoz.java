@@ -556,7 +556,7 @@ public class CheckSezpoz {
 				final Element element = xml.createElement("factorypathentry");
 				element.setAttribute("enabled", "true");
 				element.setAttribute("id",
-					"M2_REPO/net/java/sezpoz/sezpoz/1.9/sezpoz-1.9.jar");
+					"M2_REPO/net/java/sezpoz/sezpoz/1.9-imagej/sezpoz-1.9-imagej.jar");
 				element.setAttribute("kind", "VARJAR");
 				element.setAttribute("runInBatchMode", "true");
 				xml.getDocumentElement().appendChild(element);
