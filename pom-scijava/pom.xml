@@ -73,7 +73,7 @@
 
 		<plugins>
 			<!-- Enable copying the artifacts and dependencies by setting
-			     the 'imagej.app.directory' property to a valid directory -->
+			     the 'imagej.app.directory' property to a valid directory. -->
 			<plugin>
 				<groupId>net.imagej</groupId>
 				<artifactId>imagej-maven-plugin</artifactId>
@@ -387,7 +387,7 @@
 	     This is precisely the rationale for why we include the entries here.
 	     -->
 	<repositories>
-		<!-- LOCI projects -->
+		<!-- ImageJ repositories -->
 		<repository>
 			<id>imagej.releases</id>
 			<url>http://maven.imagej.net/content/repositories/releases</url>
@@ -396,8 +396,6 @@
 			<id>imagej.snapshots</id>
 			<url>http://maven.imagej.net/content/repositories/snapshots</url>
 		</repository>
-
-		<!-- Various dependencies -->
 		<repository>
 			<id>imagej.thirdparty</id>
 			<url>http://maven.imagej.net/content/repositories/thirdparty</url>
