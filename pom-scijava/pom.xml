@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.42</version>
+	<version>1.43-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
