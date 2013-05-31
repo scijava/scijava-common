@@ -7,11 +7,16 @@ die () {
 
 BATCH_MODE=--batch-mode
 SKIP_PUSH=
+ALT_REPOSITORY=
 while test $# -gt 0
 do
 	case "$1" in
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
+	--alt-repository=imagej)
+		ALT_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories/thirdparty;;
+	--alt-repository=*|--alt-deployment-repository=*)
+		ALT_REPOSITORY="${1#--*=}";;
 	-*) echo "Unknown option: $1" >&2; break;;
 	*) break;;
 	esac
@@ -19,7 +24,7 @@ do
 done
 
 test $# = 1 && test "a$1" = "a${1#-}" ||
-die "Usage: $0 [--no-batch-mode] [--skip-push] <release-version>"
+die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
@@ -58,5 +63,5 @@ exit
 
 git checkout $tag &&
 mvn clean verify &&
-mvn -DupdateReleaseInfo=true deploy &&
+mvn $ALT_REPOSITORY -DupdateReleaseInfo=true deploy &&
 git checkout @{-1}
