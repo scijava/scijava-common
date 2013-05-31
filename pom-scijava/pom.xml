@@ -16,6 +16,13 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
+		<!-- If two artifacts on the classpath use two different versions of the
+		     same dependency, behavior is inconsistent at best, and often broken.
+		     The following properties facilitate consistency of dependency
+		     versions between various projects in the SciJava software stack.
+		     When possible, we advise using the relevant groupId and version
+		     properties for your dependencies rather than hardcoding them. -->
+
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
 		<imagej1.version>1.47q</imagej1.version>
