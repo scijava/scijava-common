@@ -396,12 +396,6 @@
 			<id>imagej.thirdparty</id>
 			<url>http://maven.imagej.net/content/repositories/thirdparty</url>
 		</repository>
-
-		<!-- SezPoz -->
-		<repository>
-			<id>java.net</id>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
 	</repositories>
 
 	<pluginRepositories>
