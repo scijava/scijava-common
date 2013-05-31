@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.43</version>
+	<version>1.44</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -47,7 +47,7 @@
 		<nar.version>3.0.0-scijava-1</nar.version>
 
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
-		<scifio.groupId>scifio</scifio.groupId>
+		<scifio.groupId>io.scif</scifio.groupId>
 		<scifio.version>0.1.0</scifio.version>
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
