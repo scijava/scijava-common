@@ -6,10 +6,12 @@ die () {
 }
 
 BATCH_MODE=--batch-mode
+SKIP_PUSH=
 while test $# -gt 0
 do
 	case "$1" in
 	--no-batch-mode) BATCH_MODE=;;
+	--skip-push) SKIP_PUSH=t;;
 	-*) echo "Unknown option: $1" >&2; break;;
 	*) break;;
 	esac
@@ -17,7 +19,7 @@ do
 done
 
 test $# = 1 && test "a$1" = "a${1#-}" ||
-die "Usage: $0 [--no-batch-mode] <release-version>"
+die "Usage: $0 [--no-batch-mode] [--skip-push] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
@@ -47,8 +49,11 @@ git commit -s -m "Bump to next development cycle" &&
 # push the current branch and the tag
 tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
 test -n "$tag" &&
-git push "$REMOTE" HEAD &&
-git push "$REMOTE" $tag ||
+if test -z "$SKIP_PUSH"
+then
+	git push "$REMOTE" HEAD &&
+	git push "$REMOTE" $tag
+fi ||
 exit
 
 git checkout $tag &&
