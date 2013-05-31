@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.42</version>
+	<version>1.43</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -16,22 +16,47 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
+		<!-- If two artifacts on the classpath use two different versions of the
+		     same dependency, behavior is inconsistent at best, and often broken.
+		     The following properties facilitate consistency of dependency
+		     versions between various projects in the SciJava software stack.
+		     When possible, we advise using the relevant groupId and version
+		     properties for your dependencies rather than hardcoding them. -->
+
+		<!-- Bio-Formats - https://github.com/openmicroscopy/bioformats -->
+		<bio-formats.groupId>loci</bio-formats.groupId>
+		<bio-formats.version>4.4.8</bio-formats.version>
+
+		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
-		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
+		<imagej.version>2.0.0-beta-7</imagej.version>
+
+		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
 		<imagej1.version>1.47q</imagej1.version>
-		<imglib1.groupId>mpicbg</imglib1.groupId>
-		<imglib1.version>2.0.0-SNAPSHOT</imglib1.version>
+
+		<!-- ImgLib2 - https://github.com/imagej/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
-		<imglib2.version>2.0.0-SNAPSHOT</imglib2.version>
-		<jetty.version>8.0.0.M1</jetty.version>
-		<junit.version>4.8.1</junit.version>
+		<imglib2.version>2.0.0-beta-7</imglib2.version>
+
+		<!-- MPICBG - https://github.com/axtimwalde/mpicbg -->
 		<mpicbg.groupId>mpicbg</mpicbg.groupId>
 		<mpicbg.version>20111128</mpicbg.version>
-		<nar.version>2.1-SNAPSHOT</nar.version>
-		<scifio.groupId>loci</scifio.groupId>
-		<scifio.version>4.5-SNAPSHOT</scifio.version>
+
+		<!-- NAR Maven plugin - https://github.com/maven-nar/maven-nar-plugin -->
+		<nar.groupId>org.apache.maven.plugins</nar.groupId>
+		<nar.version>3.0.0-scijava-1</nar.version>
+
+		<!-- SCIFIO - https://github.com/scifio/scifio -->
+		<scifio.groupId>scifio</scifio.groupId>
+		<scifio.version>0.1.0</scifio.version>
+
+		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
 		<scijava-common.version>1.4.0</scijava-common.version>
+
+		<!-- Other common project dependencies -->
+		<jetty.version>8.0.0.M1</jetty.version>
+		<junit.version>4.8.1</junit.version>
 		<sezpoz.version>1.9-imagej</sezpoz.version>
 
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
@@ -48,7 +73,7 @@
 
 		<plugins>
 			<!-- Enable copying the artifacts and dependencies by setting
-			     the 'imagej.app.directory' property to a valid directory -->
+			     the 'imagej.app.directory' property to a valid directory. -->
 			<plugin>
 				<groupId>net.imagej</groupId>
 				<artifactId>imagej-maven-plugin</artifactId>
@@ -69,11 +94,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
 			</plugin>
 		</plugins>
 
@@ -148,6 +168,11 @@
 				<plugin>
 					<artifactId>maven-plugin-plugin</artifactId>
 					<version>2.9</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4.1</version>
 				</plugin>
 
 				<plugin>
@@ -304,10 +329,6 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-				<plugin>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.4.1</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -362,7 +383,7 @@
 	     This is precisely the rationale for why we include the entries here.
 	     -->
 	<repositories>
-		<!-- LOCI projects -->
+		<!-- ImageJ repositories -->
 		<repository>
 			<id>imagej.releases</id>
 			<url>http://maven.imagej.net/content/repositories/releases</url>
@@ -371,17 +392,9 @@
 			<id>imagej.snapshots</id>
 			<url>http://maven.imagej.net/content/repositories/snapshots</url>
 		</repository>
-
-		<!-- Various dependencies -->
 		<repository>
 			<id>imagej.thirdparty</id>
 			<url>http://maven.imagej.net/content/repositories/thirdparty</url>
-		</repository>
-
-		<!-- SezPoz -->
-		<repository>
-			<id>java.net</id>
-			<url>http://download.java.net/maven/2</url>
 		</repository>
 	</repositories>
 
