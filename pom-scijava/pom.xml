@@ -26,8 +26,6 @@
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
 		<imagej1.version>1.47q</imagej1.version>
-		<imglib1.groupId>mpicbg</imglib1.groupId>
-		<imglib1.version>2.0.0-SNAPSHOT</imglib1.version>
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
 		<imglib2.version>2.0.0-SNAPSHOT</imglib2.version>
 		<jetty.version>8.0.0.M1</jetty.version>
