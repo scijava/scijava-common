@@ -23,6 +23,10 @@
 		     When possible, we advise using the relevant groupId and version
 		     properties for your dependencies rather than hardcoding them. -->
 
+		<!-- Bio-Formats - https://github.com/openmicroscopy/bioformats -->
+		<bio-formats.groupId>loci</bio-formats.groupId>
+		<bio-formats.version>4.4.8</bio-formats.version>
+
 		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
