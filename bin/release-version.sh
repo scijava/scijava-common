@@ -5,8 +5,19 @@ die () {
 	exit 1
 }
 
-test $# = 1 ||
-die "Usage: $0 <release-version>"
+BATCH_MODE=--batch-mode
+while test $# -gt 0
+do
+	case "$1" in
+	--no-batch-mode) BATCH_MODE=;;
+	-*) echo "Unknown option: $1" >&2; break;;
+	*) break;;
+	esac
+	shift
+done
+
+test $# = 1 && test "a$1" = "a${1#-}" ||
+die "Usage: $0 [--no-batch-mode] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
@@ -26,7 +37,7 @@ test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
-mvn --batch-mode release:prepare -DpushChanges=false -Dresume=false \
+mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false \
         -DreleaseVersion="$1" &&
 
 # Squash the two commits on the current branch into one
