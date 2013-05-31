@@ -23,20 +23,36 @@
 		     When possible, we advise using the relevant groupId and version
 		     properties for your dependencies rather than hardcoding them. -->
 
+		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
 		<imagej.version>2.0.0-SNAPSHOT</imagej.version>
+
+		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
 		<imagej1.version>1.47q</imagej1.version>
+
+		<!-- ImgLib2 - https://github.com/imagej/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
 		<imglib2.version>2.0.0-SNAPSHOT</imglib2.version>
-		<jetty.version>8.0.0.M1</jetty.version>
-		<junit.version>4.8.1</junit.version>
+
+		<!-- MPICBG - https://github.com/axtimwalde/mpicbg -->
 		<mpicbg.groupId>mpicbg</mpicbg.groupId>
 		<mpicbg.version>20111128</mpicbg.version>
+
+		<!-- NAR Maven plugin - https://github.com/maven-nar/maven-nar-plugin -->
+		<nar.groupId>org.apache.maven.plugins</nar.groupId>
 		<nar.version>2.1-SNAPSHOT</nar.version>
+
+		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>loci</scifio.groupId>
 		<scifio.version>4.5-SNAPSHOT</scifio.version>
+
+		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
 		<scijava-common.version>1.4.0</scijava-common.version>
+
+		<!-- Other common project dependencies -->
+		<jetty.version>8.0.0.M1</jetty.version>
+		<junit.version>4.8.1</junit.version>
 		<sezpoz.version>1.9-imagej</sezpoz.version>
 
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
