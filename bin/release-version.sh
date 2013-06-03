@@ -10,6 +10,7 @@ IMAGEJ_RELEASES_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/releases
 IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
 
 BATCH_MODE=--batch-mode
+EXTRA_ARGS=
 SKIP_PUSH=
 ALT_REPOSITORY=
 while test $# -gt 0
@@ -17,6 +18,8 @@ do
 	case "$1" in
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
+	--extra-arg=*|--extra-args=*)
+		EXTRA_ARGS="$EXTRA_ARGS ${1#--*=}";;
 	--alt-repository=imagej-releases)
 		ALT_REPOSITORY=$IMAGEJ_RELEASES_REPOSITORY;;
 	--alt-repository=imagej-thirdparty)
@@ -27,6 +30,8 @@ do
 		BATCH_MODE=
 		SKIP_PUSH=t
 		ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY;;
+	--skip-gpg)
+		EXTRA_ARGS="$EXTRA_ARGS -Dgpg.skip=true";;
 	-*) echo "Unknown option: $1" >&2; break;;
 	*) break;;
 	esac
@@ -34,7 +39,7 @@ do
 done
 
 test $# = 1 && test "a$1" = "a${1#-}" ||
-die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [--thirdparty=imagej] <release-version>"
+die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [--thirdparty=imagej] [--skip-gpg] [--extra-arg=<args>] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
@@ -55,7 +60,7 @@ die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
 mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false \
-        -DreleaseVersion="$1" &&
+        -DreleaseVersion="$1" "-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
 git reset --soft HEAD^^ &&
