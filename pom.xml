@@ -73,8 +73,8 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 	</build>
 
 	<scm>
-		<connection>scm:git:git://github.com/scijava/scijava-common.git</connection>
-		<developerConnection>scm:git:git@github.com:scijava/scijava-common.git</developerConnection>
+		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
+		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/scijava-common</url>
 	</scm>
