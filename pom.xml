@@ -75,10 +75,10 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 	<mailingLists>
 		<mailingList>
 			<name>SciJava</name>
-			<subscribe>https://groups.google.com/forum/?fromgroups#!forum/scijava</subscribe>
-			<unsubscribe>https://groups.google.com/forum/?fromgroups#!forum/scijava</unsubscribe>
+			<subscribe>https://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>https://groups.google.com/group/scijava</unsubscribe>
 			<post>scijava@googlegroups.com</post>
-			<archive>https://groups.google.com/forum/?fromgroups#!forum/scijava</archive>
+			<archive>https://groups.google.com/group/scijava</archive>
 		</mailingList>
 	</mailingLists>
 
