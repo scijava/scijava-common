@@ -72,6 +72,16 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 		</plugins>
 	</build>
 
+	<mailingLists>
+		<mailingList>
+			<name>SciJava</name>
+			<subscribe>https://groups.google.com/forum/?fromgroups#!forum/scijava</subscribe>
+			<unsubscribe>https://groups.google.com/forum/?fromgroups#!forum/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>https://groups.google.com/forum/?fromgroups#!forum/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
 		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
