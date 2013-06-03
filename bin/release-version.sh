@@ -5,6 +5,10 @@ die () {
 	exit 1
 }
 
+IMAGEJ_BASE_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories
+IMAGEJ_RELEASES_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/releases
+IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
+
 BATCH_MODE=--batch-mode
 SKIP_PUSH=
 ALT_REPOSITORY=
@@ -13,10 +17,16 @@ do
 	case "$1" in
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
-	--alt-repository=imagej)
-		ALT_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories/thirdparty;;
+	--alt-repository=imagej-releases)
+		ALT_REPOSITORY=$IMAGEJ_RELEASES_REPOSITORY;;
+	--alt-repository=imagej-thirdparty)
+		ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY;;
 	--alt-repository=*|--alt-deployment-repository=*)
 		ALT_REPOSITORY="${1#--*=}";;
+	--thirdparty=imagej)
+		BATCH_MODE=
+		SKIP_PUSH=t
+		ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY;;
 	-*) echo "Unknown option: $1" >&2; break;;
 	*) break;;
 	esac
@@ -24,7 +34,7 @@ do
 done
 
 test $# = 1 && test "a$1" = "a${1#-}" ||
-die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] <release-version>"
+die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [--thirdparty=imagej] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
