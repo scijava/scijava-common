@@ -5,8 +5,36 @@ die () {
 	exit 1
 }
 
-test $# = 1 ||
-die "Usage: $0 <release-version>"
+IMAGEJ_BASE_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories
+IMAGEJ_RELEASES_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/releases
+IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
+
+BATCH_MODE=--batch-mode
+SKIP_PUSH=
+ALT_REPOSITORY=
+while test $# -gt 0
+do
+	case "$1" in
+	--no-batch-mode) BATCH_MODE=;;
+	--skip-push) SKIP_PUSH=t;;
+	--alt-repository=imagej-releases)
+		ALT_REPOSITORY=$IMAGEJ_RELEASES_REPOSITORY;;
+	--alt-repository=imagej-thirdparty)
+		ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY;;
+	--alt-repository=*|--alt-deployment-repository=*)
+		ALT_REPOSITORY="${1#--*=}";;
+	--thirdparty=imagej)
+		BATCH_MODE=
+		SKIP_PUSH=t
+		ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY;;
+	-*) echo "Unknown option: $1" >&2; break;;
+	*) break;;
+	esac
+	shift
+done
+
+test $# = 1 && test "a$1" = "a${1#-}" ||
+die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [--thirdparty=imagej] <release-version>"
 
 REMOTE="${REMOTE:-origin}"
 
@@ -26,7 +54,7 @@ test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
-mvn --batch-mode release:prepare -DpushChanges=false -Dresume=false \
+mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false \
         -DreleaseVersion="$1" &&
 
 # Squash the two commits on the current branch into one
@@ -36,11 +64,14 @@ git commit -s -m "Bump to next development cycle" &&
 # push the current branch and the tag
 tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
 test -n "$tag" &&
-git push "$REMOTE" HEAD &&
-git push "$REMOTE" $tag ||
+if test -z "$SKIP_PUSH"
+then
+	git push "$REMOTE" HEAD &&
+	git push "$REMOTE" $tag
+fi ||
 exit
 
 git checkout $tag &&
 mvn clean verify &&
-mvn -DupdateReleaseInfo=true deploy &&
+mvn $ALT_REPOSITORY -DupdateReleaseInfo=true deploy &&
 git checkout @{-1}
