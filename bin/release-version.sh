@@ -64,7 +64,10 @@ mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false \
 
 # Squash the two commits on the current branch into one
 git reset --soft HEAD^^ &&
-git commit -s -m "Bump to next development cycle" &&
+if ! git diff-index --cached --quiet --ignore-submodules HEAD --
+then
+	git commit -s -m "Bump to next development cycle"
+fi &&
 
 # push the current branch and the tag
 tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
