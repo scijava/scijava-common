@@ -12,12 +12,14 @@ IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
 BATCH_MODE=--batch-mode
 EXTRA_ARGS=
 SKIP_PUSH=
+SKIP_DEPLOY=
 ALT_REPOSITORY=
 while test $# -gt 0
 do
 	case "$1" in
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
+	--skip-deploy) SKIP_DEPLOY=t;;
 	--extra-arg=*|--extra-args=*)
 		EXTRA_ARGS="$EXTRA_ARGS ${1#--*=}";;
 	--alt-repository=imagej-releases)
@@ -79,7 +81,10 @@ then
 fi ||
 exit
 
-git checkout $tag &&
-mvn clean verify &&
-mvn $ALT_REPOSITORY -DupdateReleaseInfo=true deploy &&
-git checkout @{-1}
+if test -z "$SKIP_DEPLOY"
+then
+	git checkout $tag &&
+	mvn clean verify &&
+	mvn $ALT_REPOSITORY -DupdateReleaseInfo=true deploy &&
+	git checkout @{-1}
+fi
