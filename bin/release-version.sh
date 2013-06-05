@@ -10,9 +10,10 @@ IMAGEJ_RELEASES_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/releases
 IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
 
 BATCH_MODE=--batch-mode
-EXTRA_ARGS=
 SKIP_PUSH=
 SKIP_DEPLOY=
+TAG=
+EXTRA_ARGS=
 ALT_REPOSITORY=
 while test $# -gt 0
 do
@@ -20,6 +21,8 @@ do
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
 	--skip-deploy) SKIP_DEPLOY=t;;
+	--tag=*)
+		TAG="-Dtag=${1#--*=}";;
 	--extra-arg=*|--extra-args=*)
 		EXTRA_ARGS="$EXTRA_ARGS ${1#--*=}";;
 	--alt-repository=imagej-releases)
@@ -61,7 +64,7 @@ test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
-mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false \
+mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
         -DreleaseVersion="$1" "-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
