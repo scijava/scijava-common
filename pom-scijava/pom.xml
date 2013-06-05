@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.45</version>
+	<version>1.46</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -33,6 +33,9 @@
 
 		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
 		<imagej1.version>1.47q</imagej1.version>
+
+		<!-- ImageJ Launcher - https://github.com/imagej/imagej-launcher -->
+		<imagej-launcher.version>2.0.0</imagej-launcher.version>
 
 		<!-- ImgLib2 - https://github.com/imagej/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
