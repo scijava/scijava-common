@@ -38,7 +38,7 @@ do
 		git diff --quiet "$commit".. -- "$dir" || {
 			jar_poms="$jar_poms $pom" &&
 			echo "Deploying $dir" &&
-			mvn -N -f "$pom" deploy
+			mvn -N -f "$pom" -DupdateReleaseInfo=true deploy
 		}
 		;;
 	esac
@@ -50,7 +50,7 @@ do
 	case "$jar_poms" in
 	*" ${pom%pom.xml}"*)
 		echo "Deploying aggregate $pom" &&
-		mvn -N -f "$pom" deploy
+		mvn -N -f "$pom" -DupdateReleaseInfo=true deploy
 		;;
 	esac
 done
