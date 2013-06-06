@@ -13,6 +13,7 @@ BATCH_MODE=--batch-mode
 SKIP_PUSH=
 SKIP_DEPLOY=
 TAG=
+DEV_VERSION=
 EXTRA_ARGS=
 ALT_REPOSITORY=
 while test $# -gt 0
@@ -23,6 +24,8 @@ do
 	--skip-deploy) SKIP_DEPLOY=t;;
 	--tag=*)
 		TAG="-Dtag=${1#--*=}";;
+	--dev-version=*|--development-version=*)
+		DEV_VERSION="-DdevelopmentVersion=${1#--*=}";;
 	--extra-arg=*|--extra-args=*)
 		EXTRA_ARGS="$EXTRA_ARGS ${1#--*=}";;
 	--alt-repository=imagej-releases)
@@ -65,7 +68,7 @@ die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
 mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
-        -DreleaseVersion="$1" "-Darguments=${EXTRA_ARGS# }" &&
+        $DEV_VERSION -DreleaseVersion="$1" "-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
 git reset --soft HEAD^^ &&
