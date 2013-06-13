@@ -221,7 +221,7 @@ public final class AppUtils {
 		final String baseSubdirectory)
 	{
 		if (classLocation == null) return null;
-		String path = FileUtils.getPath(classLocation);
+		String path = FileUtils.getPath(classLocation).replace('\\', '/');
 
 		if (path.contains("/.m2/repository/")) {
 			// NB: The class is in a JAR in the Maven repository cache.
