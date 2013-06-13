@@ -220,6 +220,7 @@ public final class AppUtils {
 	public static File getBaseDirectory(final File classLocation,
 		final String baseSubdirectory)
 	{
+		if (classLocation == null) return null;
 		String path = FileUtils.getPath(classLocation);
 
 		if (path.contains("/.m2/repository/")) {
