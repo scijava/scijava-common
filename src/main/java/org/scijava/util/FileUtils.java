@@ -180,7 +180,7 @@ public final class FileUtils {
 	 * @throws IllegalArgumentException if the URL does not correspond to a file.
 	 */
 	public static File urlToFile(final URL url) {
-		return urlToFile(url.toString());
+		return url == null ? null : urlToFile(url.toString());
 	}
 
 	/**
