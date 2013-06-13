@@ -102,11 +102,12 @@ test -z "$bump_parent" || {
 
 test "a--default-properties" != "a$*" ||
 set imagej1.version --latest \
+	imagej.version --latest \
+	imagej-launcher.version --latest \
+	imglib2.version --latest \
+	nar.version --latest \
+	scifio.version --latest \
 	scijava-common.version --latest
-# TODO:
-#	imagej.version --latest \
-#	imglib2.version --latest \
-#	scifio.version --latest \
 
 test $# -ge 2 &&
 test 0 = $(($#%2)) ||
@@ -147,8 +148,14 @@ do
 		imagej.version)
 			ga=net.imagej:ij-core
 			;;
+		imagej-launcher.version)
+			ga=net.imagej:ij-launcher
+			;;
 		imglib2.version)
 			ga=net.imglib2:imglib2
+			;;
+		nar.version)
+			ga=org.apache.maven.plugins:nar-maven-plugin
 			;;
 		scifio.version)
 			ga=io:scif
