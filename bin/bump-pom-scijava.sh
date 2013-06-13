@@ -151,7 +151,7 @@ do
 			ga=net.imglib2:imglib2
 			;;
 		scifio.version)
-			ga=loci:scifio
+			ga=io:scif
 			;;
 		*)
 			die "Unknown GAV for $1"
