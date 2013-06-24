@@ -158,7 +158,7 @@ do
 			ga=org.apache.maven.plugins:nar-maven-plugin
 			;;
 		scifio.version)
-			ga=io.scif:scif
+			ga=io.scif:scifio
 			;;
 		*)
 			die "Unknown GAV for $1"
