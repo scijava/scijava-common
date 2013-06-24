@@ -88,7 +88,17 @@ project_url () {
 		echo "$root_url/snapshots/$infix"
 		;;
 	*)
-		echo "$root_url/releases/$infix"
+		# Release could be in either releases or thirdparty; try releases first
+		project_url="$root_url/releases/$infix"
+		header=$(curl -Is "$project_url/")
+		case "$header" in
+		"HTTP/1.1 200 OK"*)
+			;;
+		*)
+			project_url="$root_url/thirdparty/$infix"
+			;;
+		esac
+		echo "$project_url"
 		;;
 	esac
 }
