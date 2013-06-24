@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.48</version>
+	<version>1.49</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -32,14 +32,14 @@
 		<imagej.version>2.0.0-beta-7</imagej.version>
 
 		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
-		<imagej1.version>1.47q</imagej1.version>
+		<imagej1.version>1.47t</imagej1.version>
 
 		<!-- ImageJ Launcher - https://github.com/imagej/imagej-launcher -->
-		<imagej-launcher.version>2.0.0</imagej-launcher.version>
+		<imagej-launcher.version>2.0.0-beta6</imagej-launcher.version>
 
 		<!-- ImgLib2 - https://github.com/imagej/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
-		<imglib2.version>2.0.0-beta-8</imglib2.version>
+		<imglib2.version>2.0.0-beta-9</imglib2.version>
 
 		<!-- MPICBG - https://github.com/axtimwalde/mpicbg -->
 		<mpicbg.groupId>mpicbg</mpicbg.groupId>
@@ -47,11 +47,11 @@
 
 		<!-- NAR Maven plugin - https://github.com/maven-nar/maven-nar-plugin -->
 		<nar.groupId>org.apache.maven.plugins</nar.groupId>
-		<nar.version>3.0.0-scijava-2</nar.version>
+		<nar.version></nar.version>
 
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>io.scif</scifio.groupId>
-		<scifio.version>0.2.0</scifio.version>
+		<scifio.version></scifio.version>
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
