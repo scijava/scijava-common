@@ -193,7 +193,20 @@ tmpfile () {
 	echo /tmp/precompiled.$i"$1"
 }
 
-# Given a GAV parameter and a name, resolve a property (falling back to parents)
+# Given a GAV or a path, read the POM
+
+read_pom () {
+	case "$1" in
+	pom.xml|*/pom.xml|*\\pom.xml)
+		cat "$1"
+		;;
+	*)
+		curl -s "$(pom_url "$1")"
+		;;
+	esac
+}
+
+# Given a GAV parameter (or pom.xml path) and a name, resolve a property (falling back to parents)
 
 get_property () {
 	gav="$1"
@@ -214,7 +227,7 @@ get_property () {
 	esac
 	while test -n "$gav"
 	do
-		pom="$(curl -s "$(pom_url "$gav")")"
+		pom="$(read_pom "$gav")"
 		properties="$(extract_tag properties "$pom")"
 		property="$(extract_tag "$key" "$properties")"
 		if test -n "$property"
@@ -258,7 +271,7 @@ expand () {
 # Given a GAV parameter, make a list of its dependencies (as GAV parameters)
 
 get_dependencies () {
-	pom="$(curl -s "$(pom_url "$1")")"
+	pom="$(read_pom "$1")"
 	while true
 	do
 		case "$pom" in
@@ -404,6 +417,14 @@ parent-gav-from-pom)
 packaging-from-pom)
 	packaging_from_pom "$2"
 	;;
+property-from-pom|get-property|property)
+	if test $# -lt 3
+	then
+		get_property pom.xml "$2"
+	else
+		get_property "$2" "$3"
+	fi
+	;;
 install)
 	install_jar "$2"
 	;;
@@ -438,6 +459,9 @@ parent-gav-from-pom <pom.xml>
 
 packaging-from-pom <pom.xml>
 	Prints the packaging type of the given project.
+
+property-from-pom <pom.xml> <property-name>
+	Prints the property specified in the pom.xml file (or in its parents).
 
 install <groupId>:<artifactId>:<version>
 	Installs the given artifact and all its dependencies; if the artifact
