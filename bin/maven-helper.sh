@@ -18,12 +18,18 @@ die () {
 get_mtime () {
 	stat -c %Y "$1"
 }
-if test Darwin = "$(uname -s 2> /dev/null)"
-then
+case "$(uname -s 2> /dev/null)" in
+MINGW*)
+	get_mtime () {
+		date -r "$1" +%s
+	}
+	;;
+Darwin)
 	get_mtime () {
 		stat -f %m "$1"
 	}
-fi
+	;;
+esac
 
 # Parse <groupId>:<artifactId>:<version> triplets (i.e. GAV parameters)
 
