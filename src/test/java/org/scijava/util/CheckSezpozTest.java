@@ -105,6 +105,7 @@ public class CheckSezpozTest {
 			+ "@Plugin(type = Service.class)\n"
 			+ "public class Annotated implements Service {\n"
 			+ "\tpublic void initialize() { }\n"
+			+ "\tpublic void registerEventHandlers() { }\n"
 			+ "\tpublic double getPriority() { return 0; }\n"
 			+ "\tpublic void setPriority(final double priority) { }\n"
 			+ "\tpublic int compareTo(final Prioritized other) { return 0; }\n"
