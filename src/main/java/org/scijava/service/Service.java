@@ -58,10 +58,24 @@ public interface Service extends SciJavaPlugin, Contextual, Prioritized,
 	Disposable
 {
 
-	/** Performs any needed initialization when the service is first loaded. */
+	/**
+	 * Performs any needed initialization when the service is first loaded.
+	 * <p>
+	 * NB: This method is not intended to be called directly. It is called by
+	 * the service framework itself (specifically by the {@link ServiceHelper})
+	 * when initializing the service. It should not be called a second time.
+	 * </p>
+	 */
 	void initialize();
 
-	/** Registers the service's event handler methods. */
+	/**
+	 * Registers the service's event handler methods.
+	 * <p>
+	 * NB: This method is not intended to be called directly. It is called by
+	 * the service framework itself (specifically by the {@link ServiceHelper})
+	 * when initializing the service. It should not be called a second time.
+	 * </p>
+	 */
 	void registerEventHandlers();
 
 }
