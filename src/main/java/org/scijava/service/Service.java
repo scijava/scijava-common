@@ -61,4 +61,7 @@ public interface Service extends SciJavaPlugin, Contextual, Prioritized,
 	/** Performs any needed initialization when the service is first loaded. */
 	void initialize();
 
+	/** Registers the service's event handler methods. */
+	void registerEventHandlers();
+
 }

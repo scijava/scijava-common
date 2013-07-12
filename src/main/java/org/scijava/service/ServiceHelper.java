@@ -222,6 +222,7 @@ public class ServiceHelper extends AbstractContextual {
 		}
 
 		service.initialize();
+		service.registerEventHandlers();
 		return service;
 	}
 

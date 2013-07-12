@@ -59,6 +59,13 @@ public abstract class AbstractService extends SortablePlugin implements
 
 	@Override
 	public void initialize() {
+		// NB: Do nothing by default.
+	}
+
+	@Override
+	public void registerEventHandlers() {
+		// NB: The AbstractContextual superclass automatically takes
+		// care of registering event handlers when its context is set.
 		super.setContext(context);
 	}
 
@@ -72,7 +79,7 @@ public abstract class AbstractService extends SortablePlugin implements
 	@Override
 	public void setContext(final Context context) {
 		// NB: Do not call super.setContext(Context) yet!
-		// It happens later, at the conclusion of initialize().
+		// It happens later, in registerEventHandlers().
 		this.context = context;
 	}
 
