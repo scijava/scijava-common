@@ -57,9 +57,10 @@ public class DefaultEventHistory extends AbstractService implements
 	private EventService eventService;
 
 	/** Event details that have been recorded. */
-	private ArrayList<EventDetails> history;
+	private ArrayList<EventDetails> history = new ArrayList<EventDetails>();
 
-	private ArrayList<EventHistoryListener> listeners;
+	private ArrayList<EventHistoryListener> listeners =
+		new ArrayList<EventHistoryListener>();
 
 	private boolean active;
 
@@ -116,14 +117,6 @@ public class DefaultEventHistory extends AbstractService implements
 			// if no one is listening, stop recording
 			setActive(false);
 		}
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		history = new ArrayList<EventDetails>();
-		listeners = new ArrayList<EventHistoryListener>();
 	}
 
 	// -- Event handlers --

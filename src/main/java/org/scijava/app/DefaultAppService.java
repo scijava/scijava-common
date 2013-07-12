@@ -83,6 +83,7 @@ public class DefaultAppService extends AbstractService implements AppService {
 	public void initialize() {
 		apps = Collections.unmodifiableMap(discoverApps());
 		log.info("Found " + apps.size() + " applications.");
+		super.initialize();
 	}
 
 	// -- Helper methods --

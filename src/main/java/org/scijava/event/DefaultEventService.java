@@ -135,6 +135,7 @@ public class DefaultEventService extends AbstractService implements
 	@Override
 	public void initialize() {
 		eventBus = new DefaultEventBus(threadService, log);
+		super.initialize();
 	}
 
 	// -- Disposable methods --

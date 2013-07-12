@@ -261,6 +261,8 @@ public class DefaultPluginService extends AbstractService implements
 		}
 
 		logExceptions();
+
+		super.initialize();
 	}
 
 	// -- Utility methods --

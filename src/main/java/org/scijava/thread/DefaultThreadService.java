@@ -106,6 +106,7 @@ public final class DefaultThreadService extends AbstractService implements
 	@Override
 	public void initialize() {
 		executor = Executors.newCachedThreadPool(this);
+		super.initialize();
 	}
 
 	// -- Disposable methods --

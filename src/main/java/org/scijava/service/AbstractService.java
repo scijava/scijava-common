@@ -35,6 +35,7 @@
 
 package org.scijava.service;
 
+import org.scijava.Context;
 import org.scijava.plugin.SortablePlugin;
 
 /**
@@ -46,11 +47,33 @@ public abstract class AbstractService extends SortablePlugin implements
 	Service
 {
 
+	/**
+	 * A pointer to the service's {@link Context}. Note that the context is not
+	 * set in the superclass until {@link #initialize()} is called; this deferral
+	 * ensures that event handler methods are not registered until after service
+	 * initialization is complete.
+	 */
+	private Context context;
+
 	// -- Service methods --
 
 	@Override
 	public void initialize() {
-		// NB: Do nothing by default.
+		super.setContext(context);
+	}
+
+	// -- Contextual methods --
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
+
+	@Override
+	public void setContext(final Context context) {
+		// NB: Do not call super.setContext(Context) yet!
+		// It happens later, at the conclusion of initialize().
+		this.context = context;
 	}
 
 	// -- Disposable methods --
