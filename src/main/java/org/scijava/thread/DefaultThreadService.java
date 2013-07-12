@@ -69,12 +69,12 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public <V> Future<V> run(final Callable<V> code) {
-		return executor.submit(code);
+		return executor().submit(code);
 	}
 
 	@Override
 	public Future<?> run(final Runnable code) {
-		return executor.submit(code);
+		return executor().submit(code);
 	}
 
 	@Override
@@ -101,19 +101,11 @@ public final class DefaultThreadService extends AbstractService implements
 		EventQueue.invokeLater(code);
 	}
 
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		executor = Executors.newCachedThreadPool(this);
-		super.initialize();
-	}
-
 	// -- Disposable methods --
 
 	@Override
 	public void dispose() {
-		executor.shutdown();
+		executor().shutdown();
 	}
 
 	// -- ThreadFactory methods --
@@ -124,6 +116,15 @@ public final class DefaultThreadService extends AbstractService implements
 		final String threadName =
 			"SciJava-" + contextHash + "-Thread-" + nextThread++;
 		return new Thread(r, threadName);
+	}
+
+	// -- Helper methods --
+
+	private ExecutorService executor() {
+		if (executor == null) {
+			executor = Executors.newCachedThreadPool(this);
+		}
+		return executor;
 	}
 
 }
