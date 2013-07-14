@@ -275,13 +275,13 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	protected boolean addToList(final E obj, final List<E> list,
-		@SuppressWarnings("unused") final boolean batch)
+		final boolean batch)
 	{
 		return list.add(obj);
 	}
 
 	protected boolean removeFromList(final Object obj, final List<E> list,
-		@SuppressWarnings("unused") final boolean batch)
+		final boolean batch)
 	{
 		return list.remove(obj);
 	}

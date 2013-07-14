@@ -45,6 +45,8 @@ import java.util.Collection;
  */
 public class MenuPath extends ArrayList<MenuEntry> {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The separator between elements of a menu path string. */
 	public static final String PATH_SEPARATOR = ">";
 
