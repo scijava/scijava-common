@@ -43,6 +43,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -57,6 +58,7 @@ import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -364,19 +366,6 @@ public class CheckSezpoz {
 	 * @return whether anything in {@code META-INF/annotations/*} changed
 	 */
 	public static boolean fix(final File classes, final File sources) {
-		final Method aptProcess;
-		try {
-			final Class<?> aptClass =
-				ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
-			aptProcess =
-				aptClass.getMethod("process", new Class[] { String[].class });
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			System.err
-				.println("ERROR: Could not fix " + sources + ": apt not found");
-			return false;
-		}
 		if (!sources.exists()) {
 			System.err.println("ERROR: Sources are not in the expected place: " +
 				sources);
@@ -384,10 +373,7 @@ public class CheckSezpoz {
 		}
 
 		final List<String> aptArgs = new ArrayList<String>();
-		aptArgs.add("-nocompile");
 		if (verbose) aptArgs.add("-verbose");
-		aptArgs.add("-factory");
-		aptArgs.add("net.java.sezpoz.impl.IndexerFactory");
 		aptArgs.add("-d");
 		aptArgs.add(classes.getPath());
 		final int count = aptArgs.size();
@@ -413,7 +399,7 @@ public class CheckSezpoz {
 		final String[] args = aptArgs.toArray(new String[aptArgs.size()]);
 		try {
 			System.err.println("WARN: Updating the annotation index in " + classes);
-			aptProcess.invoke(null, new Object[] { args });
+			runApt(args);
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
@@ -439,6 +425,36 @@ public class CheckSezpoz {
 
 		setLatestCheck(classes.getParentFile());
 		return result;
+	}
+
+	private static void runApt(String[] args) throws ClassNotFoundException,
+		SecurityException, NoSuchMethodException, IllegalArgumentException,
+		IllegalAccessException, InvocationTargetException
+	{
+		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler != null) {
+			final List<String> aptArgs = new ArrayList<String>();
+			aptArgs.add("-proc:only");
+			aptArgs.add("-processor");
+			aptArgs.add("net.java.sezpoz.impl.Indexer6");
+			aptArgs.addAll(Arrays.asList(args));
+			compiler.run(null,  null,  null, args);
+			return;
+		}
+
+		System.err.println("WARN: falling back to calling the 'apt' Main class directly");
+		final List<String> aptArgs = new ArrayList<String>();
+		aptArgs.add("-nocompile");
+		aptArgs.add("-factory");
+		aptArgs.add("net.java.sezpoz.impl.IndexerFactory");
+		aptArgs.addAll(Arrays.asList(args));
+
+		final Method aptProcess;
+		final Class<?> aptClass =
+			ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
+		aptProcess =
+			aptClass.getMethod("process", new Class[] { String[].class });
+		aptProcess.invoke(null, aptArgs.toArray());
 	}
 
 	private static MessageDigest digest;
