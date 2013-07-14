@@ -38,6 +38,7 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,6 +120,8 @@ public class CheckSezpozTest {
 		writer.close();
 
 		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) System.err.println("WARN: running in a JRE; Skipping CheckSezpozTest!");
+		assumeTrue(compiler != null);
 		compiler.run(null, null, null, "-classpath",
 			System.getProperty("java.class.path"), new File(sources, "Annotated.java").getAbsolutePath());
 
