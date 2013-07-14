@@ -51,6 +51,8 @@ import java.util.Collection;
  */
 public class SizableArrayList<E> extends ArrayList<E> implements Sizable {
 
+	private static final long serialVersionUID = 1L;
+
 	// -- Constructors --
 
 	public SizableArrayList(final int initialCapacity) {

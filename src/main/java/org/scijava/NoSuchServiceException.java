@@ -44,6 +44,8 @@ package org.scijava;
  */
 public class NoSuchServiceException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
+
 	public NoSuchServiceException() {
 		super();
 	}

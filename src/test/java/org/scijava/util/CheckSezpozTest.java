@@ -38,6 +38,7 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,6 +50,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
@@ -115,8 +119,11 @@ public class CheckSezpozTest {
 			+ "}\n");
 		writer.close();
 
-		ProcessUtils.exec(sources, System.err, System.out, "javac", "-classpath",
-			System.getProperty("java.class.path"), "Annotated.java");
+		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) System.err.println("WARN: running in a JRE; Skipping CheckSezpozTest!");
+		assumeTrue(compiler != null);
+		compiler.run(null, null, null, "-classpath",
+			System.getProperty("java.class.path"), new File(sources, "Annotated.java").getAbsolutePath());
 
 		// to make sure the annotation processor "has not run",
 		// we need to copy the .class file
