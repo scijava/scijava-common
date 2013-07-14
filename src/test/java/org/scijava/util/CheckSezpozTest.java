@@ -50,6 +50,9 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
 import net.java.sezpoz.Index;
 import net.java.sezpoz.IndexItem;
 
@@ -115,8 +118,9 @@ public class CheckSezpozTest {
 			+ "}\n");
 		writer.close();
 
-		ProcessUtils.exec(sources, System.err, System.out, "javac", "-classpath",
-			System.getProperty("java.class.path"), "Annotated.java");
+		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		compiler.run(null, null, null, "-classpath",
+			System.getProperty("java.class.path"), new File(sources, "Annotated.java").getAbsolutePath());
 
 		// to make sure the annotation processor "has not run",
 		// we need to copy the .class file
