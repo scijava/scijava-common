@@ -62,8 +62,8 @@ die "Not on 'master' branch"
 HEAD="$(git rev-parse HEAD)" &&
 git fetch "$REMOTE" master &&
 FETCH_HEAD="$(git rev-parse FETCH_HEAD)" &&
-test $FETCH_HEAD = HEAD ||
-test $FETCH_HEAD = "$(git merge-base $FETCH_HEAD $HEAD)" ||
+test "$FETCH_HEAD" = HEAD ||
+test "$FETCH_HEAD" = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
