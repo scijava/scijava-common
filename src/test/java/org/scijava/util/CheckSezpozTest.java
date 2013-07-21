@@ -123,7 +123,8 @@ public class CheckSezpozTest {
 		if (compiler == null) System.err.println("WARN: running in a JRE; Skipping CheckSezpozTest!");
 		assumeTrue(compiler != null);
 		compiler.run(null, null, null, "-classpath",
-			System.getProperty("java.class.path"), new File(sources, "Annotated.java").getAbsolutePath());
+			System.getProperty("java.class.path"), "-d", sources.getAbsolutePath(),
+			new File(sources, "Annotated.java").getAbsolutePath());
 
 		// to make sure the annotation processor "has not run",
 		// we need to copy the .class file
