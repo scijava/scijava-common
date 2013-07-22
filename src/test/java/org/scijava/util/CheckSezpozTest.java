@@ -122,6 +122,7 @@ public class CheckSezpozTest {
 		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		if (compiler == null) System.err.println("WARN: running in a JRE; Skipping CheckSezpozTest!");
 		assumeTrue(compiler != null);
+		if (compiler == null) return; // NB: Silence an Eclipse warning.
 		compiler.run(null, null, null, "-classpath",
 			System.getProperty("java.class.path"), "-d", sources.getAbsolutePath(),
 			new File(sources, "Annotated.java").getAbsolutePath());

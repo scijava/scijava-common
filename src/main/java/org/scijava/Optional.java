@@ -45,7 +45,9 @@ package org.scijava;
  * </p>
  * 
  * @author Johannes Schindelin
- * @see {@link org.scijava.service.Service}
+ * @see org.scijava.service.Service
  */
-public interface Optional { }
+public interface Optional {
+	// NB: Marker interface.
+}
 
