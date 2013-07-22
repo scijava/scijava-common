@@ -80,7 +80,7 @@ public interface ThreadService extends Service, ThreadFactory {
 	 * {@link #invoke} and {@link #queue}.
 	 * <p>
 	 * In the case of AWT-based applications (e.g., Java on the desktop), this is
-	 * typically the AWT Event Dispatch Thread (EDT). Howveer, ultimately the
+	 * typically the AWT Event Dispatch Thread (EDT). However, ultimately the
 	 * behavior is implementation-dependent.
 	 * </p>
 	 * 
@@ -93,7 +93,7 @@ public interface ThreadService extends Service, ThreadFactory {
 	 * execution is complete.
 	 * <p>
 	 * In the case of AWT-based applications (e.g., Java on the desktop), this is
-	 * typically the AWT Event Dispatch Thread (EDT). Howveer, ultimately the
+	 * typically the AWT Event Dispatch Thread (EDT). However, ultimately the
 	 * behavior is implementation-dependent.
 	 * </p>
 	 * 
@@ -109,7 +109,7 @@ public interface ThreadService extends Service, ThreadFactory {
 	 * Queues the given code for later execution in a special dispatch thread.
 	 * <p>
 	 * In the case of AWT-based applications (e.g., Java on the desktop), this is
-	 * typically the AWT Event Dispatch Thread (EDT). Howveer, ultimately the
+	 * typically the AWT Event Dispatch Thread (EDT). However, ultimately the
 	 * behavior is implementation-dependent.
 	 * </p>
 	 * 
