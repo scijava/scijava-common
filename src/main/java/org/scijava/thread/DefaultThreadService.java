@@ -105,7 +105,7 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public void dispose() {
-		executor().shutdown();
+		if (executor != null) executor.shutdown();
 	}
 
 	// -- ThreadFactory methods --
