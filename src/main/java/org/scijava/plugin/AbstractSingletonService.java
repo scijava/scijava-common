@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.scijava.log.LogService;
+import org.scijava.object.ObjectService;
 
 /**
  * Abstract base class for {@link SingletonService}s.
@@ -52,6 +53,9 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 	@Parameter
 	private LogService log;
+
+	@Parameter
+	private ObjectService objectService;
 
 	// TODO: Listen for PluginsAddedEvent and PluginsRemovedEvent
 	// and update the list of singletons accordingly.
@@ -78,6 +82,11 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 		log.info("Found " + instances.size() + " " +
 			getPluginType().getSimpleName() + " plugins.");
+
+		// register singleton instances with the object service
+		for (final PT instance : instances) {
+			objectService.addObject(instance);
+		}
 	}
 
 }

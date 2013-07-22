@@ -59,6 +59,13 @@ public abstract class SortablePlugin extends AbstractContextual implements
 	/** The metadata associated with the plugin. */
 	private PluginInfo<?> info;
 
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return getInfo().getTitle();
+	}
+
 	// -- Prioritized methods --
 
 	@Override
