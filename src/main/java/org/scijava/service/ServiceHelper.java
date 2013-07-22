@@ -172,25 +172,33 @@ public class ServiceHelper extends AbstractContextual {
 	 *         instantiated
 	 */
 	public <S extends Service> S createExactService(final Class<S> c) {
-		log.debug("Creating service: " + c.getName(), null);
+		final String name = c.getName();
+		log.debug("Creating service: " + name, null);
 		try {
+			long start = 0, end = 0;
+			boolean debug = log.isDebug();
+			if (debug) start = System.currentTimeMillis();
 			final S service = createService(c);
 			getContext().getServiceIndex().add(service);
-			log.info("Created service: " + c.getName());
+			if (debug) end = System.currentTimeMillis();
+			log.info("Created service: " + name);
+			if (debug) {
+				log.debug("\t[" + name + " created in " + (end - start) + " ms]");
+			}
 			return service;
 		}
 		catch (final Throwable t) {
 			if (log.isDebug()) {
 				// when in debug mode, always give full stack trace of invalid services
-				log.debug("Invalid service: " + c.getName(), t);
+				log.debug("Invalid service: " + name, t);
 			}
 			else if (!Optional.class.isAssignableFrom(c)) {
 				// for required (i.e., non-optional) services, we also dump the stack
-				log.warn("Invalid service: " + c.getName(), t);
+				log.warn("Invalid service: " + name, t);
 			}
 			else {
 				// we emit only a short warning for failing optional services
-				log.warn("Invalid service: " + c.getName());
+				log.warn("Invalid service: " + name);
 			}
 		}
 		return null;
