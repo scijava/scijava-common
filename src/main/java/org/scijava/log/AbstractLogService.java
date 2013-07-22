@@ -35,6 +35,10 @@
 
 package org.scijava.log;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.scijava.service.AbstractService;
 
 /**
@@ -43,7 +47,11 @@ import org.scijava.service.AbstractService;
  * @author Johannes Schindelin
  */
 public abstract class AbstractLogService extends AbstractService implements LogService {
+
 	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
+
+	private Map<String, Integer> classAndPackageLevels =
+		new HashMap<String, Integer>();
 
 	// -- abstract methods --
 
@@ -64,38 +72,35 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 	// -- constructor --
 
 	public AbstractLogService() {
-		// check SciJava log level system property for initial logging level
+		// check SciJava log level system properties for initial logging levels
+
+		// global log level property
 		final String logProp = System.getProperty(LOG_LEVEL_PROPERTY);
-		if (logProp != null) {
-			// check whether it's a string label (e.g., "debug")
-			final String log = logProp.trim().toLowerCase();
-			if (log.startsWith("n")) setLevel(NONE);
-			else if (log.startsWith("e")) setLevel(ERROR);
-			else if (log.startsWith("w")) setLevel(WARN);
-			else if (log.startsWith("i")) setLevel(INFO);
-			else if (log.startsWith("d")) setLevel(DEBUG);
-			else if (log.startsWith("t")) setLevel(TRACE);
-			else {
-				// check whether it's a numerical value (e.g., 5)
-				try {
-					setLevel(Integer.parseInt(log));
-				}
-				catch (final NumberFormatException exc) {
-					// nope!
-				}
-			}
-		}
+		final int level = level(logProp);
+		if (level >= 0) setLevel(level);
 
 		if (getLevel() == 0) {
 			// use the default, which is INFO unless the DEBUG env. variable is set
 			setLevel(System.getenv("DEBUG") == null ? INFO : DEBUG);
 		}
+
+		// populate custom class- and package-specific log level properties
+		final String logLevelPrefix = LOG_LEVEL_PROPERTY + ":";
+		final Properties props = System.getProperties();
+		for (final Object propKey : props.keySet()) {
+			if (!(propKey instanceof String)) continue;
+			final String propName = (String) propKey;
+			if (!propName.startsWith(logLevelPrefix)) continue;
+			final String classOrPackageName = propName.substring(logLevelPrefix.length());
+			setLevel(classOrPackageName, level(props.getProperty(propName)));
+		}
+
 	}
 
 	// -- helper methods --
 
 	protected void log(final int level, final Object msg, final Throwable t) {
-		if (level > currentLevel) return;
+		if (level > getLevel()) return;
 
 		if (msg != null || t == null) {
 			log(level, msg);
@@ -204,36 +209,93 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 
 	@Override
 	public boolean isDebug() {
-		return currentLevel >= DEBUG;
+		return getLevel() >= DEBUG;
 	}
 
 	@Override
 	public boolean isError() {
-		return currentLevel >= ERROR;
+		return getLevel() >= ERROR;
 	}
 
 	@Override
 	public boolean isInfo() {
-		return currentLevel >= INFO;
+		return getLevel() >= INFO;
 	}
 
 	@Override
 	public boolean isTrace() {
-		return currentLevel >= TRACE;
+		return getLevel() >= TRACE;
 	}
 
 	@Override
 	public boolean isWarn() {
-		return currentLevel >= WARN;
+		return getLevel() >= WARN;
 	}
 
 	@Override
 	public int getLevel() {
+		if (!classAndPackageLevels.isEmpty()) {
+			// check for a custom log level for calling class or its parent packages
+			String classOrPackageName = callingClass();
+			while (classOrPackageName != null) {
+				final Integer level = classAndPackageLevels.get(classOrPackageName);
+				if (level != null) return level;
+				classOrPackageName = parentPackage(classOrPackageName);
+			}
+		}
+		// no custom log level; return the global log level
 		return currentLevel;
 	}
 
 	@Override
-	public void setLevel(int level) {
+	public void setLevel(final int level) {
 		currentLevel = level;
 	}
+
+	//@Override
+	public void setLevel(final String classOrPackageName, final int level) {
+		classAndPackageLevels.put(classOrPackageName, level);
+	}
+
+	// -- Helper methods --
+
+	/** Extracts the log level value from a string. */
+	private int level(final String logProp) {
+		if (logProp == null) return -1;
+
+		// check whether it's a string label (e.g., "debug")
+		final String log = logProp.trim().toLowerCase();
+		if (log.startsWith("n")) return NONE;
+		if (log.startsWith("e")) return ERROR;
+		if (log.startsWith("w")) return WARN;
+		if (log.startsWith("i")) return INFO;
+		if (log.startsWith("d")) return DEBUG;
+		if (log.startsWith("t")) return TRACE;
+
+		// check whether it's a numerical value (e.g., 5)
+		try {
+			return Integer.parseInt(log);
+		}
+		catch (final NumberFormatException exc) {
+			// nope!
+		}
+		return -1;
+	}
+
+	private String callingClass() {
+		final String thisClass = AbstractLogService.class.getName();
+		for (final StackTraceElement element : new Exception().getStackTrace()) {
+			final String className = element.getClassName();
+			// NB: Skip stack trace elements from other methods of this class.
+			if (!thisClass.equals(className)) return className;
+		}
+		return null;
+	}
+
+	private String parentPackage(final String classOrPackageName) {
+		int dot = classOrPackageName.lastIndexOf(".");
+		if (dot < 0) return null;
+		return classOrPackageName.substring(0, dot);
+	}
+
 }
