@@ -63,7 +63,8 @@ public abstract class SortablePlugin extends AbstractContextual implements
 
 	@Override
 	public String toString() {
-		return getInfo().getTitle();
+		final PluginInfo<?> info = getInfo();
+		return info == null ? getClass().getName() : info.getTitle();
 	}
 
 	// -- Prioritized methods --
