@@ -44,6 +44,7 @@ import java.util.Map;
 
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
+import org.scijava.Optional;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.log.StderrLogService;
@@ -180,8 +181,15 @@ public class ServiceHelper extends AbstractContextual {
 		}
 		catch (final Throwable t) {
 			if (log.isDebug()) {
+				// when in debug mode, always give full stack trace of invalid services
 				log.debug("Invalid service: " + c.getName(), t);
-			} else {
+			}
+			else if (!Optional.class.isAssignableFrom(c)) {
+				// for required (i.e., non-optional) services, we also dump the stack
+				log.warn("Invalid service: " + c.getName(), t);
+			}
+			else {
+				// we emit only a short warning for failing optional services
 				log.warn("Invalid service: " + c.getName());
 			}
 		}
