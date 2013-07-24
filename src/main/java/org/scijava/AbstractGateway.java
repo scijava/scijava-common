@@ -35,7 +35,17 @@
 
 package org.scijava;
 
+import org.scijava.app.App;
+import org.scijava.app.AppService;
+import org.scijava.app.SciJavaApp;
+import org.scijava.app.StatusService;
+import org.scijava.event.EventHistory;
+import org.scijava.event.EventService;
+import org.scijava.log.LogService;
+import org.scijava.object.ObjectService;
+import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
 
 /**
  * Abstract superclass for {@link Gateway} implementations.
@@ -46,6 +56,19 @@ import org.scijava.service.Service;
 public abstract class AbstractGateway extends AbstractContextual implements
 	Gateway
 {
+
+	private final String appName;
+
+	// -- Constructor --
+
+	public AbstractGateway() {
+		this(SciJavaApp.NAME, null);
+	}
+
+	public AbstractGateway(String appName, Context context) {
+		this.appName = appName;
+		setContext(context);
+	}
 
 	// -- Gateway methods --
 
@@ -61,6 +84,70 @@ public abstract class AbstractGateway extends AbstractContextual implements
 		final Service service = getContext().getService(serviceClassName);
 		checkNull(service, serviceClassName);
 		return service;
+	}
+
+	// -- Gateway methods - services --
+
+	@Override
+	public AppService app() {
+		return get(AppService.class);
+	}
+
+	@Override
+	public EventHistory eventHistory() {
+		return get(EventHistory.class);
+	}
+
+	@Override
+	public EventService event() {
+		return get(EventService.class);
+	}
+
+	@Override
+	public LogService log() {
+		return get(LogService.class);
+	}
+
+	@Override
+	public ObjectService object() {
+		return get(ObjectService.class);
+	}
+
+	@Override
+	public PluginService plugin() {
+		return get(PluginService.class);
+	}
+
+	@Override
+	public StatusService status() {
+		return get(StatusService.class);
+	}
+
+	@Override
+	public ThreadService thread() {
+		return get(ThreadService.class);
+	}
+
+	// -- Gateway methods - application --
+
+	@Override
+	public App getApp() {
+		return app().getApp(appName);
+	}
+
+	@Override
+	public String getTitle() {
+		return getApp().getTitle();
+	}
+
+	@Override
+	public String getVersion() {
+		return getApp().getVersion();
+	}
+
+	@Override
+	public String getInfo(boolean mem) {
+		return getApp().getInfo(mem);
 	}
 
 	// -- Helper methods --

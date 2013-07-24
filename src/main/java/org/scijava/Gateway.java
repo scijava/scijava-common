@@ -35,7 +35,16 @@
 
 package org.scijava;
 
+import org.scijava.app.App;
+import org.scijava.app.AppService;
+import org.scijava.app.StatusService;
+import org.scijava.event.EventHistory;
+import org.scijava.event.EventService;
+import org.scijava.log.LogService;
+import org.scijava.object.ObjectService;
+import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
 
 /**
  * Interface for convenience classes that wrap a {@link Context} to provide
@@ -108,5 +117,37 @@ public interface Gateway extends Contextual {
 	 *           serviceClassName.
 	 */
 	Service get(final String serviceClassName);
+
+	// -- Gateway methods - services --
+
+	AppService app();
+
+	EventHistory eventHistory();
+
+	EventService event();
+
+	LogService log();
+
+	ObjectService object();
+
+	PluginService plugin();
+
+	StatusService status();
+
+	ThreadService thread();
+
+	// -- Gateway methods - application --
+
+	/** @see org.scijava.app.AppService */
+	App getApp();
+
+	/** @see org.scijava.app.App#getTitle() */
+	String getTitle();
+
+	/** @see org.scijava.app.App#getVersion() */
+	String getVersion();
+
+	/** @see org.scijava.app.App#getInfo(boolean) */
+	String getInfo(boolean mem);
 
 }
