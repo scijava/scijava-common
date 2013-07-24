@@ -440,7 +440,7 @@ public class CheckSezpoz {
 			aptArgs.add("-processor");
 			aptArgs.add("net.java.sezpoz.impl.Indexer6");
 			aptArgs.addAll(Arrays.asList(args));
-			compiler.run(null,  null,  null, args);
+			compiler.run(null,  null,  null, aptArgs.toArray(new String[aptArgs.size()]));
 			return;
 		}
 
