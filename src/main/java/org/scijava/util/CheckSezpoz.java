@@ -143,6 +143,7 @@ public class CheckSezpoz {
 				classes.getPath());
 			return true;
 		}
+		final String type = path.endsWith("target/classes") ? "main" : "test";
 		for (File file : classes.listFiles()) {
 			if (file.isFile() && file.getName().startsWith(".netbeans_")) {
 				System.err.println("WARN: Ignoring NetBeans build directory: " +
@@ -151,7 +152,7 @@ public class CheckSezpoz {
 			}
 		}
 		final File projectRoot = classes.getParentFile().getParentFile();
-		final File source = new File(projectRoot, "src/main/java");
+		final File source = new File(projectRoot, "src/" + type + "/java");
 		if (!source.isDirectory()) {
 			System.err.println("WARN: No src/main/java found for " + classes);
 			return true;
