@@ -456,7 +456,7 @@ public class CheckSezpoz {
 			ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
 		aptProcess =
 			aptClass.getMethod("process", new Class[] { String[].class });
-		aptProcess.invoke(null, aptArgs.toArray());
+		aptProcess.invoke(null, (Object)aptArgs.toArray(new String[aptArgs.size()]));
 	}
 
 	private static MessageDigest digest;
