@@ -136,12 +136,14 @@ public class CheckSezpoz {
 	 * @throws IOException
 	 */
 	public static boolean checkDirectory(final File classes) throws IOException {
+		if (!classes.isDirectory()) return false;
 		final String path = FileUtils.getPath(classes);
 		if (!path.endsWith("target/classes") && !path.endsWith("target/test-classes")) {
 			System.err.println("WARN: Ignoring non-Maven build directory: " +
 				classes.getPath());
 			return true;
 		}
+		final String type = path.endsWith("target/classes") ? "main" : "test";
 		for (File file : classes.listFiles()) {
 			if (file.isFile() && file.getName().startsWith(".netbeans_")) {
 				System.err.println("WARN: Ignoring NetBeans build directory: " +
@@ -150,7 +152,7 @@ public class CheckSezpoz {
 			}
 		}
 		final File projectRoot = classes.getParentFile().getParentFile();
-		final File source = new File(projectRoot, "src/main/java");
+		final File source = new File(projectRoot, "src/" + type + "/java");
 		if (!source.isDirectory()) {
 			System.err.println("WARN: No src/main/java found for " + classes);
 			return true;
@@ -438,7 +440,7 @@ public class CheckSezpoz {
 			aptArgs.add("-processor");
 			aptArgs.add("net.java.sezpoz.impl.Indexer6");
 			aptArgs.addAll(Arrays.asList(args));
-			compiler.run(null,  null,  null, args);
+			compiler.run(null,  null,  null, aptArgs.toArray(new String[aptArgs.size()]));
 			return;
 		}
 
@@ -454,7 +456,7 @@ public class CheckSezpoz {
 			ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
 		aptProcess =
 			aptClass.getMethod("process", new Class[] { String[].class });
-		aptProcess.invoke(null, aptArgs.toArray());
+		aptProcess.invoke(null, (Object)aptArgs.toArray(new String[aptArgs.size()]));
 	}
 
 	private static MessageDigest digest;
