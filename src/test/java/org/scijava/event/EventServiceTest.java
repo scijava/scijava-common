@@ -33,46 +33,69 @@
  * #L%
  */
 
-package org.scijava;
+package org.scijava.event;
 
-import org.scijava.event.EventSubscriber;
-import org.scijava.event.EventUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.lang.ref.WeakReference;
+
+import org.junit.Test;
+import org.scijava.Context;
 
 /**
- * Abstract base class for {@link Contextual} objects.
- * <p>
- * This class enforces a single call to {@link #setContext}, throwing an
- * {@link IllegalStateException} if the context is already set. It also
- * registers the object's {@link org.scijava.event.EventHandler} methods with
- * the {@link org.scijava.event.EventService}, if any, at the time the context
- * is assigned. This frees subclasses from the burden of maintaining
- * {@link EventSubscriber} references manually.
- * </p>
+ * Verifies that the SciJava event service works as expected.
  * 
- * @author Curtis Rueden
+ * @author Johannes Schindelin
  */
-public abstract class AbstractContextual implements Contextual {
+public class EventServiceTest {
+	@Test
+	public void testWeakEventHandlers() {
+		// verify that the garbage collector collects weak references
+		final WeakReference<MyEventHandler> reference =
+				new WeakReference<MyEventHandler>(new MyEventHandler());
+		gc();
+		assertNull(reference.get());
 
-	/** This application context associated with the object. */
-	private Context context;
+		// make a new context with an event service
+		final Context context = new Context(EventService.class);
+		final EventService eventService = context.getService(EventService.class);
 
-	// -- Contextual methods --
+		// register the custom event handler
+		MyEventHandler handler = new MyEventHandler();
+		eventService.subscribe(handler);
 
-	@Override
-	public Context getContext() {
-		return context;
+		// verify that the event handler is called even after garbage collecting
+		gc();
+		assertEquals(0, counter);
+		eventService.publish(new MyEvent());
+		assertEquals(1, counter);
+
+		// verify that releasing the reference releases the event handler
+		handler = null;
+		gc();
+		eventService.publish(new MyEvent());
+		assertEquals(1, counter);
 	}
 
-	@Override
-	public void setContext(final Context context) {
-		if (this.context != null) {
-			throw new IllegalStateException("Context already set");
+	private static void gc() {
+		System.gc();
+		// for some reason, some systems need extra encouragement to collect their garbage
+		System.gc();
+	}
+
+	private int counter = 0;
+
+	private class MyEvent extends SciJavaEvent {
+		public void inc() {
+			counter++;
 		}
-		this.context = context;
-
-		// NB: Subscribe to all events handled by this object.
-		// This greatly simplifies event handling for subclasses.
-		EventUtils.subscribe(context, this);
 	}
 
+	public static class MyEventHandler {
+		@EventHandler
+		public void onEvent(final MyEvent e) {
+			e.inc();
+		}
+	}
 }

@@ -40,6 +40,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import org.bushe.swing.event.annotation.AbstractProxySubscriber;
 import org.bushe.swing.event.annotation.BaseProxySubscriber;
@@ -209,6 +210,37 @@ public class DefaultEventService extends AbstractService implements
 		return eventClass;
 	}
 
+	// -- Event handlers garbage collection preventer --
+
+	private WeakHashMap<Object, List<ProxySubscriber<?>>> keepEm =
+			new WeakHashMap<Object, List<ProxySubscriber<?>>>();
+
+	/**
+	 * Prevents {@link ProxySubscriber} instances from being garbage collected
+	 * prematurely.
+	 * <p>
+	 * We instantiate a {@link ProxySubscriber} for each method with an
+	 * {@link EventHandler} annotation. These instances are then passed to the
+	 * EventBus. The way the instances are created ensures that the event handlers
+	 * will be held only as weak references. But they are weak references to the
+	 * {@link ProxySubscriber} instances rather than the object containing the
+	 * {@link EventHandler}-annotated methods. Therefore, we have to make sure
+	 * that there is a non-GC'able reference to each {@link ProxySubscriber} as
+	 * long as there is a reference to the containing event handler object.
+	 * </p>
+	 * 
+	 * @param o the object containing {@link EventHandler}-annotated methods
+	 * @param subscriber a {@link ProxySubscriber} for a particular {@link EventHandler}
+	 */
+	private synchronized void keepIt(final Object o, final ProxySubscriber<?> subscriber) {
+		List<ProxySubscriber<?>> list = keepEm.get(o);
+		if (list == null) {
+			list = new ArrayList<ProxySubscriber<?>>();
+			keepEm.put(o, list);
+		}
+		list.add(subscriber);
+	}
+
 	// -- Helper classes --
 
 	/**
@@ -229,6 +261,7 @@ public class DefaultEventService extends AbstractService implements
 
 		public ProxySubscriber(final Class<E> c, final Object o, final Method m) {
 			super(o, m, ReferenceStrength.WEAK, eventBus, false);
+			keepIt(o, this);
 			this.c = c;
 
 			// allow calling of non-public methods
