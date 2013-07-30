@@ -102,14 +102,24 @@ public interface EventService extends Service {
 
 	/**
 	 * Subscribes all of the given object's @{@link EventHandler} annotated
-	 * methods. This allows a single class to subscribe to multiple types of
-	 * events by implementing multiple event handling methods and annotating each
-	 * one with @{@link EventHandler}.
+	 * methods.
+	 * <p>
+	 * This allows a single class to subscribe to multiple types of events by
+	 * implementing multiple event handling methods and annotating each one with
+	 * the {@link EventHandler} annotation.
+	 * </p>
+	 * <p>
+	 * Note that it is <u>not</u> necessary to store a copy of the event
+	 * subscribers (because the event service is expected to hold a weak mapping
+	 * between the event handler object and the subscribers) <u>unless</u> the
+	 * subscribers need to be unsubscribed explicitly.
+	 * </p>
 	 * 
+	 * @param o
+	 *         the event handler object containing the {@link EventHandler}
+	 *         annotated methods
 	 * @return The list of newly created {@link EventSubscriber}s, weakly
-	 *         subscribed to the event service. These objects must not be allowed
-	 *         to fall out of scope or they will be garbage collected (in which
-	 *         case events will not be delivered to them!).
+	 *         subscribed to the event service.
 	 */
 	List<EventSubscriber<?>> subscribe(Object o);
 
