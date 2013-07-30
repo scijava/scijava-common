@@ -35,8 +35,6 @@
 
 package org.scijava;
 
-import java.util.List;
-
 import org.scijava.event.EventSubscriber;
 import org.scijava.event.EventUtils;
 
@@ -58,21 +56,6 @@ public abstract class AbstractContextual implements Contextual {
 	/** This application context associated with the object. */
 	private Context context;
 
-	/**
-	 * The list of event subscribers, maintained to avoid garbage collection.
-	 * 
-	 * @see org.scijava.event.EventService#subscribe(Object)
-	 */
-	private List<EventSubscriber<?>> subscribers;
-
-	// -- Object methods --
-
-	@Override
-	public void finalize() {
-		// unregister any event handling methods
-		EventUtils.unsubscribe(getContext(), subscribers);
-	}
-
 	// -- Contextual methods --
 
 	@Override
@@ -89,7 +72,7 @@ public abstract class AbstractContextual implements Contextual {
 
 		// NB: Subscribe to all events handled by this object.
 		// This greatly simplifies event handling for subclasses.
-		subscribers = EventUtils.subscribe(context, this);
+		EventUtils.subscribe(context, this);
 	}
 
 }
