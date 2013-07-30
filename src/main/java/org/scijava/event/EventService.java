@@ -114,12 +114,17 @@ public interface EventService extends Service {
 	 * between the event handler object and the subscribers) <u>unless</u> the
 	 * subscribers need to be unsubscribed explicitly.
 	 * </p>
+	 * <p>
+	 * Most users will want to extend {@link org.scijava.AbstractContextual} instead
+	 * of subscribing to the event service explicitly.
+	 * </p>
 	 * 
 	 * @param o
 	 *         the event handler object containing the {@link EventHandler}
 	 *         annotated methods
 	 * @return The list of newly created {@link EventSubscriber}s, weakly
 	 *         subscribed to the event service.
+	 * @see {@link org.scijava.AbstractContextual}
 	 */
 	List<EventSubscriber<?>> subscribe(Object o);
 
