@@ -58,9 +58,17 @@ public final class EventUtils {
 	 * {@link EventService}.
 	 * </p>
 	 * 
-	 * @return The list of event subscribers that were created. It is necessary to
-	 *         keep a reference to this list, to avoid them being garbage
-	 *         collected (which would cause events to stop being delivered).
+	 * @param context
+	 *         the {@link Context} instance to whose {@link EventService} to
+	 *         subscribe the event handlers to.
+	 * @param o
+	 *         the event handler object containing the {@link EventHandler}
+	 *         annotated methods
+	 * @return The list of event subscribers that were created. It is <u>not</u>
+	 *         necessary to keep a reference to this list to avoid them being
+	 *         garbage collected (because the {@link EventService} is expected
+	 *         to hold a weak mapping between the event handler object and the
+	 *         subscribers).
 	 * @see EventService#subscribe(Object)
 	 */
 	public static List<EventSubscriber<?>> subscribe(final Context context,
