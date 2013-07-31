@@ -40,8 +40,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.activation.CommandInfo;
-
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 
@@ -53,7 +51,6 @@ import org.scijava.ItemVisibility;
  * @author Johannes Schindelin
  * @author Grant Harris
  * @author Curtis Rueden
- * @see CommandInfo
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
