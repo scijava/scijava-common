@@ -145,7 +145,7 @@ public class ServiceHelper extends AbstractContextual {
 	 */
 	public <S extends Service> S loadService(final Class<S> c) {
 		// if a compatible service already exists, return it
-		final S service = getContext().getServiceIndex().getService(c);
+		final S service = getContext().getService(c);
 		if (service != null) return service;
 
 		// scan the class pool for a suitable match
@@ -229,7 +229,7 @@ public class ServiceHelper extends AbstractContextual {
 			}
 			@SuppressWarnings("unchecked")
 			final Class<Service> serviceType = (Class<Service>) type;
-			Service s = getContext().getServiceIndex().getService(serviceType);
+			Service s = getContext().getService(serviceType);
 			if (s == null) {
 				// recursively obtain needed service
 				s = loadService(serviceType);
