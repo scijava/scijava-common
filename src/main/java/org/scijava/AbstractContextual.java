@@ -65,10 +65,15 @@ public abstract class AbstractContextual implements Contextual {
 
 	@Override
 	public void setContext(final Context context) {
-		if (this.context != null) {
+		if (this.context == null) {
+			this.context = context;
+		}
+		else if (this.context != context) {
 			throw new IllegalStateException("Context already set");
 		}
-		this.context = context;
+
+		// inject context and service parameters
+		context.inject(this);
 
 		// NB: Subscribe to all events handled by this object.
 		// This greatly simplifies event handling for subclasses.
