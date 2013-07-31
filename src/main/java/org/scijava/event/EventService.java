@@ -124,7 +124,7 @@ public interface EventService extends Service {
 	 *         annotated methods
 	 * @return The list of newly created {@link EventSubscriber}s, weakly
 	 *         subscribed to the event service.
-	 * @see {@link org.scijava.AbstractContextual}
+	 * @see org.scijava.AbstractContextual
 	 */
 	List<EventSubscriber<?>> subscribe(Object o);
 
