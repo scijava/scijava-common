@@ -162,4 +162,10 @@ public @interface Parameter {
 	/** Defines the list of possible values (multiple choice text fields only). */
 	String[] choices() default {};
 
+	/**
+	 * A list of additional attributes which can be used to extend this annotation
+	 * beyond its built-in capabilities.
+	 */
+	Attr[] attrs() default {};
+
 }
