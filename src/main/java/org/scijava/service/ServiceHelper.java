@@ -228,7 +228,8 @@ public class ServiceHelper extends AbstractContextual {
 				throw new IllegalArgumentException("Invalid parameter: " + f.getName());
 			}
 			@SuppressWarnings("unchecked")
-			final Class<Service> serviceType = (Class<Service>) type;
+			final Class<? extends Service> serviceType =
+				(Class<? extends Service>) type;
 			Service s = getContext().getService(serviceType);
 			if (s == null) {
 				// recursively obtain needed service
