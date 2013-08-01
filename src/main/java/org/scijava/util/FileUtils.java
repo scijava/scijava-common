@@ -490,13 +490,14 @@ public final class FileUtils {
 				final int bang = url.indexOf("!/");
 				if (bang < 0) return result;
 				final String prefix = url.substring(bang + 2);
+				final String baseURL = url.substring(0, bang + 2);
 
 				final JarURLConnection connection =
-					(JarURLConnection) new URL(url.substring(0, bang + 2)).openConnection();
+					(JarURLConnection) new URL(baseURL).openConnection();
 				final JarFile jar = connection.getJarFile();
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
 					if (entry.getName().startsWith(prefix)) {
-						result.add(new URL(url.substring(0, bang + 2) + entry.getName()));
+						result.add(new URL(baseURL + entry.getName()));
 					}
 				}
 				jar.close();
