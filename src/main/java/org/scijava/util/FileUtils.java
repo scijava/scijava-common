@@ -44,6 +44,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -496,14 +497,18 @@ public final class FileUtils {
 					(JarURLConnection) new URL(baseURL).openConnection();
 				final JarFile jar = connection.getJarFile();
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
-					if (entry.getName().startsWith(prefix)) {
-						result.add(new URL(baseURL + entry.getName()));
+					final String urlEncoded = new URI(null, null, entry.getName(), null).toString();
+					if (urlEncoded.startsWith(prefix)) {
+						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
 				jar.close();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+			}
+			catch (final URISyntaxException e) {
+				throw new IllegalArgumentException(e);
 			}
 		}
 		return result;
