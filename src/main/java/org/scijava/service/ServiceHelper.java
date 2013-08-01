@@ -121,6 +121,10 @@ public class ServiceHelper extends AbstractContextual {
 	/**
 	 * Ensures all candidate service classes are registered in the index, locating
 	 * and instantiating compatible services as needed.
+	 * 
+	 * @throws IllegalArgumentException if one of the requested services is
+	 *           required (i.e., not marked {@link Optional}) but cannot be
+	 *           filled.
 	 */
 	public void loadServices() {
 		for (final Class<? extends Service> serviceClass : serviceClasses) {
@@ -139,30 +143,14 @@ public class ServiceHelper extends AbstractContextual {
 	 * Obtains a service compatible with the given class, instantiating it (and
 	 * registering it in the index) if necessary.
 	 * 
-	 * @return an existing compatible service if one is registered, or else the
-	 *         newly created service, or null if none can be instantiated
-	 * @throws IllegalArgumentException if no suitable service class is found
+	 * @return an existing compatible service if one is already registered; or
+	 *         else a newly created instance of the service with highest priority;
+	 *         or null if no suitable service can be created
+	 * @throws IllegalArgumentException if no suitable service can be created and
+	 *           the class is required (i.e., not marked {@link Optional})
 	 */
 	public <S extends Service> S loadService(final Class<S> c) {
-		// if a compatible service already exists, return it
-		final S service = getContext().getService(c);
-		if (service != null) return service;
-
-		// scan the class pool for a suitable match
-		for (final Class<? extends Service> serviceClass : classPoolList) {
-			if (c.isAssignableFrom(serviceClass)) {
-				// found a match; now instantiate it
-				@SuppressWarnings("unchecked")
-				final S result = (S) createExactService(serviceClass);
-				return result;
-			}
-		}
-
-		if (c.isInterface()) {
-			throw new IllegalArgumentException("No class found that implements " + c);
-		}
-
-		return createExactService(c);
+		return loadService(c, !isOptional(c));
 	}
 
 	/**
@@ -172,13 +160,68 @@ public class ServiceHelper extends AbstractContextual {
 	 *         instantiated
 	 */
 	public <S extends Service> S createExactService(final Class<S> c) {
+		return createExactService(c, false);
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * Obtains a service compatible with the given class, instantiating it (and
+	 * registering it in the index) if necessary.
+	 * 
+	 * @return an existing compatible service if one is already registered; or
+	 *         else a newly created instance of the service with highest priority;
+	 *         or null if no suitable service can be created
+	 * @throws IllegalArgumentException if no suitable service can be created and
+	 *           the {@code required} flag is {@code true}
+	 */
+	private <S extends Service> S loadService(final Class<S> c,
+		final boolean required)
+	{
+		// if a compatible service already exists, return it
+		final S service = getContext().getService(c);
+		if (service != null) return service;
+
+		// scan the class pool for a suitable match
+		for (final Class<? extends Service> serviceClass : classPoolList) {
+			if (c.isAssignableFrom(serviceClass)) {
+				// found a match; now instantiate it
+				@SuppressWarnings("unchecked")
+				final S result = (S) createExactService(serviceClass, required);
+				if (required && result == null) {
+					throw new IllegalArgumentException();
+				}
+				return result;
+			}
+		}
+
+		if (required && c.isInterface()) {
+			throw new IllegalArgumentException("No compatible service: " +
+				c.getName());
+		}
+
+		return createExactService(c, required);
+	}
+
+	/**
+	 * Instantiates a service of the given class, registering it in the index.
+	 * 
+	 * @return the newly created service, or null if the given class cannot be
+	 *         instantiated
+	 * 
+	 * @throws IllegalArgumentException if there is an error creating the service
+	 *           and the {@code required} flag is {@code true}
+	 */
+	private <S extends Service> S createExactService(final Class<S> c,
+		final boolean required)
+	{
 		final String name = c.getName();
 		log.debug("Creating service: " + name, null);
 		try {
 			long start = 0, end = 0;
 			boolean debug = log.isDebug();
 			if (debug) start = System.currentTimeMillis();
-			final S service = createService(c);
+			final S service = createServiceRecursively(c);
 			getContext().getServiceIndex().add(service);
 			if (debug) end = System.currentTimeMillis();
 			log.info("Created service: " + name);
@@ -188,13 +231,12 @@ public class ServiceHelper extends AbstractContextual {
 			return service;
 		}
 		catch (final Throwable t) {
-			if (log.isDebug()) {
-				// when in debug mode, always give full stack trace of invalid services
-				log.debug("Invalid service: " + name, t);
+			if (required) {
+				throw new IllegalArgumentException("Invalid service: " + name, t);
 			}
-			else if (!Optional.class.isAssignableFrom(c)) {
-				// for required (i.e., non-optional) services, we also dump the stack
-				log.warn("Invalid service: " + name, t);
+			if (log.isDebug()) {
+				// when in debug mode, give full stack trace of invalid services
+				log.debug("Invalid service: " + name, t);
 			}
 			else {
 				// we emit only a short warning for failing optional services
@@ -204,10 +246,11 @@ public class ServiceHelper extends AbstractContextual {
 		return null;
 	}
 
-	// -- Helper methods --
-
-	/** Instantiates a service using the given constructor. */
-	private <S extends Service> S createService(final Class<S> c)
+	/**
+	 * Instantiates a service of the given class, recursively populating its
+	 * service parameters.
+	 */
+	private <S extends Service> S createServiceRecursively(final Class<S> c)
 		throws InstantiationException, IllegalAccessException
 	{
 		final S service = c.newInstance();
@@ -233,7 +276,8 @@ public class ServiceHelper extends AbstractContextual {
 			Service s = getContext().getService(serviceType);
 			if (s == null) {
 				// recursively obtain needed service
-				s = loadService(serviceType);
+				final boolean required = f.getAnnotation(Parameter.class).required();
+				s = loadService(serviceType, required);
 			}
 			ClassUtils.setValue(f, service, s);
 		}
@@ -263,6 +307,11 @@ public class ServiceHelper extends AbstractContextual {
 				log.error("Invalid service: " + info, e);
 			}
 		}
+	}
+
+	/** Returns true iff the given class is {@link Optional}. */
+	private boolean isOptional(final Class<?> c) {
+		return Optional.class.isAssignableFrom(c);
 	}
 
 }
