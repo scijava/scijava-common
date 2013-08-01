@@ -44,6 +44,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.jar.JarEntry;
@@ -180,7 +182,7 @@ public class FileUtilsTest {
 	}
 
 	@Test
-	public void testListContents() throws IOException {
+	public void testListContents() throws IOException, URISyntaxException {
 		File nonExisting;
 		int i = 0;
 		for (;;) {
@@ -202,10 +204,10 @@ public class FileUtilsTest {
 		final FileOutputStream out = new FileOutputStream(jarFile);
 		final JarOutputStream jarOut = new JarOutputStream(out);
 		try {
-			jarOut.putNextEntry(new JarEntry("subdirectory/hello.txt"));
+			jarOut.putNextEntry(new JarEntry("sub 𝄞directory/hello.txt"));
 			jarOut.write("world".getBytes());
 			jarOut.closeEntry();
-			jarOut.putNextEntry(new JarEntry("subdirectory/rock.txt"));
+			jarOut.putNextEntry(new JarEntry("sub 𝄞directory/rock.txt"));
 			jarOut.write("roll".getBytes());
 			jarOut.closeEntry();
 			jarOut.close();
@@ -213,7 +215,8 @@ public class FileUtilsTest {
 			out.close();
 		}
 
-		final String url = "jar:" + jarFile.toURI().toURL() + "!/subdirectory/";
+		final String path = new URI(null, null, "!/sub 𝄞directory/", null).toString();
+		final String url = "jar:" + jarFile.toURI().toURL() + path;
 		final Collection<URL> set = FileUtils.listContents(new URL(url));
 		final URL[] list = set.toArray(new URL[set.size()]);
 
