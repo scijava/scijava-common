@@ -5,6 +5,12 @@ die () {
 	exit 1
 }
 
+MAVEN_HELPER="$(cd "$(dirname "$0")" && pwd)/maven-helper.sh"
+
+maven_helper () {
+	sh -$- "$MAVEN_HELPER" "$@"
+}
+
 IMAGEJ_BASE_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories
 IMAGEJ_RELEASES_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/releases
 IMAGEJ_THIRDPARTY_REPOSITORY=$IMAGEJ_BASE_REPOSITORY/thirdparty
@@ -51,6 +57,32 @@ die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [
 
 VERSION="$1"
 REMOTE="${REMOTE:-origin}"
+
+# defaults
+
+BASE_GAV="$(maven_helper gav-from-pom pom.xml)" ||
+die "Could not obtain GAV coordinates for base project"
+
+case "$BASE_GAV" in
+net.imagej:pom-ij-base:2.0.0-*SNAPSHOT)
+	test -n "$TAG" || TAG=-Dtag=imagej-$VERSION
+	test -n "$DEV_VERSION" ||
+	DEV_VERSION=-DdevelopmentVersion=2.0.0-SNAPSHOT
+	;;
+net.imglib2:pom-imglib2:2.0.0-*SNAPSHOT)
+	test -n "$TAG" || TAG=-Dtag=imglib2-$VERSION
+	test -n "$DEV_VERSION" ||
+	DEV_VERSION=-DdevelopmentVersion=2.0.0-SNAPSHOT
+	;;
+net.imagej:ij-launcher:*)
+	SKIP_DEPLOY=t
+	;;
+net.sf.antcontrib:cpptasks-parallel:*|*:maven-nar-plugin:*|*:nar-maven-plugin:*)
+	BATCH_MODE=
+	SKIP_PUSH=t
+	ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY
+	;;
+esac
 
 git update-index -q --refresh &&
 git diff-files --quiet --ignore-submodules &&
