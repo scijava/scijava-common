@@ -49,6 +49,7 @@ done
 test $# = 1 && test "a$1" = "a${1#-}" ||
 die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [--thirdparty=imagej] [--skip-gpg] [--extra-arg=<args>] <release-version>"
 
+VERSION="$1"
 REMOTE="${REMOTE:-origin}"
 
 git update-index -q --refresh &&
@@ -68,7 +69,8 @@ die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
 mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
-        $DEV_VERSION -DreleaseVersion="$1" "-Darguments=${EXTRA_ARGS# }" &&
+        $DEV_VERSION -DreleaseVersion="$VERSION" \
+	"-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
 git reset --soft HEAD^^ &&
