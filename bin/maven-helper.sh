@@ -438,6 +438,7 @@ is-deployed)
 	is_deployed "$2"
 	;;
 *)
+	test $# -eq 0 || echo "Unknown command: $1" >&2
 	die "Usage: $0 [command] [argument...]"'
 
 Commands:
