@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.scijava.event.EventService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
@@ -252,6 +253,11 @@ public class Context implements Disposable {
 				ClassUtils.setValue(f, o, this);
 			}
 		}
+
+		// NB: Subscribe to all events handled by this object.
+		// This greatly simplifies event handling.
+		final EventService eventService = getService(EventService.class);
+		if (eventService != null) eventService.subscribe(o);
 	}
 
 	// -- Disposable methods --
