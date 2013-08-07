@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -288,16 +289,21 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
+	private Map<Class<?>, HashSet<Class<?>>> typeMap = new HashMap<Class<?>, HashSet<Class<?>>>();
+
 	/** Gets a new set containing the type and all its supertypes. */
-	private HashSet<Class<?>> getTypes(final Class<?> type) {
-		final HashSet<Class<?>> types = new HashSet<Class<?>>();
+	private synchronized HashSet<Class<?>> getTypes(final Class<?> type) {
+		HashSet<Class<?>> types = typeMap.get(type);
+		if (types != null) return types;
+		types = new HashSet<Class<?>>();
 		types.add(All.class); // NB: Always include the "All" class.
 		getTypes(type, types);
+		typeMap.put(type, types);
 		return types;
 	}
 
 	/** Recursively adds the type and all its supertypes to the given set. */
-	private void getTypes(final Class<?> type, final HashSet<Class<?>> types) {
+	private synchronized void getTypes(final Class<?> type, final HashSet<Class<?>> types) {
 		if (type == null) return;
 		types.add(type);
 
