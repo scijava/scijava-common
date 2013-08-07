@@ -35,10 +35,15 @@
 
 package org.scijava;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.scijava.event.EventHandler;
+import org.scijava.event.EventService;
+import org.scijava.event.SciJavaEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -114,6 +119,47 @@ public class ContextInjectionTest {
 		assertSame(context, needsContext.context);
 	}
 
+	/**
+	 * Tests that event subscription works properly for objects which extend
+	 * {@link AbstractContextual}.
+	 */
+	@Test
+	public void testAbstractContextualEventSubscription() {
+		final Context context = new Context(EventService.class);
+		final EventService eventService = context.getService(EventService.class);
+
+		final HasEventsContextual hasEvents = new HasEventsContextual();
+		assertFalse(hasEvents.eventReceived);
+
+		eventService.publish(new SciJavaEvent() {/**/});
+		assertFalse(hasEvents.eventReceived);
+
+		hasEvents.setContext(context);
+		eventService.publish(new SciJavaEvent() {/**/});
+		assertTrue(hasEvents.eventReceived);
+	}
+
+	/**
+	 * Tests that event subscription works properly for objects which do not
+	 * implement {@link Contextual}, when injected using
+	 * {@link Context#inject(Object)}.
+	 */
+	@Test
+	public void testNonContextualEventSubscription() {
+		final Context context = new Context(EventService.class);
+		final EventService eventService = context.getService(EventService.class);
+
+		final HasEventsPlain hasEvents = new HasEventsPlain();
+		assertFalse(hasEvents.eventReceived);
+
+		eventService.publish(new SciJavaEvent() {/**/});
+		assertFalse(hasEvents.eventReceived);
+
+		context.inject(hasEvents);
+		eventService.publish(new SciJavaEvent() {/**/});
+		assertTrue(hasEvents.eventReceived);
+	}
+
 	// -- Helper classes --
 
 	/** A simple service with no dependencies. */
@@ -151,6 +197,36 @@ public class ContextInjectionTest {
 
 		@Parameter
 		private Context context;
+
+	}
+
+	/**
+	 * An object that subscribes to {@link SciJavaEvent}s and extends
+	 * {@link AbstractContextual}.
+	 */
+	public static class HasEventsContextual extends AbstractContextual {
+
+		private boolean eventReceived;
+
+		@EventHandler
+		private void onEvent(@SuppressWarnings("unused") SciJavaEvent e) {
+			eventReceived = true;
+		}
+
+	}
+
+	/**
+	 * An object that subscribes to {@link SciJavaEvent}s but does not implement
+	 * {@link Contextual}.
+	 */
+	public static class HasEventsPlain {
+
+		private boolean eventReceived;
+
+		@EventHandler
+		private void onEvent(@SuppressWarnings("unused") SciJavaEvent e) {
+			eventReceived = true;
+		}
 
 	}
 
