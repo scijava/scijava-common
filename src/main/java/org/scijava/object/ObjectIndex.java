@@ -253,12 +253,25 @@ public class ObjectIndex<E> implements Collection<E> {
 		return remove(o, o.getClass(), batch);
 	}
 
+	private Map<Class<?>, List<List<?>>> type2Lists = new HashMap<Class<?>, List<List<?>>>();
+
+	private synchronized List<List<?>> retrieveListsForType(final Class<?> type) {
+		List<List<?>> result = type2Lists.get(type);
+		if (result != null) return result;
+		result = new ArrayList<List<?>>();
+		for (final Class<?> c : getTypes(type)) {
+			result.add(retrieveList(c));
+		}
+		type2Lists.put(type, result);
+		return result;
+	}
+
 	/** Adds an object to type lists beneath the given type hierarchy. */
+	@SuppressWarnings("unchecked")
 	protected boolean add(final E o, final Class<?> type, final boolean batch) {
 		boolean result = false;
-		final Set<Class<?>> types = getTypes(type);
-		for (final Class<?> c : types) {
-			if (addToList(o, retrieveList(c), batch)) result = true;
+		for (final List<?> list : retrieveListsForType(type)) {
+			if (addToList(o, (List<E>)list, batch)) result = true;
 		}
 		return result;
 	}
