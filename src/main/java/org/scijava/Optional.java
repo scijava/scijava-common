@@ -38,10 +38,10 @@ package org.scijava;
 /**
  * A marker interface for optional SciJava components.
  * <p>
- * Some components might be discoverable, but cannot alwayts be initialized,
+ * Some components might be discoverable, but cannot always be initialized,
  * e.g. when relying on proprietary libraries. Such components can be marked
  * with this interface to indicate that failure to initialize should not
- * necessarily imply loud warnings in the log, for example.
+ * necessarily cause the entire application context to collapse, for example.
  * </p>
  * 
  * @author Johannes Schindelin

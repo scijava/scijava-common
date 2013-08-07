@@ -36,7 +36,6 @@
 package org.scijava;
 
 import org.scijava.event.EventSubscriber;
-import org.scijava.event.EventUtils;
 
 /**
  * Abstract base class for {@link Contextual} objects.
@@ -65,14 +64,15 @@ public abstract class AbstractContextual implements Contextual {
 
 	@Override
 	public void setContext(final Context context) {
-		if (this.context != null) {
+		if (this.context == null) {
+			this.context = context;
+		}
+		else if (this.context != context) {
 			throw new IllegalStateException("Context already set");
 		}
-		this.context = context;
 
-		// NB: Subscribe to all events handled by this object.
-		// This greatly simplifies event handling for subclasses.
-		EventUtils.subscribe(context, this);
+		// inject context and service parameters, and subscribe to events
+		context.inject(this);
 	}
 
 }

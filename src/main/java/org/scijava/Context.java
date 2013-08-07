@@ -36,16 +36,20 @@
 package org.scijava;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.scijava.event.EventService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
 import org.scijava.service.ServiceHelper;
 import org.scijava.service.ServiceIndex;
 import org.scijava.util.CheckSezpoz;
+import org.scijava.util.ClassUtils;
 
 /**
  * Top-level SciJava application context, which initializes and maintains a list
@@ -192,22 +196,68 @@ public class Context implements Disposable {
 	}
 
 	/**
-	 * Injects the application context into the given object. Note that this is
-	 * only possible if the given object implements the {@link Contextual}
-	 * interface.
+	 * Injects the application context into the given object. This does three
+	 * things:
+	 * <ul>
+	 * <li>If the given object implements the {@link Contextual} interface, calls
+	 * {@link Contextual#setContext(Context)} with this context.</li>
+	 * <li>If the given object has any non-final {@link Context} fields annotated
+	 * with @{@link Parameter}, sets the value of those fields to this context.</li>
+	 * <li>If the given object has any non-final {@link Service} fields annotated
+	 * with @{@link Parameter}, sets the value of those fields to the
+	 * corresponding service available from this context.</li>
+	 * </ul>
 	 * 
 	 * @param o The object to which the context should be assigned.
-	 * @return true If the context was successfully injected, or if the object
-	 *         already has this context.
 	 * @throws IllegalStateException If the object already has a different
 	 *           context.
+	 * @throws IllegalArgumentException If the object has a required
+	 *           {@link Service} parameter (see {@link Parameter#required()})
+	 *           which is not available from this context.
 	 */
-	public boolean inject(final Object o) {
-		if (!(o instanceof Contextual)) return false;
-		final Contextual c = (Contextual) o;
-		if (c.getContext() == this) return true;
-		c.setContext(this);
-		return true;
+	public void inject(final Object o) {
+		// inject the context itself, if applicable
+		if (o instanceof Contextual) {
+			final Contextual c = (Contextual) o;
+			if (c.getContext() == null) {
+				// object does not have a context yet; inject this one
+				c.setContext(this);
+			}
+			else if (c.getContext() != this) {
+				// object already has a different context; complain loudly
+				throw new IllegalStateException("Context already set");
+			}
+		}
+
+		// populate any Context and Service fields annotated with @Parameter
+		final List<Field> fields =
+			ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
+		for (final Field f : fields) {
+			f.setAccessible(true); // expose private fields
+
+			final Class<?> type = f.getType();
+			if (Service.class.isAssignableFrom(type)) {
+				// populate Service parameter
+				@SuppressWarnings("unchecked")
+				final Class<? extends Service> serviceType =
+					(Class<? extends Service>) type;
+				final Service service = getService(serviceType);
+				if (service == null && f.getAnnotation(Parameter.class).required()) {
+					throw new IllegalArgumentException("Required service is missing: " +
+						serviceType.getName());
+				}
+				ClassUtils.setValue(f, o, service);
+			}
+			else if (type.isAssignableFrom(getClass())) {
+				// populate Context parameter
+				ClassUtils.setValue(f, o, this);
+			}
+		}
+
+		// NB: Subscribe to all events handled by this object.
+		// This greatly simplifies event handling.
+		final EventService eventService = getService(EventService.class);
+		if (eventService != null) eventService.subscribe(o);
 	}
 
 	// -- Disposable methods --
