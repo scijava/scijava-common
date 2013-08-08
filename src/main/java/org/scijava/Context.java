@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginIndex;
@@ -196,8 +197,8 @@ public class Context implements Disposable {
 	}
 
 	/**
-	 * Injects the application context into the given object. This does three
-	 * things:
+	 * Injects the application context into the given object. This does four
+	 * distinct things:
 	 * <ul>
 	 * <li>If the given object implements the {@link Contextual} interface, calls
 	 * {@link Contextual#setContext(Context)} with this context.</li>
@@ -206,6 +207,9 @@ public class Context implements Disposable {
 	 * <li>If the given object has any non-final {@link Service} fields annotated
 	 * with @{@link Parameter}, sets the value of those fields to the
 	 * corresponding service available from this context.</li>
+	 * <li>Calls {@link EventService#subscribe(Object)} with the object to
+	 * register any @{@link EventHandler} annotated methods as event subscribers.</li>
+	 * .</li>
 	 * </ul>
 	 * 
 	 * @param o The object to which the context should be assigned.
