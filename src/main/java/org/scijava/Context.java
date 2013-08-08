@@ -233,7 +233,7 @@ public class Context implements Disposable {
 			}
 		}
 
-		// populate any Context and Service fields annotated with @Parameter
+		// iterate over all @Parameter annotated fields
 		final List<Field> fields =
 			ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
 		for (final Field f : fields) {
