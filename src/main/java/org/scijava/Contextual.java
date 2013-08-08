@@ -35,7 +35,8 @@
 
 package org.scijava;
 
-import org.scijava.Context;
+import org.scijava.plugin.Parameter;
+import org.scijava.service.Service;
 
 /**
  * An object that belongs to a SciJava application context.
@@ -51,12 +52,18 @@ public interface Contextual {
 	/**
 	 * Sets the application context to which the object belongs.
 	 * <p>
-	 * Typically this method is called only once to populate the context. Many
-	 * contextual objects do not support later alteration of the context, and
-	 * throw {@link IllegalStateException} if this method is invoked again.
+	 * Typically this method simply delegates to {@link Context#inject(Object)},
+	 * and should be called only once to populate the context. Most contextual
+	 * objects do not support later alteration of the context, and will throw
+	 * {@link IllegalStateException} if this method is invoked again.
 	 * </p>
 	 * 
-	 * @throws IllegalStateException if the context has already been set.
+	 * @see Context#inject(Object)
+	 * @see AbstractContextual for an example of how to implement this interface
+	 * @throws IllegalStateException If the object already has a context.
+	 * @throws IllegalArgumentException If the object has a required
+	 *           {@link Service} parameter (see {@link Parameter#required()})
+	 *           which is not available from the context.
 	 */
 	void setContext(Context context);
 

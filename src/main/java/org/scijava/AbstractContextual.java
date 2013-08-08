@@ -35,24 +35,23 @@
 
 package org.scijava;
 
-import org.scijava.event.EventSubscriber;
+import org.scijava.event.EventHandler;
+import org.scijava.plugin.Parameter;
 
 /**
  * Abstract base class for {@link Contextual} objects.
  * <p>
- * This class enforces a single call to {@link #setContext}, throwing an
- * {@link IllegalStateException} if the context is already set. It also
- * registers the object's {@link org.scijava.event.EventHandler} methods with
- * the {@link org.scijava.event.EventService}, if any, at the time the context
- * is assigned. This frees subclasses from the burden of maintaining
- * {@link EventSubscriber} references manually.
+ * Delegates to {@link Context#inject(Object)} to do the actual work of
+ * setting the context, injecting service parameters, and registering
+ * {@link EventHandler} methods as event subscribers.
  * </p>
  * 
  * @author Curtis Rueden
+ * @see Context#inject(Object)
  */
 public abstract class AbstractContextual implements Contextual {
 
-	/** This application context associated with the object. */
+	@Parameter
 	private Context context;
 
 	// -- Contextual methods --
@@ -64,14 +63,6 @@ public abstract class AbstractContextual implements Contextual {
 
 	@Override
 	public void setContext(final Context context) {
-		if (this.context == null) {
-			this.context = context;
-		}
-		else if (this.context != context) {
-			throw new IllegalStateException("Context already set");
-		}
-
-		// inject context and service parameters, and subscribe to events
 		context.inject(this);
 	}
 

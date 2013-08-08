@@ -197,11 +197,9 @@ public class Context implements Disposable {
 	}
 
 	/**
-	 * Injects the application context into the given object. This does four
+	 * Injects the application context into the given object. This does three
 	 * distinct things:
 	 * <ul>
-	 * <li>If the given object implements the {@link Contextual} interface, calls
-	 * {@link Contextual#setContext(Context)} with this context.</li>
 	 * <li>If the given object has any non-final {@link Context} fields annotated
 	 * with @{@link Parameter}, sets the value of those fields to this context.</li>
 	 * <li>If the given object has any non-final {@link Service} fields annotated
@@ -213,26 +211,12 @@ public class Context implements Disposable {
 	 * </ul>
 	 * 
 	 * @param o The object to which the context should be assigned.
-	 * @throws IllegalStateException If the object already has a different
-	 *           context.
+	 * @throws IllegalStateException If the object already has a context.
 	 * @throws IllegalArgumentException If the object has a required
 	 *           {@link Service} parameter (see {@link Parameter#required()})
 	 *           which is not available from this context.
 	 */
 	public void inject(final Object o) {
-		// inject the context itself, if applicable
-		if (o instanceof Contextual) {
-			final Contextual c = (Contextual) o;
-			if (c.getContext() == null) {
-				// object does not have a context yet; inject this one
-				c.setContext(this);
-			}
-			else if (c.getContext() != this) {
-				// object already has a different context; complain loudly
-				throw new IllegalStateException("Context already set");
-			}
-		}
-
 		// iterate over all @Parameter annotated fields
 		final List<Field> fields =
 			ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
@@ -241,6 +225,12 @@ public class Context implements Disposable {
 
 			final Class<?> type = f.getType();
 			if (Service.class.isAssignableFrom(type)) {
+				final Service existingService = (Service) ClassUtils.getValue(f, o);
+				if (existingService != null) {
+					throw new IllegalStateException("Context already injected: " +
+						f.getDeclaringClass().getName() + "#" + f.getName());
+				}
+
 				// populate Service parameter
 				@SuppressWarnings("unchecked")
 				final Class<? extends Service> serviceType =
@@ -253,6 +243,12 @@ public class Context implements Disposable {
 				ClassUtils.setValue(f, o, service);
 			}
 			else if (type.isAssignableFrom(getClass())) {
+				final Context existingContext = (Context) ClassUtils.getValue(f, o);
+				if (existingContext != null) {
+					throw new IllegalStateException("Context already injected: " +
+						f.getDeclaringClass().getName() + "#" + f.getName());
+				}
+
 				// populate Context parameter
 				ClassUtils.setValue(f, o, this);
 			}
