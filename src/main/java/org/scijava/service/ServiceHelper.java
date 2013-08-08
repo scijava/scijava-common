@@ -267,6 +267,11 @@ public class ServiceHelper extends AbstractContextual {
 			f.setAccessible(true); // expose private fields
 
 			final Class<?> type = f.getType();
+			if (type.isAssignableFrom(getContext().getClass())) {
+				// populate annotated Context field
+				ClassUtils.setValue(f, service, getContext());
+				continue;
+			}
 			if (!Service.class.isAssignableFrom(type)) {
 				throw new IllegalArgumentException("Invalid parameter: " + f.getName());
 			}
