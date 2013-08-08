@@ -111,7 +111,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testNonContextualContextParameters() {
-		final Context context = new Context(FooService.class);
+		final Context context = new Context(true);
 
 		final NeedsContext needsContext = new NeedsContext();
 		assertNull(needsContext.context);
