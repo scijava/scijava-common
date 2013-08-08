@@ -36,6 +36,7 @@
 package org.scijava.service;
 
 import org.scijava.Context;
+import org.scijava.event.EventService;
 import org.scijava.plugin.SortablePlugin;
 
 /**
@@ -48,10 +49,17 @@ public abstract class AbstractService extends SortablePlugin implements
 {
 
 	/**
-	 * A pointer to the service's {@link Context}. Note that the context is not
-	 * set in the superclass until {@link #initialize()} is called; this deferral
-	 * ensures that event handler methods are not registered until after service
-	 * initialization is complete.
+	 * A pointer to the service's {@link Context}. Note that for two reasons, the
+	 * context is not set in the superclass:
+	 * <ol>
+	 * <li>As services are initialized, their dependencies are recursively created
+	 * and initialized too, which is something that normal context injection does
+	 * not handle. I.e., the {@link Context#inject(Object)} method assumes the
+	 * context and its associated services have all been initialized already.</li>
+	 * <li>Event handler methods must not be registered until after service
+	 * initialization is complete (i.e., during {@link #registerEventHandlers()},
+	 * after {@link #initialize()}).</li>
+	 * </ol>
 	 */
 	private Context context;
 
@@ -64,9 +72,12 @@ public abstract class AbstractService extends SortablePlugin implements
 
 	@Override
 	public void registerEventHandlers() {
-		// NB: The AbstractContextual superclass automatically takes
-		// care of registering event handlers when its context is set.
-		super.setContext(context);
+		// TODO: Consider removing this method in scijava-common 3.0.0.
+		// Instead, the ServiceHelper could just invoke the lines below directly,
+		// and there would be one less boilerplate Service method to implement.
+		final EventService eventService =
+			getContext().getService(EventService.class);
+		if (eventService != null) eventService.subscribe(this);
 	}
 
 	// -- Contextual methods --
@@ -78,8 +89,10 @@ public abstract class AbstractService extends SortablePlugin implements
 
 	@Override
 	public void setContext(final Context context) {
-		// NB: Do not call super.setContext(Context) yet!
-		// It happens later, in registerEventHandlers().
+		// NB: Do not call super.setContext(Context)!
+		// The ServiceHelper populates service parameters.
+		// We do this because we need to recursively create and initialize
+		// service dependencies, rather than merely injecting existing ones.
 		this.context = context;
 	}
 
