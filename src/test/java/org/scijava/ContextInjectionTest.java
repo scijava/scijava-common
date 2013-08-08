@@ -35,10 +35,12 @@
 
 package org.scijava;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.scijava.event.EventHandler;
@@ -108,6 +110,10 @@ public class ContextInjectionTest {
 	 * Tests that {@link Context} parameters are properly injected when calling
 	 * {@link Context#inject(Object)} on a class that does <em>not</em> implement
 	 * the {@link Contextual} interface.
+	 * <p>
+	 * Also verifies that calling {@link Context#inject(Object)} more than once
+	 * fails with an {@link IllegalStateException} as advertised.
+	 * </p>
 	 */
 	@Test
 	public void testNonContextualContextParameters() {
@@ -117,6 +123,18 @@ public class ContextInjectionTest {
 		assertNull(needsContext.context);
 		context.inject(needsContext);
 		assertSame(context, needsContext.context);
+
+		// test that a second injection attempt fails
+		try {
+			context.inject(needsContext);
+			fail("Expected IllegalStateException");
+		}
+		catch (final IllegalStateException exc) {
+			final String expectedMessage =
+				"Context already injected: " + needsContext.getClass().getName() +
+					"#context";
+			assertEquals(expectedMessage, exc.getMessage());
+		}
 	}
 
 	/**
