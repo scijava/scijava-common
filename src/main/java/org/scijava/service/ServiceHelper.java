@@ -273,7 +273,8 @@ public class ServiceHelper extends AbstractContextual {
 				continue;
 			}
 			if (!Service.class.isAssignableFrom(type)) {
-				throw new IllegalArgumentException("Invalid parameter: " + f.getName());
+				throw new IllegalArgumentException("Invalid parameter: " +
+					f.getDeclaringClass().getName() + "#" + f.getName());
 			}
 			@SuppressWarnings("unchecked")
 			final Class<? extends Service> serviceType =
