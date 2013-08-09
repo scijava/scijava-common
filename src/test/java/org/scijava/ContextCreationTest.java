@@ -62,6 +62,31 @@ public class ContextCreationTest {
 	}
 
 	/**
+	 * Tests that a new fully populated {@link Context} has all available core
+	 * {@link Service}s, in the expected priority order.
+	 */
+	@Test
+	public void testFull() {
+		final Class<?>[] expected = {
+			org.scijava.event.DefaultEventService.class,
+			org.scijava.app.DefaultAppService.class,
+			org.scijava.app.DefaultStatusService.class,
+			org.scijava.event.DefaultEventHistory.class,
+			org.scijava.object.DefaultObjectService.class,
+			org.scijava.plugin.DefaultPluginService.class,
+			org.scijava.thread.DefaultThreadService.class,
+			org.scijava.log.StderrLogService.class
+		};
+
+		final Context context = new Context();
+		assertEquals(expected.length, context.getServiceIndex().size());
+		int index = 0;
+		for (final Service service : context.getServiceIndex()) {
+			assertSame(expected[index++], service.getClass());
+		}
+	}
+
+	/**
 	 * Tests that dependent {@link Service}s are automatically created and
 	 * populated in downstream {@link Service} classes.
 	 */
