@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -52,6 +53,13 @@ import org.scijava.service.Service;
  * @author Curtis Rueden
  */
 public class ContextCreationTest {
+
+	/** Tests that a new empty {@link Context} indeed has no {@link Service}s. */
+	@Test
+	public void testEmpty() {
+		final Context context = new Context(true);
+		assertTrue(context.getServiceIndex().isEmpty());
+	}
 
 	/**
 	 * Tests that dependent {@link Service}s are automatically created and
