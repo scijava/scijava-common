@@ -45,7 +45,7 @@ import org.scijava.object.ObjectService;
  * Abstract base class for {@link SingletonService}s.
  * 
  * @author Curtis Rueden
- * @param <PT> Plugin type of the {@link SciJavaPlugin}s being managed.
+ * @param <PT> Plugin type of the {@link SingletonPlugin}s being managed.
  */
 public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	extends AbstractPTService<PT> implements SingletonService<PT>
