@@ -70,8 +70,8 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 
 	@Override
 	public void initialize() {
-		log.info("Found " + getPlugins() + " " + getPluginType().getSimpleName() +
-			" plugins.");
+		log.info("Found " + getPlugins().size() + " " +
+			getPluginType().getSimpleName() + " plugins.");
 	}
 
 	// -- Typed methods --
