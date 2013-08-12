@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.63</version>
+	<version>1.64</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -55,7 +55,7 @@
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
-		<scijava-common.version>2.0.1</scijava-common.version>
+		<scijava-common.version>2.0.2</scijava-common.version>
 
 		<!-- Other common project dependencies -->
 		<jetty.version>8.0.0.M1</jetty.version>
