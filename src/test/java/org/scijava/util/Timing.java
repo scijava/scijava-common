@@ -72,8 +72,17 @@ import java.util.Map.Entry;
  * @author Johannes Schindelin
  */
 public class Timing {
-	private long total = 0, start = System.nanoTime();
+	private long total = 0, start = System.nanoTime(), tick = start;
 	private List<Entry<Long, String>> list = new ArrayList<Entry<Long, String>>();
+
+	public void reset() {
+		tick = System.nanoTime();
+	}
+
+	public void addTiming(final Object message) {
+		addTiming(System.nanoTime() - tick, message == null ? getCaller() : message);
+		tick = System.nanoTime();
+	}
 
 	public void addTiming(final long duration, final Object message) {
 		final long now = System.nanoTime();
