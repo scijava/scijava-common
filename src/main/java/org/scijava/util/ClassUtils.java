@@ -79,6 +79,47 @@ public final class ClassUtils {
 		// cast the existing object, if possible
 		if (canCast(value, saneType)) return cast(value, saneType);
 
+		// special case for conversion from number to number
+		if (value instanceof Number) {
+			final Number number = (Number) value;
+			if (saneType == Byte.class) {
+				final Byte result = number.byteValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+			if (saneType == Double.class) {
+				final Double result = number.doubleValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+			if (saneType == Float.class) {
+				final Float result = number.floatValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+			if (saneType == Integer.class) {
+				final Integer result = number.intValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+			if (saneType == Long.class) {
+				final Long result = number.longValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+			if (saneType == Short.class) {
+				final Short result = number.shortValue();
+				@SuppressWarnings("unchecked")
+				final T typedResult = (T) result;
+				return typedResult;
+			}
+		}
+
 		// special cases for strings
 		if (value instanceof String) {
 			// source type is String
