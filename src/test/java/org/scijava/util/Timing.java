@@ -118,8 +118,13 @@ public class Timing {
 	private static String getCaller() {
 		final StackTraceElement[] trace =
 			Thread.currentThread().getStackTrace();
-		return trace.length < 3 ? "?" : trace[2].getClassName() + "."
-				+ trace[2].getMethodName() + "(" + trace[2].getFileName() + ":"
-				+ trace[2].getLineNumber() + ")";
+		int i = 1;
+		while (i + 1 < trace.length &&
+				Timing.class.getName().equals(trace[i].getClassName())) {
+			i++;
+		}
+		return i >= trace.length ? "?" : trace[i].getClassName() + "."
+				+ trace[i].getMethodName() + "(" + trace[i].getFileName() + ":"
+				+ trace[i].getLineNumber() + ")";
 	}
 }
