@@ -67,7 +67,7 @@ public abstract class AbstractGateway extends AbstractContextual implements
 
 	public AbstractGateway(String appName, Context context) {
 		this.appName = appName;
-		if (context != null) setContext(context);
+		setContext(context);
 	}
 
 	// -- Gateway methods --
