@@ -58,6 +58,14 @@ die "Usage: $0 [--no-batch-mode] [--skip-push] [--alt-repository=<repository>] [
 VERSION="$1"
 REMOTE="${REMOTE:-origin}"
 
+# do a quick sanity check on the new version number
+case "$VERSION" in
+[0-9]*)
+	;;
+*)
+	die "Version '$VERSION' does not start with a digit!"
+esac
+
 # defaults
 
 BASE_GAV="$(maven_helper gav-from-pom pom.xml)" ||
