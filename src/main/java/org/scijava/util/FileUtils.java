@@ -134,6 +134,12 @@ public final class FileUtils {
 	private final static Pattern versionPattern =
 		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+|\\.GA)*)?(\\.jar(-[a-z]*)?)");
 
+	public static String stripFilenameVersion(final String filename) {
+		final Matcher matcher = versionPattern.matcher(filename);
+		if (!matcher.matches()) return filename;
+		return matcher.group(1) + matcher.group(5);
+	}
+
 	/**
 	 * Returns the {@link Matcher} object dissecting a versioned file name.
 	 * 
