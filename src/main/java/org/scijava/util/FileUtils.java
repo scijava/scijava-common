@@ -132,13 +132,12 @@ public final class FileUtils {
 	 * </p>
 	 */
 	private final static Pattern versionPattern =
-		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?(-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?)");
+		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?))");
 
 	public static String stripFilenameVersion(final String filename) {
 		final Matcher matcher = versionPattern.matcher(filename);
 		if (!matcher.matches()) return filename;
-		final String classifier = matcher.group(5);
-		return matcher.group(1) + (classifier == null ? "" : classifier) + matcher.group(7);
+		return matcher.group(1) + matcher.group(5);
 	}
 
 	/**
