@@ -43,6 +43,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -260,15 +261,17 @@ public class ObjectIndex<E> implements Collection<E> {
 		return remove(o, getType((E)o), batch);
 	}
 
-	private Map<Class<?>, List<List<?>>> type2Lists = new HashMap<Class<?>, List<List<?>>>();
+	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<Class<?>, List<E>[]>();
 
-	private synchronized List<List<?>> retrieveListsForType(final Class<?> type) {
-		List<List<?>> result = type2Lists.get(type);
+	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
+		List<E>[] result = type2Lists.get(type);
 		if (result != null) return result;
-		result = new ArrayList<List<?>>();
+
+		final Collection<List<E>> lists = new ArrayList<List<E>>();
 		for (final Class<?> c : getTypes(type)) {
-			result.add(retrieveList(c));
+			lists.add(retrieveList(c));
 		}
+		result = lists.toArray(new List[lists.size()]);
 		type2Lists.put(type, result);
 		return result;
 	}
@@ -288,9 +291,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		final boolean batch)
 	{
 		boolean result = false;
-		final Set<Class<?>> types = getTypes(type);
-		for (final Class<?> c : types) {
-			if (removeFromList(o, retrieveList(c), batch)) result = true;
+		for (final List<?> list : retrieveListsForType(type)) {
+			if (removeFromList(o, (List<E>) list, batch)) result = true;
 		}
 		return result;
 	}
@@ -309,21 +311,22 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
-	private Map<Class<?>, HashSet<Class<?>>> typeMap = new HashMap<Class<?>, HashSet<Class<?>>>();
+	private static Map<Class<?>, Class<?>[]> typeMap = new HashMap<Class<?>, Class<?>[]>();
 
 	/** Gets a new set containing the type and all its supertypes. */
-	private synchronized HashSet<Class<?>> getTypes(final Class<?> type) {
-		HashSet<Class<?>> types = typeMap.get(type);
+	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
+		Class<?>[] types = typeMap.get(type);
 		if (types != null) return types;
-		types = new HashSet<Class<?>>();
-		types.add(All.class); // NB: Always include the "All" class.
-		getTypes(type, types);
+		final Set<Class<?>>set = new LinkedHashSet<Class<?>>();
+		set.add(All.class); // NB: Always include the "All" class.
+		getTypes(type, set);
+		types = set.toArray(new Class[set.size()]);
 		typeMap.put(type, types);
 		return types;
 	}
 
 	/** Recursively adds the type and all its supertypes to the given set. */
-	private synchronized void getTypes(final Class<?> type, final HashSet<Class<?>> types) {
+	private static synchronized void getTypes(final Class<?> type, final Set<Class<?>> types) {
 		if (type == null) return;
 		types.add(type);
 
@@ -335,7 +338,7 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	/** Retrieves the type list for the given type, creating it if necessary. */
-	private List<E> retrieveList(final Class<?> type) {
+	protected List<E> retrieveList(final Class<?> type) {
 		List<E> list = hoard.get(type);
 		if (list == null) {
 			list = new ArrayList<E>();
