@@ -216,7 +216,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{
-		threadService.queue(new Runnable() {
+		threadService.run(new Runnable() {
 
 			@Override
 			public void run() {
