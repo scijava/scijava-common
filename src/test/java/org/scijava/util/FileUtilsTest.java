@@ -235,4 +235,15 @@ public class FileUtilsTest {
 		}
 	}
 
+	@Test
+	public void testStripVersionFromFilename() {
+		assertEquals("jars/bio-formats.jar", FileUtils.stripFilenameVersion("jars/bio-formats-4.4-imagej-2.0.0-beta1.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/ij-data-2.0.0.1-beta1.jar"), FileUtils.stripFilenameVersion("jars/ij-data-2.0.0.1-SNAPSHOT.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/ij-1.44.jar"), FileUtils.stripFilenameVersion("jars/ij-1.46b.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils.stripFilenameVersion("jars/javassist-3.9.0.GA.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils.stripFilenameVersion("jars/javassist-3.16.1-GA.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/bsh.jar"), FileUtils.stripFilenameVersion("jars/bsh-2.0b4.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/mpicbg.jar"), FileUtils.stripFilenameVersion("jars/mpicbg-20111128.jar"));
+	}
+
 }
