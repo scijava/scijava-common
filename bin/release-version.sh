@@ -64,6 +64,9 @@ BASE_GAV="$(maven_helper gav-from-pom pom.xml)" ||
 die "Could not obtain GAV coordinates for base project"
 
 case "$BASE_GAV" in
+io.scif:pom-scifio:*)
+	test -n "$TAG" || TAG=-Dtag=scifio-$VERSION
+	;;
 net.imagej:pom-imagej:2.0.0-*SNAPSHOT)
 	test -n "$TAG" || TAG=-Dtag=imagej-$VERSION
 	test -n "$DEV_VERSION" ||
