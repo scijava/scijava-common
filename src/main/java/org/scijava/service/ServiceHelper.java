@@ -136,7 +136,7 @@ public class ServiceHelper extends AbstractContextual {
 		}
 		final EventService eventService =
 			getContext().getService(EventService.class);
-		if (eventService != null) eventService.publish(new ServicesLoadedEvent());
+		if (eventService != null) eventService.publishLater(new ServicesLoadedEvent());
 	}
 
 	/**
