@@ -136,4 +136,22 @@ public class Timing {
 				+ trace[i].getMethodName() + "(" + trace[i].getFileName() + ":"
 				+ trace[i].getLineNumber() + ")";
 	}
+
+	public static Timing start(boolean condition) {
+		return condition ? new Timing() : null;
+	}
+
+	public static void tick(final Timing timing) {
+		if (timing != null) timing.addTiming(null);
+	}
+
+	public static void tick(final Timing timing, final Object message) {
+		if (timing != null) timing.addTiming(message);
+	}
+
+	public static void stop(final Timing timing) {
+		if (timing == null) return;
+		timing.addTiming(null);
+		timing.report(null);
+	}
 }
