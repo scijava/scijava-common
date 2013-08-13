@@ -145,6 +145,7 @@ public final class FileUtils {
 	 * 
 	 * @param filename the file name
 	 * @return the {@link Matcher} object
+	 * @deprecated see {@link #stripFilenameVersion(String)}
 	 */
 	public static Matcher matchVersionedFilename(String filename) {
 		return versionPattern.matcher(filename);
@@ -158,7 +159,7 @@ public final class FileUtils {
 	 * @return the list of matches
 	 */
 	public static File[] getAllVersions(final File directory, final String filename) {
-		final Matcher matcher = matchVersionedFilename(filename);
+		final Matcher matcher = versionPattern.matcher(filename);
 		if (!matcher.matches()) {
 			final File file = new File(directory, filename);
 			return file.exists() ? new File[] { file } : null;
@@ -169,7 +170,7 @@ public final class FileUtils {
 			public boolean accept(final File dir, final String name) {
 				if (!name.startsWith(baseName))
 					return false;
-				final Matcher matcher2 = matchVersionedFilename(name);
+				final Matcher matcher2 = versionPattern.matcher(name);
 				return matcher2.matches() && baseName.equals(matcher2.group(1));
 			}
 		});
