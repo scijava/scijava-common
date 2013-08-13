@@ -244,6 +244,7 @@ public class FileUtilsTest {
 		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils.stripFilenameVersion("jars/javassist-3.16.1-GA.jar"));
 		assertEquals(FileUtils.stripFilenameVersion("jars/bsh.jar"), FileUtils.stripFilenameVersion("jars/bsh-2.0b4.jar"));
 		assertEquals(FileUtils.stripFilenameVersion("jars/mpicbg.jar"), FileUtils.stripFilenameVersion("jars/mpicbg-20111128.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/miglayout-swing.jar"), FileUtils.stripFilenameVersion("jars/miglayout-3.7.3.1-swing.jar"));
 	}
 
 }
