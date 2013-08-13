@@ -147,7 +147,8 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	@Override
 	public boolean contains(final Object o) {
-		return get(o.getClass()).contains(o);
+		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
+		return get(getType((E)o)).contains(o);
 	}
 
 	@Override
@@ -245,12 +246,18 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	/** Adds the object to all compatible type lists. */
 	protected boolean add(final E o, final boolean batch) {
-		return add(o, o.getClass(), batch);
+		return add(o, getType(o), batch);
+	}
+
+	/** Return the type by which to index the object. */
+	protected Class<?> getType(final E o) {
+		return o.getClass();
 	}
 
 	/** Removes the object from all compatible type lists. */
 	protected boolean remove(final Object o, final boolean batch) {
-		return remove(o, o.getClass(), batch);
+		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
+		return remove(o, getType((E)o), batch);
 	}
 
 	private Map<Class<?>, List<List<?>>> type2Lists = new HashMap<Class<?>, List<List<?>>>();
