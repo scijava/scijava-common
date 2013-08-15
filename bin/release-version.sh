@@ -8,7 +8,8 @@ die () {
 MAVEN_HELPER="$(cd "$(dirname "$0")" && pwd)/maven-helper.sh"
 
 maven_helper () {
-	sh -$- "$MAVEN_HELPER" "$@"
+	sh -$- "$MAVEN_HELPER" "$@" ||
+	die "Could not find maven-helper in '$MAVEN_HELPER'"
 }
 
 IMAGEJ_BASE_REPOSITORY=-DaltDeploymentRepository=imagej.releases::default::dav:http://maven.imagej.net/content/repositories
