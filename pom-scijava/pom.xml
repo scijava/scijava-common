@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.67</version>
+	<version>1.68</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -80,7 +80,7 @@
 			<plugin>
 				<groupId>net.imagej</groupId>
 				<artifactId>imagej-maven-plugin</artifactId>
-				<version>0.1.0</version>
+				<version>0.2.0</version>
 				<executions>
 					<execution>
 						<id>copy-jars</id>
