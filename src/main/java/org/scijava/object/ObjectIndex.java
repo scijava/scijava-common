@@ -40,8 +40,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,7 +148,8 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	@Override
 	public boolean contains(final Object o) {
-		return get(o.getClass()).contains(o);
+		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
+		return get(getType((E)o)).contains(o);
 	}
 
 	@Override
@@ -244,20 +247,41 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	/** Adds the object to all compatible type lists. */
 	protected boolean add(final E o, final boolean batch) {
-		return add(o, o.getClass(), batch);
+		return add(o, getType(o), batch);
+	}
+
+	/** Return the type by which to index the object. */
+	protected Class<?> getType(final E o) {
+		return o.getClass();
 	}
 
 	/** Removes the object from all compatible type lists. */
 	protected boolean remove(final Object o, final boolean batch) {
-		return remove(o, o.getClass(), batch);
+		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
+		return remove(o, getType((E)o), batch);
+	}
+
+	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<Class<?>, List<E>[]>();
+
+	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
+		List<E>[] result = type2Lists.get(type);
+		if (result != null) return result;
+
+		final Collection<List<E>> lists = new ArrayList<List<E>>();
+		for (final Class<?> c : getTypes(type)) {
+			lists.add(retrieveList(c));
+		}
+		result = lists.toArray(new List[lists.size()]);
+		type2Lists.put(type, result);
+		return result;
 	}
 
 	/** Adds an object to type lists beneath the given type hierarchy. */
+	@SuppressWarnings("unchecked")
 	protected boolean add(final E o, final Class<?> type, final boolean batch) {
 		boolean result = false;
-		final Set<Class<?>> types = getTypes(type);
-		for (final Class<?> c : types) {
-			if (addToList(o, retrieveList(c), batch)) result = true;
+		for (final List<?> list : retrieveListsForType(type)) {
+			if (addToList(o, (List<E>)list, batch)) result = true;
 		}
 		return result;
 	}
@@ -267,9 +291,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		final boolean batch)
 	{
 		boolean result = false;
-		final Set<Class<?>> types = getTypes(type);
-		for (final Class<?> c : types) {
-			if (removeFromList(o, retrieveList(c), batch)) result = true;
+		for (final List<?> list : retrieveListsForType(type)) {
+			if (removeFromList(o, (List<E>) list, batch)) result = true;
 		}
 		return result;
 	}
@@ -288,16 +311,22 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
+	private static Map<Class<?>, Class<?>[]> typeMap = new HashMap<Class<?>, Class<?>[]>();
+
 	/** Gets a new set containing the type and all its supertypes. */
-	private HashSet<Class<?>> getTypes(final Class<?> type) {
-		final HashSet<Class<?>> types = new HashSet<Class<?>>();
-		types.add(All.class); // NB: Always include the "All" class.
-		getTypes(type, types);
+	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
+		Class<?>[] types = typeMap.get(type);
+		if (types != null) return types;
+		final Set<Class<?>>set = new LinkedHashSet<Class<?>>();
+		set.add(All.class); // NB: Always include the "All" class.
+		getTypes(type, set);
+		types = set.toArray(new Class[set.size()]);
+		typeMap.put(type, types);
 		return types;
 	}
 
 	/** Recursively adds the type and all its supertypes to the given set. */
-	private void getTypes(final Class<?> type, final HashSet<Class<?>> types) {
+	private static synchronized void getTypes(final Class<?> type, final Set<Class<?>> types) {
 		if (type == null) return;
 		types.add(type);
 
@@ -309,7 +338,7 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	/** Retrieves the type list for the given type, creating it if necessary. */
-	private List<E> retrieveList(final Class<?> type) {
+	protected List<E> retrieveList(final Class<?> type) {
 		List<E> list = hoard.get(type);
 		if (list == null) {
 			list = new ArrayList<E>();

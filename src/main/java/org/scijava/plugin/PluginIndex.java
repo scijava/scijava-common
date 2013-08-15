@@ -135,19 +135,13 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	// -- Internal methods --
 
 	/**
-	 * Adds the plugin to all type lists compatible with its plugin type.
-	 * <p>
-	 * NB: This behavior differs from the default
-	 * {@link org.scijava.object.ObjectIndex} behavior in that the {@code info}
-	 * object's actual type hierarchy is not used for classification, but rather
-	 * the object is classified according to {@link PluginInfo#getPluginType()}.
-	 * </p>
+	 * Overrides the type by which the entries are indexed.
 	 * 
 	 * @see PluginInfo#getPluginType()
 	 */
 	@Override
-	protected boolean add(final PluginInfo<?> info, final boolean batch) {
-		return add(info, info.getPluginType(), batch);
+	protected Class<?> getType(final PluginInfo<?> info) {
+		return info.getPluginType();
 	}
 
 	/**

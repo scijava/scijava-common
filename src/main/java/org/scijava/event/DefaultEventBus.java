@@ -190,6 +190,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{
+		if (subscribers == null || subscribers.isEmpty()) return;
 		try {
 			threadService.invoke(new Runnable() {
 
@@ -216,7 +217,8 @@ public class DefaultEventBus extends ThreadSafeEventService {
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{
-		threadService.queue(new Runnable() {
+		if (subscribers == null || subscribers.isEmpty()) return;
+		threadService.run(new Runnable() {
 
 			@Override
 			public void run() {
