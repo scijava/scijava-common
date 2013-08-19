@@ -126,6 +126,28 @@ public class Context implements Disposable {
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
 		this(serviceClasses, new PluginIndex());
 	}
+	
+	/**
+	 * Creates a new SciJava application with the specified PluginIndex. This
+	 * allows a base set of available plugins to be defined, and is useful when
+	 * plugins that would not be returned by the PluginIndex's PluginFinder are
+	 * desired.
+	 * <p>
+	 * NB: the {@link PluginIndex#discover()} method may still be called, adding
+	 * additional plugins to this index. The mechanism of discovery should be
+	 * configured exclusively through the attached PluginFinder.
+	 * </p>
+	 * 
+	 * @param pluginIndex The plugin index to use when discovering and indexing
+	 *          plugins. If you wish to completely control how services are
+	 *          discovered (i.e., use your own
+	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
+	 *          can pass a custom {@link PluginIndex} here.
+	 */
+	@SuppressWarnings("unchecked")
+	public Context(final PluginIndex pluginIndex) {
+		this(Arrays.<Class<? extends Service>>asList(Service.class), pluginIndex);
+	}
 
 	/**
 	 * Creates a new SciJava application context with the specified services (and
