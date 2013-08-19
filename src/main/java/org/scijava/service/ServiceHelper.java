@@ -129,7 +129,8 @@ public class ServiceHelper extends AbstractContextual {
 	public void loadServices() {
 		for (final Class<? extends Service> serviceClass : serviceClasses) {
 			loadService(serviceClass);
-			if (serviceClass == LogService.class) {
+
+			if (LogService.class.isAssignableFrom(serviceClass)) {
 				final LogService logService = getContext().getService(LogService.class);
 				if (logService != null) log = logService;
 			}
