@@ -42,10 +42,16 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.scijava.plugin.Parameter;
+import org.scijava.plugin.PluginIndex;
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
 
 /**
  * Tests {@link Context} creation with {@link Service} dependencies.
@@ -67,23 +73,18 @@ public class ContextCreationTest {
 	 */
 	@Test
 	public void testFull() {
-		final Class<?>[] expected = {
-			org.scijava.event.DefaultEventService.class,
-			org.scijava.app.DefaultAppService.class,
-			org.scijava.app.DefaultStatusService.class,
-			org.scijava.event.DefaultEventHistory.class,
-			org.scijava.object.DefaultObjectService.class,
-			org.scijava.plugin.DefaultPluginService.class,
-			org.scijava.thread.DefaultThreadService.class,
-			org.scijava.log.StderrLogService.class
-		};
+		final Class<?>[] expected =
+			{ org.scijava.event.DefaultEventService.class,
+				org.scijava.app.DefaultAppService.class,
+				org.scijava.app.DefaultStatusService.class,
+				org.scijava.event.DefaultEventHistory.class,
+				org.scijava.object.DefaultObjectService.class,
+				org.scijava.plugin.DefaultPluginService.class,
+				org.scijava.thread.DefaultThreadService.class,
+				org.scijava.log.StderrLogService.class };
 
 		final Context context = new Context();
-		assertEquals(expected.length, context.getServiceIndex().size());
-		int index = 0;
-		for (final Service service : context.getServiceIndex()) {
-			assertSame(expected[index++], service.getClass());
-		}
+		verifyServiceOrder(expected, context);
 	}
 
 	/**
@@ -176,6 +177,74 @@ public class ContextCreationTest {
 	}
 
 	/**
+	 * Verifies that the order plugins appear in the PluginIndex and Service list
+	 * does not affect which services are loaded.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testClassOrder() {
+		int expectedSize = 2;
+
+		// Same order, Base first
+		Context c =
+			createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
+				BaseService.class, ExtensionService.class));
+		assertEquals(expectedSize, c.getServiceIndex().size());
+
+		// Same order, Extension first
+		c =
+			createContext(pluginIndex(ExtensionImpl.class, BaseImpl.class), services(
+				ExtensionService.class, BaseService.class));
+		assertEquals(expectedSize, c.getServiceIndex().size());
+
+		// Different order, Extension first
+		c =
+			createContext(pluginIndex(ExtensionImpl.class, BaseImpl.class), services(
+				BaseService.class, ExtensionService.class));
+		assertEquals(expectedSize, c.getServiceIndex().size());
+
+		// Different order, Base first
+		c =
+			createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
+				ExtensionService.class, BaseService.class));
+		assertEquals(expectedSize, c.getServiceIndex().size());
+	}
+
+	/**
+	 * Verifies that the Service index created when using Abstract classes is the
+	 * same as for interfaces.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAbstractClasslist() {
+		Context cAbstract =
+			createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
+				AbstractBase.class, AbstractExtension.class));
+		
+		Context cService =
+				createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
+					BaseService.class, ExtensionService.class));
+		
+		assertEquals(cService.getServiceIndex().size(), cAbstract.getServiceIndex()
+			.size());
+	}
+
+	/**
+	 * Verify that if no services are explicitly passed, all subclasses of
+	 * Service.class are discovered automatically.
+	 */
+	@Test
+	public void testNoServicesCtor() {
+		// create a 2-service context
+		PluginIndex index = pluginIndex(BaseImpl.class, ExtensionImpl.class);
+		// Add another service, that is not indexed under Service.class
+		index.add(new PluginInfo<SciJavaPlugin>(ThreadService.class.getName(),
+			SciJavaPlugin.class));
+		Context c = new Context(pluginIndex(BaseImpl.class, ExtensionImpl.class));
+		assertEquals(2, c.getServiceIndex().size());
+	}
+
+	/**
 	 * Tests that missing-but-optional {@link Service}s are handled properly;
 	 * specifically, that the {@link Context} is still created successfully when
 	 * attempting to include a missing-but-optional service directly.
@@ -221,6 +290,53 @@ public class ContextCreationTest {
 		assertEquals(1, context.getServiceIndex().size());
 	}
 
+	// -- Helper methods --
+
+	/**
+	 * Checks the expected order vs. the order in the provided Context's
+	 * ServiceIndex
+	 */
+	private void verifyServiceOrder(Class<?>[] expected, Context context) {
+		assertEquals(expected.length, context.getServiceIndex().size());
+		int index = 0;
+		for (final Service service : context.getServiceIndex()) {
+			assertSame(expected[index++], service.getClass());
+		}
+	}
+
+	/**
+	 * Initializes and returns a Context given the provided PluginIndex and
+	 * array of services.
+	 */
+	private Context createContext(PluginIndex index,
+		Class<? extends Service>[] services)
+	{
+		return new Context(Arrays.<Class<? extends Service>> asList(services),
+			index);
+	}
+	
+	/**
+	 * Convenience method since you can't instantiate a Class<? extends Service>
+	 * array.
+	 */
+	private Class<? extends Service>[] services(
+		Class<? extends Service>... serviceClasses)
+	{
+		return serviceClasses;
+	}
+
+	/**
+	 * Creates a PluginIndex and adds all the provided classes as plugins, indexed
+	 * under Service.class
+	 */
+	private PluginIndex pluginIndex(Class<?>... plugins) {
+		PluginIndex index = new PluginIndex(null);
+		for (Class<?> c : plugins) {
+			index.add(new PluginInfo<Service>(c.getName(), Service.class));
+		}
+		return index;
+	}
+
 	// -- Helper classes --
 
 	/** A service which requires a {@link BarService}. */
@@ -229,6 +345,16 @@ public class ContextCreationTest {
 		@Parameter
 		private BarService barService;
 
+	}
+
+	/** A service that is extended by {@link ExtensionService}. */
+	public static interface BaseService extends Service {
+		// NB: No implementation needed.
+	}
+
+	/** A service extending {@link BaseService}. */
+	public static interface ExtensionService extends BaseService {
+		// NB: No implementation needed.
 	}
 
 	/** A simple service with no dependencies. */
@@ -245,6 +371,26 @@ public class ContextCreationTest {
 	public static interface OptionalMissingService extends Service, Optional {
 		// NB: Marker interface.
 	}
+
+	/** Abstract implementation of {@link BaseService}. */
+	public static abstract class AbstractBase extends AbstractService implements
+		BaseService
+	{ 
+		// NB: No implementation needed.
+	};
+
+	/** Abstract implementation of {@link ExtensionService}. */
+	public static abstract class AbstractExtension extends AbstractService
+		implements ExtensionService
+	{ 
+		// NB: No implementation needed.
+	};
+
+	/** Empty {@link BaseService} implementation. */
+	public static class BaseImpl extends AbstractBase { };
+
+	/** Empty {@link ExtensionService} implementation. */
+	public static class ExtensionImpl extends AbstractExtension { };
 
 	/** A service that is doomed to fail, for depending on a missing service. */
 	public static class ServiceRequiringMissingService extends AbstractService {
