@@ -82,8 +82,10 @@ public class Context implements Disposable {
 	 * @param empty If true, the context will be empty; otherwise, it will be
 	 *          initialized with all available services.
 	 */
+	@SuppressWarnings("unchecked")
 	public Context(final boolean empty) {
-		this(empty ? Collections.<Class<? extends Service>> emptyList() : null);
+		this(empty ? Collections.<Class<? extends Service>> emptyList() : Arrays
+			.<Class<? extends Service>> asList(Service.class));
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class Context implements Disposable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Context(final Class... serviceClasses) {
 		this(serviceClasses != null ? (Collection) Arrays.asList(serviceClasses)
-			: null);
+			: Arrays.asList(Service.class));
 	}
 
 	/**
