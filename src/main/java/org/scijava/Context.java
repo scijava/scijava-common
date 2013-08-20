@@ -130,6 +130,15 @@ public class Context implements Disposable {
 	 * any required service dependencies). Service dependency candidates are
 	 * selected from those discovered by the given {@link PluginIndex}'s
 	 * associated {@link org.scijava.plugin.PluginFinder}.
+	 * <p>
+	 * NB: Context creation is an important step of a SciJava applictation's
+	 * lifecycle. Particularly in environments where more than one implementation
+	 * exists for various services, careful consideration should be exercised
+	 * regaring what classes and plugins are provided to the Context, and what
+	 * needs to occur during the initialization of these services (especially
+	 * those of lower priority). See {@link ServiceHelper#loadServices()} for more
+	 * information.
+	 * </p>
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
