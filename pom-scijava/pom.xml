@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.68</version>
+	<version>1.69</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -39,7 +39,7 @@
 
 		<!-- ImgLib2 - https://github.com/imagej/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
-		<imglib2.version>2.0.0-beta-10</imglib2.version>
+		<imglib2.version>2.0.0-beta-11</imglib2.version>
 
 		<!-- MPICBG - https://github.com/axtimwalde/mpicbg -->
 		<mpicbg.groupId>mpicbg</mpicbg.groupId>
@@ -55,7 +55,7 @@
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
-		<scijava-common.version>2.0.2</scijava-common.version>
+		<scijava-common.version>2.1.0</scijava-common.version>
 
 		<!-- Other common project dependencies -->
 		<jetty.version>8.0.0.M1</jetty.version>
