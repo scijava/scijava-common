@@ -37,14 +37,14 @@ package org.scijava.app;
 
 import java.util.Map;
 
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for application-level functionality.
  * 
  * @author Curtis Rueden
  */
-public interface AppService extends Service {
+public interface AppService extends SciJavaService {
 
 	/** Gets an application by name. */
 	App getApp(final String name);

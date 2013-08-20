@@ -39,7 +39,7 @@ package org.scijava.plugin;
 import java.util.Collection;
 import java.util.List;
 
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for service that keeps track of available plugins.
@@ -55,7 +55,7 @@ import org.scijava.service.Service;
  * @author Curtis Rueden
  * @see SciJavaPlugin
  */
-public interface PluginService extends Service {
+public interface PluginService extends SciJavaService {
 
 	/** Gets the index of available plugins. */
 	PluginIndex getIndex();
