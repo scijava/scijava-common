@@ -41,14 +41,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for the thread handling service.
  * 
  * @author Curtis Rueden
  */
-public interface ThreadService extends Service, ThreadFactory {
+public interface ThreadService extends SciJavaService, ThreadFactory {
 
 	/**
 	 * Asynchronously executes the given code in a new thread, as decided by the

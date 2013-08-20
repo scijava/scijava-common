@@ -121,6 +121,22 @@ public class ServiceHelper extends AbstractContextual {
 	/**
 	 * Ensures all candidate service classes are registered in the index, locating
 	 * and instantiating compatible services as needed.
+	 * <p>
+	 * This is a NxM operation, where N is the number of service classes attached
+	 * to this ServiceHelper, and M is the number of discovered plugins. Multiple
+	 * implementations of a given service subclass can be loaded. For example, if
+	 * FooService, a subclass of {@link Service} (whether abstract, concrete, or
+	 * an interface), appears on the service list, all subclasses of FooService in
+	 * the plugin class pool will be loaded.
+	 * </p>
+	 * <p>
+	 * NB: In typical use, a {@link Context} will only return the highest priority
+	 * implementation for a loaded service. To retrieve the lower priority
+	 * service(s), they must be requested directly (or through a superclass not
+	 * shared with the higher priority implementation). Thus, as these lower
+	 * priority services will go unused in many cases, it is critical that service
+	 * loading (initialization) is as lightweight as possible.
+	 * </p>
 	 * 
 	 * @throws IllegalArgumentException if one of the requested services is
 	 *           required (i.e., not marked {@link Optional}) but cannot be
@@ -128,8 +144,15 @@ public class ServiceHelper extends AbstractContextual {
 	 */
 	public void loadServices() {
 		for (final Class<? extends Service> serviceClass : serviceClasses) {
+			// Load all compatible classes
+			for (Class<? extends Service> c : classPoolList) {
+				if (serviceClass.isAssignableFrom(c)) loadService(c);
+			}
+
+			// Make sure loadService gets called once on the actual provided class
 			loadService(serviceClass);
-			if (serviceClass == LogService.class) {
+
+			if (LogService.class.isAssignableFrom(serviceClass)) {
 				final LogService logService = getContext().getService(LogService.class);
 				if (logService != null) log = logService;
 			}

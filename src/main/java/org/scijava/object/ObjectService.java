@@ -39,14 +39,14 @@ package org.scijava.object;
 import java.util.List;
 
 import org.scijava.event.EventService;
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for object management service.
  * 
  * @author Curtis Rueden
  */
-public interface ObjectService extends Service {
+public interface ObjectService extends SciJavaService {
 
 	EventService getEventService();
 

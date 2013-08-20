@@ -39,7 +39,7 @@ package org.scijava.event;
 import java.util.Collection;
 import java.util.List;
 
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for the event handling service.
@@ -47,7 +47,7 @@ import org.scijava.service.Service;
  * @author Curtis Rueden
  * @author Grant Harris
  */
-public interface EventService extends Service {
+public interface EventService extends SciJavaService {
 
 	/**
 	 * Publishes the given event immediately, reporting it to all subscribers.

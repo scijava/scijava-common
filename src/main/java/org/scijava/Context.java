@@ -82,8 +82,10 @@ public class Context implements Disposable {
 	 * @param empty If true, the context will be empty; otherwise, it will be
 	 *          initialized with all available services.
 	 */
+	@SuppressWarnings("unchecked")
 	public Context(final boolean empty) {
-		this(empty ? Collections.<Class<? extends Service>> emptyList() : null);
+		this(empty ? Collections.<Class<? extends Service>> emptyList() : Arrays
+			.<Class<? extends Service>> asList(Service.class));
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class Context implements Disposable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Context(final Class... serviceClasses) {
 		this(serviceClasses != null ? (Collection) Arrays.asList(serviceClasses)
-			: null);
+			: Arrays.asList(Service.class));
 	}
 
 	/**
@@ -124,12 +126,43 @@ public class Context implements Disposable {
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
 		this(serviceClasses, new PluginIndex());
 	}
+	
+	/**
+	 * Creates a new SciJava application with the specified PluginIndex. This
+	 * allows a base set of available plugins to be defined, and is useful when
+	 * plugins that would not be returned by the PluginIndex's PluginFinder are
+	 * desired.
+	 * <p>
+	 * NB: the {@link PluginIndex#discover()} method may still be called, adding
+	 * additional plugins to this index. The mechanism of discovery should be
+	 * configured exclusively through the attached PluginFinder.
+	 * </p>
+	 * 
+	 * @param pluginIndex The plugin index to use when discovering and indexing
+	 *          plugins. If you wish to completely control how services are
+	 *          discovered (i.e., use your own
+	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
+	 *          can pass a custom {@link PluginIndex} here.
+	 */
+	@SuppressWarnings("unchecked")
+	public Context(final PluginIndex pluginIndex) {
+		this(Arrays.<Class<? extends Service>>asList(Service.class), pluginIndex);
+	}
 
 	/**
 	 * Creates a new SciJava application context with the specified services (and
 	 * any required service dependencies). Service dependency candidates are
 	 * selected from those discovered by the given {@link PluginIndex}'s
 	 * associated {@link org.scijava.plugin.PluginFinder}.
+	 * <p>
+	 * NB: Context creation is an important step of a SciJava applictation's
+	 * lifecycle. Particularly in environments where more than one implementation
+	 * exists for various services, careful consideration should be exercised
+	 * regaring what classes and plugins are provided to the Context, and what
+	 * needs to occur during the initialization of these services (especially
+	 * those of lower priority). See {@link ServiceHelper#loadServices()} for more
+	 * information.
+	 * </p>
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).

@@ -33,75 +33,13 @@
  * #L%
  */
 
-package org.scijava.log;
-
-import org.scijava.service.SciJavaService;
+package org.scijava.service;
 
 /**
- * Interface for the logging service.
- * <p>
- * The service supports five common logging levels: {@link #ERROR},
- * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It provides
- * methods for logging messages, exception stack traces and combinations of the
- * two.
- * </p>
+ * Marker interface for {@link Service}s used by SciJava-common
  * 
- * @author Curtis Rueden
+ * @author Mark Hiner
  */
-public interface LogService extends SciJavaService {
-
-	/** System property to set for overriding the default logging level. */
-	String LOG_LEVEL_PROPERTY = "scijava.log.level";
-
-	int NONE = 0;
-	int ERROR = 1;
-	int WARN = 2;
-	int INFO = 3;
-	int DEBUG = 4;
-	int TRACE = 5;
-
-	void debug(Object msg);
-
-	void debug(Throwable t);
-
-	void debug(Object msg, Throwable t);
-
-	void error(Object msg);
-
-	void error(Throwable t);
-
-	void error(Object msg, Throwable t);
-
-	void info(Object msg);
-
-	void info(Throwable t);
-
-	void info(Object msg, Throwable t);
-
-	void trace(Object msg);
-
-	void trace(Throwable t);
-
-	void trace(Object msg, Throwable t);
-
-	void warn(Object msg);
-
-	void warn(Throwable t);
-
-	void warn(Object msg, Throwable t);
-
-	boolean isDebug();
-
-	boolean isError();
-
-	boolean isInfo();
-
-	boolean isTrace();
-
-	boolean isWarn();
-
-	int getLevel();
-
-	void setLevel(int level);
-
+public interface SciJavaService extends Service {
+	// NB: Marker interface.
 }

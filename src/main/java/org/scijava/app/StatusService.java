@@ -36,14 +36,14 @@
 package org.scijava.app;
 
 import org.scijava.app.event.StatusEvent;
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for the status notification service.
  * 
  * @author Curtis Rueden
  */
-public interface StatusService extends Service {
+public interface StatusService extends SciJavaService {
 
 	/** Updates the progress bar. */
 	void showProgress(int value, int maximum);

@@ -87,6 +87,10 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	/**
 	 * Constructs a new plugin index which uses the given {@link PluginFinder} to
 	 * discover plugins.
+	 * <p>
+	 * A null PluginFinder is allowed, in which case no plugins will be discovered
+	 * during {@link #discover()} calls.
+	 * </p>
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PluginIndex(final PluginFinder pluginFinder) {
@@ -97,8 +101,12 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 
 	// -- PluginIndex methods --
 
-	/** Discovers plugins available on the classpath. */
+	/**
+	 * Adds all plugins discovered by the attached {@link PluginFinder} to
+	 * this index, or does nothing if the attached PluginFiner is null.
+	 */
 	public void discover() {
+		if (pluginFinder == null) return;
 		final ArrayList<PluginInfo<?>> plugins = new ArrayList<PluginInfo<?>>();
 		exceptions = pluginFinder.findPlugins(plugins);
 		addAll(plugins);
