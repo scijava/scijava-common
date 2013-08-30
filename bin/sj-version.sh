@@ -22,7 +22,8 @@ props() {
 
 if [ -z "$version" ]
 then
-  echo "Usage: sj-version.sh version [version-to-diff]"
+	echo "Usage: sj-version.sh version [version-to-diff]"
+	exit 1
 fi
 
 if [ -n "$diff" ]
