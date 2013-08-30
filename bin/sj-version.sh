@@ -22,6 +22,18 @@ props() {
 
 if [ -z "$version" ]
 then
+	# try to extract version from pom.xml in this directory
+	if [ -e pom.xml ]
+	then
+		version=$(grep -A 1 pom-scijava pom.xml | \
+			grep '<version>' | \
+			sed 's/<\/.*//' | \
+			sed 's/.*>//')
+	fi
+fi
+
+if [ -z "$version" ]
+then
 	echo "Usage: sj-version.sh version [version-to-diff]"
 	exit 1
 fi
