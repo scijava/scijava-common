@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.74</version>
+	<version>1.75</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -62,6 +62,9 @@
 		<junit.version>4.8.1</junit.version>
 		<sezpoz.version>1.9-imagej</sezpoz.version>
 
+		<!-- ImageJ Maven Plugin - https://github.com/imagej/imagej-maven-plugin -->
+		<imagej-maven-plugin.version>0.2.0</imagej-maven-plugin.version>
+
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -80,7 +83,7 @@
 			<plugin>
 				<groupId>net.imagej</groupId>
 				<artifactId>imagej-maven-plugin</artifactId>
-				<version>0.2.0</version>
+				<version>${imagej-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-jars</id>
