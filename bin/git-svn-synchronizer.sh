@@ -79,6 +79,8 @@ then
 	git svn init -s "$SVN_URL" &&
 	git svn fetch &&
 	git rev-parse refs/remotes/trunk || {
+		rm -rf .git/svn &&
+		git config --remove-section svn-remote.svn &&
 		git svn init "$SVN_URL" &&
 		git svn fetch
 	}
