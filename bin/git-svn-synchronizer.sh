@@ -78,7 +78,8 @@ then
 	# Try standard trunk/branches/tags setup first
 	git svn init -s "$SVN_URL" &&
 	git svn fetch &&
-	git rev-parse refs/remotes/trunk || {
+	git rev-parse refs/remotes/trunk ||
+	git rev-parse refs/remotes/git-svn || {
 		rm -rf .git/svn &&
 		git config --remove-section svn-remote.svn &&
 		git svn init "$SVN_URL" &&
