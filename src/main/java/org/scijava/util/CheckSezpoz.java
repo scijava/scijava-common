@@ -44,7 +44,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.DigestInputStream;
@@ -532,16 +531,6 @@ public final class CheckSezpoz {
 	}
 
 	/**
-	 * Adjusts the mtime of a file to "now".
-	 * 
-	 * @param file the file to touch
-	 * @throws IOException
-	 */
-	private static void touch(final File file) throws IOException {
-		new FileOutputStream(file, true).close();
-	}
-
-	/**
 	 * Makes sure that the given Eclipse project is set up correctly to run
 	 * SezPoz.
 	 * <p>
@@ -708,19 +697,4 @@ public final class CheckSezpoz {
 		}
 	}
 
-	/**
-	 * Writes plain text into a plain file.
-	 * 
-	 * @param file the plain file
-	 * @param contents the plain text
-	 * @throws IOException
-	 * @throws UnsupportedEncodingException
-	 */
-	private static void write(final File file, final String contents)
-		throws IOException, UnsupportedEncodingException
-	{
-		final OutputStream out = new FileOutputStream(file);
-		out.write(contents.getBytes("UTF-8"));
-		out.close();
-	}
 }
