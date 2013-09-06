@@ -648,6 +648,7 @@ public class CheckSezpoz {
 	}
 
 	private static final String[] APT_PROPERTIES = {
+		"eclipse.preferences.version=1", //
 		"org.eclipse.jdt.apt.aptEnabled=true", //
 		"org.eclipse.jdt.apt.genSrcDir=target/classes", //
 		"org.eclipse.jdt.apt.reconcileEnabled=false"
