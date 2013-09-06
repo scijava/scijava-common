@@ -647,6 +647,12 @@ public class CheckSezpoz {
 		transformer.transform(source, result);
 	}
 
+	private static final String[] APT_PROPERTIES = {
+		"org.eclipse.jdt.apt.aptEnabled=true", //
+		"org.eclipse.jdt.apt.genSrcDir=target/classes", //
+		"org.eclipse.jdt.apt.reconcileEnabled=false"
+	};
+
 	/**
 	 * Makes sure that the given Eclipse project has annotation processing
 	 * switched on.
@@ -662,11 +668,9 @@ public class CheckSezpoz {
 				properties.load(new FileInputStream(aptSettings));
 			}
 			boolean changed = false;
-			for (final String pair : new String[] { "aptEnabled=true",
-				"genSrcDir=target/classes", "reconcileEnabled=false" })
-			{
+			for (final String pair : APT_PROPERTIES) {
 				final int equals = pair.indexOf('=');
-				final String key = "org.eclipse.jdt.apt." + pair.substring(0, equals);
+				final String key = pair.substring(0, equals);
 				final String value = pair.substring(equals + 1);
 				if (value.equals(properties.get(key))) continue;
 				properties.put(key, value);
