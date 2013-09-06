@@ -86,11 +86,15 @@ import org.xml.sax.SAXException;
  * 
  * @author Johannes Schindelin
  */
-public class CheckSezpoz {
+public final class CheckSezpoz {
 
 	public static boolean verbose;
 
 	public static final String FILE_NAME = "latest-sezpoz-check.txt";
+
+	private CheckSezpoz() {
+		// NB: Prevent instantiation of utility class.
+	}
 
 	/**
 	 * Checks the annotations of all CLASSPATH components. Optionally, it only
