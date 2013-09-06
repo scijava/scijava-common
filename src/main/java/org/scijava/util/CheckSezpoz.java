@@ -654,12 +654,12 @@ public class CheckSezpoz {
 	 * @param directory the Eclipse project to fix
 	 */
 	protected static void fixAnnotationProcessingSettings(final File directory) {
-		final File jdtSettings =
+		final File aptSettings =
 			new File(directory, ".settings/org.eclipse.jdt.apt.core.prefs");
 		try {
 			final Properties properties = new Properties();
-			if (jdtSettings.exists()) {
-				properties.load(new FileInputStream(jdtSettings));
+			if (aptSettings.exists()) {
+				properties.load(new FileInputStream(aptSettings));
 			}
 			boolean changed = false;
 			for (final String pair : new String[] { "aptEnabled=true",
@@ -672,11 +672,11 @@ public class CheckSezpoz {
 				properties.put(key, value);
 				changed = true;
 			}
-			if (changed) properties.store(new FileOutputStream(jdtSettings), null);
+			if (changed) properties.store(new FileOutputStream(aptSettings), null);
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			System.err.println("ERROR: Could not edit " + jdtSettings);
+			System.err.println("ERROR: Could not edit " + aptSettings);
 		}
 	}
 
