@@ -40,8 +40,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -673,11 +675,28 @@ public class CheckSezpoz {
 				final int equals = pair.indexOf('=');
 				final String key = pair.substring(0, equals);
 				final String value = pair.substring(equals + 1);
-				if (value.equals(properties.get(key))) continue;
-				properties.put(key, value);
-				changed = true;
+				if (!value.equals(properties.get(key))) {
+					changed = true;
+					break;
+				}
 			}
-			if (changed) properties.store(new FileOutputStream(aptSettings), null);
+			if (changed) {
+				// write out the correct properties
+				// NB: We do not use the Properties.store method because it prepends a
+				// date comment which Eclipse 4.3+ later strips out, resulting in
+				// modified aptSettings files committed to source control.
+				// Further, because Properties is a hash, we cannot control the order
+				// the properties are written out; we want them to be written in exactly
+				// the order declared above, to minimize the chance of Eclipse
+				// modifying them in any way. The downside of this approach is that any
+				// additional properties previously stored in the file will be lost, but
+				// thus far we have not encountered that situation in practice.
+				final PrintWriter out = new PrintWriter(new FileWriter(aptSettings));
+				for (final String pair : APT_PROPERTIES) {
+					out.println(pair);
+				}
+				out.close();
+			}
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
