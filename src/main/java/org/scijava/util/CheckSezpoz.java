@@ -178,7 +178,7 @@ public final class CheckSezpoz {
 	 * @param targetDirectory the <i>target/</i> directory Maven writes into
 	 * @return the timestamp of our last check
 	 */
-	protected static long getLatestCheck(final File targetDirectory) {
+	static long getLatestCheck(final File targetDirectory) {
 		try {
 			final File file = new File(targetDirectory, FILE_NAME);
 			if (!file.exists()) return -1;
@@ -204,7 +204,7 @@ public final class CheckSezpoz {
 	 * @param jar the <i>.jar</i> file
 	 * @return -1 since we cannot really tell
 	 */
-	protected static long getLatestCheck(final JarFile jar) {
+	private static long getLatestCheck(final JarFile jar) {
 		return -1;
 	}
 
@@ -298,7 +298,7 @@ public final class CheckSezpoz {
 	 * 
 	 * @param file the <i>.java</i> file to check
 	 */
-	protected static boolean hasAnnotation(final File file) {
+	static boolean hasAnnotation(final File file) {
 		if (!file.getName().endsWith(".java")) return false;
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -477,7 +477,7 @@ public final class CheckSezpoz {
 	 * @param files the files to process
 	 * @return a map containing (filename, checksum) mappings
 	 */
-	protected static Map<String, byte[]> checksum(final File[] files) {
+	private static Map<String, byte[]> checksum(final File[] files) {
 		final Map<String, byte[]> result = new HashMap<String, byte[]>();
 		if (files != null && files.length != 0) {
 			for (final File file : files)
@@ -492,7 +492,7 @@ public final class CheckSezpoz {
 	 * @param file the file to process
 	 * @return the checksum
 	 */
-	protected synchronized static byte[] checksum(final File file) {
+	private synchronized static byte[] checksum(final File file) {
 		try {
 			if (digest == null) digest = MessageDigest.getInstance("SHA-1");
 			else digest.reset();
@@ -518,7 +518,7 @@ public final class CheckSezpoz {
 	 * @param list the list of filenames to append to
 	 * @param directory the directory
 	 */
-	protected static void addJavaPathsRecursively(final List<String> list,
+	private static void addJavaPathsRecursively(final List<String> list,
 		final File directory)
 	{
 		final File[] files = directory.listFiles();
@@ -537,7 +537,7 @@ public final class CheckSezpoz {
 	 * @param file the file to touch
 	 * @throws IOException
 	 */
-	protected static void touch(final File file) throws IOException {
+	private static void touch(final File file) throws IOException {
 		new FileOutputStream(file, true).close();
 	}
 
@@ -551,7 +551,7 @@ public final class CheckSezpoz {
 	 * 
 	 * @param directory the directory in which the project lives
 	 */
-	protected static void fixEclipseConfiguration(final File directory) {
+	private static void fixEclipseConfiguration(final File directory) {
 		// is this an Eclipse project at all?
 		if (!new File(directory, ".settings").isDirectory()) return;
 		fixFactoryPath(directory);
@@ -564,7 +564,7 @@ public final class CheckSezpoz {
 	 * 
 	 * @param directory the Eclipse project to fix
 	 */
-	protected static void fixFactoryPath(final File directory) {
+	private static void fixFactoryPath(final File directory) {
 		final File factoryPath = new File(directory, ".factorypath");
 		try {
 			final Document xml;
@@ -623,7 +623,7 @@ public final class CheckSezpoz {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	protected static Document readXMLFile(final File file)
+	private static Document readXMLFile(final File file)
 		throws ParserConfigurationException, SAXException, IOException
 	{
 		final DocumentBuilderFactory builderFactory =
@@ -666,7 +666,7 @@ public final class CheckSezpoz {
 	 * 
 	 * @param directory the Eclipse project to fix
 	 */
-	protected static void fixAnnotationProcessingSettings(final File directory) {
+	private static void fixAnnotationProcessingSettings(final File directory) {
 		final File aptSettings =
 			new File(directory, ".settings/org.eclipse.jdt.apt.core.prefs");
 		try {
@@ -716,7 +716,7 @@ public final class CheckSezpoz {
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected static void write(final File file, final String contents)
+	private static void write(final File file, final String contents)
 		throws IOException, UnsupportedEncodingException
 	{
 		final OutputStream out = new FileOutputStream(file);
