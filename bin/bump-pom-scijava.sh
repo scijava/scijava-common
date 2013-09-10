@@ -104,6 +104,7 @@ test "a--default-properties" != "a$*" ||
 set imagej1.version --latest \
 	imagej.version --latest \
 	imagej-launcher.version --latest \
+	imagej-maven-plugin.version --latest \
 	imglib2.version --latest \
 	nar.version --latest \
 	scifio.version --latest \
@@ -150,6 +151,9 @@ do
 			;;
 		imagej-launcher.version)
 			ga=net.imagej:ij-launcher
+			;;
+		imagej-maven-plugin.version)
+			ga=net.imagej:imagej-maven-plugin
 			;;
 		imglib2.version)
 			ga=net.imglib2:imglib2
