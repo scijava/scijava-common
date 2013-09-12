@@ -40,9 +40,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.DigestInputStream;
@@ -84,11 +85,15 @@ import org.xml.sax.SAXException;
  * 
  * @author Johannes Schindelin
  */
-public class CheckSezpoz {
+public final class CheckSezpoz {
 
 	public static boolean verbose;
 
 	public static final String FILE_NAME = "latest-sezpoz-check.txt";
+
+	private CheckSezpoz() {
+		// NB: Prevent instantiation of utility class.
+	}
 
 	/**
 	 * Checks the annotations of all CLASSPATH components. Optionally, it only
@@ -172,7 +177,7 @@ public class CheckSezpoz {
 	 * @param targetDirectory the <i>target/</i> directory Maven writes into
 	 * @return the timestamp of our last check
 	 */
-	protected static long getLatestCheck(final File targetDirectory) {
+	static long getLatestCheck(final File targetDirectory) {
 		try {
 			final File file = new File(targetDirectory, FILE_NAME);
 			if (!file.exists()) return -1;
@@ -198,7 +203,7 @@ public class CheckSezpoz {
 	 * @param jar the <i>.jar</i> file
 	 * @return -1 since we cannot really tell
 	 */
-	protected static long getLatestCheck(final JarFile jar) {
+	private static long getLatestCheck(final JarFile jar) {
 		return -1;
 	}
 
@@ -292,7 +297,7 @@ public class CheckSezpoz {
 	 * 
 	 * @param file the <i>.java</i> file to check
 	 */
-	protected static boolean hasAnnotation(final File file) {
+	static boolean hasAnnotation(final File file) {
 		if (!file.getName().endsWith(".java")) return false;
 		try {
 			final BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -471,7 +476,7 @@ public class CheckSezpoz {
 	 * @param files the files to process
 	 * @return a map containing (filename, checksum) mappings
 	 */
-	protected static Map<String, byte[]> checksum(final File[] files) {
+	private static Map<String, byte[]> checksum(final File[] files) {
 		final Map<String, byte[]> result = new HashMap<String, byte[]>();
 		if (files != null && files.length != 0) {
 			for (final File file : files)
@@ -486,7 +491,7 @@ public class CheckSezpoz {
 	 * @param file the file to process
 	 * @return the checksum
 	 */
-	protected synchronized static byte[] checksum(final File file) {
+	private synchronized static byte[] checksum(final File file) {
 		try {
 			if (digest == null) digest = MessageDigest.getInstance("SHA-1");
 			else digest.reset();
@@ -512,7 +517,7 @@ public class CheckSezpoz {
 	 * @param list the list of filenames to append to
 	 * @param directory the directory
 	 */
-	protected static void addJavaPathsRecursively(final List<String> list,
+	private static void addJavaPathsRecursively(final List<String> list,
 		final File directory)
 	{
 		final File[] files = directory.listFiles();
@@ -526,16 +531,6 @@ public class CheckSezpoz {
 	}
 
 	/**
-	 * Adjusts the mtime of a file to "now".
-	 * 
-	 * @param file the file to touch
-	 * @throws IOException
-	 */
-	protected static void touch(final File file) throws IOException {
-		new FileOutputStream(file, true).close();
-	}
-
-	/**
 	 * Makes sure that the given Eclipse project is set up correctly to run
 	 * SezPoz.
 	 * <p>
@@ -545,7 +540,7 @@ public class CheckSezpoz {
 	 * 
 	 * @param directory the directory in which the project lives
 	 */
-	protected static void fixEclipseConfiguration(final File directory) {
+	private static void fixEclipseConfiguration(final File directory) {
 		// is this an Eclipse project at all?
 		if (!new File(directory, ".settings").isDirectory()) return;
 		fixFactoryPath(directory);
@@ -558,7 +553,7 @@ public class CheckSezpoz {
 	 * 
 	 * @param directory the Eclipse project to fix
 	 */
-	protected static void fixFactoryPath(final File directory) {
+	private static void fixFactoryPath(final File directory) {
 		final File factoryPath = new File(directory, ".factorypath");
 		try {
 			final Document xml;
@@ -617,7 +612,7 @@ public class CheckSezpoz {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	protected static Document readXMLFile(final File file)
+	private static Document readXMLFile(final File file)
 		throws ParserConfigurationException, SAXException, IOException
 	{
 		final DocumentBuilderFactory builderFactory =
@@ -647,52 +642,59 @@ public class CheckSezpoz {
 		transformer.transform(source, result);
 	}
 
+	private static final String[] APT_PROPERTIES = {
+		"eclipse.preferences.version=1", //
+		"org.eclipse.jdt.apt.aptEnabled=true", //
+		"org.eclipse.jdt.apt.genSrcDir=target/classes", //
+		"org.eclipse.jdt.apt.reconcileEnabled=false"
+	};
+
 	/**
 	 * Makes sure that the given Eclipse project has annotation processing
 	 * switched on.
 	 * 
 	 * @param directory the Eclipse project to fix
 	 */
-	protected static void fixAnnotationProcessingSettings(final File directory) {
-		final File jdtSettings =
+	private static void fixAnnotationProcessingSettings(final File directory) {
+		final File aptSettings =
 			new File(directory, ".settings/org.eclipse.jdt.apt.core.prefs");
 		try {
 			final Properties properties = new Properties();
-			if (jdtSettings.exists()) {
-				properties.load(new FileInputStream(jdtSettings));
+			if (aptSettings.exists()) {
+				properties.load(new FileInputStream(aptSettings));
 			}
 			boolean changed = false;
-			for (final String pair : new String[] { "aptEnabled=true",
-				"genSrcDir=target/classes", "reconcileEnabled=false" })
-			{
+			for (final String pair : APT_PROPERTIES) {
 				final int equals = pair.indexOf('=');
-				final String key = "org.eclipse.jdt.apt." + pair.substring(0, equals);
+				final String key = pair.substring(0, equals);
 				final String value = pair.substring(equals + 1);
-				if (value.equals(properties.get(key))) continue;
-				properties.put(key, value);
-				changed = true;
+				if (!value.equals(properties.get(key))) {
+					changed = true;
+					break;
+				}
 			}
-			if (changed) properties.store(new FileOutputStream(jdtSettings), null);
+			if (changed) {
+				// write out the correct properties
+				// NB: We do not use the Properties.store method because it prepends a
+				// date comment which Eclipse 4.3+ later strips out, resulting in
+				// modified aptSettings files committed to source control.
+				// Further, because Properties is a hash, we cannot control the order
+				// the properties are written out; we want them to be written in exactly
+				// the order declared above, to minimize the chance of Eclipse
+				// modifying them in any way. The downside of this approach is that any
+				// additional properties previously stored in the file will be lost, but
+				// thus far we have not encountered that situation in practice.
+				final PrintWriter out = new PrintWriter(new FileWriter(aptSettings));
+				for (final String pair : APT_PROPERTIES) {
+					out.println(pair);
+				}
+				out.close();
+			}
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			System.err.println("ERROR: Could not edit " + jdtSettings);
+			System.err.println("ERROR: Could not edit " + aptSettings);
 		}
 	}
 
-	/**
-	 * Writes plain text into a plain file.
-	 * 
-	 * @param file the plain file
-	 * @param contents the plain text
-	 * @throws IOException
-	 * @throws UnsupportedEncodingException
-	 */
-	protected static void write(final File file, final String contents)
-		throws IOException, UnsupportedEncodingException
-	{
-		final OutputStream out = new FileOutputStream(file);
-		out.write(contents.getBytes("UTF-8"));
-		out.close();
-	}
 }
