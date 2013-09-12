@@ -38,6 +38,7 @@ package org.scijava.util;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -354,7 +355,7 @@ public final class ClassUtils {
 	{
 		try {
 			field.setAccessible(true);
-			field.set(instance, convert(value, field.getType()));
+			field.set(instance, ConversionUtils.convert(value,field.getGenericType()));
 		}
 		catch (final IllegalAccessException e) {
 			throw new IllegalArgumentException("No access to field: " +

@@ -35,7 +35,17 @@
 
 package org.scijava.util;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Useful methods for converting and casting between classes and types.
@@ -45,7 +55,114 @@ import java.lang.reflect.Constructor;
  */
 public class ConversionUtils {
 
+	private ConversionUtils() {
+		// prevent instantiation of utility class
+	}
+
 	// -- Type conversion and casting --
+
+	/**
+	 * As {@link #convert(Object, Class)} but capable of creating and populating
+	 * multi-element objects ({@link Collection}s and array types). If a single
+	 * element type is provided, it will be converted as if the Class signature
+	 * was used. If a multi-element type is detected, then the value parameter
+	 * will be interpreted as potential collection of values. An appropriate
+	 * container will be created, and the full set of values will be type
+	 * converted and added.
+	 * <p>
+	 * NB: This method should be capable of creating any array type, but if a
+	 * {@link Collection} interface or abstract class is provided we can only make
+	 * a best guess as to what container type to instantiate. Defaults are
+	 * provided for {@link Set} and {@link List} subclasses.
+	 * </p>
+	 * 
+	 * @param value The object to convert.
+	 * @param type Type to which the object should be converted.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Object convert(final Object value, final Type type) {
+		Class<?> baseClass = null;
+
+		if (type instanceof Class) baseClass = (Class<?>) type;
+
+		// First we make sure the value is a collection. This provides the simplest
+		// interface for iterating over all the elements.
+		Collection items = ArrayUtils.toCollection(value);
+
+		// There are two possible signals that we're trying to create an array.
+		// We could have gotten an actual array class, or a GenericArrayType
+		// instance. Both are handled basically the same
+		if (GenericArrayType.class.isAssignableFrom(type.getClass()) ||
+			(baseClass != null && baseClass.isArray()))
+		{
+			Class<?> componentClass;
+
+			// Based on which test got us here, we get the component type of the
+			// array
+			if (baseClass != null && baseClass.isArray()) {
+				componentClass = baseClass.getComponentType();
+			}
+			else {
+				GenericArrayType gType = (GenericArrayType) type;
+				componentClass = (Class<?>) gType.getGenericComponentType();
+			}
+
+			Object array = Array.newInstance(componentClass, items.size());
+
+			// Populate the array by converting each item in the value collection
+			// to the component type
+			int index = 0;
+			for (Object item : items) {
+				Array.set(array, index++, convert(item, componentClass));
+			}
+			return array;
+		}
+		else if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
+			ParameterizedType pType = (ParameterizedType) type;
+			// Get the actual class of this type
+			Class<?> rawClass = (Class<?>) pType.getRawType();
+
+			// Check to see if we have a type we know how to populate
+			if (Collection.class.isAssignableFrom(rawClass)) {
+				Collection collection;
+
+				// If we were given an interface or abstract class, and not a concrete
+				// class, we attempt to make default implementations.
+				if (rawClass.isInterface() ||
+					Modifier.isAbstract(rawClass.getModifiers()))
+				{
+					// We don't have a concrete class. If it's a set or a list, we can
+					// provide the typical default implementation. Otherwise we won't
+					// convert
+					if (List.class.isAssignableFrom(rawClass)) collection =
+						new ArrayList();
+					else if (Set.class.isAssignableFrom(rawClass)) collection =
+						new HashSet();
+					else return null;
+				}
+				else {
+					// Got a concrete type. Instantiate it.
+					try {
+						collection = (Collection) rawClass.newInstance();
+					}
+					catch (Exception e) {
+						return null;
+					}
+				}
+				// Populate the collection
+				for (Object item : items) {
+					collection.add(convert(item, pType.getActualTypeArguments()[0]));
+				}
+
+				return collection;
+			}
+		}
+		// This wasn't a collection or array, so convert it as a single element.
+		else if (baseClass != null) return convert(value, baseClass);
+
+		// Don't know how to convert the given object
+		return null;
+	}
 
 	/**
 	 * Converts the given object to an object of the specified type. The object is
@@ -137,8 +254,15 @@ public class ConversionUtils {
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
-			final Constructor<T> ctor = saneType.getConstructor(value.getClass());
-			return ctor.newInstance(value);
+			for (Constructor<?> ctor : saneType.getConstructors()) {
+				Class<?>[] params = ctor.getParameterTypes();
+				if (params.length == 1 && params[0].isAssignableFrom(value.getClass())) {
+					@SuppressWarnings("unchecked")
+					T instance = (T)ctor.newInstance(value);
+					return instance;
+				}
+			}
+			return null;
 		}
 		catch (final Exception exc) {
 			// no known way to convert
@@ -274,5 +398,4 @@ public class ConversionUtils {
 		final T result = (T) defaultValue;
 		return result;
 	}
-
 }
