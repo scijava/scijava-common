@@ -98,7 +98,7 @@ project_url () {
 		project_url="$root_url/releases/$infix"
 		header=$(curl -Is "$project_url/")
 		case "$header" in
-		"HTTP/1.1 200 OK"*)
+		HTTP/1.?" 200 OK"*)
 			;;
 		*)
 			project_url="$root_url/thirdparty/$infix"
