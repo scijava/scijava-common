@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.80</version>
+	<version>1.81</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -51,7 +51,7 @@
 
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>io.scif</scifio.groupId>
-		<scifio.version>0.6.1</scifio.version>
+		<scifio.version>0.6.2</scifio.version>
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
