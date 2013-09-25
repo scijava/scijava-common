@@ -137,7 +137,7 @@ exit
 if test -z "$SKIP_DEPLOY"
 then
 	git checkout $tag &&
-	mvn clean verify &&
-	mvn $ALT_REPOSITORY -DupdateReleaseInfo=true deploy &&
+	mvn -DperformRlease clean verify &&
+	mvn $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
 	git checkout @{-1}
 fi
