@@ -35,8 +35,23 @@
 
 package org.scijava.service;
 
+import org.scijava.Context;
+
 /**
- * Marker interface for {@link Service}s used by SciJava-common
+ * Marker interface for core SciJava Common {@link Service}s.
+ * <p>
+ * Note that this interface is not intended to be extended by non-core service
+ * interfaces, because it serves as a marker for core SciJava Common services
+ * <em>only</em>. The idea is that this interface can be used to create a
+ * {@link Context} containing core SciJava services using the invocation:
+ * </p>
+ * <pre>
+ * final Context context = new Context(SciJavaService.class);
+ * </pre>
+ * <p>
+ * If you have a collection of services which you want to be grouped similarly,
+ * just create your own marker interface for the same purpose.
+ * </p>
  * 
  * @author Mark Hiner
  */
