@@ -62,36 +62,36 @@ public class DefaultStatusService extends AbstractService implements
 
 	@Override
 	public void showProgress(final int value, final int maximum) {
-		eventService.publish(new StatusEvent(value, maximum));
+		publish(new StatusEvent(value, maximum));
 	}
 
 	@Override
 	public void showStatus(final String message) {
-		eventService.publish(new StatusEvent(message));
+		publish(new StatusEvent(message));
 	}
 
 	@Override
 	public void showStatus(final int progress, final int maximum,
 		final String message)
 	{
-		eventService.publish(new StatusEvent(progress, maximum, message));
+		publish(new StatusEvent(progress, maximum, message));
 	}
 
 	@Override
 	public void warn(final String message) {
-		eventService.publish(new StatusEvent(message, true));
+		publish(new StatusEvent(message, true));
 	}
 
 	@Override
 	public void showStatus(final int progress, final int maximum,
 		final String message, final boolean warn)
 	{
-		eventService.publish(new StatusEvent(progress, maximum, message, warn));
+		publish(new StatusEvent(progress, maximum, message, warn));
 	}
 
 	@Override
 	public void clearStatus() {
-		eventService.publish(new StatusEvent(""));
+		publish(new StatusEvent(""));
 	}
 
 	@Override
@@ -101,6 +101,19 @@ public class DefaultStatusService extends AbstractService implements
 		final String message = statusEvent.getStatusMessage();
 		if (!"".equals(message)) return message;
 		return appService.getApp(appName).getInfo(false);
+	}
+	
+	/**
+	 * Publish the status event to the event service.
+	 * The default behavior is to publish status asynchronously.
+	 * You can change this behavior by overriding this method
+	 * in a derived class.
+	 * 
+	 * @param statusEvent the event to send to status listeners.
+	 */
+	protected void publish(final StatusEvent statusEvent)
+	{
+		eventService.publishLater(statusEvent);
 	}
 
 }
