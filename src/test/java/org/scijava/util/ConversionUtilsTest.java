@@ -69,7 +69,7 @@ public class ConversionUtilsTest {
 	public void testPrimitiveArray() throws SecurityException,
 		NoSuchFieldException
 	{
-		List<Integer> intVals = getValueList(4, 3, 7);
+		final List<Integer> intVals = getValueList(4, 3, 7);
 		setFieldValue(mef, "intArray", intVals);
 
 		for (int i = 0; i < mef.intArray.length; i++) {
@@ -90,7 +90,7 @@ public class ConversionUtilsTest {
 	@Test
 	public void testObjectArray() throws SecurityException, NoSuchFieldException {
 		// Verify behavior setting an array of Objects (Doubles)
-		List<Double> doubleVals = getValueList(1.0, 2.0, 3.0);
+		final List<Double> doubleVals = getValueList(1.0, 2.0, 3.0);
 		setFieldValue(mef, "doubleArray", doubleVals);
 
 		for (int i = 0; i < mef.doubleArray.length; i++) {
@@ -104,7 +104,7 @@ public class ConversionUtilsTest {
 	@Test
 	public void testCollection() throws SecurityException, NoSuchFieldException {
 		// Verify behavior setting a List of Objects (Strings)
-		List<String> stringVals = getValueList("ok", "still ok");
+		final List<String> stringVals = getValueList("ok", "still ok");
 		setFieldValue(mef, "stringList", stringVals);
 
 		for (int i = 0; i < mef.stringList.size(); i++) {
@@ -127,13 +127,13 @@ public class ConversionUtilsTest {
 		NoSuchFieldException
 	{
 		// Verify behavior setting a nesting of multi-elements (Set of Array)
-		Set<char[]> nestedSetValues = new HashSet<char[]>();
-		char[] chars = { 'a', 'b', 'c' };
+		final Set<char[]> nestedSetValues = new HashSet<char[]>();
+		final char[] chars = { 'a', 'b', 'c' };
 		nestedSetValues.add(chars);
 
 		setFieldValue(mef, "nestedArray", nestedSetValues);
 
-		for (char[] charVals : mef.nestedArray) {
+		for (final char[] charVals : mef.nestedArray) {
 			for (int i = 0; i < chars.length; i++) {
 				assertEquals(chars[i], charVals[i]);
 			}
@@ -149,12 +149,12 @@ public class ConversionUtilsTest {
 		NoSuchFieldException
 	{
 		// Verify behavior setting a single element of an array
-		double dVal = 6.3;
+		final double dVal = 6.3;
 		setFieldValue(mef, "doubleArray", dVal);
 		assertEquals(new Double(dVal), mef.doubleArray[0]);
 
 		// Verify behavior setting a single element of a list
-		String sVal = "I am a ghost";
+		final String sVal = "I am a ghost";
 		setFieldValue(mef, "stringList", sVal);
 		assertEquals(sVal, mef.stringList.get(0));
 	}
@@ -235,8 +235,9 @@ public class ConversionUtilsTest {
 	 * Convenience method to automatically get a field from a field name and call
 	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}
 	 */
-	private void setFieldValue(MultiElementFields mef, String fieldName,
-		Object value) throws SecurityException, NoSuchFieldException
+	private void setFieldValue(final MultiElementFields mef,
+		final String fieldName, final Object value) throws SecurityException,
+		NoSuchFieldException
 	{
 		ClassUtils.setValue(mef.getClass().getField(fieldName), mef, value);
 	}
@@ -244,9 +245,9 @@ public class ConversionUtilsTest {
 	/**
 	 * Convenience method to convert an array of values to a collection.
 	 */
-	private <T> List<T> getValueList(T... values) {
-		List<T> list = new ArrayList<T>();
-		for (T value : values)
+	private <T> List<T> getValueList(final T... values) {
+		final List<T> list = new ArrayList<T>();
+		for (final T value : values)
 			list.add(value);
 		return list;
 	}
@@ -279,7 +280,7 @@ public class ConversionUtilsTest {
 	private static class ArrayWrapper {
 
 		@SuppressWarnings("unused")
-		public ArrayWrapper(int[] gonnaWrapThisArray) {
+		public ArrayWrapper(final int[] gonnaWrapThisArray) {
 			// nothing to do
 		}
 	}
@@ -292,8 +293,9 @@ public class ConversionUtilsTest {
 	private static class CollectionWrapper {
 
 		@SuppressWarnings("unused")
-		public CollectionWrapper(List<?> gonnaWrapThisCollection) {
+		public CollectionWrapper(final List<?> gonnaWrapThisCollection) {
 			// nothing to do
 		}
 	}
+
 }
