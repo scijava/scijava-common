@@ -56,7 +56,7 @@ public final class ArrayUtils {
 	 * Converts the provided Object to a {@link Collection} implementation. If the
 	 * object is an array type, a {@link PrimitiveArray} wrapper will be created.
 	 */
-	public static Collection<?> toCollection(Object value) {
+	public static Collection<?> toCollection(final Object value) {
 		// If the value is null or we we have a collection, just return it
 		if (value == null || Collection.class.isAssignableFrom(value.getClass())) {
 			return (Collection<?>) value;
@@ -87,13 +87,13 @@ public final class ArrayUtils {
 			return new DoubleArray((double[]) value);
 		}
 		else if (value instanceof Object[]) {
-			return makeObjectArray((Object[]) value, value.getClass()
-				.getComponentType());
+			final Class<?> type = value.getClass().getComponentType();
+			return makeObjectArray((Object[]) value, type);
 		}
 		else {
 			// This object is a neither an array nor a collection. So we wrap it in a
 			// list and return.
-			List<Object> list = new ArrayList<Object>();
+			final List<Object> list = new ArrayList<Object>();
 			list.add(value);
 			return list;
 		}
@@ -104,7 +104,10 @@ public final class ArrayUtils {
 	 * parameterized using the given Class instance.
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> ObjectArray<T> makeObjectArray(Object[] values, Class<T> type) {
+	private static <T> ObjectArray<T> makeObjectArray(final Object[] values,
+		@SuppressWarnings("unused") final Class<T> type)
+	{
 		return new ObjectArray<T>((T[]) values);
 	}
+
 }
