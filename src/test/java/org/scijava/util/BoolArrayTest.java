@@ -47,6 +47,7 @@ import org.junit.Test;
 /**
  * Tests {@link BoolArray}.
  * 
+ * @author Mark Hiner
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */

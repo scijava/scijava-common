@@ -48,6 +48,7 @@ import org.junit.Test;
 /**
  * Tests {@link ObjectArray<Integer>}.
  * 
+ * @author Mark Hiner
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */

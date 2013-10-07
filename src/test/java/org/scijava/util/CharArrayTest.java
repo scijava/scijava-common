@@ -49,6 +49,7 @@ import org.scijava.util.IntArray;
 /**
  * Tests {@link CharArray}.
  * 
+ * @author Mark Hiner
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
