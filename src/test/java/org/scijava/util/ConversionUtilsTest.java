@@ -38,10 +38,12 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.junit.Test;
@@ -124,6 +126,33 @@ public class ConversionUtilsTest {
 
 		for (int i = 0; i < struct.stringList.size(); i++) {
 			assertEquals(stringVals.get(i), struct.stringList.get(i));
+		}
+	}
+
+	/**
+	 * Tests populating a subclass of a collection.
+	 */
+	@Test
+	public void testCollectionSubclass() throws SecurityException {
+		class RandomSet extends HashSet<Random> {
+			// NB: No implementation needed.
+		}
+		class Struct {
+
+			private List<String> stringList;
+		}
+		final Struct struct = new Struct();
+
+		final RandomSet randomSet = new RandomSet();
+		randomSet.add(new Random(567));
+		randomSet.add(new Random(321));
+
+		setFieldValue(struct, "stringList", randomSet);
+
+		assertNotNull(struct.stringList);
+		assertEquals(2, struct.stringList.size());
+		for (final String s : struct.stringList) {
+			assertTrue(s.matches("^java.util.Random@[0-9a-f]{8}$"));
 		}
 	}
 
