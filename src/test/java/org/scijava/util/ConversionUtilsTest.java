@@ -152,7 +152,7 @@ public class ConversionUtilsTest {
 		assertNotNull(struct.stringList);
 		assertEquals(2, struct.stringList.size());
 		for (final String s : struct.stringList) {
-			assertTrue(s.matches("^java.util.Random@[0-9a-f]{8}$"));
+			assertTrue(s.matches("^java.util.Random@[0-9a-f]+$"));
 		}
 	}
 
