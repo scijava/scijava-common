@@ -223,10 +223,10 @@ public final class ClassUtils {
 				c.getProtectionDomain().getCodeSource().getLocation();
 			if (codeSourceLocation != null) return codeSourceLocation;
 		}
-		catch (SecurityException e) {
+		catch (final SecurityException e) {
 			// NB: Cannot access protection domain.
 		}
-		catch (NullPointerException e) {
+		catch (final NullPointerException e) {
 			// NB: Protection domain or code source is null.
 		}
 
@@ -253,7 +253,7 @@ public final class ClassUtils {
 		try {
 			return new URL(path);
 		}
-		catch (MalformedURLException e) {
+		catch (final MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -291,9 +291,8 @@ public final class ClassUtils {
 	 * @param annotationClass The type of annotation for which to scan.
 	 * @param fields The list to which matching fields will be added.
 	 */
-	public static <A extends Annotation> void
-		getAnnotatedFields(final Class<?> c, final Class<A> annotationClass,
-			final List<Field> fields)
+	public static <A extends Annotation> void getAnnotatedFields(
+		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
 		if (c == null) return;
 
@@ -312,8 +311,7 @@ public final class ClassUtils {
 	/**
 	 * Gets the specified field of the given class, or null if it does not exist.
 	 */
-	public static Field getField(final String className, final String fieldName)
-	{
+	public static Field getField(final String className, final String fieldName) {
 		return getField(loadClass(className), fieldName);
 	}
 
@@ -354,7 +352,8 @@ public final class ClassUtils {
 	{
 		try {
 			field.setAccessible(true);
-			field.set(instance, ConversionUtils.convert(value,field.getGenericType()));
+			field.set(instance, ConversionUtils
+				.convert(value, field.getGenericType()));
 		}
 		catch (final IllegalAccessException e) {
 			throw new IllegalArgumentException("No access to field: " +
