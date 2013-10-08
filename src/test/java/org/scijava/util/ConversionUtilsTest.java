@@ -160,7 +160,7 @@ public class ConversionUtilsTest {
 	}
 
 	/**
-	 * Tests setting an incompatible element value for a primitive array
+	 * Tests setting an incompatible element value for a primitive array.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadPrimitiveArray() throws SecurityException,
@@ -171,7 +171,7 @@ public class ConversionUtilsTest {
 
 	/**
 	 * Tests setting incompatible object values, for both array types of objects
-	 * and a Collection.
+	 * and a collection.
 	 */
 	@Test
 	public void testBadObjectElements() throws SecurityException,
@@ -233,7 +233,7 @@ public class ConversionUtilsTest {
 
 	/**
 	 * Convenience method to automatically get a field from a field name and call
-	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}
+	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}.
 	 */
 	private void setFieldValue(final MultiElementFields mef,
 		final String fieldName, final Object value) throws SecurityException,
