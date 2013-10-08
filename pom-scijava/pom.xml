@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.81</version>
+	<version>1.82</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -32,7 +32,7 @@
 		<imagej.version>2.0.0-beta-7.3</imagej.version>
 
 		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
-		<imagej1.version>1.48c</imagej1.version>
+		<imagej1.version>1.48d</imagej1.version>
 
 		<!-- ImageJ Launcher - https://github.com/imagej/imagej-launcher -->
 		<imagej-launcher.version>2.0.2</imagej-launcher.version>
@@ -55,7 +55,7 @@
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
-		<scijava-common.version>2.1.0</scijava-common.version>
+		<scijava-common.version>2.2.0</scijava-common.version>
 
 		<!-- Other common project dependencies -->
 		<jetty.version>8.0.0.M1</jetty.version>
