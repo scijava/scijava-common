@@ -40,45 +40,43 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests {@link ConversionUtils}.
  * 
  * @author Mark Hiner
+ * @author Curtis Rueden
  */
 public class ConversionUtilsTest {
-
-	private MultiElementFields mef;
-
-	@Before
-	public void setUp() {
-		mef = new MultiElementFields();
-	}
 
 	/**
 	 * Tests populating a primitive array.
 	 */
 	@Test
 	public void testPrimitiveArray() throws SecurityException {
-		final List<Integer> intVals = getValueList(4, 3, 7);
-		setFieldValue(mef, "intArray", intVals);
+		class Struct {
 
-		for (int i = 0; i < mef.intArray.length; i++) {
-			assertEquals(intVals.get(i).intValue(), mef.intArray[i]);
+			private int[] intArray;
+		}
+		final Struct struct = new Struct();
+
+		final List<Integer> intVals = getValueList(4, 3, 7);
+		setFieldValue(struct, "intArray", intVals);
+
+		for (int i = 0; i < struct.intArray.length; i++) {
+			assertEquals(intVals.get(i).intValue(), struct.intArray[i]);
 		}
 
 		// Repeat, using a primitive array of values this time
-		setFieldValue(mef, "intArray", new int[] { 8, 6, 14 });
+		setFieldValue(struct, "intArray", new int[] { 8, 6, 14 });
 
-		for (int i = 0; i < mef.intArray.length; i++) {
-			assertEquals(intVals.get(i).intValue() * 2, mef.intArray[i]);
+		for (int i = 0; i < struct.intArray.length; i++) {
+			assertEquals(intVals.get(i).intValue() * 2, struct.intArray[i]);
 		}
 	}
 
@@ -87,12 +85,18 @@ public class ConversionUtilsTest {
 	 */
 	@Test
 	public void testObjectArray() throws SecurityException {
+		class Struct {
+
+			private Double[] doubleArray;
+		}
+		final Struct struct = new Struct();
+
 		// Verify behavior setting an array of Objects (Doubles)
 		final List<Double> doubleVals = getValueList(1.0, 2.0, 3.0);
-		setFieldValue(mef, "doubleArray", doubleVals);
+		setFieldValue(struct, "doubleArray", doubleVals);
 
-		for (int i = 0; i < mef.doubleArray.length; i++) {
-			assertEquals(doubleVals.get(i), mef.doubleArray[i]);
+		for (int i = 0; i < struct.doubleArray.length; i++) {
+			assertEquals(doubleVals.get(i), struct.doubleArray[i]);
 		}
 	}
 
@@ -101,19 +105,25 @@ public class ConversionUtilsTest {
 	 */
 	@Test
 	public void testCollection() throws SecurityException {
+		class Struct {
+
+			private List<String> stringList;
+		}
+		final Struct struct = new Struct();
+
 		// Verify behavior setting a List of Objects (Strings)
 		final List<String> stringVals = getValueList("ok", "still ok");
-		setFieldValue(mef, "stringList", stringVals);
+		setFieldValue(struct, "stringList", stringVals);
 
-		for (int i = 0; i < mef.stringList.size(); i++) {
-			assertEquals(stringVals.get(i), mef.stringList.get(i));
+		for (int i = 0; i < struct.stringList.size(); i++) {
+			assertEquals(stringVals.get(i), struct.stringList.get(i));
 		}
 
 		// Repeat, using an array of Strings to populate a collection
-		setFieldValue(mef, "stringList", stringVals.toArray());
+		setFieldValue(struct, "stringList", stringVals.toArray());
 
-		for (int i = 0; i < mef.stringList.size(); i++) {
-			assertEquals(stringVals.get(i), mef.stringList.get(i));
+		for (int i = 0; i < struct.stringList.size(); i++) {
+			assertEquals(stringVals.get(i), struct.stringList.get(i));
 		}
 	}
 
@@ -122,14 +132,20 @@ public class ConversionUtilsTest {
 	 */
 	@Test
 	public void testNestingMultiElements() throws SecurityException {
+		class Struct {
+
+			private Set<char[]> nestedArray;
+		}
+		final Struct struct = new Struct();
+
 		// Verify behavior setting a nesting of multi-elements (Set of Array)
 		final Set<char[]> nestedSetValues = new HashSet<char[]>();
 		final char[] chars = { 'a', 'b', 'c' };
 		nestedSetValues.add(chars);
 
-		setFieldValue(mef, "nestedArray", nestedSetValues);
+		setFieldValue(struct, "nestedArray", nestedSetValues);
 
-		for (final char[] charVals : mef.nestedArray) {
+		for (final char[] charVals : struct.nestedArray) {
 			for (int i = 0; i < chars.length; i++) {
 				assertEquals(chars[i], charVals[i]);
 			}
@@ -142,15 +158,22 @@ public class ConversionUtilsTest {
 	 */
 	@Test
 	public void testSettingSingleElements() throws SecurityException {
+		class Struct {
+
+			private Double[] doubleArray;
+			private List<String> stringList;
+		}
+		final Struct struct = new Struct();
+
 		// Verify behavior setting a single element of an array
 		final double dVal = 6.3;
-		setFieldValue(mef, "doubleArray", dVal);
-		assertEquals(new Double(dVal), mef.doubleArray[0]);
+		setFieldValue(struct, "doubleArray", dVal);
+		assertEquals(new Double(dVal), struct.doubleArray[0]);
 
 		// Verify behavior setting a single element of a list
 		final String sVal = "I am a ghost";
-		setFieldValue(mef, "stringList", sVal);
-		assertEquals(sVal, mef.stringList.get(0));
+		setFieldValue(struct, "stringList", sVal);
+		assertEquals(sVal, struct.stringList.get(0));
 	}
 
 	/**
@@ -158,7 +181,14 @@ public class ConversionUtilsTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadPrimitiveArray() throws SecurityException {
-		setFieldValue(mef, "intArray", "not an int array");
+		class Struct {
+
+			@SuppressWarnings("unused")
+			private int[] intArray;
+		}
+		final Struct struct = new Struct();
+
+		setFieldValue(struct, "intArray", "not an int array");
 	}
 
 	/**
@@ -167,42 +197,84 @@ public class ConversionUtilsTest {
 	 */
 	@Test
 	public void testBadObjectElements() throws SecurityException {
+		class Struct {
+
+			private Double[] doubleArray;
+			private List<String> stringList;
+			@SuppressWarnings("unused")
+			private Set<char[]> nestedArray;
+		}
+		final Struct struct = new Struct();
+
 		// Test abnormal behavior for an object array
-		setFieldValue(mef, "doubleArray", "not a double array");
-		assertEquals(null, mef.doubleArray[0]);
+		setFieldValue(struct, "doubleArray", "not a double array");
+		assertEquals(null, struct.doubleArray[0]);
 
 		// Test abnormal behavior for a list
-		setFieldValue(mef, "nestedArray", "definitely not a set of char arrays");
-		assertNull(mef.stringList);
+		setFieldValue(struct, "nestedArray", "definitely not a set of char arrays");
+		assertNull(struct.stringList);
 	}
 
 	/**
 	 * Test behavior when setting a single element field with a collection and
 	 * array.
+	 * 
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadSingleton() throws SecurityException {
-		setFieldValue(mef, "singleValue", new int[] { 4, 8, 2 });
+	public void testBadSingleton() throws SecurityException, NoSuchFieldException
+	{
+		class Struct {
+
+			@SuppressWarnings("unused")
+			private int singleValue;
+		}
+		final Struct struct = new Struct();
+
+		setFieldValue(struct, "singleValue", new int[] { 4, 8, 2 });
 	}
 
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts a primitive array.
+	 * 
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonArray() throws SecurityException {
-		setFieldValue(mef, "arrayWrapper", new int[] { 4, 8, 2 });
-		assertNotNull(mef.arrayWrapper);
+	public void testLegitimateSingletonArray() throws SecurityException,
+		NoSuchFieldException
+	{
+		class Struct {
+
+			private ArrayWrapper arrayWrapper;
+		}
+		final Struct struct = new Struct();
+
+		setFieldValue(struct, "arrayWrapper", new int[] { 4, 8, 2 });
+		assertNotNull(struct.arrayWrapper);
 	}
 
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts collections.
+	 * 
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonCollection() throws SecurityException {
-		setFieldValue(mef, "listWrapper", getValueList(4, 8, 2));
-		assertNotNull(mef.listWrapper);
+	public void testLegitimateSingletonCollection() throws SecurityException,
+		NoSuchFieldException
+	{
+		class Struct {
+
+			private ListWrapper listWrapper;
+		}
+		final Struct struct = new Struct();
+
+		setFieldValue(struct, "listWrapper", getValueList(4, 8, 2));
+		assertNotNull(struct.listWrapper);
 	}
 
 // -- Helper Methods --
@@ -211,10 +283,10 @@ public class ConversionUtilsTest {
 	 * Convenience method to automatically get a field from a field name and call
 	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}.
 	 */
-	private void setFieldValue(final MultiElementFields mef,
-		final String fieldName, final Object value) throws SecurityException
+	private void setFieldValue(final Object o, final String fieldName,
+		final Object value) throws SecurityException
 	{
-		ClassUtils.setValue(ClassUtils.getField(mef.getClass(), fieldName), mef, value);
+		ClassUtils.setValue(ClassUtils.getField(o.getClass(), fieldName), o, value);
 	}
 
 	/**
@@ -228,24 +300,6 @@ public class ConversionUtilsTest {
 	}
 
 	// -- Helper Classes --
-
-	/**
-	 * Contains a variety of {@link Collection} and array fields (multi-element
-	 * fields) to test complex
-	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)} calls.
-	 */
-	private static class MultiElementFields {
-
-		public int[] intArray;
-		public Double[] doubleArray;
-		public List<String> stringList;
-		public Set<char[]> nestedArray;
-		public ArrayWrapper arrayWrapper;
-		public ListWrapper listWrapper;
-
-		@SuppressWarnings("unused")
-		public int singleValue;
-	}
 
 	/**
 	 * Dummy class with an array constructor to ensure that the logic to
