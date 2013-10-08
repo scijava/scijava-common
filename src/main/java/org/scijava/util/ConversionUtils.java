@@ -118,7 +118,8 @@ public class ConversionUtils {
 			}
 			return array;
 		}
-		else if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
+
+		if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
 			final ParameterizedType pType = (ParameterizedType) type;
 			// Get the actual class of this type
 			final Class<?> rawClass = (Class<?>) pType.getRawType();
@@ -163,8 +164,9 @@ public class ConversionUtils {
 				return collection;
 			}
 		}
+
 		// This wasn't a collection or array, so convert it as a single element.
-		else if (baseClass != null) return convert(value, baseClass);
+		if (baseClass != null) return convert(value, baseClass);
 
 		// Don't know how to convert the given object
 		return null;
