@@ -64,11 +64,11 @@ public class ConversionUtils {
 	/**
 	 * As {@link #convert(Object, Class)} but capable of creating and populating
 	 * multi-element objects ({@link Collection}s and array types). If a single
-	 * element type is provided, it will be converted as if the Class signature
-	 * was used. If a multi-element type is detected, then the value parameter
-	 * will be interpreted as potential collection of values. An appropriate
-	 * container will be created, and the full set of values will be type
-	 * converted and added.
+	 * element type is provided, it will be converted the same as
+	 * {@link #convert(Object, Class)}. If a multi-element type is detected, then
+	 * the value parameter will be interpreted as potential collection of values.
+	 * An appropriate container will be created, and the full set of values will
+	 * be type converted and added.
 	 * <p>
 	 * NB: This method should be capable of creating any array type, but if a
 	 * {@link Collection} interface or abstract class is provided we can only make
@@ -86,7 +86,9 @@ public class ConversionUtils {
 		if (type instanceof Class) baseClass = (Class<?>) type;
 
 		// First we make sure the value is a collection. This provides the simplest
-		// interface for iterating over all the elements.
+		// interface for iterating over all the elements. We use SciJava's
+		// PrimitiveArray collection implementations internally, so that this
+		// conversion is always wrapping by reference, for performance.
 		Collection items = ArrayUtils.toCollection(value);
 
 		// There are two possible signals that we're trying to create an array.
