@@ -14,7 +14,7 @@ repo="http://maven.imagej.net/content/repositories/releases"
 props() {
 	url="$repo/org/scijava/pom-scijava/$1/pom-scijava-$1.pom"
 	curl -s $url | \
-		grep '\.version' | \
+		grep '\.version>' | \
 		sed 's/<\/.*//' | \
 		sed 's/^	*<\(.*\)>/\1: /' | \
 		sort
