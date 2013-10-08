@@ -89,7 +89,7 @@ public class ConversionUtils {
 		// interface for iterating over all the elements. We use SciJava's
 		// PrimitiveArray collection implementations internally, so that this
 		// conversion is always wrapping by reference, for performance.
-		Collection items = ArrayUtils.toCollection(value);
+		final Collection items = ArrayUtils.toCollection(value);
 
 		// There are two possible signals that we're trying to create an array.
 		// We could have gotten an actual array class, or a GenericArrayType
@@ -105,24 +105,24 @@ public class ConversionUtils {
 				componentClass = baseClass.getComponentType();
 			}
 			else {
-				GenericArrayType gType = (GenericArrayType) type;
+				final GenericArrayType gType = (GenericArrayType) type;
 				componentClass = (Class<?>) gType.getGenericComponentType();
 			}
 
-			Object array = Array.newInstance(componentClass, items.size());
+			final Object array = Array.newInstance(componentClass, items.size());
 
 			// Populate the array by converting each item in the value collection
 			// to the component type
 			int index = 0;
-			for (Object item : items) {
+			for (final Object item : items) {
 				Array.set(array, index++, convert(item, componentClass));
 			}
 			return array;
 		}
 		else if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
-			ParameterizedType pType = (ParameterizedType) type;
+			final ParameterizedType pType = (ParameterizedType) type;
 			// Get the actual class of this type
-			Class<?> rawClass = (Class<?>) pType.getRawType();
+			final Class<?> rawClass = (Class<?>) pType.getRawType();
 
 			// Check to see if we have a type we know how to populate
 			if (Collection.class.isAssignableFrom(rawClass)) {
@@ -136,10 +136,12 @@ public class ConversionUtils {
 					// We don't have a concrete class. If it's a set or a list, we can
 					// provide the typical default implementation. Otherwise we won't
 					// convert
-					if (List.class.isAssignableFrom(rawClass)) collection =
-						new ArrayList();
-					else if (Set.class.isAssignableFrom(rawClass)) collection =
-						new HashSet();
+					if (List.class.isAssignableFrom(rawClass)) {
+						collection = new ArrayList<Object>();
+					}
+					else if (Set.class.isAssignableFrom(rawClass)) {
+						collection = new HashSet<Object>();
+					}
 					else return null;
 				}
 				else {
@@ -147,12 +149,12 @@ public class ConversionUtils {
 					try {
 						collection = (Collection) rawClass.newInstance();
 					}
-					catch (Exception e) {
+					catch (final Exception e) {
 						return null;
 					}
 				}
 				// Populate the collection
-				for (Object item : items) {
+				for (final Object item : items) {
 					collection.add(convert(item, pType.getActualTypeArguments()[0]));
 				}
 
@@ -256,11 +258,12 @@ public class ConversionUtils {
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
-			for (Constructor<?> ctor : saneType.getConstructors()) {
-				Class<?>[] params = ctor.getParameterTypes();
-				if (params.length == 1 && params[0].isAssignableFrom(value.getClass())) {
+			for (final Constructor<?> ctor : saneType.getConstructors()) {
+				final Class<?>[] params = ctor.getParameterTypes();
+				if (params.length == 1 && params[0].isAssignableFrom(value.getClass()))
+				{
 					@SuppressWarnings("unchecked")
-					T instance = (T)ctor.newInstance(value);
+					final T instance = (T) ctor.newInstance(value);
 					return instance;
 				}
 			}
