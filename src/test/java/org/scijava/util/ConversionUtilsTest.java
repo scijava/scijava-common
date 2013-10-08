@@ -157,6 +157,38 @@ public class ConversionUtilsTest {
 	}
 
 	/**
+	 * Tests conversion <em>to</em> a subclass of a collection.
+	 */
+	@Test
+	public void testToCollectionSubclass() {
+		class Struct {
+
+			private ListExtension<Double> myDoubles;
+			private StringListExtension myStrings;
+		}
+		final Struct struct = new Struct();
+
+		final LongArray longArray = new LongArray();
+		longArray.add(123456789012L);
+		longArray.add(987654321098L);
+
+		// Conversion to list of Doubles (with a generic parameter) succeeds.
+
+		setFieldValue(struct, "myDoubles", longArray);
+
+		assertNotNull(struct.myDoubles);
+		assertEquals(2, struct.myDoubles.size());
+		assertEquals(123456789012.0, struct.myDoubles.get(0), 0.0);
+		assertEquals(987654321098.0, struct.myDoubles.get(1), 0.0);
+
+		// Conversion to a list of strings (with no generic parameter) fails.
+
+		setFieldValue(struct, "myStrings", longArray);
+
+		assertNull(struct.myStrings);
+	}
+
+	/**
 	 * Tests populating nested multi-element objects (collection of arrays).
 	 */
 	@Test
@@ -354,6 +386,16 @@ public class ConversionUtilsTest {
 		public ListWrapper(final List<?> gonnaWrapThisList) {
 			// nothing to do
 		}
+	}
+
+	/** Extension of {@link ArrayList} which retains a generic parameter. */
+	public static class ListExtension<T> extends ArrayList<T> {
+		// NB: No implementation needed.
+	}
+
+	/** Extension of {@link ArrayList} which resolves the generic parameter. */
+	public static class StringListExtension extends ArrayList<String> {
+		// NB: No implementation needed.
 	}
 
 }
