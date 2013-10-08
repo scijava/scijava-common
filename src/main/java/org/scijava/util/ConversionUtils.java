@@ -104,7 +104,7 @@ public class ConversionUtils {
 			return array;
 		}
 
-		if (ParameterizedType.class.isAssignableFrom(type.getClass())) {
+		if (type instanceof ParameterizedType) {
 			final ParameterizedType pType = (ParameterizedType) type;
 			// Get the actual class of this type
 			final Class<?> rawClass = (Class<?>) pType.getRawType();
