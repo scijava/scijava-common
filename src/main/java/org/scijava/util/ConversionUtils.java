@@ -96,7 +96,7 @@ public class ConversionUtils {
 			final Object array = Array.newInstance(componentClass, items.size());
 
 			// Populate the array by converting each item in the value collection
-			// to the component type
+			// to the component type.
 			int index = 0;
 			for (final Object item : items) {
 				Array.set(array, index++, convert(item, componentClass));
@@ -104,12 +104,14 @@ public class ConversionUtils {
 			return array;
 		}
 
+		// Handle parameterized collection types.
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType pType = (ParameterizedType) type;
-			// Get the actual class of this type
+
+			// Get the actual class of this type.
 			final Class<?> rawClass = (Class<?>) pType.getRawType();
 
-			// Check to see if we have a type we know how to populate
+			// Check to see if we have a type we know how to populate.
 			if (Collection.class.isAssignableFrom(rawClass)) {
 				Collection<Object> collection;
 
@@ -120,7 +122,7 @@ public class ConversionUtils {
 				{
 					// We don't have a concrete class. If it's a set or a list, we can
 					// provide the typical default implementation. Otherwise we won't
-					// convert
+					// convert.
 					if (List.class.isAssignableFrom(rawClass)) {
 						collection = new ArrayList<Object>();
 					}
@@ -141,7 +143,7 @@ public class ConversionUtils {
 						return null;
 					}
 				}
-				// Populate the collection
+				// Populate the collection.
 				for (final Object item : items) {
 					collection.add(convert(item, pType.getActualTypeArguments()[0]));
 				}
@@ -153,7 +155,7 @@ public class ConversionUtils {
 		// This wasn't a collection or array, so convert it as a single element.
 		if (baseClass != null) return convert(value, baseClass);
 
-		// Don't know how to convert the given object
+		// Don't know how to convert the given object.
 		return null;
 	}
 
