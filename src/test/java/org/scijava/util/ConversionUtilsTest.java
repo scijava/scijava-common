@@ -66,9 +66,7 @@ public class ConversionUtilsTest {
 	 * Tests populating a primitive array.
 	 */
 	@Test
-	public void testPrimitiveArray() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testPrimitiveArray() throws SecurityException {
 		final List<Integer> intVals = getValueList(4, 3, 7);
 		setFieldValue(mef, "intArray", intVals);
 
@@ -88,7 +86,7 @@ public class ConversionUtilsTest {
 	 * Tests populating an array type of Objects.
 	 */
 	@Test
-	public void testObjectArray() throws SecurityException, NoSuchFieldException {
+	public void testObjectArray() throws SecurityException {
 		// Verify behavior setting an array of Objects (Doubles)
 		final List<Double> doubleVals = getValueList(1.0, 2.0, 3.0);
 		setFieldValue(mef, "doubleArray", doubleVals);
@@ -102,7 +100,7 @@ public class ConversionUtilsTest {
 	 * Tests populating a collection.
 	 */
 	@Test
-	public void testCollection() throws SecurityException, NoSuchFieldException {
+	public void testCollection() throws SecurityException {
 		// Verify behavior setting a List of Objects (Strings)
 		final List<String> stringVals = getValueList("ok", "still ok");
 		setFieldValue(mef, "stringList", stringVals);
@@ -123,9 +121,7 @@ public class ConversionUtilsTest {
 	 * Tests populating nested multi-element objects (collection of arrays).
 	 */
 	@Test
-	public void testNestingMultiElements() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testNestingMultiElements() throws SecurityException {
 		// Verify behavior setting a nesting of multi-elements (Set of Array)
 		final Set<char[]> nestedSetValues = new HashSet<char[]>();
 		final char[] chars = { 'a', 'b', 'c' };
@@ -145,9 +141,7 @@ public class ConversionUtilsTest {
 	 * collection/array.
 	 */
 	@Test
-	public void testSettingSingleElements() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testSettingSingleElements() throws SecurityException {
 		// Verify behavior setting a single element of an array
 		final double dVal = 6.3;
 		setFieldValue(mef, "doubleArray", dVal);
@@ -163,9 +157,7 @@ public class ConversionUtilsTest {
 	 * Tests setting an incompatible element value for a primitive array.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadPrimitiveArray() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testBadPrimitiveArray() throws SecurityException {
 		setFieldValue(mef, "intArray", "not an int array");
 	}
 
@@ -174,9 +166,7 @@ public class ConversionUtilsTest {
 	 * and a collection.
 	 */
 	@Test
-	public void testBadObjectElements() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testBadObjectElements() throws SecurityException {
 		// Test abnormal behavior for an object array
 		setFieldValue(mef, "doubleArray", "not a double array");
 		assertEquals(null, mef.doubleArray[0]);
@@ -189,27 +179,18 @@ public class ConversionUtilsTest {
 	/**
 	 * Test behavior when setting a single element field with a collection and
 	 * array.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadSingleton() throws SecurityException, NoSuchFieldException
-	{
+	public void testBadSingleton() throws SecurityException {
 		setFieldValue(mef, "singleValue", new int[] { 4, 8, 2 });
 	}
 
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts a primitive array.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonArray() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testLegitimateSingletonArray() throws SecurityException {
 		setFieldValue(mef, "arrayWrapper", new int[] { 4, 8, 2 });
 		assertNotNull(mef.arrayWrapper);
 	}
@@ -217,14 +198,9 @@ public class ConversionUtilsTest {
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts collections.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonCollection() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testLegitimateSingletonCollection() throws SecurityException {
 		setFieldValue(mef, "listWrapper", getValueList(4, 8, 2));
 		assertNotNull(mef.listWrapper);
 	}
@@ -236,10 +212,9 @@ public class ConversionUtilsTest {
 	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}.
 	 */
 	private void setFieldValue(final MultiElementFields mef,
-		final String fieldName, final Object value) throws SecurityException,
-		NoSuchFieldException
+		final String fieldName, final Object value) throws SecurityException
 	{
-		ClassUtils.setValue(mef.getClass().getField(fieldName), mef, value);
+		ClassUtils.setValue(ClassUtils.getField(mef.getClass(), fieldName), mef, value);
 	}
 
 	/**
