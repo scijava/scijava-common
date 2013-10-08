@@ -227,7 +227,7 @@ public class ConversionUtilsTest {
 		return list;
 	}
 
-	// -- Helper Classic --
+	// -- Helper Classes --
 
 	/**
 	 * Contains a variety of {@link Collection} and array fields (multi-element
