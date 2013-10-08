@@ -79,7 +79,6 @@ public class ConversionUtils {
 	 * @param value The object to convert.
 	 * @param type Type to which the object should be converted.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(final Object value, final Type type) {
 		Class<?> baseClass = null;
 
@@ -89,7 +88,7 @@ public class ConversionUtils {
 		// interface for iterating over all the elements. We use SciJava's
 		// PrimitiveArray collection implementations internally, so that this
 		// conversion is always wrapping by reference, for performance.
-		final Collection items = ArrayUtils.toCollection(value);
+		final Collection<?> items = ArrayUtils.toCollection(value);
 
 		// There are two possible signals that we're trying to create an array.
 		// We could have gotten an actual array class, or a GenericArrayType
@@ -126,7 +125,7 @@ public class ConversionUtils {
 
 			// Check to see if we have a type we know how to populate
 			if (Collection.class.isAssignableFrom(rawClass)) {
-				Collection collection;
+				Collection<Object> collection;
 
 				// If we were given an interface or abstract class, and not a concrete
 				// class, we attempt to make default implementations.
@@ -147,7 +146,10 @@ public class ConversionUtils {
 				else {
 					// Got a concrete type. Instantiate it.
 					try {
-						collection = (Collection) rawClass.newInstance();
+						@SuppressWarnings("unchecked")
+						final Collection<Object> c =
+							(Collection<Object>) rawClass.newInstance();
+						collection = c;
 					}
 					catch (final Exception e) {
 						return null;
