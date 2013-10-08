@@ -225,8 +225,8 @@ public class ConversionUtilsTest {
 	public void testLegitimateSingletonCollection() throws SecurityException,
 		NoSuchFieldException
 	{
-		setFieldValue(mef, "collectionWrapper", getValueList(4, 8, 2));
-		assertNotNull(mef.collectionWrapper);
+		setFieldValue(mef, "listWrapper", getValueList(4, 8, 2));
+		assertNotNull(mef.listWrapper);
 	}
 
 // -- Helper Methods --
@@ -266,7 +266,7 @@ public class ConversionUtilsTest {
 		public List<String> stringList;
 		public Set<char[]> nestedArray;
 		public ArrayWrapper arrayWrapper;
-		public CollectionWrapper collectionWrapper;
+		public ListWrapper listWrapper;
 
 		@SuppressWarnings("unused")
 		public int singleValue;
@@ -286,14 +286,14 @@ public class ConversionUtilsTest {
 	}
 
 	/**
-	 * Dummy class with an array constructor to ensure that the logic to
-	 * recursively convert collections doesn't consume the collections improperly
-	 * when it should be used in the constructor of an object.
+	 * Dummy class with a list constructor to ensure that the logic to recursively
+	 * convert collections doesn't consume the list improperly when it should be
+	 * used in the constructor of an object.
 	 */
-	private static class CollectionWrapper {
+	private static class ListWrapper {
 
 		@SuppressWarnings("unused")
-		public CollectionWrapper(final List<?> gonnaWrapThisCollection) {
+		public ListWrapper(final List<?> gonnaWrapThisList) {
 			// nothing to do
 		}
 	}
