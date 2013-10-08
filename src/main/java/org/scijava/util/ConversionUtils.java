@@ -90,24 +90,9 @@ public class ConversionUtils {
 		// conversion is always wrapping by reference, for performance.
 		final Collection<?> items = ArrayUtils.toCollection(value);
 
-		// There are two possible signals that we're trying to create an array.
-		// We could have gotten an actual array class, or a GenericArrayType
-		// instance. Both are handled basically the same
-		if (GenericArrayType.class.isAssignableFrom(type.getClass()) ||
-			(baseClass != null && baseClass.isArray()))
-		{
-			Class<?> componentClass;
-
-			// Based on which test got us here, we get the component type of the
-			// array
-			if (baseClass != null && baseClass.isArray()) {
-				componentClass = baseClass.getComponentType();
-			}
-			else {
-				final GenericArrayType gType = (GenericArrayType) type;
-				componentClass = (Class<?>) gType.getGenericComponentType();
-			}
-
+		// Handle array types, including generic array types.
+		final Class<?> componentClass = getComponentClass(type);
+		if (componentClass != null) {
 			final Object array = Array.newInstance(componentClass, items.size());
 
 			// Populate the array by converting each item in the value collection
@@ -407,4 +392,20 @@ public class ConversionUtils {
 		final T result = (T) defaultValue;
 		return result;
 	}
+
+	/**
+	 * Gets the component type of the given array type, or null if not an array.
+	 * Supports both regular array types (i.e., {@link Class#getComponentType()}
+	 * if {@code type} is a {@link Class}) and generic array types (i.e.,
+	 * {@link GenericArrayType#getGenericComponentType()} if {@code type} is a
+	 * {@link GenericArrayType}).
+	 */
+	public static Class<?> getComponentClass(final Type type) {
+		if (type instanceof Class) return ((Class<?>) type).getComponentType();
+		if (type instanceof GenericArrayType) {
+			return (Class<?>) ((GenericArrayType) type).getGenericComponentType();
+		}
+		return null;
+	}
+
 }
