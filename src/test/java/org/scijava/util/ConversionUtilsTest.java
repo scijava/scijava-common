@@ -130,10 +130,10 @@ public class ConversionUtilsTest {
 	}
 
 	/**
-	 * Tests populating a subclass of a collection.
+	 * Tests conversion <em>from</em> a subclass of a collection.
 	 */
 	@Test
-	public void testCollectionSubclass() throws SecurityException {
+	public void testFromCollectionSubclass() throws SecurityException {
 		class RandomSet extends HashSet<Random> {
 			// NB: No implementation needed.
 		}
