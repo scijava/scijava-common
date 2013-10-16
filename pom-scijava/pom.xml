@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.86</version>
+	<version>1.87</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -25,7 +25,7 @@
 
 		<!-- Bio-Formats - https://github.com/openmicroscopy/bioformats -->
 		<bio-formats.groupId>loci</bio-formats.groupId>
-		<bio-formats.version>4.4.8</bio-formats.version>
+		<bio-formats.version>4.4.9</bio-formats.version>
 
 		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
