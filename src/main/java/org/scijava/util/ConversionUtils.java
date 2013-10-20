@@ -395,6 +395,24 @@ public class ConversionUtils {
 	}
 
 	/**
+	 * Gets the raw class corresponding to the given type.
+	 * <p>
+	 * If the type is a {@link Class} it is simply casted. In the case of a
+	 * {@link ParameterizedType}, then {@link ParameterizedType#getRawType()} is
+	 * returned. Otherwise, returns null.
+	 * </p>
+	 */
+	public static Class<?> getClass(final Type type) {
+		if (type instanceof Class) return (Class<?>) type;
+
+		if (type instanceof ParameterizedType) {
+			return getClass(((ParameterizedType) type).getRawType());
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets the component type of the given array type, or null if not an array.
 	 * Supports both regular array types (i.e., {@link Class#getComponentType()}
 	 * if {@code type} is a {@link Class}) and generic array types (i.e.,
