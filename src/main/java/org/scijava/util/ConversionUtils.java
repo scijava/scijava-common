@@ -187,8 +187,7 @@ public class ConversionUtils {
 		try {
 			for (final Constructor<?> ctor : saneType.getConstructors()) {
 				final Class<?>[] params = ctor.getParameterTypes();
-				if (params.length == 1 && params[0].isAssignableFrom(value.getClass()))
-				{
+				if (params.length == 1 && canCast(value, params[0])) {
 					@SuppressWarnings("unchecked")
 					final T instance = (T) ctor.newInstance(value);
 					return instance;
@@ -220,7 +219,7 @@ public class ConversionUtils {
 
 		// OK if source type is string and destination type is character
 		// (in this case, the first character of the string would be used)
-		if (String.class.isAssignableFrom(c) && saneType == Character.class) {
+		if (canCast(c, String.class) && saneType == Character.class) {
 			return true;
 		}
 
