@@ -87,25 +87,13 @@ public final class ArrayUtils {
 			return new DoubleArray((double[]) value);
 		}
 		if (value instanceof Object[]) {
-			final Class<?> type = value.getClass().getComponentType();
-			return makeObjectArray((Object[]) value, type);
+			return new ObjectArray<Object>((Object[]) value);
 		}
 		// This object is neither an array nor a collection.
 		// So we wrap it in a list and return.
 		final List<Object> list = new ArrayList<Object>();
 		list.add(value);
 		return list;
-	}
-
-	/**
-	 * Created a new {@link ObjectArray} instance wrapping the provided Object[],
-	 * parameterized using the given Class instance.
-	 */
-	@SuppressWarnings("unchecked")
-	private static <T> ObjectArray<T> makeObjectArray(final Object[] values,
-		@SuppressWarnings("unused") final Class<T> type)
-	{
-		return new ObjectArray<T>((T[]) values);
 	}
 
 }
