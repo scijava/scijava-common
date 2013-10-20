@@ -171,6 +171,7 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static <T> T convert(final Object value, final Class<T> type) {
+		if (type == null) return null;
 		if (value == null) return getNullValue(type);
 
 		// ensure type is well-behaved, rather than a primitive type
