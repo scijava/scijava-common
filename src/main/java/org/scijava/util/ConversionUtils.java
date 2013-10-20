@@ -80,9 +80,7 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static Object convert(final Object value, final Type type) {
-		Class<?> baseClass = null;
-
-		if (type instanceof Class) baseClass = (Class<?>) type;
+		final Class<?> baseClass = type instanceof Class ? (Class<?>) type : null;
 
 		// First we make sure the value is a collection. This provides the simplest
 		// interface for iterating over all the elements. We use SciJava's
