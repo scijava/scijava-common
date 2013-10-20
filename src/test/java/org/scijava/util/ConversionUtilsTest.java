@@ -60,7 +60,7 @@ public class ConversionUtilsTest {
 	 * Tests populating a primitive array.
 	 */
 	@Test
-	public void testPrimitiveArray() throws SecurityException {
+	public void testPrimitiveArray() {
 		class Struct {
 
 			private int[] intArray;
@@ -86,7 +86,7 @@ public class ConversionUtilsTest {
 	 * Tests populating an array type of Objects.
 	 */
 	@Test
-	public void testObjectArray() throws SecurityException {
+	public void testObjectArray() {
 		class Struct {
 
 			private Double[] doubleArray;
@@ -106,7 +106,7 @@ public class ConversionUtilsTest {
 	 * Tests populating a collection.
 	 */
 	@Test
-	public void testCollection() throws SecurityException {
+	public void testCollection() {
 		class Struct {
 
 			private List<String> stringList;
@@ -133,7 +133,7 @@ public class ConversionUtilsTest {
 	 * Tests conversion <em>from</em> a subclass of a collection.
 	 */
 	@Test
-	public void testFromCollectionSubclass() throws SecurityException {
+	public void testFromCollectionSubclass() {
 		class RandomSet extends HashSet<Random> {
 			// NB: No implementation needed.
 		}
@@ -192,7 +192,7 @@ public class ConversionUtilsTest {
 	 * Tests populating nested multi-element objects (collection of arrays).
 	 */
 	@Test
-	public void testNestingMultiElements() throws SecurityException {
+	public void testNestingMultiElements() {
 		class Struct {
 
 			private Set<char[]> nestedArray;
@@ -218,7 +218,7 @@ public class ConversionUtilsTest {
 	 * collection/array.
 	 */
 	@Test
-	public void testSettingSingleElements() throws SecurityException {
+	public void testSettingSingleElements() {
 		class Struct {
 
 			private Double[] doubleArray;
@@ -241,7 +241,7 @@ public class ConversionUtilsTest {
 	 * Tests setting an incompatible element value for a primitive array.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadPrimitiveArray() throws SecurityException {
+	public void testBadPrimitiveArray() {
 		class Struct {
 
 			@SuppressWarnings("unused")
@@ -257,7 +257,7 @@ public class ConversionUtilsTest {
 	 * and a collection.
 	 */
 	@Test
-	public void testBadObjectElements() throws SecurityException {
+	public void testBadObjectElements() {
 		class Struct {
 
 			private Double[] doubleArray;
@@ -279,13 +279,9 @@ public class ConversionUtilsTest {
 	/**
 	 * Test behavior when setting a single element field with a collection and
 	 * array.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadSingleton() throws SecurityException, NoSuchFieldException
-	{
+	public void testBadSingleton() {
 		class Struct {
 
 			@SuppressWarnings("unused")
@@ -299,14 +295,9 @@ public class ConversionUtilsTest {
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts a primitive array.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonArray() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testLegitimateSingletonArray() {
 		class Struct {
 
 			private ArrayWrapper arrayWrapper;
@@ -320,14 +311,9 @@ public class ConversionUtilsTest {
 	/**
 	 * Test behavior when setting a single element field with a constructor that
 	 * accepts collections.
-	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
 	 */
 	@Test
-	public void testLegitimateSingletonCollection() throws SecurityException,
-		NoSuchFieldException
-	{
+	public void testLegitimateSingletonCollection() {
 		class Struct {
 
 			private ListWrapper listWrapper;
@@ -345,7 +331,7 @@ public class ConversionUtilsTest {
 	 * {@link ClassUtils#setValue(java.lang.reflect.Field, Object, Object)}.
 	 */
 	private void setFieldValue(final Object o, final String fieldName,
-		final Object value) throws SecurityException
+		final Object value)
 	{
 		ClassUtils.setValue(ClassUtils.getField(o.getClass(), fieldName), o, value);
 	}
