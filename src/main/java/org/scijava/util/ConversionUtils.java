@@ -80,81 +80,18 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static Object convert(final Object value, final Type type) {
-		final Class<?> baseClass = type instanceof Class ? (Class<?>) type : null;
-
-		// First we make sure the value is a collection. This provides the simplest
-		// interface for iterating over all the elements. We use SciJava's
-		// PrimitiveArray collection implementations internally, so that this
-		// conversion is always wrapping by reference, for performance.
-		final Collection<?> items = ArrayUtils.toCollection(value);
-
 		// Handle array types, including generic array types.
-		final Class<?> componentClass = getComponentClass(type);
-		if (componentClass != null) {
-			final Object array = Array.newInstance(componentClass, items.size());
-
-			// Populate the array by converting each item in the value collection
-			// to the component type.
-			int index = 0;
-			for (final Object item : items) {
-				Array.set(array, index++, convert(item, componentClass));
-			}
-			return array;
+		if (isArray(type)) {
+			return convertToArray(value, getComponentClass(type));
 		}
 
 		// Handle parameterized collection types.
-		if (type instanceof ParameterizedType) {
-			final ParameterizedType pType = (ParameterizedType) type;
-
-			// Get the actual class of this type.
-			final Class<?> rawClass = (Class<?>) pType.getRawType();
-
-			// Check to see if we have a type we know how to populate.
-			if (Collection.class.isAssignableFrom(rawClass)) {
-				Collection<Object> collection;
-
-				// If we were given an interface or abstract class, and not a concrete
-				// class, we attempt to make default implementations.
-				if (rawClass.isInterface() ||
-					Modifier.isAbstract(rawClass.getModifiers()))
-				{
-					// We don't have a concrete class. If it's a set or a list, we can
-					// provide the typical default implementation. Otherwise we won't
-					// convert.
-					if (List.class.isAssignableFrom(rawClass)) {
-						collection = new ArrayList<Object>();
-					}
-					else if (Set.class.isAssignableFrom(rawClass)) {
-						collection = new HashSet<Object>();
-					}
-					else return null;
-				}
-				else {
-					// Got a concrete type. Instantiate it.
-					try {
-						@SuppressWarnings("unchecked")
-						final Collection<Object> c =
-							(Collection<Object>) rawClass.newInstance();
-						collection = c;
-					}
-					catch (final Exception e) {
-						return null;
-					}
-				}
-				// Populate the collection.
-				for (final Object item : items) {
-					collection.add(convert(item, pType.getActualTypeArguments()[0]));
-				}
-
-				return collection;
-			}
+		if (type instanceof ParameterizedType && isCollection(type)) {
+			return convertToCollection(value, (ParameterizedType) type);
 		}
 
 		// This wasn't a collection or array, so convert it as a single element.
-		if (baseClass != null) return convert(value, baseClass);
-
-		// Don't know how to convert the given object.
-		return null;
+		return convert(value, getClass(type));
 	}
 
 	/**
@@ -425,6 +362,77 @@ public class ConversionUtils {
 			return (Class<?>) ((GenericArrayType) type).getGenericComponentType();
 		}
 		return null;
+	}
+
+	// -- Helper methods --
+
+	private static boolean isArray(final Type type) {
+		return getComponentClass(type) != null;
+	}
+
+	private static boolean isCollection(final Type type) {
+		return canCast(getClass(type), Collection.class);
+	}
+
+	private static Object convertToArray(final Object value,
+		final Class<?> componentType)
+	{
+		// First we make sure the value is a collection. This provides the simplest
+		// interface for iterating over all the elements. We use SciJava's
+		// PrimitiveArray collection implementations internally, so that this
+		// conversion is always wrapping by reference, for performance.
+		final Collection<?> items = ArrayUtils.toCollection(value);
+
+		final Object array = Array.newInstance(componentType, items.size());
+
+		// Populate the array by converting each item in the value collection
+		// to the component type.
+		int index = 0;
+		for (final Object item : items) {
+			Array.set(array, index++, convert(item, componentType));
+		}
+		return array;
+	}
+
+	private static Object convertToCollection(final Object value,
+		final ParameterizedType pType)
+	{
+		final Collection<Object> collection = createCollection(getClass(pType));
+		if (collection == null) return null;
+
+		// Populate the collection.
+		final Collection<?> items = ArrayUtils.toCollection(value);
+		final Type collectionType = pType.getActualTypeArguments()[0];
+		for (final Object item : items) {
+			collection.add(convert(item, collectionType));
+		}
+
+		return collection;
+	}
+
+	private static Collection<Object> createCollection(final Class<?> type) {
+		// If we were given an interface or abstract class, and not a concrete
+		// class, we attempt to make default implementations.
+		if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
+			// We don't have a concrete class. If it's a set or a list, we use
+			// the typical default implementation. Otherwise we won't convert.
+			if (canCast(type, List.class)) return new ArrayList<Object>();
+			if (canCast(type, Set.class)) return new HashSet<Object>();
+			return null;
+		}
+
+		// Got a concrete type. Instantiate it.
+		try {
+			@SuppressWarnings("unchecked")
+			final Collection<Object> c = (Collection<Object>) type.newInstance();
+			return c;
+		}
+		catch (final InstantiationException exc) {
+			return null;
+		}
+		catch (final IllegalAccessException exc) {
+			return null;
+		}
 	}
 
 }
