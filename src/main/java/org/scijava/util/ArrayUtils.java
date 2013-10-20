@@ -90,7 +90,7 @@ public final class ArrayUtils {
 			final Class<?> type = value.getClass().getComponentType();
 			return makeObjectArray((Object[]) value, type);
 		}
-		// This object is a neither an array nor a collection.
+		// This object is neither an array nor a collection.
 		// So we wrap it in a list and return.
 		final List<Object> list = new ArrayList<Object>();
 		list.add(value);
