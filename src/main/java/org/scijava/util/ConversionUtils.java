@@ -185,15 +185,11 @@ public class ConversionUtils {
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
-			for (final Constructor<?> ctor : saneType.getConstructors()) {
-				final Class<?>[] params = ctor.getParameterTypes();
-				if (params.length == 1 && canCast(value, params[0])) {
-					@SuppressWarnings("unchecked")
-					final T instance = (T) ctor.newInstance(value);
-					return instance;
-				}
-			}
-			return null;
+			final Constructor<?> ctor = getConstructor(saneType, value.getClass());
+			if (ctor == null) return null;
+			@SuppressWarnings("unchecked")
+			final T instance = (T) ctor.newInstance(value);
+			return instance;
 		}
 		catch (final Exception exc) {
 			// no known way to convert
@@ -225,8 +221,7 @@ public class ConversionUtils {
 
 		// OK if appropriate wrapper constructor exists
 		try {
-			saneType.getConstructor(c);
-			return true;
+			return getConstructor(saneType, c) != null;
 		}
 		catch (final Exception exc) {
 			// no known way to convert
@@ -364,6 +359,18 @@ public class ConversionUtils {
 	}
 
 	// -- Helper methods --
+
+	private static Constructor<?> getConstructor(final Class<?> type,
+		final Class<?> argType)
+	{
+		for (final Constructor<?> ctor : type.getConstructors()) {
+			final Class<?>[] params = ctor.getParameterTypes();
+			if (params.length == 1 && canCast(argType, params[0])) {
+				return ctor;
+			}
+		}
+		return null;
+	}
 
 	private static boolean isArray(final Type type) {
 		return getComponentClass(type) != null;

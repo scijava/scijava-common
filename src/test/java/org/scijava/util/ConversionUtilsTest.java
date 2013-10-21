@@ -118,8 +118,7 @@ public class ConversionUtilsTest {
 		// check conversion of various types w/ appropriate constructor
 		assertTrue(ConversionUtils.canConvert(String.class, Double.class));
 		assertTrue(ConversionUtils.canConvert(Collection.class, ArrayList.class));
-		// FIXME: Change the next behavior. HashSet is assignable to Collection.
-		assertFalse(ConversionUtils.canConvert(HashSet.class, ArrayList.class));
+		assertTrue(ConversionUtils.canConvert(HashSet.class, ArrayList.class));
 		assertTrue(ConversionUtils.canConvert(long.class, Date.class));
 
 		// check lack of conversion of various types w/o appropriate constructor
