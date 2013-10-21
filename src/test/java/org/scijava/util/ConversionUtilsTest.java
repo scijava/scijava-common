@@ -242,6 +242,26 @@ public class ConversionUtilsTest {
 		assertSame(HashMap.class, getClass(Struct.class, "map"));
 	}
 
+	/** Tests {@link ConversionUtils#getComponentClass(Type)}. */
+	@Test
+	public void testGetComponentClass() {
+		@SuppressWarnings("unused")
+		class Struct {
+			private int[] intArray;
+			private double d;
+			private String[][] strings;
+			private Void v;
+			private List<String>[] list;
+			private HashMap<Integer, Float> map;
+		}
+		assertSame(int.class, getComponentClass(Struct.class, "intArray"));
+		assertNull(getComponentClass(Struct.class, "d"));
+		assertSame(String[].class, getComponentClass(Struct.class, "strings"));
+		assertSame(null, getComponentClass(Struct.class, "v"));
+		assertSame(List.class, getComponentClass(Struct.class, "list"));
+		assertSame(null, getComponentClass(Struct.class, "map"));
+	}
+
 	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
 	@Test
 	public void testGetNonprimitiveType() {
@@ -660,6 +680,14 @@ public class ConversionUtilsTest {
 	 */
 	private Class<?> getClass(final Class<?> c, final String fieldName) {
 		return ConversionUtils.getClass(type(c, fieldName));
+	}
+
+	/**
+	 * Convenience method to call {@link ConversionUtils#getComponentClass(Type)}
+	 * on a field.
+	 */
+	private Class<?> getComponentClass(final Class<?> c, final String fieldName) {
+		return ConversionUtils.getComponentClass(type(c, fieldName));
 	}
 
 	// -- Helper Classes --
