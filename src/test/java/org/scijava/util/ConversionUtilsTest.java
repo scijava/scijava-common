@@ -41,6 +41,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -224,6 +225,51 @@ public class ConversionUtilsTest {
 		final int intStamp = (int) datestamp;
 		final Date intToDate = ConversionUtils.convert(intStamp, Date.class);
 		assertNull(intToDate);
+	}
+
+	/**
+	 * Tests {@link ConversionUtils#convert(Object, Class)} in subclassing cases.
+	 */
+	@Test
+	public void testConvertSubclass() {
+		final HisList hisList = new HisList();
+		hisList.add("Foo");
+		hisList.add("Bar");
+
+		// ArrayList<String> subclass to ArrayList<String> subclass
+		final HerList herList = ConversionUtils.convert(hisList, HerList.class);
+		assertEquals(2, herList.size());
+		assertEquals("Foo", herList.get(0));
+		assertEquals("Bar", herList.get(1));
+
+		// ArrayList<String> subclass to ArrayList<Object> subclass
+		final ObjectList objectList =
+			ConversionUtils.convert(hisList, ObjectList.class);
+		assertEquals(2, objectList.size());
+		assertEquals("Foo", objectList.get(0));
+		assertEquals("Bar", objectList.get(1));
+
+		// ArrayList<Object> subclass to ArrayList<String> subclass
+		final HisList objectToHisList =
+			ConversionUtils.convert(objectList, HisList.class);
+		assertEquals(2, objectToHisList.size());
+		assertEquals("Foo", objectToHisList.get(0));
+		assertEquals("Bar", objectToHisList.get(1));
+
+		// ArrayList<String> subclass to ArrayList<Number> subclass
+		// This surprisingly works due to type erasure... dangerous stuff.
+		final NumberList hisToNumberList =
+			ConversionUtils.convert(hisList, NumberList.class);
+		assertEquals(2, hisToNumberList.size());
+		assertEquals("Foo", hisToNumberList.get(0));
+		assertEquals("Bar", hisToNumberList.get(1));
+		try {
+			final Number n0 = hisToNumberList.get(0);
+			fail("expected ClassCastException but got: " + n0);
+		}
+		catch (final ClassCastException exc) {
+			// NB: Exception expected.
+		}
 	}
 
 	/** Tests {@link ConversionUtils#getClass(Type)}. */
@@ -695,6 +741,53 @@ public class ConversionUtilsTest {
 	}
 
 	// -- Helper Classes --
+
+	/**
+	 * Helper class for testing conversion of one {@link ArrayList} subclass to
+	 * another.
+	 */
+	private static class HisList extends ArrayList<String> {
+		public HisList() {
+			super();
+		}
+		@SuppressWarnings("unused")
+		public HisList(final Collection<? extends String> c) {
+			super(c);
+		}
+	}
+
+	/**
+	 * Helper class for testing conversion of one {@link ArrayList} subclass to
+	 * another.
+	 */
+	private static class HerList extends ArrayList<String> {
+		@SuppressWarnings("unused")
+		public HerList(final Collection<? extends String> c) {
+			super(c);
+		}
+	}
+
+	/**
+	 * Helper class for testing conversion of one {@link ArrayList} subclass to
+	 * another.
+	 */
+	private static class ObjectList extends ArrayList<Object> {
+		@SuppressWarnings("unused")
+		public ObjectList(final Collection<? extends Object> c) {
+			super(c);
+		}
+	}
+
+	/**
+	 * Helper class for testing conversion of one {@link ArrayList} subclass to
+	 * another.
+	 */
+	private static class NumberList extends ArrayList<Number> {
+		@SuppressWarnings("unused")
+		public NumberList(final Collection<? extends Number> c) {
+			super(c);
+		}
+	}
 
 	/**
 	 * Dummy class with an array constructor to ensure that the logic to
