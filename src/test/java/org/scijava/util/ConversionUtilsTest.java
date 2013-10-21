@@ -272,6 +272,29 @@ public class ConversionUtilsTest {
 		}
 	}
 
+	/**
+	 * Tests that {@link ConversionUtils#convert(Object, Type)} prefers casting to
+	 * conversion.
+	 */
+	@Test
+	public void testConvertTypeCasting() {
+		class Struct {
+			private INumberList iNumberList;
+			private List<String> list;
+		}
+		final Struct struct = new Struct();
+		final NumberList numberList = new NumberList();
+		numberList.add(5);
+
+		// check casting to an INumberList (Type w/o generic parameter)
+		setFieldValue(struct, "iNumberList", numberList);
+		assertSame(numberList, struct.iNumberList);
+
+		// check casting to a List<String> (Type w/ generic parameter)
+		setFieldValue(struct, "list", numberList);
+		assertSame(numberList, struct.list);
+	}
+
 	/** Tests {@link ConversionUtils#getClass(Type)}. */
 	@Test
 	public void testGetClass() {
@@ -782,11 +805,24 @@ public class ConversionUtilsTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	private static class NumberList extends ArrayList<Number> {
+	private static class NumberList extends ArrayList<Number> implements
+		INumberList
+	{
+		public NumberList() {
+			super();
+		}
 		@SuppressWarnings("unused")
 		public NumberList(final Collection<? extends Number> c) {
 			super(c);
 		}
+	}
+
+	/**
+	 * Helper interface for testing conversion of an {@link ArrayList} subclass
+	 * to one of its implementing interfaces.
+	 */
+	private static interface INumberList extends List<Number> {
+		// NB: No implementation needed.
 	}
 
 	/**
