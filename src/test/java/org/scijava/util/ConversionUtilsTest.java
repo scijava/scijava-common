@@ -46,6 +46,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -80,6 +82,43 @@ public class ConversionUtilsTest {
 		// boxing is not reported to work
 		// TODO: Consider changing this behavior.
 		assertFalse(ConversionUtils.canCast(int.class, Number.class));
+	}
+
+	/** Tests {@link ConversionUtils#canConvert(Class, Class)}. */
+	@Test
+	public void testCanConvert() {
+		// check "conversion" (i.e., casting) to superclass
+		assertTrue(ConversionUtils.canConvert(String.class, Object.class));
+
+		// check "conversion" (i.e., casting) to interface
+		assertTrue(ConversionUtils.canConvert(ArrayList.class, Collection.class));
+
+		// check conversion of numeric primitives
+		assertTrue(ConversionUtils.canConvert(double.class, float.class));
+		assertFalse(ConversionUtils.canConvert(float.class, double.class)); //FIXME
+
+		// boxing is not reported to work
+		// TODO: Consider changing this behavior.
+		assertFalse(ConversionUtils.canConvert(int.class, Number.class));
+
+		// can convert anything to string
+		assertTrue(ConversionUtils.canConvert(Object.class, String.class));
+
+		// can convert string to char
+		// TODO: Consider changing this behavior to allow conversion from anything.
+		assertTrue(ConversionUtils.canConvert(String.class, char.class));
+		assertTrue(ConversionUtils.canConvert(String.class, Character.class));
+
+		// check conversion of various types w/ appropriate constructor
+		assertTrue(ConversionUtils.canConvert(String.class, Double.class));
+		assertTrue(ConversionUtils.canConvert(Collection.class, ArrayList.class));
+		// FIXME: Change the next behavior. HashSet is assignable to Collection.
+		assertFalse(ConversionUtils.canConvert(HashSet.class, ArrayList.class));
+		assertTrue(ConversionUtils.canConvert(long.class, Date.class));
+
+		// check lack of conversion of various types w/o appropriate constructor
+		assertFalse(ConversionUtils.canConvert(Collection.class, List.class));
+		assertFalse(ConversionUtils.canConvert(int.class, Date.class));
 	}
 
 	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
