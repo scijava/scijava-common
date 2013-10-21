@@ -358,7 +358,7 @@ public class ConversionUtils {
 	public static Class<?> getComponentClass(final Type type) {
 		if (type instanceof Class) return ((Class<?>) type).getComponentType();
 		if (type instanceof GenericArrayType) {
-			return (Class<?>) ((GenericArrayType) type).getGenericComponentType();
+			return getClass(((GenericArrayType) type).getGenericComponentType());
 		}
 		return null;
 	}
