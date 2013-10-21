@@ -83,6 +83,11 @@ public class ConversionUtilsTest {
 		// boxing is not reported to work
 		// TODO: Consider changing this behavior.
 		assertFalse(ConversionUtils.canCast(int.class, Number.class));
+
+		// casting from null always works
+		final Object nullObject = null;
+		assertTrue(ConversionUtils.canCast(nullObject, Object.class));
+		assertTrue(ConversionUtils.canCast(nullObject, int[].class));
 	}
 
 	/** Tests {@link ConversionUtils#canConvert(Class, Class)}. */

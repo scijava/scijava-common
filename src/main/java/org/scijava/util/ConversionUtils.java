@@ -271,7 +271,7 @@ public class ConversionUtils {
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Object obj, final Class<?> type) {
-		return canCast(obj.getClass(), type);
+		return obj == null || canCast(obj.getClass(), type);
 	}
 
 	/**
