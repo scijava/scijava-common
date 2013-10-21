@@ -42,6 +42,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -219,6 +220,26 @@ public class ConversionUtilsTest {
 		final int intStamp = (int) datestamp;
 		final Date intToDate = ConversionUtils.convert(intStamp, Date.class);
 		assertNull(intToDate);
+	}
+
+	/** Tests {@link ConversionUtils#getClass(Type)}. */
+	@Test
+	public void testGetClass() {
+		@SuppressWarnings("unused")
+		class Struct {
+			private int[] intArray;
+			private double d;
+			private String[][] strings;
+			private Void v;
+			private List<String> list;
+			private HashMap<Integer, Float> map;
+		}
+		assertSame(int[].class, getClass(Struct.class, "intArray"));
+		assertSame(double.class, getClass(Struct.class, "d"));
+		assertSame(String[][].class, getClass(Struct.class, "strings"));
+		assertSame(Void.class, getClass(Struct.class, "v"));
+		assertSame(List.class, getClass(Struct.class, "list"));
+		assertSame(HashMap.class, getClass(Struct.class, "map"));
 	}
 
 	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
@@ -626,6 +647,19 @@ public class ConversionUtilsTest {
 		for (final T value : values)
 			list.add(value);
 		return list;
+	}
+
+	/** Convenience method to get the {@link Type} of a field. */
+	private Type type(final Class<?> c, final String fieldName) {
+		return ClassUtils.getField(c, fieldName).getGenericType();
+	}
+
+	/**
+	 * Convenience method to call {@link ConversionUtils#getClass(Type)} on a
+	 * field.
+	 */
+	private Class<?> getClass(final Class<?> c, final String fieldName) {
+		return ConversionUtils.getClass(type(c, fieldName));
 	}
 
 	// -- Helper Classes --
