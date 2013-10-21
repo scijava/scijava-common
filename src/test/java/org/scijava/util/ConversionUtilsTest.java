@@ -64,6 +64,24 @@ import org.junit.Test;
  */
 public class ConversionUtilsTest {
 
+	/** Tests {@link ConversionUtils#canCast(Class, Class)}. */
+	@Test
+	public void testCanCast() {
+		// check casting to superclass
+		assertTrue(ConversionUtils.canCast(String.class, Object.class));
+
+		// check casting to interface
+		assertTrue(ConversionUtils.canCast(ArrayList.class, Collection.class));
+
+		// casting numeric primitives is not supported
+		assertFalse(ConversionUtils.canCast(double.class, float.class));
+		assertFalse(ConversionUtils.canCast(float.class, double.class));
+
+		// boxing is not reported to work
+		// TODO: Consider changing this behavior.
+		assertFalse(ConversionUtils.canCast(int.class, Number.class));
+	}
+
 	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
 	@Test
 	public void testCast() {
