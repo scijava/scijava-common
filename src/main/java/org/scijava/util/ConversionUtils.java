@@ -119,6 +119,7 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static <T> T convert(final Object value, final Class<T> type) {
+		// TODO: Would be better to split up this method into some helpers.
 		if (type == null) return null;
 		if (value == null) return getNullValue(type);
 
@@ -203,6 +204,7 @@ public class ConversionUtils {
 			return instance;
 		}
 		catch (final Exception exc) {
+			// TODO: Best not to catch blanket Exceptions here.
 			// no known way to convert
 			return null;
 		}
@@ -244,6 +246,7 @@ public class ConversionUtils {
 			return getConstructor(saneType, c) != null;
 		}
 		catch (final Exception exc) {
+			// TODO: Best not to catch blanket Exceptions here.
 			// no known way to convert
 			return false;
 		}
@@ -428,6 +431,7 @@ public class ConversionUtils {
 
 		// Populate the collection.
 		final Collection<?> items = ArrayUtils.toCollection(value);
+		// TODO: The following can fail; e.g. "Foo extends ArrayList<String>"
 		final Type collectionType = pType.getActualTypeArguments()[0];
 		for (final Object item : items) {
 			collection.add(convert(item, collectionType));
