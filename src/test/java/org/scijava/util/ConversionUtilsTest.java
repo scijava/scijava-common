@@ -147,6 +147,80 @@ public class ConversionUtilsTest {
 		assertEquals(5, intToNumber.intValue());
 	}
 
+	/** Tests {@link ConversionUtils#convert(Object, Class)}. */
+	public void testConvert() {
+		// check "conversion" (i.e., casting) to superclass
+		final String string = "Hello";
+		final Object stringToObject = ConversionUtils.convert(string, Object.class);
+		assertSame(string, stringToObject);
+
+		// check "conversion" (i.e., casting) to interface
+		final ArrayList<?> arrayList = new ArrayList<Object>();
+		final Collection<?> arrayListToCollection =
+			ConversionUtils.convert(arrayList, Collection.class);
+		assertSame(arrayList, arrayListToCollection);
+
+		// check conversion of numeric primitives: double to float
+		final double d = 5.1;
+		final float doubleToFloat = ConversionUtils.convert(d, float.class);
+		assertTrue((float) d == doubleToFloat);
+
+		// check conversion of numeric primitives: float to double
+		final float f = 6.2f;
+		final double floatToDouble =
+			ConversionUtils.convert(float.class, double.class);
+		assertEquals(f, floatToDouble, 0.0);
+
+		// boxing works
+		final Number intToNumber = ConversionUtils.convert(5, Number.class);
+		assertSame(Integer.class, intToNumber.getClass());
+		assertEquals(5, intToNumber.intValue());
+
+		// can convert anything to string
+		final Object object = new Object();
+		final String objectToString = ConversionUtils.convert(object, String.class);
+		assertEquals(object.toString(), objectToString);
+
+		// can convert string to char
+		// TODO: Consider changing this behavior to allow conversion from anything.
+		final String name = "Houdini";
+		final char c = ConversionUtils.convert(name, char.class);
+		assertTrue(name.charAt(0) == c);
+
+		// check conversion via constructor: String to double
+		final String ns = "8.7";
+		final double stringToDouble = ConversionUtils.convert(ns, Double.class);
+		assertEquals(8.7, stringToDouble, 0.0);
+
+		// check conversion via constructor: HashSet to ArrayList
+		final HashSet<String> set = new HashSet<String>();
+		set.add("Foo");
+		set.add("Bar");
+		@SuppressWarnings("unchecked")
+		final ArrayList<String> setToArrayList =
+			ConversionUtils.convert(set, ArrayList.class);
+		assertEquals(2, setToArrayList.size());
+		Collections.sort(setToArrayList);
+		assertEquals("Bar", setToArrayList.get(0));
+		assertEquals("Foo", setToArrayList.get(1));
+
+		// check conversion via constructor: long to Date
+		final Date date = new Date();
+		final long datestamp = date.getTime();
+		final Date longToDate = ConversionUtils.convert(datestamp, Date.class);
+		assertEquals(date, longToDate);
+
+		// check conversion failure: HashSet to List interface
+		@SuppressWarnings("unchecked")
+		final List<String> setToList = ConversionUtils.convert(set, List.class);
+		assertNull(setToList);
+
+		// check conversion failure: int to Date
+		final int intStamp = (int) datestamp;
+		final Date intToDate = ConversionUtils.convert(intStamp, Date.class);
+		assertNull(intToDate);
+	}
+
 	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
 	@Test
 	public void testGetNonprimitiveType() {
