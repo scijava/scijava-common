@@ -64,6 +64,32 @@ import org.junit.Test;
  */
 public class ConversionUtilsTest {
 
+	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
+	@Test
+	public void testCast() {
+		// check casting to superclass
+		final String string = "Hello";
+		final Object stringToObject = ConversionUtils.cast(string, Object.class);
+		assertSame(string, stringToObject);
+
+		// check casting to interface
+		final ArrayList<?> arrayList = new ArrayList<Object>();
+		final Collection<?> arrayListToCollection =
+			ConversionUtils.cast(arrayList, Collection.class);
+		assertSame(arrayList, arrayListToCollection);
+
+		// casting numeric primitives is not supported
+		final Float doubleToFloat = ConversionUtils.cast(5.1, float.class);
+		assertNull(doubleToFloat);
+		final Double floatToDouble = ConversionUtils.cast(5.1f, double.class);
+		assertNull(floatToDouble);
+
+		// boxing works though
+		final Number intToNumber = ConversionUtils.cast(5, Number.class);
+		assertSame(Integer.class, intToNumber.getClass());
+		assertEquals(5, intToNumber.intValue());
+	}
+
 	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
 	@Test
 	public void testGetNonprimitiveType() {
