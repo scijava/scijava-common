@@ -210,6 +210,15 @@ public class ConversionUtils {
 		// OK if the existing object can be casted
 		if (canCast(c, saneType)) return true;
 
+		// OK for numerical conversions
+		if (canCast(getNonprimitiveType(c), Number.class) &&
+			(ClassUtils.isByte(type) || ClassUtils.isDouble(type) ||
+				ClassUtils.isFloat(type) || ClassUtils.isInteger(type) ||
+				ClassUtils.isLong(type) || ClassUtils.isShort(type)))
+		{
+			return true;
+		}
+
 		// OK if string
 		if (saneType == String.class) return true;
 

@@ -102,7 +102,7 @@ public class ConversionUtilsTest {
 
 		// check conversion of numeric primitives
 		assertTrue(ConversionUtils.canConvert(double.class, float.class));
-		assertFalse(ConversionUtils.canConvert(float.class, double.class)); //FIXME
+		assertTrue(ConversionUtils.canConvert(float.class, double.class));
 
 		// boxing is not reported to work
 		// TODO: Consider changing this behavior.
