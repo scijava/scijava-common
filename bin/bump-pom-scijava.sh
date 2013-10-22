@@ -107,7 +107,9 @@ set imagej1.version --latest \
 	imagej-maven-plugin.version --latest \
 	imglib2.version --latest \
 	nar.version --latest \
+	ome-formats.version --latest \
 	scifio.version --latest \
+	scifio-bf-compat.version --latest \
 	scijava-common.version --latest
 
 test $# -ge 2 &&
@@ -161,8 +163,14 @@ do
 		nar.version)
 			ga=org.apache.maven.plugins:nar-maven-plugin
 			;;
+		ome-formats.version)
+			ga=io.scif:ome-formats
+			;;
 		scifio.version)
 			ga=io.scif:scifio
+			;;
+		scifio-bf-compat.version)
+			ga=io.scif:scifio-bf-compat
 			;;
 		*)
 			die "Unknown GAV for $1"
