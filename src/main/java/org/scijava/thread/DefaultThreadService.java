@@ -65,15 +65,19 @@ public final class DefaultThreadService extends AbstractService implements
 
 	private int nextThread = 0;
 
+	private boolean disposed;
+
 	// -- ThreadService methods --
 
 	@Override
 	public <V> Future<V> run(final Callable<V> code) {
+		if (disposed) return null;
 		return executor().submit(code);
 	}
 
 	@Override
 	public Future<?> run(final Runnable code) {
+		if (disposed) return null;
 		return executor().submit(code);
 	}
 
@@ -105,6 +109,7 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public void dispose() {
+		disposed = true;
 		if (executor != null) executor.shutdown();
 	}
 
