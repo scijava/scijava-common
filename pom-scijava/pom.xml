@@ -49,9 +49,15 @@
 		<nar.groupId>org.apache.maven.plugins</nar.groupId>
 		<nar.version>3.0.0-scijava-2</nar.version>
 
+		<!-- OME-Formats - https://github.com/scifio/ome-formats -->
+		<ome-formats.version>0.2.0</ome-formats.version>
+
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>io.scif</scifio.groupId>
 		<scifio.version>0.7.1</scifio.version>
+
+		<!-- SCIFIO-BF-compat - https://github.com/scifio/scifio-bf-compat -->
+		<scifio-bf-compat.version>1.3.1</scifio-bf-compat.version>
 
 		<!-- SciJava Common - https://github.com/scijava/scijava-common -->
 		<scijava-common.groupId>org.scijava</scijava-common.groupId>
