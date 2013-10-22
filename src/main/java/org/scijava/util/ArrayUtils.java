@@ -62,52 +62,38 @@ public final class ArrayUtils {
 			return (Collection<?>) value;
 		}
 		// Check for primitive array types
-		else if (value instanceof char[]) {
+		if (value instanceof char[]) {
 			return new CharArray((char[]) value);
 		}
-		else if (value instanceof byte[]) {
+		if (value instanceof byte[]) {
 			return new ByteArray((byte[]) value);
 		}
-		else if (value instanceof boolean[]) {
+		if (value instanceof boolean[]) {
 			return new BoolArray((boolean[]) value);
 		}
-		else if (value instanceof short[]) {
+		if (value instanceof short[]) {
 			return new ShortArray((short[]) value);
 		}
-		else if (value instanceof int[]) {
+		if (value instanceof int[]) {
 			return new IntArray((int[]) value);
 		}
-		else if (value instanceof long[]) {
+		if (value instanceof long[]) {
 			return new LongArray((long[]) value);
 		}
-		else if (value instanceof float[]) {
+		if (value instanceof float[]) {
 			return new FloatArray((float[]) value);
 		}
-		else if (value instanceof double[]) {
+		if (value instanceof double[]) {
 			return new DoubleArray((double[]) value);
 		}
-		else if (value instanceof Object[]) {
-			final Class<?> type = value.getClass().getComponentType();
-			return makeObjectArray((Object[]) value, type);
+		if (value instanceof Object[]) {
+			return new ObjectArray<Object>((Object[]) value);
 		}
-		else {
-			// This object is a neither an array nor a collection. So we wrap it in a
-			// list and return.
-			final List<Object> list = new ArrayList<Object>();
-			list.add(value);
-			return list;
-		}
-	}
-
-	/**
-	 * Created a new {@link ObjectArray} instance wrapping the provided Object[],
-	 * parameterized using the given Class instance.
-	 */
-	@SuppressWarnings("unchecked")
-	private static <T> ObjectArray<T> makeObjectArray(final Object[] values,
-		@SuppressWarnings("unused") final Class<T> type)
-	{
-		return new ObjectArray<T>((T[]) values);
+		// This object is neither an array nor a collection.
+		// So we wrap it in a list and return.
+		final List<Object> list = new ArrayList<Object>();
+		list.add(value);
+		return list;
 	}
 
 }

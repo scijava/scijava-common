@@ -80,83 +80,29 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static Object convert(final Object value, final Type type) {
-		Class<?> baseClass = null;
-
-		if (type instanceof Class) baseClass = (Class<?>) type;
-
-		// First we make sure the value is a collection. This provides the simplest
-		// interface for iterating over all the elements. We use SciJava's
-		// PrimitiveArray collection implementations internally, so that this
-		// conversion is always wrapping by reference, for performance.
-		final Collection<?> items = ArrayUtils.toCollection(value);
+		// NB: Regardless of whether the destination type is an array or collection,
+		// we still want to cast directly if doing so is possible. But note that in
+		// general, this check does not detect cases of incompatible generic
+		// parameter types. If this limitation becomes a problem in the future we
+		// can extend the logic here to provide additional signatures of canCast
+		// which operate on Types in general rather than only Classes. However, the
+		// logic could become complex very quickly in various subclassing cases,
+		// generic parameters resolved vs. propagated, etc.
+		final Class<?> c = getClass(type);
+		if (c != null && canCast(value, c)) return cast(value, c);
 
 		// Handle array types, including generic array types.
-		final Class<?> componentClass = getComponentClass(type);
-		if (componentClass != null) {
-			final Object array = Array.newInstance(componentClass, items.size());
-
-			// Populate the array by converting each item in the value collection
-			// to the component type.
-			int index = 0;
-			for (final Object item : items) {
-				Array.set(array, index++, convert(item, componentClass));
-			}
-			return array;
+		if (isArray(type)) {
+			return convertToArray(value, getComponentClass(type));
 		}
 
 		// Handle parameterized collection types.
-		if (type instanceof ParameterizedType) {
-			final ParameterizedType pType = (ParameterizedType) type;
-
-			// Get the actual class of this type.
-			final Class<?> rawClass = (Class<?>) pType.getRawType();
-
-			// Check to see if we have a type we know how to populate.
-			if (Collection.class.isAssignableFrom(rawClass)) {
-				Collection<Object> collection;
-
-				// If we were given an interface or abstract class, and not a concrete
-				// class, we attempt to make default implementations.
-				if (rawClass.isInterface() ||
-					Modifier.isAbstract(rawClass.getModifiers()))
-				{
-					// We don't have a concrete class. If it's a set or a list, we can
-					// provide the typical default implementation. Otherwise we won't
-					// convert.
-					if (List.class.isAssignableFrom(rawClass)) {
-						collection = new ArrayList<Object>();
-					}
-					else if (Set.class.isAssignableFrom(rawClass)) {
-						collection = new HashSet<Object>();
-					}
-					else return null;
-				}
-				else {
-					// Got a concrete type. Instantiate it.
-					try {
-						@SuppressWarnings("unchecked")
-						final Collection<Object> c =
-							(Collection<Object>) rawClass.newInstance();
-						collection = c;
-					}
-					catch (final Exception e) {
-						return null;
-					}
-				}
-				// Populate the collection.
-				for (final Object item : items) {
-					collection.add(convert(item, pType.getActualTypeArguments()[0]));
-				}
-
-				return collection;
-			}
+		if (type instanceof ParameterizedType && isCollection(type)) {
+			return convertToCollection(value, (ParameterizedType) type);
 		}
 
 		// This wasn't a collection or array, so convert it as a single element.
-		if (baseClass != null) return convert(value, baseClass);
-
-		// Don't know how to convert the given object.
-		return null;
+		return convert(value, getClass(type));
 	}
 
 	/**
@@ -173,6 +119,8 @@ public class ConversionUtils {
 	 * @param type Type to which the object should be converted.
 	 */
 	public static <T> T convert(final Object value, final Class<T> type) {
+		// TODO: Would be better to split up this method into some helpers.
+		if (type == null) return null;
 		if (value == null) return getNullValue(type);
 
 		// ensure type is well-behaved, rather than a primitive type
@@ -249,18 +197,14 @@ public class ConversionUtils {
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
-			for (final Constructor<?> ctor : saneType.getConstructors()) {
-				final Class<?>[] params = ctor.getParameterTypes();
-				if (params.length == 1 && params[0].isAssignableFrom(value.getClass()))
-				{
-					@SuppressWarnings("unchecked")
-					final T instance = (T) ctor.newInstance(value);
-					return instance;
-				}
-			}
-			return null;
+			final Constructor<?> ctor = getConstructor(saneType, value.getClass());
+			if (ctor == null) return null;
+			@SuppressWarnings("unchecked")
+			final T instance = (T) ctor.newInstance(value);
+			return instance;
 		}
 		catch (final Exception exc) {
+			// TODO: Best not to catch blanket Exceptions here.
 			// no known way to convert
 			return null;
 		}
@@ -279,21 +223,30 @@ public class ConversionUtils {
 		// OK if the existing object can be casted
 		if (canCast(c, saneType)) return true;
 
+		// OK for numerical conversions
+		if (canCast(getNonprimitiveType(c), Number.class) &&
+			(ClassUtils.isByte(type) || ClassUtils.isDouble(type) ||
+				ClassUtils.isFloat(type) || ClassUtils.isInteger(type) ||
+				ClassUtils.isLong(type) || ClassUtils.isShort(type)))
+		{
+			return true;
+		}
+
 		// OK if string
 		if (saneType == String.class) return true;
 
 		// OK if source type is string and destination type is character
 		// (in this case, the first character of the string would be used)
-		if (String.class.isAssignableFrom(c) && saneType == Character.class) {
+		if (canCast(c, String.class) && saneType == Character.class) {
 			return true;
 		}
 
 		// OK if appropriate wrapper constructor exists
 		try {
-			saneType.getConstructor(c);
-			return true;
+			return getConstructor(saneType, c) != null;
 		}
 		catch (final Exception exc) {
+			// TODO: Best not to catch blanket Exceptions here.
 			// no known way to convert
 			return false;
 		}
@@ -336,7 +289,7 @@ public class ConversionUtils {
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Object obj, final Class<?> type) {
-		return canCast(obj.getClass(), type);
+		return obj == null || canCast(obj.getClass(), type);
 	}
 
 	/**
@@ -396,6 +349,24 @@ public class ConversionUtils {
 	}
 
 	/**
+	 * Gets the raw class corresponding to the given type.
+	 * <p>
+	 * If the type is a {@link Class} it is simply casted. In the case of a
+	 * {@link ParameterizedType}, then {@link ParameterizedType#getRawType()} is
+	 * returned. Otherwise, returns null.
+	 * </p>
+	 */
+	public static Class<?> getClass(final Type type) {
+		if (type instanceof Class) return (Class<?>) type;
+
+		if (type instanceof ParameterizedType) {
+			return getClass(((ParameterizedType) type).getRawType());
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets the component type of the given array type, or null if not an array.
 	 * Supports both regular array types (i.e., {@link Class#getComponentType()}
 	 * if {@code type} is a {@link Class}) and generic array types (i.e.,
@@ -405,9 +376,93 @@ public class ConversionUtils {
 	public static Class<?> getComponentClass(final Type type) {
 		if (type instanceof Class) return ((Class<?>) type).getComponentType();
 		if (type instanceof GenericArrayType) {
-			return (Class<?>) ((GenericArrayType) type).getGenericComponentType();
+			return getClass(((GenericArrayType) type).getGenericComponentType());
 		}
 		return null;
+	}
+
+	// -- Helper methods --
+
+	private static Constructor<?> getConstructor(final Class<?> type,
+		final Class<?> argType)
+	{
+		for (final Constructor<?> ctor : type.getConstructors()) {
+			final Class<?>[] params = ctor.getParameterTypes();
+			if (params.length == 1 && canCast(argType, params[0])) {
+				return ctor;
+			}
+		}
+		return null;
+	}
+
+	private static boolean isArray(final Type type) {
+		return getComponentClass(type) != null;
+	}
+
+	private static boolean isCollection(final Type type) {
+		return canCast(getClass(type), Collection.class);
+	}
+
+	private static Object convertToArray(final Object value,
+		final Class<?> componentType)
+	{
+		// First we make sure the value is a collection. This provides the simplest
+		// interface for iterating over all the elements. We use SciJava's
+		// PrimitiveArray collection implementations internally, so that this
+		// conversion is always wrapping by reference, for performance.
+		final Collection<?> items = ArrayUtils.toCollection(value);
+
+		final Object array = Array.newInstance(componentType, items.size());
+
+		// Populate the array by converting each item in the value collection
+		// to the component type.
+		int index = 0;
+		for (final Object item : items) {
+			Array.set(array, index++, convert(item, componentType));
+		}
+		return array;
+	}
+
+	private static Object convertToCollection(final Object value,
+		final ParameterizedType pType)
+	{
+		final Collection<Object> collection = createCollection(getClass(pType));
+		if (collection == null) return null;
+
+		// Populate the collection.
+		final Collection<?> items = ArrayUtils.toCollection(value);
+		// TODO: The following can fail; e.g. "Foo extends ArrayList<String>"
+		final Type collectionType = pType.getActualTypeArguments()[0];
+		for (final Object item : items) {
+			collection.add(convert(item, collectionType));
+		}
+
+		return collection;
+	}
+
+	private static Collection<Object> createCollection(final Class<?> type) {
+		// If we were given an interface or abstract class, and not a concrete
+		// class, we attempt to make default implementations.
+		if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
+			// We don't have a concrete class. If it's a set or a list, we use
+			// the typical default implementation. Otherwise we won't convert.
+			if (canCast(type, List.class)) return new ArrayList<Object>();
+			if (canCast(type, Set.class)) return new HashSet<Object>();
+			return null;
+		}
+
+		// Got a concrete type. Instantiate it.
+		try {
+			@SuppressWarnings("unchecked")
+			final Collection<Object> c = (Collection<Object>) type.newInstance();
+			return c;
+		}
+		catch (final InstantiationException exc) {
+			return null;
+		}
+		catch (final IllegalAccessException exc) {
+			return null;
+		}
 	}
 
 }
