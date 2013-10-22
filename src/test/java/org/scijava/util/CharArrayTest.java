@@ -339,8 +339,8 @@ public class CharArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link IntArray#remove(Object)}. */
 	@Test
 	public void testRemove() {
-		final int[] raw = { 3, 5, 8, 13, 21 };
-		final IntArray array = new IntArray(raw.clone());
+		final char[] raw = { 3, 5, 8, 13, 21 };
+		final CharArray array = new CharArray(raw.clone());
 		assertEquals(raw.length, array.size());
 		array.remove(new Integer(raw[0]));
 		assertEquals(raw.length - 1, array.size());
@@ -355,8 +355,8 @@ public class CharArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link IntArray#containsAll}. */
 	@Test
 	public void testContainsAll() {
-		final int[] raw = { 3, 5, 8, 13, 21 };
-		final IntArray array = new IntArray(raw.clone());
+		final char[] raw = { 3, 5, 8, 13, 21 };
+		final CharArray array = new CharArray(raw.clone());
 
 		final ArrayList<Integer> list = new ArrayList<Integer>();
 		assertTrue(array.containsAll(list));
@@ -365,10 +365,10 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		list.add(1);
 		assertFalse(array.containsAll(list));
 
-		final IntArray yes = new IntArray(new int[] { 3, 8, 21 });
+		final CharArray yes = new CharArray(new char[] { 3, 8, 21 });
 		assertTrue(array.containsAll(yes));
 
-		final IntArray no = new IntArray(new int[] { 5, 13, 1 });
+		final CharArray no = new CharArray(new char[] { 5, 13, 1 });
 		assertFalse(array.containsAll(no));
 	}
 
