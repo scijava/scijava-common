@@ -147,6 +147,7 @@ public final class FileUtils {
 	 * @return the {@link Matcher} object
 	 * @deprecated see {@link #stripFilenameVersion(String)}
 	 */
+	@Deprecated
 	public static Matcher matchVersionedFilename(String filename) {
 		return versionPattern.matcher(filename);
 	}

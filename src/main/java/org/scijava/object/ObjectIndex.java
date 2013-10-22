@@ -258,7 +258,9 @@ public class ObjectIndex<E> implements Collection<E> {
 	/** Removes the object from all compatible type lists. */
 	protected boolean remove(final Object o, final boolean batch) {
 		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
-		return remove(o, getType((E)o), batch);
+		@SuppressWarnings("unchecked")
+		final E e = (E) o;
+		return remove(o, getType(e), batch);
 	}
 
 	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<Class<?>, List<E>[]>();

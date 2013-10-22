@@ -53,8 +53,8 @@ public final class NumberUtils {
 	 * null if the types are incompatible.
 	 */
 	public static Number toNumber(final Object value, final Class<?> type) {
-		final Object num = ClassUtils.convert(value, type);
-		return num == null ? null : ClassUtils.cast(num, Number.class);
+		final Object num = ConversionUtils.convert(value, type);
+		return num == null ? null : ConversionUtils.cast(num, Number.class);
 	}
 
 	public static Number getMinimumNumber(final Class<?> type) {

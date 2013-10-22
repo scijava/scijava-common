@@ -187,7 +187,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 	@Override
 	public boolean remove(final Object o) {
 		if (!compatibleClass(o)) return false;
-		final E value = ClassUtils.cast(o, objectClass);
+		final E value = ConversionUtils.cast(o, objectClass);
 		return removeValue(value);
 	}
 
@@ -219,7 +219,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 		boolean changed = false;
 		for (final Object o : c) {
 			if (!compatibleClass(o)) continue;
-			final E value = ClassUtils.cast(o, objectClass);
+			final E value = ConversionUtils.cast(o, objectClass);
 			final boolean result = removeValue(value);
 			if (result) changed = true;
 		}

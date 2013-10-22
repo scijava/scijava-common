@@ -377,20 +377,24 @@ public class ContextCreationTest {
 		BaseService
 	{ 
 		// NB: No implementation needed.
-	};
+	}
 
 	/** Abstract implementation of {@link ExtensionService}. */
 	public static abstract class AbstractExtension extends AbstractService
 		implements ExtensionService
 	{ 
 		// NB: No implementation needed.
-	};
+	}
 
 	/** Empty {@link BaseService} implementation. */
-	public static class BaseImpl extends AbstractBase { };
+	public static class BaseImpl extends AbstractBase {
+		// NB: No implementation needed.
+	}
 
 	/** Empty {@link ExtensionService} implementation. */
-	public static class ExtensionImpl extends AbstractExtension { };
+	public static class ExtensionImpl extends AbstractExtension {
+		// NB: No implementation needed.
+	}
 
 	/** A service that is doomed to fail, for depending on a missing service. */
 	public static class ServiceRequiringMissingService extends AbstractService {

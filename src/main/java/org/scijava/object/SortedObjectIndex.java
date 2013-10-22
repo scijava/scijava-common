@@ -97,14 +97,13 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 		return changed;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void mergeAfterSorting(final Collection<? extends E> c) {
 		final List<E> listToMerge = new ArrayList<E>(c);
 		Collections.sort(listToMerge);
 		final Map<Class<?>, List<E>> map = new HashMap<Class<?>, List<E>>();
 		for (final E e : listToMerge) {
 			for (final Class<?> clazz : getTypes(getType(e))) {
-				final List<E> list = (List<E>)retrieveList(clazz);
+				final List<E> list = retrieveList(clazz);
 				List<E> list2 = map.get(clazz);
 				if (list2 == null) {
 					list2 = list.size() == 0 ? (List<E>)list : new ArrayList<E>();
