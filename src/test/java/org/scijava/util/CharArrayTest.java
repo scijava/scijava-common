@@ -42,6 +42,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Test;
 import org.scijava.util.IntArray;
@@ -55,7 +56,7 @@ import org.scijava.util.IntArray;
  */
 public class CharArrayTest extends PrimitiveArrayTest {
 
-	/** Tests {@link CharArray#IntArray()}. */
+	/** Tests {@link CharArray#CharArray()}. */
 	@Test
 	public void testConstructorNoArgs() {
 		final CharArray array = new CharArray();
@@ -63,7 +64,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(0, array.copyArray().length);
 	}
 
-	/** Tests {@link IntArray#IntArray(int)}. */
+	/** Tests {@link CharArray#CharArray(int)}. */
 	@Test
 	public void testConstructorSize() {
 		final int size = 24;
@@ -72,7 +73,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(size, array.copyArray().length);
 	}
 
-	/** Tests {@link IntArray#IntArray(int[])}. */
+	/** Tests {@link CharArray#CharArray(char[])}. */
 	@Test
 	public void testConstructorArray() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -85,7 +86,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertArrayEquals(raw, array.copyArray());
 	}
 
-	/** Tests {@link IntArray#addValue(int)}. */
+	/** Tests {@link CharArray#addValue(char)}. */
 	@Test
 	public void testAddValue() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -101,7 +102,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.getValue(6));
 	}
 
-	/** Tests {@link IntArray#removeValue(int)}. */
+	/** Tests {@link CharArray#removeValue(char)}. */
 	public void testRemoveValue() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
@@ -116,7 +117,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link IntArray#getValue(int)}. */
+	/** Tests {@link CharArray#getValue(int)}. */
 	public void testGetValue() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
@@ -125,7 +126,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link IntArray#setValue(int, int)}. */
+	/** Tests {@link CharArray#setValue(int, char)}. */
 	@Test
 	public void testSetValue() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -142,7 +143,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(e4, array.getValue(4));
 	}
 
-	/** Tests {@link IntArray#addValue(int, int)}. */
+	/** Tests {@link CharArray#addValue(int, char)}. */
 	@Test
 	public void testAddValueIndex() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -162,7 +163,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.getValue(7));
 	}
 
-	/** Tests {@link IntArray#remove(int)}. */
+	/** Tests {@link CharArray#remove(int)}. */
 	public void testRemoveIndex() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
@@ -177,7 +178,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link IntArray#indexOf(int)}. */
+	/** Tests {@link CharArray#indexOf(char)}. */
 	@Test
 	public void testIndexOf() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -192,7 +193,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.indexOf(Integer.MIN_VALUE));
 	}
 
-	/** Tests {@link IntArray#lastIndexOf(int)}. */
+	/** Tests {@link CharArray#lastIndexOf(char)}. */
 	@Test
 	public void testLastIndexOf() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -207,7 +208,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.lastIndexOf(Integer.MIN_VALUE));
 	}
 
-	/** Tests {@link IntArray#contains(int)}. */
+	/** Tests {@link CharArray#contains(char)}. */
 	@Test
 	public void testContains() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -223,8 +224,8 @@ public class CharArrayTest extends PrimitiveArrayTest {
 	}
 
 	/**
-	 * Tests {@link IntArray#getArray()} and
-	 * {@link IntArray#setArray(int[])}.
+	 * Tests {@link CharArray#getArray()} and
+	 * {@link CharArray#setArray(char[])}.
 	 */
 	@Test
 	public void testSetArray() {
@@ -234,21 +235,21 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertSame(raw, array.getArray());
 	}
 
-	/** Tests {@link IntArray#insert(int, int)}. */
+	/** Tests {@link CharArray#insert(int, int)}. */
 	@Test
 	public void testInsert() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		testInsert(new CharArray(raw));
 	}
 
-	/** Tests {@link IntArray#delete(int, int)}. */
+	/** Tests {@link CharArray#delete(int, int)}. */
 	@Test
 	public void testDelete() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		testDelete(new CharArray(raw));
 	}
 
-	/** Tests {@link IntArray#get(int)}. */
+	/** Tests {@link CharArray#get(int)}. */
 	@Test
 	public void testGet() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -258,7 +259,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link IntArray#set(int, Integer)}. */
+	/** Tests {@link CharArray#set(int, Character)}. */
 	@Test
 	public void testSet() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -275,7 +276,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(e4, array.get(4));
 	}
 
-	/** Tests {@link IntArray#add(int, Integer)}. */
+	/** Tests {@link CharArray#add(int, Character)}. */
 	@Test
 	public void testAdd() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -291,7 +292,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.get(6));
 	}
 
-	/** Tests {@link IntArray#indexOf(Object)}. */
+	/** Tests {@link CharArray#indexOf(Object)}. */
 	@Test
 	public void testIndexOfBoxed() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -306,7 +307,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.indexOf("Not a char"));
 	}
 
-	/** Tests {@link IntArray#lastIndexOf(Object)}. */
+	/** Tests {@link CharArray#lastIndexOf(Object)}. */
 	@Test
 	public void testLastIndexOfBoxed() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -321,7 +322,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.lastIndexOf("Not a char"));
 	}
 
-	/** Tests {@link IntArray#contains(Object)}. */
+	/** Tests {@link CharArray#contains(Object)}. */
 	@Test
 	public void testContainsBoxed() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -336,7 +337,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertFalse(array.contains("Not a char"));
 	}
 
-	/** Tests {@link IntArray#remove(Object)}. */
+	/** Tests {@link CharArray#remove(Object)}. */
 	@Test
 	public void testRemove() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -352,7 +353,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link IntArray#containsAll}. */
+	/** Tests {@link CharArray#containsAll(Collection)}. */
 	@Test
 	public void testContainsAll() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -372,7 +373,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		assertFalse(array.containsAll(no));
 	}
 
-	/** Tests {@link IntArray#addAll(int, java.util.Collection)}. */
+	/** Tests {@link CharArray#addAll(int, Collection)}. */
 	@Test
 	public void testAddAll() {
 		final char[] raw = { 3, 5, 8, 13, 21 };
@@ -392,7 +393,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link IntArray#removeAll}. */
+	/** Tests {@link CharArray#removeAll}. */
 	@Test
 	public void testRemoveAll() {
 		final char[] raw = { 3, 5, 8, 13, 21 };

@@ -83,7 +83,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link BoolArray#addValue(int)}. */
+	/** Tests {@link BoolArray#addValue(boolean)}. */
 	@Test
 	public void testAddValue() {
 		final boolean[] raw = { true, false };
@@ -99,7 +99,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		assertEquals(e1, array.getValue(1));
 	}
 
-	/** Tests {@link BoolArray#removeValue(int)}. */
+	/** Tests {@link BoolArray#removeValue(boolean)}. */
 	public void testRemoveValue() {
 		final boolean[] raw = { true, false, false, true, false };
 		final BoolArray array = new BoolArray(raw.clone());
@@ -123,7 +123,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link BoolArray#setValue(int, int)}. */
+	/** Tests {@link BoolArray#setValue(int, boolean)}. */
 	@Test
 	public void testSetValue() {
 		final boolean[] raw = { true, false, false, true, false };
@@ -140,7 +140,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		assertEquals(e4, array.getValue(4));
 	}
 
-	/** Tests {@link BoolArray#addValue(int, int)}. */
+	/** Tests {@link BoolArray#addValue(int, boolean)}. */
 	@Test
 	public void testAddValueIndex() {
 		final boolean[] raw = { true, false, false, true, false };
@@ -175,7 +175,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link BoolArray#indexOf(int)}. */
+	/** Tests {@link BoolArray#indexOf(boolean)}. */
 	@Test
 	public void testIndexOf() {
 		final boolean[] raw = { true, false };
@@ -185,7 +185,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link BoolArray#lastIndexOf(int)}. */
+	/** Tests {@link BoolArray#lastIndexOf(boolean)}. */
 	@Test
 	public void testLastIndexOf() {
 		final boolean[] raw = { true, false };
@@ -195,7 +195,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link BoolArray#contains(int)}. */
+	/** Tests {@link BoolArray#contains(boolean)}. */
 	@Test
 	public void testContains() {
 		final boolean[] raw = { true, false, false, true, false };

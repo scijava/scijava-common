@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * Tests {@link ObjectArray<Integer>}.
+ * Tests {@link ObjectArray}.
  * 
  * @author Mark Hiner
  * @author Curtis Rueden
@@ -54,7 +54,7 @@ import org.junit.Test;
  */
 public class ObjectArrayTest extends PrimitiveArrayTest {
 
-	/** Tests {@link ObjectArray<Integer>#ObjectArray<Integer>(Class)}. */
+	/** Tests {@link ObjectArray#ObjectArray(Class)}. */
 	@Test
 	public void testConstructorNoArgs() {
 		final ObjectArray<Integer> array = new ObjectArray<Integer>(Integer.class);
@@ -62,7 +62,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(0, array.copyArray().length);
 	}
 
-	/** Tests {@link ObjectArray<Integer>#ObjectArray<Integer>(Class, int)}. */
+	/** Tests {@link ObjectArray#ObjectArray(Class, int)}. */
 	@Test
 	public void testConstructorSize() {
 		final int size = 24;
@@ -72,7 +72,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(size, array.copyArray().length);
 	}
 
-	/** Tests {@link ObjectArray<Integer>#ObjectArray<Integer>(Class, int[])}. */
+	/** Tests {@link ObjectArray#ObjectArray(Object[])}. */
 	@Test
 	public void testConstructorArray() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -85,7 +85,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertArrayEquals(raw, array.copyArray());
 	}
 
-	/** Tests {@link ObjectArray<Integer>#addValue(int)}. */
+	/** Tests {@link ObjectArray#addValue(Object)}. */
 	@Test
 	public void testAddValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -101,7 +101,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.getValue(6));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#removeValue(int)}. */
+	/** Tests {@link ObjectArray#removeValue(Object)}. */
 	public void testRemoveValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
@@ -116,7 +116,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#getValue(int)}. */
+	/** Tests {@link ObjectArray#getValue(int)}. */
 	public void testGetValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
@@ -125,7 +125,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link ObjectArray<Integer>#setValue(int, int)}. */
+	/** Tests {@link ObjectArray#setValue(int, Object)}. */
 	@Test
 	public void testSetValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -142,7 +142,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(e4, array.getValue(4));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#addValue(int, int)}. */
+	/** Tests {@link ObjectArray#addValue(int, Object)}. */
 	@Test
 	public void testAddValueIndex() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -162,7 +162,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.getValue(7));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#remove(int)}. */
+	/** Tests {@link ObjectArray#remove(int)}. */
 	public void testRemoveIndex() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
@@ -177,7 +177,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#indexOf(int)}. */
+	/** Tests {@link ObjectArray#indexOf(Object)}. */
 	@Test
 	public void testIndexOf() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -192,7 +192,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.indexOf(Integer.MIN_VALUE));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#lastIndexOf(int)}. */
+	/** Tests {@link ObjectArray#lastIndexOf(Object)}. */
 	@Test
 	public void testLastIndexOf() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -207,7 +207,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.lastIndexOf(Integer.MIN_VALUE));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#contains(int)}. */
+	/** Tests {@link ObjectArray#contains(Object)}. */
 	@Test
 	public void testContains() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -223,8 +223,8 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	}
 
 	/**
-	 * Tests {@link ObjectArray<Integer>#getArray()} and {@link ObjectArray
-	 * <Integer>#setArray(int[])}.
+	 * Tests {@link ObjectArray#getArray()} and
+	 * {@link ObjectArray#setArray(Object[])}.
 	 */
 	@Test
 	public void testSetArray() {
@@ -234,21 +234,21 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertSame(raw, array.getArray());
 	}
 
-	/** Tests {@link ObjectArray<Integer>#insert(int, int)}. */
+	/** Tests {@link ObjectArray#insert(int, int)}. */
 	@Test
 	public void testInsert() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		testInsert(new ObjectArray<Integer>(raw));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#delete(int, int)}. */
+	/** Tests {@link ObjectArray#delete(int, int)}. */
 	@Test
 	public void testDelete() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		testDelete(new ObjectArray<Integer>(raw));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#get(int)}. */
+	/** Tests {@link ObjectArray#get(int)}. */
 	@Test
 	public void testGet() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -258,7 +258,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link ObjectArray<Integer>#set(int, Integer)}. */
+	/** Tests {@link ObjectArray#set(int, Object)}. */
 	@Test
 	public void testSet() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -275,7 +275,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(e4, array.get(4));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#add(int, Integer)}. */
+	/** Tests {@link ObjectArray#add(int, Object)}. */
 	@Test
 	public void testAdd() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -291,7 +291,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(e7, array.get(6));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#indexOf(Object)}. */
+	/** Tests {@link ObjectArray#indexOf(Object)}. */
 	@Test
 	public void testIndexOfBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -308,7 +308,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.indexOf("Not an int"));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#lastIndexOf(Object)}. */
+	/** Tests {@link ObjectArray#lastIndexOf(Object)}. */
 	@Test
 	public void testLastIndexOfBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -325,7 +325,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(-1, array.lastIndexOf("Not an int"));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#contains(Object)}. */
+	/** Tests {@link ObjectArray#contains(Object)}. */
 	@Test
 	public void testContainsBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -342,7 +342,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertFalse(array.contains("Not an int"));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#remove(Object)}. */
+	/** Tests {@link ObjectArray#remove(Object)}. */
 	@Test
 	public void testRemove() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -358,7 +358,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertEquals(raw[3], array.getValue(1));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#containsAll}. */
+	/** Tests {@link ObjectArray#containsAll}. */
 	@Test
 	public void testContainsAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -380,7 +380,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertFalse(array.containsAll(no));
 	}
 
-	/** Tests {@link ObjectArray<Integer>#addAll(int, java.util.Collection)}. */
+	/** Tests {@link ObjectArray#addAll(int, java.util.Collection)}. */
 	@Test
 	public void testAddAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
@@ -400,7 +400,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		}
 	}
 
-	/** Tests {@link ObjectArray<Integer>#removeAll}. */
+	/** Tests {@link ObjectArray#removeAll}. */
 	@Test
 	public void testRemoveAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
