@@ -342,11 +342,11 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
 		assertEquals(raw.length, array.size());
-		array.remove(new Integer(raw[0]));
+		array.remove(new Character(raw[0]));
 		assertEquals(raw.length - 1, array.size());
-		array.remove(new Integer(raw[2]));
+		array.remove(new Character(raw[2]));
 		assertEquals(raw.length - 2, array.size());
-		array.remove(new Integer(raw[4]));
+		array.remove(new Character(raw[4]));
 		assertEquals(raw.length - 3, array.size());
 		assertEquals(raw[1], array.getValue(0));
 		assertEquals(raw[3], array.getValue(1));
@@ -358,11 +358,11 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
 
-		final ArrayList<Integer> list = new ArrayList<Integer>();
+		final ArrayList<Character> list = new ArrayList<Character>();
 		assertTrue(array.containsAll(list));
-		list.add(13);
+		list.add((char) 13);
 		assertTrue(array.containsAll(list));
-		list.add(1);
+		list.add((char) 1);
 		assertFalse(array.containsAll(list));
 
 		final CharArray yes = new CharArray(new char[] { 3, 8, 21 });
