@@ -49,8 +49,6 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import org.junit.Test;
-import org.scijava.util.ClassUtils;
-import org.scijava.util.FileUtils;
 
 /**
  * Tests {@link ClassUtils}.

@@ -35,8 +35,6 @@
 
 package org.scijava.plugin;
 
-import org.scijava.plugin.Plugin;
-
 /**
  * Top-level interface for plugins. Plugins discoverable at runtime must
  * implement this interface and be annotated with @{@link Plugin}.

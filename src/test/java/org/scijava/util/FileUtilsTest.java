@@ -52,7 +52,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import org.junit.Test;
-import org.scijava.util.FileUtils;
 
 /**
  * Tests {@link FileUtils}.

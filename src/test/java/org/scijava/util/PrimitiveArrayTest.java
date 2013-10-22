@@ -37,8 +37,6 @@ package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
 
-import org.scijava.util.PrimitiveArray;
-
 /**
  * Abstract superclass for {@link PrimitiveArray}-based tests.
  * 

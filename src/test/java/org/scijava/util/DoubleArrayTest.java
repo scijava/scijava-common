@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.scijava.util.DoubleArray;
 
 /**
  * Tests {@link DoubleArray}.

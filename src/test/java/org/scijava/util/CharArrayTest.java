@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Test;
-import org.scijava.util.IntArray;
 
 /**
  * Tests {@link CharArray}.

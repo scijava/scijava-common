@@ -41,7 +41,6 @@ import static org.junit.Assert.assertNull;
 import java.io.File;
 
 import org.junit.Test;
-import org.scijava.util.AppUtils;
 
 /**
  * Tests {@link AppUtils}.

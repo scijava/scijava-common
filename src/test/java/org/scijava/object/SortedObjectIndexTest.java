@@ -41,7 +41,6 @@ import static org.junit.Assert.assertSame;
 import java.util.List;
 
 import org.junit.Test;
-import org.scijava.object.SortedObjectIndex;
 
 /**
  * Tests {@link SortedObjectIndex}.
