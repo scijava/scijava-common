@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.91</version>
+	<version>1.92</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -29,7 +29,7 @@
 
 		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
-		<imagej.version>2.0.0-beta-7.4</imagej.version>
+		<imagej.version>2.0.0-beta-7.5</imagej.version>
 
 		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
 		<imagej1.version>1.48e</imagej1.version>
