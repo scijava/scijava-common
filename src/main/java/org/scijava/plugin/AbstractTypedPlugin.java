@@ -44,8 +44,8 @@ import org.scijava.Typed;
  * @param <D> Data type associated with the plugin.
  * @see Typed
  */
-public abstract class AbstractTypedPlugin<D> extends SortablePlugin implements
-	TypedPlugin<D>
+public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
+	implements TypedPlugin<D>
 {
 
 	// -- Typed methods --

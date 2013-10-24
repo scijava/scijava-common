@@ -35,8 +35,6 @@
 
 package org.scijava.plugin;
 
-import org.scijava.Contextual;
-import org.scijava.Prioritized;
 import org.scijava.Typed;
 
 /**
@@ -46,8 +44,6 @@ import org.scijava.Typed;
  * @param <D> Data type associated with the plugin.
  * @see Typed
  */
-public interface TypedPlugin<D> extends SciJavaPlugin, Contextual, Prioritized,
-	Typed<D>
-{
+public interface TypedPlugin<D> extends RichPlugin, Typed<D> {
 	// NB: Marker interface.
 }

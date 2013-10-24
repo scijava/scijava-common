@@ -35,7 +35,7 @@
 
 package org.scijava.app;
 
-import org.scijava.plugin.SortablePlugin;
+import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.util.Manifest;
 import org.scijava.util.POM;
 
@@ -44,7 +44,7 @@ import org.scijava.util.POM;
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractApp extends SortablePlugin implements App {
+public abstract class AbstractApp extends AbstractRichPlugin implements App {
 
 	/** Maven POM with metadata about the application. */
 	private POM pom;

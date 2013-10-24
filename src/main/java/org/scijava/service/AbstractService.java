@@ -37,14 +37,14 @@ package org.scijava.service;
 
 import org.scijava.Context;
 import org.scijava.event.EventService;
-import org.scijava.plugin.SortablePlugin;
+import org.scijava.plugin.AbstractRichPlugin;
 
 /**
  * Abstract superclass of {@link Service} implementations.
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractService extends SortablePlugin implements
+public abstract class AbstractService extends AbstractRichPlugin implements
 	Service
 {
 

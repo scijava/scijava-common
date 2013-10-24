@@ -35,11 +35,9 @@
 
 package org.scijava.service;
 
-import org.scijava.Contextual;
 import org.scijava.Disposable;
-import org.scijava.Prioritized;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.SciJavaPlugin;
+import org.scijava.plugin.RichPlugin;
 
 /**
  * A SciJava service, for a particular area of functionality.
@@ -54,9 +52,7 @@ import org.scijava.plugin.SciJavaPlugin;
  * @author Curtis Rueden
  * @see Plugin
  */
-public interface Service extends SciJavaPlugin, Contextual, Prioritized,
-	Disposable
-{
+public interface Service extends RichPlugin, Disposable {
 
 	/**
 	 * Performs any needed initialization when the service is first loaded.

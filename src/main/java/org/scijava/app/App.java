@@ -35,10 +35,8 @@
 
 package org.scijava.app;
 
-import org.scijava.Contextual;
-import org.scijava.Prioritized;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.SciJavaPlugin;
+import org.scijava.plugin.RichPlugin;
 import org.scijava.util.Manifest;
 import org.scijava.util.POM;
 
@@ -56,7 +54,7 @@ import org.scijava.util.POM;
  * @see Plugin
  * @see AppService
  */
-public interface App extends SciJavaPlugin, Contextual, Prioritized {
+public interface App extends RichPlugin {
 
 	/** Gets the title of the application. */
 	String getTitle();
