@@ -35,18 +35,7 @@
 
 package org.scijava.plugin;
 
-import org.scijava.Contextual;
-import org.scijava.Prioritized;
-
-/**
- * Abstract base class for {@link Contextual}, {@link Prioritized} plugins that
- * retain access to their associated {@link PluginInfo} metadata via the
- * {@link HasPluginInfo} interface. This class is intended as a convenient
- * extension point for plugin type implementations.
- * 
- * @author Curtis Rueden
- * @deprecated Use {@link AbstractRichPlugin} instead.
- */
+/** @deprecated Use {@link AbstractRichPlugin} instead. */
 @Deprecated
 public abstract class SortablePlugin extends AbstractRichPlugin {
 	// NB: No implementation needed.
