@@ -35,19 +35,70 @@
 
 package org.scijava.plugin;
 
-import org.scijava.Contextual;
+import org.scijava.AbstractContextual;
 import org.scijava.Prioritized;
+import org.scijava.Priority;
+import org.scijava.util.ClassUtils;
 
 /**
- * Abstract base class for {@link Contextual}, {@link Prioritized} plugins that
- * retain access to their associated {@link PluginInfo} metadata via the
- * {@link HasPluginInfo} interface. This class is intended as a convenient
- * extension point for plugin type implementations.
+ * Abstract base class for {@link RichPlugin} implementations.
  * 
  * @author Curtis Rueden
- * @deprecated Use {@link AbstractRichPlugin} instead.
  */
-@Deprecated
-public abstract class SortablePlugin extends AbstractRichPlugin {
-	// NB: No implementation needed.
+public abstract class AbstractRichPlugin extends AbstractContextual implements
+	RichPlugin
+{
+
+	/** The priority of the plugin. */
+	private double priority = Priority.NORMAL_PRIORITY;
+
+	/** The metadata associated with the plugin. */
+	private PluginInfo<?> info;
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		final PluginInfo<?> pi = getInfo();
+		return pi == null ? super.toString() : pi.getTitle();
+	}
+
+	// -- Prioritized methods --
+
+	@Override
+	public double getPriority() {
+		return priority;
+	}
+
+	@Override
+	public void setPriority(final double priority) {
+		this.priority = priority;
+	}
+
+	// -- HasPluginInfo methods --
+
+	@Override
+	public PluginInfo<?> getInfo() {
+		return info;
+	}
+
+	@Override
+	public void setInfo(final PluginInfo<?> info) {
+		this.info = info;
+	}
+
+	// -- Comparable methods --
+
+	@Override
+	public int compareTo(final Prioritized that) {
+		if (that == null) return 1;
+
+		// compare priorities
+		final int priorityCompare = Priority.compare(this, that);
+		if (priorityCompare != 0) return priorityCompare;
+
+		// compare classes
+		return ClassUtils.compare(getClass(), that.getClass());
+	}
+
 }
