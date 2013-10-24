@@ -40,7 +40,7 @@ package org.scijava.plugin;
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractHandlerPlugin<D> extends AbstractRichPlugin
+public abstract class AbstractHandlerPlugin<D> extends AbstractTypedPlugin<D>
 	implements HandlerPlugin<D>
 {
 	// NB: No implementation needed.
