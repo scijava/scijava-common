@@ -104,6 +104,7 @@ public class CheckSezpozTest {
 		writer.append("import org.scijava.Context;\n"
 			+ "import org.scijava.Prioritized;\n"
 			+ "import org.scijava.plugin.Plugin;\n"
+			+ "import org.scijava.plugin.PluginInfo;\n"
 			+ "import org.scijava.service.Service;\n"
 			+ "\n"
 			+ "@Plugin(type = Service.class)\n"
@@ -115,6 +116,8 @@ public class CheckSezpozTest {
 			+ "\tpublic int compareTo(final Prioritized other) { return 0; }\n"
 			+ "\tpublic Context getContext() { return null; }\n"
 			+ "\tpublic void setContext(final Context context) { }\n"
+			+ "\tpublic PluginInfo<?> getInfo() { return null; }\n"
+			+ "\tpublic void setInfo(PluginInfo<?> info) { }\n"
 			+ "\tpublic void dispose() { }\n"
 			+ "}\n");
 		writer.close();
