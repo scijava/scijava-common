@@ -110,6 +110,7 @@ set imagej1.version --latest \
 	ome-formats.version --latest \
 	scifio.version --latest \
 	scifio-bf-compat.version --latest \
+	scifio-lifesci.version --latest \
 	scijava-common.version --latest
 
 test $# -ge 2 &&
@@ -171,6 +172,9 @@ do
 			;;
 		scifio-bf-compat.version)
 			ga=io.scif:scifio-bf-compat
+			;;
+		scifio-lifesci.version)
+			ga=io.scif:pom-scifio-lifesci
 			;;
 		*)
 			die "Unknown GAV for $1"
