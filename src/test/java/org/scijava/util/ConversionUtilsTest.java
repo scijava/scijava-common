@@ -116,10 +116,18 @@ public class ConversionUtilsTest {
 		assertTrue(ConversionUtils.canConvert(String.class, char.class));
 		assertTrue(ConversionUtils.canConvert(String.class, Character.class));
 
+		// check array conversion
+		assertTrue(ConversionUtils.canConvert(int[].class, long[].class));
+		assertTrue(ConversionUtils.canConvert(new ArrayList<Long>().getClass(),
+			long[].class));
+		assertTrue(ConversionUtils.canConvert(long[].class,
+			new ArrayList<Long>().getClass()));
+
 		// check conversion of various types w/ appropriate constructor
 		assertTrue(ConversionUtils.canConvert(String.class, Double.class));
 		assertTrue(ConversionUtils.canConvert(Collection.class, ArrayList.class));
 		assertTrue(ConversionUtils.canConvert(HashSet.class, ArrayList.class));
+
 		assertTrue(ConversionUtils.canConvert(long.class, Date.class));
 
 		// check lack of conversion of various types w/o appropriate constructor
@@ -305,6 +313,8 @@ public class ConversionUtilsTest {
 			private String[][] strings;
 			private Void v;
 			private List<String> list;
+			private List<String>[] genericArray;
+			private List<String>[][] generic2DArray;
 			private HashMap<Integer, Float> map;
 		}
 		assertSame(int[].class, getClass(Struct.class, "intArray"));
@@ -312,6 +322,8 @@ public class ConversionUtilsTest {
 		assertSame(String[][].class, getClass(Struct.class, "strings"));
 		assertSame(Void.class, getClass(Struct.class, "v"));
 		assertSame(List.class, getClass(Struct.class, "list"));
+		assertSame(List[].class, getClass(Struct.class, "genericArray"));
+		assertSame(List[][].class, getClass(Struct.class, "generic2DArray"));
 		assertSame(HashMap.class, getClass(Struct.class, "map"));
 	}
 

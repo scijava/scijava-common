@@ -101,7 +101,7 @@ public class ConversionUtils {
 			return convertToCollection(value, (ParameterizedType) type);
 		}
 
-		// This wasn't a collection or array, so convert it as a single element.
+		// This wasn't a collection, so convert it normally.
 		return convert(value, getClass(type));
 	}
 
@@ -219,7 +219,6 @@ public class ConversionUtils {
 	public static boolean canConvert(final Class<?> c, final Class<?> type) {
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<?> saneType = getNonprimitiveType(type);
-
 		// OK if the existing object can be casted
 		if (canCast(c, saneType)) return true;
 
@@ -239,6 +238,11 @@ public class ConversionUtils {
 		// (in this case, the first character of the string would be used)
 		if (canCast(c, String.class) && saneType == Character.class) {
 			return true;
+		}
+
+		// OK if arrays of convertible types
+		if (c.isArray() && type.isArray()) {
+			return canConvert(c.getComponentType(), type.getComponentType());
 		}
 
 		// OK if appropriate wrapper constructor exists
@@ -362,6 +366,11 @@ public class ConversionUtils {
 		if (type instanceof ParameterizedType) {
 			return getClass(((ParameterizedType) type).getRawType());
 		}
+		if (type instanceof GenericArrayType) {
+			// List<String>[] -> List[]
+			// List<String>[].getGenericComponentType() = List<String> -> List !!!
+			return getClass(((GenericArrayType) type).getGenericComponentType());
+		}
 
 		return null;
 	}
@@ -374,11 +383,12 @@ public class ConversionUtils {
 	 * {@link GenericArrayType}).
 	 */
 	public static Class<?> getComponentClass(final Type type) {
-		if (type instanceof Class) return ((Class<?>) type).getComponentType();
-		if (type instanceof GenericArrayType) {
-			return getClass(((GenericArrayType) type).getGenericComponentType());
-		}
-		return null;
+		return getClass(type).getComponentType();
+//		if (type instanceof Class) return ((Class<?>) type).getComponentType();
+//		if (type instanceof GenericArrayType) {
+//			return getClass(((GenericArrayType) type).getGenericComponentType());
+//		}
+//		return null;
 	}
 
 	// -- Helper methods --
