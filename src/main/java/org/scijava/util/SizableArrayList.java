@@ -67,6 +67,16 @@ public class SizableArrayList<E> extends ArrayList<E> implements Sizable {
 		super(c);
 	}
 
+	// -- ArrayList methods --
+
+	@Override
+	public void ensureCapacity(int capacity) {
+		// HACK: With Java 1.7.0_45 (but not 1.7.0_21), when calling ensureCapacity
+		// with a value <= 10, while the size is still 0, does not actually affect
+		// the capacity. This seems like a bug, but we will work around it!
+		super.ensureCapacity(capacity < 11 ? 11 : capacity);
+	}
+
 	// -- Sizable methods --
 
 	@Override
@@ -80,21 +90,42 @@ public class SizableArrayList<E> extends ArrayList<E> implements Sizable {
 		else {
 			// need to add some elements
 			ensureCapacity(size);
-			try {
-				final Field sizeField = ArrayList.class.getDeclaredField("size");
-				sizeField.setAccessible(true);
-				sizeField.set(this, size);
-			}
-			catch (final NoSuchFieldException exc) {
-				throw new IllegalStateException(exc);
-			}
-			catch (final IllegalArgumentException exc) {
-				throw new IllegalStateException(exc);
-			}
-			catch (final IllegalAccessException exc) {
-				throw new IllegalStateException(exc);
+			final boolean hackSuccessful = hackSize(size);
+			if (!hackSuccessful) {
+				// explicitly increase the size by adding nulls
+				while (size() < size) add(null);
 			}
 		}
+	}
+
+	// -- Helper methods --
+
+	private boolean hackSize(final int size) {
+		// HACK: Override the size field directly.
+		final int oldSize;
+		try {
+			final Field sizeField = ArrayList.class.getDeclaredField("size");
+			sizeField.setAccessible(true);
+			oldSize = (Integer) sizeField.get(this);
+			sizeField.set(this, size);
+
+			// NB: Check that it worked. In the case of Java 1.7.0_45, it is possible
+			// for the capacity to not *actually* be ensured, in which case
+			// subsequently attempting to get the (size - 1)th value results in
+			// ArrayIndexOutOfBoundsException. So let's be safe and verify it here.
+			try {
+				get(size - 1);
+			}
+			catch (final Exception exc) {
+				// NB: Restore the previous size, then fail.
+				sizeField.set(this, oldSize);
+				return false;
+			}
+		}
+		catch (final Exception exc) {
+			return false;
+		}
+		return true;
 	}
 
 }
