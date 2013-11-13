@@ -108,6 +108,11 @@ public final class CheckSezpoz {
 	 * @throws IOException
 	 */
 	public static boolean check(final boolean checkJars) throws IOException {
+		if (!aptAvailable()) {
+			System.err.println("WARN: Cannot run apt with this JVM");
+			return true;
+		}
+
 		boolean upToDate = true;
 		for (final String path : System.getProperty("java.class.path").split(
 			File.pathSeparator))
@@ -457,10 +462,14 @@ public final class CheckSezpoz {
 		aptArgs.addAll(Arrays.asList(args));
 
 		final Method aptProcess;
+		final ClassLoader toolClassLoader = ToolProvider.getSystemToolClassLoader();
+		if (toolClassLoader == null) {
+			System.err.println("WARN: no system tool class loader; giving up");
+			return;
+		}
 		final Class<?> aptClass =
-			ToolProvider.getSystemToolClassLoader().loadClass("com.sun.tools.apt.Main");
-		aptProcess =
-			aptClass.getMethod("process", new Class[] { String[].class });
+			toolClassLoader.loadClass("com.sun.tools.apt.Main");
+		aptProcess = aptClass.getMethod("process", new Class[] { String[].class });
 		aptProcess.invoke(null, (Object)aptArgs.toArray(new String[aptArgs.size()]));
 	}
 
@@ -640,6 +649,11 @@ public final class CheckSezpoz {
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
 			"4");
 		transformer.transform(source, result);
+	}
+
+	private static boolean aptAvailable() {
+		return ToolProvider.getSystemJavaCompiler() != null ||
+			ToolProvider.getSystemToolClassLoader() != null;
 	}
 
 	private static final String[] APT_PROPERTIES = {
