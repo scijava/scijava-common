@@ -36,6 +36,7 @@
 package org.scijava.event;
 
 
+import java.util.List;
 import java.util.Set;
 
 import org.scijava.service.Service;
@@ -55,6 +56,16 @@ public interface EventHistory extends Service {
 
 	/** Clears the recorded event history. */
 	void clear();
+
+	/** Gets the complete history of events. */
+	List<EventDetails> events();
+
+	/**
+	 * Gets a portion of the recorded event history, filtering out certain event
+	 * types.
+	 */
+	List<EventDetails> events(Set<Class<? extends SciJavaEvent>> includes,
+		Set<Class<? extends SciJavaEvent>> excludes);
 
 	/**
 	 * Gets the recorded event history as an HTML string.

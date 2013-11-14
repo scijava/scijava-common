@@ -36,6 +36,10 @@
 package org.scijava.event;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.scijava.plugin.Parameter;
@@ -57,9 +61,9 @@ public class DefaultEventHistory extends AbstractService implements
 	private EventService eventService;
 
 	/** Event details that have been recorded. */
-	private ArrayList<EventDetails> history = new ArrayList<EventDetails>();
+	private final ArrayList<EventDetails> history = new ArrayList<EventDetails>();
 
-	private ArrayList<EventHistoryListener> listeners =
+	private final ArrayList<EventHistoryListener> listeners =
 		new ArrayList<EventHistoryListener>();
 
 	private boolean active;
@@ -79,6 +83,19 @@ public class DefaultEventHistory extends AbstractService implements
 	@Override
 	public void clear() {
 		history.clear();
+	}
+
+	@Override
+	public List<EventDetails> events() {
+		return events(null, null);
+	}
+
+	@Override
+	public List<EventDetails> events(
+		final Set<Class<? extends SciJavaEvent>> includes,
+		final Set<Class<? extends SciJavaEvent>> excludes)
+	{
+		return events(history, includes, excludes);
 	}
 
 	@Override
@@ -137,6 +154,38 @@ public class DefaultEventHistory extends AbstractService implements
 				l.eventOccurred(details);
 			}
 		}
+	}
+
+	private List<EventDetails> events(final Collection<EventDetails> events,
+		Set<Class<? extends SciJavaEvent>> includes,
+		Set<Class<? extends SciJavaEvent>> excludes)
+	{
+		if (includes == null) {
+			// include all SciJava event types by default
+			includes = new HashSet<Class<? extends SciJavaEvent>>();
+			includes.add(SciJavaEvent.class);
+		}
+		if (excludes == null) {
+			// exclude nothing by default
+			excludes = Collections.emptySet();
+		}
+		final ArrayList<EventDetails> matches = new ArrayList<EventDetails>();
+		for (final EventDetails event : events) {
+			final Class<? extends SciJavaEvent> eventType = event.getEventType();
+			if (!typeInSet(eventType, includes)) continue; // not included
+			if (typeInSet(eventType, excludes)) continue; // excluded
+			matches.add(event);
+		}
+		return matches;
+	}
+
+	private boolean typeInSet(final Class<? extends SciJavaEvent> eventType,
+		Set<Class<? extends SciJavaEvent>> typeSet)
+	{
+		for (Class<? extends SciJavaEvent> type : typeSet) {
+			if (type.isAssignableFrom(eventType)) return true;
+		}
+		return false;
 	}
 
 }
