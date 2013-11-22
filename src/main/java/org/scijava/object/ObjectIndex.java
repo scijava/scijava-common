@@ -361,6 +361,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		return list;
 	}
 
+	// -- Helper classes --
+
 	private static class All {
 		// NB: A special class beneath which *all* elements of the index are listed.
 	}
