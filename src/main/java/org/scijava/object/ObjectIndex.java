@@ -55,13 +55,14 @@ import org.scijava.util.ClassUtils;
  * <p>
  * The object index keeps lists of objects segregated by type. The type
  * hierarchy beneath which each object is classified can be customized through
- * subclassing (e.g., see {@link org.scijava.plugin.PluginIndex}), but by default,
- * each registered object is added to all type lists with which its class is
- * compatible. For example, an object of type {@link String} would be added to
- * the following type lists: {@link String}, {@link java.io.Serializable},
- * {@link Comparable}, {@link CharSequence} and {@link Object}. A subsequent
- * request for all objects of type {@link Comparable} (via a call to
- * {@link #get(Class)}) would return a list that includes the object.
+ * subclassing (e.g., see {@link org.scijava.plugin.PluginIndex}), but by
+ * default, each registered object is added to all type lists with which its
+ * class is compatible. For example, an object of type {@link String} would be
+ * added to the following type lists: {@link String},
+ * {@link java.io.Serializable}, {@link Comparable}, {@link CharSequence} and
+ * {@link Object}. A subsequent request for all objects of type
+ * {@link Comparable} (via a call to {@link #get(Class)}) would return a list
+ * that includes the object.
  * </p>
  * <p>
  * Note that similar to {@link List}, it is possible for the same object to be
@@ -262,7 +263,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		return remove(o, getType(e), batch);
 	}
 
-	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<Class<?>, List<E>[]>();
+	private Map<Class<?>, List<E>[]> type2Lists =
+		new HashMap<Class<?>, List<E>[]>();
 
 	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
 		List<E>[] result = type2Lists.get(type);
@@ -312,7 +314,8 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
-	private static Map<Class<?>, Class<?>[]> typeMap = new HashMap<Class<?>, Class<?>[]>();
+	private static Map<Class<?>, Class<?>[]> typeMap =
+		new HashMap<Class<?>, Class<?>[]>();
 
 	/** Gets a new set containing the type and all its supertypes. */
 	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
@@ -327,7 +330,9 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	/** Recursively adds the type and all its supertypes to the given set. */
-	private static synchronized void getTypes(final Class<?> type, final Set<Class<?>> types) {
+	private static synchronized void getTypes(final Class<?> type,
+		final Set<Class<?>> types)
+	{
 		if (type == null) return;
 		types.add(type);
 
