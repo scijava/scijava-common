@@ -35,10 +35,12 @@
 
 package org.scijava.plugin;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.scijava.log.LogService;
+import org.scijava.object.LazyObjects;
 import org.scijava.object.ObjectService;
 
 /**
@@ -71,6 +73,20 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 			createInstances();
 		}
 		return instances;
+	}
+
+	// -- Service methods --
+
+	@Override
+	public void initialize() {
+		// add singleton instances to the object index... IN THE FUTURE!
+		objectService.getIndex().addLater(new LazyObjects<Object>() {
+
+			@Override
+			public ArrayList<Object> get() {
+				return new ArrayList<Object>(getInstances());
+			}
+		});
 	}
 
 	// -- Helper methods --
