@@ -35,7 +35,6 @@
 
 package org.scijava.object;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +42,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,13 +55,14 @@ import org.scijava.util.ClassUtils;
  * <p>
  * The object index keeps lists of objects segregated by type. The type
  * hierarchy beneath which each object is classified can be customized through
- * subclassing (e.g., see {@link org.scijava.plugin.PluginIndex}), but by default,
- * each registered object is added to all type lists with which its class is
- * compatible. For example, an object of type {@link String} would be added to
- * the following type lists: {@link String}, {@link java.io.Serializable},
- * {@link Comparable}, {@link CharSequence} and {@link Object}. A subsequent
- * request for all objects of type {@link Comparable} (via a call to
- * {@link #get(Class)}) would return a list that includes the object.
+ * subclassing (e.g., see {@link org.scijava.plugin.PluginIndex}), but by
+ * default, each registered object is added to all type lists with which its
+ * class is compatible. For example, an object of type {@link String} would be
+ * added to the following type lists: {@link String},
+ * {@link java.io.Serializable}, {@link Comparable}, {@link CharSequence} and
+ * {@link Object}. A subsequent request for all objects of type
+ * {@link Comparable} (via a call to {@link #get(Class)}) would return a list
+ * that includes the object.
  * </p>
  * <p>
  * Note that similar to {@link List}, it is possible for the same object to be
@@ -86,6 +87,10 @@ public class ObjectIndex<E> implements Collection<E> {
 		new ConcurrentHashMap<Class<?>, List<E>>();
 
 	private final Class<E> baseClass;
+
+	/** List of objects to add later as needed (i.e., lazily). */
+	private final List<LazyObjects<? extends E>> pending =
+		new LinkedList<LazyObjects<? extends E>>();
 
 	public ObjectIndex(final Class<E> baseClass) {
 		this.baseClass = baseClass;
@@ -127,10 +132,28 @@ public class ObjectIndex<E> implements Collection<E> {
 	 *         list if no such objects exist (this method never returns null).
 	 */
 	public List<E> get(final Class<?> type) {
+		// lazily register any pending objects
+		if (!pending.isEmpty()) resolvePending();
+
 		List<E> list = retrieveList(type);
 		// NB: Return a copy of the data, to facilitate thread safety.
 		list = new ArrayList<E>(list);
 		return list;
+	}
+
+	/**
+	 * Registers objects which will be created lazily as needed.
+	 * <p>
+	 * This is useful if creation of the objects is expensive for some reason. In
+	 * that case, the object index can wait to actually request and register the
+	 * objects until the next accessor method invocation (i.e.,
+	 * {@link #get(Class)} or {@link #getAll()}).
+	 * </p>
+	 */
+	public void addLater(final LazyObjects<? extends E> c) {
+		synchronized (pending) {
+			pending.add(c);
+		}
 	}
 
 	// -- Collection methods --
@@ -148,7 +171,10 @@ public class ObjectIndex<E> implements Collection<E> {
 	@Override
 	public boolean contains(final Object o) {
 		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
-		return get(getType((E)o)).contains(o);
+		@SuppressWarnings("unchecked")
+		final E typedObj = (E) o;
+		final Class<?> type = getType(typedObj);
+		return get(type).contains(o);
 	}
 
 	@Override
@@ -262,19 +288,26 @@ public class ObjectIndex<E> implements Collection<E> {
 		return remove(o, getType(e), batch);
 	}
 
-	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<Class<?>, List<E>[]>();
+	private Map<Class<?>, List<E>[]> type2Lists =
+		new HashMap<Class<?>, List<E>[]>();
 
 	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
-		List<E>[] result = type2Lists.get(type);
-		if (result != null) return result;
+		final List<E>[] lists = type2Lists.get(type);
+		if (lists != null) return lists;
 
-		final Collection<List<E>> lists = new ArrayList<List<E>>();
+		final ArrayList<List<E>> listOfLists = new ArrayList<List<E>>();
 		for (final Class<?> c : getTypes(type)) {
-			lists.add(retrieveList(c));
+			listOfLists.add(retrieveList(c));
 		}
-		result = lists.toArray(new List[lists.size()]);
-		type2Lists.put(type, result);
-		return result;
+		// convert list of lists to array of lists
+		@SuppressWarnings("rawtypes")
+		final List[] arrayOfRawLists =
+			listOfLists.toArray(new List[listOfLists.size()]);
+		@SuppressWarnings({ "unchecked" })
+		final List<E>[] arrayOfLists = arrayOfRawLists;
+		type2Lists.put(type, arrayOfLists);
+
+		return arrayOfLists;
 	}
 
 	/** Adds an object to type lists beneath the given type hierarchy. */
@@ -292,8 +325,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		final boolean batch)
 	{
 		boolean result = false;
-		for (final List<?> list : retrieveListsForType(type)) {
-			if (removeFromList(o, (List<E>) list, batch)) result = true;
+		for (final List<E> list : retrieveListsForType(type)) {
+			if (removeFromList(o, list, batch)) result = true;
 		}
 		return result;
 	}
@@ -312,7 +345,8 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
-	private static Map<Class<?>, Class<?>[]> typeMap = new HashMap<Class<?>, Class<?>[]>();
+	private static Map<Class<?>, Class<?>[]> typeMap =
+		new HashMap<Class<?>, Class<?>[]>();
 
 	/** Gets a new set containing the type and all its supertypes. */
 	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
@@ -327,7 +361,9 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	/** Recursively adds the type and all its supertypes to the given set. */
-	private static synchronized void getTypes(final Class<?> type, final Set<Class<?>> types) {
+	private static synchronized void getTypes(final Class<?> type,
+		final Set<Class<?>> types)
+	{
 		if (type == null) return;
 		types.add(type);
 
@@ -347,6 +383,17 @@ public class ObjectIndex<E> implements Collection<E> {
 		}
 		return list;
 	}
+
+	private void resolvePending() {
+		synchronized (pending) {
+			while (!pending.isEmpty()) {
+				final LazyObjects<? extends E> c = pending.remove(0);
+				addAll(c.get());
+			}
+		}
+	}
+
+	// -- Helper classes --
 
 	private static class All {
 		// NB: A special class beneath which *all* elements of the index are listed.

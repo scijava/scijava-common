@@ -1,6 +1,6 @@
 /*
  * #%L
- * ImageJ software for multidimensional image processing and analysis.
+ * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2013 Board of Regents of the University of
  * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
@@ -33,76 +33,20 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.object;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.scijava.log.LogService;
-import org.scijava.object.LazyObjects;
-import org.scijava.object.ObjectService;
+import java.util.Collection;
 
 /**
- * Abstract base class for {@link SingletonService}s.
+ * Interface for objects created lazily. This interface provides a mechanism to
+ * register a callback of sorts, so that the {@link ObjectIndex} can request
+ * creation of objects only when they are needed.
  * 
  * @author Curtis Rueden
- * @param <PT> Plugin type of the {@link SingletonPlugin}s being managed.
  */
-public abstract class AbstractSingletonService<PT extends SingletonPlugin>
-	extends AbstractPTService<PT> implements SingletonService<PT>
-{
+public interface LazyObjects<T> {
 
-	@Parameter
-	private LogService log;
-
-	@Parameter
-	private ObjectService objectService;
-
-	// TODO: Listen for PluginsAddedEvent and PluginsRemovedEvent
-	// and update the list of singletons accordingly.
-
-	/** List of singleton plugin instances. */
-	private List<PT> instances;
-
-	// -- SingletonService methods --
-
-	@Override
-	public List<PT> getInstances() {
-		if (instances == null) {
-			createInstances();
-		}
-		return instances;
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		// add singleton instances to the object index... IN THE FUTURE!
-		objectService.getIndex().addLater(new LazyObjects<Object>() {
-
-			@Override
-			public ArrayList<Object> get() {
-				return new ArrayList<Object>(getInstances());
-			}
-		});
-	}
-
-	// -- Helper methods --
-
-	private void createInstances() {
-		instances =
-			Collections.unmodifiableList(getPluginService().createInstancesOfType(
-				getPluginType()));
-
-		log.info("Found " + instances.size() + " " +
-			getPluginType().getSimpleName() + " plugins.");
-
-		// register singleton instances with the object service
-		for (final PT instance : instances) {
-			objectService.addObject(instance);
-		}
-	}
+	/** Gets the collection of objects. */
+	Collection<T> get();
 
 }
