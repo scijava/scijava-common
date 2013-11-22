@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +88,10 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	private final Class<E> baseClass;
 
+	/** List of objects to add later as needed (i.e., lazily). */
+	private final List<LazyObjects<? extends E>> pending =
+		new LinkedList<LazyObjects<? extends E>>();
+
 	public ObjectIndex(final Class<E> baseClass) {
 		this.baseClass = baseClass;
 	}
@@ -127,10 +132,28 @@ public class ObjectIndex<E> implements Collection<E> {
 	 *         list if no such objects exist (this method never returns null).
 	 */
 	public List<E> get(final Class<?> type) {
+		// lazily register any pending objects
+		if (!pending.isEmpty()) resolvePending();
+
 		List<E> list = retrieveList(type);
 		// NB: Return a copy of the data, to facilitate thread safety.
 		list = new ArrayList<E>(list);
 		return list;
+	}
+
+	/**
+	 * Registers objects which will be created lazily as needed.
+	 * <p>
+	 * This is useful if creation of the objects is expensive for some reason. In
+	 * that case, the object index can wait to actually request and register the
+	 * objects until the next accessor method invocation (i.e.,
+	 * {@link #get(Class)} or {@link #getAll()}).
+	 * </p>
+	 */
+	public void addLater(final LazyObjects<? extends E> c) {
+		synchronized (pending) {
+			pending.add(c);
+		}
 	}
 
 	// -- Collection methods --
@@ -359,6 +382,15 @@ public class ObjectIndex<E> implements Collection<E> {
 			hoard.put(type, list);
 		}
 		return list;
+	}
+
+	private void resolvePending() {
+		synchronized (pending) {
+			while (!pending.isEmpty()) {
+				final LazyObjects<? extends E> c = pending.remove(0);
+				addAll(c.get());
+			}
+		}
 	}
 
 	// -- Helper classes --
