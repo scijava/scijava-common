@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.3.3-SNAPSHOT</version>
+	<version>2.4.0</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, driven by the SezPoz library, so that plugins can be loaded dynamically. It is used by both ImageJ and SCIFIO.</description>
@@ -91,7 +91,7 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
 		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
-		<tag>HEAD</tag>
+		<tag>scijava-common-2.4.0</tag>
 		<url>https://github.com/scijava/scijava-common</url>
 	</scm>
 
