@@ -149,7 +149,10 @@ public class ObjectIndex<E> implements Collection<E> {
 	@Override
 	public boolean contains(final Object o) {
 		if (!getBaseClass().isAssignableFrom(o.getClass())) return false;
-		return get(getType((E)o)).contains(o);
+		@SuppressWarnings("unchecked")
+		final E typedObj = (E) o;
+		final Class<?> type = getType(typedObj);
+		return get(type).contains(o);
 	}
 
 	@Override
@@ -267,16 +270,22 @@ public class ObjectIndex<E> implements Collection<E> {
 		new HashMap<Class<?>, List<E>[]>();
 
 	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
-		List<E>[] result = type2Lists.get(type);
-		if (result != null) return result;
+		final List<E>[] lists = type2Lists.get(type);
+		if (lists != null) return lists;
 
-		final Collection<List<E>> lists = new ArrayList<List<E>>();
+		final ArrayList<List<E>> listOfLists = new ArrayList<List<E>>();
 		for (final Class<?> c : getTypes(type)) {
-			lists.add(retrieveList(c));
+			listOfLists.add(retrieveList(c));
 		}
-		result = lists.toArray(new List[lists.size()]);
-		type2Lists.put(type, result);
-		return result;
+		// convert list of lists to array of lists
+		@SuppressWarnings("rawtypes")
+		final List[] arrayOfRawLists =
+			listOfLists.toArray(new List[listOfLists.size()]);
+		@SuppressWarnings({ "unchecked" })
+		final List<E>[] arrayOfLists = arrayOfRawLists;
+		type2Lists.put(type, arrayOfLists);
+
+		return arrayOfLists;
 	}
 
 	/** Adds an object to type lists beneath the given type hierarchy. */
@@ -294,8 +303,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		final boolean batch)
 	{
 		boolean result = false;
-		for (final List<?> list : retrieveListsForType(type)) {
-			if (removeFromList(o, (List<E>) list, batch)) result = true;
+		for (final List<E> list : retrieveListsForType(type)) {
+			if (removeFromList(o, list, batch)) result = true;
 		}
 		return result;
 	}
