@@ -211,6 +211,30 @@ public class ConversionUtils {
 	}
 
 	/**
+	 * Converts the given string value to an enumeration constant of the specified
+	 * type.
+	 * 
+	 * @param value The value to convert.
+	 * @param type The type of the enumeration constant.
+	 * @return The converted enumeration constant, or null if the type is not an
+	 *         enumeration type or has no such constant.
+	 */
+	public static <T> T convertToEnum(final String value, final Class<T> type) {
+		if (value == null || !type.isEnum()) return null;
+		try {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			final Enum result = Enum.valueOf((Class) type, value);
+			@SuppressWarnings("unchecked")
+			final T typedResult = (T) result;
+			return typedResult;
+		}
+		catch (final IllegalArgumentException exc) {
+			// no such enum constant
+			return null;
+		}
+	}
+
+	/**
 	 * Checks whether objects of the given class can be converted to the specified
 	 * type.
 	 * 
