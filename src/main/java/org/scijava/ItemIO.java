@@ -43,7 +43,7 @@ package org.scijava;
  * <ul>
  * <li>INPUT: item is an input for the module.</li>
  * <li>OUTPUT: item is an output for the module.</li>
- * <li>BOTH: item is both and input and an output for the module. This type is
+ * <li>BOTH: item is both an input and an output for the module. This type is
  * used to indicate an object that is mutated somehow during execution.</li>
  * </ul>
  * 
