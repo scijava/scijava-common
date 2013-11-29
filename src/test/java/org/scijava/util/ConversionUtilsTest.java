@@ -116,6 +116,9 @@ public class ConversionUtilsTest {
 		assertTrue(ConversionUtils.canConvert(String.class, char.class));
 		assertTrue(ConversionUtils.canConvert(String.class, Character.class));
 
+		// can convert string to enum
+		assertTrue(ConversionUtils.canConvert(String.class, Words.class));
+
 		// check conversion of various types w/ appropriate constructor
 		assertTrue(ConversionUtils.canConvert(String.class, Double.class));
 		assertTrue(ConversionUtils.canConvert(Collection.class, ArrayList.class));
@@ -165,6 +168,12 @@ public class ConversionUtilsTest {
 		final Collection<?> arrayListToCollection =
 			ConversionUtils.convert(arrayList, Collection.class);
 		assertSame(arrayList, arrayListToCollection);
+
+		// check conversion to enum values (testConvertToEnum is more thorough)
+		final Words fubar = ConversionUtils.convert("FUBAR", Words.class);
+		assertSame(Words.FUBAR, fubar);
+		final Words noConstant = ConversionUtils.convert("NONE", Words.class);
+		assertNull(noConstant);
 
 		// check conversion of numeric primitives: double to float
 		final double d = 5.1;
