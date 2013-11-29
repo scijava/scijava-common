@@ -186,6 +186,12 @@ public class ConversionUtils {
 				final T result = (T) c;
 				return result;
 			}
+
+			// special case for conversion to enum
+			if (type.isEnum()) {
+				final T result = convertToEnum(s, type);
+				if (result != null) return result;
+			}
 		}
 		if (saneType == String.class) {
 			// destination type is String; use Object.toString() method
@@ -259,10 +265,13 @@ public class ConversionUtils {
 		// OK if string
 		if (saneType == String.class) return true;
 
-		// OK if source type is string and destination type is character
-		// (in this case, the first character of the string would be used)
-		if (canCast(c, String.class) && saneType == Character.class) {
-			return true;
+		if (canCast(c, String.class)) {
+			// OK if source type is string and destination type is character
+			// (in this case, the first character of the string would be used)
+			if (saneType == Character.class) return true;
+
+			// OK if source type is string and destination type is an enum
+			if (type.isEnum()) return true;
 		}
 
 		// OK if appropriate wrapper constructor exists
