@@ -62,4 +62,7 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 	 */
 	List<PT> getInstances();
 
+	/** Gets the singleton plugin instance of the given class. */
+	<P extends PT> P getInstance(Class<P> pluginClass);
+
 }

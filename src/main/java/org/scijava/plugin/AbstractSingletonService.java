@@ -75,6 +75,12 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		return instances;
 	}
 
+	@Override
+	public <P extends PT> P getInstance(final Class<P> pluginClass) {
+		final List<P> objects = objectService.getObjects(pluginClass);
+		return objects == null || objects.isEmpty() ? null : objects.get(0);
+	}
+
 	// -- Service methods --
 
 	@Override
