@@ -174,7 +174,7 @@ do
 			ga=io.scif:scifio-bf-compat
 			;;
 		scifio-lifesci.version)
-			ga=io.scif:pom-scifio-lifesci
+			ga=io.scif:scifio-lifesci
 			;;
 		*)
 			die "Unknown GAV for $1"
