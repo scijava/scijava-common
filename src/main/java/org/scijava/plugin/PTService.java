@@ -47,22 +47,28 @@ import org.scijava.service.SciJavaService;
  * few examples from ImageJ:
  * </p>
  * <ul>
- * <li>{@code imagej.command.CommandService} works with
+ * <li>The {@code imagej.command.CommandService} works with
  * {@code imagej.command.Command}s.</li>
- * <li>{@code imagej.text.TextService} works with {@code imagej.text.TextFormat}
- * s.</li>
- * <li>{@code imagej.platform.PlatformService} works with
+ * <li>The {@code imagej.text.TextService} works with
+ * {@code imagej.text.TextFormat}s.</li>
+ * <li>The {@code imagej.platform.PlatformService} works with
  * {@code imagej.platform.Platform}s.</li>
  * </ul>
  * <p>
  * Most services fit this pattern in one way or another. When you wish to
  * provide a new extensibility point, you create a new type of
  * {@link SciJavaPlugin}, and a corresponding {@link PTService} for working with
- * it. Depending on the nature of your new plugin type, this service might be a
- * {@link SingletonService} (such as {@code imagej.platform.PlatformService}), a
- * {@link HandlerService} (such as {@code imagej.text.TextService}) or a
- * {@link WrapperService} (such as {@code imagej.widget.WidgetService}).
+ * it. Depending on the nature of your new plugin type, this service might be:
  * </p>
+ * <ul>
+ * <li>A {@link SingletonService}, such as
+ * {@code imagej.platform.PlatformService}, which manages
+ * {@link SingletonPlugin}s.</li>
+ * <li>A {@link HandlerService}, such as {@code imagej.text.TextService}, which
+ * manages {@link HandlerPlugin}s.</li>
+ * <li>A {@link WrapperService}, such as {@code imagej.widget.WidgetService},
+ * which manages {@link WrapperPlugin}s.</li>
+ * </ul>
  * <p>
  * It is named {@code PTService} rather than {@code PluginTypeService} or
  * similar to avoid confusion with A) the {@link PluginService} itself, and B)
