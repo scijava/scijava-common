@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.107</version>
+	<version>1.108</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -369,13 +369,38 @@
 					     http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5101868 -->
 					<use>false</use>
 					<links>
-						<link>https://pivot.apache.org/2.0.2/docs/api/</link>
-						<link>http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/</link>
+						<!-- Java 6 -->
 						<link>http://docs.oracle.com/javase/6/docs/api/</link>
-						<link>http://download.java.net/media/java3d/javadoc/1.5.2/</link>
+
+						<!-- Core SciJava projects -->
+						<!-- Bio-Formats -->
 						<link>http://hudson.openmicroscopy.org.uk/job/BIOFORMATS-trunk/javadoc/</link>
+						<!-- Fiji -->
+						<link>http://jenkins.imagej.net/job/Fiji-javadoc/javadoc/</link>
+						<!-- ImageJ1 -->
+						<link>http://jenkins.imagej.net/job/ImageJ1-javadoc/javadoc/</link>
+						<!-- ImageJ2 -->
+						<link>http://jenkins.imagej.net/job/ImageJ-daily/javadoc/</link>
+						<!-- ImgLib2 -->
+						<link>http://jenkins.imagej.net/job/ImgLib-daily/javadoc/</link>
+						<!-- SCIFIO -->
+						<link>http://jenkins.imagej.net/job/SCIFIO-javadoc/javadoc/</link>
+						<!-- SciJava Common -->
+						<link>http://jenkins.imagej.net/job/SciJava-common-javadoc/javadoc/</link>
+
+						<!-- Third party dependencies -->
+						<!-- Apache Pivot -->
+						<link>http://pivot.apache.org/2.0.3/docs/api/</link>
+						<!-- Eclipse -->
+						<link>http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/api/</link>
+						<!-- Java3D -->
+						<link>http://download.java.net/media/java3d/javadoc/1.5.2/</link>
+						<!-- Javassist -->
 						<link>http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/html/</link>
+						<!-- JHotDraw -->
 						<link>http://www.randelshofer.ch/oop/jhotdraw/JavaDoc/</link>
+						<!-- MPI-CBG -->
+						<link>http://jenkins.imagej.net/view/Fiji/job/Saalfeld-MPICBG-Maven/javadoc/</link>
 					</links>
 				</configuration>
 			</plugin>
