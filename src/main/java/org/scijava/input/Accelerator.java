@@ -108,7 +108,8 @@ public class Accelerator {
 	 * <ul>
 	 * <li>"control" may be shortened to "ctrl"</li>
 	 * <li>"altGraph" may be shortened to "altGr"</li>
-	 * <li>The caret character ('^') is expanded to "control "</li>
+	 * <li>The caret character ('^') is expanded to "control " on non-Mac
+	 * platforms, and "meta " (i.e., the Mac command key) on Mac platforms.</li>
 	 * </ul>
 	 * Here are some example strings:
 	 * <ul>
@@ -125,8 +126,9 @@ public class Accelerator {
 	public static Accelerator create(final String acc) {
 		if (acc == null || acc.isEmpty()) return null;
 
-		// allow use of caret for control (e.g., "^X" to represent "control X")
-		final String a = acc.replaceAll(Pattern.quote("^"), "control ");
+		// allow use of caret for control/command
+		// (e.g., "^X" to mean "control X" or "meta X")
+		final String a = acc.replaceAll(Pattern.quote("^"), expandedCaret());
 
 		final String[] components = a.split(" ");
 
@@ -149,12 +151,6 @@ public class Accelerator {
 			else if (components[i].equalsIgnoreCase("shift")) shift = true;
 		}
 
-		// replace control with meta, if applicable
-		if (ctrl && !meta && isCtrlReplacedWithMeta()) {
-			ctrl = false;
-			meta = true;
-		}
-
 		final InputModifiers modifiers =
 			new InputModifiers(alt, altGr, ctrl, meta, shift, false, false, false);
 
@@ -168,6 +164,12 @@ public class Accelerator {
 	public static boolean isCtrlReplacedWithMeta() {
 		// TODO: Relocate this platform-specific logic?
 		return System.getProperty("os.name").startsWith("Mac");
+	}
+
+	// -- Helper methods --
+
+	private static String expandedCaret() {
+		return isCtrlReplacedWithMeta() ? "meta " : "control ";
 	}
 
 }
