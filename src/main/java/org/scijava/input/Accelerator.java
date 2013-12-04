@@ -91,7 +91,7 @@ public class Accelerator {
 		return modString + " " + keyString;
 	}
 
-	// -- Helper methods --
+	// -- Utility methods --
 
 	/**
 	 * Creates an accelerator from the given string representation. The string
