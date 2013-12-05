@@ -170,6 +170,16 @@ public @interface Plugin {
 	/**
 	 * A list of additional attributes which can be used to extend this annotation
 	 * beyond its built-in capabilities.
+	 * <p>
+	 * Note to developers: when designing new plugin types, it is tempting to use
+	 * this attribute to store additional information about each plugin. However,
+	 * we suggest doing so only if you need that additional information before
+	 * creating an instance of the plugin: e.g., to decide whether to instantiate
+	 * one, or even whether to load the annotated plugin class at all. If you are
+	 * going to create a plugin instance anyway, it is cleaner and more type-safe
+	 * to add proper API methods to the plugin type's interface reporting the same
+	 * information.
+	 * </p>
 	 */
 	Attr[] attrs() default {};
 
