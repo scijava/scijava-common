@@ -228,7 +228,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return pluginType;
 	}
 
-	/** Returns true iff the the given key is defined by the metadata. */
+	/** Returns true iff the given key is defined by the metadata. */
 	public boolean is(final String key) {
 		return values.containsKey(key);
 	}
