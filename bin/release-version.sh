@@ -148,7 +148,7 @@ exit
 if test -z "$SKIP_DEPLOY"
 then
 	$DRY_RUN git checkout $tag &&
-	$DRY_RUN mvn $PROFILE -DperformRlease clean verify &&
+	$DRY_RUN mvn $PROFILE -DperformRelease clean verify &&
 	$DRY_RUN mvn $PROFILE $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
 	$DRY_RUN git checkout @{-1}
 fi
