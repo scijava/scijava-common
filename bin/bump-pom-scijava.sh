@@ -162,7 +162,7 @@ do
 			ga=net.imglib2:imglib2
 			;;
 		nar.version)
-			ga=org.apache.maven.plugins:nar-maven-plugin
+			ga=com.github.maven-nar:nar-maven-plugin
 			;;
 		ome-formats.version)
 			ga=io.scif:ome-formats
