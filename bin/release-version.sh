@@ -23,6 +23,7 @@ TAG=
 DEV_VERSION=
 EXTRA_ARGS=
 ALT_REPOSITORY=
+PROFILE=
 DRY_RUN=
 while test $# -gt 0
 do
@@ -88,10 +89,13 @@ net.imglib2:pom-imglib2:2.0.0-*SNAPSHOT)
 net.imagej:ij-launcher:*)
 	SKIP_DEPLOY=t
 	;;
-net.sf.antcontrib:cpptasks-parallel:*|*:maven-nar-plugin:*|*:nar-maven-plugin:*)
+net.sf.antcontrib:cpptasks-parallel:*|*:maven-nar-plugin:*)
 	BATCH_MODE=
 	SKIP_PUSH=t
 	ALT_REPOSITORY=$IMAGEJ_THIRDPARTY_REPOSITORY
+	;;
+*:nar-maven-plugin:*)
+	PROFILE=-Psonatype-oss-release
 	;;
 *:pom-*:*)
 	ARTIFACT_ID=${BASE_GAV#*:pom-}
@@ -116,7 +120,7 @@ die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
 $DRY_RUN mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
-        $DEV_VERSION -DreleaseVersion="$VERSION" \
+        $PROFILE $DEV_VERSION -DreleaseVersion="$VERSION" \
 	"-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
@@ -144,7 +148,7 @@ exit
 if test -z "$SKIP_DEPLOY"
 then
 	$DRY_RUN git checkout $tag &&
-	$DRY_RUN mvn -DperformRlease clean verify &&
-	$DRY_RUN mvn $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
+	$DRY_RUN mvn $PROFILE -DperformRlease clean verify &&
+	$DRY_RUN mvn $PROFILE $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
 	$DRY_RUN git checkout @{-1}
 fi
