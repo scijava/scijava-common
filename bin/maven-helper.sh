@@ -6,7 +6,16 @@
 # error out whenever a command fails
 set -e
 
-root_url=http://maven.imagej.net/content/repositories
+root_url () {
+	case "$1,$2" in
+	nar-maven-plugin,*)
+		echo http://repo1.maven.org/maven2/
+		;;
+	*)
+		echo http://maven.imagej.net/content/repositories/$2
+		;;
+	esac
+}
 
 die () {
 	echo "$*" >&2
@@ -91,17 +100,17 @@ project_url () {
 	version="$(version "$gav")"
 	case "$version" in
 	*SNAPSHOT)
-		echo "$root_url/snapshots/$infix"
+		echo "$(root_url $artifactId snapshots)/$infix"
 		;;
 	*)
 		# Release could be in either releases or thirdparty; try releases first
-		project_url="$root_url/releases/$infix"
+		project_url="$(root_url $artifactId releases)/$infix"
 		header=$(curl -Is "$project_url/")
 		case "$header" in
 		HTTP/1.?" 200 OK"*)
 			;;
 		*)
-			project_url="$root_url/thirdparty/$infix"
+			project_url="$(root_url $artifactId thirdparty)/$infix"
 			;;
 		esac
 		echo "$project_url"
@@ -118,15 +127,15 @@ jar_url () {
 	infix="$(groupId "$gav" | tr . /)/$artifactId/$version"
 	case "$version" in
 	*-SNAPSHOT)
-		url="$root_url/snapshots/$infix/maven-metadata.xml"
+		url="$(root_url $artifactId snapshots)/$infix/maven-metadata.xml"
 		metadata="$(curl -s "$url")"
 		timestamp="$(extract_tag timestamp "$metadata")"
 		buildNumber="$(extract_tag buildNumber "$metadata")"
 		version=${version%-SNAPSHOT}-$timestamp-$buildNumber
-		echo "$root_url/snapshots/$infix/$artifactId-$version.jar"
+		echo "$(root_url $artifactId snapshots)/$infix/$artifactId-$version.jar"
 		;;
 	*)
-		echo "$root_url/releases/$infix/$artifactId-$version.jar"
+		echo "$(root_url $artifactId releases)/$infix/$artifactId-$version.jar"
 		;;
 	esac
 }
