@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.109</version>
+	<version>1.110</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -47,7 +47,7 @@
 
 		<!-- NAR Maven plugin - https://github.com/maven-nar/maven-nar-plugin -->
 		<nar.groupId>com.github.maven-nar</nar.groupId>
-		<nar.version>3.0.0-rc-2</nar.version>
+		<nar.version>3.0.0</nar.version>
 
 		<!-- OME-Formats - https://github.com/scifio/ome-formats -->
 		<ome-formats.version>0.3.0</ome-formats.version>
