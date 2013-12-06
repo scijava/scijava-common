@@ -23,9 +23,11 @@ TAG=
 DEV_VERSION=
 EXTRA_ARGS=
 ALT_REPOSITORY=
+DRY_RUN=
 while test $# -gt 0
 do
 	case "$1" in
+	--dry-run) DRY_RUN=echo;;
 	--no-batch-mode) BATCH_MODE=;;
 	--skip-push) SKIP_PUSH=t;;
 	--skip-deploy) SKIP_DEPLOY=t;;
@@ -113,31 +115,36 @@ test "$FETCH_HEAD" = "$(git merge-base $FETCH_HEAD $HEAD)" ||
 die "'master' is not up-to-date"
 
 # Prepare new release without pushing (requires the release plugin >= 2.1)
-mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
+$DRY_RUN mvn $BATCH_MODE release:prepare -DpushChanges=false -Dresume=false $TAG \
         $DEV_VERSION -DreleaseVersion="$VERSION" \
 	"-Darguments=${EXTRA_ARGS# }" &&
 
 # Squash the two commits on the current branch into one
-git reset --soft HEAD^^ &&
+$DRY_RUN git reset --soft HEAD^^ &&
 if ! git diff-index --cached --quiet --ignore-submodules HEAD --
 then
-	git commit -s -m "Bump to next development cycle"
+	$DRY_RUN git commit -s -m "Bump to next development cycle"
 fi &&
 
 # push the current branch and the tag
-tag=$(sed -n 's/^scm.tag=//p' < release.properties) &&
+if test -z "$DRY_RUN"
+then
+	tag=$(sed -n 's/^scm.tag=//p' < release.properties)
+else
+	tag="<tag>"
+fi &&
 test -n "$tag" &&
 if test -z "$SKIP_PUSH"
 then
-	git push "$REMOTE" HEAD &&
-	git push "$REMOTE" $tag
+	$DRY_RUN git push "$REMOTE" HEAD &&
+	$DRY_RUN git push "$REMOTE" $tag
 fi ||
 exit
 
 if test -z "$SKIP_DEPLOY"
 then
-	git checkout $tag &&
-	mvn -DperformRlease clean verify &&
-	mvn $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
-	git checkout @{-1}
+	$DRY_RUN git checkout $tag &&
+	$DRY_RUN mvn -DperformRlease clean verify &&
+	$DRY_RUN mvn $ALT_REPOSITORY -DperformRelease -DupdateReleaseInfo=true deploy &&
+	$DRY_RUN git checkout @{-1}
 fi
