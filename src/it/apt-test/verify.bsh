@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
+assertTrue(message, condition) {
+	if (!condition) {
+		throw new Exception(message);
+	}
+}
+
+assertEquals(a, b) {
+	if (a !=b && (a == null || !a.equals(b))) {
+		throw new Exception("Not equal: " + a + " != " + b);
+	}
+}
+
+readAsString(file) {
+	builder = new StringBuilder();
+	reader = new BufferedReader(new FileReader(file));
+	for (;;) {
+		line = reader.readLine();
+		if (line == null) {
+			break;
+		}
+		if (builder.length() > 0) {
+			builder.append('\n');
+		}
+		builder.append(line);
+	}
+	reader.close();
+	return builder.toString();
+}
+
+annotationIndex = new File(basedir,
+	"target/classes/META-INF/json/org.scijava.annotations.its.CustomAnnotation");
+
+assertTrue("File does not exist: " + annotationIndex, annotationIndex.exists());
+
+expect = readAsString(new File(basedir, "src/test/resources/expect"));
+actual = readAsString(annotationIndex);
+assertEquals(expect, actual);
