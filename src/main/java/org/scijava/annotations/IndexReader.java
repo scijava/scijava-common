@@ -42,6 +42,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.scijava.annotations.legacy.LegacyReader;
+
 /**
  * Reads indexed annotations in JSON format.
  * <p>
@@ -212,5 +214,25 @@ class IndexReader {
 		for (char c : match.toCharArray()) {
 			expect(c);
 		}
+	}
+
+	private IndexReader() {
+		this.in = null;
+	}
+
+	static IndexReader getLegacyReader(final InputStream in) throws IOException {
+		final LegacyReader legacy = new LegacyReader(in);
+		return new IndexReader() {
+
+			@Override
+			public Object next() throws IOException {
+				return legacy.readObject();
+			}
+
+			@Override
+			public void close() throws IOException {
+				legacy.close();
+			}
+		};
 	}
 }
