@@ -39,7 +39,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -79,11 +86,14 @@ public class DirectoryIndexerTest {
 
 		// read the index
 		final Map<String, IndexItem<Complex>> map =
-			new TreeMap<String, IndexItem<Complex>>();
-		for (final IndexItem<Complex> item : Index.load(Complex.class)) {
-			map.put(item.className(), item);
-		}
+			readIndex(Complex.class, DirectoryIndexerTest.class.getClassLoader());
 
+		testDefaultAnnotations(map);
+	}
+
+	public static void
+		testDefaultAnnotations(Map<String, IndexItem<Complex>> map)
+	{
 		assertEquals(4, map.size());
 		Complex a = map.get(AnnotatedA.class.getName()).annotation();
 		assertEquals("Hello, World!", a.simple().string1());
@@ -117,5 +127,39 @@ public class DirectoryIndexerTest {
 
 	public static String getResourcePath(final Class<?> clazz) {
 		return clazz.getName().replace('.', '/') + ".class";
+	}
+
+	public static <A extends Annotation> Map<String, IndexItem<A>> readIndex(
+		final Class<A> annotationClass, final URL... directories)
+	{
+		final ClassLoader loader = new ClassLoader() {
+
+			@Override
+			public final Enumeration<URL> getResources(final String path)
+				throws IOException
+			{
+				final List<URL> urls = new ArrayList<URL>();
+				for (final URL directory : directories) {
+					final URL url = new URL(directory, path);
+					final URLConnection connection = url.openConnection();
+					if (connection.getLastModified() > 0) {
+						urls.add(url);
+					}
+				}
+				return Collections.enumeration(urls);
+			}
+		};
+		return readIndex(annotationClass, loader);
+	}
+
+	public static <A extends Annotation> Map<String, IndexItem<A>> readIndex(
+		final Class<A> annotationClass, final ClassLoader loader)
+	{
+		// read the index
+		final Map<String, IndexItem<A>> map = new TreeMap<String, IndexItem<A>>();
+		for (final IndexItem<A> item : Index.load(annotationClass, loader)) {
+			map.put(item.className(), item);
+		}
+		return map;
 	}
 }
