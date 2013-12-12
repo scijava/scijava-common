@@ -41,5 +41,5 @@ package org.scijava.annotations;
 public class AnnotatedInnerClass {
 
 	@Complex(simple = @Simple)
-	public class InnerClass {}
+	public static class InnerClass {}
 }

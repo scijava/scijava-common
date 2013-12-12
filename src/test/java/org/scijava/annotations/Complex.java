@@ -38,6 +38,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.java.sezpoz.Indexable;
+
 /**
  * An annotation using all possible field types.
  * 
