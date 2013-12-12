@@ -30,15 +30,16 @@
  * policies, either expressed or implied, of any organization.
  * #L%
  */
-package org.scijava.annotations.its;
+
+package org.scijava.annotations;
 
 /**
- * An annotated class, to be indexed in the integration test
+ * A simple class with an annotated inner class.
  * 
  * @author Johannes Schindelin
  */
-@CustomAnnotation(greeting = "Hey, what's up, doc?")
-public class Annotated {
-	@CustomAnnotation(greeting = "Howdy, stranger!")
-	public class Inner {}
+public class AnnotatedInnerClass {
+
+	@Complex(simple = @Simple)
+	public class InnerClass {}
 }

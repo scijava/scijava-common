@@ -34,6 +34,7 @@
 package org.scijava.annotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -83,7 +84,7 @@ public class DirectoryIndexerTest {
 			map.put(item.className(), item);
 		}
 
-		assertEquals(3, map.size());
+		assertEquals(4, map.size());
 		Complex a = map.get(AnnotatedA.class.getName()).annotation();
 		assertEquals("Hello, World!", a.simple().string1());
 
@@ -109,6 +110,9 @@ public class DirectoryIndexerTest {
 		assertEquals(-47, c.array1()[1]);
 		assertEquals(-53, c.array1()[2]);
 		assertEquals(-59, c.array1()[3]);
+
+		c = map.get(AnnotatedInnerClass.InnerClass.class.getName()).annotation();
+		assertNotNull(c);
 	}
 
 	public static String getResourcePath(final Class<?> clazz) {
