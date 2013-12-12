@@ -85,6 +85,25 @@ public class EclipseHelperTest {
 			assertTrue(new File(jsonDir, clazz.getName()).exists());
 		}
 		assertEquals(2, jsonDir.list().length);
+
+		// delete the .class files and verify that the annotation indexes are
+		// deleted
+		jsonDir.setLastModified(123456789);
+		for (final Class<?> clazz : new Class<?>[] { AnnotatedA.class,
+			AnnotatedB.class, AnnotatedC.class })
+		{
+			assertTrue(new File(dir, DirectoryIndexerTest.getResourcePath(clazz))
+				.delete());
+		}
+		long now = System.currentTimeMillis();
+		EclipseHelper.updateAnnotationIndex(loader);
+		assertEquals(0, jsonDir.list().length);
+		/*
+		 * Most file systems provide the mtime at second granularity, not
+		 * milli-second granularity. Hence "now" might be as much as 999
+		 * milliseconds ahead of the stored mtime.
+		 */
+		assertTrue(jsonDir.lastModified() >= now - 999);
 	}
 
 	private void copyClasses(final File dir, final Class<?>... classes)

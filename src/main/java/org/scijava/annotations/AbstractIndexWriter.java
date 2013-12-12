@@ -81,6 +81,8 @@ public abstract class AbstractIndexWriter {
 		InputStream openInput(String annotationName) throws IOException;
 
 		OutputStream openOutput(String annotationName) throws IOException;
+
+		boolean isClassObsolete(String className);
 	}
 
 	protected synchronized void write(final StreamFactory factory)
@@ -99,6 +101,19 @@ public abstract class AbstractIndexWriter {
 		map.clear();
 	}
 
+	/**
+	 * Merges an existing annotation index into the currently-generated one.
+	 * <p>
+	 * This method is used to read previously-indexed annotations and reconcile
+	 * them with the newly-generated ones just.
+	 * </p>
+	 * 
+	 * @param annotationName the name of the annotation for which the index
+	 *          contains the annotated classes
+	 * @param factory the factory to generate input and output streams given an
+	 *          annotation name
+	 * @throws IOException
+	 */
 	protected synchronized void merge(final String annotationName,
 		final StreamFactory factory) throws IOException
 	{
@@ -111,6 +126,12 @@ public abstract class AbstractIndexWriter {
 			map = new LinkedHashMap<String, Object>();
 			this.map.put(annotationName, map);
 		}
+		/*
+		 * To determine whether the index needs to be written out,
+		 * we need to keep track of changed entries.
+		 */
+		int changedCount = map.size();
+		boolean hasObsoletes = false;
 
 		final IndexReader reader = new IndexReader(in);
 		try {
@@ -121,13 +142,25 @@ public abstract class AbstractIndexWriter {
 					break;
 				}
 				final String className = (String) entry.get("class");
-				if (!map.containsKey(className)) {
+				if (factory.isClassObsolete(className)) {
+					hasObsoletes = true;
+				}
+				else if (map.containsKey(className)) {
+					if (!hasObsoletes && entry.equals(map.get(className))) {
+						changedCount--;
+					}
+				}
+				else {
 					map.put(className, entry);
 				}
 			}
 		}
 		finally {
 			reader.close();
+		}
+		// if this annotation index is unchanged, no need to write it out again
+		if (changedCount == 0 && !hasObsoletes) {
+			this.map.remove(annotationName);
 		}
 	}
 

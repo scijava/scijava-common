@@ -115,7 +115,7 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 	}
 
 	protected synchronized void write(final File directory) throws IOException {
-		write(new StreamFactory() {
+		final StreamFactory factory = new StreamFactory() {
 
 			public InputStream openInput(String annotationName) throws IOException {
 				final File file =
@@ -137,8 +137,34 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				{
 					throw new IOException("Could not make directory " + directory);
 				}
-				return new FileOutputStream(file);
+				return new FileOutputStream(file) {
+
+					@Override
+					public void close() throws IOException {
+						super.close();
+						if (file.length() == 0) {
+							file.delete();
+						}
+					}
+				};
 			}
-		});
+
+			public boolean isClassObsolete(String className) {
+				final String classPath = className.replace('.', '/') + ".class";
+				return !new File(directory, classPath).exists();
+			}
+		};
+
+		final File[] possiblyObsoletes =
+			new File(directory, Index.INDEX_PREFIX).listFiles();
+		if (possiblyObsoletes != null) {
+			for (final File candidate : possiblyObsoletes) {
+				if (candidate.isFile()) {
+					final String annotationName = candidate.getName();
+					merge(annotationName, factory);
+				}
+			}
+		}
+		write(factory);
 	}
 }
