@@ -38,8 +38,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.java.sezpoz.Indexable;
-
 /**
  * A simple annotation for use with SezPoz.
  * 

@@ -33,13 +33,20 @@
 
 package org.scijava.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * A simple class with an annotated inner class.
+ * Meta annotation for indexable annotations.
+ * <p>
+ * All annotations that want to be indexed need to be annotated with
+ * {@code @Indexable}.
+ * </p>
  * 
  * @author Johannes Schindelin
  */
-public class AnnotatedInnerClass {
-
-	@Complex(simple = @Simple)
-	public class InnerClass {}
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
+public @interface Indexable {}
