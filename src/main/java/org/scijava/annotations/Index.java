@@ -85,6 +85,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	public static <A extends Annotation> Index<A> load(final Class<A> annotation,
 		final ClassLoader loader)
 	{
+		EclipseHelper.updateAnnotationIndex(loader);
 		return new Index<A>(annotation, loader);
 	}
 
