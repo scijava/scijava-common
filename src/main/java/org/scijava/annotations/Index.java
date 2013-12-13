@@ -38,7 +38,9 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Makes the annotation indexes accessible.
@@ -90,6 +92,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	}
 
 	static final String INDEX_PREFIX = "META-INF/json/";
+	private static final String LEGACY_INDEX_PREFIX = "META-INF/annotations/";
 
 	private final Class<A> annotation;
 	private final ClassLoader loader;
@@ -105,8 +108,27 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		private IndexReader indexReader;
 		private IndexItem<A> next;
 
+		private Map<String, URL> legacyURLs;
+
 		public IndexItemIterator(final Class<A> annotation) {
 			try {
+				legacyURLs = new LinkedHashMap<String, URL>();
+				final Enumeration<URL> legacy =
+					loader.getResources(LEGACY_INDEX_PREFIX + annotation.getName());
+				final int legacySuffixLength =
+					LEGACY_INDEX_PREFIX.length() + annotation.getName().length();
+				while (legacy.hasMoreElements()) {
+					final URL url = legacy.nextElement();
+					final String string = url.toString();
+					final String key =
+						string.substring(0, string.length() - legacySuffixLength) +
+							INDEX_PREFIX + annotation.getName();
+					legacyURLs.put(key, url);
+				}
+				if (legacyURLs.isEmpty()) {
+					legacyURLs = null;
+				}
+
 				urls = loader.getResources(INDEX_PREFIX + annotation.getName());
 				readNext();
 			}
@@ -146,9 +168,18 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 				return null;
 			}
 			else if (!urls.hasMoreElements()) {
+				if (legacyURLs != null && !legacyURLs.isEmpty()) {
+					final Entry<String, URL> entry =
+						legacyURLs.entrySet().iterator().next();
+					legacyURLs.remove(entry.getKey());
+					return IndexReader.getLegacyReader(entry.getValue().openStream());
+				}
 				return null;
 			}
 			final URL url = urls.nextElement();
+			if (legacyURLs != null) {
+				legacyURLs.remove(url.toString());
+			}
 			return new IndexReader(url.openStream());
 		}
 
