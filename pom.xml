@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.5.1-SNAPSHOT</version>
+	<version>2.6.0-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, driven by the SezPoz library, so that plugins can be loaded dynamically. It is used by both ImageJ and SCIFIO.</description>
@@ -75,6 +75,13 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<canUpdateCopyright>true</canUpdateCopyright>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -87,6 +94,57 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 			<archive>https://groups.google.com/group/scijava</archive>
 		</mailingList>
 	</mailingLists>
+
+	<developers>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<email>ctrueden@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/curtis-rueden</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+		<developer>
+			<id>dscho</id>
+			<name>Johannes Schindelin</name>
+			<email>schindelin@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>SciJava</name>
+		<url>http://scijava.org/</url>
+	</organization>
+
+	<issueManagement>
+		<system>GitHub issues</system>
+		<url>https://github.com/scijava/scijava-common/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jenkins.imagej.net/job/SciJava-common/</url>
+	</ciManagement>
+
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
@@ -115,6 +173,41 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<systemPath>${java.home}/../lib/tools.jar</systemPath>
 				</dependency>
 			</dependencies>
+		</profile>
+		<profile>
+			<id>run-its</id>
+			<build>
+				<defaultGoal>integration-test</defaultGoal>
+				<plugins>
+					<plugin>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<version>1.8</version>
+						<configuration>
+							<debug>${invoker.debug}</debug>
+							<showErrors>true</showErrors>
+							<streamLogs>true</streamLogs>
+							<projectsDirectory>src/it</projectsDirectory>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<pomIncludes>
+								<pomInclude>*/pom.xml</pomInclude>
+							</pomIncludes>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+							<preBuildHookScript>setup.bsh</preBuildHookScript>
+							<postBuildHookScript>verify.bsh</postBuildHookScript>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>install</goal>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
