@@ -1,0 +1,24 @@
+import java.io.File;
+
+assertTrue(message, condition) {
+	if (!condition) {
+		throw new Exception(message);
+	}
+}
+
+rmRF(directory) {
+	list = directory.listFiles();
+	for (i = 0; list != null && i < list.length; i++) {
+		if ((list[i].isFile() && !list[i].delete()) ||
+				(list[i].isDirectory() && !rmRF(list[i]))) {
+			print("Could not delete " + list[i]);
+			return false;
+		}
+	}
+	return directory.delete();
+}
+
+metaInf = new File(basedir, "target/classes/META-INF");
+
+assertTrue("Could not delete META-INF/", !metaInf.isDirectory() || rmRF(metaInf));
+print("Setup completed");

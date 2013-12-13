@@ -36,6 +36,13 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<!-- Always add classpath to JAR manifests. -->
@@ -147,6 +154,44 @@
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/annindex</url>
 	</scm>
+
+	<profiles>
+		<profile>
+			<id>run-its</id>
+			<build>
+				<defaultGoal>integration-test</defaultGoal>
+				<plugins>
+					<plugin>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<version>1.8</version>
+						<configuration>
+							<debug>${invoker.debug}</debug>
+							<showErrors>true</showErrors>
+							<streamLogs>true</streamLogs>
+							<projectsDirectory>src/it</projectsDirectory>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<pomIncludes>
+								<pomInclude>*/pom.xml</pomInclude>
+							</pomIncludes>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+							<preBuildHookScript>setup.bsh</preBuildHookScript>
+							<postBuildHookScript>verify.bsh</postBuildHookScript>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>install</goal>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
 

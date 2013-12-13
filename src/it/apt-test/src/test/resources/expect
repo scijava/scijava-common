@@ -1,0 +1,1 @@
+{"class":"org.scijava.annotations.its.Annotated","values":{"greeting":"Hey, what's up, doc?"}}{"class":"org.scijava.annotations.its.Annotated$Inner","values":{"greeting":"Howdy, stranger!"}}
