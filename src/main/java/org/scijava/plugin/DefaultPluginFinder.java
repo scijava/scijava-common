@@ -38,8 +38,8 @@ package org.scijava.plugin;
 import java.util.HashMap;
 import java.util.List;
 
-import net.java.sezpoz.Index;
-import net.java.sezpoz.IndexItem;
+import org.scijava.annotations.Index;
+import org.scijava.annotations.IndexItem;
 
 /**
  * Default SciJava plugin discovery mechanism.
@@ -76,11 +76,11 @@ public class DefaultPluginFinder implements PluginFinder {
 
 		// load the SezPoz index
 		final ClassLoader classLoader = getClassLoader();
-		final Index<Plugin, SciJavaPlugin> sezPozIndex =
-			Index.load(Plugin.class, SciJavaPlugin.class, classLoader);
+		final Index<Plugin> sezPozIndex =
+			Index.load(Plugin.class, classLoader);
 
 		// create a PluginInfo object for each item in the index
-		for (final IndexItem<Plugin, SciJavaPlugin> item : sezPozIndex) {
+		for (final IndexItem<Plugin> item : sezPozIndex) {
 			try {
 				final PluginInfo<?> info = createInfo(item, classLoader);
 				plugins.add(info);
@@ -96,7 +96,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	// -- Helper methods --
 
 	private PluginInfo<SciJavaPlugin> createInfo(
-		final IndexItem<Plugin, SciJavaPlugin> item, final ClassLoader classLoader)
+		final IndexItem<Plugin> item, final ClassLoader classLoader)
 	{
 		final String className = item.className();
 		final Plugin plugin = item.annotation();
