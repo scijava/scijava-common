@@ -35,35 +35,11 @@
 
 package org.scijava.util;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.net.URL;
+import java.net.URLClassLoader;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -73,24 +49,24 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Attr;
+import org.scijava.annotations.EclipseHelper;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
- * TODO
+ * Deprecated class.
  * 
  * @author Johannes Schindelin
  */
+@Deprecated
 public final class CheckSezpoz {
 
+	@Deprecated
 	public static boolean verbose;
 
+	@Deprecated
 	public static final String FILE_NAME = "latest-sezpoz-check.txt";
 
+	@Deprecated
 	private CheckSezpoz() {
 		// NB: Prevent instantiation of utility class.
 	}
@@ -106,21 +82,12 @@ public final class CheckSezpoz {
 	 * @param checkJars whether to inspect .jar components of the CLASSPATH
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static boolean check(final boolean checkJars) throws IOException {
-		if (!aptAvailable()) {
-			System.err.println("WARN: Cannot run apt with this JVM");
-			return true;
-		}
-
-		boolean upToDate = true;
-		for (final String path : System.getProperty("java.class.path").split(
-			File.pathSeparator))
-		{
-			if (!checkJars && path.endsWith(".jar")) continue;
-			if (!check(new File(path))) upToDate = false;
-		}
-		return upToDate;
+		EclipseHelper.main();
+		return false;
 	}
 
 	/**
@@ -129,13 +96,13 @@ public final class CheckSezpoz {
 	 * @param file the CLASSPATH component (.jar file or directory)
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static boolean check(final File file) throws IOException {
-		if (!file.exists()) return true;
-		if (file.isDirectory()) return checkDirectory(file);
-		else if (file.isFile() && file.getName().endsWith(".jar")) checkJar(file);
-		else System.err.println("WARN: Skipping SezPoz check of " + file);
-		return true;
+		System.err.println("Warning: Deprecated CheckSezpoz class was called!");
+		EclipseHelper.updateAnnotationIndex(new URLClassLoader(new URL[] { file.toURI().toURL() }));
+		return false;
 	}
 
 	/**
@@ -144,90 +111,11 @@ public final class CheckSezpoz {
 	 * @param classes the CLASSPATH component directory
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static boolean checkDirectory(final File classes) throws IOException {
-		if (!classes.isDirectory()) return false;
-		final String path = FileUtils.getPath(classes);
-		if (!path.endsWith("target/classes") && !path.endsWith("target/test-classes")) {
-			System.err.println("WARN: Ignoring non-Maven build directory: " +
-				classes.getPath());
-			return true;
-		}
-		final String type = path.endsWith("target/classes") ? "main" : "test";
-		for (File file : classes.listFiles()) {
-			if (file.isFile() && file.getName().startsWith(".netbeans_")) {
-				System.err.println("WARN: Ignoring NetBeans build directory: " +
-						classes.getPath());
-				return true;
-			}
-		}
-		final File projectRoot = classes.getParentFile().getParentFile();
-		final File source = new File(projectRoot, "src/" + type + "/java");
-		if (!source.isDirectory()) {
-			System.err.println("WARN: No src/main/java found for " + classes);
-			return true;
-		}
-		final long latestCheck = getLatestCheck(classes.getParentFile());
-		final boolean upToDate = checkDirectory(classes, source, latestCheck);
-		if (!upToDate) {
-			fixEclipseConfiguration(projectRoot);
-			return !fix(classes, source);
-		}
-		return true;
-	}
-
-	/**
-	 * Determines when we checked whether SezPoz ran alright last time.
-	 * 
-	 * @param targetDirectory the <i>target/</i> directory Maven writes into
-	 * @return the timestamp of our last check
-	 */
-	static long getLatestCheck(final File targetDirectory) {
-		try {
-			final File file = new File(targetDirectory, FILE_NAME);
-			if (!file.exists()) return -1;
-			final BufferedReader reader = new BufferedReader(new FileReader(file));
-			String firstLine = reader.readLine();
-			reader.close();
-			if (firstLine == null) return -1;
-			if (firstLine.endsWith("\n")) firstLine =
-				firstLine.substring(0, firstLine.length() - 1);
-			return Long.parseLong(firstLine);
-		}
-		catch (final IOException e) {
-			return -1;
-		}
-		catch (final NumberFormatException e) {
-			return -1;
-		}
-	}
-
-	/**
-	 * Fakes the check for <i>.jar</i> files a la {@link #getLatestCheck(File)}.
-	 * 
-	 * @param jar the <i>.jar</i> file
-	 * @return -1 since we cannot really tell
-	 */
-	private static long getLatestCheck(final JarFile jar) {
-		return -1;
-	}
-
-	private static void setLatestCheck(final File targetDirectory) {
-		final File file = new File(targetDirectory, FILE_NAME);
-		// let's make sure this file has LF-terminated lines
-		try {
-			final Date date = new Date();
-			final String content =
-				"" + date.getTime() + "\n" +
-					DateFormat.getDateTimeInstance().format(date) + "\n";
-			final OutputStream out = new FileOutputStream(file);
-			out.write(content.getBytes());
-			out.close();
-		}
-		catch (final IOException e) {
-			e.printStackTrace();
-			System.err.println("ERROR: Failure updating the Sezpoz check timestamp");
-		}
+		return check(classes);
 	}
 
 	/**
@@ -243,29 +131,13 @@ public final class CheckSezpoz {
 	 * @param source the <i>src/main/java/<i> directory where Maven expects the
 	 *          <i>.java</i> files
 	 * @param youngerThan the date/time when we last checked
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static boolean checkDirectory(final File classes, final File source,
 		final long youngerThan) throws IOException
 	{
-		if (classes.getName().equals("META-INF") || !source.isDirectory()) return true;
-
-		final File[] list = classes.listFiles();
-		if (list == null) return true;
-		for (final File file : list) {
-			final String name = file.getName();
-			if (file.isDirectory()) {
-				if (!checkDirectory(file, new File(source, name), youngerThan)) return false;
-			}
-			else if (file.isFile() &&
-				file.lastModified() > youngerThan &&
-				name.endsWith(".class") &&
-				hasAnnotation(new File(source, name.substring(0, name.length() - 5) +
-					"java")))
-			{
-				return false;
-			}
-		}
-		return true;
+		return check(classes);
 	}
 
 	/**
@@ -276,97 +148,11 @@ public final class CheckSezpoz {
 	 * </p>
 	 * 
 	 * @param file the <i>.jar</i> file
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static void checkJar(final File file) throws IOException {
-		final JarFile jar = new JarFile(file);
-		final long mtime = getLatestCheck(jar);
-		if (mtime < 0) {
-			// Eclipse cannot generate .jar files (except in manual mode).
-			// Assume everything is alright
-			return;
-		}
-		for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
-			if (entry.getTime() > mtime) {
-				throw new IOException("Annotations for " + entry + " in " + file +
-					" are out-of-date!");
-			}
-		}
-	}
-
-	/**
-	 * Determines whether the class defined in a file has at least one annotation.
-	 * <p>
-	 * This method simply parses everything before the first occurrence of the
-	 * word {@code class}, skipping comments, for things looking like annotations.
-	 * </p>
-	 * 
-	 * @param file the <i>.java</i> file to check
-	 */
-	static boolean hasAnnotation(final File file) {
-		if (!file.getName().endsWith(".java")) return false;
-		try {
-			final BufferedReader reader = new BufferedReader(new FileReader(file));
-			boolean inComment = false;
-			for (;;) {
-				final String line = reader.readLine();
-				if (line == null) break;
-				int offset = 0;
-				if (inComment) {
-					offset = line.indexOf("*/");
-					if (offset < 0) continue;
-					offset += 2;
-					inComment = false;
-				}
-				final int eol = line.length();
-				while (offset < eol) {
-					final int commentStart = line.indexOf("/*", offset);
-					final int lineCommentStart = line.indexOf("//", offset);
-					final int end =
-						Math.min(eol, Math.min(commentStart < 0 ? Integer.MAX_VALUE
-							: commentStart, lineCommentStart < 0 ? Integer.MAX_VALUE
-							: lineCommentStart));
-					if (offset < end) {
-						final int at = line.indexOf("@", offset);
-						int clazz = offset;
-						for (;;) {
-							clazz = line.indexOf("class", clazz);
-							if (clazz < 0) break;
-							// is "class" the keyword, i.e. not a substring of
-							// something else?
-							if ((clazz == 0 || !Character.isJavaIdentifierPart(line
-								.charAt(clazz - 1))) &&
-								(clazz + 4 >= end || !Character.isJavaIdentifierPart(line
-									.charAt(clazz + 5)))) break;
-							clazz += 4;
-						}
-						if (at >= 0 && at < end && (clazz < 0 || at < clazz)) {
-							reader.close();
-							return true;
-						}
-						if (clazz >= 0 && clazz < end) {
-							reader.close();
-							return false;
-						}
-					}
-					if (end == commentStart) {
-						offset = line.indexOf("*/", commentStart + 2);
-						if (offset > 0) {
-							offset += 2;
-							continue;
-						}
-						inComment = true;
-					}
-					break;
-				}
-			}
-			reader.close();
-			return false;
-		}
-		catch (final Exception e) {
-			// If we cannot read it, it does not have an annotation for all we
-			// know.
-			return false;
-		}
+		check(file);
 	}
 
 	/**
@@ -376,259 +162,15 @@ public final class CheckSezpoz {
 	 * @param classes the output directory
 	 * @param sources the directory containing the source files
 	 * @return whether anything in {@code META-INF/annotations/*} changed
+	 * @see {@link EclipseHelper}
 	 */
+	@Deprecated
 	public static boolean fix(final File classes, final File sources) {
-		if (!sources.exists()) {
-			System.err.println("ERROR: Sources are not in the expected place: " +
-				sources);
-			return false;
-		}
-
-		final List<String> aptArgs = new ArrayList<String>();
-		if (verbose) aptArgs.add("-verbose");
-		aptArgs.add("-d");
-		aptArgs.add(classes.getPath());
-		final int count = aptArgs.size();
-		addJavaPathsRecursively(aptArgs, sources);
-		// do nothing if there is nothing to
-		if (count == aptArgs.size()) return false;
-
-		// remove possibly outdated annotations
-		final File[] annotationsBefore =
-			new File(classes, "META-INF/annotations").listFiles();
-
-		// checksum the annotations so that we can determine whether something
-		// changed
-		// if nothing changed, we can safely proceed
-		final Map<String, byte[]> checksumsBefore = checksum(annotationsBefore);
-
-		// before running, remove possibly outdated annotations
-		if (annotationsBefore != null) {
-			for (final File annotation : annotationsBefore)
-				annotation.delete();
-		}
-
-		final String[] args = aptArgs.toArray(new String[aptArgs.size()]);
 		try {
-			System.err.println("WARN: Updating the annotation index in " + classes);
-			runApt(args);
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			System.err.println("WARN: Could not fix " + sources + ": apt failed");
-			return false;
-		}
-
-		boolean result = true;
-
-		final File[] annotationsAfter =
-			new File(classes, "META-INF/annotations").listFiles();
-		final Map<String, byte[]> checksumsAfter = checksum(annotationsAfter);
-		if (checksumsAfter.size() == checksumsBefore.size()) {
-			result = false;
-			for (final String key : checksumsAfter.keySet()) {
-				final byte[] before = checksumsBefore.get(key);
-				if (before == null || !Arrays.equals(before, checksumsAfter.get(key)))
-				{
-					result = true;
-				}
-			}
-		}
-
-		setLatestCheck(classes.getParentFile());
-		return result;
-	}
-
-	private static void runApt(String[] args) throws ClassNotFoundException,
-		SecurityException, NoSuchMethodException, IllegalArgumentException,
-		IllegalAccessException, InvocationTargetException
-	{
-		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler != null) {
-			final List<String> aptArgs = new ArrayList<String>();
-			aptArgs.add("-proc:only");
-			aptArgs.add("-processor");
-			aptArgs.add("net.java.sezpoz.impl.Indexer6");
-			aptArgs.addAll(Arrays.asList(args));
-			compiler.run(null,  null,  null, aptArgs.toArray(new String[aptArgs.size()]));
-			return;
-		}
-
-		System.err.println("WARN: falling back to calling the 'apt' Main class directly");
-		final List<String> aptArgs = new ArrayList<String>();
-		aptArgs.add("-nocompile");
-		aptArgs.add("-factory");
-		aptArgs.add("net.java.sezpoz.impl.IndexerFactory");
-		aptArgs.addAll(Arrays.asList(args));
-
-		final Method aptProcess;
-		final ClassLoader toolClassLoader = ToolProvider.getSystemToolClassLoader();
-		if (toolClassLoader == null) {
-			System.err.println("WARN: no system tool class loader; giving up");
-			return;
-		}
-		final Class<?> aptClass =
-			toolClassLoader.loadClass("com.sun.tools.apt.Main");
-		aptProcess = aptClass.getMethod("process", new Class[] { String[].class });
-		aptProcess.invoke(null, (Object)aptArgs.toArray(new String[aptArgs.size()]));
-	}
-
-	private static MessageDigest digest;
-
-	/**
-	 * Calculates checksums of a list of files.
-	 * <p>
-	 * This method is used to determine whether annotation files have been changed
-	 * by SezPoz rather than re-generated identically.
-	 * </p>
-	 * 
-	 * @param files the files to process
-	 * @return a map containing (filename, checksum) mappings
-	 */
-	private static Map<String, byte[]> checksum(final File[] files) {
-		final Map<String, byte[]> result = new HashMap<String, byte[]>();
-		if (files != null && files.length != 0) {
-			for (final File file : files)
-				result.put(file.getName(), checksum(file));
-		}
-		return result;
-	}
-
-	/**
-	 * Calculate the checksum of one file.
-	 * 
-	 * @param file the file to process
-	 * @return the checksum
-	 */
-	private synchronized static byte[] checksum(final File file) {
-		try {
-			if (digest == null) digest = MessageDigest.getInstance("SHA-1");
-			else digest.reset();
-			final byte[] buffer = new byte[65536];
-			final DigestInputStream digestStream =
-				new DigestInputStream(new FileInputStream(file), digest);
-			while (digestStream.read(buffer) >= 0) {
-				// do nothing
-			}
-			digestStream.close();
-			return digest.digest();
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
+			return check(classes);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * Builds a list of <i>.java</i> files in a directory including all its
-	 * sub-directories.
-	 * 
-	 * @param list the list of filenames to append to
-	 * @param directory the directory
-	 */
-	private static void addJavaPathsRecursively(final List<String> list,
-		final File directory)
-	{
-		final File[] files = directory.listFiles();
-		if (files == null) return;
-		for (final File file : files) {
-			if (file.isDirectory()) addJavaPathsRecursively(list, file);
-			else if (file.isFile() && file.getName().endsWith(".java")) {
-				list.add(file.getPath());
-			}
-		}
-	}
-
-	/**
-	 * Makes sure that the given Eclipse project is set up correctly to run
-	 * SezPoz.
-	 * <p>
-	 * If the {@code directory} does not point to an Eclipse project, the method
-	 * will simply return.
-	 * </p>
-	 * 
-	 * @param directory the directory in which the project lives
-	 */
-	private static void fixEclipseConfiguration(final File directory) {
-		// is this an Eclipse project at all?
-		if (!new File(directory, ".settings").isDirectory()) return;
-		fixFactoryPath(directory);
-		fixAnnotationProcessingSettings(directory);
-	}
-
-	/**
-	 * Makes sure that the given Eclipse project has a <i>.factorypath</i>
-	 * pointing to SezPoz in the current user's Maven repository.
-	 * 
-	 * @param directory the Eclipse project to fix
-	 */
-	private static void fixFactoryPath(final File directory) {
-		final File factoryPath = new File(directory, ".factorypath");
-		try {
-			final Document xml;
-			if (factoryPath.exists()) {
-				xml = readXMLFile(factoryPath);
-			}
-			else {
-				xml =
-					DocumentBuilderFactory.newInstance().newDocumentBuilder()
-						.newDocument();
-				xml.appendChild(xml.createElement("factorypath"));
-			}
-			if (!containsSezpozId(xml.getElementsByTagName("factorypathentry"))) {
-				final Element element = xml.createElement("factorypathentry");
-				element.setAttribute("enabled", "true");
-				element.setAttribute("id",
-					"M2_REPO/net/java/sezpoz/sezpoz/1.9-imagej/sezpoz-1.9-imagej.jar");
-				element.setAttribute("kind", "VARJAR");
-				element.setAttribute("runInBatchMode", "true");
-				xml.getDocumentElement().appendChild(element);
-				writeXMLFile(xml, factoryPath);
-			}
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			System.err.println("ERROR: Could not modify " + factoryPath);
-		}
-	}
-
-	/**
-	 * Determines whether a parsed Eclipse configuration file contains a SezPoz
-	 * entry already.
-	 * 
-	 * @param elements the parsed Eclipse configuration
-	 * @return whether SezPoz is configured already
-	 */
-	private static boolean containsSezpozId(final NodeList elements) {
-		if (elements == null) return false;
-		for (int i = 0; i < elements.getLength(); i++) {
-			final NamedNodeMap attributes = elements.item(i).getAttributes();
-			for (int j = 0; j < attributes.getLength(); j++) {
-				final Attr attribute = (Attr) attributes.item(j);
-				if (attribute.getName().equals("id") &&
-					attribute.getValue().indexOf("sezpoz") >= 0) return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Parses an <i>.xml</i> file into a DOM.
-	 * 
-	 * @param file the <i>.xml</i> file to parse
-	 * @return the DOM
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	private static Document readXMLFile(final File file)
-		throws ParserConfigurationException, SAXException, IOException
-	{
-		final DocumentBuilderFactory builderFactory =
-			DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = null;
-		builder = builderFactory.newDocumentBuilder();
-		return builder.parse(file);
 	}
 
 	/**
@@ -638,6 +180,7 @@ public final class CheckSezpoz {
 	 * @param file the file to write
 	 * @throws TransformerException
 	 */
+	@Deprecated
 	public static void writeXMLFile(final Document xml, final File file)
 		throws TransformerException
 	{
@@ -650,65 +193,4 @@ public final class CheckSezpoz {
 			"4");
 		transformer.transform(source, result);
 	}
-
-	private static boolean aptAvailable() {
-		return ToolProvider.getSystemJavaCompiler() != null ||
-			ToolProvider.getSystemToolClassLoader() != null;
-	}
-
-	private static final String[] APT_PROPERTIES = {
-		"eclipse.preferences.version=1", //
-		"org.eclipse.jdt.apt.aptEnabled=true", //
-		"org.eclipse.jdt.apt.genSrcDir=target/classes", //
-		"org.eclipse.jdt.apt.reconcileEnabled=false"
-	};
-
-	/**
-	 * Makes sure that the given Eclipse project has annotation processing
-	 * switched on.
-	 * 
-	 * @param directory the Eclipse project to fix
-	 */
-	private static void fixAnnotationProcessingSettings(final File directory) {
-		final File aptSettings =
-			new File(directory, ".settings/org.eclipse.jdt.apt.core.prefs");
-		try {
-			final Properties properties = new Properties();
-			if (aptSettings.exists()) {
-				properties.load(new FileInputStream(aptSettings));
-			}
-			boolean changed = false;
-			for (final String pair : APT_PROPERTIES) {
-				final int equals = pair.indexOf('=');
-				final String key = pair.substring(0, equals);
-				final String value = pair.substring(equals + 1);
-				if (!value.equals(properties.get(key))) {
-					changed = true;
-					break;
-				}
-			}
-			if (changed) {
-				// write out the correct properties
-				// NB: We do not use the Properties.store method because it prepends a
-				// date comment which Eclipse 4.3+ later strips out, resulting in
-				// modified aptSettings files committed to source control.
-				// Further, because Properties is a hash, we cannot control the order
-				// the properties are written out; we want them to be written in exactly
-				// the order declared above, to minimize the chance of Eclipse
-				// modifying them in any way. The downside of this approach is that any
-				// additional properties previously stored in the file will be lost, but
-				// thus far we have not encountered that situation in practice.
-				final PrintWriter out = new PrintWriter(new FileWriter(aptSettings));
-				for (final String pair : APT_PROPERTIES) {
-					out.println(pair);
-				}
-				out.close();
-			}
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-			System.err.println("ERROR: Could not edit " + aptSettings);
-		}
-	}
-
 }
