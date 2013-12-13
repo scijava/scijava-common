@@ -35,8 +35,14 @@ package org.scijava.annotations;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.jar.Attributes.Name;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * Helps Eclipse's lack of support for annotation processing in incremental
@@ -91,6 +97,8 @@ import java.net.URLClassLoader;
  */
 public class EclipseHelper extends DirectoryIndexer {
 
+	static Set<URL> indexed = new HashSet<URL>();
+
 	/**
 	 * Updates the annotation index in the current Eclipse project.
 	 * <p>
@@ -109,24 +117,63 @@ public class EclipseHelper extends DirectoryIndexer {
 		if (!(loader instanceof URLClassLoader)) {
 			return;
 		}
-		EclipseHelper helper = null;
+		EclipseHelper helper = new EclipseHelper();
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
-			if (!"file".equals(url.getProtocol())) {
-				continue;
-			}
-			String path = url.getFile();
-			if (path.indexOf(':') >= 0) {
-				continue;
-			}
-			File directory = new File(path);
-			if (!directory.isDirectory()) {
-				continue;
-			}
-			if (helper == null) {
-				helper = new EclipseHelper();
-			}
-			helper.index(directory, loader);
+			helper.maybeIndex(url, loader);
 		}
+	}
+
+	private void maybeIndex(final URL url, final ClassLoader loader) {
+		synchronized (indexed) {
+			if (indexed.contains(url)) {
+				return;
+			}
+			indexed.add(url);
+		}
+		if (!"file".equals(url.getProtocol())) {
+			return;
+		}
+		String path = url.getFile();
+		if (path.indexOf(':') >= 0) {
+			return;
+		}
+		if (path.endsWith(".jar")) {
+			/*
+			 * To support mixed development with Eclipse and Maven, let's handle
+			 * the case where Eclipse compiled classes, did not run the annotation
+			 * processors, then the developer called "mvn test". In this case, we
+			 * have a surefirebooter.jar whose manifest contains the dependencies,
+			 * but crucially also the target/classes/ and target/test-classes/
+			 * directories which may need to be indexed.
+			 */
+			if (path.matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
+				final JarFile jar = new JarFile(path);
+				Manifest manifest = jar.getManifest();
+				if (manifest != null) {
+					final String classPath =
+						manifest.getMainAttributes().getValue(Name.CLASS_PATH);
+					if (classPath != null) {
+						for (final String element : classPath.split(" +"))
+							try {
+								maybeIndex(new URL(element), loader);
+							}
+							catch (MalformedURLException e) {
+								e.printStackTrace();
+							}
+					}
+				}
+			}
+			catch (final IOException e) {
+				System.err.println("Warning: could not index annotations due to ");
+				e.printStackTrace();
+			}
+			return;
+		}
+		File directory = new File(path);
+		if (!directory.isDirectory()) {
+			return;
+		}
+		index(directory, loader);
 	}
 
 	private void index(File directory, ClassLoader loader) {
