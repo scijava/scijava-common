@@ -82,20 +82,24 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				discoverAnnotations(file, classNamePrefix + file.getName() + ".",
 					loader);
 			}
-			else if (file.isFile()) try {
+			else if (file.isFile()) {
 				final String fileName = file.getName();
 				if (!fileName.endsWith(".class")) {
 					continue;
 				}
 				final String className =
 					classNamePrefix + fileName.substring(0, fileName.length() - 6);
-				final Class<?> clazz = loader.loadClass(className);
-				for (final Annotation a : clazz.getAnnotations()) {
-					add(a, className);
+				try {
+					final Class<?> clazz = loader.loadClass(className);
+					for (final Annotation a : clazz.getAnnotations()) {
+						add(a, className);
+					}
+				} catch (NoClassDefFoundError e) {
+					System.err.println("Warning: could not load class '" + className + "' ("
+							+ e.getMessage() + "); skipping");
+				} catch (ClassNotFoundException e) {
+					System.err.println("Warning: could not load class '" + className + "'; skipping");
 				}
-			}
-			catch (ClassNotFoundException e) {
-				throw new IOException(e);
 			}
 		}
 	}
