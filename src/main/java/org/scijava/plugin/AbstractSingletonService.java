@@ -99,8 +99,8 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 	private void createInstances() {
 		instances =
-			Collections.unmodifiableList(getPluginService().createInstancesOfType(
-				getPluginType()));
+			Collections.unmodifiableList(filterInstances(getPluginService()
+				.createInstancesOfType(getPluginType())));
 
 		log.info("Found " + instances.size() + " " +
 			getPluginType().getSimpleName() + " plugins.");
@@ -109,6 +109,16 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		for (final PT instance : instances) {
 			objectService.addObject(instance);
 		}
+	}
+
+	/**
+	 * Allows subclasses to exclude instances.
+	 * 
+	 * @param list the initial list of instances
+	 * @return the filtered list of instances
+	 */
+	protected List<? extends PT> filterInstances(List<PT> list) {
+		return list;
 	}
 
 }
