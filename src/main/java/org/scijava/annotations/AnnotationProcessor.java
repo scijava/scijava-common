@@ -75,7 +75,6 @@ import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("*")
-@SuppressWarnings("restriction")
 public class AnnotationProcessor extends AbstractProcessor {
 
 	private RoundEnvironment roundEnv;
