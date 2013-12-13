@@ -227,4 +227,22 @@ public class EclipseHelper extends DirectoryIndexer {
 		}
 		return true;
 	}
+
+	/**
+	 * Updates the annotation index in the current Eclipse project.
+	 * <p>
+	 * The assumption is that Eclipse -- after failing to run the annotation
+	 * processors correctly -- will launch any tests or main classes with a class
+	 * path that contains the project's output directory with the {@code .class}
+	 * files (as opposed to a {@code .jar} file). We only need to update that
+	 * first class path element (or for tests, the first two), and only if it is a
+	 * local directory.
+	 * </p>
+	 * 
+	 * @throws IOException
+	 */
+	public static void main(final String... args) {
+		updateAnnotationIndex(Thread.currentThread().getContextClassLoader());
+	}
+
 }
