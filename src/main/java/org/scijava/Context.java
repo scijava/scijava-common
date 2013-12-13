@@ -35,7 +35,6 @@
 
 package org.scijava;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,7 +48,6 @@ import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
 import org.scijava.service.ServiceHelper;
 import org.scijava.service.ServiceIndex;
-import org.scijava.util.CheckSezpoz;
 import org.scijava.util.ClassUtils;
 
 /**
@@ -60,8 +58,6 @@ import org.scijava.util.ClassUtils;
  * @see Service
  */
 public class Context implements Disposable {
-
-	private static boolean sezpozNeedsToRun = true;
 
 	// -- Fields --
 
@@ -175,21 +171,6 @@ public class Context implements Disposable {
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
 		final PluginIndex pluginIndex)
 	{
-		if (sezpozNeedsToRun) {
-			// First context! Check that annotations were generated properly.
-			try {
-				if (!CheckSezpoz.check(false)) {
-					// SezPoz uses ClassLoader.getResources() which will now pick up the
-					// apt-generated annotations.
-					System.err.println("SezPoz generated annotations."); // no log service
-				}
-			}
-			catch (final IOException e) {
-				e.printStackTrace();
-			}
-			sezpozNeedsToRun = false;
-		}
-
 		serviceIndex = new ServiceIndex();
 
 		this.pluginIndex = pluginIndex;
