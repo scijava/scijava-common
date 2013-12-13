@@ -35,12 +35,13 @@
 
 package org.scijava.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -49,8 +50,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import net.java.sezpoz.impl.SerAnnotatedElement;
-
 /**
  * Combines SezPoz annotations from all JAR files on the classpath.
  * 
@@ -58,7 +57,7 @@ import net.java.sezpoz.impl.SerAnnotatedElement;
  */
 public class CombineAnnotations {
 
-	private static final String PREFIX = "META-INF/annotations";
+	private static final String PREFIX = "META-INF/json";
 	private static final String OUTPUT_DIR = "src/main/assembly/all";
 
 	private final Set<String> annotationFiles;
@@ -69,8 +68,7 @@ public class CombineAnnotations {
 
 	/** Reads in annotations from all available resources and combines them. */
 	public void combine() throws IOException, ClassNotFoundException {
-		final HashSet<SerAnnotatedElement> annotations =
-			new HashSet<SerAnnotatedElement>();
+		final StringBuilder annotations = new StringBuilder();
 		final ClassLoader loader = ClassLoader.getSystemClassLoader();
 
 		log("");
@@ -79,32 +77,28 @@ public class CombineAnnotations {
 		new File(OUTPUT_DIR, PREFIX).mkdirs();
 
 		for (final String annotationFile : annotationFiles) {
-			annotations.clear();
+			annotations.setLength(0);
 
 			// read in annotations from all classpath resources
 			final Enumeration<URL> resources = loader.getResources(annotationFile);
 			while (resources.hasMoreElements()) {
 				final URL resource = resources.nextElement();
-				final ObjectInputStream ois =
-					new ObjectInputStream(resource.openStream());
+				final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()));
 				while (true) {
-					final SerAnnotatedElement el = (SerAnnotatedElement) ois.readObject();
-					if (el == null) break;
-					annotations.add(el);
+					final String line = reader.readLine();
+					if (line == null) break;
+					annotations.append(line);
 				}
-				ois.close();
+				reader.close();
 			}
 
 			// write out annotations to combined file on disk
 			final File outputFile = new File(OUTPUT_DIR, annotationFile);
-			final ObjectOutputStream oos =
-				new ObjectOutputStream(new FileOutputStream(outputFile));
-			for (final SerAnnotatedElement el : annotations) {
-				oos.writeObject(el);
-			}
-			oos.writeObject(null);
-			oos.close();
-			log(outputFile.getName() + ": " + annotations.size() + " items");
+			final PrintStream out =
+				new PrintStream(new FileOutputStream(outputFile));
+			out.print(annotations.toString());
+			out.close();
+			log(outputFile.getName() + ": " + annotations.length() + " bytes");
 		}
 	}
 
