@@ -57,5 +57,19 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5</version>
+				<!-- Require the Java 6 platform. -->
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
 
