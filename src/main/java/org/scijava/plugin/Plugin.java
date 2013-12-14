@@ -40,9 +40,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.java.sezpoz.Indexable;
-
 import org.scijava.Priority;
+import org.scijava.annotations.Indexable;
 
 /**
  * Annotation identifying a plugin, which gets loaded by SciJava's dynamic
@@ -54,7 +53,7 @@ import org.scijava.Priority;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Indexable(type = SciJavaPlugin.class)
+@Indexable
 public @interface Plugin {
 
 	String APPLICATION_MENU_ROOT = "app";

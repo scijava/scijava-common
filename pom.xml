@@ -9,17 +9,12 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.5.1-SNAPSHOT</version>
+	<version>2.6.0-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, driven by the SezPoz library, so that plugins can be loaded dynamically. It is used by both ImageJ and SCIFIO.</description>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.java.sezpoz</groupId>
-			<artifactId>sezpoz</artifactId>
-			<version>${sezpoz.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.bushe</groupId>
 			<artifactId>eventbus</artifactId>
@@ -75,6 +70,28 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<canUpdateCopyright>true</canUpdateCopyright>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>org.scijava.annotations.EclipseHelper</mainClass>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -87,6 +104,57 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 			<archive>https://groups.google.com/group/scijava</archive>
 		</mailingList>
 	</mailingLists>
+
+	<developers>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<email>ctrueden@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/curtis-rueden</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+		<developer>
+			<id>dscho</id>
+			<name>Johannes Schindelin</name>
+			<email>schindelin@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>SciJava</name>
+		<url>http://scijava.org/</url>
+	</organization>
+
+	<issueManagement>
+		<system>GitHub issues</system>
+		<url>https://github.com/scijava/scijava-common/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jenkins.imagej.net/job/SciJava-common/</url>
+	</ciManagement>
+
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
@@ -115,6 +183,81 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<systemPath>${java.home}/../lib/tools.jar</systemPath>
 				</dependency>
 			</dependencies>
+		</profile>
+		<profile>
+			<id>run-its</id>
+			<build>
+				<defaultGoal>integration-test</defaultGoal>
+				<plugins>
+					<plugin>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<version>1.8</version>
+						<configuration>
+							<debug>${invoker.debug}</debug>
+							<showErrors>true</showErrors>
+							<streamLogs>true</streamLogs>
+							<projectsDirectory>src/it</projectsDirectory>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<pomIncludes>
+								<pomInclude>*/pom.xml</pomInclude>
+							</pomIncludes>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+							<preBuildHookScript>setup.bsh</preBuildHookScript>
+							<postBuildHookScript>verify.bsh</postBuildHookScript>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>install</goal>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>only-eclipse</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<!-- This plugin's configuration is used to store Eclipse m2e settings
+								 only. It has no influence on the Maven build itself. -->
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.codehaus.mojo</groupId>
+												<artifactId>exec-maven-plugin</artifactId>
+												<versionRange>1.2.1</versionRange>
+												<goals>
+													<goal>java</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
 		</profile>
 	</profiles>
 
