@@ -134,7 +134,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			return;
 		}
 		String path = url.getFile();
-		if (path.indexOf(':') >= 0) {
+		if (!path.startsWith("/")) {
 			return;
 		}
 		if (path.endsWith(".jar")) {
