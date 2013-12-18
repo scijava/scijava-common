@@ -79,7 +79,7 @@ public class CombineAnnotations extends AbstractIndexWriter {
 
 	/** Reads in annotations from all available resources and combines them. */
 	public void combine() throws IOException, ClassNotFoundException {
-		final ClassLoader loader = ClassLoader.getSystemClassLoader();
+		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
 		log("");
 		log("Writing annotations to " + new File(OUTPUT_DIR).getAbsolutePath());
