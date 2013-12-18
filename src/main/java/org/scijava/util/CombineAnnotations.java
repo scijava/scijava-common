@@ -37,7 +37,6 @@ package org.scijava.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,9 +45,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Combines SezPoz annotations from all JAR files on the classpath.
@@ -57,7 +53,8 @@ import java.util.zip.ZipInputStream;
  */
 public class CombineAnnotations {
 
-	private static final String PREFIX = "META-INF/json";
+	private static final String PREFIX = "META-INF/json/";
+	private static final String LEGACY_PREFIX = "META-INF/annotations/";
 	private static final String OUTPUT_DIR = "src/main/assembly/all";
 
 	private final Set<String> annotationFiles;
@@ -106,34 +103,22 @@ public class CombineAnnotations {
 	public Set<String> getAnnotationFiles() throws IOException {
 		final HashSet<String> files = new HashSet<String>();
 
-		final String classpath = System.getProperty("java.class.path");
-		final String[] pathItems = classpath.split(File.pathSeparator);
-		for (final String pathItem : pathItems) {
-			log("Scanning " + pathItem);
-			if (pathItem.toLowerCase().endsWith(".jar")) {
-				// read index from JAR file
-				final ZipInputStream zis =
-					new ZipInputStream(new FileInputStream(pathItem));
-				while (true) {
-					final ZipEntry zipEntry = zis.getNextEntry();
-					if (zipEntry == null) break;
-					final String name = zipEntry.getName();
-					if (!name.matches(Pattern.quote(PREFIX + "/") + ".+")) continue;
-					add(files, name);
-				}
-				zis.close();
-			}
-			else {
-				// read files from directory
-				final File annDir = new File(pathItem + "/" + PREFIX);
-				if (!annDir.exists() || !annDir.isDirectory()) continue;
-				final File[] annItems = annDir.listFiles();
-				for (final File annItem : annItems) {
-					add(files, PREFIX + "/" + annItem.getName());
+		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
+			final Enumeration<URL> directories = Thread.currentThread()
+					.getContextClassLoader().getResources(prefix);
+			while (directories.hasMoreElements()) {
+				final URL url = directories.nextElement();
+				for (final URL annotationIndexURL : FileUtils.listContents(url)) {
+					String string = annotationIndexURL.toString();
+					if (string.endsWith("/")) {
+						continue;
+					}
+					final int length = string.length();
+					add(files, PREFIX + string.substring(
+							string.lastIndexOf('/', length - 1) + 1, length));
 				}
 			}
 		}
-
 		return files;
 	}
 
