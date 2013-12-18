@@ -59,11 +59,21 @@ public class CombineAnnotations extends AbstractIndexWriter {
 
 	private static final String PREFIX = "META-INF/json/";
 	private static final String LEGACY_PREFIX = "META-INF/annotations/";
-	private static final String OUTPUT_DIR = "src/main/assembly/all";
+	private final String OUTPUT_DIR;
 
 	private final Set<String> annotationFiles;
 
 	public CombineAnnotations() throws IOException {
+		this(null);
+	}
+
+	public CombineAnnotations(final String outputDir) throws IOException {
+		if (outputDir != null) {
+			OUTPUT_DIR = outputDir;
+		} else {
+			OUTPUT_DIR = "src/main/assembly/all";
+		}
+
 		annotationFiles = getAnnotationFiles();
 	}
 
@@ -132,7 +142,7 @@ public class CombineAnnotations extends AbstractIndexWriter {
 	}
 
 	public static void main(final String[] args) throws Exception {
-		new CombineAnnotations().combine();
+		new CombineAnnotations(args.length > 0 ? args[0] : null).combine();
 	}
 
 	// -- Helper methods --
