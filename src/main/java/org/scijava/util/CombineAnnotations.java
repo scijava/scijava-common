@@ -35,125 +35,48 @@
 
 package org.scijava.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.scijava.annotations.AbstractIndexWriter;
-import org.scijava.annotations.Index;
-import org.scijava.annotations.IndexItem;
-
 /**
- * Combines SezPoz annotations from all JAR files on the classpath.
- * 
- * @author Curtis Rueden
+ * @deprecated Use {@link org.scijava.annotations.CombineAnnotations} instead.
  */
-public class CombineAnnotations extends AbstractIndexWriter {
+@Deprecated
+public class CombineAnnotations extends
+	org.scijava.annotations.CombineAnnotations
+{
 
-	private static final String PREFIX = "META-INF/json/";
-	private static final String LEGACY_PREFIX = "META-INF/annotations/";
-	private final String OUTPUT_DIR;
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#CombineAnnotations()} instead.
+	 */
+	@Deprecated
+	public CombineAnnotations() throws IOException {}
 
-	private final Set<String> annotationFiles;
-
-	public CombineAnnotations() throws IOException {
-		this(null);
-	}
-
-	public CombineAnnotations(final String outputDir) throws IOException {
-		if (outputDir != null) {
-			OUTPUT_DIR = outputDir;
-		} else {
-			OUTPUT_DIR = "src/main/assembly/all";
-		}
-
-		annotationFiles = getAnnotationFiles();
-	}
-
-	/** Reads in annotations from all available resources and combines them. */
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#combine()} instead.
+	 */
+	@Deprecated
+	@Override
 	public void combine() throws IOException, ClassNotFoundException {
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-		log("");
-		log("Writing annotations to " + new File(OUTPUT_DIR).getAbsolutePath());
-
-		new File(OUTPUT_DIR, PREFIX).mkdirs();
-		for (final String annotationFile : annotationFiles) {
-			final String annotationName = annotationFile.substring(PREFIX.length());
-			@SuppressWarnings("unchecked")
-			final Class<? extends Annotation> annotation =
-				(Class<? extends Annotation>) loader.loadClass(annotationName);
-			for (IndexItem<? extends Annotation> item : Index.load(annotation, loader)) {
-				add(adapt(item.annotation()), annotationName, item.className());
-			}
-		}
-
-		write(new StreamFactory() {
-
-			@Override
-			public InputStream openInput(String annotationName)
-					throws IOException {
-				return null;
-			}
-
-			@Override
-			public OutputStream openOutput(String annotationName)
-					throws IOException {
-				final File file = new File(OUTPUT_DIR, PREFIX + annotationName);
-				return new FileOutputStream(file);
-			}
-
-			@Override
-			public boolean isClassObsolete(String className) {
-				return false;
-			}
-
-		});
+		super.combine();
 	}
 
-	/** Scans for annotations files in every resource on the classpath. */
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#getAnnotationFiles()} instead.
+	 */
+	@Deprecated
+	@Override
 	public Set<String> getAnnotationFiles() throws IOException {
-		final HashSet<String> files = new HashSet<String>();
-
-		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
-			final Enumeration<URL> directories = Thread.currentThread()
-					.getContextClassLoader().getResources(prefix);
-			while (directories.hasMoreElements()) {
-				final URL url = directories.nextElement();
-				for (final URL annotationIndexURL : FileUtils.listContents(url)) {
-					String string = annotationIndexURL.toString();
-					if (string.endsWith("/")) {
-						continue;
-					}
-					final int length = string.length();
-					add(files, PREFIX + string.substring(
-							string.lastIndexOf('/', length - 1) + 1, length));
-				}
-			}
-		}
-		return files;
+		return super.getAnnotationFiles();
 	}
 
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#main(String[])} instead.
+	 */
+	@Deprecated
 	public static void main(final String[] args) throws Exception {
-		new CombineAnnotations(args.length > 0 ? args[0] : null).combine();
-	}
-
-	// -- Helper methods --
-
-	private void add(final HashSet<String> set, final String item) {
-		log("\t" + item);
-		set.add(item);
-	}
-
-	private void log(final String msg) {
-		System.out.println(msg);
+		new org.scijava.annotations.CombineAnnotations(args.length > 0 ? args[0]
+			: null).combine();
 	}
 
 }
