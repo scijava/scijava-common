@@ -35,23 +35,27 @@
 
 package org.scijava.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.scijava.annotations.AbstractIndexWriter;
+import org.scijava.annotations.Index;
+import org.scijava.annotations.IndexItem;
 
 /**
  * Combines SezPoz annotations from all JAR files on the classpath.
  * 
  * @author Curtis Rueden
  */
-public class CombineAnnotations {
+public class CombineAnnotations extends AbstractIndexWriter {
 
 	private static final String PREFIX = "META-INF/json/";
 	private static final String LEGACY_PREFIX = "META-INF/annotations/";
@@ -65,38 +69,43 @@ public class CombineAnnotations {
 
 	/** Reads in annotations from all available resources and combines them. */
 	public void combine() throws IOException, ClassNotFoundException {
-		final StringBuilder annotations = new StringBuilder();
 		final ClassLoader loader = ClassLoader.getSystemClassLoader();
 
 		log("");
 		log("Writing annotations to " + new File(OUTPUT_DIR).getAbsolutePath());
 
 		new File(OUTPUT_DIR, PREFIX).mkdirs();
-
 		for (final String annotationFile : annotationFiles) {
-			annotations.setLength(0);
+			final String annotationName = annotationFile.substring(PREFIX.length());
+			@SuppressWarnings("unchecked")
+			final Class<? extends Annotation> annotation =
+				(Class<? extends Annotation>) loader.loadClass(annotationName);
+			for (IndexItem<? extends Annotation> item : Index.load(annotation, loader)) {
+				add(adapt(item.annotation()), annotationName, item.className());
+			}
+		}
 
-			// read in annotations from all classpath resources
-			final Enumeration<URL> resources = loader.getResources(annotationFile);
-			while (resources.hasMoreElements()) {
-				final URL resource = resources.nextElement();
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()));
-				while (true) {
-					final String line = reader.readLine();
-					if (line == null) break;
-					annotations.append(line);
-				}
-				reader.close();
+		write(new StreamFactory() {
+
+			@Override
+			public InputStream openInput(String annotationName)
+					throws IOException {
+				return null;
 			}
 
-			// write out annotations to combined file on disk
-			final File outputFile = new File(OUTPUT_DIR, annotationFile);
-			final PrintStream out =
-				new PrintStream(new FileOutputStream(outputFile));
-			out.print(annotations.toString());
-			out.close();
-			log(outputFile.getName() + ": " + annotations.length() + " bytes");
-		}
+			@Override
+			public OutputStream openOutput(String annotationName)
+					throws IOException {
+				final File file = new File(OUTPUT_DIR, PREFIX + annotationName);
+				return new FileOutputStream(file);
+			}
+
+			@Override
+			public boolean isClassObsolete(String className) {
+				return false;
+			}
+
+		});
 	}
 
 	/** Scans for annotations files in every resource on the classpath. */
