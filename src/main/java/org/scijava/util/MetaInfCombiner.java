@@ -33,35 +33,24 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.util;
 
-import java.util.List;
-
-import org.scijava.service.AbstractService;
+import org.scijava.annotations.AnnotationCombiner;
 
 /**
- * Abstract base class for {@link PTService}s.
+ * Accumulates information from the class path to make META-INF/ files
+ * appropriate for an uber jar.
  * 
- * @author Curtis Rueden
- * @param <PT> Plugin type of the {@link SciJavaPlugin}s being managed.
+ * @author Johannes Schindelin
  */
-public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
-	AbstractService implements PTService<PT>
-{
+public class MetaInfCombiner {
 
-	@Parameter
-	private PluginService pluginService;
+	public static void main(final String... args) throws Exception {
+		if (args.length != 1) {
+			throw new RuntimeException("Need an output directory!");
+		}
 
-	// -- PTService methods --
-
-	@Override
-	public PluginService getPluginService() {
-		return pluginService;
+		ServiceCombiner.main(args);
+		AnnotationCombiner.main(args);
 	}
-
-	@Override
-	public List<PluginInfo<PT>> getPlugins() {
-		return pluginService.getPluginsOfType(getPluginType());
-	}
-
 }

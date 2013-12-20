@@ -35,121 +35,61 @@
 
 package org.scijava.util;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import org.scijava.annotations.AnnotationCombiner;
 
 /**
- * Combines SezPoz annotations from all JAR files on the classpath.
- * 
- * @author Curtis Rueden
+ * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner} instead.
  */
-public class CombineAnnotations {
+@Deprecated
+public class CombineAnnotations
+{
 
-	private static final String PREFIX = "META-INF/json";
-	private static final String OUTPUT_DIR = "src/main/assembly/all";
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#CombineAnnotations()} instead.
+	 */
+	@Deprecated
+	public CombineAnnotations() throws IOException {}
 
-	private final Set<String> annotationFiles;
-
-	public CombineAnnotations() throws IOException {
-		annotationFiles = getAnnotationFiles();
-	}
-
-	/** Reads in annotations from all available resources and combines them. */
+	private AnnotationCombiner combiner = new AnnotationCombiner();
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#combine()} instead.
+	 */
+	@Deprecated
 	public void combine() throws IOException, ClassNotFoundException {
-		final StringBuilder annotations = new StringBuilder();
-		final ClassLoader loader = ClassLoader.getSystemClassLoader();
-
-		log("");
-		log("Writing annotations to " + new File(OUTPUT_DIR).getAbsolutePath());
-
-		new File(OUTPUT_DIR, PREFIX).mkdirs();
-
-		for (final String annotationFile : annotationFiles) {
-			annotations.setLength(0);
-
-			// read in annotations from all classpath resources
-			final Enumeration<URL> resources = loader.getResources(annotationFile);
-			while (resources.hasMoreElements()) {
-				final URL resource = resources.nextElement();
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()));
-				while (true) {
-					final String line = reader.readLine();
-					if (line == null) break;
-					annotations.append(line);
-				}
-				reader.close();
+		try {
+			combiner.combine(null);
+		}
+		catch (Exception e) {
+			if (e instanceof IOException) {
+				throw new IOException(e.getMessage());
 			}
-
-			// write out annotations to combined file on disk
-			final File outputFile = new File(OUTPUT_DIR, annotationFile);
-			final PrintStream out =
-				new PrintStream(new FileOutputStream(outputFile));
-			out.print(annotations.toString());
-			out.close();
-			log(outputFile.getName() + ": " + annotations.length() + " bytes");
+			if (e instanceof ClassNotFoundException) {
+				throw new ClassNotFoundException(e.getMessage());
+			}
 		}
 	}
 
-	/** Scans for annotations files in every resource on the classpath. */
+	/**
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#getAnnotationFiles()} instead.
+	 */
+	@Deprecated
 	public Set<String> getAnnotationFiles() throws IOException {
-		final HashSet<String> files = new HashSet<String>();
-
-		final String classpath = System.getProperty("java.class.path");
-		final String[] pathItems = classpath.split(File.pathSeparator);
-		for (final String pathItem : pathItems) {
-			log("Scanning " + pathItem);
-			if (pathItem.toLowerCase().endsWith(".jar")) {
-				// read index from JAR file
-				final ZipInputStream zis =
-					new ZipInputStream(new FileInputStream(pathItem));
-				while (true) {
-					final ZipEntry zipEntry = zis.getNextEntry();
-					if (zipEntry == null) break;
-					final String name = zipEntry.getName();
-					if (!name.matches(Pattern.quote(PREFIX + "/") + ".+")) continue;
-					add(files, name);
-				}
-				zis.close();
-			}
-			else {
-				// read files from directory
-				final File annDir = new File(pathItem + "/" + PREFIX);
-				if (!annDir.exists() || !annDir.isDirectory()) continue;
-				final File[] annItems = annDir.listFiles();
-				for (final File annItem : annItems) {
-					add(files, PREFIX + "/" + annItem.getName());
-				}
-			}
-		}
-
-		return files;
+		return combiner.getAnnotationFiles();
 	}
 
+	/**
+	 * @deprecated Use
+	 *             {@link org.scijava.annotations.AnnotationCombiner#main(String[])}
+	 *             instead.
+	 */
+	@Deprecated
 	public static void main(final String[] args) throws Exception {
-		new CombineAnnotations().combine();
-	}
-
-	// -- Helper methods --
-
-	private void add(final HashSet<String> set, final String item) {
-		log("\t" + item);
-		set.add(item);
-	}
-
-	private void log(final String msg) {
-		System.out.println(msg);
+		new org.scijava.annotations.AnnotationCombiner().combine(args.length > 0
+			? new File(args[0]) : null);
 	}
 
 }

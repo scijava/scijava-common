@@ -33,35 +33,22 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.util;
 
-import java.util.List;
-
-import org.scijava.service.AbstractService;
+import java.io.File;
 
 /**
- * Abstract base class for {@link PTService}s.
- * 
- * @author Curtis Rueden
- * @param <PT> Plugin type of the {@link SciJavaPlugin}s being managed.
+ * Interface for combining structurally-delicate items (such as annotations)
+ * which need to be unified to a single output.
+ *
+ * @author Mark Hiner
  */
-public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
-	AbstractService implements PTService<PT>
-{
+public interface Combiner {
 
-	@Parameter
-	private PluginService pluginService;
-
-	// -- PTService methods --
-
-	@Override
-	public PluginService getPluginService() {
-		return pluginService;
-	}
-
-	@Override
-	public List<PluginInfo<PT>> getPlugins() {
-		return pluginService.getPluginsOfType(getPluginType());
-	}
+	/**
+	 * Combines a collection of items and writes the result to the provided
+	 * directory.
+	 */
+	void combine(File outputDirectory) throws Exception;
 
 }
