@@ -35,48 +35,61 @@
 
 package org.scijava.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import org.scijava.annotations.AnnotationCombiner;
+
 /**
- * @deprecated Use {@link org.scijava.annotations.CombineAnnotations} instead.
+ * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner} instead.
  */
 @Deprecated
-public class CombineAnnotations extends
-	org.scijava.annotations.CombineAnnotations
+public class CombineAnnotations
 {
 
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#CombineAnnotations()} instead.
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#CombineAnnotations()} instead.
 	 */
 	@Deprecated
 	public CombineAnnotations() throws IOException {}
 
+	private AnnotationCombiner combiner = new AnnotationCombiner();
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#combine()} instead.
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#combine()} instead.
 	 */
 	@Deprecated
-	@Override
 	public void combine() throws IOException, ClassNotFoundException {
-		super.combine();
+		try {
+			combiner.combine(null);
+		}
+		catch (Exception e) {
+			if (e instanceof IOException) {
+				throw new IOException(e.getMessage());
+			}
+			if (e instanceof ClassNotFoundException) {
+				throw new ClassNotFoundException(e.getMessage());
+			}
+		}
 	}
 
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#getAnnotationFiles()} instead.
+	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#getAnnotationFiles()} instead.
 	 */
 	@Deprecated
-	@Override
 	public Set<String> getAnnotationFiles() throws IOException {
-		return super.getAnnotationFiles();
+		return combiner.getAnnotationFiles();
 	}
 
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.CombineAnnotations#main(String[])} instead.
+	 * @deprecated Use
+	 *             {@link org.scijava.annotations.AnnotationCombiner#main(String[])}
+	 *             instead.
 	 */
 	@Deprecated
 	public static void main(final String[] args) throws Exception {
-		new org.scijava.annotations.CombineAnnotations(args.length > 0 ? args[0]
-			: null).combine();
+		new org.scijava.annotations.AnnotationCombiner().combine(args.length > 0
+			? new File(args[0]) : null);
 	}
 
 }

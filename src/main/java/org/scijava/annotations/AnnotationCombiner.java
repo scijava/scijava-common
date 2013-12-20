@@ -46,6 +46,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.scijava.util.Combiner;
 import org.scijava.util.FileUtils;
 
 /**
@@ -53,67 +54,39 @@ import org.scijava.util.FileUtils;
  * 
  * @author Curtis Rueden
  */
-public class CombineAnnotations extends AbstractIndexWriter {
+public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
+{
 
 	private static final String PREFIX = "META-INF/json/";
 	private static final String LEGACY_PREFIX = "META-INF/annotations/";
-	private final String OUTPUT_DIR;
-
-	private final Set<String> annotationFiles;
-
-	public CombineAnnotations() throws IOException {
-		this(null);
-	}
-
-	public CombineAnnotations(final String outputDir) throws IOException {
-		if (outputDir != null) {
-			OUTPUT_DIR = outputDir;
-		} else {
-			OUTPUT_DIR = "src/main/assembly/all";
-		}
-
-		annotationFiles = getAnnotationFiles();
-	}
 
 	/** Reads in annotations from all available resources and combines them. */
-	public void combine() throws IOException, ClassNotFoundException {
+	@Override
+	public void combine(File outputDirectory) throws Exception {
+		if (outputDirectory == null) {
+			outputDirectory = new File("src/main/assembly/all");
+		}
+		final Set<String> annotationFiles = getAnnotationFiles();
+
 		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
 		log("");
-		log("Writing annotations to " + new File(OUTPUT_DIR).getAbsolutePath());
+		log("Writing annotations to " + outputDirectory.getAbsolutePath());
 
-		new File(OUTPUT_DIR, PREFIX).mkdirs();
+		new File(outputDirectory, PREFIX).mkdirs();
 		for (final String annotationFile : annotationFiles) {
 			final String annotationName = annotationFile.substring(PREFIX.length());
 			@SuppressWarnings("unchecked")
 			final Class<? extends Annotation> annotation =
 				(Class<? extends Annotation>) loader.loadClass(annotationName);
-			for (IndexItem<? extends Annotation> item : Index.load(annotation, loader)) {
+			for (IndexItem<? extends Annotation> item : Index
+				.load(annotation, loader))
+			{
 				add(adapt(item.annotation()), annotationName, item.className());
 			}
 		}
 
-		write(new StreamFactory() {
-
-			@Override
-			public InputStream openInput(String annotationName)
-					throws IOException {
-				return null;
-			}
-
-			@Override
-			public OutputStream openOutput(String annotationName)
-					throws IOException {
-				final File file = new File(OUTPUT_DIR, PREFIX + annotationName);
-				return new FileOutputStream(file);
-			}
-
-			@Override
-			public boolean isClassObsolete(String className) {
-				return false;
-			}
-
-		});
+		write(new AnnotationStreamFactory(outputDirectory));
 	}
 
 	/** Scans for annotations files in every resource on the classpath. */
@@ -121,8 +94,8 @@ public class CombineAnnotations extends AbstractIndexWriter {
 		final HashSet<String> files = new HashSet<String>();
 
 		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
-			final Enumeration<URL> directories = Thread.currentThread()
-					.getContextClassLoader().getResources(prefix);
+			final Enumeration<URL> directories =
+				Thread.currentThread().getContextClassLoader().getResources(prefix);
 			while (directories.hasMoreElements()) {
 				final URL url = directories.nextElement();
 				for (final URL annotationIndexURL : FileUtils.listContents(url)) {
@@ -131,16 +104,12 @@ public class CombineAnnotations extends AbstractIndexWriter {
 						continue;
 					}
 					final int length = string.length();
-					add(files, PREFIX + string.substring(
-							string.lastIndexOf('/', length - 1) + 1, length));
+					add(files, PREFIX +
+						string.substring(string.lastIndexOf('/', length - 1) + 1, length));
 				}
 			}
 		}
 		return files;
-	}
-
-	public static void main(final String[] args) throws Exception {
-		new CombineAnnotations(args.length > 0 ? args[0] : null).combine();
 	}
 
 	// -- Helper methods --
@@ -154,4 +123,41 @@ public class CombineAnnotations extends AbstractIndexWriter {
 		System.out.println(msg);
 	}
 
+	// -- Helper Class --
+
+	/**
+	 * {@link StreamFactory} implementation for writing an annotation.
+	 *
+	 */
+	private static class AnnotationStreamFactory implements StreamFactory {
+
+		private final File outputDirectory;
+
+		public AnnotationStreamFactory(final File outputDirectory) {
+			this.outputDirectory = outputDirectory;
+		}
+
+		@Override
+		public InputStream openInput(String annotationName) throws IOException {
+			return null;
+		}
+
+		@Override
+		public OutputStream openOutput(String annotationName) throws IOException {
+			final File file = new File(outputDirectory, PREFIX + annotationName);
+			return new FileOutputStream(file);
+		}
+
+		@Override
+		public boolean isClassObsolete(String className) {
+			return false;
+		}
+
+	}
+
+	// -- Main method --
+	
+	public static void main(final String[] args) throws Exception {
+		new AnnotationCombiner().combine(args.length > 0 ? new File(args[0]) : null);
+	}
 }
