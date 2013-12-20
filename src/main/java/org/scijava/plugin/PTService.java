@@ -37,7 +37,7 @@ package org.scijava.plugin;
 
 import java.util.List;
 
-import org.scijava.service.SciJavaService;
+import org.scijava.service.Service;
 
 /**
  * A service for managing a particular sort of {@link SciJavaPlugin}.
@@ -84,7 +84,7 @@ import org.scijava.service.SciJavaService;
  * @see TypedService
  * @see WrapperService
  */
-public interface PTService<PT extends SciJavaPlugin> extends SciJavaService {
+public interface PTService<PT extends SciJavaPlugin> extends Service {
 
 	/**
 	 * Gets the service responsible for discovering and managing this service's
