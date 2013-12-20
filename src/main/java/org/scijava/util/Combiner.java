@@ -35,22 +35,20 @@
 
 package org.scijava.util;
 
-import org.scijava.annotations.AnnotationCombiner;
+import java.io.File;
 
 /**
- * Accumulates information from the class path to make META-INF/ files
- * appropriate for an uber jar.
- * 
- * @author Johannes Schindelin
+ * Interface for combining structurally-delicate items (such as annotations)
+ * which need to be unified to a single output.
+ *
+ * @author Mark Hiner
  */
-public class MetaInfCombiner {
+public interface Combiner {
 
-	public static void main(final String... args) throws Exception {
-		if (args.length != 1) {
-			throw new RuntimeException("Need an output directory!");
-		}
+	/**
+	 * Combines a collection of items and writes the result to the provided
+	 * directory.
+	 */
+	void combine(File outputDirectory) throws Exception;
 
-		ServiceCombiner.main(args);
-		AnnotationCombiner.main(args);
-	}
 }
