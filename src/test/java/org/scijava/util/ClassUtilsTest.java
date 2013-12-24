@@ -98,7 +98,7 @@ public class ClassUtilsTest {
 	 * @param closeOut whether to close the sink after we're done
 	 * @throws IOException
 	 */
-	private static void copy(final InputStream in, final OutputStream out,
+	private void copy(final InputStream in, final OutputStream out,
 		final boolean closeOut) throws IOException
 	{
 		final byte[] buffer = new byte[16384];
