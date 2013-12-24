@@ -136,14 +136,62 @@ public final class ClassUtils {
 	/**
 	 * Loads the class with the given name, using the specified
 	 * {@link ClassLoader}, or null if it cannot be loaded.
+	 * <p>
+	 * This method is capable of parsing several different class name syntaxes.
+	 * In particular, array classes (including primitives) represented using
+	 * either square brackets or internal Java array name syntax are supported.
+	 * Examples:
+	 * </p>
+	 * <ul>
+	 * <li>{@code boolean} is loaded as {@code boolean.class}</li>
+	 * <li>{@code Z} is loaded as {@code boolean.class}</li>
+	 * <li>{@code double[]} is loaded as {@code double[].class}</li>
+	 * <li>{@code string[]} is loaded as {@code java.lang.String.class}</li>
+	 * <li>{@code [F} is loaded as {@code float[].class}</li>
+	 * </ul>
 	 * 
-	 * @param className The name of the class to load.
+	 * @param name The name of the class to load.
 	 * @param classLoader The class loader with which to load the class; if null,
 	 *          the current thread's context class loader will be used.
 	 */
-	public static Class<?> loadClass(final String className,
+	public static Class<?> loadClass(final String name,
 		final ClassLoader classLoader)
 	{
+		// handle primitive types
+		if (name.equals("Z") || name.equals("boolean")) return boolean.class;
+		if (name.equals("B") || name.equals("byte")) return byte.class;
+		if (name.equals("C") || name.equals("char")) return char.class;
+		if (name.equals("D") || name.equals("double")) return double.class;
+		if (name.equals("F") || name.equals("float")) return float.class;
+		if (name.equals("I") || name.equals("int")) return int.class;
+		if (name.equals("J") || name.equals("long")) return long.class;
+		if (name.equals("S") || name.equals("short")) return short.class;
+		if (name.equals("V") || name.equals("void")) return void.class;
+
+		// handle built-in class shortcuts
+		final String className;
+		if (name.equals("string")) className = "java.lang.String";
+		else className = name;
+
+		// handle source style arrays (e.g.: "java.lang.String[]")
+		if (name.endsWith("[]")) {
+			final String elementClassName = name.substring(0, name.length() - 2);
+			return getArrayClass(loadClass(elementClassName, classLoader));
+		}
+
+		// handle non-primitive internal arrays (e.g.: "[Ljava.lang.String;")
+		if (name.startsWith("[L") && name.endsWith(";")) {
+			final String elementClassName = name.substring(2, name.length() - 1);
+			return getArrayClass(loadClass(elementClassName, classLoader));
+		}
+
+		// handle other internal arrays (e.g.: "[I", "[[I", "[[Ljava.lang.String;")
+		if (name.startsWith("[")) {
+			final String elementClassName = name.substring(1);
+			return getArrayClass(loadClass(elementClassName, classLoader));
+		}
+
+		// load the class!
 		try {
 			final ClassLoader cl =
 				classLoader == null ? Thread.currentThread().getContextClassLoader()
