@@ -122,12 +122,24 @@ public final class ClassUtils {
 
 	// -- Class loading, querying and reflection --
 
-	/** Loads the class with the given name, or null if it cannot be loaded. */
+	/**
+	 * Loads the class with the given name, using the current thread's context
+	 * class loader, or null if it cannot be loaded.
+	 * 
+	 * @see #loadClass(String, ClassLoader)
+	 */
 	public static Class<?> loadClass(final String className) {
 		return loadClass(className, null);
 	}
 
-	/** Loads the class with the given name, or null if it cannot be loaded. */
+	/**
+	 * Loads the class with the given name, using the specified
+	 * {@link ClassLoader}, or null if it cannot be loaded.
+	 * 
+	 * @param className The name of the class to load.
+	 * @param classLoader The class loader with which to load the class; if null,
+	 *          the current thread's context class loader will be used.
+	 */
 	public static Class<?> loadClass(final String className,
 		final ClassLoader classLoader)
 	{
