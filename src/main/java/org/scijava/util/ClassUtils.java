@@ -37,6 +37,7 @@ package org.scijava.util;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -150,6 +151,25 @@ public final class ClassUtils {
 			return cl.loadClass(className);
 		}
 		catch (final ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the array class corresponding to the given element type.
+	 * <p>
+	 * For example, {@code getArrayClass(double.class)} returns
+	 * {@code double[].class}.
+	 * </p>
+	 */
+	public static Class<?> getArrayClass(final Class<?> elementClass) {
+		if (elementClass == null) return null;
+		// NB: It appears the reflection API has no built-in way to do this.
+		// So unfortunately, we must allocate a new object and then inspect it.
+		try {
+			return Array.newInstance(elementClass, 0).getClass();
+		}
+		catch (final IllegalArgumentException exc) {
 			return null;
 		}
 	}
