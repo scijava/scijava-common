@@ -36,6 +36,8 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -54,8 +56,20 @@ import org.junit.Test;
  * Tests {@link ClassUtils}.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public class ClassUtilsTest {
+
+	@Test
+	public void testGetArrayClass() {
+		assertSame(boolean[].class, ClassUtils.getArrayClass(boolean.class));
+		assertSame(String[].class, ClassUtils.getArrayClass(String.class));
+		assertSame(Number[].class, ClassUtils.getArrayClass(Number.class));
+		assertSame(boolean[][].class, ClassUtils.getArrayClass(boolean[].class));
+		assertSame(String[][].class, ClassUtils.getArrayClass(String[].class));
+		assertSame(Number[][].class, ClassUtils.getArrayClass(Number[].class));
+		assertNull(ClassUtils.getArrayClass(void.class));
+	}
 
 	@Test
 	public void testUnpackedClass() throws IOException {
