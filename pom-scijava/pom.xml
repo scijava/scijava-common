@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.113</version>
+	<version>1.114</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -50,7 +50,7 @@
 		<nar.version>3.0.0</nar.version>
 
 		<!-- OME-Formats - https://github.com/scifio/ome-formats -->
-		<ome-formats.version>0.3.0</ome-formats.version>
+		<ome-formats.version>0.4.0</ome-formats.version>
 
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>io.scif</scifio.groupId>
