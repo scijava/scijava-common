@@ -121,6 +121,10 @@ public class EclipseHelper extends DirectoryIndexer {
 		}
 		EclipseHelper helper = new EclipseHelper();
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
+			if (url.toString().endsWith("/./")) {
+				// Eclipse never adds "." to the class path
+				break;
+			}
 			helper.maybeIndex(url, loader);
 		}
 	}
