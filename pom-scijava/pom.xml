@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.116</version>
+	<version>1.117</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -45,7 +45,7 @@
 		<mpicbg.groupId>mpicbg</mpicbg.groupId>
 		<mpicbg.version>20111128</mpicbg.version>
 
-		<!-- NAR Maven plugin - https://github.com/maven-nar/maven-nar-plugin -->
+		<!-- NAR Maven plugin - https://github.com/maven-nar/nar-maven-plugin -->
 		<nar.groupId>com.github.maven-nar</nar.groupId>
 		<nar.version>3.0.0</nar.version>
 
@@ -456,7 +456,7 @@
 			</releases>
 		</pluginRepository>
 
-		<!-- maven-nar-plugin, cppwrap-maven-plugin -->
+		<!-- cppwrap-maven-plugin, nar-maven-plugin -->
 		<pluginRepository>
 			<id>imagej.releases</id>
 			<url>http://maven.imagej.net/content/repositories/releases</url>
