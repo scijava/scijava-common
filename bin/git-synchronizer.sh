@@ -14,7 +14,7 @@
 #
 # git-synchronizer.sh \
 #	git://fiji.sc/imglib.git=fiji.sc:/srv/git/imglib.git \
-#	git://github.com/imagej/imglib=github.com:imagej/imglib
+#	git://github.com/imglib/imglib=github.com:imglib/imglib
 
 errors=
 add_error () {

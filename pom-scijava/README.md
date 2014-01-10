@@ -6,7 +6,7 @@ Maven-based SciJava code, including:
 * [ImageJ1 unit tests](https://github.com/imagej/ij1-tests)
 * [ImageJ2](https://github.com/imagej/imagej)
 * [ImageJA](https://github.com/fiji/imageja)
-* [ImgLib](https://github.com/imagej/imglib)
+* [ImgLib](https://github.com/imglib/imglib)
 * [LOCI](https://github.com/uw-loci/pom-loci)
 * [SCIFIO](https://github.com/imagej/minimal-ij1-plugin)
 * [SciJava Common](https://github.com/scijava/scijava-common)

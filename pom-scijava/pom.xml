@@ -37,7 +37,7 @@
 		<!-- ImageJ Launcher - https://github.com/imagej/imagej-launcher -->
 		<imagej-launcher.version>2.0.2</imagej-launcher.version>
 
-		<!-- ImgLib2 - https://github.com/imagej/imglib -->
+		<!-- ImgLib2 - https://github.com/imglib/imglib -->
 		<imglib2.groupId>net.imglib2</imglib2.groupId>
 		<imglib2.version>2.0.0-beta-22</imglib2.version>
 
