@@ -36,6 +36,8 @@
 package org.scijava;
 
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -251,8 +253,8 @@ public class Context implements Disposable {
 					(Class<? extends Service>) type;
 				final Service service = getService(serviceType);
 				if (service == null && f.getAnnotation(Parameter.class).required()) {
-					throw new IllegalArgumentException("Required service is missing: " +
-						serviceType.getName());
+					throw new IllegalArgumentException(
+						createMissingServiceMessage(serviceType));
 				}
 				ClassUtils.setValue(f, o, service);
 			}
@@ -285,6 +287,39 @@ public class Context implements Disposable {
 		for (int s = services.size() - 1; s >= 0; s--) {
 			services.get(s).dispose();
 		}
+	}
+
+	// -- Helper methods --
+
+	private String createMissingServiceMessage(
+		final Class<? extends Service> serviceType)
+	{
+		final String nl = System.getProperty("line.separator");
+		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		final StringBuilder msg =
+			new StringBuilder("Required service is missing: " +
+				serviceType.getName() + nl);
+		msg.append("Context: " + this + nl);
+		msg.append("ClassLoader: " + classLoader + nl);
+
+		// Add list of services known to context
+		msg.append(nl + "-- Services known to context --" + nl);
+		for (final Service knownService : serviceIndex.getAll()) {
+			msg.append(knownService + nl);
+		}
+
+		// Add list of classes known to classloader
+		msg.append(nl + "-- Classpath of ClassLoader --" + nl);
+		if (classLoader instanceof URLClassLoader) {
+			for (final URL url : ((URLClassLoader) classLoader).getURLs()) {
+				msg.append(url.getPath() + nl);
+			}
+		}
+		else {
+			msg
+				.append("ClassLoader was not a URLClassLoader. Could not print classpath.");
+		}
+		return msg.toString();
 	}
 
 }
