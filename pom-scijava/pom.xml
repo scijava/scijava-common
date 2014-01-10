@@ -7,7 +7,7 @@
 
 	<groupId>org.scijava</groupId>
 	<artifactId>pom-scijava</artifactId>
-	<version>1.117</version>
+	<version>1.118</version>
 	<packaging>pom</packaging>
 
 	<name>SciJava Projects</name>
@@ -29,10 +29,10 @@
 
 		<!-- ImageJ - https://github.com/imagej/imagej -->
 		<imagej.groupId>net.imagej</imagej.groupId>
-		<imagej.version>2.0.0-beta-7.5</imagej.version>
+		<imagej.version>2.0.0-beta-7.6</imagej.version>
 
 		<!-- ImageJ 1.x - https://github.com/fiji/ImageJA -->
-		<imagej1.version>1.48k</imagej1.version>
+		<imagej1.version>1.48o</imagej1.version>
 
 		<!-- ImageJ Launcher - https://github.com/imagej/imagej-launcher -->
 		<imagej-launcher.version>2.0.2</imagej-launcher.version>
@@ -54,7 +54,7 @@
 
 		<!-- SCIFIO - https://github.com/scifio/scifio -->
 		<scifio.groupId>io.scif</scifio.groupId>
-		<scifio.version>0.8.1</scifio.version>
+		<scifio.version>0.8.2</scifio.version>
 
 		<!-- SCIFIO-BF-compat - https://github.com/scifio/scifio-bf-compat -->
 		<scifio-bf-compat.version>1.4.0</scifio-bf-compat.version>
