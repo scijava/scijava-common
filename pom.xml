@@ -12,7 +12,7 @@
 	<version>2.8.0-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
-	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, driven by the SezPoz library, so that plugins can be loaded dynamically. It is used by both ImageJ and SCIFIO.</description>
+	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by both ImageJ and SCIFIO.</description>
 
 	<dependencies>
 		<dependency>

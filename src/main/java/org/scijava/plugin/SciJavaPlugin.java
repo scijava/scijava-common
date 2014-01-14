@@ -48,5 +48,5 @@ package org.scijava.plugin;
  * @see PluginService
  */
 public interface SciJavaPlugin {
-	// top-level marker interface for discovery via SezPoz
+	// top-level marker interface for discovery via annotation indexes
 }

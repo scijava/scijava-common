@@ -44,15 +44,15 @@ import org.scijava.annotations.IndexItem;
 /**
  * Default SciJava plugin discovery mechanism.
  * <p>
- * It works by using SezPoz to scan the classpath for {@link Plugin}
- * annotations.
+ * It works by scanning the classpath for {@link Plugin} annotations
+ * previously indexed by scijava-common itself.
  * </p>
  * 
  * @author Curtis Rueden
  */
 public class DefaultPluginFinder implements PluginFinder {
 
-	/** Class loader to use when querying SezPoz. */
+	/** Class loader to use when querying the annotation indexes. */
 	private final ClassLoader customClassLoader;
 
 	// -- Constructors --
@@ -74,13 +74,13 @@ public class DefaultPluginFinder implements PluginFinder {
 		final HashMap<String, Throwable> exceptions =
 			new HashMap<String, Throwable>();
 
-		// load the SezPoz index
+		// load the annotation indexes
 		final ClassLoader classLoader = getClassLoader();
-		final Index<Plugin> sezPozIndex =
+		final Index<Plugin> annotationIndex =
 			Index.load(Plugin.class, classLoader);
 
 		// create a PluginInfo object for each item in the index
-		for (final IndexItem<Plugin> item : sezPozIndex) {
+		for (final IndexItem<Plugin> item : annotationIndex) {
 			try {
 				final PluginInfo<?> info = createInfo(item, classLoader);
 				plugins.add(info);

@@ -41,7 +41,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A simple annotation for use with SezPoz.
+ * A simple annotation for use with our annotation processor.
  * 
  * @author Johannes Schindelin
  */

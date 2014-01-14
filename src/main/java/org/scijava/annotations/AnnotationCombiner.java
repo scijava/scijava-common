@@ -50,7 +50,7 @@ import org.scijava.util.Combiner;
 import org.scijava.util.FileUtils;
 
 /**
- * Combines SezPoz annotations from all JAR files on the classpath.
+ * Combines annotation indexes from all JAR files on the classpath.
  * 
  * @author Curtis Rueden
  */
