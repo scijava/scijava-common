@@ -140,7 +140,7 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 	</organization>
 
 	<issueManagement>
-		<system>GitHub issues</system>
+		<system>GitHub Issues</system>
 		<url>https://github.com/scijava/scijava-common/issues</url>
 	</issueManagement>
 
