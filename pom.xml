@@ -261,15 +261,11 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 		</profile>
 	</profiles>
 
-	<!-- NB: for project parent -->
 	<repositories>
+		<!-- NB: for project parent -->
 		<repository>
-			<id>imagej.releases</id>
-			<url>http://maven.imagej.net/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>imagej.snapshots</id>
-			<url>http://maven.imagej.net/content/repositories/snapshots</url>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/group/public</url>
 		</repository>
 	</repositories>
 
