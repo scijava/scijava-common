@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>1.123</version>
+		<version>1.125</version>
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
@@ -34,12 +34,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-Dapple.awt.UIElement="true"</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -50,13 +44,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<configuration>
@@ -65,9 +52,6 @@
 Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
 Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<projectName>SciJava Common shared library for SciJava software.</projectName>
-					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-					<canUpdateDescription>true</canUpdateDescription>
-					<canUpdateCopyright>true</canUpdateCopyright>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -183,41 +167,6 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 					<systemPath>${java.home}/../lib/tools.jar</systemPath>
 				</dependency>
 			</dependencies>
-		</profile>
-		<profile>
-			<id>run-its</id>
-			<build>
-				<defaultGoal>integration-test</defaultGoal>
-				<plugins>
-					<plugin>
-						<artifactId>maven-invoker-plugin</artifactId>
-						<version>1.8</version>
-						<configuration>
-							<debug>${invoker.debug}</debug>
-							<showErrors>true</showErrors>
-							<streamLogs>true</streamLogs>
-							<projectsDirectory>src/it</projectsDirectory>
-							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-							<pomIncludes>
-								<pomInclude>*/pom.xml</pomInclude>
-							</pomIncludes>
-							<settingsFile>src/it/settings.xml</settingsFile>
-							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-							<preBuildHookScript>setup.bsh</preBuildHookScript>
-							<postBuildHookScript>verify.bsh</postBuildHookScript>
-						</configuration>
-						<executions>
-							<execution>
-								<id>integration-test</id>
-								<goals>
-									<goal>install</goal>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>only-eclipse</id>
