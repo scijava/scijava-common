@@ -119,11 +119,6 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 		</developer>
 	</developers>
 
-	<organization>
-		<name>SciJava</name>
-		<url>http://scijava.org/</url>
-	</organization>
-
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/scijava/scijava-common/issues</url>
