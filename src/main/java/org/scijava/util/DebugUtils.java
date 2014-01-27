@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 /**
  * Useful methods for debugging programs.
@@ -80,6 +81,23 @@ public final class DebugUtils {
 			}
 		}
 		return "" + value;
+	}
+
+	/**
+	 * Get the class whose main method launched the application. The heuristic
+	 * will fail if the main thread has terminated before this method is called.
+	 */
+	public static String getMainClassName() {
+		final Map<Thread, StackTraceElement[]> traceMap =
+			Thread.getAllStackTraces();
+		for (final Thread thread : traceMap.keySet()) {
+			if (!"main".equals(thread.getName())) continue;
+			final StackTraceElement[] trace = traceMap.get(thread);
+			if (trace == null || trace.length == 0) continue;
+			final StackTraceElement element = trace[trace.length - 1];
+			return element.getClassName();
+		}
+		return null;
 	}
 
 }

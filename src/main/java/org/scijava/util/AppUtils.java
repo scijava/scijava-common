@@ -33,7 +33,6 @@ package org.scijava.util;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,17 +49,7 @@ public final class AppUtils {
 	static {
 		// Get the class whose main method launched the application. The heuristic
 		// will fail if the main thread has terminated before this class loads.
-		final Map<Thread, StackTraceElement[]> traceMap =
-			Thread.getAllStackTraces();
-		String className = null;
-		for (final Thread thread : traceMap.keySet()) {
-			if (!"main".equals(thread.getName())) continue;
-			final StackTraceElement[] trace = traceMap.get(thread);
-			if (trace == null || trace.length == 0) continue;
-			final StackTraceElement element = trace[trace.length - 1];
-			className = element.getClassName();
-			break;
-		}
+		final String className = DebugUtils.getMainClassName();
 		mainClass = className == null ? null : ClassUtils.loadClass(className);
 	}
 
