@@ -37,6 +37,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.scijava.Priority;
+import org.scijava.UIDetails;
 import org.scijava.annotations.Indexable;
 
 /**
@@ -52,7 +53,16 @@ import org.scijava.annotations.Indexable;
 @Indexable
 public @interface Plugin {
 
+	/** @deprecated Use {@link UIDetails#APPLICATION_MENU_ROOT} instead. */
+	@Deprecated
 	String APPLICATION_MENU_ROOT = "app";
+
+	/**
+	 * @deprecated Use a context-specific menu root string instead. This one is
+	 *             too general. There is no such thing as a "default context menu"
+	 *             since such a thing wouldn't be a context menu!
+	 */
+	@Deprecated
 	String CONTEXT_MENU_ROOT = "context";
 
 	/** The type of plugin; e.g., {@link org.scijava.service.Service}. */
@@ -87,10 +97,10 @@ public @interface Plugin {
 	/**
 	 * String identifier naming the menu to which this plugin belongs, or in the
 	 * case of a tool, the context menu that should be displayed while the tool is
-	 * active. The default value of {@link #APPLICATION_MENU_ROOT} references the
-	 * menu structure of the primary application window.
+	 * active. The default value of {@link UIDetails#APPLICATION_MENU_ROOT}
+	 * references the menu structure of the primary application window.
 	 */
-	String menuRoot() default APPLICATION_MENU_ROOT;
+	String menuRoot() default UIDetails.APPLICATION_MENU_ROOT;
 
 	/** Path to the plugin's icon (e.g., shown in the menu structure). */
 	String iconPath() default "";

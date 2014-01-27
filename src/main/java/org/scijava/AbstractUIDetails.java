@@ -55,7 +55,7 @@ public abstract class AbstractUIDetails implements UIDetails {
 	private MenuPath menuPath;
 
 	/** Name of the menu structure to which the object belongs. */
-	private String menuRoot;
+	private String menuRoot = APPLICATION_MENU_ROOT;
 
 	/** Resource path to this object's icon. */
 	private String iconPath;

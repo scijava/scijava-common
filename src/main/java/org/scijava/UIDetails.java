@@ -40,6 +40,13 @@ package org.scijava;
 public interface UIDetails extends BasicDetails, Prioritized {
 
 	/**
+	 * The default, application-level menu root.
+	 * 
+	 * @see #getMenuRoot()
+	 */
+	String APPLICATION_MENU_ROOT = "app";
+
+	/**
 	 * Gets an appropriate title for the object, for use in a user interface. The
 	 * result is prioritized as follows:
 	 * <ol>
