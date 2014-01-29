@@ -436,20 +436,12 @@ public final class FileUtils {
 		return directory.delete();
 	}
 
-	/**
-	 * Lists all contents of the referenced directory.
-	 * 
-	 * @author Johannes Schindelin
-	 */
+	/** Lists all contents of the referenced directory. */
 	public static Collection<URL> listContents(final URL directory) {
 		return appendContents(new ArrayList<URL>(), directory);
 	}
 
-	/**
-	 * Add contents from the referenced directory to an existing collection.
-	 * 
-	 * @author Johannes Schindelin
-	 */
+	/** Add contents from the referenced directory to an existing collection. */
 	public static Collection<URL> appendContents(final Collection<URL> result,
 		final URL directory)
 	{
