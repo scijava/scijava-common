@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
  * Useful methods for working with file paths.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  * @author Grant Harris
  */
 public final class FileUtils {
