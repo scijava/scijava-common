@@ -62,8 +62,8 @@ public class POM extends XML {
 	}
 
 	/** Parses a POM from the given string. */
-	public POM(final String s) throws ParserConfigurationException,
-		SAXException, IOException
+	public POM(final String s) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		super(s);
 	}
@@ -103,11 +103,14 @@ public class POM extends XML {
 	{
 		try {
 			final URL location = ClassUtils.getLocation(c);
-			if (!location.getProtocol().equals("file") || location.toString().endsWith(".jar")) {
+			if (!location.getProtocol().equals("file") ||
+				location.toString().endsWith(".jar"))
+			{
 				// look for pom.xml in JAR's META-INF/maven subdirectory
 				final String pomPath =
 					"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-				final URL pomURL = new URL("jar:" + location.toString() + "!/" + pomPath);
+				final URL pomURL =
+					new URL("jar:" + location.toString() + "!/" + pomPath);
 				final InputStream pomStream = pomURL.openStream();
 				return new POM(pomStream);
 			}
