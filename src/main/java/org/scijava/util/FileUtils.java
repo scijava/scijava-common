@@ -128,7 +128,8 @@ public final class FileUtils {
 	 * </p>
 	 */
 	private final static Pattern versionPattern =
-		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?))");
+		Pattern
+			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?))");
 
 	public static String stripFilenameVersion(final String filename) {
 		final Matcher matcher = versionPattern.matcher(filename);
@@ -143,7 +144,9 @@ public final class FileUtils {
 	 * @param filename the file name to use
 	 * @return the list of matches
 	 */
-	public static File[] getAllVersions(final File directory, final String filename) {
+	public static File[] getAllVersions(final File directory,
+		final String filename)
+	{
 		final Matcher matcher = versionPattern.matcher(filename);
 		if (!matcher.matches()) {
 			final File file = new File(directory, filename);
@@ -151,10 +154,10 @@ public final class FileUtils {
 		}
 		final String baseName = matcher.group(1);
 		return directory.listFiles(new FilenameFilter() {
+
 			@Override
 			public boolean accept(final File dir, final String name) {
-				if (!name.startsWith(baseName))
-					return false;
+				if (!name.startsWith(baseName)) return false;
 				final Matcher matcher2 = versionPattern.matcher(name);
 				return matcher2.matches() && baseName.equals(matcher2.group(1));
 			}
@@ -438,8 +441,7 @@ public final class FileUtils {
 	 * @author Johannes Schindelin
 	 */
 	public static Collection<URL> listContents(final URL directory) {
-		final Collection<URL> result = new ArrayList<URL>();
-		return appendContents(result, directory);
+		return appendContents(new ArrayList<URL>(), directory);
 	}
 
 	/**
@@ -471,7 +473,7 @@ public final class FileUtils {
 							appendContents(result, file.toURI().toURL());
 						}
 					}
-					catch (MalformedURLException e) {
+					catch (final MalformedURLException e) {
 						e.printStackTrace();
 					}
 				}
@@ -489,14 +491,15 @@ public final class FileUtils {
 					(JarURLConnection) new URL(baseURL).openConnection();
 				final JarFile jar = connection.getJarFile();
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
-					final String urlEncoded = new URI(null, null, entry.getName(), null).toString();
+					final String urlEncoded =
+						new URI(null, null, entry.getName(), null).toString();
 					if (urlEncoded.startsWith(prefix)) {
 						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
 				jar.close();
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				e.printStackTrace();
 			}
 			catch (final URISyntaxException e) {
@@ -516,7 +519,7 @@ public final class FileUtils {
 	 * @deprecated see {@link #stripFilenameVersion(String)}
 	 */
 	@Deprecated
-	public static Matcher matchVersionedFilename(String filename) {
+	public static Matcher matchVersionedFilename(final String filename) {
 		return versionPattern.matcher(filename);
 	}
 
