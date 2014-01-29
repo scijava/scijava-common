@@ -137,18 +137,6 @@ public final class FileUtils {
 	}
 
 	/**
-	 * Returns the {@link Matcher} object dissecting a versioned file name.
-	 * 
-	 * @param filename the file name
-	 * @return the {@link Matcher} object
-	 * @deprecated see {@link #stripFilenameVersion(String)}
-	 */
-	@Deprecated
-	public static Matcher matchVersionedFilename(String filename) {
-		return versionPattern.matcher(filename);
-	}
-
-	/**
 	 * Lists all versions of a given (possibly versioned) file name.
 	 * 
 	 * @param directory the directory to scan
@@ -516,6 +504,20 @@ public final class FileUtils {
 			}
 		}
 		return result;
+	}
+
+	// -- Deprecated methods --
+
+	/**
+	 * Returns the {@link Matcher} object dissecting a versioned file name.
+	 * 
+	 * @param filename the file name
+	 * @return the {@link Matcher} object
+	 * @deprecated see {@link #stripFilenameVersion(String)}
+	 */
+	@Deprecated
+	public static Matcher matchVersionedFilename(String filename) {
+		return versionPattern.matcher(filename);
 	}
 
 }
