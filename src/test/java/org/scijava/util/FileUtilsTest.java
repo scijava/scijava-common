@@ -31,6 +31,7 @@
 
 package org.scijava.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -179,6 +180,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void testListContents() throws IOException, URISyntaxException {
+		// verify that listContents on a non-existent file returns the empty set
 		File nonExisting;
 		int i = 0;
 		for (;;) {
@@ -186,7 +188,6 @@ public class FileUtilsTest {
 			if (!nonExisting.exists()) break;
 			i++;
 		}
-
 		try {
 			Collection<URL> urls = FileUtils.listContents(nonExisting.toURI().toURL());
 			assertNotNull(urls);
@@ -195,31 +196,72 @@ public class FileUtilsTest {
 			e.printStackTrace();
 		}
 
-		// list items inside a .jar file
-		final File jarFile = File.createTempFile("listFileContentsTest", ".jar");
+		// write some items to a temporary .jar file
+		final String subDir = "sub 𝄞directory/";
+		final String subSubDir = "more 𝄢stuff/";
+		final File jarFile = File.createTempFile("listContentsTest", ".jar");
 		final FileOutputStream out = new FileOutputStream(jarFile);
 		final JarOutputStream jarOut = new JarOutputStream(out);
 		try {
-			jarOut.putNextEntry(new JarEntry("sub 𝄞directory/hello.txt"));
+			jarOut.putNextEntry(new JarEntry(subDir));
+			jarOut.closeEntry();
+			jarOut.putNextEntry(new JarEntry(subDir + subSubDir));
+			jarOut.closeEntry();
+			// NB: This entry is not in the subdirectory, and should not be listed.
+			jarOut.putNextEntry(new JarEntry("foo.txt"));
+			jarOut.write("bar".getBytes());
+			jarOut.closeEntry();
+			// NB: The next two entries are directly beneath the subdirectory.
+			jarOut.putNextEntry(new JarEntry(subDir + "hello.txt"));
 			jarOut.write("world".getBytes());
 			jarOut.closeEntry();
-			jarOut.putNextEntry(new JarEntry("sub 𝄞directory/rock.txt"));
+			jarOut.putNextEntry(new JarEntry(subDir + "rock.txt"));
 			jarOut.write("roll".getBytes());
+			jarOut.closeEntry();
+			// NB: The last two entries are beneath a second subdirectory,
+			// and should only be listed when the recurse flag is set to true.
+			jarOut.putNextEntry(new JarEntry(subDir + subSubDir + "fox.txt"));
+			jarOut.write("the quick brown fox".getBytes());
+			jarOut.closeEntry();
+			jarOut.putNextEntry(new JarEntry(subDir + subSubDir + "dog.txt"));
+			jarOut.write("jumps over the lazy dog".getBytes());
 			jarOut.closeEntry();
 			jarOut.close();
 		} finally {
 			out.close();
 		}
 
-		final String path = new URI(null, null, "!/sub 𝄞directory/", null).toString();
-		final String url = "jar:" + jarFile.toURI().toURL() + path;
-		final Collection<URL> set = FileUtils.listContents(new URL(url));
-		final URL[] list = set.toArray(new URL[set.size()]);
+		final String uriPath = new URI(null, null, "!/" + subDir, null).toString();
+		final String urlPath = "jar:" + jarFile.toURI().toURL() + uriPath;
+		final URL url = new URL(urlPath);
+		final URL subSubURL = new URL(urlPath + "more%20𝄢stuff/");
+		final URL helloURL = new URL(urlPath + "hello.txt");
+		final URL rockURL = new URL(urlPath + "rock.txt");
+		final URL foxURL = new URL(urlPath + "more%20𝄢stuff/fox.txt");
+		final URL dogURL = new URL(urlPath + "more%20𝄢stuff/dog.txt");
 
-		assertEquals(2, list.length);
-		assertEquals(new URL(url + "hello.txt"), list[0]);
-		assertEquals(new URL(url + "rock.txt"), list[1]);
+		// check listContents: recursive without directories
+		final Collection<URL> setTT = FileUtils.listContents(url, true, true);
+		final URL[] listTT = setTT.toArray(new URL[setTT.size()]);
+		assertArrayEquals(new URL[] { helloURL, rockURL, foxURL, dogURL }, listTT);
 
+		// check listContents: recursive including directories
+		final Collection<URL> setTF = FileUtils.listContents(url, true, false);
+		final URL[] listTF = setTF.toArray(new URL[setTF.size()]);
+		assertArrayEquals(
+			new URL[] { subSubURL, helloURL, rockURL, foxURL, dogURL }, listTF);
+
+		// check listContents: non-recursive without directories
+		final Collection<URL> setFT = FileUtils.listContents(url, false, true);
+		final URL[] listFT = setFT.toArray(new URL[setFT.size()]);
+		assertArrayEquals(new URL[] { helloURL, rockURL }, listFT);
+
+		// check listContents: non-recursive including directories
+		final Collection<URL> setFF = FileUtils.listContents(url, false, false);
+		final URL[] listFF = setFF.toArray(new URL[setFF.size()]);
+		assertArrayEquals(new URL[] { subSubURL, helloURL, rockURL }, listFF);
+
+		// clean up
 		assertTrue(jarFile.delete());
 	}
 
