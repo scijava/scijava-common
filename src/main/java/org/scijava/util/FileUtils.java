@@ -493,7 +493,9 @@ public final class FileUtils {
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
 					final String urlEncoded =
 						new URI(null, null, entry.getName(), null).toString();
-					if (urlEncoded.startsWith(prefix)) {
+					if (urlEncoded.length() > prefix.length() && // omit directory itself
+						urlEncoded.startsWith(prefix))
+					{
 						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
