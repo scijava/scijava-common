@@ -455,13 +455,7 @@ public final class FileUtils {
 		if (directory == null) return result; // nothing to append
 		final String protocol = directory.getProtocol();
 		if (protocol.equals("file")) {
-			File dir;
-			try {
-				dir = new File(directory.toURI());
-			}
-			catch (Exception e) {
-				dir = new File(directory.getPath());
-			}
+			final File dir = urlToFile(directory);
 			final File[] list = dir.listFiles();
 			if (list != null) {
 				for (final File file : list) {
