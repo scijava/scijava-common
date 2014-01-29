@@ -53,6 +53,7 @@ import org.junit.Test;
  * Tests {@link FileUtils}.
  * 
  * @author Curtis Rueden
+ * @author Johannes Schindelin
  * @author Grant Harris
  */
 public class FileUtilsTest {
