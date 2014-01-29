@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
  * Useful methods for working with file paths.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  * @author Grant Harris
  */
 public final class FileUtils {
@@ -128,24 +129,13 @@ public final class FileUtils {
 	 * </p>
 	 */
 	private final static Pattern versionPattern =
-		Pattern.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?))");
+		Pattern
+			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|sources|javadoc))?(\\.jar(-[a-z]*)?))");
 
 	public static String stripFilenameVersion(final String filename) {
 		final Matcher matcher = versionPattern.matcher(filename);
 		if (!matcher.matches()) return filename;
 		return matcher.group(1) + matcher.group(5);
-	}
-
-	/**
-	 * Returns the {@link Matcher} object dissecting a versioned file name.
-	 * 
-	 * @param filename the file name
-	 * @return the {@link Matcher} object
-	 * @deprecated see {@link #stripFilenameVersion(String)}
-	 */
-	@Deprecated
-	public static Matcher matchVersionedFilename(String filename) {
-		return versionPattern.matcher(filename);
 	}
 
 	/**
@@ -155,7 +145,9 @@ public final class FileUtils {
 	 * @param filename the file name to use
 	 * @return the list of matches
 	 */
-	public static File[] getAllVersions(final File directory, final String filename) {
+	public static File[] getAllVersions(final File directory,
+		final String filename)
+	{
 		final Matcher matcher = versionPattern.matcher(filename);
 		if (!matcher.matches()) {
 			final File file = new File(directory, filename);
@@ -163,10 +155,10 @@ public final class FileUtils {
 		}
 		final String baseName = matcher.group(1);
 		return directory.listFiles(new FilenameFilter() {
+
 			@Override
 			public boolean accept(final File dir, final String name) {
-				if (!name.startsWith(baseName))
-					return false;
+				if (!name.startsWith(baseName)) return false;
 				final Matcher matcher2 = versionPattern.matcher(name);
 				return matcher2.matches() && baseName.equals(matcher2.group(1));
 			}
@@ -416,74 +408,103 @@ public final class FileUtils {
 	}
 
 	/**
-	 * Delete a directory recursively
+	 * Deletes a directory recursively.
 	 * 
-	 * @param directory
+	 * @param directory The directory to delete.
 	 * @return whether it succeeded (see also {@link File#delete()})
 	 */
 	public static boolean deleteRecursively(final File directory) {
-		if (directory == null) {
-			return true;
-		}
+		if (directory == null) return true;
 		final File[] list = directory.listFiles();
-		if (list == null) {
-			return true;
-		}
+		if (list == null) return true;
 		for (final File file : list) {
 			if (file.isFile()) {
-				if (!file.delete()) {
-					return false;
-				}
+				if (!file.delete()) return false;
 			}
 			else if (file.isDirectory()) {
-				if (!deleteRecursively(file)) {
-					return false;
-				}
+				if (!deleteRecursively(file)) return false;
 			}
 		}
 		return directory.delete();
 	}
 
 	/**
-	 * Lists all contents of the referenced directory.
+	 * Recursively lists the contents of the referenced directory. Directories are
+	 * excluded from the result. Supported protocols include {@code file} and
+	 * {@code jar}.
 	 * 
-	 * @author Johannes Schindelin
+	 * @param directory The directory whose contents should be listed.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 * @see #listContents(URL, boolean, boolean)
 	 */
 	public static Collection<URL> listContents(final URL directory) {
-		final Collection<URL> result = new ArrayList<URL>();
-		return appendContents(result, directory);
+		return listContents(directory, true, true);
 	}
 
 	/**
-	 * Add contents from the referenced directory to an existing collection.
+	 * Lists all contents of the referenced directory. Supported protocols include
+	 * {@code file} and {@code jar}.
 	 * 
-	 * @author Johannes Schindelin
+	 * @param directory The directory whose contents should be listed.
+	 * @param recurse Whether to list contents recursively, as opposed to only the
+	 *          directory's direct contents.
+	 * @param filesOnly Whether to exclude directories in the resulting collection
+	 *          of contents.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 */
+	public static Collection<URL> listContents(final URL directory,
+		final boolean recurse, final boolean filesOnly)
+	{
+		return appendContents(new ArrayList<URL>(), directory, recurse, filesOnly);
+	}
+
+	/**
+	 * Recursively adds contents from the referenced directory to an existing
+	 * collection. Directories are excluded from the result. Supported protocols
+	 * include {@code file} and {@code jar}.
+	 * 
+	 * @param result The collection to which contents should be added.
+	 * @param directory The directory whose contents should be listed.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 * @see #appendContents(Collection, URL, boolean, boolean)
 	 */
 	public static Collection<URL> appendContents(final Collection<URL> result,
 		final URL directory)
 	{
+		return appendContents(result, directory, true, true);
+	}
+
+	/**
+	 * Add contents from the referenced directory to an existing collection.
+	 * Supported protocols include {@code file} and {@code jar}.
+	 * 
+	 * @param result The collection to which contents should be added.
+	 * @param directory The directory whose contents should be listed.
+	 * @param recurse Whether to append contents recursively, as opposed to only
+	 *          the directory's direct contents.
+	 * @param filesOnly Whether to exclude directories in the resulting collection
+	 *          of contents.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 */
+	public static Collection<URL> appendContents(final Collection<URL> result,
+		final URL directory, final boolean recurse, final boolean filesOnly)
+	{
 		if (directory == null) return result; // nothing to append
 		final String protocol = directory.getProtocol();
 		if (protocol.equals("file")) {
-			File dir;
-			try {
-				dir = new File(directory.toURI());
-			}
-			catch (Exception e) {
-				dir = new File(directory.getPath());
-			}
+			final File dir = urlToFile(directory);
 			final File[] list = dir.listFiles();
 			if (list != null) {
 				for (final File file : list) {
 					try {
-						if (file.isFile()) {
+						if (!filesOnly || file.isFile()) {
 							result.add(file.toURI().toURL());
 						}
-						else if (file.isDirectory()) {
+						if (recurse && file.isDirectory()) {
 							appendContents(result, file.toURI().toURL());
 						}
 					}
-					catch (MalformedURLException e) {
+					catch (final MalformedURLException e) {
 						e.printStackTrace();
 					}
 				}
@@ -501,14 +522,29 @@ public final class FileUtils {
 					(JarURLConnection) new URL(baseURL).openConnection();
 				final JarFile jar = connection.getJarFile();
 				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
-					final String urlEncoded = new URI(null, null, entry.getName(), null).toString();
-					if (urlEncoded.startsWith(prefix)) {
+					final String urlEncoded =
+						new URI(null, null, entry.getName(), null).toString();
+					if (urlEncoded.length() > prefix.length() && // omit directory itself
+						urlEncoded.startsWith(prefix))
+					{
+						if (filesOnly && urlEncoded.endsWith("/")) {
+							// URL is directory; exclude it
+							continue;
+						}
+						if (!recurse) {
+							// check whether this URL is a *direct* child of the directory
+							final int slash = urlEncoded.indexOf("/", prefix.length());
+							if (slash >= 0 && slash != urlEncoded.length() - 1) {
+								// not a direct child
+								continue;
+							}
+						}
 						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
 				jar.close();
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				e.printStackTrace();
 			}
 			catch (final URISyntaxException e) {
@@ -516,6 +552,20 @@ public final class FileUtils {
 			}
 		}
 		return result;
+	}
+
+	// -- Deprecated methods --
+
+	/**
+	 * Returns the {@link Matcher} object dissecting a versioned file name.
+	 * 
+	 * @param filename the file name
+	 * @return the {@link Matcher} object
+	 * @deprecated see {@link #stripFilenameVersion(String)}
+	 */
+	@Deprecated
+	public static Matcher matchVersionedFilename(final String filename) {
+		return versionPattern.matcher(filename);
 	}
 
 }
