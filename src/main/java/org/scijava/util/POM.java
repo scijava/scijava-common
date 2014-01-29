@@ -35,6 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -129,6 +132,46 @@ public class POM extends XML {
 		catch (final SAXException e) {
 			return null;
 		}
+	}
+
+	/** Gets all available Maven POMs on the class path. */
+	public static List<POM> getAllPOMs() {
+		// find all META-INF/maven/ folders on the classpath
+		final String pomPrefix = "META-INF/maven/";
+		final ClassLoader classLoader =
+			Thread.currentThread().getContextClassLoader();
+		final Enumeration<URL> resources;
+		try {
+			resources = classLoader.getResources(pomPrefix);
+		}
+		catch (final IOException exc) {
+			return null;
+		}
+
+		final ArrayList<POM> poms = new ArrayList<POM>();
+
+		// recursively list contents of META-INF/maven/ directories
+		for (final URL resource : new IteratorPlus<URL>(resources)) {
+			for (final URL url : FileUtils.listContents(resource)) {
+				// look for pom.xml files amongst the contents
+				if (url.getPath().endsWith("/pom.xml")) {
+					try {
+						poms.add(new POM(url));
+					}
+					catch (final IOException exc) {
+						// ignore and continue
+					}
+					catch (final ParserConfigurationException exc) {
+						// ignore and continue
+					}
+					catch (final SAXException exc) {
+						// ignore and continue
+					}
+				}
+			}
+		}
+
+		return poms;
 	}
 
 }
