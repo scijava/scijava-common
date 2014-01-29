@@ -435,13 +435,20 @@ public final class FileUtils {
 	 * 
 	 * @param directory The directory whose contents should be listed.
 	 * @return A collection of {@link URL}s representing the directory's contents.
-	 * @see #listContents(URL, boolean, boolean)
 	 */
 	public static Collection<URL> listContents(final URL directory) {
 		return appendContents(new ArrayList<URL>(), directory);
 	}
 
-	/** Add contents from the referenced directory to an existing collection. */
+	/**
+	 * Recursively adds contents from the referenced directory to an existing
+	 * collection. Directories are excluded from the result. Supported protocols
+	 * include {@code file} and {@code jar}.
+	 * 
+	 * @param result The collection to which contents should be added.
+	 * @param directory The directory whose contents should be listed.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 */
 	public static Collection<URL> appendContents(final Collection<URL> result,
 		final URL directory)
 	{
