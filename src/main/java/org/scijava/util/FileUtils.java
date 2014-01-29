@@ -428,7 +428,15 @@ public final class FileUtils {
 		return directory.delete();
 	}
 
-	/** Lists all contents of the referenced directory. */
+	/**
+	 * Recursively lists the contents of the referenced directory. Directories are
+	 * excluded from the result. Supported protocols include {@code file} and
+	 * {@code jar}.
+	 * 
+	 * @param directory The directory whose contents should be listed.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 * @see #listContents(URL, boolean, boolean)
+	 */
 	public static Collection<URL> listContents(final URL directory) {
 		return appendContents(new ArrayList<URL>(), directory);
 	}
