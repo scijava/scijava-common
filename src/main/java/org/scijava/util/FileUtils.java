@@ -435,9 +435,27 @@ public final class FileUtils {
 	 * 
 	 * @param directory The directory whose contents should be listed.
 	 * @return A collection of {@link URL}s representing the directory's contents.
+	 * @see #listContents(URL, boolean, boolean)
 	 */
 	public static Collection<URL> listContents(final URL directory) {
-		return appendContents(new ArrayList<URL>(), directory);
+		return listContents(directory, true, true);
+	}
+
+	/**
+	 * Lists all contents of the referenced directory. Supported protocols include
+	 * {@code file} and {@code jar}.
+	 * 
+	 * @param directory The directory whose contents should be listed.
+	 * @param recurse Whether to list contents recursively, as opposed to only the
+	 *          directory's direct contents.
+	 * @param filesOnly Whether to exclude directories in the resulting collection
+	 *          of contents.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 */
+	public static Collection<URL> listContents(final URL directory,
+		final boolean recurse, final boolean filesOnly)
+	{
+		return appendContents(new ArrayList<URL>(), directory, recurse, filesOnly);
 	}
 
 	/**
@@ -448,9 +466,28 @@ public final class FileUtils {
 	 * @param result The collection to which contents should be added.
 	 * @param directory The directory whose contents should be listed.
 	 * @return A collection of {@link URL}s representing the directory's contents.
+	 * @see #appendContents(Collection, URL, boolean, boolean)
 	 */
 	public static Collection<URL> appendContents(final Collection<URL> result,
 		final URL directory)
+	{
+		return appendContents(result, directory, true, true);
+	}
+
+	/**
+	 * Add contents from the referenced directory to an existing collection.
+	 * Supported protocols include {@code file} and {@code jar}.
+	 * 
+	 * @param result The collection to which contents should be added.
+	 * @param directory The directory whose contents should be listed.
+	 * @param recurse Whether to append contents recursively, as opposed to only
+	 *          the directory's direct contents.
+	 * @param filesOnly Whether to exclude directories in the resulting collection
+	 *          of contents.
+	 * @return A collection of {@link URL}s representing the directory's contents.
+	 */
+	public static Collection<URL> appendContents(final Collection<URL> result,
+		final URL directory, final boolean recurse, final boolean filesOnly)
 	{
 		if (directory == null) return result; // nothing to append
 		final String protocol = directory.getProtocol();
@@ -460,10 +497,10 @@ public final class FileUtils {
 			if (list != null) {
 				for (final File file : list) {
 					try {
-						if (file.isFile()) {
+						if (!filesOnly || file.isFile()) {
 							result.add(file.toURI().toURL());
 						}
-						else if (file.isDirectory()) {
+						if (recurse && file.isDirectory()) {
 							appendContents(result, file.toURI().toURL());
 						}
 					}
@@ -490,6 +527,18 @@ public final class FileUtils {
 					if (urlEncoded.length() > prefix.length() && // omit directory itself
 						urlEncoded.startsWith(prefix))
 					{
+						if (filesOnly && urlEncoded.endsWith("/")) {
+							// URL is directory; exclude it
+							continue;
+						}
+						if (!recurse) {
+							// check whether this URL is a *direct* child of the directory
+							final int slash = urlEncoded.indexOf("/", prefix.length());
+							if (slash >= 0 && slash != urlEncoded.length() - 1) {
+								// not a direct child
+								continue;
+							}
+						}
 						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
