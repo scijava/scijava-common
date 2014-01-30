@@ -100,6 +100,36 @@ public class POM extends XML implements Comparable<POM> {
 		return cdata("//project/parent/version");
 	}
 
+	/** Gets the project name. */
+	public String getProjectName() {
+		return cdata("//project/name");
+	}
+
+	/** Gets the project description. */
+	public String getProjectDescription() {
+		return cdata("//project/description");
+	}
+
+	/** Gets the project URL. */
+	public String getProjectURL() {
+		return cdata("//project/url");
+	}
+
+	/** Gets the project inception year. */
+	public String getProjectInceptionYear() {
+		return cdata("//project/inceptionYear");
+	}
+
+	/** Gets the organization name. */
+	public String getOrganizationName() {
+		return cdata("//project/organization/name");
+	}
+
+	/** Gets the organization URL. */
+	public String getOrganizationURL() {
+		return cdata("//project/organization/url");
+	}
+
 	// -- Comparable methods --
 
 	@Override
