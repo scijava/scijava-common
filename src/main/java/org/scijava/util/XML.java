@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -77,6 +78,13 @@ public class XML {
 		SAXException, IOException
 	{
 		this(loadXML(file));
+	}
+
+	/** Parses XML from the given URL. */
+	public XML(final URL url) throws ParserConfigurationException,
+		SAXException, IOException
+	{
+		this(loadXML(url));
 	}
 
 	/** Parses XML from the given input stream. */
@@ -148,6 +156,16 @@ public class XML {
 		throws ParserConfigurationException, SAXException, IOException
 	{
 		return createBuilder().parse(file.getAbsolutePath());
+	}
+
+	/** Loads an XML document from the given URL. */
+	private static Document loadXML(final URL url)
+		throws ParserConfigurationException, SAXException, IOException
+	{
+		final InputStream in = url.openStream();
+		final Document document = loadXML(in);
+		in.close();
+		return document;
 	}
 
 	/** Loads an XML document from the given input stream. */
