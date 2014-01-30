@@ -121,8 +121,7 @@ public class POM extends XML {
 					"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
 				final URL pomURL =
 					new URL("jar:" + location.toString() + "!/" + pomPath);
-				final InputStream pomStream = pomURL.openStream();
-				return new POM(pomStream);
+				return new POM(pomURL);
 			}
 			// look for the POM in the class's base directory
 			final File file = FileUtils.urlToFile(location);
