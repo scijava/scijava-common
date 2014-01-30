@@ -67,6 +67,9 @@ import org.xml.sax.SAXException;
  */
 public class XML {
 
+	/** Path to the XML document (e.g., a file or URL). */
+	private final String path;
+
 	/** The parsed XML DOM. */
 	private final Document doc;
 
@@ -77,37 +80,48 @@ public class XML {
 	public XML(final File file) throws ParserConfigurationException,
 		SAXException, IOException
 	{
-		this(loadXML(file));
+		this(file.getAbsolutePath(), loadXML(file));
 	}
 
 	/** Parses XML from the given URL. */
 	public XML(final URL url) throws ParserConfigurationException,
 		SAXException, IOException
 	{
-		this(loadXML(url));
+		this(url.getPath(), loadXML(url));
 	}
 
 	/** Parses XML from the given input stream. */
 	public XML(final InputStream in) throws ParserConfigurationException,
 		SAXException, IOException
 	{
-		this(loadXML(in));
+		this(null, loadXML(in));
 	}
 
 	/** Parses XML from the given string. */
 	public XML(final String s) throws ParserConfigurationException,
 		SAXException, IOException
 	{
-		this(loadXML(s));
+		this(null, loadXML(s));
 	}
 
 	/** Creates an XML object for an existing document. */
 	public XML(final Document doc) {
+		this(null, doc);
+	}
+
+	/** Creates an XML object for an existing document. */
+	public XML(final String path, final Document doc) {
+		this.path = path;
 		this.doc = doc;
 		xpath = XPathFactory.newInstance().newXPath();
 	}
 
 	// -- XML methods --
+
+	/** Gets the path to the XML document, or null if none. */
+	public String getPath() {
+		return path;
+	}
 
 	/** Gets the XML's DOM representation. */
 	public Document getDocument() {
