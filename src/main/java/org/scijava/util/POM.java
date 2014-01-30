@@ -57,6 +57,13 @@ public class POM extends XML {
 		super(file);
 	}
 
+	/** Parses a POM from the given URL. */
+	public POM(final URL url) throws ParserConfigurationException,
+		SAXException, IOException
+	{
+		super(url);
+	}
+
 	/** Parses a POM from the given input stream. */
 	public POM(final InputStream in) throws ParserConfigurationException,
 		SAXException, IOException
