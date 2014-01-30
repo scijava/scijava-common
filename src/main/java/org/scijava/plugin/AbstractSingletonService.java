@@ -65,9 +65,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 	@Override
 	public List<PT> getInstances() {
-		if (instances == null) {
-			createInstances();
-		}
+		if (instances == null) initInstances();
 		return instances;
 	}
 
@@ -93,18 +91,15 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 	// -- Helper methods --
 
-	private void createInstances() {
+	private synchronized void initInstances() {
+		if (instances != null) return;
+
 		instances =
 			Collections.unmodifiableList(filterInstances(getPluginService()
 				.createInstancesOfType(getPluginType())));
 
 		log.info("Found " + instances.size() + " " +
 			getPluginType().getSimpleName() + " plugins.");
-
-		// register singleton instances with the object service
-		for (final PT instance : instances) {
-			objectService.addObject(instance);
-		}
 	}
 
 	/**
