@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -48,7 +49,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Curtis Rueden
  */
-public class POM extends XML {
+public class POM extends XML implements Comparable<POM> {
 
 	/** Parses a POM from the given file. */
 	public POM(final File file) throws ParserConfigurationException,
@@ -58,8 +59,8 @@ public class POM extends XML {
 	}
 
 	/** Parses a POM from the given URL. */
-	public POM(final URL url) throws ParserConfigurationException,
-		SAXException, IOException
+	public POM(final URL url) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		super(url);
 	}
@@ -97,6 +98,22 @@ public class POM extends XML {
 		final String version = cdata("//project/version");
 		if (version != null) return version;
 		return cdata("//project/parent/version");
+	}
+
+	// -- Comparable methods --
+
+	@Override
+	public int compareTo(final POM pom) {
+		// sort by groupId first
+		final int gid = getGroupId().compareTo(pom.getGroupId());
+		if (gid != 0) return gid;
+
+		// sort by artifactId second
+		final int aid = getArtifactId().compareTo(pom.getArtifactId());
+		if (aid != 0) return aid;
+
+		// finally, sort by version
+		return compareVersions(getVersion(), pom.getVersion());
 	}
 
 	// -- Utility methods --
@@ -178,6 +195,69 @@ public class POM extends XML {
 		}
 
 		return poms;
+	}
+
+	/**
+	 * Compares two version strings.
+	 * <p>
+	 * Given the variation between versioning styles, there is no single
+	 * comparison method that can possibly be correct 100% of the time. So this
+	 * method works on a "best effort" basis; YMMV.
+	 * </p>
+	 * <p>
+	 * The algorithm is as follows:
+	 * </p>
+	 * <ul>
+	 * <li>Split on non-alphameric characters.</li>
+	 * <li>Compare each token one by one.</li>
+	 * <li>Comparison is numerical when possible (i.e., when an integer can be
+	 * parsed from the token), and lexicographic otherwise.</li>
+	 * <li>If one version string runs out of tokens, the version with additional
+	 * tokens remaining is considered <em>greater than</em> the version without
+	 * additional tokens.</li>
+	 * <li>There is one exception: if two version strings are identical except
+	 * that one has a suffix beginning with a dash ({@code -}), the version with
+	 * suffix will be considered <em>less than</em> the one without a suffix. The
+	 * reason for this is to accommodate the <a
+	 * href="http://semver.org/">SemVer</a> versioning scheme's usage of
+	 * "prerelease" version suffixes. For example, {@code 2.0.0} will compare
+	 * greater than {@code 2.0.0-beta-1}, whereas {@code 2.0.0} will compare less
+	 * than {@code 2.0.0.1}.</li>
+	 * </ul>
+	 * 
+	 * @return a negative integer, zero, or a positive integer as the first
+	 *         argument is less than, equal to, or greater than the second.
+	 * @see Comparator#compare(Object, Object)
+	 */
+	public static int compareVersions(final String v1, final String v2) {
+		final String[] t1 = v1.split("[^\\w]");
+		final String[] t2 = v2.split("[^\\w]");
+		final int size = Math.min(t1.length, t2.length);
+		for (int i = 0; i < size; i++) {
+			try {
+				final long n1 = Long.parseLong(t1[i]);
+				final long n2 = Long.parseLong(t2[i]);
+				if (n1 < n2) return -1;
+				if (n1 > n2) return 1;
+			}
+			catch (final NumberFormatException exc) {
+				final int result = t1[i].compareTo(t2[i]);
+				if (result != 0) return result;
+			}
+		}
+		if (t1.length == t2.length) return 0; // versions match
+
+		// check for SemVer prerelease versions
+		if (v1.startsWith(v2) && v1.charAt(v2.length()) == '-') {
+			// v1 is a prerelease version of v2
+			return -1;
+		}
+		if (v2.startsWith(v1) && v2.charAt(v1.length()) == '-') {
+			// v2 is a prerelease version of v1
+			return 1;
+		}
+
+		return t1.length < t2.length ? -1 : 1;
 	}
 
 }
