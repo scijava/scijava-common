@@ -42,7 +42,21 @@ import org.scijava.service.Service;
  */
 public interface Contextual {
 
-	/** Gets the application context to which the object belongs. */
+	/**
+	 * Gets the application context to which the object belongs.
+	 * 
+	 * @see #getContext()
+	 * @throws NullContextException if the context has not yet been set via
+	 *           {@link #setContext(Context)}.
+	 */
+	Context context();
+
+	/**
+	 * Gets the application context to which the object belongs, or null if
+	 * {@link #setContext(Context)} has not yet been called on this object.
+	 * 
+	 * @see #context()
+	 */
 	Context getContext();
 
 	/**
