@@ -41,8 +41,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.scijava.AbstractContextual;
 import org.scijava.Context;
-import org.scijava.Contextual;
 import org.scijava.app.event.StatusEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.plugin.Parameter;
@@ -52,7 +52,7 @@ public class DefaultStatusServiceTest {
 	StatusListener statusListener;
 	BlockingQueue<StatusEvent> queue;
 	StatusService statusService;
-	class StatusListener implements Contextual {
+	class StatusListener extends AbstractContextual {
 		int progress;
 		int maximum;
 		String status;
@@ -60,15 +60,6 @@ public class DefaultStatusServiceTest {
 		@Parameter
 		StatusService statusService;
 		
-		@Override
-		public Context getContext() {
-			return context;
-		}
-
-		@Override
-		public void setContext(Context context) {
-			context.inject(this);
-		}
 		@EventHandler
 		void eventHandler(StatusEvent e) {
 			try {
