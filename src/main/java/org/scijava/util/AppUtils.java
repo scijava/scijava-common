@@ -130,14 +130,15 @@ public final class AppUtils {
 		final String baseSubdirectory)
 	{
 		final URL location = ClassUtils.getLocation(c);
+		File baseFile;
 		try {
-			File baseFile = FileUtils.urlToFile(location);
-			return getBaseDirectory(baseFile, baseSubdirectory);
+			baseFile = FileUtils.urlToFile(location);
 		}
 		catch (final IllegalArgumentException exc) {
-			// URL cannot be converted to a file.
-			return null;
+			// URL can't be converted to a file.
+			baseFile = null;
 		}
+		return getBaseDirectory(baseFile, baseSubdirectory);
 	}
 
 	/**
