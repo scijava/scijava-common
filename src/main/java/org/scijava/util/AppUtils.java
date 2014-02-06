@@ -129,15 +129,22 @@ public final class AppUtils {
 	public static File getBaseDirectory(final Class<?> c,
 		final String baseSubdirectory)
 	{
+		// see: http://stackoverflow.com/a/12733172/1207769
+
+		// step 1: convert Class to URL
 		final URL location = ClassUtils.getLocation(c);
+
+		// step 2: convert URL to File
 		File baseFile;
 		try {
 			baseFile = FileUtils.urlToFile(location);
 		}
 		catch (final IllegalArgumentException exc) {
-			// URL can't be converted to a file.
+			// URL can't be converted to a file
 			baseFile = null;
 		}
+
+		// step 3: get the file's base directory
 		return getBaseDirectory(baseFile, baseSubdirectory);
 	}
 
