@@ -99,6 +99,7 @@ public interface Gateway extends Contextual {
 	 * 
 	 * @param serviceClass the requested {@link Service}
 	 * @return The singleton instance of the given class
+	 * @throws NullContextException if the application context is not set.
 	 * @throws NoSuchServiceException if there is no service of the given class.
 	 */
 	<S extends Service> S get(Class<S> serviceClass);
@@ -109,8 +110,9 @@ public interface Gateway extends Contextual {
 	 * 
 	 * @param serviceClassName name of the requested {@link Service}
 	 * @return The singleton instance of the requested {@link Service}
+	 * @throws NullContextException if the application context is not set.
 	 * @throws NoSuchServiceException if there is no service matching
-	 *           serviceClassName.
+	 *           {@code serviceClassName}.
 	 */
 	Service get(final String serviceClassName);
 
