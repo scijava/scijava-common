@@ -189,6 +189,41 @@ public class Context implements Disposable {
 	}
 
 	/**
+	 * Gets the service of the given class.
+	 * 
+	 * @throws NoSuchServiceException if the context does not have the requested
+	 *           service.
+	 */
+	public <S extends Service> S service(final Class<S> c) {
+		final S service = getService(c);
+		if (service == null) {
+			throw new NoSuchServiceException("Service " + c.getName() + " not found.");
+		}
+		return service;
+	}
+
+	/**
+	 * Gets the service of the given class name (useful for scripts).
+	 * 
+	 * @throws IllegalArgumentException if the class does not exist, or is not a
+	 *           service class.
+	 * @throws NoSuchServiceException if the context does not have the requested
+	 *           service.
+	 */
+	public Service service(final String className) {
+		final Class<?> c = ClassUtils.loadClass(className);
+		if (c == null) {
+			throw new IllegalArgumentException("No such class: " + className);
+		}
+		if (!Service.class.isAssignableFrom(c)) {
+			throw new IllegalArgumentException("Not a service class: " + c.getName());
+		}
+		@SuppressWarnings("unchecked")
+		final Class<? extends Service> serviceClass = (Class<? extends Service>) c;
+		return service(serviceClass);
+	}
+
+	/**
 	 * Gets the service of the given class, or null if there is no matching
 	 * service.
 	 */
