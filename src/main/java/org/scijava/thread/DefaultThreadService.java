@@ -113,7 +113,7 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public Thread newThread(final Runnable r) {
-		final String contextHash = Integer.toHexString(getContext().hashCode());
+		final String contextHash = Integer.toHexString(context().hashCode());
 		final String threadName =
 			"SciJava-" + contextHash + "-Thread-" + nextThread++;
 		return new Thread(r, threadName);
