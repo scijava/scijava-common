@@ -70,16 +70,12 @@ public abstract class AbstractGateway extends AbstractContextual implements
 
 	@Override
 	public <S extends Service> S get(final Class<S> serviceClass) {
-		final S service = getContext().getService(serviceClass);
-		checkNull(service, serviceClass.getName());
-		return service;
+		return context().service(serviceClass);
 	}
 
 	@Override
 	public Service get(final String serviceClassName) {
-		final Service service = getContext().getService(serviceClassName);
-		checkNull(service, serviceClassName);
-		return service;
+		return context().service(serviceClassName);
 	}
 
 	// -- Gateway methods - services --
@@ -144,15 +140,6 @@ public abstract class AbstractGateway extends AbstractContextual implements
 	@Override
 	public String getInfo(boolean mem) {
 		return getApp().getInfo(mem);
-	}
-
-	// -- Helper methods --
-
-	/** Throws {@link NoSuchServiceException} if the service wasn't found. */
-	private void checkNull(final Service service, final String name) {
-		if (service == null) {
-			throw new NoSuchServiceException("Service " + name + " not found.");
-		}
 	}
 
 }
