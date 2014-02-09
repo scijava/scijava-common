@@ -38,8 +38,12 @@ package org.scijava;
  */
 public class NullContextException extends RuntimeException {
 
+	private static final String DEFAULT_MESSAGE =
+		"Before attempting to use this object, "
+			+ "please set its context by calling the setContext(...) method.";
+
 	public NullContextException() {
-		super();
+		this(DEFAULT_MESSAGE);
 	}
 
 	public NullContextException(final String s) {
@@ -51,7 +55,7 @@ public class NullContextException extends RuntimeException {
 	}
 
 	public NullContextException(final Throwable cause) {
-		super(cause);
+		this(DEFAULT_MESSAGE, cause);
 	}
 
 }
