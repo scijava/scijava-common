@@ -198,21 +198,12 @@ public class Context implements Disposable {
 
 	/** Gets the service of the given class name (useful for scripts). */
 	public Service getService(final String className) {
-		try {
-			final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			final Class<?> c = loader.loadClass(className);
-			if (!Service.class.isAssignableFrom(c)) {
-				// not a service class
-				return null;
-			}
-			@SuppressWarnings("unchecked")
-			final Class<? extends Service> serviceClass =
-				(Class<? extends Service>) c;
-			return getService(serviceClass);
-		}
-		catch (final ClassNotFoundException exc) {
-			return null;
-		}
+		final Class<?> c = ClassUtils.loadClass(className);
+		if (c == null) return null;
+		if (!Service.class.isAssignableFrom(c)) return null; // not a service class
+		@SuppressWarnings("unchecked")
+		final Class<? extends Service> serviceClass = (Class<? extends Service>) c;
+		return getService(serviceClass);
 	}
 
 	/**
