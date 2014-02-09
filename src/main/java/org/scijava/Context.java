@@ -188,7 +188,10 @@ public class Context implements Disposable {
 		return pluginIndex;
 	}
 
-	/** Gets the service of the given class. */
+	/**
+	 * Gets the service of the given class, or null if there is no matching
+	 * service.
+	 */
 	public <S extends Service> S getService(final Class<S> c) {
 		return serviceIndex.getService(c);
 	}
