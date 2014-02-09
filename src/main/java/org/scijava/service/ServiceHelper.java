@@ -149,13 +149,14 @@ public class ServiceHelper extends AbstractContextual {
 			loadService(serviceClass);
 
 			if (LogService.class.isAssignableFrom(serviceClass)) {
-				final LogService logService = getContext().getService(LogService.class);
+				final LogService logService = context().getService(LogService.class);
 				if (logService != null) log = logService;
 			}
 		}
-		final EventService eventService =
-			getContext().getService(EventService.class);
-		if (eventService != null) eventService.publishLater(new ServicesLoadedEvent());
+		final EventService eventService = context().getService(EventService.class);
+		if (eventService != null) {
+			eventService.publishLater(new ServicesLoadedEvent());
+		}
 	}
 
 	/**
@@ -198,7 +199,7 @@ public class ServiceHelper extends AbstractContextual {
 		final boolean required)
 	{
 		// if a compatible service already exists, return it
-		final S service = getContext().getService(c);
+		final S service = context().getService(c);
 		if (service != null) return service;
 
 		// scan the class pool for a suitable match
@@ -241,7 +242,7 @@ public class ServiceHelper extends AbstractContextual {
 			boolean debug = log.isDebug();
 			if (debug) start = System.currentTimeMillis();
 			final S service = createServiceRecursively(c);
-			getContext().getServiceIndex().add(service);
+			context().getServiceIndex().add(service);
 			if (debug) end = System.currentTimeMillis();
 			log.info("Created service: " + name);
 			if (debug) {
@@ -286,7 +287,7 @@ public class ServiceHelper extends AbstractContextual {
 			f.setAccessible(true); // expose private fields
 
 			final Class<?> type = f.getType();
-			if (type.isAssignableFrom(getContext().getClass())) {
+			if (type.isAssignableFrom(context().getClass())) {
 				// populate annotated Context field
 				ClassUtils.setValue(f, service, getContext());
 				continue;
@@ -298,7 +299,7 @@ public class ServiceHelper extends AbstractContextual {
 			@SuppressWarnings("unchecked")
 			final Class<? extends Service> serviceType =
 				(Class<? extends Service>) type;
-			Service s = getContext().getService(serviceType);
+			Service s = context().getService(serviceType);
 			if (s == null) {
 				// recursively obtain needed service
 				final boolean required = f.getAnnotation(Parameter.class).required();
@@ -319,7 +320,7 @@ public class ServiceHelper extends AbstractContextual {
 	{
 		// ask the plugin index for the (sorted) list of available services
 		final List<PluginInfo<Service>> services =
-			getContext().getPluginIndex().getPlugins(Service.class);
+			context().getPluginIndex().getPlugins(Service.class);
 
 		for (final PluginInfo<Service> info : services) {
 			try {

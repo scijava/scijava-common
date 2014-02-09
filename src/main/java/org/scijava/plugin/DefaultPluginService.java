@@ -234,7 +234,7 @@ public class DefaultPluginService extends AbstractService implements
 	{
 		try {
 			final PT p = info.createInstance();
-			getContext().inject(p);
+			context().inject(p);
 			return p;
 		}
 		catch (final Throwable t) {
@@ -247,7 +247,7 @@ public class DefaultPluginService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		pluginIndex = getContext().getPluginIndex();
+		pluginIndex = context().getPluginIndex();
 
 		log.info("Found " + pluginIndex.size() + " plugins.");
 		if (log.isDebug()) {

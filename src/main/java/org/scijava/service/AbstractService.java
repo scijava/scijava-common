@@ -71,8 +71,7 @@ public abstract class AbstractService extends AbstractRichPlugin implements
 		// TODO: Consider removing this method in scijava-common 3.0.0.
 		// Instead, the ServiceHelper could just invoke the lines below directly,
 		// and there would be one less boilerplate Service method to implement.
-		final EventService eventService =
-			getContext().getService(EventService.class);
+		final EventService eventService = context().getService(EventService.class);
 		if (eventService != null) eventService.subscribe(this);
 	}
 

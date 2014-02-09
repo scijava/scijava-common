@@ -53,6 +53,12 @@ public abstract class AbstractContextual implements Contextual {
 	// -- Contextual methods --
 
 	@Override
+	public Context context() {
+		if (context == null) throw new NullContextException();
+		return context;
+	}
+
+	@Override
 	public Context getContext() {
 		return context;
 	}

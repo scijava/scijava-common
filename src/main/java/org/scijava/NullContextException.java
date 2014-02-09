@@ -31,50 +31,31 @@
 
 package org.scijava;
 
-import org.scijava.plugin.Parameter;
-import org.scijava.service.Service;
-
 /**
- * An object that belongs to a SciJava application context.
+ * An exception thrown when a {@link Context} is null, but shouldn't be.
  * 
- * @author Lee Kamentsky
  * @author Curtis Rueden
  */
-public interface Contextual {
+public class NullContextException extends RuntimeException {
 
-	/**
-	 * Gets the application context to which the object belongs.
-	 * 
-	 * @see #getContext()
-	 * @throws NullContextException if the context has not yet been set via
-	 *           {@link #setContext(Context)}.
-	 */
-	Context context();
+	private static final String DEFAULT_MESSAGE =
+		"Before attempting to use this object, "
+			+ "please set its context by calling the setContext(...) method.";
 
-	/**
-	 * Gets the application context to which the object belongs, or null if
-	 * {@link #setContext(Context)} has not yet been called on this object.
-	 * 
-	 * @see #context()
-	 */
-	Context getContext();
+	public NullContextException() {
+		this(DEFAULT_MESSAGE);
+	}
 
-	/**
-	 * Sets the application context to which the object belongs.
-	 * <p>
-	 * Typically this method simply delegates to {@link Context#inject(Object)},
-	 * and should be called only once to populate the context. Most contextual
-	 * objects do not support later alteration of the context, and will throw
-	 * {@link IllegalStateException} if this method is invoked again.
-	 * </p>
-	 * 
-	 * @see Context#inject(Object)
-	 * @see AbstractContextual for an example of how to implement this interface
-	 * @throws IllegalStateException If the object already has a context.
-	 * @throws IllegalArgumentException If the object has a required
-	 *           {@link Service} parameter (see {@link Parameter#required()})
-	 *           which is not available from the context.
-	 */
-	void setContext(Context context);
+	public NullContextException(final String s) {
+		super(s);
+	}
+
+	public NullContextException(final String s, final Throwable cause) {
+		super(s, cause);
+	}
+
+	public NullContextException(final Throwable cause) {
+		this(DEFAULT_MESSAGE, cause);
+	}
 
 }
