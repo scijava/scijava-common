@@ -70,7 +70,7 @@ public class Context implements Disposable {
 		this(false);
 	}
 
-  /**
+	/**
 	 * Creates a new SciJava application context.
 	 * 
 	 * @param empty If true, the context will be empty; otherwise, it will be
@@ -120,7 +120,7 @@ public class Context implements Disposable {
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
 		this(serviceClasses, new PluginIndex());
 	}
-	
+
 	/**
 	 * Creates a new SciJava application with the specified PluginIndex. This
 	 * allows a base set of available plugins to be defined, and is useful when
@@ -140,7 +140,7 @@ public class Context implements Disposable {
 	 */
 	@SuppressWarnings("unchecked")
 	public Context(final PluginIndex pluginIndex) {
-		this(Arrays.<Class<? extends Service>>asList(Service.class), pluginIndex);
+		this(Arrays.<Class<? extends Service>> asList(Service.class), pluginIndex);
 	}
 
 	/**
@@ -174,8 +174,7 @@ public class Context implements Disposable {
 		this.pluginIndex = pluginIndex;
 		pluginIndex.discover();
 
-		final ServiceHelper serviceHelper =
-			new ServiceHelper(this, serviceClasses);
+		final ServiceHelper serviceHelper = new ServiceHelper(this, serviceClasses);
 		serviceHelper.loadServices();
 	}
 
@@ -197,13 +196,13 @@ public class Context implements Disposable {
 	/** Gets the service of the given class name (useful for scripts). */
 	public Service getService(final String className) {
 		try {
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			@SuppressWarnings("unchecked")
 			final Class<Service> serviceClass =
 				(Class<Service>) loader.loadClass(className);
 			return getService(serviceClass);
 		}
-		catch (ClassNotFoundException exc) {
+		catch (final ClassNotFoundException exc) {
 			return null;
 		}
 	}
@@ -291,7 +290,8 @@ public class Context implements Disposable {
 		final Class<? extends Service> serviceType)
 	{
 		final String nl = System.getProperty("line.separator");
-		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		final ClassLoader classLoader =
+			Thread.currentThread().getContextClassLoader();
 		final StringBuilder msg =
 			new StringBuilder("Required service is missing: " +
 				serviceType.getName() + nl);
