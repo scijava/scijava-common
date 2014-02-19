@@ -38,7 +38,9 @@ import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
+import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
+import org.scijava.plugin.RichPlugin;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
@@ -86,12 +88,19 @@ import org.scijava.thread.ThreadService;
  * a {@link NoSuchServiceException} is thrown, which facilitates appropriate
  * (but optional) handling of missing services.
  * </p>
+ * <p>
+ * Gateways discoverable at runtime must implement this interface and be
+ * annotated with @{@link Gateway} with attribute {@link Plugin#type()} =
+ * {@link Gateway}.class. While it possible to create a gateway merely by
+ * implementing this interface, it is encouraged to instead extend
+ * {@link AbstractGateway}, for convenience.
+ * </p>
  * 
  * @see Context
  * @author Mark Hiner
  * @author Curtis Rueden
  */
-public interface Gateway extends Contextual {
+public interface Gateway extends RichPlugin {
 
 	/**
 	 * Returns an implementation of the requested {@link Service}, if it exists in

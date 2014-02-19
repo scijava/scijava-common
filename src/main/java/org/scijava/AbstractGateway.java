@@ -39,6 +39,7 @@ import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
+import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
@@ -49,7 +50,7 @@ import org.scijava.thread.ThreadService;
  * @author Mark Hiner
  * @author Curtis Rueden
  */
-public abstract class AbstractGateway extends AbstractContextual implements
+public abstract class AbstractGateway extends AbstractRichPlugin implements
 	Gateway
 {
 
