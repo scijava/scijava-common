@@ -61,7 +61,7 @@ public abstract class AbstractGateway extends AbstractContextual implements
 		this(SciJavaApp.NAME, null);
 	}
 
-	public AbstractGateway(String appName, Context context) {
+	public AbstractGateway(final String appName, final Context context) {
 		this.appName = appName;
 		if (context != null) setContext(context);
 	}
@@ -138,7 +138,7 @@ public abstract class AbstractGateway extends AbstractContextual implements
 	}
 
 	@Override
-	public String getInfo(boolean mem) {
+	public String getInfo(final boolean mem) {
 		return getApp().getInfo(mem);
 	}
 
