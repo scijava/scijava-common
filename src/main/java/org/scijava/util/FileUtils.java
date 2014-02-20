@@ -501,7 +501,7 @@ public final class FileUtils {
 							result.add(file.toURI().toURL());
 						}
 						if (recurse && file.isDirectory()) {
-							appendContents(result, file.toURI().toURL());
+							appendContents(result, file.toURI().toURL(), recurse, filesOnly);
 						}
 					}
 					catch (final MalformedURLException e) {
