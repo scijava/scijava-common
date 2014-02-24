@@ -32,6 +32,7 @@
 package org.scijava.annotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -40,12 +41,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.junit.Test;
@@ -87,6 +91,26 @@ public class DirectoryIndexerTest {
 			readIndex(Complex.class, DirectoryIndexerTest.class.getClassLoader());
 
 		testDefaultAnnotations(map);
+	}
+
+	@Test
+	public void testRepeatedClassPathElements() throws Exception {
+		final String suffix = getResourcePath(AnnotatedA.class);
+		final String classURL =
+			getClass().getResource("/" + suffix).toString();
+		final URL classPathURL = new URL(classURL.substring(0,
+			classURL.length() - suffix.length()));
+		final ClassLoader loader = new URLClassLoader(new URL[] {
+			classPathURL, classPathURL
+		});
+		final Set<String> seen = new HashSet<String>();
+		for (final IndexItem<Simple> item :
+				Index.load(Simple.class, loader)) {
+			final String name = item.className();
+			assertFalse(seen.contains(name));
+			seen.add(name);
+		}
+		assertEquals(2, seen.size());
 	}
 
 	public static void
