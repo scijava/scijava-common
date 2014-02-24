@@ -35,10 +35,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Makes the annotation indexes accessible.
@@ -105,10 +107,12 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		private Enumeration<URL> urls;
 		private IndexReader indexReader;
 		private IndexItem<A> next;
+		private Set<URL> seen;
 
 		private Map<String, URL> legacyURLs;
 
 		public IndexItemIterator(final Class<A> annotation) {
+			seen = new HashSet<URL>();
 			try {
 				legacyURLs = new LinkedHashMap<String, URL>();
 				final Enumeration<URL> legacy =
@@ -165,20 +169,22 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 			if (urls == null) {
 				return null;
 			}
-			else if (!urls.hasMoreElements()) {
-				if (legacyURLs != null && !legacyURLs.isEmpty()) {
-					final Entry<String, URL> entry =
-						legacyURLs.entrySet().iterator().next();
-					legacyURLs.remove(entry.getKey());
-					return IndexReader.getLegacyReader(entry.getValue().openStream());
+			while (urls.hasMoreElements()) {
+				final URL url = urls.nextElement();
+				if (seen.contains(url)) continue;
+				if (legacyURLs != null) {
+					legacyURLs.remove(url.toString());
 				}
-				return null;
+				seen.add(url);
+				return new IndexReader(url.openStream());
 			}
-			final URL url = urls.nextElement();
-			if (legacyURLs != null) {
-				legacyURLs.remove(url.toString());
+			if (legacyURLs != null && !legacyURLs.isEmpty()) {
+				final Entry<String, URL> entry =
+					legacyURLs.entrySet().iterator().next();
+				legacyURLs.remove(entry.getKey());
+				return IndexReader.getLegacyReader(entry.getValue().openStream());
 			}
-			return new IndexReader(url.openStream());
+			return null;
 		}
 
 		public boolean hasNext() {
