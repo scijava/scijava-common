@@ -112,7 +112,9 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * @throws IOException
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
-		if (!(loader instanceof URLClassLoader)) {
+		if (loader == null || loader == ClassLoader.getSystemClassLoader() ||
+			!(loader instanceof URLClassLoader))
+		{
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
@@ -123,6 +125,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			}
 			helper.maybeIndex(url, loader);
 		}
+		updateAnnotationIndex(loader.getParent());
 	}
 
 	private void maybeIndex(final URL url, final ClassLoader loader) {
