@@ -37,6 +37,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -390,6 +391,11 @@ public class ConversionUtils {
 
 		if (type instanceof ParameterizedType) {
 			return getClass(((ParameterizedType) type).getRawType());
+		}
+
+		if (type instanceof TypeVariable<?>) {
+			final Type[] types = ((TypeVariable<?>) type).getBounds();
+			if (types.length == 1) return getClass(types[0]);
 		}
 
 		return null;
