@@ -118,7 +118,14 @@ public class EclipseHelper extends DirectoryIndexer {
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
+		boolean first = true;
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
+			if (first) {
+				if (!"file".equals(url.getProtocol()) || !url.getPath().endsWith("/")) {
+					return;
+				}
+				first = false;
+			}
 			if (url.toString().endsWith("/./")) {
 				// Eclipse never adds "." to the class path
 				break;
