@@ -112,13 +112,20 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * @throws IOException
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
-		if (loader == null || loader == ClassLoader.getSystemClassLoader() ||
+		if (loader == null ||
 			!(loader instanceof URLClassLoader))
 		{
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
+		boolean first = true;
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
+			if (first) {
+				if (!"file".equals(url.getProtocol()) || !url.getPath().endsWith("/")) {
+					return;
+				}
+				first = false;
+			}
 			if (url.toString().endsWith("/./")) {
 				// Eclipse never adds "." to the class path
 				break;
