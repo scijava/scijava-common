@@ -41,6 +41,7 @@ import org.scijava.InstantiableException;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
+import org.scijava.UIDetails;
 import org.scijava.input.Accelerator;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
@@ -176,7 +177,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		}
 		setPluginType(pluginType);
 		setMenuPath(null);
-		setMenuRoot(Plugin.APPLICATION_MENU_ROOT);
+		setMenuRoot(UIDetails.APPLICATION_MENU_ROOT);
 		if (annotation != null) {
 			this.annotation = annotation;
 			populateValues();
