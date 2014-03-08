@@ -133,7 +133,9 @@ public class EclipseHelper extends DirectoryIndexer {
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
 			debug("Checking URL: " + url);
 			if (first) {
-				if (!"file".equals(url.getProtocol()) || !url.getPath().endsWith("/")) {
+				if (!"file".equals(url.getProtocol()) ||
+					(!url.getPath().endsWith("/") && !url.getPath().contains("surefire")))
+				{
 					debug("Not Eclipse because first entry is: " + url);
 					return;
 				}
