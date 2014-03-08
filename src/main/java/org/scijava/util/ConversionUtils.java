@@ -241,6 +241,36 @@ public class ConversionUtils {
 	 * Checks whether objects of the given class can be converted to the specified
 	 * type.
 	 * 
+	 * @see #convert(Object, Type)
+	 */
+	public static boolean canConvert(final Class<?> src, final Type dest) {
+		// NB: Regardless of whether the destination type is an array or collection,
+		// we still want to cast directly if doing so is possible. But note that in
+		// general, this check does not detect cases of incompatible generic
+		// parameter types. If this limitation becomes a problem in the future we
+		// can extend the logic here to provide additional signatures of canCast
+		// which operate on Types in general rather than only Classes. However, the
+		// logic could become complex very quickly in various subclassing cases,
+		// generic parameters resolved vs. propagated, etc.
+		final Class<?> c = getClass(dest);
+		if (c != null && canCast(src, c)) return true;
+
+		// Handle array types, including generic array types.
+		if (isArray(dest)) return true;
+
+		// Handle parameterized collection types.
+		if (dest instanceof ParameterizedType && isCollection(dest)) {
+			return createCollection(getClass(dest)) != null;
+		}
+
+		// This wasn't a collection or array, so convert it as a single element.
+		return canConvert(src, getClass(dest));
+	}
+
+	/**
+	 * Checks whether objects of the given class can be converted to the specified
+	 * type.
+	 * 
 	 * @see #convert(Object, Class)
 	 */
 	public static boolean canConvert(final Class<?> src, final Class<?> dest) {
