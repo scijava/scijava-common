@@ -97,6 +97,15 @@ public class EclipseHelper extends DirectoryIndexer {
 
 	static Set<URL> indexed = new HashSet<URL>();
 
+	private static boolean debug =
+		"debug".equals(System.getProperty("scijava.log.level"));
+
+	private static void debug(final String message) {
+		if (debug) {
+			System.err.println(message);
+		}
+	}
+
 	/**
 	 * Updates the annotation index in the current Eclipse project.
 	 * <p>
@@ -112,16 +121,20 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * @throws IOException
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
+		debug("Checking class loader: " + loader);
 		if (loader == null ||
 			!(loader instanceof URLClassLoader))
 		{
+			debug("Not an URLClassLoader: " + loader);
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
 		boolean first = true;
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
+			debug("Checking URL: " + url);
 			if (first) {
 				if (!"file".equals(url.getProtocol()) || !url.getPath().endsWith("/")) {
+					debug("Not Eclipse because first entry is: " + url);
 					return;
 				}
 				first = false;
@@ -143,10 +156,12 @@ public class EclipseHelper extends DirectoryIndexer {
 			indexed.add(url);
 		}
 		if (!"file".equals(url.getProtocol())) {
+			debug("Not a file URL: " + url);
 			return;
 		}
 		String path = url.getFile();
 		if (!path.startsWith("/")) {
+			debug("Not an absolute file URL: " + url);
 			return;
 		}
 		if (path.endsWith(".jar")) {
@@ -189,7 +204,10 @@ public class EclipseHelper extends DirectoryIndexer {
 	}
 
 	private void index(File directory, ClassLoader loader) {
+		debug("Directory: " + directory);
 		if (!directory.canWrite() || upToDate(directory)) {
+			debug("can write: " + directory.canWrite()
+				+ ", up-to-date: " + upToDate(directory));
 			return;
 		}
 		System.err.println("[ECLIPSE HELPER] Indexing annotations...");
