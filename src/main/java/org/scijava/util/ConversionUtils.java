@@ -315,6 +315,16 @@ public class ConversionUtils {
 	/**
 	 * Checks whether the given object can be converted to the specified type.
 	 * 
+	 * @see #convert(Object, Type)
+	 */
+	public static boolean canConvert(final Object src, final Type dest) {
+		if (src == null) return true;
+		return canConvert(src.getClass(), dest);
+	}
+
+	/**
+	 * Checks whether the given object can be converted to the specified type.
+	 * 
 	 * @see #convert(Object, Class)
 	 */
 	public static boolean canConvert(final Object src, final Class<?> dest) {
