@@ -31,39 +31,89 @@
 
 package org.scijava;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.scijava.util.StringMaker;
+
 /**
- * An interface defining basic characteristics including name, label,
- * description, and a table of key/value pairs.
+ * Abstract superclass of {@link BasicDetails} implementations.
  * 
  * @author Curtis Rueden
  */
-public interface BasicDetails {
+public abstract class AbstractBasicDetails implements BasicDetails {
 
-	/** Gets the unique name of the object. */
-	String getName();
+	/** Unique name of the object. */
+	private String name;
 
-	/** Gets the name to appear in a UI, if applicable. */
-	String getLabel();
+	/** Human-readable label for describing the object. */
+	private String label;
 
-	/** Gets a string describing the object. */
-	String getDescription();
+	/** String describing the object in detail. */
+	private String description;
 
-	/** Returns true iff the given key is defined. */
-	public boolean is(String key);
+	/** Table of extra key/value pairs. */
+	private Map<String, String> values = new HashMap<String, String>();
 
-	/** Gets the value of the given key, or null if undefined. */
-	public String get(String key);
+	// -- Object methods --
 
-	/** Sets the unique name of the object. */
-	void setName(String name);
+	@Override
+	public String toString() {
+		final StringMaker sm = new StringMaker();
+		sm.append("name", name);
+		sm.append("label", label);
+		sm.append("description", description);
+		for (final String key : values.keySet()) {
+			sm.append(key, values.get(key));
+		}
+		return sm.toString();
+	}
 
-	/** Sets the name to appear in a UI, if applicable. */
-	void setLabel(String label);
+	// -- BasicDetails methods --
 
-	/** Sets a string describing the object. */
-	void setDescription(String description);
+	@Override
+	public String getName() {
+		return name;
+	}
 
-	/** Sets the value of the given key. */
-	public void set(final String key, final String value);
+	@Override
+	public String getLabel() {
+		return label;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public boolean is(final String key) {
+		return values.containsKey(key);
+	}
+
+	@Override
+	public String get(final String key) {
+		return values.get(key);
+	}
+
+	@Override
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	@Override
+	public void setLabel(final String label) {
+		this.label = label;
+	}
+
+	@Override
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	@Override
+	public void set(String key, String value) {
+		values.put(key, value);
+	}
 
 }

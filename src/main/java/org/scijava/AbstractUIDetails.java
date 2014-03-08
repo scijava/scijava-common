@@ -40,16 +40,7 @@ import org.scijava.util.StringMaker;
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractUIDetails implements UIDetails {
-
-	/** Unique name of the object. */
-	private String name;
-
-	/** Human-readable label for describing the object. */
-	private String label;
-
-	/** String describing the object in detail. */
-	private String description;
+public abstract class AbstractUIDetails extends AbstractBasicDetails implements UIDetails {
 
 	/** Path to this object's suggested position in the menu structure. */
 	private MenuPath menuPath;
@@ -83,9 +74,7 @@ public abstract class AbstractUIDetails implements UIDetails {
 	@Override
 	public String toString() {
 		final StringMaker sm = new StringMaker();
-		sm.append("name", name);
-		sm.append("label", label);
-		sm.append("description", description);
+		sm.append(super.toString());
 		sm.append("menu", menuPath == null ? null : menuPath.getMenuString());
 		sm.append("iconPath", iconPath);
 		sm.append("priority", priority, Integer.MAX_VALUE);
@@ -102,7 +91,7 @@ public abstract class AbstractUIDetails implements UIDetails {
 	@Override
 	public String getTitle() {
 		// use object label, if available
-		if (label != null && !label.isEmpty()) return label;
+		if (getLabel() != null && !getLabel().isEmpty()) return getLabel();
 
 		// use name of leaf menu item, if available
 		if (menuPath != null && menuPath.size() > 0) {
@@ -112,7 +101,7 @@ public abstract class AbstractUIDetails implements UIDetails {
 		}
 
 		// use object name, if available
-		if (name != null && !name.isEmpty()) return name;
+		if (getName() != null && !getName().isEmpty()) return getName();
 
 		// use class name as a last resort
 		return getClass().getSimpleName();
@@ -201,38 +190,6 @@ public abstract class AbstractUIDetails implements UIDetails {
 	@Override
 	public void setSelected(final boolean selected) {
 		this.selected = selected;
-	}
-
-	// -- BasicDetails methods --
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String getLabel() {
-		return label;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	@Override
-	public void setLabel(final String label) {
-		this.label = label;
-	}
-
-	@Override
-	public void setDescription(final String description) {
-		this.description = description;
 	}
 
 	// -- Prioritized methods --
