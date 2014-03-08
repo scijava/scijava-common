@@ -73,10 +73,10 @@ public class ConversionUtils {
 	 * provided for {@link Set} and {@link List} subclasses.
 	 * </p>
 	 * 
-	 * @param value The object to convert.
-	 * @param type Type to which the object should be converted.
+	 * @param src The object to convert.
+	 * @param dest Type to which the object should be converted.
 	 */
-	public static Object convert(final Object value, final Type type) {
+	public static Object convert(final Object src, final Type dest) {
 		// NB: Regardless of whether the destination type is an array or collection,
 		// we still want to cast directly if doing so is possible. But note that in
 		// general, this check does not detect cases of incompatible generic
@@ -85,21 +85,21 @@ public class ConversionUtils {
 		// which operate on Types in general rather than only Classes. However, the
 		// logic could become complex very quickly in various subclassing cases,
 		// generic parameters resolved vs. propagated, etc.
-		final Class<?> c = getClass(type);
-		if (c != null && canCast(value, c)) return cast(value, c);
+		final Class<?> c = getClass(dest);
+		if (c != null && canCast(src, c)) return cast(src, c);
 
 		// Handle array types, including generic array types.
-		if (isArray(type)) {
-			return convertToArray(value, getComponentClass(type));
+		if (isArray(dest)) {
+			return convertToArray(src, getComponentClass(dest));
 		}
 
 		// Handle parameterized collection types.
-		if (type instanceof ParameterizedType && isCollection(type)) {
-			return convertToCollection(value, (ParameterizedType) type);
+		if (dest instanceof ParameterizedType && isCollection(dest)) {
+			return convertToCollection(src, (ParameterizedType) dest);
 		}
 
 		// This wasn't a collection or array, so convert it as a single element.
-		return convert(value, getClass(type));
+		return convert(src, getClass(dest));
 	}
 
 	/**
@@ -112,54 +112,54 @@ public class ConversionUtils {
 	 * type does not have an appropriate constructor, returns null.
 	 * 
 	 * @param <T> Type to which the object should be converted.
-	 * @param value The object to convert.
-	 * @param type Type to which the object should be converted.
+	 * @param src The object to convert.
+	 * @param dest Type to which the object should be converted.
 	 */
-	public static <T> T convert(final Object value, final Class<T> type) {
+	public static <T> T convert(final Object src, final Class<T> dest) {
 		// TODO: Would be better to split up this method into some helpers.
-		if (type == null) return null;
-		if (value == null) return getNullValue(type);
+		if (dest == null) return null;
+		if (src == null) return getNullValue(dest);
 
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<T> saneType = getNonprimitiveType(type);
+		final Class<T> saneDest = getNonprimitiveType(dest);
 
 		// cast the existing object, if possible
-		if (canCast(value, saneType)) return cast(value, saneType);
+		if (canCast(src, saneDest)) return cast(src, saneDest);
 
 		// special case for conversion from number to number
-		if (value instanceof Number) {
-			final Number number = (Number) value;
-			if (saneType == Byte.class) {
+		if (src instanceof Number) {
+			final Number number = (Number) src;
+			if (saneDest == Byte.class) {
 				final Byte result = number.byteValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
 				return typedResult;
 			}
-			if (saneType == Double.class) {
+			if (saneDest == Double.class) {
 				final Double result = number.doubleValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
 				return typedResult;
 			}
-			if (saneType == Float.class) {
+			if (saneDest == Float.class) {
 				final Float result = number.floatValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
 				return typedResult;
 			}
-			if (saneType == Integer.class) {
+			if (saneDest == Integer.class) {
 				final Integer result = number.intValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
 				return typedResult;
 			}
-			if (saneType == Long.class) {
+			if (saneDest == Long.class) {
 				final Long result = number.longValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
 				return typedResult;
 			}
-			if (saneType == Short.class) {
+			if (saneDest == Short.class) {
 				final Short result = number.shortValue();
 				@SuppressWarnings("unchecked")
 				final T typedResult = (T) result;
@@ -168,16 +168,16 @@ public class ConversionUtils {
 		}
 
 		// special cases for strings
-		if (value instanceof String) {
+		if (src instanceof String) {
 			// source type is String
-			final String s = (String) value;
+			final String s = (String) src;
 			if (s.isEmpty()) {
 				// return null for empty strings
-				return getNullValue(type);
+				return getNullValue(dest);
 			}
 
 			// use first character when converting to Character
-			if (saneType == Character.class) {
+			if (saneDest == Character.class) {
 				final Character c = new Character(s.charAt(0));
 				@SuppressWarnings("unchecked")
 				final T result = (T) c;
@@ -185,14 +185,14 @@ public class ConversionUtils {
 			}
 
 			// special case for conversion to enum
-			if (type.isEnum()) {
-				final T result = convertToEnum(s, type);
+			if (dest.isEnum()) {
+				final T result = convertToEnum(s, dest);
 				if (result != null) return result;
 			}
 		}
-		if (saneType == String.class) {
+		if (saneDest == String.class) {
 			// destination type is String; use Object.toString() method
-			final String sValue = value.toString();
+			final String sValue = src.toString();
 			@SuppressWarnings("unchecked")
 			final T result = (T) sValue;
 			return result;
@@ -200,10 +200,10 @@ public class ConversionUtils {
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
-			final Constructor<?> ctor = getConstructor(saneType, value.getClass());
+			final Constructor<?> ctor = getConstructor(saneDest, src.getClass());
 			if (ctor == null) return null;
 			@SuppressWarnings("unchecked")
-			final T instance = (T) ctor.newInstance(value);
+			final T instance = (T) ctor.newInstance(src);
 			return instance;
 		}
 		catch (final Exception exc) {
@@ -217,16 +217,16 @@ public class ConversionUtils {
 	 * Converts the given string value to an enumeration constant of the specified
 	 * type.
 	 * 
-	 * @param value The value to convert.
-	 * @param type The type of the enumeration constant.
+	 * @param src The value to convert.
+	 * @param dest The type of the enumeration constant.
 	 * @return The converted enumeration constant, or null if the type is not an
 	 *         enumeration type or has no such constant.
 	 */
-	public static <T> T convertToEnum(final String value, final Class<T> type) {
-		if (value == null || !type.isEnum()) return null;
+	public static <T> T convertToEnum(final String src, final Class<T> dest) {
+		if (src == null || !dest.isEnum()) return null;
 		try {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
-			final Enum result = Enum.valueOf((Class) type, value);
+			final Enum result = Enum.valueOf((Class) dest, src);
 			@SuppressWarnings("unchecked")
 			final T typedResult = (T) result;
 			return typedResult;
@@ -243,37 +243,37 @@ public class ConversionUtils {
 	 * 
 	 * @see #convert(Object, Class)
 	 */
-	public static boolean canConvert(final Class<?> c, final Class<?> type) {
+	public static boolean canConvert(final Class<?> src, final Class<?> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<?> saneType = getNonprimitiveType(type);
+		final Class<?> saneDest = getNonprimitiveType(dest);
 
 		// OK if the existing object can be casted
-		if (canCast(c, saneType)) return true;
+		if (canCast(src, saneDest)) return true;
 
 		// OK for numerical conversions
-		if (canCast(getNonprimitiveType(c), Number.class) &&
-			(ClassUtils.isByte(type) || ClassUtils.isDouble(type) ||
-				ClassUtils.isFloat(type) || ClassUtils.isInteger(type) ||
-				ClassUtils.isLong(type) || ClassUtils.isShort(type)))
+		if (canCast(getNonprimitiveType(src), Number.class) &&
+			(ClassUtils.isByte(dest) || ClassUtils.isDouble(dest) ||
+				ClassUtils.isFloat(dest) || ClassUtils.isInteger(dest) ||
+				ClassUtils.isLong(dest) || ClassUtils.isShort(dest)))
 		{
 			return true;
 		}
 
 		// OK if string
-		if (saneType == String.class) return true;
+		if (saneDest == String.class) return true;
 
-		if (canCast(c, String.class)) {
+		if (canCast(src, String.class)) {
 			// OK if source type is string and destination type is character
 			// (in this case, the first character of the string would be used)
-			if (saneType == Character.class) return true;
+			if (saneDest == Character.class) return true;
 
 			// OK if source type is string and destination type is an enum
-			if (type.isEnum()) return true;
+			if (dest.isEnum()) return true;
 		}
 
 		// OK if appropriate wrapper constructor exists
 		try {
-			return getConstructor(saneType, c) != null;
+			return getConstructor(saneDest, src) != null;
 		}
 		catch (final Exception exc) {
 			// TODO: Best not to catch blanket Exceptions here.
@@ -287,19 +287,19 @@ public class ConversionUtils {
 	 * 
 	 * @see #convert(Object, Class)
 	 */
-	public static boolean canConvert(final Object value, final Class<?> type) {
-		if (value == null) return true;
-		return canConvert(value.getClass(), type);
+	public static boolean canConvert(final Object src, final Class<?> dest) {
+		if (src == null) return true;
+		return canConvert(src.getClass(), dest);
 	}
 
 	/**
 	 * Casts the given object to the specified type, or null if the types are
 	 * incompatible.
 	 */
-	public static <T> T cast(final Object obj, final Class<T> type) {
-		if (!canCast(obj, type)) return null;
+	public static <T> T cast(final Object src, final Class<T> dest) {
+		if (!canCast(src, dest)) return null;
 		@SuppressWarnings("unchecked")
-		final T result = (T) obj;
+		final T result = (T) src;
 		return result;
 	}
 
@@ -309,8 +309,8 @@ public class ConversionUtils {
 	 * 
 	 * @see #cast(Object, Class)
 	 */
-	public static boolean canCast(final Class<?> c, final Class<?> type) {
-		return type.isAssignableFrom(c);
+	public static boolean canCast(final Class<?> src, final Class<?> dest) {
+		return dest.isAssignableFrom(src);
 	}
 
 	/**
@@ -318,8 +318,8 @@ public class ConversionUtils {
 	 * 
 	 * @see #cast(Object, Class)
 	 */
-	public static boolean canCast(final Object obj, final Class<?> type) {
-		return obj == null || canCast(obj.getClass(), type);
+	public static boolean canCast(final Object src, final Class<?> dest) {
+		return src == null || canCast(src.getClass(), dest);
 	}
 
 	/**
