@@ -147,24 +147,6 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 	     http://maven.apache.org/general.html#tools-jar-dependency -->
 	<profiles>
 		<profile>
-			<id>tools-jar</id> <!-- required for CheckSezpozTest -->
-			<activation>
-				<file>
-					<!-- NB: Custom properties do not work here, so we hardcode. -->
-					<exists>${java.home}/../lib/tools.jar</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.sun</groupId>
-					<artifactId>tools</artifactId>
-					<version>1.4.2</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../lib/tools.jar</systemPath>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
 			<id>only-eclipse</id>
 			<activation>
 				<property>
