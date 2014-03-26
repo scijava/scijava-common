@@ -154,13 +154,22 @@ public final class FileUtils {
 			return file.exists() ? new File[] { file } : null;
 		}
 		final String baseName = matcher.group(1);
+		final String classifier = matcher.group(6);
 		return directory.listFiles(new FilenameFilter() {
 
 			@Override
 			public boolean accept(final File dir, final String name) {
 				if (!name.startsWith(baseName)) return false;
 				final Matcher matcher2 = versionPattern.matcher(name);
-				return matcher2.matches() && baseName.equals(matcher2.group(1));
+				return matcher2.matches() && baseName.equals(matcher2.group(1)) &&
+						equals(classifier, matcher2.group(6));
+			}
+
+			private boolean equals(final String a, final String b) {
+				if (a == null) {
+					return b == null;
+				}
+				return a.equals(b);
 			}
 		});
 	}
