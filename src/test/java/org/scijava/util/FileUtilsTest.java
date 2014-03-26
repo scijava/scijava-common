@@ -38,8 +38,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -285,4 +287,29 @@ public class FileUtilsTest {
 		assertEquals(FileUtils.stripFilenameVersion("jars/miglayout-swing.jar"), FileUtils.stripFilenameVersion("jars/miglayout-3.7.3.1-swing.jar"));
 	}
 
+	@Test
+	public void testGetAllVersions() throws IOException {
+		final String withClassifier = "miglayout-3.7.3.1-swing.jar";
+		final String withoutClassifier = "miglayout-3.7.3.1.jar";
+
+		final File tmp = FileUtils.createTemporaryDirectory("delete-other-", "");
+		try {
+			writeEmptyFile(new File(tmp, withClassifier));
+			writeEmptyFile(new File(tmp, withoutClassifier));
+
+			assertArrayEquals(new File[] { new File(tmp, withClassifier) },
+				FileUtils.getAllVersions(tmp, withClassifier));
+			assertArrayEquals(new File[] { new File(tmp, withoutClassifier) },
+				FileUtils.getAllVersions(tmp, withoutClassifier));
+		}
+		finally {
+			FileUtils.deleteRecursively(tmp);
+		}
+	}
+
+	private static void writeEmptyFile(final File file) throws FileNotFoundException, IOException {
+		final OutputStream out = new FileOutputStream(file);
+		out.flush();
+		out.close();
+	}
 }
