@@ -53,6 +53,20 @@ import org.junit.Test;
 public class EclipseHelperTest {
 
 	@Test
+	public void testSkipIndexGeneration() throws Exception {
+		final File dir = createTempDirectory();
+		copyClasses(dir, Complex.class, Simple.class);
+		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
+		assertFalse(jsonDir.exists());
+		final URLClassLoader loader =
+			new URLClassLoader(new URL[] { dir.toURI().toURL() }, getClass()
+				.getClassLoader().getParent());
+		EclipseHelper.indexed.clear();
+		EclipseHelper.updateAnnotationIndex(loader);
+		assertFalse(jsonDir.exists());
+	}
+
+	@Test
 	public void testIndexing() throws Exception {
 		final File dir = createTempDirectory();
 		copyClasses(dir, Complex.class, Simple.class, Fruit.class,
