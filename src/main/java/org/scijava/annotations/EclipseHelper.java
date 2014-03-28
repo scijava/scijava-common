@@ -96,6 +96,7 @@ import java.util.jar.Manifest;
 public class EclipseHelper extends DirectoryIndexer {
 
 	static Set<URL> indexed = new HashSet<URL>();
+	private boolean bannerShown;
 
 	private static boolean debug =
 		"debug".equals(System.getProperty("scijava.log.level"));
@@ -216,7 +217,10 @@ public class EclipseHelper extends DirectoryIndexer {
 		try {
 			discoverAnnotations(directory, "", loader);
 			if (!jsonDirectory.exists() && !foundAnnotations()) return;
-			System.err.println("[ECLIPSE HELPER] Indexing annotations...");
+			if (!bannerShown) {
+				System.err.println("[ECLIPSE HELPER] Indexing annotations...");
+				bannerShown = true;
+			}
 			write(directory);
 		}
 		catch (IOException e) {
