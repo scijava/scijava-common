@@ -212,16 +212,17 @@ public class EclipseHelper extends DirectoryIndexer {
 				+ ", up-to-date: " + upToDate(directory));
 			return;
 		}
-		System.err.println("[ECLIPSE HELPER] Indexing annotations...");
+		final File jsonDirectory = new File(directory, Index.INDEX_PREFIX);
 		try {
 			discoverAnnotations(directory, "", loader);
+			if (!jsonDirectory.exists() && !foundAnnotations()) return;
+			System.err.println("[ECLIPSE HELPER] Indexing annotations...");
 			write(directory);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		// update the timestamp of META-INF/json/
-		final File jsonDirectory = new File(directory, Index.INDEX_PREFIX);
 		if (jsonDirectory.isDirectory()) {
 			jsonDirectory.setLastModified(System.currentTimeMillis());
 		}

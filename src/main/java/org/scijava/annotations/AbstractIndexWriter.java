@@ -60,6 +60,10 @@ public abstract class AbstractIndexWriter {
 	private final Map<String, Map<String, Object>> map =
 		new TreeMap<String, Map<String, Object>>();
 
+	protected synchronized boolean foundAnnotations() {
+		return !map.isEmpty();
+	}
+
 	protected synchronized void add(final Map<String, Object> annotationValues,
 		final String annotationName, final String className)
 	{
