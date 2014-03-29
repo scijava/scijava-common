@@ -289,7 +289,7 @@ public class ContextInjectionTest {
 		private boolean eventReceived;
 
 		@EventHandler
-		private void onEvent(@SuppressWarnings("unused") SciJavaEvent e) {
+		private void onEvent(@SuppressWarnings("unused") final SciJavaEvent e) {
 			eventReceived = true;
 		}
 
@@ -304,7 +304,7 @@ public class ContextInjectionTest {
 		private boolean eventReceived;
 
 		@EventHandler
-		private void onEvent(@SuppressWarnings("unused") SciJavaEvent e) {
+		private void onEvent(@SuppressWarnings("unused") final SciJavaEvent e) {
 			eventReceived = true;
 		}
 
