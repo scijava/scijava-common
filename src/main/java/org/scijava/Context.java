@@ -287,7 +287,7 @@ public class Context implements Disposable {
 				}
 				ClassUtils.setValue(f, o, service);
 			}
-			else if (type.isAssignableFrom(getClass())) {
+			else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
 				final Context existingContext = (Context) ClassUtils.getValue(f, o);
 				if (existingContext != null) {
 					throw new IllegalStateException("Context already injected: " +
