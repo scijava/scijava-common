@@ -134,6 +134,37 @@ public class ContextInjectionTest {
 	}
 
 	/**
+	 * Tests that subclasses of {@link Context} are injected properly in the
+	 * relevant circumstances.
+	 */
+	@Test
+	public void testContextSubclassInjection() {
+		final Context c = new Context(true);
+		final FooContext foo = new FooContext();
+		final BarContext bar = new BarContext();
+
+		final ContextSubclassParameters cspPlain = new ContextSubclassParameters();
+		c.inject(cspPlain);
+		assertSame(c, cspPlain.c);
+		assertNull(cspPlain.foo);
+		assertNull(cspPlain.bar);
+
+		final ContextSubclassParameters cspFoo = new ContextSubclassParameters();
+		foo.inject(cspFoo);
+		assertNull(cspFoo.o);
+		assertSame(foo, cspFoo.c);
+		assertSame(foo, cspFoo.foo);
+		assertNull(cspFoo.bar);
+
+		final ContextSubclassParameters cspBar = new ContextSubclassParameters();
+		bar.inject(cspBar);
+		assertNull(cspBar.o);
+		assertSame(bar, cspBar.c);
+		assertNull(cspBar.foo);
+		assertSame(bar, cspBar.bar);
+	}
+
+	/**
 	 * Tests that event subscription works properly for objects which extend
 	 * {@link AbstractContextual}.
 	 */
@@ -211,6 +242,41 @@ public class ContextInjectionTest {
 
 		@Parameter
 		private Context context;
+
+	}
+
+	/** An object that only wants matching {@link Context} types injected. */
+	public static class ContextSubclassParameters {
+
+		@Parameter
+		private Object o;
+
+		@Parameter
+		private Context c;
+
+		@Parameter
+		private FooContext foo;
+
+		@Parameter
+		private BarContext bar;
+
+	}
+
+	/** A simple {@link Context} subclass. */
+	public static class FooContext extends Context {
+
+		public FooContext() {
+			super(true);
+		}
+
+	}
+
+	/** Another simple {@link Context} subclass. */
+	public static class BarContext extends Context {
+
+		public BarContext() {
+			super(true);
+		}
 
 	}
 
