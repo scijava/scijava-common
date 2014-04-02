@@ -41,8 +41,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -126,6 +130,51 @@ public class ClassUtilsTest {
 		assertNull(ClassUtils.getArrayClass(void.class));
 	}
 
+	/** Tests {@link ClassUtils#getTypes(java.lang.reflect.Field, Class)}. */
+	@Test
+	public void testGetTypes() {
+		final Field field = ClassUtils.getField(Thing.class, "thing");
+
+		// T
+		final Type tType = ClassUtils.getGenericType(field, Thing.class);
+		assertEquals("capture of ?", tType.toString());
+
+		// N extends Number
+		final Type nType = ClassUtils.getGenericType(field, NumberThing.class);
+		assertEquals("capture of ?", nType.toString());
+
+		// Integer
+		final Type iType = ClassUtils.getGenericType(field, IntegerThing.class);
+		assertSame(Integer.class, iType);
+	}
+
+	/** Tests {@link ClassUtils#getGenericType}. */
+	@Test
+	public void testGetGenericType() {
+		final Field field = ClassUtils.getField(Thing.class, "thing");
+
+		// Object
+		final List<Class<?>> tTypes = ClassUtils.getTypes(field, Thing.class);
+		assertEquals(1, tTypes.size());
+		assertSame(Object.class, tTypes.get(0));
+
+		// N extends Number
+		final List<Class<?>> nTypes = ClassUtils.getTypes(field, NumberThing.class);
+		assertEquals(1, nTypes.size());
+		assertEquals(Number.class, nTypes.get(0));
+
+		// Integer
+		final List<Class<?>> iTypes = ClassUtils.getTypes(field, IntegerThing.class);
+		assertEquals(1, iTypes.size());
+		assertSame(Integer.class, iTypes.get(0));
+
+		// Serializable & Cloneable
+		final List<Class<?>> cTypes = ClassUtils.getTypes(field, ComplexThing.class);
+		assertEquals(2, cTypes.size());
+		assertSame(Serializable.class, cTypes.get(0));
+		assertSame(Cloneable.class, cTypes.get(1));
+	}
+
 	@Test
 	public void testUnpackedClass() throws IOException {
 		final File tmpDir = FileUtils.createTemporaryDirectory("class-utils-test", "");
@@ -182,6 +231,26 @@ public class ClassUtilsTest {
 
 	private void assertLoaded(final Class<?> c, final String name) {
 		assertSame(c, ClassUtils.loadClass(name));
+	}
+
+	// -- Helper classes --
+
+	public static class Thing<T> {
+		public T thing;
+	}
+
+	public static class NumberThing<N extends Number> extends Thing<N> {
+		// NB: No implementation needed.
+	}
+
+	public static class IntegerThing extends NumberThing<Integer> {
+		// NB: No implementation needed.
+	}
+
+	public static class ComplexThing<T extends Serializable & Cloneable> extends
+		Thing<T>
+	{
+		// NB: No implementation needed.
 	}
 
 }
