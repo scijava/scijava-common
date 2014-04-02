@@ -154,25 +154,19 @@ public class ClassUtilsTest {
 		final Field field = ClassUtils.getField(Thing.class, "thing");
 
 		// Object
-		final List<Class<?>> tTypes = ClassUtils.getTypes(field, Thing.class);
-		assertEquals(1, tTypes.size());
-		assertSame(Object.class, tTypes.get(0));
+		assertAllTheSame(ClassUtils.getTypes(field, Thing.class), Object.class);
 
 		// N extends Number
-		final List<Class<?>> nTypes = ClassUtils.getTypes(field, NumberThing.class);
-		assertEquals(1, nTypes.size());
-		assertEquals(Number.class, nTypes.get(0));
+		assertAllTheSame(ClassUtils.getTypes(field, NumberThing.class),
+			Number.class);
 
 		// Integer
-		final List<Class<?>> iTypes = ClassUtils.getTypes(field, IntegerThing.class);
-		assertEquals(1, iTypes.size());
-		assertSame(Integer.class, iTypes.get(0));
+		assertAllTheSame(ClassUtils.getTypes(field, IntegerThing.class),
+			Integer.class);
 
 		// Serializable & Cloneable
-		final List<Class<?>> cTypes = ClassUtils.getTypes(field, ComplexThing.class);
-		assertEquals(2, cTypes.size());
-		assertSame(Serializable.class, cTypes.get(0));
-		assertSame(Cloneable.class, cTypes.get(1));
+		assertAllTheSame(ClassUtils.getTypes(field, ComplexThing.class),
+			Serializable.class, Cloneable.class);
 	}
 
 	@Test
@@ -208,6 +202,8 @@ public class ClassUtilsTest {
 		jar.deleteOnExit();
 	}
 
+	// -- Helper methods --
+
 	/**
 	 * Copies bytes from an {@link InputStream} to an {@link OutputStream}.
 	 * 
@@ -227,6 +223,13 @@ public class ClassUtilsTest {
 		}
 		in.close();
 		if (closeOut) out.close();
+	}
+
+	private <T> void assertAllTheSame(final List<T> list, T... values) {
+		assertEquals(list.size(), values.length);
+		for (int i = 0; i < values.length; i++) {
+			assertSame(list.get(i), values[i]);
+		}
 	}
 
 	private void assertLoaded(final Class<?> c, final String name) {
