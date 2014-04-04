@@ -243,10 +243,9 @@ public class ServiceHelper extends AbstractContextual {
 			if (debug) start = System.currentTimeMillis();
 			final S service = createServiceRecursively(c);
 			context().getServiceIndex().add(service);
-			if (debug) end = System.currentTimeMillis();
-			log.info("Created service: " + name);
 			if (debug) {
-				log.debug("\t[" + name + " created in " + (end - start) + " ms]");
+				end = System.currentTimeMillis();
+				log.debug("Created service '" + name + "' in " + (end - start) + " ms");
 			}
 			return service;
 		}
