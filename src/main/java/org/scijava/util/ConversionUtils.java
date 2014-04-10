@@ -313,7 +313,17 @@ public class ConversionUtils {
 	}
 
 	/**
-	 * Checks whether the given object's type can be converted to the specified type.
+	 * Checks whether the given object's type can be converted to the specified
+	 * type.
+	 * <p>
+	 * Note that this does <em>not</em> necessarily entail that
+	 * {@link #convert(Object, Type)} on that specific object will succeed. For
+	 * example: {@code canConvert("5.1", int.class)} will return {@code true}
+	 * because a {@link String} can in general be converted to an {@code int}, but
+	 * calling {@code convert("5.1", int.class)} will throw a
+	 * {@link NumberFormatException} when the conversion is actually attempted
+	 * via the {@link Integer#Integer(String)} constructor.
+	 * </p>
 	 * 
 	 * @see #convert(Object, Type)
 	 */
