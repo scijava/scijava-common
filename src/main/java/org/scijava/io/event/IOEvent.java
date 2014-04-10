@@ -34,7 +34,7 @@ package org.scijava.io.event;
 import org.scijava.event.SciJavaEvent;
 
 /**
- * An event indicating that I/O (i.e., opening or saving) has occurred.
+ * An event indicating that I/O (e.g., opening or saving) has occurred.
  * 
  * @author Curtis Rueden
  */
