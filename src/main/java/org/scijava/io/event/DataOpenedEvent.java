@@ -38,8 +38,8 @@ package org.scijava.io.event;
  */
 public class DataOpenedEvent extends IOEvent {
 
-	public DataOpenedEvent(final String source) {
-		super(source);
+	public DataOpenedEvent(final String source, final Object data) {
+		super(source, data);
 	}
 
 	// -- DataOpenedEvent methods --

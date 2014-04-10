@@ -38,8 +38,8 @@ package org.scijava.io.event;
  */
 public class DataSavedEvent extends IOEvent {
 
-	public DataSavedEvent(final String destination) {
-		super(destination);
+	public DataSavedEvent(final String destination, final Object data) {
+		super(destination, data);
 	}
 
 	// -- DataSavedEvent methods --

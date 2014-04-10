@@ -43,8 +43,12 @@ public abstract class IOEvent extends SciJavaEvent {
 	/** The data descriptor (source or destination). */
 	private final String descriptor;
 
-	public IOEvent(final String descriptor) {
+	/** The data for which I/O took place. */
+	private final Object data;
+
+	public IOEvent(final String descriptor, final Object data) {
 		this.descriptor = descriptor;
+		this.data = data;
 	}
 
 	/** Gets the data descriptor (source or destination). */
@@ -52,11 +56,16 @@ public abstract class IOEvent extends SciJavaEvent {
 		return descriptor;
 	}
 
+	/** Gets the data for which I/O took place. */
+	public Object getData() {
+		return data;
+	}
+
 	// -- Object methods --
 
 	@Override
 	public String toString() {
-		return super.toString() + "\n\tdescriptor = " + descriptor;
+		return super.toString() + "\n\tdescriptor = " + data + "\n\tdata = " + data;
 	}
 
 }
