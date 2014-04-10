@@ -257,7 +257,7 @@ public class ConversionUtils {
 	}
 
 	/**
-	 * Checks whether the given object can be converted to the specified type.
+	 * Checks whether the given object's type can be converted to the specified type.
 	 * 
 	 * @see #convert(Object, Class)
 	 */
