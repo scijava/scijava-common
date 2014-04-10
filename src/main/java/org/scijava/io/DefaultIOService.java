@@ -34,6 +34,8 @@ package org.scijava.io;
 import java.io.IOException;
 
 import org.scijava.event.EventService;
+import org.scijava.io.event.DataOpenedEvent;
+import org.scijava.io.event.DataSavedEvent;
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
@@ -80,7 +82,9 @@ public final class DefaultIOService
 
 	@Override
 	public Object open(final String source) throws IOException {
-		return getOpener(source).open(source);
+		final Object data = getOpener(source).open(source);
+		eventService.publish(new DataOpenedEvent(source, data));
+		return data;
 	}
 
 	@Override
@@ -88,6 +92,7 @@ public final class DefaultIOService
 		throws IOException
 	{
 		getSaver(data, destination).save(data, destination);
+		eventService.publish(new DataSavedEvent(destination, data));
 	}
 
 	// -- HandlerService methods --
