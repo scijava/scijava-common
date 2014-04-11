@@ -73,9 +73,12 @@ public class ContextCreationTest {
 			{ org.scijava.event.DefaultEventService.class,
 				org.scijava.app.DefaultAppService.class,
 				org.scijava.app.DefaultStatusService.class,
+				org.scijava.console.DefaultConsoleService.class,
 				org.scijava.event.DefaultEventHistory.class,
+				org.scijava.io.DefaultIOService.class,
 				org.scijava.object.DefaultObjectService.class,
 				org.scijava.plugin.DefaultPluginService.class,
+				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.log.StderrLogService.class };
 
