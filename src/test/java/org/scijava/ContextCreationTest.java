@@ -73,9 +73,12 @@ public class ContextCreationTest {
 			{ org.scijava.event.DefaultEventService.class,
 				org.scijava.app.DefaultAppService.class,
 				org.scijava.app.DefaultStatusService.class,
+				org.scijava.console.DefaultConsoleService.class,
 				org.scijava.event.DefaultEventHistory.class,
+				org.scijava.io.DefaultIOService.class,
 				org.scijava.object.DefaultObjectService.class,
 				org.scijava.plugin.DefaultPluginService.class,
+				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.log.StderrLogService.class };
 
@@ -179,7 +182,7 @@ public class ContextCreationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testClassOrder() {
-		int expectedSize = 2;
+		final int expectedSize = 2;
 
 		// Same order, Base first
 		Context c =
@@ -213,14 +216,14 @@ public class ContextCreationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testAbstractClasslist() {
-		Context cAbstract =
+		final Context cAbstract =
 			createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
 				AbstractBase.class, AbstractExtension.class));
-		
-		Context cService =
-				createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
-					BaseService.class, ExtensionService.class));
-		
+
+		final Context cService =
+			createContext(pluginIndex(BaseImpl.class, ExtensionImpl.class), services(
+				BaseService.class, ExtensionService.class));
+
 		assertEquals(cService.getServiceIndex().size(), cAbstract.getServiceIndex()
 			.size());
 	}
@@ -232,11 +235,12 @@ public class ContextCreationTest {
 	@Test
 	public void testNoServicesCtor() {
 		// create a 2-service context
-		PluginIndex index = pluginIndex(BaseImpl.class, ExtensionImpl.class);
+		final PluginIndex index = pluginIndex(BaseImpl.class, ExtensionImpl.class);
 		// Add another service, that is not indexed under Service.class
 		index.add(new PluginInfo<SciJavaPlugin>(ThreadService.class.getName(),
 			SciJavaPlugin.class));
-		Context c = new Context(pluginIndex(BaseImpl.class, ExtensionImpl.class));
+		final Context c =
+			new Context(pluginIndex(BaseImpl.class, ExtensionImpl.class));
 		assertEquals(2, c.getServiceIndex().size());
 	}
 
@@ -292,7 +296,9 @@ public class ContextCreationTest {
 	 * Checks the expected order vs. the order in the provided Context's
 	 * ServiceIndex
 	 */
-	private void verifyServiceOrder(Class<?>[] expected, Context context) {
+	private void verifyServiceOrder(final Class<?>[] expected,
+		final Context context)
+	{
 		assertEquals(expected.length, context.getServiceIndex().size());
 		int index = 0;
 		for (final Service service : context.getServiceIndex()) {
@@ -301,22 +307,22 @@ public class ContextCreationTest {
 	}
 
 	/**
-	 * Initializes and returns a Context given the provided PluginIndex and
-	 * array of services.
+	 * Initializes and returns a Context given the provided PluginIndex and array
+	 * of services.
 	 */
-	private Context createContext(PluginIndex index,
-		Class<? extends Service>[] services)
+	private Context createContext(final PluginIndex index,
+		final Class<? extends Service>[] services)
 	{
 		return new Context(Arrays.<Class<? extends Service>> asList(services),
 			index);
 	}
-	
+
 	/**
 	 * Convenience method since you can't instantiate a Class<? extends Service>
 	 * array.
 	 */
 	private Class<? extends Service>[] services(
-		Class<? extends Service>... serviceClasses)
+		final Class<? extends Service>... serviceClasses)
 	{
 		return serviceClasses;
 	}
@@ -325,9 +331,9 @@ public class ContextCreationTest {
 	 * Creates a PluginIndex and adds all the provided classes as plugins, indexed
 	 * under Service.class
 	 */
-	private PluginIndex pluginIndex(Class<?>... plugins) {
-		PluginIndex index = new PluginIndex(null);
-		for (Class<?> c : plugins) {
+	private PluginIndex pluginIndex(final Class<?>... plugins) {
+		final PluginIndex index = new PluginIndex(null);
+		for (final Class<?> c : plugins) {
 			index.add(new PluginInfo<Service>(c.getName(), Service.class));
 		}
 		return index;
@@ -371,14 +377,14 @@ public class ContextCreationTest {
 	/** Abstract implementation of {@link BaseService}. */
 	public static abstract class AbstractBase extends AbstractService implements
 		BaseService
-	{ 
+	{
 		// NB: No implementation needed.
 	}
 
 	/** Abstract implementation of {@link ExtensionService}. */
 	public static abstract class AbstractExtension extends AbstractService
 		implements ExtensionService
-	{ 
+	{
 		// NB: No implementation needed.
 	}
 
