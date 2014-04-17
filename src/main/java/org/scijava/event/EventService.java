@@ -54,14 +54,15 @@ public interface EventService extends SciJavaService {
 	 * of a stack. For example:
 	 * </p>
 	 * <ol>
-	 * <li>@{code imagej.module.event.ModulesUpdatedEvent} is published with
+	 * <li>{@link org.scijava.module.event.ModulesUpdatedEvent} is published with
 	 * {@link #publish}.</li>
-	 * <li>{@code imagej.menu.DefaultMenuService} receives the event and handles
-	 * it, publishing {@code imagej.menu.event.MenusUpdatedEvent} in response.</li>
+	 * <li>{@link org.scijava.menu.DefaultMenuService} receives the event and
+	 * handles it, publishing {@link org.scijava.menu.event.MenusUpdatedEvent} in
+	 * response.</li>
 	 * <li>A third party that subscribes to both
-	 * {@code imagej.module.event.ModulesUpdatedEvent} and
-	 * {@code imagej.menu.event.MenusUpdatedEvent} will receive the latter before
-	 * the former.</li>
+	 * {@link org.scijava.module.event.ModulesUpdatedEvent} and
+	 * {@link org.scijava.menu.event.MenusUpdatedEvent} will receive the latter
+	 * before the former.</li>
 	 * </ol>
 	 * That said, the behavior of {@link #publish} depends on the thread from
 	 * which it is called: if called from a thread identified as a dispatch thread
@@ -84,14 +85,15 @@ public interface EventService extends SciJavaService {
 	 * resemble that of a queue. For example:
 	 * </p>
 	 * <ol>
-	 * <li>{@code imagej.module.event.ModulesUpdatedEvent} is published with
+	 * <li>{@link org.scijava.module.event.ModulesUpdatedEvent} is published with
 	 * {@link #publishLater}.</li>
-	 * <li>{@code imagej.menu.DefaultMenuService} receives the event and handles
-	 * it, publishing {@code imagej.menu.event.MenusUpdatedEvent} in response.</li>
+	 * <li>{@link org.scijava.menu.DefaultMenuService} receives the event and
+	 * handles it, publishing {@link org.scijava.menu.event.MenusUpdatedEvent} in
+	 * response.</li>
 	 * <li>A third party that subscribes to both
-	 * {@code imagej.module.event.ModulesUpdatedEvent} and
-	 * {@code imagej.menu.event.MenusUpdatedEvent} will receive the former first,
-	 * since it was already queued by the time the latter was published.</li>
+	 * {@link org.scijava.module.event.ModulesUpdatedEvent} and
+	 * {@link org.scijava.menu.event.MenusUpdatedEvent} will receive the former
+	 * first, since it was already queued by the time the latter was published.</li>
 	 * </ol>
 	 */
 	<E extends SciJavaEvent> void publishLater(E e);

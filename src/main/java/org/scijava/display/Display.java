@@ -38,9 +38,7 @@ import org.scijava.plugin.RichPlugin;
 
 /**
  * A display is a particular type of plugin intended to collect objects for
- * visualization. The most common type of display is the
- * {@code net.imagej.display.ImageDisplay}, which displays images. However, in
- * principle there are no limits to the sorts of objects that can be handled.
+ * visualization. For example, a {@link TextDisplay} displays {@link String}s.
  * <p>
  * Displays discoverable at runtime must implement this interface and be
  * annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
@@ -86,11 +84,11 @@ public interface Display<T> extends List<T>, RichPlugin {
 	 * <p>
 	 * Note that this method may behave differently than {@link #contains}; in
 	 * general, any time {@link #contains} returns true, this method will also
-	 * return true, but not vice versa. For example, an
-	 * {@code imagej.data.display.ImageDisplay} is a {@code Display<DataView>} but
-	 * calling {@code isDisplaying} an a {@code Dataset} (which is not a
-	 * {@code DataView}) will return true if the {@code ImageDisplay} currently
-	 * contains a {@code DatasetView} that wraps that {@code Dataset}.
+	 * return true, but not vice versa. For example, in ImageJ, an
+	 * {@code ImageDisplay} is a {@code Display<DataView>} but calling
+	 * {@code isDisplaying} on a {@code Dataset} (which is not a {@code DataView})
+	 * will return true if the {@code ImageDisplay} currently contains a
+	 * {@code DatasetView} that wraps that {@code Dataset}.
 	 * </p>
 	 */
 	boolean isDisplaying(Object o);

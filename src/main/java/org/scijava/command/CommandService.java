@@ -90,7 +90,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * Gets the list of commands of the given class.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 */
 	<C extends Command> List<CommandInfo> getCommandsOfClass(
@@ -100,7 +100,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * Gets the list of commands with the given class name.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 */
 	List<CommandInfo> getCommandsOfClass(String className);

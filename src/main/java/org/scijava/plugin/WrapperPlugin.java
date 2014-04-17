@@ -35,7 +35,7 @@ package org.scijava.plugin;
  * A plugin with a special "has-a" relationship (i.e., composition rather than
  * inheritance) with a single data object of a particular type.
  * <p>
- * For a concrete example, see ImageJ's {@code imagej.view.View}.
+ * For a concrete example, see {@code org.scijava.widget.InputWidget}.
  * </p>
  * 
  * @author Curtis Rueden
