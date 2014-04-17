@@ -38,6 +38,32 @@ package org.scijava.plugin;
  * What all plugins have in common is that they are declared using an annotation
  * (@{@link Plugin}), and discovered if present on the classpath at runtime.
  * </p>
+ * <p>
+ * The core types of plugins are as follows:
+ * </p>
+ * <ul>
+ * <li>{@link org.scijava.command.Command} - plugins that are executable. These
+ * plugins typically perform a discrete operation, and are accessible via the
+ * application menus.</li>
+ * <li>{@link org.scijava.display.Display} - plugins that visualize objects,
+ * often used to display module outputs.</li>
+ * <li>{@link org.scijava.module.process.PreprocessorPlugin} - plugins that
+ * perform preprocessing on modules. A preprocessor plugin is a discoverable
+ * {@link org.scijava.module.process.ModulePreprocessor}.</li>
+ * <li>{@link org.scijava.module.process.PostprocessorPlugin} - plugins that
+ * perform postprocessing on modules. A
+ * {@link org.scijava.module.process.PostprocessorPlugin} is a discoverable
+ * {@link org.scijava.module.process.ModulePostprocessor}.</li>
+ * <li>{@link org.scijava.platform.Platform} - plugins for defining
+ * platform-specific behavior.</li>
+ * <li>{@link org.scijava.service.Service} - plugins that define new API in a
+ * particular area.</li>
+ * <li>{@link org.scijava.tool.Tool} - plugins that map user input (e.g.,
+ * keyboard and mouse actions) to behavior. They are usually rendered as icons
+ * in the application toolbar.</li>
+ * <li>{@link org.scijava.widget.InputWidget} - plugins that render UI widgets
+ * for the {@link org.scijava.widget.InputHarvester} preprocessor.</li>
+ * </ul>
  * 
  * @author Curtis Rueden
  * @see Plugin
