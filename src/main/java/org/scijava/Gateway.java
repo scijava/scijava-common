@@ -34,14 +34,17 @@ package org.scijava;
 import org.scijava.app.App;
 import org.scijava.app.AppService;
 import org.scijava.app.StatusService;
+import org.scijava.console.ConsoleService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.io.IOService;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.service.Service;
+import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 
 /**
@@ -129,9 +132,13 @@ public interface Gateway extends RichPlugin {
 
 	AppService app();
 
+	ConsoleService console();
+
 	EventHistory eventHistory();
 
 	EventService event();
+
+	IOService io();
 
 	LogService log();
 
@@ -140,6 +147,8 @@ public interface Gateway extends RichPlugin {
 	PluginService plugin();
 
 	StatusService status();
+
+	TextService text();
 
 	ThreadService thread();
 

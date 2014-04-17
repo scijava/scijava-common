@@ -35,13 +35,16 @@ import org.scijava.app.App;
 import org.scijava.app.AppService;
 import org.scijava.app.SciJavaApp;
 import org.scijava.app.StatusService;
+import org.scijava.console.ConsoleService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.io.IOService;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
+import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 
 /**
@@ -87,6 +90,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	}
 
 	@Override
+	public ConsoleService console() {
+		return get(ConsoleService.class);
+	}
+
+	@Override
 	public EventHistory eventHistory() {
 		return get(EventHistory.class);
 	}
@@ -94,6 +102,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public EventService event() {
 		return get(EventService.class);
+	}
+
+	@Override
+	public IOService io() {
+		return get(IOService.class);
 	}
 
 	@Override
@@ -114,6 +127,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public StatusService status() {
 		return get(StatusService.class);
+	}
+
+	@Override
+	public TextService text() {
+		return get(TextService.class);
 	}
 
 	@Override
