@@ -17,6 +17,69 @@
 	<url>http://scijava.org/</url>
 	<inceptionYear>2009</inceptionYear>
 
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<email>ctrueden@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/curtis-rueden</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+		<developer>
+			<id>dscho</id>
+			<name>Johannes Schindelin</name>
+			<email>schindelin@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<mailingLists>
+		<mailingList>
+			<name>SciJava</name>
+			<subscribe>https://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>https://groups.google.com/group/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>https://groups.google.com/group/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
+		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/scijava/scijava-common</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/scijava/scijava-common/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://jenkins.imagej.net/job/SciJava-common/</url>
+	</ciManagement>
+
 	<dependencies>
 		<!-- Third-party dependencies -->
 		<dependency>
@@ -86,69 +149,6 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 		</plugins>
 	</build>
 
-	<mailingLists>
-		<mailingList>
-			<name>SciJava</name>
-			<subscribe>https://groups.google.com/group/scijava</subscribe>
-			<unsubscribe>https://groups.google.com/group/scijava</unsubscribe>
-			<post>scijava@googlegroups.com</post>
-			<archive>https://groups.google.com/group/scijava</archive>
-		</mailingList>
-	</mailingLists>
-
-	<developers>
-		<developer>
-			<id>ctrueden</id>
-			<name>Curtis Rueden</name>
-			<email>ctrueden@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/curtis-rueden</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-		<developer>
-			<id>dscho</id>
-			<name>Johannes Schindelin</name>
-			<email>schindelin@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-	</developers>
-
-	<issueManagement>
-		<system>GitHub Issues</system>
-		<url>https://github.com/scijava/scijava-common/issues</url>
-	</issueManagement>
-
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>https://jenkins.imagej.net/job/SciJava-common/</url>
-	</ciManagement>
-
-	<licenses>
-		<license>
-			<name>Simplified BSD License</name>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<scm>
-		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
-		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/scijava/scijava-common</url>
-	</scm>
-
 	<profiles>
 		<profile>
 			<id>only-eclipse</id>
@@ -191,4 +191,5 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 			</build>
 		</profile>
 	</profiles>
+
 </project>
