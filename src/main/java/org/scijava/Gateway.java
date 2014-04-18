@@ -40,6 +40,7 @@ import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
 import org.scijava.io.IOService;
+import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
 import org.scijava.menu.MenuService;
 import org.scijava.module.ModuleService;
@@ -172,6 +173,8 @@ public interface Gateway extends RichPlugin {
 	PlatformService platform();
 
 	PluginService plugin();
+
+	RecentFileService recentFile();
 
 	ScriptService script();
 
