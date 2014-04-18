@@ -43,12 +43,12 @@ import org.scijava.service.Service;
  * few examples from ImageJ:
  * </p>
  * <ul>
- * <li>The {@code imagej.command.CommandService} works with
- * {@code imagej.command.Command}s.</li>
- * <li>The {@code imagej.text.TextService} works with
- * {@code imagej.text.TextFormat}s.</li>
- * <li>The {@code imagej.platform.PlatformService} works with
- * {@code imagej.platform.Platform}s.</li>
+ * <li>The {@link org.scijava.command.CommandService} works with
+ * {@link org.scijava.command.Command}s.</li>
+ * <li>The {@link org.scijava.text.TextService} works with
+ * {@link org.scijava.text.TextFormat}s.</li>
+ * <li>The {@link org.scijava.platform.PlatformService} works with
+ * {@link org.scijava.platform.Platform}s.</li>
  * </ul>
  * <p>
  * Most services fit this pattern in one way or another. When you wish to
@@ -58,12 +58,13 @@ import org.scijava.service.Service;
  * </p>
  * <ul>
  * <li>A {@link SingletonService}, such as
- * {@code imagej.platform.PlatformService}, which manages
+ * {@link org.scijava.platform.PlatformService}, which manages
  * {@link SingletonPlugin}s.</li>
- * <li>A {@link HandlerService}, such as {@code imagej.text.TextService}, which
- * manages {@link HandlerPlugin}s.</li>
- * <li>A {@link WrapperService}, such as {@code imagej.widget.WidgetService},
- * which manages {@link WrapperPlugin}s.</li>
+ * <li>A {@link HandlerService}, such as {@link org.scijava.text.TextService},
+ * which manages {@link HandlerPlugin}s.</li>
+ * <li>A {@link WrapperService}, such as
+ * {@link org.scijava.widget.WidgetService}, which manages
+ * {@link WrapperPlugin}s.</li>
  * </ul>
  * <p>
  * It is named {@code PTService} rather than {@code PluginTypeService} or

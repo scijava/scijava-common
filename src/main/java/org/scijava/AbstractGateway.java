@@ -35,14 +35,29 @@ import org.scijava.app.App;
 import org.scijava.app.AppService;
 import org.scijava.app.SciJavaApp;
 import org.scijava.app.StatusService;
+import org.scijava.command.CommandService;
+import org.scijava.console.ConsoleService;
+import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.io.IOService;
+import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
+import org.scijava.menu.MenuService;
+import org.scijava.module.ModuleService;
 import org.scijava.object.ObjectService;
+import org.scijava.options.OptionsService;
+import org.scijava.platform.AppEventService;
+import org.scijava.platform.PlatformService;
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.PluginService;
+import org.scijava.script.ScriptService;
 import org.scijava.service.Service;
+import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
+import org.scijava.tool.IconService;
+import org.scijava.tool.ToolService;
+import org.scijava.widget.WidgetService;
 
 /**
  * Abstract superclass for {@link Gateway} implementations.
@@ -82,8 +97,28 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	// -- Gateway methods - services --
 
 	@Override
+	public AppEventService appEvent() {
+		return get(AppEventService.class);
+	}
+
+	@Override
 	public AppService app() {
 		return get(AppService.class);
+	}
+
+	@Override
+	public CommandService command() {
+		return get(CommandService.class);
+	}
+
+	@Override
+	public ConsoleService console() {
+		return get(ConsoleService.class);
+	}
+
+	@Override
+	public DisplayService display() {
+		return get(DisplayService.class);
 	}
 
 	@Override
@@ -97,8 +132,28 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	}
 
 	@Override
+	public IconService icon() {
+		return get(IconService.class);
+	}
+
+	@Override
+	public IOService io() {
+		return get(IOService.class);
+	}
+
+	@Override
 	public LogService log() {
 		return get(LogService.class);
+	}
+
+	@Override
+	public MenuService menu() {
+		return get(MenuService.class);
+	}
+
+	@Override
+	public ModuleService module() {
+		return get(ModuleService.class);
 	}
 
 	@Override
@@ -107,8 +162,28 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	}
 
 	@Override
+	public OptionsService options() {
+		return get(OptionsService.class);
+	}
+
+	@Override
+	public PlatformService platform() {
+		return get(PlatformService.class);
+	}
+
+	@Override
 	public PluginService plugin() {
 		return get(PluginService.class);
+	}
+
+	@Override
+	public RecentFileService recentFile() {
+		return get(RecentFileService.class);
+	}
+
+	@Override
+	public ScriptService script() {
+		return get(ScriptService.class);
 	}
 
 	@Override
@@ -117,8 +192,23 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	}
 
 	@Override
+	public TextService text() {
+		return get(TextService.class);
+	}
+
+	@Override
 	public ThreadService thread() {
 		return get(ThreadService.class);
+	}
+
+	@Override
+	public ToolService tool() {
+		return get(ToolService.class);
+	}
+
+	@Override
+	public WidgetService widget() {
+		return get(WidgetService.class);
 	}
 
 	// -- Gateway methods - application --

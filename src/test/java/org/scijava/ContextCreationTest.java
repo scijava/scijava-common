@@ -71,16 +71,27 @@ public class ContextCreationTest {
 	public void testFull() {
 		final Class<?>[] expected =
 			{ org.scijava.event.DefaultEventService.class,
+				org.scijava.script.DefaultScriptService.class,
 				org.scijava.app.DefaultAppService.class,
 				org.scijava.app.DefaultStatusService.class,
+				org.scijava.command.DefaultCommandService.class,
 				org.scijava.console.DefaultConsoleService.class,
+				org.scijava.display.DefaultDisplayService.class,
 				org.scijava.event.DefaultEventHistory.class,
 				org.scijava.io.DefaultIOService.class,
+				org.scijava.io.DefaultRecentFileService.class,
+				org.scijava.menu.DefaultMenuService.class,
+				org.scijava.module.DefaultModuleService.class,
 				org.scijava.object.DefaultObjectService.class,
+				org.scijava.options.DefaultOptionsService.class,
+				org.scijava.platform.DefaultPlatformService.class,
 				org.scijava.plugin.DefaultPluginService.class,
 				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
-				org.scijava.log.StderrLogService.class };
+				org.scijava.tool.DefaultToolService.class,
+				org.scijava.widget.DefaultWidgetService.class,
+				org.scijava.log.StderrLogService.class,
+				org.scijava.platform.DefaultAppEventService.class };
 
 		final Context context = new Context();
 		verifyServiceOrder(expected, context);

@@ -34,15 +34,30 @@ package org.scijava;
 import org.scijava.app.App;
 import org.scijava.app.AppService;
 import org.scijava.app.StatusService;
+import org.scijava.command.CommandService;
+import org.scijava.console.ConsoleService;
+import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.io.IOService;
+import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
+import org.scijava.menu.MenuService;
+import org.scijava.module.ModuleService;
 import org.scijava.object.ObjectService;
+import org.scijava.options.OptionsService;
+import org.scijava.platform.AppEventService;
+import org.scijava.platform.PlatformService;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.plugin.RichPlugin;
+import org.scijava.script.ScriptService;
 import org.scijava.service.Service;
+import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
+import org.scijava.tool.IconService;
+import org.scijava.tool.ToolService;
+import org.scijava.widget.WidgetService;
 
 /**
  * Interface for convenience classes that wrap a {@link Context} to provide
@@ -127,21 +142,51 @@ public interface Gateway extends RichPlugin {
 
 	// -- Gateway methods - services --
 
+	AppEventService appEvent();
+
 	AppService app();
+
+	CommandService command();
+
+	ConsoleService console();
+
+	DisplayService display();
 
 	EventHistory eventHistory();
 
 	EventService event();
 
+	IconService icon();
+
+	IOService io();
+
 	LogService log();
+
+	MenuService menu();
+
+	ModuleService module();
 
 	ObjectService object();
 
+	OptionsService options();
+
+	PlatformService platform();
+
 	PluginService plugin();
+
+	RecentFileService recentFile();
+
+	ScriptService script();
 
 	StatusService status();
 
+	TextService text();
+
 	ThreadService thread();
+
+	ToolService tool();
+
+	WidgetService widget();
 
 	// -- Gateway methods - application --
 

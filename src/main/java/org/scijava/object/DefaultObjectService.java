@@ -50,9 +50,11 @@ import org.scijava.service.Service;
  * registers new objects from {@link ObjectCreatedEvent}s, and removes objects
  * from {@link ObjectDeletedEvent}s.
  * <p>
- * This is useful to retrieve available objects of a particular type, such as
- * the list of {@code imagej.data.Dataset}s upon which a user can choose to
- * operate.
+ * This is useful to retrieve available objects of a particular type. For
+ * example, the {@link org.scijava.widget.InputHarvester} infrastructure uses it
+ * to provide a pool of available objects for widgets such as the
+ * {@link org.scijava.widget.ObjectWidget}, which provide the user with a
+ * multiple-choice selection.
  * </p>
  * 
  * @author Curtis Rueden

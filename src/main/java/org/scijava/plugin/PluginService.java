@@ -114,7 +114,7 @@ public interface PluginService extends SciJavaService {
 	 * Gets the list of plugins of the given class.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 * <p>
 	 * Note that this method will result in {@link PluginInfo}s with matching
@@ -133,7 +133,7 @@ public interface PluginService extends SciJavaService {
 	 * Gets the list of plugins of the given class.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 * <p>
 	 * Note that this method will result in {@link PluginInfo}s with matching
@@ -156,7 +156,7 @@ public interface PluginService extends SciJavaService {
 	 * Gets the list of plugins with the given class name.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 * 
 	 * @param className The class name for which to obtain the list of matching
@@ -168,7 +168,7 @@ public interface PluginService extends SciJavaService {
 	 * Gets the list of plugins with the given class name.
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
-	 * as {@code imagej.legacy.LegacyCommand}) may match many entries.
+	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
 	 * 
 	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
