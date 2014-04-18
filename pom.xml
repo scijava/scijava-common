@@ -149,8 +149,6 @@ Institute of Molecular Cell Biology and Genetics.</organizationName>
 		<url>https://github.com/scijava/scijava-common</url>
 	</scm>
 
-	<!-- NB: Enable dependency on tools.jar. See:
-	     http://maven.apache.org/general.html#tools-jar-dependency -->
 	<profiles>
 		<profile>
 			<id>only-eclipse</id>
