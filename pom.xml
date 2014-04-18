@@ -18,18 +18,19 @@
 	<inceptionYear>2009</inceptionYear>
 
 	<dependencies>
+		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>com.googlecode.gentyref</groupId>
+			<artifactId>gentyref</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.bushe</groupId>
 			<artifactId>eventbus</artifactId>
 			<version>1.4</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.googlecode.gentyref</groupId>
-			<artifactId>gentyref</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-
+		<!-- Test scope dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
