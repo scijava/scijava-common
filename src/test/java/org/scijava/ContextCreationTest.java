@@ -89,6 +89,8 @@ public class ContextCreationTest {
 				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.tool.DefaultToolService.class,
+				org.scijava.ui.DefaultUIService.class,
+				org.scijava.ui.dnd.DefaultDragAndDropService.class,
 				org.scijava.widget.DefaultWidgetService.class,
 				org.scijava.log.StderrLogService.class,
 				org.scijava.platform.DefaultAppEventService.class };
