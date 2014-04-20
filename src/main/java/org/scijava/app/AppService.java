@@ -42,6 +42,9 @@ import org.scijava.plugin.SingletonService;
  */
 public interface AppService extends SingletonService<App> {
 
+	/** Gets the foremost application (the one with the highest priority). */
+	App getApp();
+
 	/** Gets an application by name. */
 	App getApp(final String name);
 

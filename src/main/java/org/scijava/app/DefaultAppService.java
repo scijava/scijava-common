@@ -33,6 +33,7 @@ package org.scijava.app;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.scijava.log.LogService;
@@ -60,6 +61,13 @@ public class DefaultAppService extends AbstractSingletonService<App> implements 
 	private Map<String, App> apps;
 
 	// -- AppService methods --
+
+	@Override
+	public App getApp() {
+		final List<App> appList = getInstances();
+		if (appList == null || appList.isEmpty()) return null;
+		return appList.get(0);
+	}
 
 	@Override
 	public App getApp(final String name) {
