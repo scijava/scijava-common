@@ -53,7 +53,7 @@ public class CommandServiceTest {
 		final CommandService commandService =
 			context.getService(CommandService.class);
 		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, new Object[] {"string", string}).get(); // FIXME
+		commandService.run(TestCommand.class, true, "string", string).get();
 		assertEquals("Hello, World!", string.toString());
 	}
 
