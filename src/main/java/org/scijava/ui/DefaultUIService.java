@@ -350,7 +350,8 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public String getStatusMessage(final StatusEvent statusEvent) {
-		return statusService.getStatusMessage(SciJavaApp.NAME, statusEvent);
+		final String appName = appService.getApp().getInfo().getName();
+		return statusService.getStatusMessage(appName, statusEvent);
 	}
 
 	// -- Disposable methods --
