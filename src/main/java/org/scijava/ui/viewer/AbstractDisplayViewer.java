@@ -116,21 +116,9 @@ public abstract class AbstractDisplayViewer<T> extends AbstractRichPlugin
 	// -- Internal AbstractDisplayViewer methods --
 
 	protected void updateTitle() {
-		String trailer = "";
-		// FIXME
-//		if (display instanceof ImageDisplay && imageDisplayService != null) {
-//			final ImageDisplay imageDisplay = (ImageDisplay) display;
-//			final Dataset ds = imageDisplayService.getActiveDataset(imageDisplay);
-//			if (ds != null) {
-//				final Img<?> img = ds.getImgPlus().getImg();
-//				if (AbstractCellImg.class.isAssignableFrom(img.getClass())) {
-//					trailer = " (V)";
-//				}
-//			}
-//		}
 		String name = getDisplay().getName();
 		if (name == null) name = "";
-		getWindow().setTitle(name + trailer);
+		getWindow().setTitle(name);
 	}
 
 	// -- Event handlers --
