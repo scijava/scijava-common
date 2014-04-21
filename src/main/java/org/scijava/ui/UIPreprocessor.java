@@ -29,44 +29,46 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.Priority;
+import org.scijava.module.Module;
+import org.scijava.module.ModuleItem;
+import org.scijava.module.process.AbstractPreprocessorPlugin;
+import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * Tests {@link CommandService}.
+ * The UI preprocessor automatically populates module {@link UserInterface}
+ * inputs with the {@link UIService}'s default UI instance, if compatible.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH_PRIORITY)
+public class UIPreprocessor extends AbstractPreprocessorPlugin {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	@Parameter(required = false)
+	private UIService uiService;
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- ModuleProcessor methods --
 
-		@Parameter
-		public StringBuffer string;
+	@Override
+	public void process(final Module module) {
+		if (uiService == null) return; // no UI service available
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
+		final UserInterface ui = uiService.getDefaultUI();
+		if (ui == null) return; // no default UI
+
+		for (final ModuleItem<?> input : module.getInfo().inputs()) {
+			if (!input.isAutoFill()) continue; // cannot auto-fill this input
+			final Class<?> type = input.getType();
+			if (type.isAssignableFrom(ui.getClass())) {
+				// input is a compatible UI
+				final String name = input.getName();
+				module.setInput(name, ui);
+				module.setResolved(name, true);
+			}
 		}
 	}
 

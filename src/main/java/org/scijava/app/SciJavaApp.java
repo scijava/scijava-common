@@ -31,6 +31,7 @@
 
 package org.scijava.app;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
 /**
@@ -39,15 +40,11 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  * @see AppService
  */
-@Plugin(type = App.class, name = SciJavaApp.NAME)
+@Plugin(type = App.class, name = SciJavaApp.NAME,
+	priority = Priority.LOW_PRIORITY)
 public class SciJavaApp extends AbstractApp {
 
 	public static final String NAME = "SciJava";
-
-	@Override
-	public String getTitle() {
-		return NAME;
-	}
 
 	@Override
 	public String getGroupId() {

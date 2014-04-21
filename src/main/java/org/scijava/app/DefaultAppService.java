@@ -37,11 +37,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.scijava.log.LogService;
+import org.scijava.plugin.AbstractSingletonService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
-import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 
 /**
@@ -50,7 +49,7 @@ import org.scijava.service.Service;
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
-public class DefaultAppService extends AbstractService implements AppService {
+public class DefaultAppService extends AbstractSingletonService<App> implements AppService {
 
 	@Parameter
 	private LogService log;
@@ -64,42 +63,50 @@ public class DefaultAppService extends AbstractService implements AppService {
 	// -- AppService methods --
 
 	@Override
+	public App getApp() {
+		final List<App> appList = getInstances();
+		if (appList == null || appList.isEmpty()) return null;
+		return appList.get(0);
+	}
+
+	@Override
 	public App getApp(final String name) {
-		return apps.get(name);
+		return apps().get(name);
 	}
 
 	@Override
 	public Map<String, App> getApps() {
+		return apps();
+	}
+
+	// -- SingletonService methods --
+
+	@Override
+	public Class<App> getPluginType() {
+		return App.class;
+	}
+
+	// -- Helper methods - lazy initialization --
+
+	/** Gets {@link #apps}, initializing if necessary. */
+	private Map<String, App> apps() {
+		if (apps == null) initApps();
 		return apps;
 	}
 
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		apps = Collections.unmodifiableMap(discoverApps());
-		log.info("Found " + apps.size() + " applications.");
-		super.initialize();
-	}
-
-	// -- Helper methods --
-
-	/** Discovers applications. */
-	private HashMap<String, App> discoverApps() {
+	/** Initializes {@link #apps}. */
+	private synchronized void initApps() {
+		if (apps != null) return; // already initialized
 		final HashMap<String, App> map = new HashMap<String, App>();
 
-		final List<PluginInfo<App>> infos =
-			pluginService.getPluginsOfType(App.class);
-		for (final PluginInfo<App> info : infos) {
-			final App app = pluginService.createInstance(info);
-			if (app == null) continue;
-			final String name = info.getName();
+		for (final App app : getInstances()) {
+			final String name = app.getInfo().getName();
 			if (!map.containsKey(name)) {
 				// no (higher-priority) app with the same name exists
 				map.put(name, app);
 			}
 		}
-		return map;
+		apps = Collections.unmodifiableMap(map);
 	}
 
 }

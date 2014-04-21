@@ -29,45 +29,29 @@
  * #L%
  */
 
-package org.scijava.command;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+package org.scijava.ui;
 
 /**
- * Tests {@link CommandService}.
+ * Common interface for top-level application frames.
  * 
- * @author Johannes Schindelin
+ * @author Grant Harris
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public interface ApplicationFrame {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	/** Sets the coordinates of the application frame's top left corner. */
+	void setLocation(int x, int y);
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	/** Gets the X coordinate of the application frame's top left corner. */
+	int getLocationX();
 
-		@Parameter
-		public StringBuffer string;
+	/** Gets the Y coordinate of the application frame's top left corner. */
+	int getLocationY();
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	/** Activate the application frame, bringing it to the front. */
+	void activate();
+
+	/** Show or hide the application frame */
+	void setVisible(boolean visible);
 
 }

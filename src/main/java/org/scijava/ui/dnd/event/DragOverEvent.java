@@ -29,45 +29,24 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd.event;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.display.Display;
+import org.scijava.input.InputModifiers;
+import org.scijava.ui.dnd.DragAndDropData;
 
 /**
- * Tests {@link CommandService}.
+ * An event indicating an object was dragged within a display.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public class DragOverEvent extends DragAndDropEvent {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
-
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
-
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	public DragOverEvent(final Display<?> display,
+		final InputModifiers modifiers, final int x, final int y,
+		final DragAndDropData data)
+	{
+		super(display, modifiers, x, y, data);
 	}
 
 }

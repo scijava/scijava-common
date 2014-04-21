@@ -29,45 +29,70 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.display.Display;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * Tests {@link CommandService}.
+ * Drag-and-drop handler for lists of objects.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
+ * @author Barry DeZonia
  */
-public class CommandServiceTest {
+@Plugin(type = DragAndDropHandler.class)
+public class ListDragAndDropHandler extends AbstractDragAndDropHandler<List<?>>
+{
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Parameter(required = false)
+	private DragAndDropService dragAndDropService;
+
+	// -- DragAndDropHandler methods --
+
+	@Override
+	public boolean supports(final List<?> list, final Display<?> display) {
+		if (dragAndDropService == null) return false;
+		if (!super.supports(list, display)) return false;
+
+		// empty lists are trivially compatible
+		if (list.size() == 0) return true;
+
+		// the list is deemed compatible if at least one item is compatible
+		for (final Object item : list) {
+			if (dragAndDropService.supports(item, display)) return true;
+		}
+		return false;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	@Override
+	public boolean drop(final List<?> list, final Display<?> display) {
+		if (dragAndDropService == null) return false;
+		check(list, display);
+		if (list == null) return true; // trivial case
 
-		@Parameter
-		public StringBuffer string;
+		// dropping an empty list trivially succeeds
+		if (list.size() == 0) return true;
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
+		// use the drag-and-drop service to handle each item separately
+		boolean success = false;
+		for (final Object item : list) {
+			if (dragAndDropService.supports(item, display)) {
+				final boolean result = dragAndDropService.drop(item, display);
+				if (result) success = true;
+			}
 		}
+		return success;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Class<List<?>> getType() {
+		return (Class) List.class;
 	}
 
 }

@@ -29,45 +29,35 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.viewer;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.display.Display;
 
 /**
- * Tests {@link CommandService}.
+ * The panel housing a particular {@link Display}.
  * 
- * @author Johannes Schindelin
+ * @author Grant Harris
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public interface DisplayPanel {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	/** Gets the panel's associated display. */
+	Display<?> getDisplay();
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	/** Gets the window housing this panel. */
+	DisplayWindow getWindow();
 
-		@Parameter
-		public StringBuffer string;
+	/**
+	 * Rebuilds the display window to reflect the display's current views,
+	 * dimensional lengths, etc. The window may change size, and hence may repack
+	 * itself.
+	 */
+	void redoLayout();
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	/** Sets the label at the top of the display panel. */
+	void setLabel(String s);
+
+	/** Redraws the contents of the panel. */
+	void redraw();
 
 }

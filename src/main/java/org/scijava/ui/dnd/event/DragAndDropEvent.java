@@ -29,45 +29,51 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd.event;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.display.Display;
+import org.scijava.display.event.input.InputEvent;
+import org.scijava.input.InputModifiers;
+import org.scijava.ui.dnd.DragAndDropData;
 
 /**
- * Tests {@link CommandService}.
+ * An event indicating drag-and-drop activity in a display.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public abstract class DragAndDropEvent extends InputEvent {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	private final DragAndDropData data;
+
+	public DragAndDropEvent(final Display<?> display) {
+		this(display, null);
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	public DragAndDropEvent(final Display<?> display, final DragAndDropData data)
+	{
+		this(display, null, -1, -1, data);
+	}
 
-		@Parameter
-		public StringBuffer string;
+	public DragAndDropEvent(final Display<?> display,
+		final InputModifiers modifiers, final int x, final int y,
+		final DragAndDropData data)
+	{
+		super(display, modifiers, x, y);
+		this.data = data;
+	}
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	// -- DragAndDropEvent methods --
+
+	/** Gets the drag-and-drop data. */
+	public DragAndDropData getData() {
+		return data;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return super.toString() + "\n\tdata = " + data;
 	}
 
 }

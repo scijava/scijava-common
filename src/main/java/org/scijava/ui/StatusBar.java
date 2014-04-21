@@ -29,45 +29,18 @@
  * #L%
  */
 
-package org.scijava.command;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+package org.scijava.ui;
 
 /**
- * Tests {@link CommandService}.
+ * Common interface for status bars, which have a text area and progress bar,
+ * similar to ImageJ 1.x.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public interface StatusBar {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	void setStatus(String message);
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
-
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	void setProgress(int val, int max);
 
 }

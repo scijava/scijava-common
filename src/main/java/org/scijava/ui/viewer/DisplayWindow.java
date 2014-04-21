@@ -29,45 +29,45 @@
  * #L%
  */
 
-package org.scijava.command;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+package org.scijava.ui.viewer;
 
 /**
- * Tests {@link CommandService}.
+ * A user interface window associated with a Display, containing a
+ * {@link DisplayPanel}.
  * 
- * @author Johannes Schindelin
+ * @author Grant Harris
+ * @author Barry DeZonia
  */
-public class CommandServiceTest {
+public interface DisplayWindow {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	void setTitle(String s);
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	void setContent(DisplayPanel panel);
 
-		@Parameter
-		public StringBuffer string;
+	void pack(); // or reformat, or (re)validate, or somesuch.
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	/**
+	 * Places this component into the desktop environment. It should do
+	 * appropriate size and locate the window. Different types of DisplayWindows
+	 * (e.g. Image, Text) can implement this differently; for instance, in a
+	 * tabbed enviroment, it is added to the appropriate set of tabs.
+	 */
+	void showDisplay(boolean visible);
+
+	void requestFocus();
+
+	void close();
+	
+	/**
+	 * Finds the x coordinate on the screen of the origin of the display window's
+	 * content.
+	 */
+	int findDisplayContentScreenX();
+
+	/**
+	 * Finds the y coordinate on the screen of the origin of the display window's
+	 * content.
+	 */
+	int findDisplayContentScreenY();
 
 }

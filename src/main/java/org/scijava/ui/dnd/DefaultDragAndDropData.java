@@ -29,45 +29,52 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Collections;
+import java.util.List;
 
-import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
 
 /**
- * Tests {@link CommandService}.
+ * Default implementation of {@link DragAndDropData}, which provides a
+ * UI-agnostic way to bundle an object together with its MIME type.
  * 
- * @author Johannes Schindelin
+ * @author Barry DeZonia
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public class DefaultDragAndDropData extends AbstractDragAndDropData {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	// -- Fields --
+
+	private final MIMEType mime;
+	private final Object data;
+
+	// -- Constructor --
+
+	public DefaultDragAndDropData(final Context context, final MIMEType mimeType,
+		final Object data)
+	{
+		setContext(context);
+		this.mime = mimeType;
+		this.data = data;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- DragAndDropData methods --
 
-		@Parameter
-		public StringBuffer string;
+	@Override
+	public boolean isSupported(final MIMEType mimeType) {
+		return mime.equals(mimeType);
+	}
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	@Override
+	public Object getData(final MIMEType mimeType) {
+		return isSupported(mimeType) ? data : null;
+	}
+
+	@Override
+	public List<MIMEType> getMIMETypes() {
+		return Collections.singletonList(mime);
 	}
 
 }

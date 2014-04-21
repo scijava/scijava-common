@@ -29,45 +29,59 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.io.console;
 
-import static org.junit.Assert.assertEquals;
+import java.io.IOException;
+import java.util.LinkedList;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.console.AbstractConsoleArgument;
+import org.scijava.console.ConsoleArgument;
+import org.scijava.display.DisplayService;
+import org.scijava.io.IOService;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * Tests {@link CommandService}.
+ * Handles the {@code --open} command line argument.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+@Plugin(type = ConsoleArgument.class)
+public class OpenArgument extends AbstractConsoleArgument {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Parameter
+	private IOService ioService;
+
+	@Parameter
+	private DisplayService displayService;
+
+	@Parameter
+	private LogService log;
+
+	// -- ConsoleArgument methods --
+
+	@Override
+	public void handle(final LinkedList<String> args) {
+		if (!supports(args)) return;
+
+		args.removeFirst(); // --open
+		final String source = args.removeFirst();
+
+		try {
+			final Object o = ioService.open(source);
+			displayService.createDisplay(o);
+		}
+		catch (IOException exc) {
+			log.error(exc);
+		}
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- Typed methods --
 
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	@Override
+	public boolean supports(final LinkedList<String> args) {
+		return args != null && args.size() >= 2 && args.getFirst().equals("--open");
 	}
 
 }

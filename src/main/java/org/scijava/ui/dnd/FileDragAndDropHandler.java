@@ -29,45 +29,77 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
+import java.io.IOException;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.Priority;
+import org.scijava.display.Display;
+import org.scijava.display.DisplayService;
+import org.scijava.io.IOService;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * Tests {@link CommandService}.
+ * Drag-and-drop handler for files.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
+ * @author Barry DeZonia
  */
-public class CommandServiceTest {
+@Plugin(type = DragAndDropHandler.class, priority = Priority.LOW_PRIORITY)
+public class FileDragAndDropHandler extends
+	AbstractDragAndDropHandler<File>
+{
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Parameter(required = false)
+	private IOService ioService;
+
+	@Parameter(required = false)
+	private DisplayService displayService;
+
+	@Parameter(required = false)
+	private LogService log;
+
+	// -- DragAndDropHandler methods --
+
+	@Override
+	public boolean supports(final File file) {
+		if (ioService == null || displayService == null) return false;
+		if (!super.supports(file)) return false;
+
+		// verify that the file can be opened somehow
+		return ioService.getOpener(file.getAbsolutePath()) != null;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	@Override
+	public boolean drop(final File file, final Display<?> display) {
+		if (ioService == null || displayService == null) return false;
+		check(file, display);
+		if (file == null) return true; // trivial case
 
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
+		// load the data
+		final String filename = file.getAbsolutePath();
+		final Object data;
+		try {
+			data = ioService.open(filename);
 		}
+		catch (final IOException exc) {
+			if (log != null) log.error("Error opening file: " + filename, exc);
+			return false;
+		}
+
+		// display the result
+		displayService.createDisplay(data);
+		return true;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	public Class<File> getType() {
+		return File.class;
 	}
 
 }

@@ -29,45 +29,61 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.display.Display;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 
 /**
- * Tests {@link CommandService}.
+ * Drag-and-drop handler for script files.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+@Plugin(type = DragAndDropHandler.class)
+public class ScriptFileDragAndDropHandler extends
+	AbstractDragAndDropHandler<File>
+{
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Parameter(required = false)
+	private ScriptService scriptService;
+
+	// -- DragAndDropHandler methods --
+
+	@Override
+	public boolean drop(final File file, final Display<?> display) {
+		if (scriptService == null) return false;
+		check(file, display);
+		if (file == null) return true; // trivial case
+
+		// TODO: Use the script service to open the file in the script editor.
+		// We may also want to be context sensitive about which type of display
+		// received the drop:
+		// - If it's the main window, open a new Script Editor window.
+		// - If it's an existing Script Editor window, open a new tab.
+		// -- This will require the Script Editor windows to be Displays.
+		// - Should a drop onto any other displays do anything?
+
+		return true;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- Typed methods --
 
-		@Parameter
-		public StringBuffer string;
+	@Override
+	public boolean supports(final File file) {
+		if (scriptService == null) return false;
+		if (!super.supports(file)) return false;
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+		// verify that the file is a script
+		return scriptService.canHandleFile(file);
+	}
+
+	@Override
+	public Class<File> getType() {
+		return File.class;
 	}
 
 }

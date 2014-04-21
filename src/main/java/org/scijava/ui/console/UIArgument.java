@@ -29,45 +29,55 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.console;
 
-import static org.junit.Assert.assertEquals;
+import java.util.LinkedList;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
+import org.scijava.console.AbstractConsoleArgument;
+import org.scijava.console.ConsoleArgument;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.ui.UIService;
+import org.scijava.ui.UserInterface;
 
 /**
- * Tests {@link CommandService}.
+ * Handles the {@code --ui} command line argument.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+@Plugin(type = ConsoleArgument.class)
+public class UIArgument extends AbstractConsoleArgument {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Parameter
+	private UIService uiService;
+
+	@Parameter
+	private LogService log;
+
+	// -- ConsoleArgument methods --
+
+	@Override
+	public void handle(final LinkedList<String> args) {
+		if (!supports(args)) return;
+
+		args.removeFirst(); // --ui
+		final String uiName = args.removeFirst();
+
+			final UserInterface ui = uiService.getUI(uiName);
+			if (ui == null) {
+				log.error("No such UI: " + uiName);
+			}
+			else {
+				uiService.setDefaultUI(ui);
+			}
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- Typed methods --
 
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	@Override
+	public boolean supports(final LinkedList<String> args) {
+		return args != null && args.size() >= 2 && args.getFirst().equals("--ui");
 	}
 
 }

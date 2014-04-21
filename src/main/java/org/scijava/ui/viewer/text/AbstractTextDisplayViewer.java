@@ -29,45 +29,29 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.viewer.text;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.display.Display;
+import org.scijava.display.TextDisplay;
+import org.scijava.ui.viewer.AbstractDisplayViewer;
 
 /**
- * Tests {@link CommandService}.
+ * Implements the UI-independent elements of a text viewer.
  * 
- * @author Johannes Schindelin
+ * @author Lee Kamentsky
  */
-public class CommandServiceTest {
+public abstract class AbstractTextDisplayViewer extends
+	AbstractDisplayViewer<String>
+{
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	@Override
+	public boolean canView(final Display<?> d) {
+		return d instanceof TextDisplay;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
-
-		@Parameter
-		public StringBuffer string;
-
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	@Override
+	public TextDisplay getDisplay() {
+		return (TextDisplay) super.getDisplay();
 	}
 
 }

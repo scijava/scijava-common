@@ -29,45 +29,45 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd.event;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.display.Display;
+import org.scijava.input.InputModifiers;
+import org.scijava.ui.dnd.DragAndDropData;
 
 /**
- * Tests {@link CommandService}.
+ * An event indicating an object was dropped onto a display.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public class DropEvent extends DragAndDropEvent {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	private boolean successful;
+
+	public DropEvent(final Display<?> display,
+		final InputModifiers modifiers, final int x, final int y,
+		final DragAndDropData data)
+	{
+		super(display, modifiers, x, y, data);
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- DropEvent methods --
 
-		@Parameter
-		public StringBuffer string;
+	/** Gets whether the drop operation was successful. */
+	public boolean isSuccessful() {
+		return successful;
+	}
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	/** Sets whether the drop operation was successful. */
+	public void setSuccessful(final boolean successful) {
+		this.successful = successful;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return super.toString() + "\n\tsuccessful = " + successful;
 	}
 
 }

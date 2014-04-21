@@ -29,45 +29,36 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.event;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.event.SciJavaEvent;
+import org.scijava.ui.UserInterface;
 
 /**
- * Tests {@link CommandService}.
+ * An event indicating activity relating to a {@link UserInterface}.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public abstract class UIEvent extends SciJavaEvent {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	private final UserInterface ui;
+
+	public UIEvent(final UserInterface ui) {
+		this.ui = ui;
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	// -- UIEvent methods --
 
-		@Parameter
-		public StringBuffer string;
+	/** Gets the user interface. */
+	public UserInterface getUI() {
+		return ui;
+	}
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return super.toString() + "\n\tui = " + ui;
 	}
 
 }

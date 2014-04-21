@@ -29,45 +29,48 @@
  * #L%
  */
 
-package org.scijava.command;
+package org.scijava.ui.dnd;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.ui.dnd.event.DragEnterEvent;
+import org.scijava.ui.dnd.event.DropEvent;
 
 /**
- * Tests {@link CommandService}.
+ * Interface for drag-and-drop data.
  * 
- * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
-public class CommandServiceTest {
+public interface DragAndDropData {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
-	}
+	/**
+	 * Gets whether the data can be provided as an object with the given MIME
+	 * type.
+	 */
+	boolean isSupported(MIMEType mimeType);
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	/**
+	 * Gets whether the data can be provided as an object of the given Java class.
+	 */
+	boolean isSupported(Class<?> type);
 
-		@Parameter
-		public StringBuffer string;
+	/**
+	 * Gets the data with respect to the given MIME type.
+	 * 
+	 * @return The data object for the given MIME type. May return null if the
+	 *         data is requested too early in the drag-and-drop process, such as
+	 *         during a {@link DragEnterEvent} rather than a {@link DropEvent}.
+	 * @throws IllegalArgumentException if the MIME type is not supported.
+	 */
+	Object getData(MIMEType mimeType);
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	/** Gets the data as an object of the given Java class. */
+	<T> T getData(Class<T> type);
+
+	/** Gets the best supported MIME type matching the given Java class. */
+	MIMEType getMIMEType(Class<?> type);
+
+	/** Gets the list of supported MIME types. */
+	List<MIMEType> getMIMETypes();
 
 }

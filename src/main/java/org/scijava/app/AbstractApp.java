@@ -31,7 +31,10 @@
 
 package org.scijava.app;
 
+import java.io.File;
+
 import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.util.AppUtils;
 import org.scijava.util.Manifest;
 import org.scijava.util.POM;
 
@@ -47,6 +50,11 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 
 	/** JAR manifest with metadata about the application. */
 	private Manifest manifest;
+
+	@Override
+	public String getTitle() {
+		return getInfo().getName();
+	}
 
 	@Override
 	public String getVersion() {
@@ -88,6 +96,16 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 		sb.append("; Java " + javaVersion + " [" + osArch + "]");
 		if (mem) sb.append("; " + usedMB + "MB of " + maxMB + "MB");
 		return sb.toString();
+	}
+
+	@Override
+	public String getSystemProperty() {
+		return getInfo().getName().toLowerCase() + ".dir";
+	}
+
+	@Override
+	public File getBaseDirectory() {
+		return AppUtils.getBaseDirectory(getSystemProperty(), getClass(), null);
 	}
 
 }

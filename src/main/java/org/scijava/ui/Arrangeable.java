@@ -29,45 +29,46 @@
  * #L%
  */
 
-package org.scijava.command;
+/*
+Adapted from JHotDraw7's org.jhotdraw.gui.Arrangeable interface.
 
-import static org.junit.Assert.assertEquals;
+Licensed under CC BY 2.5, as stated on the JHotDraw7 web site.
 
-import org.junit.Test;
-import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+Original copyright notice follows.
+*/
+
+/*
+ * @(#)Arrangeable.java
+ *
+ * Copyright (c) 1996-2010 by the original authors of JHotDraw and all its
+ * contributors. All rights reserved.
+ *
+ * You may not use, copy or modify this file, except in compliance with the 
+ * license agreement you entered into with the copyright holders. For details
+ * see accompanying license terms.
+ */
+
+package org.scijava.ui;
+
+import java.beans.PropertyChangeListener;
 
 /**
- * Tests {@link CommandService}.
+ * Arrangeable.
  * 
- * @author Johannes Schindelin
+ * @author Werner Randelshofer
  */
-public class CommandServiceTest {
+public interface Arrangeable {
 
-	@Test
-	public void runClass() throws Exception {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService =
-			context.getService(CommandService.class);
-		final StringBuffer string = new StringBuffer();
-		commandService.run(TestCommand.class, true, "string", string).get();
-		assertEquals("Hello, World!", string.toString());
+	enum Arrangement {
+		VERTICAL, HORIZONTAL, CASCADE
 	}
 
-	@Plugin(type = Command.class)
-	public static class TestCommand implements Command {
+	public void setArrangement(Arrangement newValue);
 
-		@Parameter
-		public StringBuffer string;
+	public Arrangement getArrangement();
 
-		@Override
-		public void run() {
-			string.setLength(0);
-			string.append("Hello, World!");
-		}
-	}
+	public void addPropertyChangeListener(PropertyChangeListener l);
+
+	public void removePropertyChangeListener(PropertyChangeListener l);
 
 }
