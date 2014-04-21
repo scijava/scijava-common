@@ -288,20 +288,20 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public DialogPrompt.Result showDialog(final String message) {
-		return showDialog(message, getApp().getTitle());
+		return showDialog(message, getTitle());
 	}
 
 	@Override
 	public Result showDialog(final String message, final MessageType messageType)
 	{
-		return showDialog(message, getApp().getTitle(), messageType);
+		return showDialog(message, getTitle(), messageType);
 	}
 
 	@Override
 	public Result showDialog(final String message, final MessageType messageType,
 		final OptionType optionType)
 	{
-		return showDialog(message, getApp().getTitle(), messageType, optionType);
+		return showDialog(message, getTitle(), messageType, optionType);
 	}
 
 	@Override
@@ -503,6 +503,10 @@ public final class DefaultUIService extends AbstractService implements
 		// add to UI map
 		uiMap.put(ui.getClass().getName(), ui);
 		if (name != null && !name.isEmpty()) uiMap.put(name, ui);
+	}
+
+	private String getTitle() {
+		return appService.getApp().getTitle();
 	}
 
 }
