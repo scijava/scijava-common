@@ -31,6 +31,8 @@
 
 package org.scijava.app;
 
+import java.io.File;
+
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
@@ -90,5 +92,18 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * @param mem If true, memory usage information is included.
 	 */
 	String getInfo(boolean mem);
+
+	/**
+	 * A system property which, if set, overrides the base directory of the
+	 * application.
+	 */
+	String getSystemProperty();
+
+	/**
+	 * Gets the application's root directory. If the application's system property
+	 * is set, it is used. Otherwise, we scan up the tree from this class for a
+	 * suitable directory.
+	 */
+	File getBaseDirectory();
 
 }
