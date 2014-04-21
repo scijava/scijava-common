@@ -53,7 +53,7 @@ public interface UIService extends SciJavaService {
 	// CTR TODO: Extend SingletonService<UserInterface>.
 
 	/** System property to set for overriding the default UI. */
-	String UI_PROPERTY = "ij.ui";
+	String UI_PROPERTY = "scijava.ui";
 
 	/** Gets the {@link App} associated with the user interface. */
 	App getApp();
