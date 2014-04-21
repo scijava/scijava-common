@@ -33,7 +33,6 @@ package org.scijava.ui;
 
 import java.util.List;
 
-import org.scijava.app.App;
 import org.scijava.app.StatusService;
 import org.scijava.command.CommandService;
 import org.scijava.display.Display;
@@ -206,12 +205,6 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	 */
 	protected void createUI() {
 		restoreLocation();
-	}
-
-	// -- Helper methods --
-
-	protected App getApp() {
-		return uiService.getApp();
 	}
 
 }

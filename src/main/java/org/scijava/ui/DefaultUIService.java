@@ -38,9 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.scijava.app.App;
 import org.scijava.app.AppService;
-import org.scijava.app.SciJavaApp;
 import org.scijava.app.StatusService;
 import org.scijava.app.event.StatusEvent;
 import org.scijava.command.CommandService;
@@ -135,26 +133,12 @@ public final class DefaultUIService extends AbstractService implements
 	/** Whether lazy initialization is complete. */
 	private boolean initialized;
 
-	/** Application associated with the user interface. */
-	private App app;
-
 	/** The default user interface to use, if one is not explicitly specified. */
 	private UserInterface defaultUI;
 
 	private boolean activationInvocationPending = false;
 
 	// -- UIService methods --
-
-	@Override
-	public App getApp() {
-		if (!initialized) discoverUIs();
-		return app;
-	}
-
-	@Override
-	public void setApp(final App app) {
-		this.app = app;
-	}
 
 	@Override
 	public void addUI(final UserInterface ui) {
@@ -469,7 +453,6 @@ public final class DefaultUIService extends AbstractService implements
 	private synchronized void discoverUIs() {
 		if (initialized) return;
 
-		app = appService.getApp(SciJavaApp.NAME);
 		displayViewers = new ArrayList<DisplayViewer<?>>();
 		uiList = new ArrayList<UserInterface>();
 		uiMap = new HashMap<String, UserInterface>();

@@ -34,7 +34,6 @@ package org.scijava.ui;
 import java.io.File;
 import java.util.List;
 
-import org.scijava.app.App;
 import org.scijava.app.StatusService;
 import org.scijava.app.event.StatusEvent;
 import org.scijava.display.Display;
@@ -54,12 +53,6 @@ public interface UIService extends SciJavaService {
 
 	/** System property to set for overriding the default UI. */
 	String UI_PROPERTY = "scijava.ui";
-
-	/** Gets the {@link App} associated with the user interface. */
-	App getApp();
-	
-	/** Sets the {@link App} associated with the user interface. */
-	void setApp(final App app);
 
 	/**
 	 * Adds the given UI to those managed by the service.
