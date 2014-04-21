@@ -49,6 +49,11 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	private Manifest manifest;
 
 	@Override
+	public String getTitle() {
+		return getInfo().getName();
+	}
+
+	@Override
 	public String getVersion() {
 		return getPOM() == null ? "Unknown" : getPOM().getVersion();
 	}
