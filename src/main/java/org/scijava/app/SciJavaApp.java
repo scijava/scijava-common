@@ -47,11 +47,6 @@ public class SciJavaApp extends AbstractApp {
 	public static final String NAME = "SciJava";
 
 	@Override
-	public String getTitle() {
-		return NAME;
-	}
-
-	@Override
 	public String getGroupId() {
 		return "org.scijava";
 	}
