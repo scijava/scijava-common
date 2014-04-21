@@ -67,6 +67,7 @@ import org.scijava.tool.ToolService;
 import org.scijava.ui.DialogPrompt.MessageType;
 import org.scijava.ui.DialogPrompt.OptionType;
 import org.scijava.ui.DialogPrompt.Result;
+import org.scijava.ui.event.UIShownEvent;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
@@ -177,6 +178,7 @@ public final class DefaultUIService extends AbstractService implements
 		for (final Display<?> display : displayService.getDisplays()) {
 			ui.show(display);
 		}
+		eventService.publish(new UIShownEvent(ui));
 	}
 
 	@Override
