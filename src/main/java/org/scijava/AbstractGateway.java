@@ -40,6 +40,7 @@ import org.scijava.console.ConsoleService;
 import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
@@ -134,6 +135,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public IconService icon() {
 		return get(IconService.class);
+	}
+
+	@Override
+	public InputService input() {
+		return get(InputService.class);
 	}
 
 	@Override

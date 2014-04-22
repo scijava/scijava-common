@@ -39,6 +39,7 @@ import org.scijava.console.ConsoleService;
 import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
+import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
@@ -157,6 +158,8 @@ public interface Gateway extends RichPlugin {
 	EventService event();
 
 	IconService icon();
+
+	InputService input();
 
 	IOService io();
 
