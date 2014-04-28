@@ -119,7 +119,6 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * </p>
 	 * 
 	 * @param loader the class loader whose class path to inspect
-	 * @throws IOException
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
 		debug("Checking class loader: " + loader);
@@ -275,8 +274,6 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * first class path element (or for tests, the first two), and only if it is a
 	 * local directory.
 	 * </p>
-	 * 
-	 * @throws IOException
 	 */
 	public static void main(final String... args) {
 		updateAnnotationIndex(Thread.currentThread().getContextClassLoader());
