@@ -207,9 +207,9 @@ public class EclipseHelper extends DirectoryIndexer {
 
 	private void index(File directory, ClassLoader loader) {
 		debug("Directory: " + directory);
-		if (!directory.canWrite() || upToDate(directory)) {
-			debug("can write: " + directory.canWrite()
-				+ ", up-to-date: " + upToDate(directory));
+		if (!directory.canWrite() || upToDate(directory) || isIJ1(directory)) {
+			debug("can write: " + directory.canWrite() + ", up-to-date: " +
+				upToDate(directory) + ", : is IJ1: " + isIJ1(directory));
 			return;
 		}
 		final File jsonDirectory = new File(directory, Index.INDEX_PREFIX);
@@ -232,6 +232,14 @@ public class EclipseHelper extends DirectoryIndexer {
 		else {
 			jsonDirectory.mkdirs();
 		}
+	}
+
+	/**
+	 * A hacky way of detecting whether the given directory is the root of an
+	 * ImageJ1 codebase containing unpacked ImageJ1 classes.
+	 */
+	private boolean isIJ1(File directory) {
+		return new File(directory, "IJ_Props.txt").exists();
 	}
 
 	private boolean upToDate(final File directory) {
