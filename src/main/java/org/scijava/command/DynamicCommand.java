@@ -131,7 +131,7 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 
 	@Override
 	public void cancel(final String reason) {
-		cancelReason = reason;
+		cancelReason = reason == null ? "" : reason;
 	}
 
 	@Override

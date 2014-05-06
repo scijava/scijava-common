@@ -89,7 +89,7 @@ public abstract class AbstractInputHarvesterPlugin<P, W> extends
 
 	@Override
 	public void cancel(final String reason) {
-		cancelReason = reason;
+		cancelReason = reason == null ? "" : reason;
 	}
 
 	@Override

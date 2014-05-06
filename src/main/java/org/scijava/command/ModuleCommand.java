@@ -92,8 +92,9 @@ public abstract class ModuleCommand extends AbstractModule implements
 
 	@Override
 	public void cancel(final String reason) {
-		cancelReason = reason;
+		cancelReason = reason == null ? "" : reason;
 	}
+
 	@Override
 	public String getCancelReason() {
 		return cancelReason;

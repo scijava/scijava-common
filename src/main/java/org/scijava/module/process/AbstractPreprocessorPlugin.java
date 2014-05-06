@@ -53,7 +53,7 @@ public abstract class AbstractPreprocessorPlugin extends AbstractContextual
 
 	@Override
 	public void cancel(final String reason) {
-		cancelReason = reason;
+		cancelReason = reason == null ? "" : reason;
 	}
 
 	@Override

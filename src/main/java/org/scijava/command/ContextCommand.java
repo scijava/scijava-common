@@ -96,7 +96,7 @@ public abstract class ContextCommand extends AbstractContextual implements
 	/** Cancels the command execution, with the given reason for doing so. */
 	@Override
 	public void cancel(final String reason) {
-		cancelReason = reason;
+		cancelReason = reason == null ? "" : reason;
 	}
 
 	@Override
