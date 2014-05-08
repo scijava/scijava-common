@@ -157,7 +157,7 @@ public class EclipseHelperTest {
 				final File testClassesDirectory = new File(directory);
 				if (testClassesDirectory.isDirectory()) {
 					final File result =
-						new File(testClassesDirectory.getParentFile(), "eclipse-test");
+						new File(testClassesDirectory.getParentFile(), "eclipse test");
 					if (result.exists()) {
 						rmRF(result);
 					}
@@ -166,7 +166,7 @@ public class EclipseHelperTest {
 			}
 		}
 		// fall back to /tmp/
-		final File result = File.createTempFile("eclipse-test", "");
+		final File result = File.createTempFile("eclipse test", "");
 		result.delete();
 		result.mkdir();
 		return result;
