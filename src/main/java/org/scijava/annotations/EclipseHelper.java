@@ -42,6 +42,8 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.scijava.util.FileUtils;
+
 /**
  * Helps Eclipse's lack of support for annotation processing in incremental
  * build mode.
@@ -198,7 +200,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			}
 			return;
 		}
-		File directory = new File(path);
+		File directory = FileUtils.urlToFile(url);
 		if (!directory.isDirectory()) {
 			return;
 		}
