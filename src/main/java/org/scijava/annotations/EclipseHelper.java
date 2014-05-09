@@ -186,7 +186,7 @@ public class EclipseHelper extends DirectoryIndexer {
 					if (classPath != null) {
 						for (final String element : classPath.split(" +"))
 							try {
-								maybeIndex(new URL(element), loader);
+								maybeIndex(new URL(url, element), loader);
 							}
 							catch (MalformedURLException e) {
 								e.printStackTrace();
