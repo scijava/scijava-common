@@ -117,7 +117,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputs List of input parameter names and values. The expected order
 	 *          is in pairs: an input name followed by its value, for each desired
 	 *          input to populate. Leaving some inputs unpopulated is allowed.
@@ -142,7 +143,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputMap Table of input parameter values, with keys matching the
 	 *          plugin's input parameter names. Passing a value of a type
 	 *          incompatible with the associated input parameter will issue an
@@ -166,7 +168,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputs List of input parameter names and values. The expected order
 	 *          is in pairs: an input name followed by its value, for each desired
 	 *          input to populate. Leaving some inputs unpopulated is allowed.
@@ -192,7 +195,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputMap Table of input parameter values, with keys matching the
 	 *          plugin's input parameter names. Passing a value of a type
 	 *          incompatible with the associated input parameter will issue an
@@ -210,7 +214,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputs List of input parameter names and values. The expected order
 	 *          is in pairs: an input name followed by its value, for each desired
 	 *          input to populate. Leaving some inputs unpopulated is allowed.
@@ -230,7 +235,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
 	 *          {@link PostprocessorPlugin}s in the plugin index; if false,
-	 *          executes the command with no pre- or postprocessing.
+	 *          executes the command with no pre- or postprocessing. For more
+	 *          fine-grained control, see the {@link ModuleService#run} methods.
 	 * @param inputMap Table of input parameter values, with keys matching the
 	 *          plugin's input parameter names. Passing a value of a type
 	 *          incompatible with the associated input parameter will issue an
