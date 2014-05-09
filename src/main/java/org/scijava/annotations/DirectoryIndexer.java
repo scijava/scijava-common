@@ -97,6 +97,9 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 							+ e.getMessage() + "); skipping");
 				} catch (ClassNotFoundException e) {
 					System.err.println("Warning: could not load class '" + className + "'; skipping");
+				} catch (Throwable e){
+					System.err.println("Warning: could not load class '" + className + "' ("
+							+ e.getMessage() + "); skipping");
 				}
 			}
 		}
