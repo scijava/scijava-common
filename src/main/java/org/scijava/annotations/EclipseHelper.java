@@ -97,11 +97,13 @@ import org.scijava.util.FileUtils;
  */
 public class EclipseHelper extends DirectoryIndexer {
 
+	private static final String FORCE_ANNOTATION_INDEX_PROPERTY = "force.annotation.index";
 	static Set<URL> indexed = new HashSet<URL>();
 	private boolean bannerShown;
 
 	private static boolean debug =
 		"debug".equals(System.getProperty("scijava.log.level"));
+	private boolean autoDetectEclipse = true;
 
 	private static void debug(final String message) {
 		if (debug) {
@@ -131,10 +133,13 @@ public class EclipseHelper extends DirectoryIndexer {
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
+		if (Boolean.getBoolean(FORCE_ANNOTATION_INDEX_PROPERTY)) {
+			helper.autoDetectEclipse = false;
+		}
 		boolean first = true;
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
 			debug("Checking URL: " + url);
-			if (first) {
+			if (helper.autoDetectEclipse && first) {
 				if (!"file".equals(url.getProtocol()) ||
 					(!url.getPath().endsWith("/") && !url.getPath().contains("surefire")))
 				{
@@ -177,7 +182,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			 * but crucially also the target/classes/ and target/test-classes/
 			 * directories which may need to be indexed.
 			 */
-			if (path.matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
+			if (!autoDetectEclipse || path.matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
 				final JarFile jar = new JarFile(path);
 				Manifest manifest = jar.getManifest();
 				if (manifest != null) {
@@ -286,6 +291,7 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * </p>
 	 */
 	public static void main(final String... args) {
+		System.setProperty(FORCE_ANNOTATION_INDEX_PROPERTY, "true");
 		updateAnnotationIndex(Thread.currentThread().getContextClassLoader());
 	}
 
