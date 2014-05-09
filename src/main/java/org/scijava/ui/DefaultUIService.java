@@ -434,6 +434,27 @@ public final class DefaultUIService extends AbstractService implements
 		}
 	}
 
+	@EventHandler
+	protected void onEvent(final StatusEvent event) {
+		if (event.isWarning()) {
+			// report warning messages to the user in a dialog box
+			final String message = event.getStatusMessage();
+			if (message != null && !message.isEmpty()) {
+				showDialog(message, MessageType.WARNING_MESSAGE);
+			}
+		}
+		else {
+			// tell each UI to report status updates in the status bar
+			final int val = event.getProgressValue();
+			final int max = event.getProgressMaximum();
+			final String message = getStatusMessage(event);
+			for (UserInterface ui : getAvailableUIs()) {
+				ui.getStatusBar().setStatus(message);
+				ui.getStatusBar().setProgress(val, max);
+			}
+		}
+	}
+
 	// -- Helper methods --
 
 	private List<DisplayViewer<?>> displayViewers() {
