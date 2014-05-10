@@ -37,7 +37,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -91,6 +93,16 @@ public class DirectoryIndexerTest {
 			readIndex(Complex.class, DirectoryIndexerTest.class.getClassLoader());
 
 		testDefaultAnnotations(map);
+
+		// verify that default values are not written to the serialized annotation index
+		final File complex = new File(jsonDirectory, Complex.class.getName());
+		final BufferedReader reader = new BufferedReader(new FileReader(complex));
+		for (;;) {
+			final String line = reader.readLine();
+			if (line == null) break;
+			assertTrue("Contains default value 'Q' for char0: " + line, line.indexOf('Q') < 0);
+		}
+		reader.close();
 	}
 
 	@Test
