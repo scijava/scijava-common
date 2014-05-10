@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -66,19 +65,6 @@ class ByteCodeAnalyzer {
 		getAllFields();
 		getAllMethods();
 		getAllAttributes();
-	}
-
-	private String getPathForClass() {
-		final int thisOffset = dereferenceOffset(endOffset + 2);
-		if (getU1(thisOffset) != 7) throw new RuntimeException("Parse error");
-		return getString(dereferenceOffset(thisOffset + 1));
-	}
-
-	private String getClassNameConstant(final int index) {
-		final int offset = poolOffsets[index - 1];
-		if (getU1(offset) != 7) throw new RuntimeException("Constant " + index +
-			" does not refer to a class");
-		return getStringConstant(getU2(offset + 1)).replace('/', '.');
 	}
 
 	private String getStringConstant(final int index) {
@@ -114,17 +100,6 @@ class ByteCodeAnalyzer {
 			getU4(offset + 5));
 	}
 
-	private boolean containsDebugInfo() {
-		for (final Method method : methods)
-			if (method.containsDebugInfo()) return true;
-		return false;
-	}
-
-	private int dereferenceOffset(final int offset) {
-		final int index = getU2(offset);
-		return poolOffsets[index - 1];
-	}
-
 	private void getConstantPoolOffsets() {
 		final int poolCount = getU2(8) - 1;
 		poolOffsets = new int[poolCount];
@@ -143,85 +118,6 @@ class ByteCodeAnalyzer {
 			else throw new RuntimeException("Unknown tag" + " " + tag);
 		}
 		endOffset = offset;
-	}
-
-	private class ClassNameIterator implements Iterator<String> {
-
-		private int index;
-
-		private ClassNameIterator() {
-			index = 0;
-			findNext();
-		}
-
-		private void findNext() {
-			while (++index <= poolOffsets.length)
-				if (getU1(poolOffsets[index - 1]) == 7) break;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return index <= poolOffsets.length;
-		}
-
-		@Override
-		public String next() {
-			final int current = index;
-			findNext();
-			return getClassNameConstant(current);
-		}
-
-		@Override
-		public void remove() throws UnsupportedOperationException {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private class InterfaceIterator implements Iterator<String> {
-
-		private int index, count;
-
-		private InterfaceIterator() {
-			index = 0;
-			count = getU2(endOffset + 6);
-		}
-
-		@Override
-		public boolean hasNext() {
-			return index < count;
-		}
-
-		@Override
-		public String next() {
-			return getClassNameConstant(getU2(endOffset + 8 + index++ * 2));
-		}
-
-		@Override
-		public void remove() throws UnsupportedOperationException {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private Iterable<String> getInterfaces() {
-		return new Iterable<String>() {
-
-			@Override
-			public Iterator<String> iterator() {
-				return new InterfaceIterator();
-			}
-		};
-	}
-
-	private String getSuperclass() {
-		final int index = getU2(endOffset + 4);
-		if (index == 0) return null;
-		return getClassNameConstant(index);
-	}
-
-	private String getSourceFile() {
-		for (final Attribute attribute : attributes)
-			if (getStringConstant(attribute.nameIndex).equals("SourceFile")) return getStringConstant(getU2(attribute.attributeEndOffset - 2));
-		return null;
 	}
 
 	@Override
@@ -308,15 +204,7 @@ class ByteCodeAnalyzer {
 
 	private class Interface {
 
-		private int nameIndex;
-
 		private Interface(final int offset) {
-			nameIndex = getU2(offset);
-		}
-
-		@Override
-		public String toString() {
-			return getClassNameConstant(nameIndex);
 		}
 	}
 
@@ -330,32 +218,18 @@ class ByteCodeAnalyzer {
 
 	private class Field {
 
-		private int accessFlags, nameIndex, descriptorIndex;
 		private Attribute[] fieldAttributes;
 		private int fieldEndOffset;
 
 		private Field(final int offset) {
-			accessFlags = getU2(offset);
-			nameIndex = getU2(offset + 2);
-			descriptorIndex = getU2(offset + 4);
 			fieldAttributes = getAttributes(offset + 6);
 			fieldEndOffset =
 				fieldAttributes.length == 0 ? offset + 8
 					: fieldAttributes[fieldAttributes.length - 1].attributeEndOffset;
 		}
 
-		protected Attribute[] getFieldAttributes() {
-			return fieldAttributes;
-		}
-
 		protected int getFieldEndOffset() {
 			return fieldEndOffset;
-		}
-
-		@Override
-		public String toString() {
-			return getStringConstant(nameIndex) +
-				ByteCodeAnalyzer.this.toString(fieldAttributes);
 		}
 	}
 
@@ -374,12 +248,6 @@ class ByteCodeAnalyzer {
 
 		private Method(final int offset) {
 			super(offset);
-		}
-
-		private boolean containsDebugInfo() {
-			for (final Attribute attribute : getFieldAttributes())
-				if (attribute.containsDebugInfo()) return true;
-			return false;
 		}
 	}
 
@@ -413,30 +281,6 @@ class ByteCodeAnalyzer {
 
 		private String getName() {
 			return getStringConstant(nameIndex);
-		}
-
-		private boolean containsDebugInfo() {
-			if (!getStringConstant(nameIndex).equals("Code")) return false;
-			for (final Attribute attribute : getAttributes())
-				if (attribute.getName().equals("LocalVariableTable")) return true;
-			return false;
-		}
-
-		private Attribute[] getAttributes() {
-			final int offset = attributeEndOffset - 6 - attribute.length;
-			final int codeLength = (int) getU4(offset + 10);
-			final int exceptionTableLength = getU2(offset + 14 + codeLength);
-			final int attributesOffset =
-				offset + 14 + codeLength + 2 + 8 * exceptionTableLength;
-			return ByteCodeAnalyzer.this.getAttributes(attributesOffset);
-		}
-
-		@Override
-		public String toString() {
-			if ("Code".equals(getName())) return "Code" +
-				ByteCodeAnalyzer.this.toString(getAttributes());
-			return getName() + " (length " + attribute.length +
-				")";
 		}
 	}
 
@@ -568,13 +412,6 @@ class ByteCodeAnalyzer {
 			throw new RuntimeException("Invalid raw class name: " + rawName);
 		}
 		return rawName.substring(1, rawName.length() - 1).replace('/', '.');
-	}
-
-	private String toString(final Attribute[] attributes) {
-		String result = "";
-		for (final Attribute attribute : attributes)
-			result += (result.equals("") ? "(" : ";") + attribute;
-		return result.equals("") ? "" : result + ")";
 	}
 
 	private static byte[] readFile(final File file) throws IOException {
