@@ -37,8 +37,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * An analyzer to parse {@code &#x40;Plugin} annotations inside a {@code .class}
@@ -440,10 +440,160 @@ class ByteCodeAnalyzer {
 		}
 	}
 
+	private Map<String, Map<String, Object>> getAnnotations() {
+		final Map<String, Map<String, Object>> annotations =
+			new TreeMap<String, Map<String, Object>>();
+		for (final Attribute attr : attributes) {
+			if ("RuntimeVisibleAnnotations".equals(attr.getName())) {
+				final byte[] buffer = attr.attribute;
+				int count = getU2(buffer, 0);
+				int offset = 2;
+				for (int i = 0; i < count; i++) {
+					final String className =
+						raw2className(getStringConstant(getU2(buffer, offset)));
+					offset += 2;
+					final Map<String, Object> values =
+						new TreeMap<String, Object>();
+					annotations.put(className, values);
+					offset = parseAnnotationValues(buffer, offset, values);
+				}
+			}
+		}
+		return annotations;
+	}
+
+	private int parseAnnotationValues(final byte[] buffer, int offset,
+		final Map<String, Object> values)
+	{
+		int count = getU2(buffer, offset);
+		offset += 2;
+		for (int i = 0; i < count; i++) {
+			final String key = getStringConstant(getU2(buffer, offset));
+			offset += 2;
+			offset = parseAnnotationValue(buffer, offset, values, key);
+		}
+		return offset;
+	}
+
+	private int parseAnnotationValue(byte[] buffer, int offset,
+		Map<String, Object> map, String key)
+	{
+		Object value;
+		switch (getU1(buffer, offset++)) {
+			case 'Z':
+				value = Boolean.valueOf(getIntegerConstant(getU2(buffer, offset)) != 0);
+				offset += 2;
+				break;
+			case 'B':
+				value = Byte.valueOf((byte) getIntegerConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'C':
+				value =
+					Character.valueOf((char) getIntegerConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'S':
+				value =
+					Short.valueOf((short) getIntegerConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'I':
+				value =
+					Integer.valueOf((int) getIntegerConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'J':
+				value = Long.valueOf(getLongConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'F':
+				value = Float.valueOf(getFloatConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 'D':
+				value = Double.valueOf(getDoubleConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case 's':
+				value = getStringConstant(getU2(buffer, offset));
+				offset += 2;
+				break;
+			case 'c':
+				value = raw2className(getStringConstant(getU2(buffer, offset)));
+				offset += 2;
+				break;
+			case '[': {
+				final Object[] array = new Object[getU2(buffer, offset)];
+				offset += 2;
+				for (int i = 0; i < array.length; i++) {
+					offset = parseAnnotationValue(buffer, offset, map, key);
+					array[i] = map.get(key);
+				}
+				value = array;
+				break;
+			}
+			case 'e': {
+				final Map<String, Object> enumValue =
+					new TreeMap<String, Object>();
+				enumValue.put("enum", raw2className(getStringConstant(getU2(buffer,
+					offset))));
+				offset += 2;
+				enumValue.put("value", getStringConstant(getU2(buffer, offset)));
+				offset += 2;
+				value = enumValue;
+				break;
+			}
+			case '@': {
+				// skipping annotation type
+				offset += 2;
+				final Map<String, Object> values = new TreeMap<String, Object>();
+				offset = parseAnnotationValues(buffer, offset, values);
+				value = values;
+				break;
+			}
+			default:
+				throw new RuntimeException("Unhandled annotation value type: " +
+					(char) getU1(buffer, offset - 1));
+		}
+		if (value == null) {
+			throw new NullPointerException();
+		}
+		map.put(key, value);
+		return offset;
+	}
+
+	private static String raw2className(final String rawName) {
+		if (!rawName.startsWith("L") || !rawName.endsWith(";")) {
+			throw new RuntimeException("Invalid raw class name: " + rawName);
+		}
+		return rawName.substring(1, rawName.length() - 1).replace('/', '.');
+	}
+
 	private String toString(final Attribute[] attributes) {
 		String result = "";
 		for (final Attribute attribute : attributes)
 			result += (result.equals("") ? "(" : ";") + attribute;
 		return result.equals("") ? "" : result + ")";
+	}
+
+	private static byte[] readFile(final File file) throws IOException {
+		final InputStream in = new FileInputStream(file);
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		final byte[] buffer = new byte[16384];
+		for (;;) {
+			int count = in.read(buffer);
+			if (count < 0) break;
+			out.write(buffer, 0, count);
+		}
+		in.close();
+		out.close();
+		return out.toByteArray();
+	}
+
+	static Map<String, Map<String, Object>> getAnnotations(File file)
+		throws IOException
+	{
+		return new ByteCodeAnalyzer(readFile(file)).getAnnotations();
 	}
 }
