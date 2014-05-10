@@ -50,20 +50,27 @@ class ByteCodeAnalyzer {
 
 	private byte[] buffer;
 	private int[] poolOffsets;
-	private int endOffset, interfacesOffset, fieldsOffset, methodsOffset,
-			attributesOffset;
-	private Interface[] interfaces;
-	private Field[] fields;
-	private Method[] methods;
+	private int endOffset;
 	private Attribute[] attributes;
 
 	private ByteCodeAnalyzer(final byte[] buffer) {
 		this.buffer = buffer;
 		if ((int) getU4(0) != 0xcafebabe) throw new RuntimeException("No class");
 		getConstantPoolOffsets();
-		getAllInterfaces();
-		getAllFields();
-		getAllMethods();
+		// skip interfaces
+		endOffset += 8 + 2 * getU2(endOffset + 6);
+		// skip fields
+		int fieldCount = getU2(endOffset);
+		endOffset += 2;
+		for (int i = 0; i < fieldCount; i++) {
+			endOffset = skipAttributes(endOffset + 6);
+		}
+		// skip methods
+		int methodCount = getU2(endOffset);
+		endOffset += 2;
+		for (int i = 0; i < methodCount; i++) {
+			endOffset = skipAttributes(endOffset + 6);
+		}
 		getAllAttributes();
 	}
 
@@ -120,26 +127,6 @@ class ByteCodeAnalyzer {
 		endOffset = offset;
 	}
 
-	@Override
-	public String toString() {
-		String result = "";
-		for (int i = 0; i < poolOffsets.length; i++) {
-			final int offset = poolOffsets[i];
-			result += "index #" + (i + 1) + ": " + format(offset) + "\n";
-			final int tag = getU1(offset);
-			if (tag == 5 || tag == 6) i++;
-		}
-		if (interfaces != null) for (int i = 0; i < interfaces.length; i++)
-			result += "interface #" + (i + 1) + ": " + interfaces[i] + "\n";
-		if (fields != null) for (int i = 0; i < fields.length; i++)
-			result += "field #" + (i + 1) + ": " + fields[i] + "\n";
-		if (methods != null) for (int i = 0; i < methods.length; i++)
-			result += "method #" + (i + 1) + ": " + methods[i] + "\n";
-		if (attributes != null) for (int i = 0; i < attributes.length; i++)
-			result += "attribute #" + (i + 1) + ": " + attributes[i] + "\n";
-		return result;
-	}
-
 	private int getU1(final int offset) {
 		return getU1(buffer, offset);
 	}
@@ -173,89 +160,17 @@ class ByteCodeAnalyzer {
 		}
 	}
 
-	private String format(final int offset) {
-		final int tag = getU1(offset);
-		final int u2 = getU2(offset + 1);
-		final String result = "offset: " + offset + "(" + tag + "), ";
-		if (tag == 7) return result + "class #" + u2;
-		if (tag == 9) return result + "field #" + u2 + ", #" + getU2(offset + 3);
-		if (tag == 10) return result + "method #" + u2 + ", #" + getU2(offset + 3);
-		if (tag == 11) return result + "interface method #" + u2 + ", #" +
-			getU2(offset + 3);
-		if (tag == 8) return result + "string #" + u2;
-		if (tag == 3) return result + "integer " + getU4(offset + 1);
-		if (tag == 4) return result + "float " + getU4(offset + 1);
-		if (tag == 12) return result + "name and type #" + u2 + ", #" +
-			getU2(offset + 3);
-		if (tag == 5) return result + "long " + getU4(offset + 1) + ", " +
-			getU4(offset + 5);
-		if (tag == 6) return result + "double " + getU4(offset + 1) + ", " +
-			getU4(offset + 5);
-		if (tag == 1) return result + "utf8 " + u2 + " " + getString(offset);
-		return result + "unknown";
-	}
-
-	private void getAllInterfaces() {
-		interfacesOffset = endOffset + 6;
-		interfaces = new Interface[getU2(interfacesOffset)];
-		for (int i = 0; i < interfaces.length; i++)
-			interfaces[i] = new Interface(interfacesOffset + 2 + i * 2);
-	}
-
-	private class Interface {
-
-		private Interface(final int offset) {
+	private int skipAttributes(int offset) {
+		int count = getU2(offset);
+		offset += 2;
+		for (int i = 0; i < count; i++) {
+			offset += 6 + getU4(offset + 2);
 		}
-	}
-
-	private void getAllFields() {
-		fieldsOffset = interfacesOffset + 2 + 2 * interfaces.length;
-		fields = new Field[getU2(fieldsOffset)];
-		for (int i = 0; i < fields.length; i++)
-			fields[i] =
-				new Field(i == 0 ? fieldsOffset + 2 : fields[i - 1].getFieldEndOffset());
-	}
-
-	private class Field {
-
-		private Attribute[] fieldAttributes;
-		private int fieldEndOffset;
-
-		private Field(final int offset) {
-			fieldAttributes = getAttributes(offset + 6);
-			fieldEndOffset =
-				fieldAttributes.length == 0 ? offset + 8
-					: fieldAttributes[fieldAttributes.length - 1].attributeEndOffset;
-		}
-
-		protected int getFieldEndOffset() {
-			return fieldEndOffset;
-		}
-	}
-
-	private void getAllMethods() {
-		methodsOffset =
-			fields.length == 0 ? fieldsOffset + 2 : fields[fields.length - 1]
-				.getFieldEndOffset();
-		methods = new Method[getU2(methodsOffset)];
-		for (int i = 0; i < methods.length; i++)
-			methods[i] =
-				new Method(i == 0 ? methodsOffset + 2 : methods[i - 1]
-					.getFieldEndOffset());
-	}
-
-	private class Method extends Field {
-
-		private Method(final int offset) {
-			super(offset);
-		}
+		return offset;
 	}
 
 	private void getAllAttributes() {
-		attributesOffset =
-			methods.length == 0 ? methodsOffset + 2 : methods[methods.length - 1]
-				.getFieldEndOffset();
-		attributes = getAttributes(attributesOffset);
+		attributes = getAttributes(endOffset);
 	}
 
 	private Attribute[] getAttributes(final int offset) {
