@@ -41,6 +41,7 @@ import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Map;
 
 /**
  * Indexes a directory of classes.
@@ -88,18 +89,28 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				final String className =
 					classNamePrefix + fileName.substring(0, fileName.length() - 6);
 				try {
-					final Class<?> clazz = loader.loadClass(className);
-					for (final Annotation a : clazz.getAnnotations()) {
-						add(a, className);
+					for (final Map.Entry<String, Map<String, Object>> entry : ByteCodeAnalyzer
+						.getAnnotations(file).entrySet())
+					{
+						final String annotationName = entry.getKey();
+						try {
+							if (!isIndexable(loader.loadClass(annotationName))) {
+								continue;
+							}
+						}
+						catch (ClassNotFoundException e) {
+							// fall back to the class loader that laoded the directory indexer
+							if (!isIndexable(Class.forName(annotationName))) {
+								continue;
+							}
+						}
+						add(entry.getValue(), annotationName, className);
 					}
-				} catch (NoClassDefFoundError e) {
-					System.err.println("Warning: could not load class '" + className + "' ("
-							+ e.getMessage() + "); skipping");
-				} catch (ClassNotFoundException e) {
-					System.err.println("Warning: could not load class '" + className + "'; skipping");
-				} catch (Throwable e){
-					System.err.println("Warning: could not load class '" + className + "' ("
-							+ e.getMessage() + "); skipping");
+				}
+				catch (Throwable e) {
+					System.err.println("Warning: could not load class '" + className +
+						"'; skipping");
+					e.printStackTrace();
 				}
 			}
 		}
@@ -116,7 +127,11 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 
 	private static <A extends Annotation> boolean isIndexable(final A annotation)
 	{
-		return annotation.annotationType().getAnnotation(Indexable.class) != null;
+		return isIndexable(annotation.annotationType());
+	}
+
+	private static boolean isIndexable(final Class<?> annotationClass) {
+		return annotationClass.getAnnotation(Indexable.class) != null;
 	}
 
 	protected synchronized void write(final File directory) throws IOException {

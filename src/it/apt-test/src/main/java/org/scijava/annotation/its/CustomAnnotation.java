@@ -48,6 +48,7 @@ import org.scijava.annotations.Indexable;
 public @interface CustomAnnotation {
 
 	String greeting() default "Hello, World!";
+	int number() default 123;
 
 }
 
