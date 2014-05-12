@@ -168,12 +168,17 @@ public class EclipseHelper extends DirectoryIndexer {
 			debug("Not a file URL: " + url);
 			return;
 		}
-		String path = url.getFile();
-		if (!path.startsWith("/")) {
+		File file = FileUtils.urlToFile(url);
+		if (autoDetectEclipse && !file.isAbsolute()) {
 			debug("Not an absolute file URL: " + url);
 			return;
 		}
-		if (path.endsWith(".jar")) {
+		final String name = file.getName();
+		if (name.endsWith(".jar")) {
+			if (!file.isFile()) {
+				debug("Not a file: " + file);
+				return;
+			}
 			/*
 			 * To support mixed development with Eclipse and Maven, let's handle
 			 * the case where Eclipse compiled classes, did not run the annotation
@@ -182,8 +187,8 @@ public class EclipseHelper extends DirectoryIndexer {
 			 * but crucially also the target/classes/ and target/test-classes/
 			 * directories which may need to be indexed.
 			 */
-			if (!autoDetectEclipse || path.matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
-				final JarFile jar = new JarFile(path);
+			if (!autoDetectEclipse || url.toString().matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
+				final JarFile jar = new JarFile(file);
 				Manifest manifest = jar.getManifest();
 				if (manifest != null) {
 					final String classPath =
@@ -205,11 +210,10 @@ public class EclipseHelper extends DirectoryIndexer {
 			}
 			return;
 		}
-		File directory = FileUtils.urlToFile(url);
-		if (!directory.isDirectory()) {
+		if (!file.isDirectory()) {
 			return;
 		}
-		index(directory, loader);
+		index(file, loader);
 	}
 
 	private void index(File directory, ClassLoader loader) {
