@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -190,6 +191,20 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			final Object decoded = language.decode(value);
 			final Object typed = ConversionUtils.convert(decoded, item.getType());
 			setOutput(name, typed);
+		}
+
+		if (output != null) try {
+			output.flush();
+		} catch (IOException e) {
+			if (error == null) {
+				log.error(e);
+			} else {
+				e.printStackTrace(errorPrinter);
+			}
+		}
+
+		if (errorPrinter != null) {
+			errorPrinter.flush();
 		}
 	}
 
