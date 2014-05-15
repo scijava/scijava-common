@@ -451,8 +451,8 @@ public final class DefaultUIService extends AbstractService implements
 			for (UserInterface ui : getAvailableUIs()) {
 				final StatusBar statusBar = ui.getStatusBar();
 				if (statusBar != null) {
-					ui.getStatusBar().setStatus(message);
-					ui.getStatusBar().setProgress(val, max);
+					statusBar.setStatus(message);
+					statusBar.setProgress(val, max);
 				}
 			}
 		}
