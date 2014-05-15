@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -146,7 +147,13 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		engine.put(ScriptEngine.FILENAME, path);
 		final ScriptContext scriptContext = engine.getContext();
 		if (output != null) scriptContext.setWriter(output);
-		if (error != null) scriptContext.setErrorWriter(error);
+		final PrintWriter errorPrinter;
+		if (error != null) {
+			scriptContext.setErrorWriter(error);
+			errorPrinter = new PrintWriter(error);
+		} else {
+			errorPrinter = null;
+		}
 
 		// populate bindings with the input values
 		for (final ModuleItem<?> item : getInfo().inputs()) {
@@ -164,11 +171,15 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			setOutput(RETURN_VALUE, language.decode(returnValue));
 			setResolved(RETURN_VALUE, true);
 		}
-		catch (final ScriptException e) {
-			log.error(e.getCause());
-		}
-		catch (final Throwable e) {
-			log.error(e);
+		catch (Throwable e) {
+			while (e instanceof ScriptException && e.getCause() != null) {
+				e = e.getCause();
+			}
+			if (error == null) {
+				log.error(e);
+			} else {
+				e.printStackTrace(errorPrinter);
+			}
 		}
 
 		// populate output values
