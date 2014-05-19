@@ -76,6 +76,9 @@ public class XML {
 	/** XPath evaluation mechanism. */
 	private final XPath xpath;
 
+	private final boolean debug =
+			"debug".equals(System.getProperty("scijava.log.level"));
+
 	/** Parses XML from the given file. */
 	public XML(final File file) throws ParserConfigurationException,
 		SAXException, IOException
@@ -113,7 +116,51 @@ public class XML {
 	public XML(final String path, final Document doc) {
 		this.path = path;
 		this.doc = doc;
-		xpath = XPathFactory.newInstance().newXPath();
+
+		// Protect against class skew: some ImageJ projects find it funny to ship
+		// outdated xalan, sometimes causing problems due to incompatible
+		// xalan/xerces combinations.
+		// 
+		// We work around that by letting the XPathFactory try with the current
+		// context class loader, and fall back onto its parent until it succeeds
+		// (because the XPathFactory will ask the context class loader to find the
+		// configured services, including the
+		// com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl).
+		if (debug) {
+			System.err.println(ClassUtils.getLocation(XPathFactory.class));
+		}
+
+		XPath xpath = null;
+		final Thread thread = Thread.currentThread();
+		final ClassLoader contextClassLoader = thread.getContextClassLoader();
+		try {
+			ClassLoader loader = contextClassLoader;
+			for (;;) try {
+				xpath = XPathFactory.newInstance().newXPath();
+				try {
+					// make sure that the current xalan/xerces pair can evaluate
+					// expressions (i.e. *not* throw NoSuchMethodErrors).
+					xpath.evaluate("//dummy", doc);
+				} catch (Throwable t) {
+					if (debug) {
+						System.err.println("There was a problem with " +
+							xpath.getClass() + " in " +
+							ClassUtils.getLocation(xpath.getClass()) + ":");
+						t.printStackTrace();
+					}
+					throw new Error(t);
+				}
+				break;
+			} catch (Error e) {
+				if (debug) e.printStackTrace();
+				loader = loader.getParent();
+				if (loader == null) throw e;
+				thread.setContextClassLoader(loader);
+			}
+			this.xpath = xpath;
+		} finally {
+			thread.setContextClassLoader(contextClassLoader);
+		}
 	}
 
 	// -- XML methods --
