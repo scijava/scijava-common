@@ -448,11 +448,16 @@ public final class DefaultUIService extends AbstractService implements
 			final int val = event.getProgressValue();
 			final int max = event.getProgressMaximum();
 			final String message = getStatusMessage(event);
+			if (max < 0 && message == null) return;
 			for (UserInterface ui : getAvailableUIs()) {
 				final StatusBar statusBar = ui.getStatusBar();
 				if (statusBar != null) {
-					statusBar.setStatus(message);
-					statusBar.setProgress(val, max);
+					if (max >= 0) {
+						statusBar.setProgress(val, max);
+					}
+					if (message != null) {
+						statusBar.setStatus(message);
+					}
 				}
 			}
 		}
