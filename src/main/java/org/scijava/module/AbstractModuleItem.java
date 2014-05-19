@@ -118,7 +118,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 
 	@Override
 	public boolean isRequired() {
-		return false;
+		return true;
 	}
 
 	@Override
