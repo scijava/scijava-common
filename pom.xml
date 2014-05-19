@@ -87,6 +87,17 @@
 			</roles>
 			<timezone>-5</timezone>
 		</contributor>
+		<contributor>
+			<name>Christian Dietz</name>
+			<email>christian.dietz@uni-konstanz.de</email>
+			<url>http://www.informatik.uni-konstanz.de/berthold/mitglieder/christian-dietz/</url>
+			<organization>University of Konstanz</organization>
+			<organizationUrl>http://www.informatik.uni-konstanz.de/</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</contributor>
 		<contributor><name>Jay Warrick</name></contributor>
 	</contributors>
 
