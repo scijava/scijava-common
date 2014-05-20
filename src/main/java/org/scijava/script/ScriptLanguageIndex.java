@@ -39,6 +39,7 @@ import java.util.Map;
 
 import javax.script.ScriptEngineFactory;
 
+import org.scijava.log.LogService;
 import org.scijava.util.FileUtils;
 
 /**
@@ -57,14 +58,32 @@ public class ScriptLanguageIndex extends HashSet<ScriptLanguage> {
 	private final Map<String, ScriptLanguage> byName =
 		new HashMap<String, ScriptLanguage>();
 
+	private final LogService log;
+
+	@Deprecated
+	public ScriptLanguageIndex() {
+		this(null);
+	}
+
+	/**
+	 * Instantiates an index of the available script languages.
+	 * 
+	 * @param logService the log service for errors and warnings
+	 */
+	public ScriptLanguageIndex(final LogService logService) {
+		log = logService;
+	}
+
 	public boolean add(final ScriptEngineFactory factory, final boolean gently) {
 		final String duplicateName = checkDuplicate(factory);
 		if (duplicateName != null) {
 			if (gently) return false;
-			throw new IllegalArgumentException("Duplicate scripting language '" +
-				duplicateName + "': existing=" +
-				byName.get(duplicateName).getClass().getName() + ", new=" +
-				factory.getClass().getName());
+			if (log != null) {
+				log.warn("Duplicate scripting language '" +
+					duplicateName + "': existing=" +
+					byName.get(duplicateName).getClass().getName() +
+					", new=" + factory.getClass().getName());
+			}
 		}
 
 		final ScriptLanguage language = wrap(factory);
