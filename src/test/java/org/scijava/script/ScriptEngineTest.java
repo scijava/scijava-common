@@ -1,0 +1,111 @@
+/*
+ * #%L
+ * SciJava Common shared library for SciJava software.
+ * %%
+ * Copyright (C) 2009 - 2014 Board of Regents of the University of
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+package org.scijava.script;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
+import org.junit.Test;
+import org.scijava.Context;
+import org.scijava.plugin.Plugin;
+
+/**
+ * Basic tests for the {@link ScriptService}.
+ * 
+ * @author Johannes Schindelin
+ */
+public class ScriptEngineTest {
+
+	@Test
+	public void testRot13() throws Exception {
+		final Context context = new Context(ScriptService.class);
+		final ScriptService scriptService = context.getService(ScriptService.class);
+		final ScriptLanguage hello = scriptService.getLanguageByName("Hello");
+		assertNotNull(hello);
+		final ScriptLanguage rot13 = scriptService.getLanguageByName("Rot13");
+		assertEquals(hello, rot13);
+		assertEquals("Svool", rot13.getScriptEngine().eval("Hello"));
+	}
+
+	@Plugin(type = ScriptLanguage.class)
+	public static class Rot13 extends AbstractScriptLanguage {
+
+		@Override
+		public ScriptEngine getScriptEngine() {
+			return new Rot13Engine();
+		}
+
+		@Override
+		public List<String> getNames() {
+			return Arrays.asList("Hello", "World", "Rot13");
+		}
+	}
+
+	public static class Rot13Engine extends AbstractScriptEngine {
+
+		@Override
+		public Object eval(String script) throws ScriptException {
+			return eval(new StringReader(script));
+		}
+
+		@Override
+		public Object eval(Reader reader) throws ScriptException {
+			final StringBuilder builder = new StringBuilder();
+			try {
+				for (;;) {
+					int c = reader.read();
+					if (c < 0) {
+						break;
+					}
+					if (c >= 'A' && c <= 'Z') {
+						c = 'Z' - c + 'A';
+					} else if (c >= 'a' && c <= 'z') {
+						c = 'z' - c + 'a';
+					}
+					builder.append((char) c);
+				}
+			} catch (final IOException e) {
+				throw new ScriptException(e);
+			}
+			return builder.toString();
+		}
+	}
+}
