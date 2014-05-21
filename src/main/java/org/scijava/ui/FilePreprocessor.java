@@ -52,13 +52,14 @@ import org.scijava.plugin.Plugin;
 	priority = Priority.VERY_LOW_PRIORITY + 1)
 public class FilePreprocessor extends AbstractPreprocessorPlugin {
 
-	@Parameter
+	@Parameter(required = false)
 	private UIService uiService;
 
 	// -- ModuleProcessor methods --
 
 	@Override
 	public void process(final Module module) {
+		if (uiService == null) return;
 		final ModuleItem<File> fileInput = getFileInput(module);
 		if (fileInput == null) return;
 
