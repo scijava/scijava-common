@@ -290,7 +290,7 @@ public class DefaultScriptService extends
 	private synchronized void initScriptLanguageIndex() {
 		if (scriptLanguageIndex != null) return; // already initialized
 
-		final ScriptLanguageIndex index = new ScriptLanguageIndex();
+		final ScriptLanguageIndex index = new ScriptLanguageIndex(log);
 
 		// add ScriptLanguage plugins
 		for (final ScriptLanguage language : getInstances()) {
