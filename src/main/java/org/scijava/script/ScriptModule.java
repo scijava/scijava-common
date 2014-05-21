@@ -146,6 +146,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 
 		// initialize the script engine
 		engine.put(ScriptEngine.FILENAME, path);
+		engine.put(ScriptModule.class.getName(), this);
 		final ScriptContext scriptContext = engine.getContext();
 		if (output != null) scriptContext.setWriter(output);
 		final PrintWriter errorPrinter;
