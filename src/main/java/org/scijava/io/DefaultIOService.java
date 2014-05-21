@@ -82,8 +82,14 @@ public final class DefaultIOService
 
 	@Override
 	public Object open(final String source) throws IOException {
-		final Object data = getOpener(source).open(source);
-		eventService.publish(new DataOpenedEvent(source, data));
+		IOPlugin<?> opener = getOpener(source);
+		Object data = null;
+		if (opener != null) {
+			data= opener.open(source);
+		}
+		if (data != null) {
+			eventService.publish(new DataOpenedEvent(source, data));
+		}
 		return data;
 	}
 
@@ -91,7 +97,10 @@ public final class DefaultIOService
 	public void save(final Object data, final String destination)
 		throws IOException
 	{
-		getSaver(data, destination).save(data, destination);
+		IOPlugin<Object> saver = getSaver(data, destination);
+		if (saver != null) {
+			saver.save(data, destination);
+		}
 		eventService.publish(new DataSavedEvent(destination, data));
 	}
 
