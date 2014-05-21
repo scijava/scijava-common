@@ -33,13 +33,17 @@ package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -65,6 +69,20 @@ public class ScriptEngineTest {
 		assertEquals("Svool", rot13.getScriptEngine().eval("Hello"));
 	}
 
+	@Test
+	public void testScriptModuleValue() throws Exception {
+		final Context context = new Context(ScriptService.class);
+		final ScriptService scriptService = context.getService(ScriptService.class);
+		final ScriptModule module =
+			scriptService.run("test.rot13", ScriptModule.class.getName(), false,
+				(Map<String, Object>) null).get();
+		final ScriptModule scriptModule = Rot13Engine.latestModule;
+		assertEquals(module, scriptModule);
+		assertTrue(scriptModule instanceof ScriptModule);
+		final ScriptInfo info = ((ScriptModule) scriptModule).getInfo();
+		assertEquals(context, info.context());
+	}
+
 	@Plugin(type = ScriptLanguage.class)
 	public static class Rot13 extends AbstractScriptLanguage {
 
@@ -77,9 +95,20 @@ public class ScriptEngineTest {
 		public List<String> getNames() {
 			return Arrays.asList("Hello", "World", "Rot13");
 		}
+
+		@Override
+		public List<String> getExtensions() {
+			return Arrays.asList("rot13");
+		}
 	}
 
-	public static class Rot13Engine extends AbstractScriptEngine {
+	private static class Rot13Engine extends AbstractScriptEngine {
+
+		{
+			engineScopeBindings = new Rot13Bindings();
+		}
+
+		private static ScriptModule latestModule;
 
 		@Override
 		public Object eval(String script) throws ScriptException {
@@ -88,6 +117,7 @@ public class ScriptEngineTest {
 
 		@Override
 		public Object eval(Reader reader) throws ScriptException {
+			latestModule = (ScriptModule) get(ScriptModule.class.getName());
 			final StringBuilder builder = new StringBuilder();
 			try {
 				for (;;) {
@@ -108,4 +138,6 @@ public class ScriptEngineTest {
 			return builder.toString();
 		}
 	}
+
+	private static class Rot13Bindings extends HashMap<String, Object> implements Bindings {	}
 }
