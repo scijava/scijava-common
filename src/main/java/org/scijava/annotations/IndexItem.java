@@ -191,7 +191,7 @@ public class IndexItem<A extends Annotation> {
 				return loader.loadClass((String) o);
 			}
 			catch (Throwable t) {
-				throw new ClassCastException(t.getMessage());
+				throw cce(t);
 			}
 		}
 		else if (expectedType.isArray()) {
@@ -214,7 +214,7 @@ public class IndexItem<A extends Annotation> {
 				return loader.loadClass(enumName).getField(constName).get(null);
 			}
 			catch (Throwable t) {
-				throw new ClassCastException(t.getMessage());
+				throw cce(t);
 			}
 		}
 		else if (Annotation.class.isAssignableFrom(expectedType)) {
@@ -226,5 +226,11 @@ public class IndexItem<A extends Annotation> {
 		}
 		throw new ClassCastException("Cannot cast object of type " +
 			o.getClass().getName() + " to " + expectedType.getName());
+	}
+
+	private static ClassCastException cce(final Throwable cause) {
+		final ClassCastException cce = new ClassCastException();
+		cce.initCause(cause);
+		return cce;
 	}
 }
