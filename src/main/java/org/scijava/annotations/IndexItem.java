@@ -85,6 +85,7 @@ public class IndexItem<A extends Annotation> {
 		return (A) Proxy.newProxyInstance(loader, new Class<?>[] { annotation },
 			new InvocationHandler() {
 
+				@Override
 				public Object invoke(Object proxy, Method method, Object[] args)
 					throws Throwable
 				{
