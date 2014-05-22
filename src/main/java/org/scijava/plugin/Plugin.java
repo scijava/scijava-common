@@ -188,4 +188,8 @@ public @interface Plugin {
 	 */
 	Attr[] attrs() default {};
 
+	/**
+	 * A list of additional classes used to index this plugin.
+	 */
+	Class<? extends SciJavaPlugin>[] indices() default {};
 }
