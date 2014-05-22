@@ -178,9 +178,7 @@ public class IndexItem<A extends Annotation> {
 			if (expectedType == Float.TYPE) {
 				return (float) d;
 			}
-			else {
-				return d;
-			}
+			return d;
 		}
 		else if (expectedType == Character.TYPE) {
 			String s = (String) o;
