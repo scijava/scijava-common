@@ -66,7 +66,7 @@ public class IndexItem<A extends Annotation> {
 	 * @return the annotation values
 	 */
 	public A annotation() {
-		return proxy(annotation, loader, map);
+		return proxy(annotation, loader, className, map);
 	}
 
 	/**
@@ -80,7 +80,8 @@ public class IndexItem<A extends Annotation> {
 
 	@SuppressWarnings("unchecked")
 	private static <A extends Annotation> A proxy(final Class<A> annotation,
-		final ClassLoader loader, final Map<Object, Object> map)
+		final ClassLoader loader, final String className,
+		final Map<Object, Object> map)
 	{
 		return (A) Proxy.newProxyInstance(loader, new Class<?>[] { annotation },
 			new InvocationHandler() {
@@ -98,7 +99,7 @@ public class IndexItem<A extends Annotation> {
 						value = map.get(name);
 						final Class<?> expectedType = method.getReturnType();
 						if (!expectedType.isAssignableFrom(value.getClass())) {
-							value = adapt(value, loader, expectedType);
+							value = adapt(value, loader, expectedType, className);
 						}
 					}
 					else if (name.equals("toString") &&
@@ -147,7 +148,7 @@ public class IndexItem<A extends Annotation> {
 	}
 
 	private static Object adapt(final Object o, final ClassLoader loader,
-		final Class<?> expectedType)
+		final Class<?> expectedType, final String className)
 	{
 		if (o == null) {
 			return null;
@@ -191,7 +192,7 @@ public class IndexItem<A extends Annotation> {
 				return loader.loadClass((String) o);
 			}
 			catch (Throwable t) {
-				throw cce(o, expectedType, t);
+				throw cce(o, expectedType, className, t);
 			}
 		}
 		else if (expectedType.isArray()) {
@@ -201,7 +202,7 @@ public class IndexItem<A extends Annotation> {
 			int length = list.size();
 			Object array = Array.newInstance(type, length);
 			for (int i = 0; i < length; i++) {
-				Array.set(array, i, adapt(list.get(i), loader, type));
+				Array.set(array, i, adapt(list.get(i), loader, type, className));
 			}
 			return array;
 		}
@@ -214,7 +215,7 @@ public class IndexItem<A extends Annotation> {
 				return loader.loadClass(enumName).getField(constName).get(null);
 			}
 			catch (Throwable t) {
-				throw cce(o, expectedType, t);
+				throw cce(o, expectedType, className, t);
 			}
 		}
 		else if (Annotation.class.isAssignableFrom(expectedType)) {
@@ -222,20 +223,20 @@ public class IndexItem<A extends Annotation> {
 			final Class<Annotation> annotation = (Class<Annotation>) expectedType;
 			@SuppressWarnings("unchecked")
 			final Map<Object, Object> map = (Map<Object, Object>) o;
-			return proxy(annotation, loader, map);
+			return proxy(annotation, loader, className, map);
 		}
-		throw cce(o, expectedType, null);
+		throw cce(o, expectedType, className, null);
 	}
 
 	private static ClassCastException cce(final Object o,
-		final Class<?> expectedType, final Throwable cause)
+		final Class<?> expectedType, final String className, final Throwable cause)
 	{
 		final String oType = o == null ? "<null>" : o.getClass().getName();
 		final String eType =
 			expectedType == null ? "<null>" : expectedType.getName();
 		final ClassCastException cce =
-			new ClassCastException("Cannot cast object of type " + oType + " to " +
-				eType);
+			new ClassCastException(className + ": cannot cast object of type " +
+				oType + " to " + eType);
 		if (cause != null) cce.initCause(cause);
 		return cce;
 	}
