@@ -31,11 +31,11 @@
 
 package org.scijava.module.process;
 
-import org.scijava.Priority;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ConversionUtils;
+import org.scijava.widget.InputHarvester;
 
 /**
  * A preprocessor for loading populated input values from persistent storage.
@@ -49,7 +49,7 @@ import org.scijava.util.ConversionUtils;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_LOW_PRIORITY + 1)
+	priority = InputHarvester.PRIORITY + 1)
 public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 
 	// -- ModuleProcessor methods --

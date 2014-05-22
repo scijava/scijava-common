@@ -33,13 +33,13 @@ package org.scijava.ui;
 
 import java.io.File;
 
-import org.scijava.Priority;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.process.AbstractPreprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.widget.InputHarvester;
 
 /**
  * A preprocessor plugin that handles single unresolved parameters of type
@@ -49,7 +49,7 @@ import org.scijava.plugin.Plugin;
  * @see UserInterface#chooseFile(File, String)
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_LOW_PRIORITY + 1)
+	priority = InputHarvester.PRIORITY + 0.5)
 public class FilePreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)
