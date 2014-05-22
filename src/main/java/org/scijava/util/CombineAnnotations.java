@@ -59,13 +59,14 @@ public class CombineAnnotations
 		try {
 			combiner.combine(null);
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			if (e instanceof IOException) {
-				throw new IOException(e.getMessage());
+				throw (IOException) e;
 			}
 			if (e instanceof ClassNotFoundException) {
-				throw new ClassNotFoundException(e.getMessage());
+				throw (ClassNotFoundException) e;
 			}
+			throw new IOException(e);
 		}
 	}
 
