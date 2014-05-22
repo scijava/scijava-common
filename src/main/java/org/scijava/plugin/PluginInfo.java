@@ -32,6 +32,9 @@
 package org.scijava.plugin;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.scijava.AbstractUIDetails;
 import org.scijava.Instantiable;
@@ -78,6 +81,8 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/** Class loader to use when loading the class with {@link #loadClass()}. */
 	private ClassLoader classLoader;
+
+	private List<Class<? extends SciJavaPlugin>> indices;
 
 	/**
 	 * Creates a new plugin metadata object.
@@ -220,6 +225,23 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return pluginType;
 	}
 
+	/**
+	 * Sets the additional classes this plugin should be indexed under.
+	 */
+	public void setIndices(Class<? extends SciJavaPlugin>[] indices) {
+		if (this.indices == null) {
+			this.indices = new ArrayList<Class<? extends SciJavaPlugin>>();
+		}
+		this.indices.addAll(Arrays.asList(indices));
+	}
+
+	/**
+	 * Gets the list of additional classes used to index this plugin.
+	 */
+	public List<Class<? extends SciJavaPlugin>> getIndices() {
+		return indices;
+	}
+
 	/** Gets the associated @{@link Plugin} annotation. */
 	public Plugin getAnnotation() {
 		return annotation;
@@ -313,6 +335,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		setName(ann.name());
 		setLabel(ann.label());
 		setDescription(ann.description());
+		setIndices(ann.indices());
 
 		final MenuPath menuPath;
 		final Menu[] menu = ann.menu();
