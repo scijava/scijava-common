@@ -156,20 +156,19 @@ public class ModuleRunner extends AbstractContextual implements
 		final ModulePreprocessor canceler = preProcess();
 		if (canceler != null) {
 			// module execution was canceled by preprocessor
-			cancel(title, canceler.getCancelReason());
+			final String reason = canceler.getCancelReason();
+			cancel(reason);
+			cleanupAndBroadcastCancelation(title, reason);
 			return;
 		}
 
 		// execute module
 		if (es != null) es.publish(new ModuleExecutingEvent(module));
 		module.run();
-		if (module instanceof Cancelable) {
-			final Cancelable cancelable = (Cancelable) module;
-			if (cancelable.isCanceled()) {
-				// module execution was canceled by the module itself
-				cancel(title, cancelable.getCancelReason());
-				return;
-			}
+		if (isCanceled()) {
+			// module execution was canceled by the module itself
+			cleanupAndBroadcastCancelation(title, getCancelReason());
+			return;
 		}
 		if (es != null) es.publish(new ModuleExecutedEvent(module));
 
@@ -183,7 +182,9 @@ public class ModuleRunner extends AbstractContextual implements
 
 	// -- Helper methods --
 
-	private void cancel(final String title, final String reason) {
+	private void cleanupAndBroadcastCancelation(final String title,
+		final String reason)
+	{
 		if (ss != null) ss.showStatus("Canceling command: " + title);
 		module.cancel();
 		if (es != null) es.publish(new ModuleCanceledEvent(module, reason));
@@ -191,6 +192,20 @@ public class ModuleRunner extends AbstractContextual implements
 			ss.showStatus("Command canceled: " + title);
 			if (reason != null) ss.warn(reason);
 		}
+	}
+
+	private boolean isCanceled() {
+		return module instanceof Cancelable && ((Cancelable) module).isCanceled();
+	}
+
+	private String getCancelReason() {
+		return module instanceof Cancelable ?
+			((Cancelable) module).getCancelReason() : null;
+	}
+
+	private void cancel(final String reason) {
+		if (!(module instanceof Cancelable)) return;
+		((Cancelable) module).cancel(reason);
 	}
 
 }
