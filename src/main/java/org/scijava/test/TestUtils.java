@@ -103,18 +103,25 @@ public class TestUtils {
 		final Class<?> forClass, final String suffix) throws IOException
 	{
 		final URL directory = ClassUtils.getLocation(forClass);
-		if (directory != null && "file".equals(directory.getProtocol())) {
-			final String path = directory.getPath();
-			if (path != null && path.endsWith("/target/test-classes/")) {
-				final File baseDirectory =
-					new File(path.substring(0, path.length() - 13));
-				final File file = new File(baseDirectory, prefix + suffix);
-				if (file.exists()) FileUtils.deleteRecursively(file);
-				if (!file.mkdir()) throw new IOException("Could not make directory " + file);
-				return file;
-			}
+		if (directory == null) {
+			throw new IllegalArgumentException("No location for class " + forClass);
 		}
-		return FileUtils.createTemporaryDirectory(prefix, suffix);
+		if (!"file".equals(directory.getProtocol())) {
+			throw new IllegalArgumentException("Invalid directory: " + directory);
+		}
+		final String path = directory.getPath();
+		if (path == null) throw new IllegalArgumentException("Directory has null path");
+		final File baseDirectory;
+		if (path.endsWith("/target/test-classes/")) {
+			baseDirectory = new File(path).getParentFile();
+		} else {
+			baseDirectory = new File(path);
+		}
+
+		final File file = new File(baseDirectory, prefix + suffix);
+		if (file.exists()) FileUtils.deleteRecursively(file);
+		if (!file.mkdir()) throw new IOException("Could not make directory " + file);
+		return file;
 	}
 
 	/**
