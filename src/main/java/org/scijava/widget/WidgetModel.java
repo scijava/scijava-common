@@ -126,6 +126,18 @@ public class WidgetModel extends AbstractContextual {
 	}
 
 	/**
+	 * Gets whether the widget is the given style. A widget may have multiple
+	 * styles separated by commas, so this method is more correct than using
+	 * {@code style.equals(getItem().getWidgetStyle())}.
+	 */
+	public boolean isStyle(final String style) {
+		for (final String s : getItem().getWidgetStyle().split(",")) {
+			if (s.equals(style)) return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Gets the current value of the module input.
 	 * <p>
 	 * In the case of inputs with a limited set of choices (i.e.,
