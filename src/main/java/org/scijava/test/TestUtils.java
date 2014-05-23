@@ -119,7 +119,10 @@ public class TestUtils {
 		}
 
 		final File file = new File(baseDirectory, prefix + suffix);
-		if (file.exists()) FileUtils.deleteRecursively(file);
+		if (file.isDirectory()) FileUtils.deleteRecursively(file);
+		else if (file.exists() && !file.delete()) {
+			throw new IOException("Could not remove " + file);
+		}
 		if (!file.mkdir()) throw new IOException("Could not make directory " + file);
 		return file;
 	}
