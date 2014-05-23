@@ -36,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.scijava.test.TestUtils.createTemporaryDirectory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -201,7 +202,8 @@ public class FileUtilsTest {
 		// write some items to a temporary .jar file
 		final String subDir = "sub 𝄞directory/";
 		final String subSubDir = "more 𝄢stuff/";
-		final File jarFile = File.createTempFile("listContentsTest", ".jar");
+		final File tmpDir = createTemporaryDirectory("file-utils-test-");
+		final File jarFile = new File(tmpDir, "listContentsTest.jar");
 		final FileOutputStream out = new FileOutputStream(jarFile);
 		final JarOutputStream jarOut = new JarOutputStream(out);
 		try {
@@ -292,7 +294,7 @@ public class FileUtilsTest {
 		final String withClassifier = "miglayout-3.7.3.1-swing.jar";
 		final String withoutClassifier = "miglayout-3.7.3.1.jar";
 
-		final File tmp = FileUtils.createTemporaryDirectory("delete-other-", "");
+		final File tmp = createTemporaryDirectory("delete-other-");
 		try {
 			writeEmptyFile(new File(tmp, withClassifier));
 			writeEmptyFile(new File(tmp, withoutClassifier));

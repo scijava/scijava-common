@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.scijava.test.TestUtils.createTemporaryDirectory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -171,7 +172,7 @@ public class ClassUtilsTest {
 
 	@Test
 	public void testUnpackedClass() throws IOException {
-		final File tmpDir = FileUtils.createTemporaryDirectory("class-utils-test", "");
+		final File tmpDir = createTemporaryDirectory("class-utils-test-");
 		final String path = getClass().getName().replace('.', '/') + ".class";
 		final File classFile = new File(tmpDir, path);
 		assertTrue(classFile.getParentFile().exists() ||
@@ -189,7 +190,8 @@ public class ClassUtilsTest {
 
 	@Test
 	public void testClassInJar() throws IOException {
-		final File jar = File.createTempFile("class-utils-test", ".jar");
+		final File tmpDir = createTemporaryDirectory("class-utils-test-");
+		final File jar = new File(tmpDir, "test.jar");
 		final JarOutputStream out = new JarOutputStream(new FileOutputStream(jar));
 		final String path = getClass().getName().replace('.', '/') + ".class";
 		out.putNextEntry(new ZipEntry(path));

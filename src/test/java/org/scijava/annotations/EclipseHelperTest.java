@@ -34,6 +34,7 @@ package org.scijava.annotations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.scijava.test.TestUtils.createTemporaryDirectory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,7 +55,7 @@ public class EclipseHelperTest {
 
 	@Test
 	public void testSkipIndexGeneration() throws Exception {
-		final File dir = createTempDirectory();
+		final File dir = createTemporaryDirectory("eclipse-test-");
 		copyClasses(dir, Complex.class, Simple.class);
 		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
 		assertFalse(jsonDir.exists());
@@ -68,7 +69,7 @@ public class EclipseHelperTest {
 
 	@Test
 	public void testIndexing() throws Exception {
-		final File dir = createTempDirectory();
+		final File dir = createTemporaryDirectory("eclipse-test-");
 		copyClasses(dir, Complex.class, Simple.class, Fruit.class,
 			AnnotatedA.class, AnnotatedB.class, AnnotatedC.class);
 		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
@@ -144,46 +145,4 @@ public class EclipseHelperTest {
 		}
 	}
 
-	private File createTempDirectory() throws IOException {
-		// if running from .../target/test-classes/, let's make a directory next to
-		// it
-		final String classPath =
-			"/" + DirectoryIndexerTest.getResourcePath(getClass());
-		final String url = getClass().getResource(classPath).toString();
-		if (url.startsWith("file:") && url.endsWith(classPath)) {
-			final String directory =
-				url.substring(5, url.length() - classPath.length());
-			if (directory.endsWith("/target/test-classes")) {
-				final File testClassesDirectory = new File(directory);
-				if (testClassesDirectory.isDirectory()) {
-					final File result =
-						new File(testClassesDirectory.getParentFile(), "eclipse test");
-					if (result.exists()) {
-						rmRF(result);
-					}
-					return result;
-				}
-			}
-		}
-		// fall back to /tmp/
-		final File result = File.createTempFile("eclipse test", "");
-		result.delete();
-		result.mkdir();
-		return result;
-	}
-
-	private static boolean rmRF(final File directory) {
-		final File[] list = directory.listFiles();
-		if (list != null) {
-			for (final File file : list) {
-				if (file.isFile() && !file.delete()) {
-					return false;
-				}
-				else if (file.isDirectory() && !rmRF(file)) {
-					return false;
-				}
-			}
-		}
-		return directory.delete();
-	}
 }
