@@ -34,6 +34,8 @@ package org.scijava.test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.AbstractMap;
+import java.util.Map;
 
 import org.scijava.util.ClassUtils;
 import org.scijava.util.FileUtils;
@@ -58,7 +60,8 @@ public class TestUtils {
 	 * @throws IOException
 	 */
 	public static File createTemporaryDirectory(final String prefix) throws IOException {
-		return createTemporaryDirectory(prefix, getCallingClass(null));
+		final Map.Entry<Class<?>, String> calling = getCallingCodeLocation(null);
+		return createTemporaryDirectory(prefix, calling.getKey(), calling.getValue());
 	}
 
 	/**
@@ -78,17 +81,40 @@ public class TestUtils {
 	public static File createTemporaryDirectory(final String prefix,
 		final Class<?> forClass) throws IOException
 	{
+		return createTemporaryDirectory(prefix, forClass, "");
+	}
+
+	/**
+	 * Makes a temporary directory for use with unit tests.
+	 * <p>
+	 * When the unit test runs in a Maven context, the temporary directory will be
+	 * created in the corresponding <i>target/</i> directory instead of
+	 * <i>/tmp/</i>.
+	 * </p>
+	 * 
+	 * @param prefix the prefix for the directory's name
+	 * @param forClass the class for context (to determine whether there's a
+	 *          <i>target/<i> directory)
+	 * @param suffix the suffix for the directory's name
+	 * @return the reference to the newly-created temporary directory
+	 * @throws IOException
+	 */
+	public static File createTemporaryDirectory(final String prefix,
+		final Class<?> forClass, final String suffix) throws IOException
+	{
 		final URL directory = ClassUtils.getLocation(forClass);
 		if (directory != null && "file".equals(directory.getProtocol())) {
 			final String path = directory.getPath();
 			if (path != null && path.endsWith("/target/test-classes/")) {
 				final File baseDirectory =
 					new File(path.substring(0, path.length() - 13));
-				final File file = File.createTempFile(prefix, "", baseDirectory);
-				if (file.delete() && file.mkdir()) return file;
+				final File file = new File(baseDirectory, prefix + suffix);
+				if (file.exists()) FileUtils.deleteRecursively(file);
+				if (!file.mkdir()) throw new IOException("Could not make directory " + file);
+				return file;
 			}
 		}
-		return FileUtils.createTemporaryDirectory(prefix, "");
+		return FileUtils.createTemporaryDirectory(prefix, suffix);
 	}
 
 	/**
@@ -104,6 +130,22 @@ public class TestUtils {
 	 * @return the class of the caller
 	 */
 	public static Class<?> getCallingClass(final Class<?> excluding) {
+		return getCallingCodeLocation(excluding).getKey();
+	}
+
+	/**
+	 * Returns the class and the method/line number of the caller (excluding the specified class).
+	 * <p>
+	 * Sometimes it is convenient to determine the caller's context, e.g. to
+	 * determine whether running in a maven-surefire-plugin context (in which case
+	 * the location of the caller's class would end in
+	 * <i>target/test-classes/</i>).
+	 * </p>
+	 * 
+	 * @param excluding the class to exclude (or null)
+	 * @return the class of the caller and the method and line number
+	 */
+	public static Map.Entry<Class<?>, String> getCallingCodeLocation(final Class<?> excluding) {
 		final String thisClassName = TestUtils.class.getName();
 		final String thisClassName2 = excluding == null ? null : excluding.getName();
 		final Thread currentThread = Thread.currentThread();
@@ -115,14 +157,17 @@ public class TestUtils {
 				continue;
 			}
 			final ClassLoader loader = currentThread.getContextClassLoader();
+			final Class<?> clazz;
 			try {
-				return loader.loadClass(element.getClassName());
+				clazz = loader.loadClass(element.getClassName());
 			}
 			catch (ClassNotFoundException e) {
 				throw new UnsupportedOperationException("Could not load " +
 					element.getClassName() + " with the current context class loader (" +
 					loader + ")!");
 			}
+			final String suffix = element.getMethodName() + "-L" + element.getLineNumber();
+			return new AbstractMap.SimpleEntry<Class<?>, String>(clazz, suffix);
 		}
 		throw new UnsupportedOperationException("No calling class outside " + thisClassName + " found!");
 	}
