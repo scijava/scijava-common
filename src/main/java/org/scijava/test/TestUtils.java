@@ -81,8 +81,10 @@ public class TestUtils {
 	public static File createTemporaryDirectory(final String prefix,
 		final Class<?> forClass) throws IOException
 	{
-		return createTemporaryDirectory(prefix, forClass, "");
+		return createTemporaryDirectory(prefix, forClass, "" + temporaryDirectoryCounter++);
 	}
+
+	private static int temporaryDirectoryCounter = 1;
 
 	/**
 	 * Makes a temporary directory for use with unit tests.
