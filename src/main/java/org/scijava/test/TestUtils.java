@@ -165,6 +165,7 @@ public class TestUtils {
 			final String thatClassName = element.getClassName();
 			if (thatClassName == null || thatClassName.equals(thisClassName) ||
 				thatClassName.equals(thisClassName2) ||
+				thatClassName.endsWith("TestUtils") ||
 				thatClassName.startsWith("java.lang.")) {
 				continue;
 			}
