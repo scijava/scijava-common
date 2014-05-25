@@ -50,14 +50,14 @@ public class TestUtilsTest {
 	public void testCreateTemporaryDirectory() throws IOException {
 		final File tmp1 = TestUtils.createTemporaryDirectory("test-utils-test-");
 		assertTrue("Not in target/: " + tmp1.getAbsolutePath(), tmp1
-			.getAbsolutePath().contains("/target/"));
+			.getAbsolutePath().replace('\\', '/').contains("/target/"));
 		final File tmp2 = TestUtils.createTemporaryDirectory("test-utils-test-");
 		assertTrue(!tmp1.getAbsolutePath().equals(tmp2.getAbsolutePath()));
 
 		final File tmp3 =
 			TestUtils.createTemporaryDirectory("test-utils-test-", getClass());
 		assertTrue("Not in target/: " + tmp3.getAbsolutePath(), tmp3
-			.getAbsolutePath().contains("/target/"));
+			.getAbsolutePath().replace('\\', '/').contains("/target/"));
 		final File tmp4 =
 			TestUtils.createTemporaryDirectory("test-utils-test-", getClass());
 		assertTrue(!tmp3.getAbsolutePath().equals(tmp4.getAbsolutePath()));
