@@ -34,7 +34,9 @@ package org.scijava.util;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.scijava.test.TestUtils;
@@ -62,5 +64,20 @@ public class TestUtilsTest {
 			TestUtils.createTemporaryDirectory("test-utils-test-", getClass());
 		assertTrue(!tmp3.getAbsolutePath().equals(tmp4.getAbsolutePath()));
 
+	}
+
+	@Test
+	public void sameDirectoryTwice() throws IOException {
+		final FileOutputStream[] out = new FileOutputStream[2];
+		for (int i = 0; i < 2; i++) {
+			final File tmp = TestUtils.createTemporaryDirectory("same-");
+			assertTrue(tmp != null);
+			final String[] list = tmp.list();
+			assertTrue("Not null: " + Arrays.toString(list), list == null || list.length == 0);
+			out[i] = new FileOutputStream(new File(tmp, "hello" + i + ".txt"));
+		}
+		for (final FileOutputStream stream : out) {
+			if (stream != null) stream.close();
+		}
 	}
 }
