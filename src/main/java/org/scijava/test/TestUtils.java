@@ -120,8 +120,15 @@ public class TestUtils {
 			baseDirectory = new File(path);
 		}
 
-		final File file = new File(baseDirectory, prefix + suffix);
-		if (file.isDirectory()) FileUtils.deleteRecursively(file);
+		File file = new File(baseDirectory, prefix + suffix);
+		if (file.isDirectory()) {
+			if (!FileUtils.deleteRecursively(file)) {
+				// Oh, how I *love* Windows. Love, love, love.
+				for (int i = -1; file.isDirectory(); i--) {
+					file = new File(baseDirectory, prefix + i + suffix);
+				}
+			}
+		}
 		else if (file.exists() && !file.delete()) {
 			throw new IOException("Could not remove " + file);
 		}
