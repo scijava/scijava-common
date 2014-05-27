@@ -237,6 +237,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	@Override
+	public Class<?> loadDelegateClass() {
+		return ScriptModule.class;
+	}
+
+	@Override
 	public ScriptModule createModule() throws ModuleException {
 		return new ScriptModule(this);
 	}

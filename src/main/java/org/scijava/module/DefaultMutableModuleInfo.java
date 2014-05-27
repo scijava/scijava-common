@@ -96,6 +96,11 @@ public class DefaultMutableModuleInfo extends AbstractModuleInfo implements
 	}
 
 	@Override
+	public Class<?> loadDelegateClass() {
+		return getModuleClass();
+	}
+
+	@Override
 	public Module createModule() throws ModuleException {
 		try {
 			return getModuleClass().newInstance();

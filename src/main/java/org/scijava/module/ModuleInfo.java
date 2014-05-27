@@ -94,6 +94,15 @@ public interface ModuleInfo extends UIDetails, Validated {
 	 */
 	String getDelegateClassName();
 
+	/**
+	 * Loads the class containing the module's actual implementation. The name of
+	 * the loaded class will match the value returned by
+	 * {@link #getDelegateClassName()}.
+	 * 
+	 * @see org.scijava.Instantiable#loadClass()
+	 */
+	Class<?> loadDelegateClass() throws ClassNotFoundException;
+
 	/** Instantiates the module described by this module info. */
 	Module createModule() throws ModuleException;
 
