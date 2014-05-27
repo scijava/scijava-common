@@ -231,8 +231,7 @@ public abstract class AbstractIndexWriter {
 			out.print((double) (Double) o);
 		}
 		else if (o instanceof Character) {
-			Character c = (Character) o;
-			writeString(out, "" + (char) c);
+			writeString(out, "" + o);
 		}
 		else if (o instanceof String) {
 			writeString(out, (String) o);
