@@ -298,6 +298,18 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
 	}
 
 	@Override
+	public Class<?> loadDelegateClass() throws ClassNotFoundException {
+		try {
+			return loadClass();
+		}
+		catch (final InstantiableException exc) {
+			final ClassNotFoundException cnfe = new ClassNotFoundException();
+			cnfe.initCause(exc);
+			throw cnfe;
+		}
+	}
+
+	@Override
 	public Module createModule() throws ModuleException {
 		// if the command implements Module, return a new instance directly
 		try {
