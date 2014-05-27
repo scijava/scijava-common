@@ -35,6 +35,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.scijava.AbstractBasicDetails;
+import org.scijava.Instantiable;
+import org.scijava.InstantiableException;
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 import org.scijava.util.ClassUtils;
@@ -266,6 +268,11 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	// -- Internal methods --
 
 	protected Class<?> getDelegateClass() {
+		if (info instanceof Instantiable) try {
+			return ((Instantiable<?>) info).loadClass();
+		} catch (final InstantiableException e) {
+			throw new RuntimeException(e);
+		}
 		return ClassUtils.loadClass(info.getDelegateClassName());
 	}
 
