@@ -86,6 +86,9 @@ public class CommandModule extends AbstractModule implements Cancelable,
 	@Parameter
 	private Context context;
 
+	/** Reason for cancelation, or null if not canceled. */
+	private String cancelReason;
+
 	/** Creates a command module for the given {@link PluginInfo}. */
 	public CommandModule(final CommandInfo info) throws ModuleException {
 		super();
@@ -202,19 +205,21 @@ public class CommandModule extends AbstractModule implements Cancelable,
 
 	@Override
 	public boolean isCanceled() {
-		if (!(command instanceof Cancelable)) return false;
-		return ((Cancelable) command).isCanceled();
+		return cancelReason != null;
 	}
 
 	@Override
 	public void cancel(final String reason) {
-		((Cancelable) command).cancel(reason);
+		cancelReason = reason == null ? "" : reason;
+		if (command instanceof Cancelable) {
+			// propagate cancelation to the command instance itself
+			((Cancelable) command).cancel(reason);
+		}
 	}
 
 	@Override
 	public String getCancelReason() {
-		if (!(command instanceof Cancelable)) return null;
-		return ((Cancelable) command).getCancelReason();
+		return cancelReason;
 	}
 
 	// -- Contextual methods --
