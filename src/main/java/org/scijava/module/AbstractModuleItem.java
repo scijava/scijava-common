@@ -266,7 +266,13 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	// -- Internal methods --
 
 	protected Class<?> getDelegateClass() {
-		return ClassUtils.loadClass(info.getDelegateClassName());
+		try {
+			return info.loadDelegateClass();
+		}
+		catch (final ClassNotFoundException exc) {
+			// TODO: Consider a better error handling mechanism here.
+			throw new IllegalStateException(exc);
+		}
 	}
 
 }
