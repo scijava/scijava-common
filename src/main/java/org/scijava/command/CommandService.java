@@ -92,6 +92,11 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * Most classes will have only a single match, but some special classes (such
 	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getCommandsOfType(Class)} on a common parent interface.
+	 * </p>
 	 */
 	<C extends Command> List<CommandInfo> getCommandsOfClass(
 		Class<C> commandClass);
@@ -101,6 +106,11 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
 	 * as ImageJ's {@code LegacyCommand}) may match many entries.
+	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getCommandsOfType(Class)} on a common parent interface.
 	 * </p>
 	 */
 	List<CommandInfo> getCommandsOfClass(String className);

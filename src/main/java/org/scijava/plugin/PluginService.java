@@ -121,6 +121,11 @@ public interface PluginService extends SciJavaService {
 	 * class <em>names</em> to load their plugin {@link Class}es so that they can
 	 * be compared with the given one.
 	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getPluginsOfType(Class)} on a common parent interface.
+	 * </p>
 	 * 
 	 * @param <P> The <em>class</em> of plugins to look up.
 	 * @param pluginClass The class for which to obtain the list of matching
@@ -140,6 +145,11 @@ public interface PluginService extends SciJavaService {
 	 * class <em>names</em> and types to load their plugin {@link Class}es so that
 	 * they can be compared with the given one.
 	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getPluginsOfType(Class)} on a common parent interface.
+	 * </p>
 	 * 
 	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
 	 *          {@code Service.class}.
@@ -158,6 +168,11 @@ public interface PluginService extends SciJavaService {
 	 * Most classes will have only a single match, but some special classes (such
 	 * as ImageJ's {@code LegacyCommand}) may match many entries.
 	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getPluginsOfType(Class)} on a common parent interface.
+	 * </p>
 	 * 
 	 * @param className The class name for which to obtain the list of matching
 	 *          plugins.
@@ -169,6 +184,11 @@ public interface PluginService extends SciJavaService {
 	 * <p>
 	 * Most classes will have only a single match, but some special classes (such
 	 * as ImageJ's {@code LegacyCommand}) may match many entries.
+	 * </p>
+	 * <p>
+	 * NB: Classes are matched by strict equality, not assignability; subtypes of
+	 * the specified class will not match. For this behavior, use
+	 * {@link #getPluginsOfType(Class)} on a common parent interface.
 	 * </p>
 	 * 
 	 * @param <PT> The <em>type</em> of plugins to look up; e.g.,
