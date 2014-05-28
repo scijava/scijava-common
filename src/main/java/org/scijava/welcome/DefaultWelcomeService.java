@@ -36,7 +36,6 @@ import java.io.IOException;
 
 import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
-import org.scijava.display.Display;
 import org.scijava.display.DisplayService;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
@@ -90,8 +89,7 @@ public class DefaultWelcomeService extends AbstractService implements
 		try {
 			if (welcomeFile.exists()) {
 				final String welcomeText = textService.asHTML(welcomeFile);
-				Display<?> display = displayService.createDisplay(welcomeText);
-				if (display != null) display.display(welcomeText);
+				displayService.createDisplay(welcomeText);
 			}
 		}
 		catch (final IOException e) {
