@@ -82,14 +82,13 @@ public final class DefaultIOService
 
 	@Override
 	public Object open(final String source) throws IOException {
-		IOPlugin<?> opener = getOpener(source);
-		Object data = null;
-		if (opener != null) {
-			data= opener.open(source);
-		}
-		if (data != null) {
-			eventService.publish(new DataOpenedEvent(source, data));
-		}
+		final IOPlugin<?> opener = getOpener(source);
+		if (opener == null) return null; // no appropriate IOPlugin
+
+		final Object data = opener.open(source);
+		if (data == null) return null; // IOPlugin returned no data; canceled?
+
+		eventService.publish(new DataOpenedEvent(source, data));
 		return data;
 	}
 
