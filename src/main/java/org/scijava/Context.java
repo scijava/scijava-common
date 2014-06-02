@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.scijava.event.ContextDisposingEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.plugin.Parameter;
@@ -309,6 +310,9 @@ public class Context implements Disposable {
 
 	@Override
 	public void dispose() {
+		final EventService eventService = getService(EventService.class);
+		if (eventService != null) eventService.publish(new ContextDisposingEvent());
+
 		// NB: Dispose services in reverse order.
 		// This may or may not actually be necessary, but seems safer, since
 		// dependent services will be disposed *before* their dependencies.
