@@ -154,6 +154,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void showUI() {
+		if (!initialized) return;
 		final UserInterface ui = getDefaultUI();
 		if (ui == null) {
 			throw new IllegalStateException("No UIs available.");
@@ -343,7 +344,7 @@ public final class DefaultUIService extends AbstractService implements
 	// -- Disposable methods --
 
 	@Override
-	public void dispose() {
+	public synchronized void dispose() {
 		// dispose active display viewers
 		// NB - copy list to avoid ConcurrentModificationExceptions
 		final List<DisplayViewer<?>> viewers = new ArrayList<DisplayViewer<?>>();
@@ -357,6 +358,7 @@ public final class DefaultUIService extends AbstractService implements
 		for (int i = uis.size() - 1; i >= 0; i--) {
 			uis.get(i).dispose();
 		}
+		initialized = false;
 	}
 
 	// -- Event handlers --
