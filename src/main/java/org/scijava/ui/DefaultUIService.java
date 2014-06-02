@@ -134,6 +134,9 @@ public final class DefaultUIService extends AbstractService implements
 	/** Whether lazy initialization is complete. */
 	private boolean initialized;
 
+	/** Whether the service was disposed */
+	private boolean disposed;
+
 	/** The default user interface to use, if one is not explicitly specified. */
 	private UserInterface defaultUI;
 
@@ -154,7 +157,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void showUI() {
-		if (!initialized) return;
+		if (disposed) return;
 		final UserInterface ui = getDefaultUI();
 		if (ui == null) {
 			throw new IllegalStateException("No UIs available.");
@@ -358,7 +361,7 @@ public final class DefaultUIService extends AbstractService implements
 		for (int i = uis.size() - 1; i >= 0; i--) {
 			uis.get(i).dispose();
 		}
-		initialized = false;
+		disposed = true;
 	}
 
 	// -- Event handlers --
