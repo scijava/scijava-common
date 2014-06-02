@@ -131,7 +131,9 @@ public class WidgetModel extends AbstractContextual {
 	 * {@code style.equals(getItem().getWidgetStyle())}.
 	 */
 	public boolean isStyle(final String style) {
-		for (final String s : getItem().getWidgetStyle().split(",")) {
+		final String widgetStyle = getItem().getWidgetStyle();
+		if (widgetStyle == null) return style == null;
+		for (final String s : widgetStyle.split(",")) {
 			if (s.equals(style)) return true;
 		}
 		return false;
