@@ -142,7 +142,12 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		private void readNext() throws IOException {
 			for (;;) {
 				if (indexReader == null) {
-					indexReader = getNextReader();
+					try {
+						indexReader = getNextReader();
+					} catch (IOException e) {
+						e.printStackTrace();
+						continue;
+					}
 					if (indexReader == null) {
 						urls = null;
 						next = null;
