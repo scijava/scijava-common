@@ -69,7 +69,7 @@ public class DefaultWelcomeService extends AbstractService implements
 	private AppService appService;
 
 	@Parameter
-	DisplayService displayService;
+	private DisplayService displayService;
 
 	@Parameter
 	private CommandService commandService;
