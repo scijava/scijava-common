@@ -49,7 +49,7 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public final class DefaultIOService
-	extends AbstractHandlerService<String, IOPlugin<?>> implements IOService
+	extends AbstractHandlerService<Location, IOPlugin<?>> implements IOService
 {
 
 	@Parameter
@@ -61,7 +61,7 @@ public final class DefaultIOService
 	// -- IOService methods --
 
 	@Override
-	public IOPlugin<?> getOpener(final String source) {
+	public IOPlugin<?> getOpener(final Location source) {
 		for (final IOPlugin<?> handler : getInstances()) {
 			if (handler.supportsOpen(source)) return handler;
 		}
@@ -69,7 +69,7 @@ public final class DefaultIOService
 	}
 
 	@Override
-	public <D> IOPlugin<D> getSaver(final D data, final String destination) {
+	public <D> IOPlugin<D> getSaver(D data, Location destination) {
 		for (final IOPlugin<?> handler : getInstances()) {
 			if (handler.supportsSave(data, destination)) {
 				@SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public final class DefaultIOService
 	}
 
 	@Override
-	public Object open(final String source) throws IOException {
+	public Object open(final Location source) throws IOException {
 		final IOPlugin<?> opener = getOpener(source);
 		if (opener == null) return null; // no appropriate IOPlugin
 
@@ -93,7 +93,7 @@ public final class DefaultIOService
 	}
 
 	@Override
-	public void save(final Object data, final String destination)
+	public void save(final Object data, final Location destination)
 		throws IOException
 	{
 		final IOPlugin<Object> saver = getSaver(data, destination);
@@ -112,8 +112,8 @@ public final class DefaultIOService
 	}
 
 	@Override
-	public Class<String> getType() {
-		return String.class;
+	public Class<Location> getType() {
+		return Location.class;
 	}
 
 }

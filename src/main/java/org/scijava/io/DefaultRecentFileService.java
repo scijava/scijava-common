@@ -178,7 +178,10 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	@EventHandler
 	protected void onEvent(final IOEvent event) {
-		add(event.getDescriptor());
+		final Location loc = event.getLocation();
+		if (!(loc instanceof FileLocation)) return;
+		final FileLocation fileLoc = (FileLocation) loc;
+		add(fileLoc.getFile().getPath());
 	}
 
 	// -- Helper methods --

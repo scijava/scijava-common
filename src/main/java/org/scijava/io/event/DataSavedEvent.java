@@ -31,6 +31,8 @@
 
 package org.scijava.io.event;
 
+import org.scijava.io.Location;
+
 /**
  * An event indicating that data has been saved to a destination.
  * 
@@ -38,15 +40,8 @@ package org.scijava.io.event;
  */
 public class DataSavedEvent extends IOEvent {
 
-	public DataSavedEvent(final String destination, final Object data) {
+	public DataSavedEvent(final Location destination, final Object data) {
 		super(destination, data);
-	}
-
-	// -- DataSavedEvent methods --
-
-	/** Gets the destination to which data was saved. */
-	public String getDestination() {
-		return getDescriptor();
 	}
 
 }

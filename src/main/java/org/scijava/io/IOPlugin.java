@@ -50,27 +50,27 @@ import org.scijava.plugin.Plugin;
  * @see Plugin
  * @see IOService
  */
-public interface IOPlugin<D> extends HandlerPlugin<String> {
+public interface IOPlugin<D> extends HandlerPlugin<Location> {
 
 	/** The type of data opened and/or saved by the plugin. */
 	Class<D> getDataType();
 
-	/** Checks whether the I/O plugin can open data from the given source. */
-	boolean supportsOpen(String source);
+	/** Checks whether the I/O plugin can open data from the given location. */
+	boolean supportsOpen(Location source);
 
-	/** Checks whether the I/O plugin can save data to the given destination. */
-	boolean supportsSave(String destination);
+	/** Checks whether the I/O plugin can save data to the given location. */
+	boolean supportsSave(Location destination);
+
+	/** Opens data from the given location. */
+	D open(Location source) throws IOException;
 
 	/**
 	 * Checks whether the I/O plugin can save the given data to the specified
-	 * destination.
+	 * location.
 	 */
-	boolean supportsSave(Object data, String destination);
+	boolean supportsSave(Object data, Location destination);
 
-	/** Opens data from the given source. */
-	D open(String source) throws IOException;
-
-	/** Saves the given data to the specified destination. */
-	void save(D data, String destination) throws IOException;
+	/** Saves the given data to the specified location. */
+	void save(D data, Location destination) throws IOException;
 
 }
