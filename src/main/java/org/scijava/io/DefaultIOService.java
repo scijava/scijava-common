@@ -96,7 +96,7 @@ public final class DefaultIOService
 	public void save(final Object data, final String destination)
 		throws IOException
 	{
-		IOPlugin<Object> saver = getSaver(data, destination);
+		final IOPlugin<Object> saver = getSaver(data, destination);
 		if (saver != null) {
 			saver.save(data, destination);
 		}
