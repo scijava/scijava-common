@@ -29,15 +29,50 @@
 
 package org.scijava.io;
 
+import org.scijava.io.location.Location;
+import org.scijava.io.location.LocationService;
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.plugin.Parameter;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Abstract base class for {@link IOPlugin}s.
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractIOPlugin<D> extends AbstractHandlerPlugin<String>
-	implements IOPlugin<D>
+public abstract class AbstractIOPlugin<D> extends
+	AbstractHandlerPlugin<Location> implements IOPlugin<D>
 {
-	// NB: No implementation needed.
+
+	@Parameter
+	private LocationService locationService;
+
+	@Override
+	public boolean supportsOpen(final String source) {
+		try {
+			return supportsOpen(locationService.resolve(source));
+		} catch (URISyntaxException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean supportsSave(final String destination) {
+		try {
+			return supportsSave(locationService.resolve(destination));
+		} catch (URISyntaxException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public void save(final D data, final String destination) throws IOException {
+		try {
+			save(data, locationService.resolve(destination));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
 }

@@ -30,10 +30,13 @@
 package org.scijava.io;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.scijava.event.EventService;
 import org.scijava.io.event.DataOpenedEvent;
 import org.scijava.io.event.DataSavedEvent;
+import org.scijava.io.location.Location;
+import org.scijava.io.location.LocationService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
@@ -47,7 +50,7 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public final class DefaultIOService
-	extends AbstractHandlerService<String, IOPlugin<?>> implements IOService
+	extends AbstractHandlerService<Location, IOPlugin<?>> implements IOService
 {
 
 	@Parameter
@@ -56,10 +59,31 @@ public final class DefaultIOService
 	@Parameter
 	private EventService eventService;
 
-	// -- IOService methods --
+	@Parameter
+	private LocationService locationService;
 
 	@Override
 	public Object open(final String source) throws IOException {
+		try {
+			return open(locationService.resolve(source));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public void save(final Object data, final String destination)
+			throws IOException
+	{
+		try {
+			save(data, locationService.resolve(destination));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public Object open(final Location source) throws IOException {
 		final IOPlugin<?> opener = getOpener(source);
 		if (opener == null) {
 			log.error("No opener IOPlugin found for " + source + ".");
@@ -77,7 +101,7 @@ public final class DefaultIOService
 	}
 
 	@Override
-	public void save(final Object data, final String destination)
+	public void save(final Object data, final Location destination)
 		throws IOException
 	{
 		final IOPlugin<Object> saver = getSaver(data, destination);

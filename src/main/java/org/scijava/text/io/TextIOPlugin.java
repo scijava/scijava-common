@@ -29,12 +29,13 @@
 
 package org.scijava.text.io;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.scijava.Priority;
 import org.scijava.io.AbstractIOPlugin;
 import org.scijava.io.IOPlugin;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.text.TextService;
@@ -59,15 +60,19 @@ public class TextIOPlugin extends AbstractIOPlugin<String> {
 	}
 
 	@Override
-	public boolean supportsOpen(final String source) {
+	public boolean supportsOpen(final Location source) {
 		if (textService == null) return false; // no service for opening text files
-		return textService.supports(new File(source));
+		if (!(source instanceof FileLocation)) return false;
+		final FileLocation loc = (FileLocation) source;
+		return textService.supports(loc.getFile());
 	}
 
 	@Override
-	public String open(final String source) throws IOException {
+	public String open(final Location source) throws IOException {
 		if (textService == null) return null; // no service for opening text files
-		return textService.asHTML(new File(source));
+		if (!(source instanceof FileLocation)) throw new IllegalArgumentException();
+		final FileLocation loc = (FileLocation) source;
+		return textService.asHTML(loc.getFile());
 	}
 
 }

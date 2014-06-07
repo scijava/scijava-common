@@ -30,6 +30,7 @@
 package org.scijava.io.event;
 
 import org.scijava.event.SciJavaEvent;
+import org.scijava.io.location.Location;
 
 /**
  * An event indicating that I/O (e.g., opening or saving) has occurred.
@@ -38,20 +39,20 @@ import org.scijava.event.SciJavaEvent;
  */
 public abstract class IOEvent extends SciJavaEvent {
 
-	/** The data descriptor (source or destination). */
-	private final String descriptor;
+	/** The data location (source or destination). */
+	private final Location location;
 
 	/** The data for which I/O took place. */
 	private final Object data;
 
-	public IOEvent(final String descriptor, final Object data) {
-		this.descriptor = descriptor;
+	public IOEvent(final Location location, final Object data) {
+		this.location = location;
 		this.data = data;
 	}
 
-	/** Gets the data descriptor (source or destination). */
-	public String getDescriptor() {
-		return descriptor;
+	/** Gets the data location (source or destination). */
+	public Location getLocation() {
+		return location;
 	}
 
 	/** Gets the data for which I/O took place. */
@@ -63,7 +64,8 @@ public abstract class IOEvent extends SciJavaEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "\n\tdescriptor = " + data + "\n\tdata = " + data;
+		return super.toString() + "\n\tlocation = " + location + "\n\tdata = " +
+			data;
 	}
 
 }

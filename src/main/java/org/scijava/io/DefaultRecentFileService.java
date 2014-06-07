@@ -41,6 +41,8 @@ import org.scijava.command.CommandService;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.io.event.IOEvent;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.menu.MenuConstants;
 import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleService;
@@ -181,7 +183,10 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	@EventHandler
 	protected void onEvent(final IOEvent event) {
-		add(event.getDescriptor());
+		final Location loc = event.getLocation();
+		if (!(loc instanceof FileLocation)) return;
+		final FileLocation fileLoc = (FileLocation) loc;
+		add(fileLoc.getFile().getPath());
 	}
 
 	// -- Helper methods --
