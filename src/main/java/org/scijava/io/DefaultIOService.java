@@ -99,8 +99,8 @@ public final class DefaultIOService
 		final IOPlugin<Object> saver = getSaver(data, destination);
 		if (saver != null) {
 			saver.save(data, destination);
+			eventService.publish(new DataSavedEvent(destination, data));
 		}
-		eventService.publish(new DataSavedEvent(destination, data));
 	}
 
 	// -- HandlerService methods --
