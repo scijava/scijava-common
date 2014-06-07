@@ -31,22 +31,17 @@
 
 package org.scijava.io.event;
 
+import org.scijava.io.Location;
+
 /**
- * An event indicating that data has been opened from a source.
+ * An event indicating that data has been opened from a location.
  * 
  * @author Curtis Rueden
  */
 public class DataOpenedEvent extends IOEvent {
 
-	public DataOpenedEvent(final String source, final Object data) {
-		super(source, data);
-	}
-
-	// -- DataOpenedEvent methods --
-
-	/** Gets the source from which data was opened. */
-	public String getSource() {
-		return getDescriptor();
+	public DataOpenedEvent(final Location location, final Object data) {
+		super(location, data);
 	}
 
 }

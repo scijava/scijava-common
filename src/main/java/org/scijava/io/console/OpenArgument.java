@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
 import org.scijava.display.DisplayService;
+import org.scijava.io.FileLocation;
 import org.scijava.io.IOService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -75,7 +76,7 @@ public class OpenArgument extends AbstractConsoleArgument {
 		final String source = args.removeFirst();
 
 		try {
-			final Object o = ioService.open(source);
+			final Object o = ioService.open(new FileLocation(source));
 			displayService.createDisplay(o);
 		}
 		catch (IOException exc) {

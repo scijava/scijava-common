@@ -40,47 +40,47 @@ import org.scijava.plugin.AbstractHandlerPlugin;
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractIOPlugin<D> extends AbstractHandlerPlugin<String>
-	implements IOPlugin<D>
+public abstract class AbstractIOPlugin<D> extends
+	AbstractHandlerPlugin<Location> implements IOPlugin<D>
 {
 
 	// -- IOPlugin methods --
 
 	@Override
-	public boolean supportsOpen(final String source) {
+	public boolean supportsOpen(final Location source) {
 		return false;
 	}
 
 	@Override
-	public boolean supportsSave(final String destination) {
+	public boolean supportsSave(final Location destination) {
 		return false;
 	}
 
 	@Override
-	public boolean supportsSave(final Object data, final String destination) {
+	public boolean supportsSave(final Object data, final Location destination) {
 		return supportsSave(destination) && getDataType().isInstance(data);
 	}
 
 	@Override
-	public D open(final String source) throws IOException {
+	public D open(final Location source) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void save(final D data, final String destination) throws IOException {
+	public void save(final D data, final Location destination) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final String descriptor) {
-		return supportsOpen(descriptor) || supportsSave(descriptor);
+	public boolean supports(final Location location) {
+		return supportsOpen(location) || supportsSave(location);
 	}
 
 	@Override
-	public Class<String> getType() {
-		return String.class;
+	public Class<Location> getType() {
+		return Location.class;
 	}
 
 }

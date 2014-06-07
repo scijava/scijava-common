@@ -43,52 +43,47 @@ import org.scijava.service.SciJavaService;
  * @see DataHandleService
  * @see Location
  */
-public interface IOService extends HandlerService<String, IOPlugin<?>>,
+public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	SciJavaService
 {
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
-	 * source.
+	 * location.
 	 */
-	IOPlugin<?> getOpener(String source);
+	IOPlugin<?> getOpener(Location source);
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
-	 * destination.
+	 * location.
 	 */
-	<D> IOPlugin<D> getSaver(D data, String destination);
+	<D> IOPlugin<D> getSaver(D data, Location destination);
 
 	/**
-	 * Loads data from the given source. For extensibility, the nature of the
-	 * source is left intentionally general, but two common examples include file
-	 * paths and URLs.
+	 * Loads data from the given location.
 	 * <p>
 	 * The opener to use is automatically determined based on available
-	 * {@link IOPlugin}s; see {@link #getOpener(String)}.
+	 * {@link IOPlugin}s; see {@link #getOpener(Location)}.
 	 * </p>
 	 * 
-	 * @param source The source (e.g., file path) from which to data should be
-	 *          loaded.
+	 * @param source The location from which to data should be loaded.
 	 * @return An object representing the loaded data, or null if the source is
 	 *         not supported.
 	 * @throws IOException if something goes wrong loading the data.
 	 */
-	Object open(String source) throws IOException;
+	Object open(Location source) throws IOException;
 
 	/**
-	 * Saves data to the given destination. The nature of the destination is left
-	 * intentionally general, but the most common example is a file path.
+	 * Saves data to the given location.
 	 * <p>
 	 * The saver to use is automatically determined based on available
-	 * {@link IOPlugin}s; see {@link #getSaver(Object, String)}.
+	 * {@link IOPlugin}s; see {@link #getSaver(Object, Location)}.
 	 * </p>
 	 * 
 	 * @param data The data to be saved to the destination.
-	 * @param destination The destination (e.g., file path) to which data should
-	 *          be saved.
+	 * @param destination The destination location to which data should be saved.
 	 * @throws IOException if something goes wrong saving the data.
 	 */
-	void save(Object data, String destination) throws IOException;
+	void save(Object data, Location destination) throws IOException;
 
 }
