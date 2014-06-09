@@ -161,7 +161,7 @@ public final class DefaultPlatformService extends
 		final List<Platform> platforms = getInstances();
 		targetPlatforms = Collections.unmodifiableList(platforms);
 		for (final Platform platform : platforms) {
-			log.info("Configuring platform: " + platform.getClass().getName());
+			log.debug("Configuring platform: " + platform.getClass().getName());
 			platform.configure(this);
 		}
 		if (platforms.size() == 0) log.info("No platforms to configure.");
