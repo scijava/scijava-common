@@ -88,6 +88,10 @@ public class DefaultWelcomeService extends AbstractService implements
 
 	@Override
 	public void displayWelcome() {
+		displayWelcome(true);
+	}
+
+	private void displayWelcome(final boolean force) {
 		final File baseDir = appService.getApp().getBaseDirectory();
 		final File welcomeFile = new File(baseDir, WELCOME_FILE);
 		try {
@@ -95,7 +99,7 @@ public class DefaultWelcomeService extends AbstractService implements
 				final String welcomeText = textService.asHTML(welcomeFile);
 				final String checksum = getChecksum(welcomeText);
 				final String previousChecksum = Prefs.get(getClass(), CHECKSUM_PREFS_KEY);
-				if (checksum.equals(previousChecksum)) return;
+				if (!force && checksum.equals(previousChecksum)) return;
 				Prefs.put(getClass(), CHECKSUM_PREFS_KEY, checksum);
 				displayService.createDisplay(welcomeText);
 			}
@@ -124,7 +128,7 @@ public class DefaultWelcomeService extends AbstractService implements
 		if (!isFirstRun()) return;
 		eventService.publish(new WelcomeEvent());
 		setFirstRun(false);
-		displayWelcome();
+		displayWelcome(false);
 	}
 
 	// -- Helper methods --
