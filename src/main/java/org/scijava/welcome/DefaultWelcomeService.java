@@ -134,6 +134,8 @@ public class DefaultWelcomeService extends AbstractService implements
 		return "firstRun-" + appService.getApp().getVersion();
 	}
 
+	// TODO: move this into TextUtils or some such
+	// see https://github.com/scijava/scijava-common/issues/82
 	// get digest of the file as according to fullPath
 	private String getChecksum(final String text)
 	{
