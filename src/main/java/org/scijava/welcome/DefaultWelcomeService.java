@@ -60,7 +60,7 @@ public class DefaultWelcomeService extends AbstractService implements
 	WelcomeService
 {
 
-	private String WELCOME_FILE = "WELCOME.md";
+	private final static String WELCOME_FILE = "WELCOME.md";
 
 	@Parameter
 	private LogService log;
