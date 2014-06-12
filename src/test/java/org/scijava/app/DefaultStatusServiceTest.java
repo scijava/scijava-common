@@ -28,6 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.app;
 
 import static org.junit.Assert.assertEquals;
@@ -48,27 +49,24 @@ import org.scijava.event.EventHandler;
 import org.scijava.plugin.Parameter;
 
 public class DefaultStatusServiceTest {
-	Context context;
-	StatusListener statusListener;
-	BlockingQueue<StatusEvent> queue;
-	StatusService statusService;
-	class StatusListener extends AbstractContextual {
-		int progress;
-		int maximum;
-		String status;
-		boolean warning;
+
+	private Context context;
+	private StatusListener statusListener;
+	private BlockingQueue<StatusEvent> queue;
+	private StatusService statusService;
+
+	private class StatusListener extends AbstractContextual {
+
 		@Parameter
-		StatusService statusService;
-		
+		private StatusService statusService;
+
 		@EventHandler
-		void eventHandler(StatusEvent e) {
+		private void eventHandler(final StatusEvent e) {
 			try {
-				queue.put(new StatusEvent(
-						e.getProgressValue(),
-						e.getProgressMaximum(),
-						e.getStatusMessage(),
-						e.isWarning()));
-			} catch (InterruptedException e1) {
+				queue.put(new StatusEvent(e.getProgressValue(), e.getProgressMaximum(),
+					e.getStatusMessage(), e.isWarning()));
+			}
+			catch (final InterruptedException e1) {
 				e1.printStackTrace();
 				fail();
 			}
@@ -81,7 +79,7 @@ public class DefaultStatusServiceTest {
 		queue = new ArrayBlockingQueue<StatusEvent>(10);
 		statusListener = new StatusListener();
 		statusListener.setContext(context);
-		statusService = statusListener.statusService; 
+		statusService = statusListener.statusService;
 	}
 
 	@Test
@@ -92,7 +90,8 @@ public class DefaultStatusServiceTest {
 			assertEquals(event.getProgressValue(), 15);
 			assertEquals(event.getProgressMaximum(), 45);
 			assertFalse(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -106,7 +105,8 @@ public class DefaultStatusServiceTest {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), text);
 			assertFalse(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -122,7 +122,8 @@ public class DefaultStatusServiceTest {
 			assertEquals(event.getProgressMaximum(), 55);
 			assertEquals(event.getStatusMessage(), text);
 			assertFalse(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -136,7 +137,8 @@ public class DefaultStatusServiceTest {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), text);
 			assertTrue(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -152,7 +154,8 @@ public class DefaultStatusServiceTest {
 			assertEquals(event.getProgressValue(), 33);
 			assertEquals(event.getProgressMaximum(), 44);
 			assertTrue(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -165,7 +168,8 @@ public class DefaultStatusServiceTest {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), "");
 			assertFalse(event.isWarning());
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e) {
 			e.printStackTrace();
 			fail();
 		}
