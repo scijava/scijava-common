@@ -268,7 +268,7 @@ public class LegacyReader {
 					classDesc = (ClassDesc) fields[i + 1];
 				}
 				else if (fields[i + 1] instanceof String) {
-					classDesc = classDescs.get((String) fields[i + 1]);
+					classDesc = classDescs.get(fields[i + 1]);
 					if (classDesc == null) {
 						throw new RuntimeException("Could not find class desc for " +
 							fields[i + 1]);
@@ -418,7 +418,7 @@ public class LegacyReader {
 
 			@Override
 			public Object read() throws IOException {
-				return (String) readObject();
+				return readObject();
 			}
 		};
 		new BoxedPrimitiveClassDesc(Boolean.class, "Z");
@@ -434,7 +434,7 @@ public class LegacyReader {
 
 			@Override
 			public Object readExtra(final Map<String, Object> map) {
-				return (String) map.get("value");
+				return map.get("value");
 			}
 		};
 		new NonPrimitiveClassDesc(toSimpleName(TreeMap.class), "comparator",

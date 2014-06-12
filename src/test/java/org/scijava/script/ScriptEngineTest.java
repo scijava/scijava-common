@@ -78,8 +78,8 @@ public class ScriptEngineTest {
 				(Map<String, Object>) null).get();
 		final ScriptModule scriptModule = Rot13Engine.latestModule;
 		assertEquals(module, scriptModule);
-		assertTrue(scriptModule instanceof ScriptModule);
-		final ScriptInfo info = ((ScriptModule) scriptModule).getInfo();
+		assertNotNull(scriptModule);
+		final ScriptInfo info = scriptModule.getInfo();
 		assertEquals(context, info.context());
 	}
 
