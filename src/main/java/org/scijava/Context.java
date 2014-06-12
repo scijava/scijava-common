@@ -119,7 +119,7 @@ public class Context implements Disposable {
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
-		this(serviceClasses, new PluginIndex());
+		this(serviceClasses, null);
 	}
 
 	/**
@@ -172,8 +172,8 @@ public class Context implements Disposable {
 	{
 		serviceIndex = new ServiceIndex();
 
-		this.pluginIndex = pluginIndex;
-		pluginIndex.discover();
+		this.pluginIndex = pluginIndex == null ? new PluginIndex() : pluginIndex;
+		this.pluginIndex.discover();
 
 		final ServiceHelper serviceHelper = new ServiceHelper(this, serviceClasses);
 		serviceHelper.loadServices();
