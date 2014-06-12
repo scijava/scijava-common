@@ -144,9 +144,7 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				if (file.exists()) {
 					return new FileInputStream(file);
 				}
-				else {
-					return null;
-				}
+				return null;
 			}
 
 			@Override
