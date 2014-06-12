@@ -56,9 +56,7 @@ import org.scijava.util.ClassUtils;
  */
 public class ServiceHelper extends AbstractContextual {
 
-	/**
-	 * For logging.
-	 */
+	/** For logging. */
 	private LogService log;
 
 	/**
