@@ -137,6 +137,7 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 	protected synchronized void write(final File directory) throws IOException {
 		final StreamFactory factory = new StreamFactory() {
 
+			@Override
 			public InputStream openInput(String annotationName) throws IOException {
 				final File file =
 					new File(directory, Index.INDEX_PREFIX + annotationName);
@@ -148,6 +149,7 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				}
 			}
 
+			@Override
 			public OutputStream openOutput(String annotationName) throws IOException {
 				final File file =
 					new File(directory, Index.INDEX_PREFIX + annotationName);
@@ -169,6 +171,7 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				};
 			}
 
+			@Override
 			public boolean isClassObsolete(String className) {
 				final String classPath = className.replace('.', '/') + ".class";
 				return !new File(directory, classPath).exists();

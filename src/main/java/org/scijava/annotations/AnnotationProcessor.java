@@ -164,6 +164,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			return result;
 		}
 
+		@Override
 		protected Object adapt(final Object o) {
 			if (o instanceof AnnotationMirror) {
 				final AnnotationMirror mirror = (AnnotationMirror) o;
@@ -219,6 +220,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			return null;
 		}
 
+		@Override
 		public InputStream openInput(String annotationName) throws IOException {
 			try {
 				return filer.getResource(StandardLocation.CLASS_OUTPUT, "",
@@ -229,6 +231,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			}
 		}
 
+		@Override
 		public OutputStream openOutput(String annotationName) throws IOException {
 			final List<Element> originating = originatingElements.get(annotationName);
 			return filer.createResource(StandardLocation.CLASS_OUTPUT, "",
@@ -237,6 +240,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 				.openOutputStream();
 		}
 
+		@Override
 		public boolean isClassObsolete(String className) {
 			return false;
 		}

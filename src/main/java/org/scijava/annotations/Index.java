@@ -192,10 +192,12 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 			return null;
 		}
 
+		@Override
 		public boolean hasNext() {
 			return next != null;
 		}
 
+		@Override
 		public IndexItem<A> next() {
 			final IndexItem<A> result = next;
 			try {
@@ -208,11 +210,13 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 			return result;
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 	}
 
+	@Override
 	public Iterator<IndexItem<A>> iterator() {
 		return new IndexItemIterator(annotation);
 	}
