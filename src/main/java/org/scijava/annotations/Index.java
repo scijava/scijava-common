@@ -66,7 +66,6 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	 * 
 	 * @param annotation the annotation type
 	 * @return the index
-	 * @throws IOException
 	 */
 	public static <A extends Annotation> Index<A> load(final Class<A> annotation)
 	{
@@ -82,7 +81,6 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	 * @param loader the class loader to use when loading {@link Class}-type
 	 *          annotation fields
 	 * @return the index
-	 * @throws IOException
 	 */
 	public static <A extends Annotation> Index<A> load(final Class<A> annotation,
 		final ClassLoader loader)

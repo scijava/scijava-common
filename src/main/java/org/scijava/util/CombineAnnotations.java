@@ -45,14 +45,20 @@ public class CombineAnnotations
 {
 
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#CombineAnnotations()} instead.
+	 * @deprecated Use
+	 *             {@link org.scijava.annotations.AnnotationCombiner#AnnotationCombiner()}
+	 *             instead.
+	 * @throws IOException
 	 */
 	@Deprecated
 	public CombineAnnotations() throws IOException {}
 
 	private AnnotationCombiner combiner = new AnnotationCombiner();
+
 	/**
-	 * @deprecated Use {@link org.scijava.annotations.AnnotationCombiner#combine()} instead.
+	 * @deprecated Use
+	 *             {@link org.scijava.annotations.AnnotationCombiner#combine(File)}
+	 *             instead.
 	 */
 	@Deprecated
 	public void combine() throws IOException, ClassNotFoundException {

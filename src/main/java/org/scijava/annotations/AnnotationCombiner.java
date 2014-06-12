@@ -122,8 +122,8 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 	// -- Helper Class --
 
 	/**
-	 * {@link StreamFactory} implementation for writing an annotation.
-	 *
+	 * {@link AbstractIndexWriter.StreamFactory} implementation for writing an
+	 * annotation.
 	 */
 	private static class AnnotationStreamFactory implements StreamFactory {
 

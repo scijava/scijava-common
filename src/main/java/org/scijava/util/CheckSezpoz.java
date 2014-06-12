@@ -78,7 +78,7 @@ public final class CheckSezpoz {
 	 * @param checkJars whether to inspect .jar components of the CLASSPATH
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static boolean check(final boolean checkJars) throws IOException {
@@ -92,7 +92,7 @@ public final class CheckSezpoz {
 	 * @param file the CLASSPATH component (.jar file or directory)
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static boolean check(final File file) throws IOException {
@@ -107,7 +107,7 @@ public final class CheckSezpoz {
 	 * @param classes the CLASSPATH component directory
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static boolean checkDirectory(final File classes) throws IOException {
@@ -127,7 +127,7 @@ public final class CheckSezpoz {
 	 * @param source the <i>src/main/java/<i> directory where Maven expects the
 	 *          <i>.java</i> files
 	 * @param youngerThan the date/time when we last checked
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static boolean checkDirectory(final File classes, final File source,
@@ -144,7 +144,7 @@ public final class CheckSezpoz {
 	 * </p>
 	 * 
 	 * @param file the <i>.jar</i> file
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static void checkJar(final File file) throws IOException {
@@ -158,7 +158,7 @@ public final class CheckSezpoz {
 	 * @param classes the output directory
 	 * @param sources the directory containing the source files
 	 * @return whether anything in {@code META-INF/annotations/*} changed
-	 * @see {@link EclipseHelper}
+	 * @see EclipseHelper
 	 */
 	@Deprecated
 	public static boolean fix(final File classes, final File sources) {

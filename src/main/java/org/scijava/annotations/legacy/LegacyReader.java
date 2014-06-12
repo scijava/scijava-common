@@ -314,8 +314,10 @@ public class LegacyReader {
 			return o;
 		}
 
+		/**
+		 * @throws IOException If something goes wrong reading the map.
+		 */
 		protected Object readExtra(Map<String, Object> o) throws IOException {
-
 			return o;
 		}
 	}
