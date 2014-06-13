@@ -52,6 +52,7 @@ import javax.script.ScriptException;
 import org.scijava.Context;
 import org.scijava.Gateway;
 import org.scijava.InstantiableException;
+import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.command.CommandService;
 import org.scijava.log.LogService;
@@ -98,6 +99,9 @@ public class DefaultScriptService extends
 	/** List of directories to scan for scripts. */
 	private ArrayList<File> scriptDirs;
 
+	/** Menu prefix to use for each script directory, if any. */
+	private HashMap<File, MenuPath> menuPrefixes;
+
 	/** Index of available scripts, by script <em>file</em>. */
 	private HashMap<File, ScriptInfo> scripts;
 
@@ -134,8 +138,21 @@ public class DefaultScriptService extends
 	}
 
 	@Override
+	public MenuPath getMenuPrefix(final File scriptDirectory) {
+		return menuPrefixes().get(scriptDirectory);
+	}
+
+	@Override
 	public void addScriptDirectory(final File scriptDirectory) {
 		scriptDirs().add(scriptDirectory);
+	}
+
+	@Override
+	public void addScriptDirectory(final File scriptDirectory,
+		final MenuPath menuPrefix)
+	{
+		scriptDirs().add(scriptDirectory);
+		menuPrefixes().put(scriptDirectory, menuPrefix);
 	}
 
 	@Override
@@ -283,6 +300,12 @@ public class DefaultScriptService extends
 		return scriptDirs;
 	}
 
+	/** Gets {@link #menuPrefixes}, initializing if needed. */
+	private HashMap<File, MenuPath> menuPrefixes() {
+		if (menuPrefixes == null) initMenuPrefixes();
+		return menuPrefixes;
+	}
+
 	/** Gets {@link #scripts}, initializing if needed. */
 	private HashMap<File, ScriptInfo> scripts() {
 		if (scripts == null) initScripts();
@@ -336,6 +359,12 @@ public class DefaultScriptService extends
 		}
 
 		scriptDirs = dirs;
+	}
+
+	/** Initializes {@link #menuPrefixes}. */
+	private synchronized void initMenuPrefixes() {
+		if (menuPrefixes != null) return;
+		menuPrefixes = new HashMap<File, MenuPath>();
 	}
 
 	/** Initializes {@link #scripts}. */

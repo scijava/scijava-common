@@ -84,7 +84,9 @@ public class ScriptFinder extends AbstractContextual {
 					directory.getAbsolutePath());
 				continue;
 			}
-			scriptCount += discoverScripts(scripts, directory, new MenuPath());
+			final MenuPath prefix = scriptService.getMenuPrefix(directory);
+			final MenuPath menuPath = prefix == null ? new MenuPath() : prefix;
+			scriptCount += discoverScripts(scripts, directory, menuPath);
 		}
 
 		log.info("Found " + scriptCount + " scripts");
