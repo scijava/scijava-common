@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.script.ScriptEngine;
@@ -64,10 +65,10 @@ public class ScriptFinderTest {
 	public static void setUp() throws IOException {
 		scriptsDir = TestUtils.createTemporaryDirectory("script-finder-");
 		TestUtils.createPath(scriptsDir, "ignored.foo");
-		TestUtils.createPath(scriptsDir, "Plugins/quick.foo");
-		TestUtils.createPath(scriptsDir, "Plugins/brown.foo");
-		TestUtils.createPath(scriptsDir, "Plugins/fox.foo");
-		TestUtils.createPath(scriptsDir, "Plugins/The_Lazy_Dog.foo");
+		TestUtils.createPath(scriptsDir, "Scripts/quick.foo");
+		TestUtils.createPath(scriptsDir, "Scripts/brown.foo");
+		TestUtils.createPath(scriptsDir, "Scripts/fox.foo");
+		TestUtils.createPath(scriptsDir, "Scripts/The_Lazy_Dog.foo");
 		TestUtils.createPath(scriptsDir, "Math/add.foo");
 		TestUtils.createPath(scriptsDir, "Math/subtract.foo");
 		TestUtils.createPath(scriptsDir, "Math/multiply.foo");
@@ -90,25 +91,31 @@ public class ScriptFinderTest {
 		final ScriptService scriptService = context.service(ScriptService.class);
 		scriptService.addScriptDirectory(scriptsDir);
 
-		final ScriptFinder scriptFinder = new ScriptFinder(scriptService);
+		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
 
-		final ArrayList<ScriptInfo> scripts = new ArrayList<ScriptInfo>();
-		scriptFinder.findScripts(scripts);
 		assertEquals(11, scripts.size());
-		assertMenuPath("Math > add", scripts, 0);
-		assertMenuPath("Math > divide", scripts, 1);
-		assertMenuPath("Math > multiply", scripts, 2);
-		assertMenuPath("Math > subtract", scripts, 3);
-		assertMenuPath("Math > Trig > cos", scripts, 4);
-		assertMenuPath("Math > Trig > sin", scripts, 5);
-		assertMenuPath("Math > Trig > tan", scripts, 6);
-		assertMenuPath("Plugins > brown", scripts, 7);
-		assertMenuPath("Plugins > fox", scripts, 8);
-		assertMenuPath("Plugins > quick", scripts, 9);
-		assertMenuPath("Plugins > The Lazy Dog", scripts, 10);
+		assertMenuPath("Scripts > The Lazy Dog", scripts, 0);
+		assertMenuPath("Math > add", scripts, 1);
+		assertMenuPath("Scripts > brown", scripts, 2);
+		assertMenuPath("Math > Trig > cos", scripts, 3);
+		assertMenuPath("Math > divide", scripts, 4);
+		assertMenuPath("Scripts > fox", scripts, 5);
+		assertMenuPath("Math > multiply", scripts, 6);
+		assertMenuPath("Scripts > quick", scripts, 7);
+		assertMenuPath("Math > Trig > sin", scripts, 8);
+		assertMenuPath("Math > subtract", scripts, 9);
+		assertMenuPath("Math > Trig > tan", scripts, 10);
 	}
 
 	// -- Helper methods --
+
+	private ArrayList<ScriptInfo> findScripts(final ScriptService scriptService) {
+		final ScriptFinder scriptFinder = new ScriptFinder(scriptService);
+		final ArrayList<ScriptInfo> scripts = new ArrayList<ScriptInfo>();
+		scriptFinder.findScripts(scripts);
+		Collections.sort(scripts);
+		return scripts;
+	}
 
 	private void assertMenuPath(final String menuString,
 		final ArrayList<ScriptInfo> scripts, final int i)
