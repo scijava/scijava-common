@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.scijava.test.TestUtils;
 
 /**
- * Tests the {@link TestUtilsTest}.
+ * Tests the {@link TestUtils}.
  * 
  * @author Johannes Schindelin
  */
