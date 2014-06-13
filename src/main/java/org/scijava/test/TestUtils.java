@@ -44,8 +44,31 @@ import org.scijava.util.FileUtils;
  * A bunch of helpful functions for unit tests.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public class TestUtils {
+
+	/**
+	 * Creates an empty file at the given path, creating intermediate directories
+	 * as necessary.
+	 * 
+	 * @param parent The parent directory of the relative path.
+	 * @param path The forward-slash-separated path to create.
+	 * @return a {@link File} pointing at the newly created empty path.
+	 * @throws IOException if the file cannot be created.
+	 */
+	public static File createPath(final File parent, final String path)
+		throws IOException
+	{
+		File file = parent;
+		final String[] elements = path.split("/");
+		for (int i=0; i<elements.length; i++) {
+			file = new File(file, elements[i]);
+			if (i == elements.length - 1) file.createNewFile();
+			else file.mkdir();
+		}
+		return file;
+	}
 
 	/**
 	 * Makes a temporary directory for use with unit tests.
