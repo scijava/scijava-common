@@ -95,6 +95,12 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	/** Gets the base directories to scan for scripts. */
 	List<File> getScriptDirectories();
 
+	/** Adds a base directory to scan for scripts. */
+	void addScriptDirectory(File scriptDirectory);
+
+	/** Removes a base directory to scan for scripts. */
+	void removeScriptDirectory(File scriptDirectory);
+
 	/** Gets all available scripts. */
 	Collection<ScriptInfo> getScripts();
 

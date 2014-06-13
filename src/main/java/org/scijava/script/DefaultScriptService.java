@@ -134,6 +134,16 @@ public class DefaultScriptService extends
 	}
 
 	@Override
+	public void addScriptDirectory(final File scriptDirectory) {
+		scriptDirs().add(scriptDirectory);
+	}
+
+	@Override
+	public void removeScriptDirectory(final File scriptDirectory) {
+		scriptDirs().remove(scriptDirectory);
+	}
+
+	@Override
 	public Collection<ScriptInfo> getScripts() {
 		return Collections.unmodifiableCollection(scripts().values());
 	}
