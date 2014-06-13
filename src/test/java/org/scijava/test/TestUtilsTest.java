@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.util;
+package org.scijava.test;
 
 import static org.junit.Assert.assertTrue;
 
