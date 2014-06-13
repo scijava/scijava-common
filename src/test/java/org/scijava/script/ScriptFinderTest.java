@@ -140,6 +140,37 @@ public class ScriptFinderTest {
 		assertMenuPath("Foo > Bar > Math > Trig > tan", scripts, 11);
 	}
 
+	/**
+	 * Tests that scripts are discovered only once when present in multiple base
+	 * directories.
+	 */
+	@Test
+	public void testOverlappingDirectories() {
+		final Context context = new Context(ScriptService.class);
+		final ScriptService scriptService = context.service(ScriptService.class);
+
+		// Scripts -> Plugins
+		scriptService.addScriptDirectory(new File(scriptsDir, "Scripts"),
+			new MenuPath("Plugins"));
+		// everything else "in place"
+		scriptService.addScriptDirectory(scriptsDir);
+
+		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
+
+		assertEquals(11, scripts.size());
+		assertMenuPath("Plugins > The Lazy Dog", scripts, 0);
+		assertMenuPath("Math > add", scripts, 1);
+		assertMenuPath("Plugins > brown", scripts, 2);
+		assertMenuPath("Math > Trig > cos", scripts, 3);
+		assertMenuPath("Math > divide", scripts, 4);
+		assertMenuPath("Plugins > fox", scripts, 5);
+		assertMenuPath("Math > multiply", scripts, 6);
+		assertMenuPath("Plugins > quick", scripts, 7);
+		assertMenuPath("Math > Trig > sin", scripts, 8);
+		assertMenuPath("Math > subtract", scripts, 9);
+		assertMenuPath("Math > Trig > tan", scripts, 10);
+	}
+
 	// -- Helper methods --
 
 	private ArrayList<ScriptInfo> findScripts(final ScriptService scriptService) {
