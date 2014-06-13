@@ -65,7 +65,7 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * 
 	 * @see #getScriptDirectories()
 	 */
-	String SCRIPTS_PATH_PROPERTY = "ij.scripts.path";
+	String SCRIPTS_PATH_PROPERTY = "scijava.scripts.path";
 
 	// -- Scripting languages --
 
