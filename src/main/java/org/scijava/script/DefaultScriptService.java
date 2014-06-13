@@ -106,7 +106,6 @@ public class DefaultScriptService extends
 
 	// -- ScriptService methods - scripting languages --
 
-	/** Gets the index of available scripting languages. */
 	@Override
 	public ScriptLanguageIndex getIndex() {
 		return scriptLanguageIndex();
