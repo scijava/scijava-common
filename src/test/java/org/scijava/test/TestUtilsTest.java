@@ -31,6 +31,7 @@
 
 package org.scijava.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -80,4 +81,33 @@ public class TestUtilsTest {
 			if (stream != null) stream.close();
 		}
 	}
+
+	/** Tests {@link TestUtils#createPath(File, String)}. */
+	@Test
+	public void testCreatePath() throws IOException {
+		final File base = TestUtils.createTemporaryDirectory("create-path-");
+		final String path = "/my/what/a/nested/directory/structure/you/have/gramma";
+		File file = TestUtils.createPath(base, path);
+		assertTrue(file.exists());
+		assertEquals("gramma", file.getName());
+		file = file.getParentFile();
+		assertEquals("have", file.getName());
+		file = file.getParentFile();
+		assertEquals("you", file.getName());
+		file = file.getParentFile();
+		assertEquals("structure", file.getName());
+		file = file.getParentFile();
+		assertEquals("directory", file.getName());
+		file = file.getParentFile();
+		assertEquals("nested", file.getName());
+		file = file.getParentFile();
+		assertEquals("a", file.getName());
+		file = file.getParentFile();
+		assertEquals("what", file.getName());
+		file = file.getParentFile();
+		assertEquals("my", file.getName());
+		file = file.getParentFile();
+		assertEquals(base, file);
+	}
+
 }
