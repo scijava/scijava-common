@@ -92,6 +92,8 @@ public class ScriptFinder extends AbstractContextual {
 		log.info("Found " + scriptCount + " scripts");
 	}
 
+	// -- Helper methods --
+
 	/**
 	 * Looks through a directory, discovering and adding scripts.
 	 * 
@@ -129,8 +131,6 @@ public class ScriptFinder extends AbstractContextual {
 
 		return scriptCount;
 	}
-
-	// -- Helper methods --
 
 	private MenuPath
 		subMenuPath(final MenuPath menuPath, final String subMenuName)
