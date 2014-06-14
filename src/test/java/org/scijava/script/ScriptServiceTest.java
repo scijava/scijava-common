@@ -52,9 +52,10 @@ public class ScriptServiceTest {
 	 */
 	@Test
 	public void testSystemProperty() {
-		final String dir1 = "/foo/bar";
+		final String slash = File.separator;
 		final String sep = File.pathSeparator;
-		final String dir2 = "/to/the/moon";
+		final String dir1 = slash + "foo" + slash + "bar";
+		final String dir2 = slash + "to" + slash + "the" + slash + "moon";
 		System.setProperty("scijava.scripts.path", dir1 + sep + dir2);
 
 		final Context context = new Context(ScriptService.class);
@@ -63,8 +64,8 @@ public class ScriptServiceTest {
 		final List<File> scriptDirs = scriptService.getScriptDirectories();
 		assertEquals(3, scriptDirs.size());
 
-		final String dir0 =
-			AppUtils.getBaseDirectory(ScriptService.class) + "/scripts";
+		final File baseDir = AppUtils.getBaseDirectory(ScriptService.class);
+		final String dir0 = baseDir.getPath() + slash + "scripts";
 		assertEquals(dir0, scriptDirs.get(0).getAbsolutePath());
 		assertEquals(dir1, scriptDirs.get(1).getAbsolutePath());
 		assertEquals(dir2, scriptDirs.get(2).getAbsolutePath());
