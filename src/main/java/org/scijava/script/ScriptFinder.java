@@ -32,7 +32,9 @@
 package org.scijava.script;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.scijava.AbstractContextual;
 import org.scijava.MenuEntry;
@@ -78,6 +80,7 @@ public class ScriptFinder extends AbstractContextual {
 
 		int scriptCount = 0;
 
+		final HashSet<File> scriptFiles = new HashSet<File>();
 		for (final File directory : directories) {
 			if (!directory.exists()) {
 				log.warn("Ignoring non-existent scripts directory: " +
@@ -86,7 +89,8 @@ public class ScriptFinder extends AbstractContextual {
 			}
 			final MenuPath prefix = scriptService.getMenuPrefix(directory);
 			final MenuPath menuPath = prefix == null ? new MenuPath() : prefix;
-			scriptCount += discoverScripts(scripts, directory, menuPath);
+			scriptCount +=
+				discoverScripts(scripts, scriptFiles, directory, menuPath);
 		}
 
 		log.info("Found " + scriptCount + " scripts");
@@ -102,7 +106,7 @@ public class ScriptFinder extends AbstractContextual {
 	 * @param menuPath The menu path, which must not be {@code null}.
 	 */
 	private int discoverScripts(final List<ScriptInfo> scripts,
-		final File directory, final MenuPath menuPath)
+		final Set<File> scriptFiles, final File directory, final MenuPath menuPath)
 	{
 		final File[] fileList = directory.listFiles();
 		if (fileList == null) return 0; // directory does not exist
@@ -111,10 +115,12 @@ public class ScriptFinder extends AbstractContextual {
 		final boolean isTopLevel = menuPath.size() == 0;
 
 		for (final File file : fileList) {
+			if (scriptFiles.contains(file)) continue; // script already added
+
 			final String name = file.getName().replace('_', ' ');
 			if (file.isDirectory()) {
 				// recurse into subdirectory
-				discoverScripts(scripts, file, subMenuPath(menuPath, name));
+				discoverScripts(scripts, scriptFiles, file, subMenuPath(menuPath, name));
 			}
 			else if (isTopLevel) {
 				// ignore scripts in toplevel script directories
@@ -125,6 +131,7 @@ public class ScriptFinder extends AbstractContextual {
 				final int dot = name.lastIndexOf('.');
 				final String noExt = dot <= 0 ? name : name.substring(0, dot);
 				scripts.add(createEntry(file, subMenuPath(menuPath, noExt)));
+				scriptFiles.add(file);
 				scriptCount++;
 			}
 		}
