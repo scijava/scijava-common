@@ -54,8 +54,9 @@ public class ScriptServiceTest {
 	public void testSystemProperty() {
 		final String slash = File.separator;
 		final String sep = File.pathSeparator;
-		final String dir1 = slash + "foo" + slash + "bar";
-		final String dir2 = slash + "to" + slash + "the" + slash + "moon";
+		final String root = new File(slash).getAbsolutePath();
+		final String dir1 = root + "foo" + slash + "bar";
+		final String dir2 = root + "to" + slash + "the" + slash + "moon";
 		System.setProperty("scijava.scripts.path", dir1 + sep + dir2);
 
 		final Context context = new Context(ScriptService.class);
