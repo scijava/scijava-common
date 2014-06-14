@@ -46,6 +46,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.MenuPath;
 import org.scijava.plugin.Plugin;
 import org.scijava.test.TestUtils;
 import org.scijava.util.FileUtils;
@@ -105,6 +106,38 @@ public class ScriptFinderTest {
 		assertMenuPath("Math > Trig > sin", scripts, 8);
 		assertMenuPath("Math > subtract", scripts, 9);
 		assertMenuPath("Math > Trig > tan", scripts, 10);
+	}
+
+	/**
+	 * Tests that menu prefixes work as expected when
+	 * {@link ScriptService#addScriptDirectory(File, org.scijava.MenuPath)} is
+	 * called.
+	 */
+	@Test
+	public void testMenuPrefixes() {
+		final Context context = new Context(ScriptService.class);
+		final ScriptService scriptService = context.service(ScriptService.class);
+
+		final MenuPath menuPrefix = new MenuPath("Foo > Bar");
+		assertEquals(2, menuPrefix.size());
+		assertEquals("Bar", menuPrefix.getLeaf().getName());
+		scriptService.addScriptDirectory(scriptsDir, menuPrefix);
+
+		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
+
+		assertEquals(12, scripts.size());
+		assertMenuPath("Foo > Bar > Scripts > The Lazy Dog", scripts, 0);
+		assertMenuPath("Foo > Bar > Math > add", scripts, 1);
+		assertMenuPath("Foo > Bar > Scripts > brown", scripts, 2);
+		assertMenuPath("Foo > Bar > Math > Trig > cos", scripts, 3);
+		assertMenuPath("Foo > Bar > Math > divide", scripts, 4);
+		assertMenuPath("Foo > Bar > Scripts > fox", scripts, 5);
+		assertMenuPath("Foo > Bar > ignored", scripts, 6);
+		assertMenuPath("Foo > Bar > Math > multiply", scripts, 7);
+		assertMenuPath("Foo > Bar > Scripts > quick", scripts, 8);
+		assertMenuPath("Foo > Bar > Math > Trig > sin", scripts, 9);
+		assertMenuPath("Foo > Bar > Math > subtract", scripts, 10);
+		assertMenuPath("Foo > Bar > Math > Trig > tan", scripts, 11);
 	}
 
 	// -- Helper methods --
