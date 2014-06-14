@@ -49,6 +49,7 @@ import org.scijava.Context;
 import org.scijava.MenuPath;
 import org.scijava.plugin.Plugin;
 import org.scijava.test.TestUtils;
+import org.scijava.util.AppUtils;
 import org.scijava.util.FileUtils;
 
 /**
@@ -88,8 +89,7 @@ public class ScriptFinderTest {
 
 	@Test
 	public void testFindScripts() {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.service(ScriptService.class);
+		final ScriptService scriptService = createScriptService();
 		scriptService.addScriptDirectory(scriptsDir);
 
 		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
@@ -115,8 +115,7 @@ public class ScriptFinderTest {
 	 */
 	@Test
 	public void testMenuPrefixes() {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.service(ScriptService.class);
+		final ScriptService scriptService = createScriptService();
 
 		final MenuPath menuPrefix = new MenuPath("Foo > Bar");
 		assertEquals(2, menuPrefix.size());
@@ -146,8 +145,7 @@ public class ScriptFinderTest {
 	 */
 	@Test
 	public void testOverlappingDirectories() {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.service(ScriptService.class);
+		final ScriptService scriptService = createScriptService();
 
 		// Scripts -> Plugins
 		scriptService.addScriptDirectory(new File(scriptsDir, "Scripts"),
@@ -172,6 +170,15 @@ public class ScriptFinderTest {
 	}
 
 	// -- Helper methods --
+
+	private ScriptService createScriptService() {
+		final Context context = new Context(ScriptService.class);
+		final ScriptService scriptService = context.service(ScriptService.class);
+		final File defaultScriptsDir =
+			new File(AppUtils.getBaseDirectory(ScriptFinder.class), "scripts");
+		scriptService.removeScriptDirectory(defaultScriptsDir);
+		return scriptService;
+	}
 
 	private ArrayList<ScriptInfo> findScripts(final ScriptService scriptService) {
 		final ScriptFinder scriptFinder = new ScriptFinder(scriptService);
