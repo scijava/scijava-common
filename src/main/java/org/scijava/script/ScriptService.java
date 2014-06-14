@@ -43,6 +43,7 @@ import java.util.concurrent.Future;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
+import org.scijava.MenuPath;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.plugin.Plugin;
@@ -95,8 +96,19 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	/** Gets the base directories to scan for scripts. */
 	List<File> getScriptDirectories();
 
+	/**
+	 * Gets the menu path prefix for the given script directory, or null if none.
+	 */
+	MenuPath getMenuPrefix(File scriptDirectory);
+
 	/** Adds a base directory to scan for scripts. */
 	void addScriptDirectory(File scriptDirectory);
+
+	/**
+	 * Adds a base directory to scan for scripts, placing discovered scripts
+	 * beneath the given menu path prefix.
+	 */
+	void addScriptDirectory(File scriptDirectory, final MenuPath menuPrefix);
 
 	/** Removes a base directory to scan for scripts. */
 	void removeScriptDirectory(File scriptDirectory);
