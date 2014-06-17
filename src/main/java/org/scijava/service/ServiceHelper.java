@@ -72,6 +72,12 @@ public class ServiceHelper extends AbstractContextual {
 	private final List<Class<? extends Service>> serviceClasses;
 
 	/**
+	 * Whether service loading will fail fast when there is an error instantiating
+	 * a required service.
+	 */
+	private final boolean strict;
+
+	/**
 	 * Creates a new service helper for discovering and instantiating services.
 	 * 
 	 * @param context The application context for which services should be
@@ -89,6 +95,21 @@ public class ServiceHelper extends AbstractContextual {
 	 */
 	public ServiceHelper(final Context context,
 		final Collection<Class<? extends Service>> serviceClasses)
+	{
+		this(context, serviceClasses, true);
+	}
+
+	/**
+	 * Creates a new service helper for discovering and instantiating services.
+	 * 
+	 * @param context The application context to which services should be added.
+	 * @param serviceClasses The service classes to instantiate.
+	 * @param strict Whether service loading will fail fast when there is an error
+	 *          instantiating a required service.
+	 */
+	public ServiceHelper(final Context context,
+		final Collection<Class<? extends Service>> serviceClasses,
+		final boolean strict)
 	{
 		setContext(context);
 		log = context.getService(LogService.class);
@@ -108,6 +129,7 @@ public class ServiceHelper extends AbstractContextual {
 			// load only the services that were explicitly specified
 			this.serviceClasses.addAll(serviceClasses);
 		}
+		this.strict = strict;
 	}
 
 	// -- ServiceHelper methods --
@@ -207,15 +229,19 @@ public class ServiceHelper extends AbstractContextual {
 				@SuppressWarnings("unchecked")
 				final S result = (S) createExactService(serviceClass, required);
 				if (required && result == null) {
-					throw new IllegalArgumentException();
+					final String error = "No match: " + serviceClass.getName();
+					if (strict) throw new IllegalArgumentException(error);
+					log.error(error);
 				}
 				return result;
 			}
 		}
 
 		if (required && c.isInterface()) {
-			throw new IllegalArgumentException("No compatible service: " +
-				c.getName());
+			final String error = "No compatible service: " + c.getName();
+			if (strict) throw new IllegalArgumentException(error);
+			log.error(error);
+			return null;
 		}
 
 		return createExactService(c, required);
@@ -249,9 +275,11 @@ public class ServiceHelper extends AbstractContextual {
 		}
 		catch (final Throwable t) {
 			if (required) {
-				throw new IllegalArgumentException("Invalid service: " + name, t);
+				final String error = "Invalid service: " + name;
+				if (strict) throw new IllegalArgumentException(error, t);
+				log.error(error, t);
 			}
-			if (log.isDebug()) {
+			else if (log.isDebug()) {
 				// when in debug mode, give full stack trace of invalid services
 				log.debug("Invalid service: " + name, t);
 			}
@@ -290,8 +318,11 @@ public class ServiceHelper extends AbstractContextual {
 				continue;
 			}
 			if (!Service.class.isAssignableFrom(type)) {
-				throw new IllegalArgumentException("Invalid parameter: " +
-					f.getDeclaringClass().getName() + "#" + f.getName());
+				final String error = "Invalid parameter: " +
+					f.getDeclaringClass().getName() + "#" + f.getName();
+				if (strict) throw new IllegalArgumentException(error);
+				log.error(error);
+				continue;
 			}
 			@SuppressWarnings("unchecked")
 			final Class<? extends Service> serviceType =

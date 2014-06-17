@@ -58,6 +58,17 @@ import org.scijava.util.ClassUtils;
  */
 public class Context implements Disposable {
 
+	// -- Constants --
+
+	/**
+	 * System property indicating whether the context should fail fast when
+	 * is attempts to instantiate a required service which is invalid or missing.
+	 * If this property is set to "false" then the context creation will attempt
+	 * to continue even when a required service cannot be instantiated. Otherwise,
+	 * the constructor will throw an {@link IllegalArgumentException} in that situation.
+	 */
+	public static final String STRICT_PROPERTY = "scijava.context.strict";
+
 	// -- Fields --
 
 	/** Index of the application context's services. */
@@ -66,7 +77,11 @@ public class Context implements Disposable {
 	/** Master index of all plugins known to the application context. */
 	private final PluginIndex pluginIndex;
 
-	/** Creates a new SciJava application context with all available services. */
+	/**
+	 * Creates a new SciJava application context with all available services.
+	 * 
+	 * @see #Context(Collection, PluginIndex, boolean)
+	 */
 	public Context() {
 		this(false);
 	}
@@ -76,6 +91,7 @@ public class Context implements Disposable {
 	 * 
 	 * @param empty If true, the context will be empty; otherwise, it will be
 	 *          initialized with all available services.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	@SuppressWarnings("unchecked")
 	public Context(final boolean empty) {
@@ -102,13 +118,12 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A list of types that implement the {@link Service}
 	 *          interface (e.g., {@code DisplayService.class}).
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Context(final Class... serviceClasses) {
-		this(serviceClasses != null ? (Collection) Arrays.asList(serviceClasses)
-			: Arrays.asList(Service.class));
+	public Context(@SuppressWarnings("rawtypes") final Class... serviceClasses) {
+		this(serviceClassList(serviceClasses));
 	}
 
 	/**
@@ -117,32 +132,67 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
 		this(serviceClasses, null);
 	}
 
 	/**
+	 * Creates a new SciJava application context with the specified services (and
+	 * any required service dependencies).
+	 * 
+	 * @param serviceClasses A collection of types that implement the
+	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @param strict Whether context creation will fail fast when there is
+	 *          is an error instantiating a required service.
+	 * @see #Context(Collection, PluginIndex, boolean)
+	 */
+	public Context(final Collection<Class<? extends Service>> serviceClasses,
+		final boolean strict)
+	{
+		this(serviceClasses, null, strict);
+	}
+
+	/**
 	 * Creates a new SciJava application with the specified PluginIndex. This
 	 * allows a base set of available plugins to be defined, and is useful when
-	 * plugins that would not be returned by the PluginIndex's PluginFinder are
-	 * desired.
-	 * <p>
-	 * NB: the {@link PluginIndex#discover()} method may still be called, adding
-	 * additional plugins to this index. The mechanism of discovery should be
-	 * configured exclusively through the attached
-	 * {@link org.scijava.plugin.PluginFinder}.
-	 * </p>
+	 * plugins that would not be returned by the {@link PluginIndex}'s
+	 * {@link org.scijava.plugin.PluginFinder} are desired.
 	 * 
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
-	 *          can pass a custom {@link PluginIndex} here.
+	 *          can pass a custom {@link PluginIndex} here. Passing null will
+	 *          result in a default plugin index being constructed and used.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	@SuppressWarnings("unchecked")
 	public Context(final PluginIndex pluginIndex) {
 		this(Arrays.<Class<? extends Service>> asList(Service.class), pluginIndex);
+	}
+
+	/**
+	 * Creates a new SciJava application context with the specified services (and
+	 * any required service dependencies). Service dependency candidates are
+	 * selected from those discovered by the given {@link PluginIndex}'s
+	 * associated {@link org.scijava.plugin.PluginFinder}.
+	 * 
+	 * @param serviceClasses A collection of types that implement the
+	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @param pluginIndex The plugin index to use when discovering and indexing
+	 *          plugins. If you wish to completely control how services are
+	 *          discovered (i.e., use your own
+	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
+	 *          can pass a custom {@link PluginIndex} here. Passing null will
+	 *          result in a default plugin index being constructed and used.
+	 * @see #Context(Collection, PluginIndex, boolean)
+	 */
+	public Context(final Collection<Class<? extends Service>> serviceClasses,
+		final PluginIndex pluginIndex)
+	{
+		this(serviceClasses, pluginIndex, strict());
 	}
 
 	/**
@@ -166,17 +216,21 @@ public class Context implements Disposable {
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
-	 *          can pass a custom {@link PluginIndex} here.
+	 *          can pass a custom {@link PluginIndex} here. Passing null will
+	 *          result in a default plugin index being constructed and used.
+	 * @param strict Whether context creation will fail fast when there is
+	 *          is an error instantiating a required service.
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
-		final PluginIndex pluginIndex)
+		final PluginIndex pluginIndex, final boolean strict)
 	{
 		serviceIndex = new ServiceIndex();
 
 		this.pluginIndex = pluginIndex == null ? new PluginIndex() : pluginIndex;
 		this.pluginIndex.discover();
 
-		final ServiceHelper serviceHelper = new ServiceHelper(this, serviceClasses);
+		final ServiceHelper serviceHelper =
+			new ServiceHelper(this, serviceClasses, strict);
 		serviceHelper.loadServices();
 	}
 
@@ -323,6 +377,20 @@ public class Context implements Disposable {
 		}
 	}
 
+	// -- Utility methods --
+
+	/**
+	 * Utility method for converting a varargs list of service classes to a
+	 * {@link List} of those classes.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Class<? extends Service>> serviceClassList(
+		final Class... serviceClasses)
+	{
+		return serviceClasses != null ? (List) Arrays.asList(serviceClasses)
+			: Arrays.asList(Service.class);
+	}
+
 	// -- Helper methods --
 
 	private String createMissingServiceMessage(
@@ -355,6 +423,10 @@ public class Context implements Disposable {
 				.append("ClassLoader was not a URLClassLoader. Could not print classpath.");
 		}
 		return msg.toString();
+	}
+
+	private static boolean strict() {
+		return !"false".equals(System.getProperty(STRICT_PROPERTY));
 	}
 
 }
