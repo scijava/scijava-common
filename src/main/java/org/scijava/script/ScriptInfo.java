@@ -56,6 +56,10 @@ import org.scijava.util.ConversionUtils;
 
 /**
  * Metadata about a script.
+ * <p>
+ * This class is responsible for parsing the script for parameters. See
+ * {@link #parseParameters()} for details.
+ * </p>
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
