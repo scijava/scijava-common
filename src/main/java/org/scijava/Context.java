@@ -122,10 +122,8 @@ public class Context implements Disposable {
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Context(final Class... serviceClasses) {
-		this(serviceClasses != null ? (Collection) Arrays.asList(serviceClasses)
-			: Arrays.asList(Service.class));
+	public Context(@SuppressWarnings("rawtypes") final Class... serviceClasses) {
+		this(serviceClassList(serviceClasses));
 	}
 
 	/**
@@ -377,6 +375,20 @@ public class Context implements Disposable {
 		for (int s = services.size() - 1; s >= 0; s--) {
 			services.get(s).dispose();
 		}
+	}
+
+	// -- Utility methods --
+
+	/**
+	 * Utility method for converting a varargs list of service classes to a
+	 * {@link List} of those classes.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Class<? extends Service>> serviceClassList(
+		final Class... serviceClasses)
+	{
+		return serviceClasses != null ? (List) Arrays.asList(serviceClasses)
+			: Arrays.asList(Service.class);
 	}
 
 	// -- Helper methods --
