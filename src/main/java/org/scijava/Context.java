@@ -123,6 +123,21 @@ public class Context implements Disposable {
 	}
 
 	/**
+	 * Creates a new SciJava application context with the specified services (and
+	 * any required service dependencies).
+	 * 
+	 * @param serviceClasses A collection of types that implement the
+	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @param strict Whether context creation will fail fast when there is
+	 *          is an error instantiating a required service.
+	 */
+	public Context(final Collection<Class<? extends Service>> serviceClasses,
+		final boolean strict)
+	{
+		this(serviceClasses, null, strict);
+	}
+
+	/**
 	 * Creates a new SciJava application with the specified PluginIndex. This
 	 * allows a base set of available plugins to be defined, and is useful when
 	 * plugins that would not be returned by the {@link PluginIndex}'s
@@ -138,6 +153,27 @@ public class Context implements Disposable {
 	@SuppressWarnings("unchecked")
 	public Context(final PluginIndex pluginIndex) {
 		this(Arrays.<Class<? extends Service>> asList(Service.class), pluginIndex);
+	}
+
+	/**
+	 * Creates a new SciJava application context with the specified services (and
+	 * any required service dependencies). Service dependency candidates are
+	 * selected from those discovered by the given {@link PluginIndex}'s
+	 * associated {@link org.scijava.plugin.PluginFinder}.
+	 * 
+	 * @param serviceClasses A collection of types that implement the
+	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @param pluginIndex The plugin index to use when discovering and indexing
+	 *          plugins. If you wish to completely control how services are
+	 *          discovered (i.e., use your own
+	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
+	 *          can pass a custom {@link PluginIndex} here. Passing null will
+	 *          result in a default plugin index being constructed and used.
+	 */
+	public Context(final Collection<Class<? extends Service>> serviceClasses,
+		final PluginIndex pluginIndex)
+	{
+		this(serviceClasses, pluginIndex, strict());
 	}
 
 	/**
@@ -163,16 +199,19 @@ public class Context implements Disposable {
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
 	 *          can pass a custom {@link PluginIndex} here. Passing null will
 	 *          result in a default plugin index being constructed and used.
+	 * @param strict Whether context creation will fail fast when there is
+	 *          is an error instantiating a required service.
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
-		final PluginIndex pluginIndex)
+		final PluginIndex pluginIndex, final boolean strict)
 	{
 		serviceIndex = new ServiceIndex();
 
 		this.pluginIndex = pluginIndex == null ? new PluginIndex() : pluginIndex;
 		this.pluginIndex.discover();
 
-		final ServiceHelper serviceHelper = new ServiceHelper(this, serviceClasses);
+		final ServiceHelper serviceHelper =
+			new ServiceHelper(this, serviceClasses, strict);
 		serviceHelper.loadServices();
 	}
 
@@ -351,6 +390,10 @@ public class Context implements Disposable {
 				.append("ClassLoader was not a URLClassLoader. Could not print classpath.");
 		}
 		return msg.toString();
+	}
+
+	private static boolean strict() {
+		return true;
 	}
 
 }
