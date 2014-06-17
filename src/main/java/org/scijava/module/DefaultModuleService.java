@@ -346,7 +346,10 @@ public class DefaultModuleService extends AbstractService implements
 			final Object value = inputMap.get(name);
 			final Object converted;
 			if (input == null) {
-				log.warn("Unmatched input: " + name);
+				// inputs whose name starts with a dot are implicitly known by convention
+				if (!name.startsWith(".")) {
+					log.warn("Unmatched input: " + name);
+				}
 				converted = value;
 			}
 			else {
