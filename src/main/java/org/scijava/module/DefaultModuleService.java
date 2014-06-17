@@ -343,17 +343,20 @@ public class DefaultModuleService extends AbstractService implements
 
 		for (final String name : inputMap.keySet()) {
 			final ModuleItem<?> input = module.getInfo().getInput(name);
-			if (input == null) {
-				log.error("No such input: " + name);
-				continue;
-			}
 			final Object value = inputMap.get(name);
-			final Class<?> type = input.getType();
-			final Object converted = ConversionUtils.convert(value, type);
-			if (value != null && converted == null) {
-				log.error("For input " + name + ": incompatible object " +
-					value.getClass().getName() + " for type " + type.getName());
-				continue;
+			final Object converted;
+			if (input == null) {
+				log.warn("Unmatched input: " + name);
+				converted = value;
+			}
+			else {
+				final Class<?> type = input.getType();
+				converted = ConversionUtils.convert(value, type);
+				if (value != null && converted == null) {
+					log.error("For input " + name + ": incompatible object " +
+						value.getClass().getName() + " for type " + type.getName());
+					continue;
+				}
 			}
 			module.setInput(name, converted);
 			module.setResolved(name, true);
