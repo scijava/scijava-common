@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.scijava.plugin.Parameter;
@@ -188,6 +189,55 @@ public class ContextCreationTest {
 				"No compatible service: " + OptionalMissingService.class.getName();
 			assertEquals(expectedCause, exc.getCause().getMessage());
 		}
+	}
+
+	/**
+	 * Tests that missing {@link Service}s are handled properly in non-strict
+	 * mode; specifically, that {@link IllegalArgumentException} is <em>not</em>
+	 * thrown when attempting to create a {@link Context} requiring one directly.
+	 */
+	@Test
+	public void testNonStrictMissingDirect() {
+		final List<Class<? extends Service>> serviceClasses =
+			Context.serviceClassList(MissingService.class);
+		final Context context = new Context(serviceClasses, false);
+		assertEquals(0, context.getServiceIndex().size());
+	}
+
+	/**
+	 * Tests that missing {@link Service}s are handled properly in non-strict
+	 * mode; specifically, that {@link IllegalArgumentException} is <em>not</em>
+	 * thrown when attempting to create a {@link Context} requiring one
+	 * transitively.
+	 */
+	@Test
+	public void testNonStrictMissingTransitive() {
+		final List<Class<? extends Service>> serviceClasses =
+			Context.serviceClassList(MissingService.class);
+		final Context context = new Context(serviceClasses, false);
+		assertEquals(0, context.getServiceIndex().size());
+	}
+
+	/**
+	 * Tests that missing-but-optional {@link Service}s are handled properly in
+	 * non-strict mode; specifically, that {@link IllegalArgumentException} is
+	 * <em>not</em> thrown when attempting to create a {@link Context} requiring
+	 * one transitively.
+	 * <p>
+	 * A service marked {@link Optional}, but annotated without
+	 * {@code required = false} from a dependent service, is assumed to be
+	 * required for that dependent service.
+	 * </p>
+	 */
+	@Test
+	public void testNonStrictOptionalMissingTransitive() {
+		final List<Class<? extends Service>> serviceClasses =
+			Context.serviceClassList(ServiceRequiringOptionalMissingService.class);
+		final Context context = new Context(serviceClasses, false);
+		final List<Service> services = context.getServiceIndex().getAll();
+		assertEquals(1, services.size());
+		assertSame(ServiceRequiringOptionalMissingService.class, services.get(0)
+			.getClass());
 	}
 
 	/**
