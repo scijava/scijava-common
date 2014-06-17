@@ -40,6 +40,11 @@ import org.scijava.module.event.ModulesUpdatedEvent;
  * A ModuleInfo object encapsulates metadata about a particular {@link Module}
  * (but not a specific instance of it). In particular, it can report details on
  * the names and types of inputs and outputs.
+ * <p>
+ * A special class of implicit input parameters is available: when the
+ * {@code name} starts with a dot (e.g. {@code .helloWorld}), no warning is
+ * issued about an unmatched input.
+ * </p>
  * 
  * @author Aivar Grislis
  * @author Curtis Rueden
