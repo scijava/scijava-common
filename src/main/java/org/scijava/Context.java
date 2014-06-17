@@ -77,7 +77,11 @@ public class Context implements Disposable {
 	/** Master index of all plugins known to the application context. */
 	private final PluginIndex pluginIndex;
 
-	/** Creates a new SciJava application context with all available services. */
+	/**
+	 * Creates a new SciJava application context with all available services.
+	 * 
+	 * @see #Context(Collection, PluginIndex, boolean)
+	 */
 	public Context() {
 		this(false);
 	}
@@ -87,6 +91,7 @@ public class Context implements Disposable {
 	 * 
 	 * @param empty If true, the context will be empty; otherwise, it will be
 	 *          initialized with all available services.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	@SuppressWarnings("unchecked")
 	public Context(final boolean empty) {
@@ -113,6 +118,7 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A list of types that implement the {@link Service}
 	 *          interface (e.g., {@code DisplayService.class}).
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
 	 */
@@ -128,6 +134,7 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
 		this(serviceClasses, null);
@@ -141,6 +148,7 @@ public class Context implements Disposable {
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 * @param strict Whether context creation will fail fast when there is
 	 *          is an error instantiating a required service.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
 		final boolean strict)
@@ -160,6 +168,7 @@ public class Context implements Disposable {
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
 	 *          can pass a custom {@link PluginIndex} here. Passing null will
 	 *          result in a default plugin index being constructed and used.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	@SuppressWarnings("unchecked")
 	public Context(final PluginIndex pluginIndex) {
@@ -180,6 +189,7 @@ public class Context implements Disposable {
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
 	 *          can pass a custom {@link PluginIndex} here. Passing null will
 	 *          result in a default plugin index being constructed and used.
+	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
 		final PluginIndex pluginIndex)
