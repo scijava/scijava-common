@@ -31,9 +31,14 @@
 
 package org.scijava.thread;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,6 +64,80 @@ public class ThreadServiceTest {
 	@After
 	public void tearDown() {
 		context.dispose();
+	}
+
+	/** Tests {@link ThreadService#run(Callable)}. */
+	@Test
+	public void testRunCallable() throws InterruptedException, ExecutionException
+	{
+		final Thread result = threadService.run(new Callable<Thread>() {
+
+			@Override
+			public Thread call() {
+				return Thread.currentThread();
+			}
+		}).get();
+		assertNotSame(Thread.currentThread(), result);
+	}
+
+	/** Tests {@link ThreadService#run(Runnable)}. */
+	@Test
+	public void testRunRunnable() throws InterruptedException, ExecutionException
+	{
+		final Thread[] results = new Thread[1];
+		threadService.run(new Runnable() {
+
+			@Override
+			public void run() {
+				results[0] = Thread.currentThread();
+			}
+		}).get();
+		assertNotSame(Thread.currentThread(), results[0]);
+	}
+
+	/**
+	 * Tests {@link ThreadService#invoke(Runnable)} and
+	 * {@link ThreadService#isDispatchThread()}.
+	 */
+	@Test
+	public void testInvoke() throws InterruptedException,
+		InvocationTargetException
+	{
+		final boolean[] results = new boolean[1];
+		threadService.invoke(new Runnable() {
+
+			@Override
+			public void run() {
+				results[0] = threadService.isDispatchThread();
+			}
+		});
+		assertTrue(results[0]);
+		assertFalse(threadService.isDispatchThread());
+	}
+
+	/**
+	 * Tests {@link ThreadService#queue(Runnable)} and
+	 * {@link ThreadService#isDispatchThread()}.
+	 */
+	@Test
+	public void testQueue() throws InterruptedException {
+		final Object sync = new Object();
+		final boolean[] results = new boolean[1];
+		synchronized (sync) {
+			threadService.queue(new Runnable() {
+
+				@Override
+				public void run() {
+					results[0] = threadService.isDispatchThread();
+					synchronized (sync) {
+						sync.notifyAll();
+					}
+				}
+			});
+			sync.wait();
+		}
+		assertTrue(results[0]);
+		assertFalse(threadService.isDispatchThread());
 	}
 
 	/**
