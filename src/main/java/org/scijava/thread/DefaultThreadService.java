@@ -33,6 +33,7 @@ package org.scijava.thread;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,18 +64,20 @@ public final class DefaultThreadService extends AbstractService implements
 
 	private boolean disposed;
 
+	private WeakHashMap<Thread, Thread> parents = new WeakHashMap<Thread, Thread>();
+
 	// -- ThreadService methods --
 
 	@Override
 	public <V> Future<V> run(final Callable<V> code) {
 		if (disposed) return null;
-		return executor().submit(code);
+		return executor().submit(wrap(code));
 	}
 
 	@Override
 	public Future<?> run(final Runnable code) {
 		if (disposed) return null;
-		return executor().submit(code);
+		return executor().submit(wrap(code));
 	}
 
 	@Override
@@ -92,13 +95,18 @@ public final class DefaultThreadService extends AbstractService implements
 		}
 		else {
 			// invoke on the EDT
-			EventQueue.invokeAndWait(code);
+			EventQueue.invokeAndWait(wrap(code));
 		}
 	}
 
 	@Override
 	public void queue(final Runnable code) {
-		EventQueue.invokeLater(code);
+		EventQueue.invokeLater(wrap(code));
+	}
+
+	@Override
+	public Thread getParent(final Thread thread) {
+		return parents.get(thread != null ? thread : Thread.currentThread());
 	}
 
 	// -- Disposable methods --
@@ -128,4 +136,37 @@ public final class DefaultThreadService extends AbstractService implements
 		return executor;
 	}
 
+	private Runnable wrap(final Runnable r) {
+		final Thread parent = Thread.currentThread();
+		return new Runnable() {
+			@Override
+			public void run() {
+				final Thread thread = Thread.currentThread();
+				try {
+					if (parent != thread) parents.put(thread, parent);
+					r.run();
+				}
+				finally {
+					if (parent != thread) parents.remove(thread);
+				}
+			}
+		};
+	}
+
+	private <V> Callable<V> wrap(final Callable<V> c) {
+		final Thread parent = Thread.currentThread();
+		return new Callable<V>() {
+			@Override
+			public V call() throws Exception {
+				final Thread thread = Thread.currentThread();
+				try {
+					if (parent != thread) parents.put(thread, parent);
+					return c.call();
+				}
+				finally {
+					if (parent != thread) parents.remove(thread);
+				}
+			}
+		};
+	}
 }

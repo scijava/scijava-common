@@ -113,4 +113,14 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 */
 	void queue(final Runnable code);
 
+	/**
+	 * Returns the thread that called the specified thread.
+	 * <p>
+	 * This works only on threads which the thread service knows about, of course.
+	 * </p>
+	 * 
+	 * @param thread the managed thread, null refers to the current thread
+	 * @return the thread that asked the {@link ThreadService} to spawn the specified thread
+	 */
+	Thread getParent(final Thread thread);
 }
