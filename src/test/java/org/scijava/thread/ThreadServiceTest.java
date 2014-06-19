@@ -33,6 +33,8 @@ package org.scijava.thread;
 
 import static org.junit.Assert.assertSame;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 
@@ -43,18 +45,29 @@ import org.scijava.Context;
  */
 public class ThreadServiceTest {
 
+	private Context context;
+	private ThreadService threadService;
+
+	@Before
+	public void setUp() {
+		context = new Context(ThreadService.class);
+		threadService = context.getService(ThreadService.class);
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
+	}
+
 	/**
 	 * Tests {@link ThreadService#getParent(Thread)} when called after
 	 * {@link ThreadService#invoke(Runnable)}.
 	 */
 	@Test
 	public void testGetParent() throws Exception {
-		final Context context = new Context(ThreadService.class);
-		final ThreadService threadService = context.getService(ThreadService.class);
 		final AskForParent ask = new AskForParent(threadService);
 		threadService.invoke(ask);
 		assertSame(Thread.currentThread(), ask.parent);
-		context.dispose();
 	}
 
 	private static class AskForParent implements Runnable {
