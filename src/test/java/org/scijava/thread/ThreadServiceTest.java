@@ -33,6 +33,8 @@ package org.scijava.thread;
 
 import static org.junit.Assert.assertSame;
 
+import java.util.concurrent.Callable;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,24 +66,61 @@ public class ThreadServiceTest {
 	 * {@link ThreadService#invoke(Runnable)}.
 	 */
 	@Test
-	public void testGetParent() throws Exception {
-		final AskForParent ask = new AskForParent(threadService);
+	public void testGetParentInvoke() throws Exception {
+		final AskForParentR ask = new AskForParentR(threadService);
 		threadService.invoke(ask);
 		assertSame(Thread.currentThread(), ask.parent);
 	}
 
-	private static class AskForParent implements Runnable {
+	/**
+	 * Tests {@link ThreadService#getParent(Thread)} when called after
+	 * {@link ThreadService#run(Callable)}.
+	 */
+	@Test
+	public void testGetParentRunCallable() throws Exception {
+		final AskForParentC ask = new AskForParentC(threadService);
+		final Thread parent = threadService.run(ask).get();
+		assertSame(Thread.currentThread(), parent);
+	}
+
+	/**
+	 * Tests {@link ThreadService#getParent(Thread)} when called after
+	 * {@link ThreadService#run(Runnable)}.
+	 */
+	@Test
+	public void testGetParentRunRunnable() throws Exception {
+		final AskForParentR ask = new AskForParentR(threadService);
+		threadService.run(ask).get();
+		assertSame(Thread.currentThread(), ask.parent);
+	}
+
+	private static class AskForParentR implements Runnable {
+
 		private final ThreadService threadService;
 
 		private Thread parent;
 
-		public AskForParent(final ThreadService threadService) {
+		public AskForParentR(final ThreadService threadService) {
 			this.threadService = threadService;
 		}
 
 		@Override
 		public void run() {
 			parent = threadService.getParent(null);
+		}
+	}
+
+	private static class AskForParentC implements Callable<Thread> {
+
+		private final ThreadService threadService;
+
+		public AskForParentC(final ThreadService threadService) {
+			this.threadService = threadService;
+		}
+
+		@Override
+		public Thread call() {
+			return threadService.getParent(null);
 		}
 	}
 
