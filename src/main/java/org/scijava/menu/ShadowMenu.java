@@ -54,6 +54,7 @@ import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.ClassUtils;
+import org.scijava.util.MiscUtils;
 
 /**
  * A tree representing a menu structure independent of any particular user
@@ -291,9 +292,7 @@ public class ShadowMenu extends AbstractContextual implements
 		// if weights are equal, sort alphabetically
 		final String n1 = menuEntry.getName();
 		final String n2 = c.menuEntry.getName();
-		final String s1 = n1 == null ? "" : n1;
-		final String s2 = n2 == null ? "" : n2;
-		return s1.compareTo(s2);
+		return MiscUtils.compare(n1,  n2);
 	}
 
 	@Override
