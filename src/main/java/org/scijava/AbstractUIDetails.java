@@ -103,6 +103,11 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 		// use object name, if available
 		if (getName() != null && !getName().isEmpty()) return getName();
 
+		// use the unique identifier, if available
+		if (this instanceof Identifiable) {
+			return ((Identifiable) this).getIdentifier();
+		}
+
 		// use class name as a last resort
 		return getClass().getSimpleName();
 	}
