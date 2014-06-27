@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,6 +111,7 @@ public class ScriptFinder extends AbstractContextual {
 	{
 		final File[] fileList = directory.listFiles();
 		if (fileList == null) return 0; // directory does not exist
+		Arrays.sort(fileList);
 
 		int scriptCount = 0;
 		final boolean isTopLevel = menuPath.size() == 0;
