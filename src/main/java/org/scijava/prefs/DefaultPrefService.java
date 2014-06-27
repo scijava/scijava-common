@@ -378,6 +378,28 @@ public class DefaultPrefService extends AbstractPrefService {
 		return getList(preferences);
 	}
 
+	@Override
+	public Iterable<String> getIterable(final String key) {
+		return getIterable((Class<?>) null, key);
+	}
+
+	@Override
+	public Iterable<String> getIterable(final Class<?> prefClass, final String key) {
+		final Preferences preferences = prefs(prefClass);
+		return getIterable(preferences.node(key));
+	}
+
+	@Override
+	public void putIterable(final Iterable<String> iterable, final String key) {
+		putIterable((Class<?>) null, iterable, key);
+	}
+
+	@Override
+	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String key) {
+		final Preferences preferences = prefs(prefClass);
+		putIterable(preferences.node(key), iterable);
+	}
+
 	// -- Helper methods --
 
 	private void clear(final Preferences preferences, final String key) {
@@ -458,6 +480,60 @@ public class DefaultPrefService extends AbstractPrefService {
 			list.add(value);
 		}
 		return list;
+	}
+
+	private void putIterable(final Preferences preferences,
+		final Iterable<String> iterable)
+	{
+		if (preferences == null) {
+			throw new IllegalArgumentException("Preferences not set.");
+		}
+		int index = 0;
+		for (final String value : iterable) {
+			preferences.put("" + index++, value == null ? null : value.toString());
+		}
+	}
+
+	private Iterable<String> getIterable(final Preferences preferences)
+	{
+		if (preferences == null) {
+			throw new IllegalArgumentException("Preferences not set.");
+		}
+		return new Iterable<String>() {
+			@Override
+			public Iterator<String> iterator() {
+				return new Iterator<String>() {
+					private String value;
+					private int index;
+					{
+						findNext();
+					}
+
+					@Override
+					public String next() {
+						final String result = value;
+						findNext();
+						return result;
+					}
+
+					@Override
+					public boolean hasNext() {
+						return value != null;
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+
+					private void findNext() {
+						if (index < 0) return;
+						value = preferences.get("" + index, null);
+						index = value == null ? -1 : index + 1;
+					}
+				};
+			}
+		};
 	}
 
 	private Preferences prefs(final Class<?> c) {
