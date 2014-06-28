@@ -49,7 +49,7 @@ public class AppUtilsTest {
 	public void testBaseDirectory() {
 		assertNull(AppUtils.getBaseDirectory(new File(
 			"/home/blub/.m2/repository/org/dscho/secret/1.0/secret-1.0.jar"), null));
-		final String tmp = System.getProperty("os.name").startsWith("Win") ? "c:/tmp" : "/tmp";
+		final String tmp = PlatformUtils.isWindows() ? "c:/tmp" : "/tmp";
 		assertEquals(new File(tmp), AppUtils.getBaseDirectory(new File(
 			tmp + "/app/target/classes"), "app"));
 		assertEquals(new File(tmp), AppUtils.getBaseDirectory(new File(
