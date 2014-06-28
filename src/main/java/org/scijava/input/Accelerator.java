@@ -158,7 +158,7 @@ public class Accelerator {
 	}
 
 	public static boolean isCtrlReplacedWithMeta() {
-		// TODO: Relocate this platform-specific logic?
+		// FIXME: Relocate this platform-specific logic.
 		return System.getProperty("os.name").startsWith("Mac");
 	}
 
