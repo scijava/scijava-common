@@ -96,6 +96,10 @@ public class FileUtilsTest {
 		} else {
 			jqpublic = "/Users/jqpublic/";
 		}
+
+		final File jqpublicFile = FileUtils.urlToFile("file:" + jqpublic);
+		assertEqualsPath(jqpublic, jqpublicFile.getPath() + "/");
+
 		final String filePath = jqpublic + "imagej/ImageJ.class";
 		final String fileURL = new File(filePath).toURI().toURL().toString();
 		final File fileFile = FileUtils.urlToFile(fileURL);
