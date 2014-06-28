@@ -61,8 +61,6 @@ import org.junit.Test;
  * @author Grant Harris
  */
 public class FileUtilsTest {
-	private final static boolean isWindows =
-		System.getProperty("os.name").startsWith("Win");
 
 	@Test
 	public void testGetPath() {
@@ -91,7 +89,7 @@ public class FileUtilsTest {
 	public void testURLToFile() throws MalformedURLException {
 		// verify that 'file:' URL works
 		final String jqpublic;
-		if (isWindows) {
+		if (PlatformUtils.isWindows()) {
 			jqpublic = "C:/Users/jqpublic/";
 		} else {
 			jqpublic = "/Users/jqpublic/";
@@ -274,7 +272,7 @@ public class FileUtilsTest {
 	}
 
 	private static void assertEqualsPath(final String a, final String b) {
-		if (isWindows) {
+		if (PlatformUtils.isWindows()) {
 			assertEquals(a.replace('\\', '/'), b.replace('\\', '/'));
 		} else {
 			assertEquals(a, b);

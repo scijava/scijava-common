@@ -68,8 +68,7 @@ public class ProcessUtilsTest {
 	}
 
 	private void assumePOSIX() {
-		final String osName = System.getProperty("os.name");
-		assumeTrue(osName.equals("Linux") || osName.equals("Mac OS X"));
+		assumeTrue(PlatformUtils.isPOSIX());
 	}
 
 	/**

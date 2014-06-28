@@ -33,6 +33,8 @@ package org.scijava.input;
 
 import java.util.regex.Pattern;
 
+import org.scijava.util.PlatformUtils;
+
 /**
  * A keyboard shortcut, consisting of a {@link KeyCode} plus
  * {@link InputModifiers}.
@@ -159,7 +161,7 @@ public class Accelerator {
 
 	public static boolean isCtrlReplacedWithMeta() {
 		// FIXME: Relocate this platform-specific logic.
-		return System.getProperty("os.name").startsWith("Mac");
+		return PlatformUtils.isMac();
 	}
 
 	// -- Helper methods --

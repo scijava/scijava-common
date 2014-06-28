@@ -66,9 +66,6 @@ public final class FileUtils {
 	public static final String SHORTENER_SLASH = "/";
 	public static final String SHORTENER_ELLIPSE = "...";
 
-	private final static boolean isWindows =
-		System.getProperty("os.name").startsWith("Win");
-
 	private FileUtils() {
 		// prevent instantiation of utility class
 	}
@@ -207,7 +204,7 @@ public final class FileUtils {
 			path = path.substring(4, index);
 		}
 		try {
-			if (isWindows && path.matches("file:[A-Za-z]:.*")) {
+			if (PlatformUtils.isWindows() && path.matches("file:[A-Za-z]:.*")) {
 				path = "file:/" + path.substring(5);
 			}
 			return new File(new URL(path).toURI());
