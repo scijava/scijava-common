@@ -260,9 +260,9 @@ public interface ModuleService extends SciJavaService {
 	<M extends Module> M waitFor(Future<M> future);
 
 	/**
-	 * Checks the given module for a solitary unresolved input of the given type,
-	 * returning the relevant {@link ModuleItem} if found, or null if not exactly
-	 * one unresolved input of that type.
+	 * Checks the given module for a solitary unresolved fillable input of the
+	 * given type, returning the relevant {@link ModuleItem} if found, or null if
+	 * not exactly one unresolved fillable input of that type.
 	 */
 	<T> ModuleItem<T> getSingleInput(Module module, Class<T> type);
 
