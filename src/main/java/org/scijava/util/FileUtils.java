@@ -204,6 +204,9 @@ public final class FileUtils {
 			path = path.substring(4, index);
 		}
 		try {
+			if (PlatformUtils.isWindows() && path.matches("file:[A-Za-z]:.*")) {
+				path = "file:/" + path.substring(5);
+			}
 			return new File(new URL(path).toURI());
 		}
 		catch (final MalformedURLException e) {

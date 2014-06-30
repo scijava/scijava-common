@@ -31,70 +31,42 @@
 
 package org.scijava.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.junit.Test;
-
 /**
- * Tests {@link ProcessUtils}.
+ * Useful methods for platform-specific interrogation.
  * 
+ * @author Curtis Rueden
  * @author Johannes Schindelin
  */
-public class ProcessUtilsTest {
+public final class PlatformUtils {
 
-	@Test
-	public void testInterruptible() throws InterruptedException {
-		assumePOSIX();
-		final SleepThread thread = new SleepThread(5000);
-		thread.start();
-		Thread.sleep(100);
-		thread.interrupt();
-		thread.join();
-		assertNotNull(thread.getResult());
+	private PlatformUtils() {
+		// prevent instantiation of utility class
 	}
 
-	@Test
-	public void testStdin() {
-		assumePOSIX();
-		final String value = "Hello, World!\n";
-		final InputStream input = new ByteArrayInputStream(value.getBytes());
-		final String result = ProcessUtils.exec(null, input, null, null, "cat");
-		assertEquals(value, result);
+	/** Whether the operating system is Windows-based. */
+	public static boolean isWindows() {
+		return osName().startsWith("Win");
 	}
 
-	private void assumePOSIX() {
-		assumeTrue(PlatformUtils.isPOSIX());
+	/** Whether the operating system is Mac-based. */
+	public static boolean isMac() {
+		return osName().startsWith("Mac");
 	}
 
-	/**
-	 * A class executing a 'sleep' call, to be interrupted.
-	 * 
-	 * @author Johannes Schindelin
-	 */
-	private static class SleepThread extends Thread {
-		private int seconds;
-		private Throwable result;
-
-		public SleepThread(int seconds) {
-			this.seconds = seconds;
-		}
-
-		@Override
-		public void run() {
-			try {
-				ProcessUtils.exec(null, null, null, "sleep", "" + seconds);
-			} catch (Throwable t) {
-				result = t;
-			}
-		}
-
-		public Throwable getResult() {
-			return result;
-		}
+	/** Whether the operating system is Linux-based. */
+	public static boolean isLinux() {
+		return osName().startsWith("Linux");
 	}
+
+	/** Whether the operating system is POSIX compliant. */
+	public static boolean isPOSIX() {
+		return isMac() || isLinux();
+	}
+
+	/** Gets the name of the operating system. */
+	public static String osName() {
+		final String osName = System.getProperty("os.name");
+		return osName == null ? "Unknown" : osName;
+	}
+
 }
