@@ -38,6 +38,8 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,11 +62,25 @@ public class ObjectIndexTest {
 		objectIndex.add(o1);
 		objectIndex.add(o2);
 		objectIndex.add(o3);
+
+		final String o4 = "quick", o5 = "brown", o6 = "fox";
+		objectIndex.addLater(new LazyObjects<String>() {
+
+			@Override
+			public Collection<String> get() {
+				return Arrays.asList(o4, o5, o6);
+			}
+
+		});
+
 		final List<Object> all = objectIndex.getAll();
-		assertEquals(3, all.size());
+		assertEquals(6, all.size());
 		assertSame(o1, all.get(0));
 		assertSame(o2, all.get(1));
 		assertSame(o3, all.get(2));
+		assertSame(o4, all.get(3));
+		assertSame(o5, all.get(4));
+		assertSame(o6, all.get(5));
 	}
 
 	@Test
