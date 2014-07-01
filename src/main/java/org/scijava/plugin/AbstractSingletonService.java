@@ -85,11 +85,11 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	@Override
 	public void initialize() {
 		// add singleton instances to the object index... IN THE FUTURE!
-		objectService.getIndex().addLater(new LazyObjects<Object>() {
+		objectService.getIndex().addLater(new LazyObjects<PT>() {
 
 			@Override
-			public ArrayList<Object> get() {
-				return new ArrayList<Object>(getInstances());
+			public ArrayList<PT> get() {
+				return new ArrayList<PT>(getInstances());
 			}
 		});
 	}
