@@ -37,6 +37,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -241,6 +242,100 @@ public class ObjectIndexTest {
 		final String[] actual =
 			objectIndex.toString().split(System.getProperty("line.separator"));
 		assertArrayEquals(expected, actual);
+	}
+
+	@Test
+	public void testAddLater() {
+		final ObjectIndex<Object> objectIndex =
+			new ObjectIndex<Object>(Object.class);
+		objectIndex.add(new Integer(5));
+		objectIndex.add(new Float(2.5f));
+		objectIndex.add(new Integer(3));
+
+		final LazyThings<Integer> lazyIntegers = new LazyThings<Integer>(9, -7);
+		objectIndex.addLater(lazyIntegers);
+
+		final LazyThings<Float> lazyFloats =
+			new LazyThings<Float>(6.6f, -3.3f, -5.1f, 12.3f);
+		objectIndex.addLater(lazyFloats);
+
+		final LazyThings<BigInteger> lazyBigIntegers =
+			new LazyThings<BigInteger>(BigInteger.ONE, BigInteger.TEN);
+		objectIndex.addLater(lazyBigIntegers);
+
+		// verify that no pending objects have been resolved yet
+		assertFalse(lazyIntegers.wasAccessed());
+		assertFalse(lazyFloats.wasAccessed());
+		assertFalse(lazyBigIntegers.wasAccessed());
+
+		// verify list of Integers; this will resolve the pending ones
+		final List<Object> integerObjects = objectIndex.get(Integer.class);
+		assertEquals(4, integerObjects.size());
+		assertEquals(5, integerObjects.get(0));
+		assertEquals(3, integerObjects.get(1));
+		assertEquals(9, integerObjects.get(2));
+		assertEquals(-7, integerObjects.get(3));
+
+		// verify that pending Integers have now been resolved
+		assertTrue(lazyIntegers.wasAccessed());
+
+		// verify that the other pending objects have still not been resolved
+		assertFalse(lazyFloats.wasAccessed());
+		assertFalse(lazyBigIntegers.wasAccessed());
+
+		// verify list of Floats; this will resolve the pending ones
+		final List<Object> floatObjects = objectIndex.get(Float.class);
+		assertEquals(5, floatObjects.size());
+		assertEquals(2.5f, floatObjects.get(0));
+		assertEquals(6.6f, floatObjects.get(1));
+		assertEquals(-3.3f, floatObjects.get(2));
+		assertEquals(-5.1f, floatObjects.get(3));
+		assertEquals(12.3f, floatObjects.get(4));
+
+		// verify that pending Floats have now been resolved
+		assertTrue(lazyFloats.wasAccessed());
+
+		// verify that pending BigIntegers have still not been resolved
+		assertFalse(lazyBigIntegers.wasAccessed());
+
+		// verify list of BigIntegers; this will resolve the pending ones
+		final List<Object> bigIntegerObjects = objectIndex.get(BigInteger.class);
+		assertEquals(2, bigIntegerObjects.size());
+		assertEquals(BigInteger.ONE, bigIntegerObjects.get(0));
+		assertEquals(BigInteger.TEN, bigIntegerObjects.get(1));
+
+		// verify that pending BigIntegers have finally been resolved
+		assertTrue(lazyBigIntegers.wasAccessed());
+	}
+
+	// -- Helper classes --
+
+	public static class LazyThings<T> implements LazyObjects<T> {
+
+		private Collection<T> objects;
+		private Class<?> type;
+		private boolean accessed;
+
+		public LazyThings(T... objects) {
+			this.objects = Arrays.asList(objects);
+			this.type = objects[0].getClass();
+		}
+
+		@Override
+		public Collection<T> get() {
+			accessed = true;
+			return objects;
+		}
+
+		@Override
+		public Class<?> getType() {
+			return type;
+		}
+
+		public boolean wasAccessed() {
+			return accessed;
+		}
+
 	}
 
 }
