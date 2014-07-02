@@ -54,72 +54,6 @@ public final class ClassUtils {
 		// prevent instantiation of utility class
 	}
 
-	// -- Type conversion and casting --
-
-	/**
-	 * @deprecated use {@link ConversionUtils#convert(Object, Class)}
-	 */
-	@Deprecated
-	public static <T> T convert(final Object value, final Class<T> type) {
-		return ConversionUtils.convert(value, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#canConvert(Class, Class)}
-	 */
-	@Deprecated
-	public static boolean canConvert(final Class<?> c, final Class<?> type) {
-		return ConversionUtils.canConvert(c, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#canConvert(Object, Class)}
-	 */
-	@Deprecated
-	public static boolean canConvert(final Object value, final Class<?> type) {
-		return ConversionUtils.canConvert(value, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#cast(Object, Class)}
-	 */
-	@Deprecated
-	public static <T> T cast(final Object obj, final Class<T> type) {
-		return ConversionUtils.cast(obj, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#canCast(Class, Class)}
-	 */
-	@Deprecated
-	public static boolean canCast(final Class<?> c, final Class<?> type) {
-		return ConversionUtils.canCast(c, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#canCast(Object, Class)}
-	 */
-	@Deprecated
-	public static boolean canCast(final Object obj, final Class<?> type) {
-		return ConversionUtils.canCast(obj, type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#getNonprimitiveType(Class)}
-	 */
-	@Deprecated
-	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
-		return ConversionUtils.getNonprimitiveType(type);
-	}
-
-	/**
-	 * @deprecated use {@link ConversionUtils#getNullValue(Class)}
-	 */
-	@Deprecated
-	public static <T> T getNullValue(final Class<T> type) {
-		return ConversionUtils.getNullValue(type);
-	}
-
 	// -- Class loading, querying and reflection --
 
 	/**
@@ -597,6 +531,72 @@ public final class ClassUtils {
 		final String name1 = c1 == null ? null : c1.getName();
 		final String name2 = c2 == null ? null : c2.getName();
 		return MiscUtils.compare(name1, name2);
+	}
+
+	// -- Deprecated methods --
+
+	/**
+	 * @deprecated use {@link ConversionUtils#convert(Object, Class)}
+	 */
+	@Deprecated
+	public static <T> T convert(final Object value, final Class<T> type) {
+		return ConversionUtils.convert(value, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#canConvert(Class, Class)}
+	 */
+	@Deprecated
+	public static boolean canConvert(final Class<?> c, final Class<?> type) {
+		return ConversionUtils.canConvert(c, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#canConvert(Object, Class)}
+	 */
+	@Deprecated
+	public static boolean canConvert(final Object value, final Class<?> type) {
+		return ConversionUtils.canConvert(value, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#cast(Object, Class)}
+	 */
+	@Deprecated
+	public static <T> T cast(final Object obj, final Class<T> type) {
+		return ConversionUtils.cast(obj, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#canCast(Class, Class)}
+	 */
+	@Deprecated
+	public static boolean canCast(final Class<?> c, final Class<?> type) {
+		return ConversionUtils.canCast(c, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#canCast(Object, Class)}
+	 */
+	@Deprecated
+	public static boolean canCast(final Object obj, final Class<?> type) {
+		return ConversionUtils.canCast(obj, type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#getNonprimitiveType(Class)}
+	 */
+	@Deprecated
+	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
+		return ConversionUtils.getNonprimitiveType(type);
+	}
+
+	/**
+	 * @deprecated use {@link ConversionUtils#getNullValue(Class)}
+	 */
+	@Deprecated
+	public static <T> T getNullValue(final Class<T> type) {
+		return ConversionUtils.getNullValue(type);
 	}
 
 }
