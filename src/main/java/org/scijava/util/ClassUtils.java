@@ -363,8 +363,8 @@ public final class ClassUtils {
 	{
 		try {
 			field.setAccessible(true);
-			field.set(instance, ConversionUtils
-				.convert(value, field.getGenericType()));
+			final Type fieldType = field.getGenericType();
+			field.set(instance, ConversionUtils.convert(value, fieldType));
 		}
 		catch (final IllegalAccessException e) {
 			throw new IllegalArgumentException("No access to field: " +
