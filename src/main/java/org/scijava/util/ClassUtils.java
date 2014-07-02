@@ -31,8 +31,6 @@
 
 package org.scijava.util;
 
-import com.googlecode.gentyref.GenericTypeReflector;
-
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -342,96 +340,6 @@ public final class ClassUtils {
 	}
 
 	/**
-	 * Returns the "safe" type(s) of the given field, as viewed from the specified
-	 * type. This may be narrower than what {@link Field#getType()} returns, if
-	 * the field is declared in a superclass, or {@code type} has a type parameter
-	 * that is used in the type of the field.
-	 * <p>
-	 * For example, suppose we have the following three classes:
-	 * </p>
-	 * 
-	 * <pre>
-	 * public class Thing&lt;T&gt; {
-	 * 	public T thing;
-	 * }
-	 * 
-	 * public class NumberThing&lt;N extends Number&gt; extends Thing&lt;N&gt; { }
-	 * 
-	 * public class IntegerThing extends NumberThing&lt;Integer&gt; { }
-	 * </pre>
-	 * 
-	 * Then this method operates as follows:
-	 * 
-	 * <pre>
-	 * field = ClassUtils.getField(Thing.class, "thing");
-	 * 
-	 * field.getType(); // Object
-	 * 
-	 * ClassUtils.getTypes(field, Thing.class).get(0); // Object
-	 * ClassUtils.getTypes(field, NumberThing.class).get(0); // Number
-	 * ClassUtils.getTypes(field, IntegerThing.class).get(0); // Integer
-	 * </pre>
-	 * 
-	 * <p>
-	 * In cases of complex generics which take the intersection of
-	 * multiple types using the {@code &} operator, there may be multiple types
-	 * returned by this method. For example:
-	 * </p>
-	 * 
-	 * <pre>
-	 * public class ComplexThing&lt;T extends Serializable &amp; Cloneable&gt; extends Thing&lt;T&gt; { }
-	 * 
-	 * ClassUtils.getTypes(field, ComplexThing.class); // Serializable, Cloneable
-	 * </pre>
-	 * 
-	 * @see #getGenericType(Field, Class)
-	 */
-	public static List<Class<?>> getTypes(final Field field, final Class<?> type)
-	{
-		final Type genericType = getGenericType(field, type);
-		return GenericTypeReflector.getUpperBoundClassAndInterfaces(genericType);
-	}
-
-	/**
-	 * Returns the "safe" generic type of the given field, as viewed from the
-	 * given type. This may be narrower than what {@link Field#getGenericType()}
-	 * returns, if the field is declared in a superclass, or {@code type} has a
-	 * type parameter that is used in the type of the field.
-	 * <p>
-	 * For example, suppose we have the following three classes:
-	 * </p>
-	 * 
-	 * <pre>
-	 * public class Thing&lt;T&gt; {
-	 * 	public T thing;
-	 * }
-	 * 
-	 * public class NumberThing&lt;N extends Number&gt; extends Thing&lt;N&gt; { }
-	 * 
-	 * public class IntegerThing extends NumberThing&lt;Integer&gt; { }
-	 * </pre>
-	 * 
-	 * Then this method operates as follows:
-	 * 
-	 * <pre>
-	 * field = ClassUtils.getField(Thing.class, "thing");
-	 * 
-	 * field.getType(); // Object
-	 * field.getGenericType(); // T
-	 * 
-	 * ClassUtils.getGenericType(field, Thing.class); // T
-	 * ClassUtils.getGenericType(field, NumberThing.class); // N extends Number
-	 * ClassUtils.getGenericType(field, IntegerThing.class); // Integer
-	 * </pre>
-	 * 
-	 * @see #getTypes(Field, Class)
-	 */
-	public static Type getGenericType(final Field field, final Class<?> type) {
-		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
-		return GenericTypeReflector.getExactFieldType(field, wildType);
-	}
-
-	/**
 	 * Gets the given field's value of the specified object instance, or null if
 	 * the value cannot be obtained.
 	 */
@@ -597,6 +505,19 @@ public final class ClassUtils {
 	@Deprecated
 	public static <T> T getNullValue(final Class<T> type) {
 		return ConversionUtils.getNullValue(type);
+	}
+
+	/** @deprecated use {@link GenericUtils#getFieldClasses(Field, Class)} */
+	@Deprecated
+	public static List<Class<?>> getTypes(final Field field, final Class<?> type)
+	{
+		return GenericUtils.getFieldClasses(field, type);
+	}
+
+	/** @deprecated use {@link GenericUtils#getFieldType(Field, Class)} */
+	@Deprecated
+	public static Type getGenericType(final Field field, final Class<?> type) {
+		return GenericUtils.getFieldType(field, type);
 	}
 
 }
