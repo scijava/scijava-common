@@ -316,46 +316,6 @@ public class ConversionUtilsTest {
 		assertNull(notAnEnum);
 	}
 
-	/** Tests {@link ConversionUtils#getClass(Type)}. */
-	@Test
-	public void testGetClass() {
-		@SuppressWarnings("unused")
-		class Struct {
-			private int[] intArray;
-			private double d;
-			private String[][] strings;
-			private Void v;
-			private List<String> list;
-			private HashMap<Integer, Float> map;
-		}
-		assertSame(int[].class, getClass(Struct.class, "intArray"));
-		assertSame(double.class, getClass(Struct.class, "d"));
-		assertSame(String[][].class, getClass(Struct.class, "strings"));
-		assertSame(Void.class, getClass(Struct.class, "v"));
-		assertSame(List.class, getClass(Struct.class, "list"));
-		assertSame(HashMap.class, getClass(Struct.class, "map"));
-	}
-
-	/** Tests {@link ConversionUtils#getComponentClass(Type)}. */
-	@Test
-	public void testGetComponentClass() {
-		@SuppressWarnings("unused")
-		class Struct {
-			private int[] intArray;
-			private double d;
-			private String[][] strings;
-			private Void v;
-			private List<String>[] list;
-			private HashMap<Integer, Float> map;
-		}
-		assertSame(int.class, getComponentClass(Struct.class, "intArray"));
-		assertNull(getComponentClass(Struct.class, "d"));
-		assertSame(String[].class, getComponentClass(Struct.class, "strings"));
-		assertSame(null, getComponentClass(Struct.class, "v"));
-		assertSame(List.class, getComponentClass(Struct.class, "list"));
-		assertSame(null, getComponentClass(Struct.class, "map"));
-	}
-
 	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
 	@Test
 	public void testGetNonprimitiveType() {
@@ -761,27 +721,6 @@ public class ConversionUtilsTest {
 		for (final T value : values)
 			list.add(value);
 		return list;
-	}
-
-	/** Convenience method to get the {@link Type} of a field. */
-	private Type type(final Class<?> c, final String fieldName) {
-		return ClassUtils.getField(c, fieldName).getGenericType();
-	}
-
-	/**
-	 * Convenience method to call {@link ConversionUtils#getClass(Type)} on a
-	 * field.
-	 */
-	private Class<?> getClass(final Class<?> c, final String fieldName) {
-		return ConversionUtils.getClass(type(c, fieldName));
-	}
-
-	/**
-	 * Convenience method to call {@link ConversionUtils#getComponentClass(Type)}
-	 * on a field.
-	 */
-	private Class<?> getComponentClass(final Class<?> c, final String fieldName) {
-		return ConversionUtils.getComponentClass(type(c, fieldName));
 	}
 
 	// -- Helper Classes --
