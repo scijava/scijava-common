@@ -71,6 +71,11 @@ public class ObjectIndexTest {
 				return Arrays.asList(o4, o5, o6);
 			}
 
+			@Override
+			public Class<?> getType() {
+				return String.class;
+			}
+
 		});
 
 		final List<Object> all = objectIndex.getAll();
