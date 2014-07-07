@@ -43,11 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -131,45 +128,6 @@ public class ClassUtilsTest {
 		assertNull(ClassUtils.getArrayClass(void.class));
 	}
 
-	/** Tests {@link ClassUtils#getTypes(java.lang.reflect.Field, Class)}. */
-	@Test
-	public void testGetTypes() {
-		final Field field = ClassUtils.getField(Thing.class, "thing");
-
-		// T
-		final Type tType = ClassUtils.getGenericType(field, Thing.class);
-		assertEquals("capture of ?", tType.toString());
-
-		// N extends Number
-		final Type nType = ClassUtils.getGenericType(field, NumberThing.class);
-		assertEquals("capture of ?", nType.toString());
-
-		// Integer
-		final Type iType = ClassUtils.getGenericType(field, IntegerThing.class);
-		assertSame(Integer.class, iType);
-	}
-
-	/** Tests {@link ClassUtils#getGenericType}. */
-	@Test
-	public void testGetGenericType() {
-		final Field field = ClassUtils.getField(Thing.class, "thing");
-
-		// Object
-		assertAllTheSame(ClassUtils.getTypes(field, Thing.class), Object.class);
-
-		// N extends Number
-		assertAllTheSame(ClassUtils.getTypes(field, NumberThing.class),
-			Number.class);
-
-		// Integer
-		assertAllTheSame(ClassUtils.getTypes(field, IntegerThing.class),
-			Integer.class);
-
-		// Serializable & Cloneable
-		assertAllTheSame(ClassUtils.getTypes(field, ComplexThing.class),
-			Serializable.class, Cloneable.class);
-	}
-
 	@Test
 	public void testUnpackedClass() throws IOException {
 		final File tmpDir = createTemporaryDirectory("class-utils-test-");
@@ -225,13 +183,6 @@ public class ClassUtilsTest {
 		}
 		in.close();
 		if (closeOut) out.close();
-	}
-
-	private <T> void assertAllTheSame(final List<T> list, T... values) {
-		assertEquals(list.size(), values.length);
-		for (int i = 0; i < values.length; i++) {
-			assertSame(list.get(i), values[i]);
-		}
 	}
 
 	private void assertLoaded(final Class<?> c, final String name) {

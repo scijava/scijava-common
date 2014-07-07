@@ -33,11 +33,9 @@ package org.scijava.util;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -438,44 +436,6 @@ public class ConversionUtils {
 		return result;
 	}
 
-	/**
-	 * Gets the raw class corresponding to the given type.
-	 * <p>
-	 * If the type is a {@link Class} it is simply casted. In the case of a
-	 * {@link ParameterizedType}, then {@link ParameterizedType#getRawType()} is
-	 * returned. Otherwise, returns null.
-	 * </p>
-	 */
-	public static Class<?> getClass(final Type type) {
-		if (type instanceof Class) return (Class<?>) type;
-
-		if (type instanceof ParameterizedType) {
-			return getClass(((ParameterizedType) type).getRawType());
-		}
-
-		if (type instanceof TypeVariable<?>) {
-			final Type[] types = ((TypeVariable<?>) type).getBounds();
-			if (types.length == 1) return getClass(types[0]);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Gets the component type of the given array type, or null if not an array.
-	 * Supports both regular array types (i.e., {@link Class#getComponentType()}
-	 * if {@code type} is a {@link Class}) and generic array types (i.e.,
-	 * {@link GenericArrayType#getGenericComponentType()} if {@code type} is a
-	 * {@link GenericArrayType}).
-	 */
-	public static Class<?> getComponentClass(final Type type) {
-		if (type instanceof Class) return ((Class<?>) type).getComponentType();
-		if (type instanceof GenericArrayType) {
-			return getClass(((GenericArrayType) type).getGenericComponentType());
-		}
-		return null;
-	}
-
 	// -- Helper methods --
 
 	private static Constructor<?> getConstructor(final Class<?> type,
@@ -558,6 +518,20 @@ public class ConversionUtils {
 		catch (final IllegalAccessException exc) {
 			return null;
 		}
+	}
+
+	// -- Deprecated methods --
+
+	/** @deprecated use {@link GenericUtils#getClass(Type)} */
+	@Deprecated
+	public static Class<?> getClass(final Type type) {
+		return GenericUtils.getClass(type);
+	}
+
+	/** @deprecated use {@link GenericUtils#getComponentClass(Type)} */
+	@Deprecated
+	public static Class<?> getComponentClass(final Type type) {
+		return GenericUtils.getComponentClass(type);
 	}
 
 }
