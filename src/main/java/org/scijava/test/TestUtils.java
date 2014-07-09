@@ -203,6 +203,11 @@ public class TestUtils {
 			final Class<?> clazz;
 			try {
 				clazz = loader.loadClass(element.getClassName());
+				final URL url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class");
+				if (url == null || !"file".equals(url.getProtocol())) {
+					// the calling code location must be unpacked; Maven artifacts in $HOME/.m2/ are excluded
+					continue;
+				}
 			}
 			catch (ClassNotFoundException e) {
 				throw new UnsupportedOperationException("Could not load " +
