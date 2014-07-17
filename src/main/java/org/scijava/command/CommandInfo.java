@@ -45,6 +45,7 @@ import org.scijava.Context;
 import org.scijava.Identifiable;
 import org.scijava.InstantiableException;
 import org.scijava.ItemVisibility;
+import org.scijava.Locatable;
 import org.scijava.ValidityProblem;
 import org.scijava.event.EventService;
 import org.scijava.module.Module;
@@ -76,7 +77,7 @@ import org.scijava.util.StringMaker;
  *      commands and the rich {@link Module} interface.
  */
 public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
-	Identifiable
+	Identifiable, Locatable
 {
 
 	/** Wrapped {@link PluginInfo}, if any. */
@@ -420,6 +421,18 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
 			sb.append(")");
 		}
 		return sb.toString();
+	}
+
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		try {
+			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
+		}
+		catch (final ClassNotFoundException exc) {
+			return null;
+		}
 	}
 
 	// -- Helper methods --

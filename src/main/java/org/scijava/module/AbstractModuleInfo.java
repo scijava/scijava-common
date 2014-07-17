@@ -39,9 +39,11 @@ import java.util.Map;
 
 import org.scijava.AbstractUIDetails;
 import org.scijava.Identifiable;
+import org.scijava.Locatable;
 import org.scijava.ValidityProblem;
 import org.scijava.event.EventService;
 import org.scijava.module.event.ModulesUpdatedEvent;
+import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
 
 /**
@@ -54,7 +56,7 @@ import org.scijava.util.ConversionUtils;
  * @author Curtis Rueden
  */
 public abstract class AbstractModuleInfo extends AbstractUIDetails implements
-	ModuleInfo, Identifiable
+	ModuleInfo, Identifiable, Locatable
 {
 
 	/** Table of inputs, keyed on name. */
@@ -168,6 +170,21 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 		// for more than one module, though, it may need to override this method to
 		// provide more differentiating details.
 		return "module:" + getDelegateClassName();
+	}
+
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		// NB: By default, we use the location of the delegate class.
+		// If the same delegate class is used for more than one module, though,
+		// it may need to override this method to indicate a different location.
+		try {
+			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
+		}
+		catch (final ClassNotFoundException exc) {
+			return null;
+		}
 	}
 
 	// -- Internal methods --
