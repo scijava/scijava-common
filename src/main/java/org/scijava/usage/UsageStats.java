@@ -32,22 +32,27 @@
 package org.scijava.usage;
 
 import org.scijava.Identifiable;
+import org.scijava.Locatable;
 
 /**
  * Data structure storing usage statistics for a particular identifier.
  * 
  * @author Curtis Rueden
  */
-public class UsageStats implements Identifiable {
+public class UsageStats implements Identifiable, Locatable {
 
 	/** The object's unique identifier. */
 	private String id;
 
+	/** This object's location URL. */
+	private String url;
+
 	/** Number of times the object was used. */
 	private long count;
 
-	public UsageStats(final String id) {
+	public UsageStats(final String id, final String url) {
 		this.id = id;
+		this.url = url;
 	}
 
 	/** Gets the number of times the object has been used. */
@@ -65,6 +70,13 @@ public class UsageStats implements Identifiable {
 	@Override
 	public String getIdentifier() {
 		return id;
+	}
+
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		return url;
 	}
 
 }

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.scijava.Identifiable;
+import org.scijava.Locatable;
 import org.scijava.event.EventHandler;
 import org.scijava.module.ModuleInfo;
 import org.scijava.module.event.ModuleExecutedEvent;
@@ -71,12 +72,13 @@ public class DefaultUsageService extends AbstractService
 
 	@Override
 	public UsageStats getUsage(final Object o) {
-		if (!(o instanceof Identifiable)) {
-			// only track objects with an identifier
+		if (!(o instanceof Identifiable) || !(o instanceof Locatable)) {
+			// only track objects with an identifier and a location
 			return null;
 		}
 		final String id = ((Identifiable) o).getIdentifier();
-		if (!stats.containsKey(id)) stats.put(id, new UsageStats(id));
+		final String url = ((Locatable) o).getLocation();
+		if (!stats.containsKey(id)) stats.put(id, new UsageStats(id, url));
 		return stats.get(id);
 	}
 
