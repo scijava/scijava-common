@@ -1,0 +1,153 @@
+/*
+ * #%L
+ * SciJava Common shared library for SciJava software.
+ * %%
+ * Copyright (C) 2009 - 2014 Board of Regents of the University of
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+package org.scijava.preferences;
+
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
+
+import org.scijava.service.SciJavaService;
+import org.scijava.service.Service;
+
+/**
+ * {@link Service} for storing and retrieving arbitrary preferences.
+ *
+ * @author Mark Hiner
+ */
+public interface PrefService extends SciJavaService {
+
+	String get(String name);
+
+	String get(String name, String defaultValue);
+
+	boolean getBoolean(String name, boolean defaultValue);
+
+	double getDouble(String name, double defaultValue);
+
+	float getFloat(String name, float defaultValue);
+
+	int getInt(String name, int defaultValue);
+
+	long getLong(String name, long defaultValue);
+
+	void put(String name, String value);
+
+	void put(String name, boolean value);
+
+	void put(String name, double value);
+
+	void put(String name, float value);
+
+	void put(String name, int value);
+
+	void put(String name, long value);
+
+	String get(Class<?> c, String name);
+
+	String get(Class<?> c, String name, String defaultValue);
+
+	boolean getBoolean(Class<?> c, String name, boolean defaultValue);
+
+	double getDouble(Class<?> c, String name, double defaultValue);
+
+	float getFloat(Class<?> c, String name, float defaultValue);
+
+	int getInt(Class<?> c, String name, int defaultValue);
+
+	long getLong(Class<?> c, String name, long defaultValue);
+
+	void put(Class<?> c, String name, String value);
+
+	void put(Class<?> c, String name, boolean value);
+
+	void put(Class<?> c, String name, double value);
+
+	void put(Class<?> c, String name, float value);
+
+	void put(Class<?> c, String name, int value);
+
+	void put(Class<?> c, String name, long value);
+
+	void clear(Class<?> c);
+
+	/** Clears everything. */
+	void clearAll();
+
+	/** Clears the node. */
+	void clear(String key);
+
+	void clear(Preferences preferences, String key);
+
+	/** Removes the node. */
+	void remove(Preferences preferences, String key);
+
+	/** Puts a list into the preferences. */
+	void putMap(Map<String, String> map, String key);
+
+	void putMap(Preferences preferences, Map<String, String> map, String key);
+
+	/** Puts a list into the preferences. */
+	void putMap(Preferences preferences, Map<String, String> map);
+
+	/** Gets a Map from the preferences. */
+	Map<String, String> getMap(String key);
+
+	Map<String, String> getMap(Preferences preferences, String key);
+
+	/** Gets a Map from the preferences. */
+	Map<String, String> getMap(Preferences preferences);
+
+	/** Puts a list into the preferences. */
+	void putList(List<String> list, String key);
+
+	void putList(Preferences preferences, List<String> list, String key);
+
+	/** Puts a list into the preferences. */
+	void putList(Preferences preferences, List<String> list);
+
+	/** Gets a List from the preferences. */
+	List<String> getList(String key);
+
+	List<String> getList(Preferences preferences, String key);
+
+	/**
+	 * Gets a List from the preferences. Returns an empty list if nothing in
+	 * prefs.
+	 */
+	List<String> getList(Preferences preferences);
+
+	/**
+	 * Updates the behavior of the {@link org.scijava.util.Prefs} static utility
+	 * class to use delegate to this service.
+	 */
+	void setStaticBehavior();
+}
