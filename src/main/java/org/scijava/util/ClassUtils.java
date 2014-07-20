@@ -356,7 +356,7 @@ public final class ClassUtils {
 	public static <A extends Annotation> void getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
-		if (c == null) return;
+		if (c == null || c == Object.class) return;
 
 		// check supertypes for annotated fields first
 		getAnnotatedFields(c.getSuperclass(), annotationClass, fields);
