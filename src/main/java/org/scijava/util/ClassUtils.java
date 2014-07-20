@@ -35,6 +35,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -267,6 +268,56 @@ public final class ClassUtils {
 		catch (final MalformedURLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * Gets the given class's {@link Method}s marked with the annotation of the
+	 * specified class.
+	 * <p>
+	 * Unlike {@link Class#getMethods()}, the result will include any non-public
+	 * methods, including methods defined in supertypes of the given class.
+	 * </p>
+	 *
+	 * @param c The class to scan for annotated methods.
+	 * @param annotationClass The type of annotation for which to scan.
+	 * @return A new list containing all methods with the requested annotation.
+	 */
+	public static <A extends Annotation> List<Method> getAnnotatedMethods(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		final ArrayList<Method> methods = new ArrayList<Method>();
+		getAnnotatedMethods(c, annotationClass, methods);
+		return methods;
+	}
+
+	/**
+	 * Gets the given class's {@link Method}s marked with the annotation of the
+	 * specified class.
+	 * <p>
+	 * Unlike {@link Class#getMethods()}, the result will include any non-public
+	 * methods, including methods defined in supertypes of the given class.
+	 * </p>
+	 *
+	 * @param c The class to scan for annotated methods.
+	 * @param annotationClass The type of annotation for which to scan.
+	 * @param methods The list to which matching methods will be added.
+	 */
+	public static <A extends Annotation> void
+		getAnnotatedMethods(final Class<?> c, final Class<A> annotationClass,
+			final List<Method> methods)
+	{
+		if (c == null || c == Object.class) return;
+
+		// check supertypes for annotated methods first
+		getAnnotatedMethods(c.getSuperclass(), annotationClass, methods);
+		for (final Class<?> iface : c.getInterfaces()) {
+			getAnnotatedMethods(iface, annotationClass, methods);
+		}
+
+		for (final Method m : c.getDeclaredMethods()) {
+			final A ann = m.getAnnotation(annotationClass);
+			if (ann != null) methods.add(m);
 		}
 	}
 
