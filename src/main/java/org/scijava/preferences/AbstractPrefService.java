@@ -52,7 +52,7 @@ public abstract class AbstractPrefService extends AbstractService implements
 
 	@Override
 	public void setStaticBehavior() {
-		Prefs.setDelegateService(this);
+		Prefs.setDelegateService(this, getPriority());
 	}
 
 }

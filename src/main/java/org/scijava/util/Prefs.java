@@ -56,6 +56,8 @@ public final class Prefs {
 
 	private static PrefService prefServiceNoContext;
 
+	private static double servicePriority = Double.MIN_VALUE;
+
 	private Prefs() {
 		// prevent instantiation of utility class
 	}
@@ -295,8 +297,13 @@ public final class Prefs {
 	/**
 	 * Sets the {@link PrefService}
 	 */
-	public static void setDelegateService(final PrefService prefService) {
-		Prefs.prefService = prefService;
+	public static void setDelegateService(final PrefService prefService,
+		final double priority)
+	{
+		if (Double.compare(priority,  Prefs.servicePriority) > 0) {
+			Prefs.prefService = prefService;
+			Prefs.servicePriority = priority;
+		}
 	}
 
 	// -- Helper methods --
