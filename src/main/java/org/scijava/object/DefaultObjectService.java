@@ -31,7 +31,6 @@
 
 package org.scijava.object;
 
-
 import java.util.List;
 
 import org.scijava.event.EventHandler;

@@ -311,6 +311,13 @@ public final class ClassUtils {
 
 		// check supertypes for annotated methods first
 		getAnnotatedMethods(c.getSuperclass(), annotationClass, methods);
+		// NB: In some cases, we may not need to recursively scan interfaces.
+		// In particular, for the @EventHandler annotation, we only care about
+		// concrete methods, not interface method declarations. So we could have
+		// additional method signatures with a boolean toggle indicating whether
+		// to include interfaces in the recursive scan. But initial benchmarks
+		// suggest that the performance difference, even when creating a
+		// full-blown Context with a large classpath, is negligible.
 		for (final Class<?> iface : c.getInterfaces()) {
 			getAnnotatedMethods(iface, annotationClass, methods);
 		}
