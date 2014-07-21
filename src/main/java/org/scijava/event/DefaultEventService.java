@@ -64,11 +64,6 @@ public class DefaultEventService extends AbstractService implements
 	/**
 	 * The default event service's priority.
 	 * <p>
-	 * It is paramount that the event service be created and initialized before
-	 * other services. Any service created before the event service may not have
-	 * its event handling methods registered correctly.
-	 * </p>
-	 * <p>
 	 * Alternative event service implementations that wish to prioritize
 	 * themselves above this one can still ensure preferential usage via
 	 * {@code priority = DefaultEventService.PRIORITY + 1} or similar.

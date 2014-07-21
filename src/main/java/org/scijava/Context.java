@@ -119,9 +119,7 @@ public class Context implements Disposable {
 	 * @param serviceClasses A list of types that implement the {@link Service}
 	 *          interface (e.g., {@code DisplayService.class}). Compatible
 	 *          services will be loaded in the order given,
-	 *          <em>regardless of their relative priorities</em>. In particular,
-	 *          take care to specify the {@link EventService} first if you need
-	 *          proper event handling for the other services.
+	 *          <em>regardless of their relative priorities</em>.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
@@ -137,9 +135,7 @@ public class Context implements Disposable {
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
-	 *          collection, <em>regardless of their relative priorities</em>. In
-	 *          particular, take care to specify the {@link EventService} first if
-	 *          you need proper event handling for the other services.
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
@@ -153,9 +149,7 @@ public class Context implements Disposable {
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
-	 *          collection, <em>regardless of their relative priorities</em>. In
-	 *          particular, take care to specify the {@link EventService} first if
-	 *          you need proper event handling for the other services.
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param strict Whether context creation will fail fast when there is
 	 *          an error instantiating a required service.
 	 * @see #Context(Collection, PluginIndex, boolean)
@@ -194,9 +188,7 @@ public class Context implements Disposable {
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
-	 *          collection, <em>regardless of their relative priorities</em>. In
-	 *          particular, take care to specify the {@link EventService} first if
-	 *          you need proper event handling for the other services.
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
@@ -229,9 +221,7 @@ public class Context implements Disposable {
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
-	 *          collection, <em>regardless of their relative priorities</em>. In
-	 *          particular, take care to specify the {@link EventService} first if
-	 *          you need proper event handling for the other services.
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
