@@ -48,6 +48,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
+import org.scijava.util.ClassUtils;
 
 /**
  * Default service for publishing and subscribing to SciJava events.
@@ -101,7 +102,16 @@ public class DefaultEventService extends AbstractService implements
 	public List<EventSubscriber<?>> subscribe(final Object o) {
 		final List<EventSubscriber<?>> subscribers =
 			new ArrayList<EventSubscriber<?>>();
-		subscribeRecursively(subscribers, o.getClass(), o);
+		final List<Method> eventHandlers =
+			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
+		for (final Method m : eventHandlers) {
+			final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
+			if (eventClass == null) {
+				log.warn("Invalid EventHandler method: " + m);
+				continue;
+			}
+			subscribers.add(subscribe(eventClass, o, m));
+		}
 		return subscribers;
 	}
 
@@ -143,30 +153,6 @@ public class DefaultEventService extends AbstractService implements
 	}
 
 	// -- Helper methods --
-
-	/**
-	 * Recursively scans for @{@link EventHandler} annotated methods, and
-	 * subscribes them to the event service.
-	 */
-	private void subscribeRecursively(
-		final List<EventSubscriber<?>> subscribers, final Class<?> type,
-		final Object o)
-	{
-		if (type == null || type == Object.class) return;
-		for (final Method m : type.getDeclaredMethods()) {
-			final EventHandler ann = m.getAnnotation(EventHandler.class);
-			if (ann == null) continue; // not an event handler method
-
-			final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
-			if (eventClass == null) {
-				log.warn("Invalid EventHandler method: " + m);
-				continue;
-			}
-
-			subscribers.add(subscribe(eventClass, o, m));
-		}
-		subscribeRecursively(subscribers, type.getSuperclass(), o);
-	}
 
 	private <E extends SciJavaEvent> void subscribe(final Class<E> c,
 		final EventSubscriber<E> subscriber)
