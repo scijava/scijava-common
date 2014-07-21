@@ -37,7 +37,7 @@ import org.scijava.module.ModuleItem;
 import org.scijava.options.event.OptionsEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.SingletonPlugin;
-import org.scijava.util.Prefs;
+import org.scijava.preferences.PrefService;
 
 // TODO - outline for how to address issues with options (initializing, aggregating into 1 dialog)
 
@@ -77,6 +77,9 @@ public class OptionsPlugin extends DynamicCommand implements SingletonPlugin {
 	@Parameter
 	protected EventService eventService;
 
+	@Parameter
+	private PrefService prefService;
+
 	// -- OptionsPlugin methods --
 
 	/** Loads option values from persistent storage. */
@@ -95,7 +98,7 @@ public class OptionsPlugin extends DynamicCommand implements SingletonPlugin {
 
 	/** Clears option values from persistent storage. */
 	public void reset() {
-		Prefs.clear(getClass());
+		prefService.clear(getClass());
 	}
 
 	// -- Runnable methods --
