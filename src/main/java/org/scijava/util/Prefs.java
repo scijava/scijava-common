@@ -49,7 +49,9 @@ import org.scijava.preferences.PrefService;
  * @author Curtis Rueden
  * @author Barry DeZonia
  * @author Grant Harris
+ * @deprecated See {@link PrefService}
  */
+@Deprecated
 public final class Prefs {
 
 	private static PrefService prefService;
