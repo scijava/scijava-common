@@ -32,12 +32,18 @@
 package org.scijava.event;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.ref.WeakReference;
 
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.plugin.Plugin;
+import org.scijava.service.AbstractService;
+import org.scijava.service.Service;
+import org.scijava.service.event.ServicesLoadedEvent;
 
 /**
  * Verifies that the SciJava event service works as expected.
@@ -74,6 +80,21 @@ public class EventServiceTest {
 		assertEquals(1, counter);
 	}
 
+	/**
+	 * Tests that when a service has methods labeled with {@code @EventHandler}
+	 * annotations, the {@link EventService} will be brought in as a dependency.
+	 */
+	@Test
+	public void testEventHandlerDependencies() throws InterruptedException {
+		final Context context = new Context(ServiceNeedingAnEventService.class);
+		final EventService eventService = context.getService(EventService.class);
+		final ServiceNeedingAnEventService snaeService =
+			context.getService(ServiceNeedingAnEventService.class);
+		assertNotNull(eventService);
+		Thread.sleep(500); // NB: ServicesLoadedEvent is published asynchronously.
+		assertTrue(snaeService.isContextCreated());
+	}
+
 	private static void gc() {
 		System.gc();
 		// for some reason, some systems need extra encouragement to collect their garbage
@@ -94,4 +115,21 @@ public class EventServiceTest {
 			e.inc();
 		}
 	}
+
+	public static class ServiceNeedingAnEventService extends AbstractService {
+
+		private boolean contextCreated;
+
+		public boolean isContextCreated() {
+			return contextCreated;
+		}
+
+		@EventHandler
+		public void onEvent(
+			@SuppressWarnings("unused") final ServicesLoadedEvent evt)
+		{
+			contextCreated = true;
+		}
+	}
+
 }
