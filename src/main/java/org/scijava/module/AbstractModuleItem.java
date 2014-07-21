@@ -137,6 +137,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	 * value for null.
 	 */
 	@Override
+	@Deprecated
 	public T loadValue() {
 		// if there is nothing to load from persistence return nothing
 		if (!isPersisted()) return null;
@@ -157,6 +158,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	}
 
 	@Override
+	@Deprecated
 	public void saveValue(final T value) {
 		if (!isPersisted()) return;
 
