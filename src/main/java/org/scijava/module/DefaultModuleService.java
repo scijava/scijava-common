@@ -54,6 +54,7 @@ import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
+import org.scijava.preferences.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
@@ -86,6 +87,9 @@ public class DefaultModuleService extends AbstractService implements
 
 	@Parameter
 	private ThreadService threadService;
+
+	@Parameter
+	private PrefService prefService;
 
 	/** Index of registered modules. */
 	private ModuleIndex moduleIndex;
@@ -255,6 +259,54 @@ public class DefaultModuleService extends AbstractService implements
 		return getSingleItem(module, type, module.getInfo().outputs());
 	}
 
+	@Override
+	public <T> void save(final ModuleItem<T> item, final T value) {
+		if (!item.isPersisted()) return;
+
+		final String sValue = value == null ? "" : value.toString();
+
+		// do not persist if object cannot be converted back from a string
+		if (!ConversionUtils.canConvert(sValue, item.getType())) return;
+
+		final String persistKey = item.getPersistKey();
+		if (persistKey == null || persistKey.isEmpty()) {
+			// Attempt to use prefService
+			if (AbstractModuleItem.class.isAssignableFrom(item.getClass())) {
+				final Class<?> prefClass = ((AbstractModuleItem<T>)item).getDelegateClass();
+				final String prefKey = item.getName();
+				prefService.put(prefClass, prefKey, sValue);
+			}
+			// Have to use ModuleItem#saveValue
+			else item.saveValue(value);
+		}
+		else prefService.put(persistKey, sValue);
+	}
+
+	@Override
+	public <T> T load(final ModuleItem<T> item) {
+		// if there is nothing to load from persistence return nothing
+		if (!item.isPersisted()) return null;
+
+		final String sValue;
+		final String persistKey = item.getPersistKey();
+		if (persistKey == null || persistKey.isEmpty()) {
+			// Attempt to use prefService
+			if (AbstractModuleItem.class.isAssignableFrom(item.getClass())) {
+				final Class<?> prefClass = ((AbstractModuleItem<T>)item).getDelegateClass();
+				final String prefKey = item.getName();
+				sValue = prefService.get(prefClass, prefKey);
+			}
+			// Have to use ModuleItem#loadValue
+			else return item.loadValue();
+		}
+		else sValue = prefService.get(persistKey);
+
+		// if persisted value has never been set before return null
+		if (sValue == null) return null;
+
+		return ConversionUtils.convert(sValue, item.getType());
+	}
+	
 	// -- Service methods --
 
 	@Override
@@ -383,5 +435,4 @@ public class DefaultModuleService extends AbstractService implements
 		}
 		return result;
 	}
-
 }
