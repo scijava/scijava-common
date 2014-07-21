@@ -33,6 +33,8 @@ package org.scijava.module.process;
 
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
+import org.scijava.module.ModuleService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ConversionUtils;
 import org.scijava.widget.InputHarvester;
@@ -52,6 +54,9 @@ import org.scijava.widget.InputHarvester;
 	priority = InputHarvester.PRIORITY + 1)
 public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 
+	@Parameter
+	private ModuleService moduleService;
+
 	// -- ModuleProcessor methods --
 
 	@Override
@@ -69,9 +74,9 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 		// skip input that has already been resolved
 		if (module.isResolved(item.getName())) return;
 
+		final T prefValue = moduleService.load(item);
 		final Class<T> type = item.getType();
 		final T defaultValue = item.getValue(module);
-		final T prefValue = item.loadValue();
 		final T value = getBestValue(prefValue, defaultValue, type);
 		item.setValue(module, value);
 	}
