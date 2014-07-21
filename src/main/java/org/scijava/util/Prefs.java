@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.preferences.PrefService;
  * "http://www.java2s.com/Code/Java/Development-Class/Utilityclassforpreferences.htm"
  * >PrefsUtil class by Robin Sharp of Javelin Software.</a>.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Barry DeZonia
  * @author Grant Harris
@@ -300,7 +300,7 @@ public final class Prefs {
 	public static void setDelegateService(final PrefService prefService,
 		final double priority)
 	{
-		if (Double.compare(priority,  Prefs.servicePriority) > 0) {
+		if (Double.compare(priority, Prefs.servicePriority) > 0) {
 			Prefs.prefService = prefService;
 			Prefs.servicePriority = priority;
 		}

@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -66,9 +66,7 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public boolean
-		getBoolean(final String name, final boolean defaultValue)
-	{
+	public boolean getBoolean(final String name, final boolean defaultValue) {
 		return getBoolean(null, name, defaultValue);
 	}
 
@@ -158,8 +156,8 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public int getInt(final Class<?> c, final String name,
-		final int defaultValue)
+	public int
+		getInt(final Class<?> c, final String name, final int defaultValue)
 	{
 		return prefs(c).getInt(key(c, name), defaultValue);
 	}
@@ -172,30 +170,22 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void
-		put(final Class<?> c, final String name, final String value)
-	{
+	public void put(final Class<?> c, final String name, final String value) {
 		prefs(c).put(key(c, name), value);
 	}
 
 	@Override
-	public void put(final Class<?> c, final String name,
-		final boolean value)
-	{
+	public void put(final Class<?> c, final String name, final boolean value) {
 		prefs(c).putBoolean(key(c, name), value);
 	}
 
 	@Override
-	public void
-		put(final Class<?> c, final String name, final double value)
-	{
+	public void put(final Class<?> c, final String name, final double value) {
 		prefs(c).putDouble(key(c, name), value);
 	}
 
 	@Override
-	public void
-		put(final Class<?> c, final String name, final float value)
-	{
+	public void put(final Class<?> c, final String name, final float value) {
 		prefs(c).putFloat(key(c, name), value);
 	}
 
@@ -205,8 +195,7 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void put(final Class<?> c, final String name, final long value)
-	{
+	public void put(final Class<?> c, final String name, final long value) {
 		prefs(c).putLong(key(c, name), value);
 	}
 
@@ -338,17 +327,15 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void putList(final Preferences preferences,
-		final List<String> list, final String key)
+	public void putList(final Preferences preferences, final List<String> list,
+		final String key)
 	{
 		putList(preferences.node(key), list);
 	}
 
 	/** Puts a list into the preferences. */
 	@Override
-	public void putList(final Preferences preferences,
-		final List<String> list)
-	{
+	public void putList(final Preferences preferences, final List<String> list) {
 		if (preferences == null) {
 			throw new IllegalArgumentException("Preferences not set.");
 		}
@@ -365,9 +352,7 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public List<String> getList(final Preferences preferences,
-		final String key)
-	{
+	public List<String> getList(final Preferences preferences, final String key) {
 		return getList(preferences.node(key));
 	}
 
