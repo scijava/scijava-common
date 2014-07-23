@@ -89,7 +89,10 @@ public class EventServiceTest {
 		final ServiceNeedingAnEventService snaeService =
 			context.getService(ServiceNeedingAnEventService.class);
 		assertNotNull(eventService);
-		Thread.sleep(500); // NB: ServicesLoadedEvent is published asynchronously.
+		// NB: ServicesLoadedEvent is published asynchronously.
+		synchronized (snaeService) {
+			snaeService.wait(500);
+		}
 		assertTrue(snaeService.isContextCreated());
 	}
 
@@ -127,6 +130,9 @@ public class EventServiceTest {
 			@SuppressWarnings("unused") final ServicesLoadedEvent evt)
 		{
 			contextCreated = true;
+			synchronized (this) {
+				notifyAll();
+			}
 		}
 	}
 
