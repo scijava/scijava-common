@@ -42,9 +42,19 @@ import org.scijava.module.event.ModuleExecutedEvent;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
 
 /**
  * Default service for tracking anonymous usage statistics.
+ * <p>
+ * Please note that that this implementation is <em>not</em> thread safe. It is
+ * up to the caller to ensure that multiple threads do not attempt to modify
+ * statistics at the same time. One way to do that (but not the only way) is to
+ * only call {@link #increment(Object)} from the event dispatch thread (i.e.,
+ * when {@link ThreadService#isDispatchThread()} returns true). And one easy way
+ * to accomplish that is by calling the {@link UsageService} only from event
+ * handler methods.
+ * </p>
  * 
  * @author Curtis Rueden
  */
