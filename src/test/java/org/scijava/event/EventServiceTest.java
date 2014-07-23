@@ -40,9 +40,7 @@ import java.lang.ref.WeakReference;
 
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
-import org.scijava.service.Service;
 import org.scijava.service.event.ServicesLoadedEvent;
 
 /**
