@@ -66,7 +66,9 @@ public class DefaultUsageService extends AbstractService
 	@Override
 	public void clearStats() {
 		// NB: Rather than calling stats.clear(), we allocate a new object
-		// so that references to the old table are not modified.
+		// so that references to the old table are not modified. In this way,
+		// any code that obtained the old table reference directly by calling
+		// getStats() can continue working with it unimpeded.
 		stats = new HashMap<String, UsageStats>();
 	}
 
