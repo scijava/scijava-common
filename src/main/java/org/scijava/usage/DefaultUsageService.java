@@ -72,7 +72,7 @@ public class DefaultUsageService extends AbstractService
 
 	@Override
 	public UsageStats getUsage(final Object o) {
-		if (!(o instanceof Identifiable) || !(o instanceof Locatable)) {
+		if (!(o instanceof Identifiable && o instanceof Locatable)) {
 			// only track objects with an identifier and a location
 			return null;
 		}
