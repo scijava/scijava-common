@@ -307,6 +307,10 @@ public final class ClassUtils {
 		getAnnotatedMethods(final Class<?> c, final Class<A> annotationClass,
 			final List<Method> methods)
 	{
+		// NB: The java.lang.Object class does not have any annotated methods.
+		// And even if it did, it definitely does not have any methods annotated
+		// with SciJava annotations such as org.scijava.event.EventHandler, which
+		// are the main sorts of methods we are interested in.
 		if (c == null || c == Object.class) return;
 
 		// check supertypes for annotated methods first
@@ -363,6 +367,10 @@ public final class ClassUtils {
 	public static <A extends Annotation> void getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
+		// NB: The java.lang.Object class does not have any annotated fields.
+		// And even if it did, it definitely does not have any fields annotated
+		// with SciJava annotations such as org.scijava.plugin.Parameter, which
+		// are the main sorts of fields we are interested in.
 		if (c == null || c == Object.class) return;
 
 		// check supertypes for annotated fields first
