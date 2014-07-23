@@ -278,6 +278,13 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		return "script:" + path;
 	}
 
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		return new File(path).toURI().normalize().toString();
+	}
+
 	// -- Helper methods --
 
 	private void parseParam(final String param) throws ScriptException {

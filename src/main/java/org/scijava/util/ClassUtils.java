@@ -35,6 +35,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -271,6 +272,67 @@ public final class ClassUtils {
 	}
 
 	/**
+	 * Gets the given class's {@link Method}s marked with the annotation of the
+	 * specified class.
+	 * <p>
+	 * Unlike {@link Class#getMethods()}, the result will include any non-public
+	 * methods, including methods defined in supertypes of the given class.
+	 * </p>
+	 *
+	 * @param c The class to scan for annotated methods.
+	 * @param annotationClass The type of annotation for which to scan.
+	 * @return A new list containing all methods with the requested annotation.
+	 */
+	public static <A extends Annotation> List<Method> getAnnotatedMethods(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		final ArrayList<Method> methods = new ArrayList<Method>();
+		getAnnotatedMethods(c, annotationClass, methods);
+		return methods;
+	}
+
+	/**
+	 * Gets the given class's {@link Method}s marked with the annotation of the
+	 * specified class.
+	 * <p>
+	 * Unlike {@link Class#getMethods()}, the result will include any non-public
+	 * methods, including methods defined in supertypes of the given class.
+	 * </p>
+	 *
+	 * @param c The class to scan for annotated methods.
+	 * @param annotationClass The type of annotation for which to scan.
+	 * @param methods The list to which matching methods will be added.
+	 */
+	public static <A extends Annotation> void
+		getAnnotatedMethods(final Class<?> c, final Class<A> annotationClass,
+			final List<Method> methods)
+	{
+		// NB: The java.lang.Object class does not have any annotated methods.
+		// And even if it did, it definitely does not have any methods annotated
+		// with SciJava annotations such as org.scijava.event.EventHandler, which
+		// are the main sorts of methods we are interested in.
+		if (c == null || c == Object.class) return;
+
+		// check supertypes for annotated methods first
+		getAnnotatedMethods(c.getSuperclass(), annotationClass, methods);
+		// NB: In some cases, we may not need to recursively scan interfaces.
+		// In particular, for the @EventHandler annotation, we only care about
+		// concrete methods, not interface method declarations. So we could have
+		// additional method signatures with a boolean toggle indicating whether
+		// to include interfaces in the recursive scan. But initial benchmarks
+		// suggest that the performance difference, even when creating a
+		// full-blown Context with a large classpath, is negligible.
+		for (final Class<?> iface : c.getInterfaces()) {
+			getAnnotatedMethods(iface, annotationClass, methods);
+		}
+
+		for (final Method m : c.getDeclaredMethods()) {
+			final A ann = m.getAnnotation(annotationClass);
+			if (ann != null) methods.add(m);
+		}
+	}
+
+	/**
 	 * Gets the given class's {@link Field}s marked with the annotation of the
 	 * specified class.
 	 * <p>
@@ -305,7 +367,11 @@ public final class ClassUtils {
 	public static <A extends Annotation> void getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
-		if (c == null) return;
+		// NB: The java.lang.Object class does not have any annotated fields.
+		// And even if it did, it definitely does not have any fields annotated
+		// with SciJava annotations such as org.scijava.plugin.Parameter, which
+		// are the main sorts of fields we are interested in.
+		if (c == null || c == Object.class) return;
 
 		// check supertypes for annotated fields first
 		getAnnotatedFields(c.getSuperclass(), annotationClass, fields);

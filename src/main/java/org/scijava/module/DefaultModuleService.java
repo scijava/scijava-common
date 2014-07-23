@@ -152,7 +152,7 @@ public class DefaultModuleService extends AbstractService implements
 			return module;
 		}
 		catch (final ModuleException exc) {
-			log.error("Cannot create module: " + info.getDelegateClassName());
+			log.error("Cannot create module: " + info.getDelegateClassName(), exc);
 		}
 		return null;
 	}

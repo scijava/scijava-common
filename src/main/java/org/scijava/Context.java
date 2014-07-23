@@ -117,7 +117,9 @@ public class Context implements Disposable {
 	 * </p>
 	 * 
 	 * @param serviceClasses A list of types that implement the {@link Service}
-	 *          interface (e.g., {@code DisplayService.class}).
+	 *          interface (e.g., {@code DisplayService.class}). Compatible
+	 *          services will be loaded in the order given,
+	 *          <em>regardless of their relative priorities</em>.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
@@ -132,6 +134,8 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 *          Compatible services will be loaded according to the order of the
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses) {
@@ -144,8 +148,10 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 *          Compatible services will be loaded according to the order of the
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param strict Whether context creation will fail fast when there is
-	 *          is an error instantiating a required service.
+	 *          an error instantiating a required service.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
@@ -155,10 +161,10 @@ public class Context implements Disposable {
 	}
 
 	/**
-	 * Creates a new SciJava application with the specified PluginIndex. This
-	 * allows a base set of available plugins to be defined, and is useful when
-	 * plugins that would not be returned by the {@link PluginIndex}'s
-	 * {@link org.scijava.plugin.PluginFinder} are desired.
+	 * Creates a new SciJava application context with all available services from
+	 * the specified PluginIndex. This allows a base set of available plugins to
+	 * be defined, and is useful when plugins that would not be returned by the
+	 * {@link PluginIndex}'s {@link org.scijava.plugin.PluginFinder} are desired.
 	 * 
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
@@ -181,6 +187,8 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 *          Compatible services will be loaded according to the order of the
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
@@ -212,6 +220,8 @@ public class Context implements Disposable {
 	 * 
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
+	 *          Compatible services will be loaded according to the order of the
+	 *          collection, <em>regardless of their relative priorities</em>.
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
@@ -219,7 +229,7 @@ public class Context implements Disposable {
 	 *          can pass a custom {@link PluginIndex} here. Passing null will
 	 *          result in a default plugin index being constructed and used.
 	 * @param strict Whether context creation will fail fast when there is
-	 *          is an error instantiating a required service.
+	 *          an error instantiating a required service.
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
 		final PluginIndex pluginIndex, final boolean strict)

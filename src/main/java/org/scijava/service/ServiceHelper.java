@@ -41,6 +41,7 @@ import java.util.Map;
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
 import org.scijava.Optional;
+import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.log.StderrLogService;
@@ -305,6 +306,11 @@ public class ServiceHelper extends AbstractContextual {
 		final Double priority = classPoolMap.get(c);
 		if (priority != null) service.setPriority(priority);
 
+		// NB: If there are any @EventHandler annotated methods, we treat the
+		// EventService as a required dependency, _unless_ there is also an
+		// EventService field annotated with @Parameter(required = false).
+		boolean eventServiceRequired = true;
+
 		// populate service parameters
 		final List<Field> fields =
 			ClassUtils.getAnnotatedFields(c, Parameter.class);
@@ -332,8 +338,16 @@ public class ServiceHelper extends AbstractContextual {
 				// recursively obtain needed service
 				final boolean required = f.getAnnotation(Parameter.class).required();
 				s = loadService(serviceType, required);
+				// NB: Remember when there is an optional EventService parameter.
+				if (s instanceof EventService) eventServiceRequired = required;
 			}
 			ClassUtils.setValue(f, service, s);
+		}
+
+		// check for event handlers
+		if (!ClassUtils.getAnnotatedMethods(c, EventHandler.class).isEmpty()) {
+			// NB: There are @EventHandler methods; we need an EventService.
+			loadService(EventService.class, eventServiceRequired);
 		}
 
 		service.initialize();
