@@ -47,6 +47,7 @@ import org.scijava.InstantiableException;
 import org.scijava.ItemVisibility;
 import org.scijava.Locatable;
 import org.scijava.ValidityProblem;
+import org.scijava.Versioned;
 import org.scijava.event.EventService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleException;
@@ -58,6 +59,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
 import org.scijava.util.ClassUtils;
+import org.scijava.util.Manifest;
 import org.scijava.util.StringMaker;
 
 /**
@@ -77,7 +79,7 @@ import org.scijava.util.StringMaker;
  *      commands and the rich {@link Module} interface.
  */
 public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
-	Identifiable, Locatable
+	Identifiable, Locatable, Versioned
 {
 
 	/** Wrapped {@link PluginInfo}, if any. */
@@ -429,6 +431,19 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
 	public String getLocation() {
 		try {
 			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
+		}
+		catch (final ClassNotFoundException exc) {
+			return null;
+		}
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		try {
+			final Manifest m = Manifest.getManifest(loadDelegateClass());
+			return m == null ? null : m.getImplementationVersion();
 		}
 		catch (final ClassNotFoundException exc) {
 			return null;
