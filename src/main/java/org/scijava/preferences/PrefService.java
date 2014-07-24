@@ -33,7 +33,6 @@ package org.scijava.preferences;
 
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
 import org.scijava.service.SciJavaService;
 import org.scijava.service.Service;
@@ -105,43 +104,94 @@ public interface PrefService extends SciJavaService {
 	/** Clears the node. */
 	void clear(String key);
 
-	void clear(Preferences preferences, String key);
+	/**
+	 * Clears the node indexed under the given class.
+	 */
+	void clear(Class<?> prefClass, String key);
+
+	/**
+	 * Clears the ndoe indexed under the given path.
+	 */
+	void clear(String absolutePath, String key);
 
 	/** Removes the node. */
-	void remove(Preferences preferences, String key);
+	void remove(Class<?> prefClass, String key);
 
-	/** Puts a list into the preferences. */
+	void remove(String absolutePath, String key);
+
+	/** Puts a Map into the preferences. */
 	void putMap(Map<String, String> map, String key);
 
-	void putMap(Preferences preferences, Map<String, String> map, String key);
+	/**
+	 * Puts a Map into the preferences, indexed under the specified class.
+	 */
+	void putMap(Class<?> prefClass, Map<String, String> map, String key);
 
-	/** Puts a list into the preferences. */
-	void putMap(Preferences preferences, Map<String, String> map);
+	/**
+	 * Puts a Map into the preferences, indexed under the given path.
+	 */
+	void putMap(String absolutePath, Map<String, String> map);
+
+	/**
+	 * Puts a Map into the preferences, indexed under the given class.
+	 */
+	void putMap(Class<?> prefClass, Map<String, String> map);
+
+	/**
+	 * Puts a Map into the preferences, indexed under the given path and
+	 * relative key path.
+	 */
+	void putMap(String absolutePath, Map<String, String> map, String key);
 
 	/** Gets a Map from the preferences. */
 	Map<String, String> getMap(String key);
 
-	Map<String, String> getMap(Preferences preferences, String key);
+	/**
+	 * Gets a map from the preferences, indexed under the specified class.
+	 */
+	Map<String, String> getMap(Class<?> prefClass, String key);
 
 	/** Gets a Map from the preferences. */
-	Map<String, String> getMap(Preferences preferences);
+	Map<String, String> getMap(Class<?> prefClass);
+
+	Map<String, String> getMap(String absolutePath, String key);
 
 	/** Puts a list into the preferences. */
 	void putList(List<String> list, String key);
 
-	void putList(Preferences preferences, List<String> list, String key);
+	/**
+	 * Puts a list into the preferences, indexed under the specified class.
+	 */
+	void putList(Class<?> prefClass, List<String> list, String key);
+
+	/**
+	 * Puts a list into the preferences, indexed under the specified path and
+	 * relative key.
+	 */
+	void putList(String absolutePath, List<String> list, String key);
 
 	/** Puts a list into the preferences. */
-	void putList(Preferences preferences, List<String> list);
+	void putList(Class<?> prefClass, List<String> list);
+
+	/** Puts a list into the preferences, indexed under the specified path. */
+	void putList(String absolutePath, List<String> list);
 
 	/** Gets a List from the preferences. */
 	List<String> getList(String key);
 
-	List<String> getList(Preferences preferences, String key);
+	/**
+	 * Gets a List from the preferences, indexed under the specified path.
+	 */
+	List<String> getList(String absolutePath, String key);
+
+	/**
+	 * Gets a List from the preferences, indexed under the specified class.
+	 */
+	List<String> getList(Class<?> prefClass, String key);
 
 	/**
 	 * Gets a List from the preferences. Returns an empty list if nothing in
 	 * prefs.
 	 */
-	List<String> getList(Preferences preferences);
+	List<String> getList(Class<?> prefClass);
 }

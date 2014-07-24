@@ -215,12 +215,12 @@ public final class Prefs {
 	}
 
 	public static void clear(final Preferences preferences, final String key) {
-		service().clear(preferences, key);
+		service().clear(preferences.absolutePath(), key);
 	}
 
 	/** Removes the node. */
 	public static void remove(final Preferences preferences, final String key) {
-		service().remove(preferences, key);
+		service().remove(preferences.absolutePath(), key);
 	}
 
 	/** Puts a list into the preferences. */
@@ -231,14 +231,14 @@ public final class Prefs {
 	public static void putMap(final Preferences preferences,
 		final Map<String, String> map, final String key)
 	{
-		service().putMap(preferences, map, key);
+		service().putMap(preferences.absolutePath(), map, key);
 	}
 
 	/** Puts a list into the preferences. */
 	public static void putMap(final Preferences preferences,
 		final Map<String, String> map)
 	{
-		service().putMap(preferences, map);
+		service().putMap(preferences.absolutePath(), map);
 	}
 
 	/** Gets a Map from the preferences. */
@@ -249,12 +249,12 @@ public final class Prefs {
 	public static Map<String, String> getMap(final Preferences preferences,
 		final String key)
 	{
-		return service().getMap(preferences, key);
+		return service().getMap(preferences.absolutePath(), key);
 	}
 
 	/** Gets a Map from the preferences. */
 	public static Map<String, String> getMap(final Preferences preferences) {
-		return service().getMap(preferences);
+		return service().getMap(preferences.absolutePath());
 	}
 
 	/** Puts a list into the preferences. */
@@ -265,14 +265,14 @@ public final class Prefs {
 	public static void putList(final Preferences preferences,
 		final List<String> list, final String key)
 	{
-		service().putList(preferences, list, key);
+		service().putList(preferences.absolutePath(), list, key);
 	}
 
 	/** Puts a list into the preferences. */
 	public static void putList(final Preferences preferences,
 		final List<String> list)
 	{
-		service().putList(preferences, list);
+		service().putList(preferences.absolutePath(), list);
 	}
 
 	/** Gets a List from the preferences. */
@@ -283,7 +283,7 @@ public final class Prefs {
 	public static List<String> getList(final Preferences preferences,
 		final String key)
 	{
-		return service().getList(preferences, key);
+		return service().getList(preferences.absolutePath(), key);
 	}
 
 	/**
@@ -291,7 +291,7 @@ public final class Prefs {
 	 * prefs.
 	 */
 	public static List<String> getList(final Preferences preferences) {
-		return service().getList(preferences);
+		return service().getList(preferences.absolutePath());
 	}
 
 	// -- PrefService setter --

@@ -224,7 +224,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	// TODO - Evaluate which of these methods are really needed, and which are
 	// duplicate of similar functionality above.
 
-	/** Clears everything. */
 	@Override
 	public void clearAll() {
 		try {
@@ -237,14 +236,153 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 	}
 
-	/** Clears the node. */
 	@Override
 	public void clear(final String key) {
-		clear(prefs(null), key);
+		clear((Class<?>) null, key);
 	}
 
 	@Override
-	public void clear(final Preferences preferences, final String key) {
+	public void clear(final Class<?> prefClass, final String key) {
+		final Preferences preferences = prefs(prefClass);
+		clear(preferences, key);
+	}
+
+	@Override
+	public void clear(final String absolutePath, final String key) {
+		final Preferences preferences = prefs(absolutePath);
+		clear(preferences, key);
+	}
+
+	@Override
+	public void remove(final Class<?> prefClass, final String key) {
+		final Preferences preferences = prefs(prefClass);
+		remove(preferences, key);
+	}
+
+	@Override
+	public void remove(final String absolutePath, final String key) {
+		final Preferences preferences = prefs(absolutePath);
+		remove(preferences, key);
+	}
+
+	@Override
+	public void putMap(final Map<String, String> map, final String key) {
+		putMap((Class<?>) null, map, key);
+	}
+
+	@Override
+	public void putMap(final Class<?> prefClass, final Map<String, String> map,
+		final String key)
+	{
+		final Preferences preferences = prefs(prefClass);
+		putMap(preferences.node(key), map);
+	}
+
+	@Override
+	public void putMap(final String absolutePath, final Map<String, String> map,
+		final String key)
+	{
+		final Preferences preferences = prefs(absolutePath);
+		putMap(preferences.node(key), map);
+	}
+
+	@Override
+	public void putMap(final Class<?> prefClass, final Map<String, String> map) {
+		final Preferences preferences = prefs(prefClass);
+		putMap(preferences, map);
+	}
+
+	@Override
+	public void putMap(final String absolutePath, final Map<String, String> map) {
+		final Preferences preferences = prefs(absolutePath);
+		putMap(preferences, map);
+	}
+
+	@Override
+	public Map<String, String> getMap(final String key) {
+		return getMap((Class<?>) null, key);
+	}
+
+	@Override
+	public Map<String, String> getMap(final Class<?> prefClass, final String key)
+	{
+		final Preferences preferences = prefs(prefClass);
+		return getMap(preferences.node(key));
+	}
+
+	@Override
+	public Map<String, String>
+		getMap(final String absolutePath, final String key)
+	{
+		final Preferences preferences = prefs(absolutePath);
+		return getMap(preferences.node(key));
+	}
+
+	@Override
+	public Map<String, String> getMap(final Class<?> prefClass) {
+		final Preferences preferences = prefs(prefClass);
+		return getMap(preferences);
+	}
+
+	@Override
+	public void putList(final List<String> list, final String key) {
+		putList((Class<?>) null, list, key);
+	}
+
+	@Override
+	public void putList(final Class<?> prefClass, final List<String> list,
+		final String key)
+	{
+		final Preferences preferences = prefs(prefClass);
+		putList(preferences.node(key), list);
+	}
+
+	@Override
+	public void putList(final String absolutePath, final List<String> list,
+		final String key)
+	{
+		final Preferences preferences = prefs(absolutePath);
+		putList(preferences.node(key), list);
+	}
+
+	@Override
+	public void putList(final Class<?> prefClass, final List<String> list) {
+		final Preferences preferences = prefs(prefClass);
+		putList(preferences, list);
+	}
+
+	@Override
+	public void putList(final String absolutePath, final List<String> list) {
+		final Preferences preferences = prefs(absolutePath);
+		putList(preferences, list);
+	}
+
+	@Override
+	public List<String> getList(final String key) {
+		return getList((Class<?>) null, key);
+	}
+
+	@Override
+	public List<String> getList(final Class<?> prefClass, final String key) {
+		final Preferences preferences = prefs(prefClass);
+		return getList(preferences.node(key));
+	}
+
+	@Override
+	public List<String> getList(final String absolutePath, final String key) {
+		final Preferences preferences = prefs(absolutePath);
+		return getList(preferences.node(key));
+	}
+
+	@Override
+	public List<String> getList(final Class<?> prefClass) {
+		final Preferences preferences = prefs(prefClass);
+		return getList(preferences);
+	}
+
+	// -- Helper methods --
+
+	private void clear(final Preferences preferences, final String key) {
 		try {
 			if (preferences.nodeExists(key)) {
 				preferences.node(key).clear();
@@ -255,9 +393,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 	}
 
-	/** Removes the node. */
-	@Override
-	public void remove(final Preferences preferences, final String key) {
+	private void remove(final Preferences preferences, final String key) {
 		try {
 			if (preferences.nodeExists(key)) {
 				preferences.node(key).removeNode();
@@ -268,22 +404,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 	}
 
-	/** Puts a list into the preferences. */
-	@Override
-	public void putMap(final Map<String, String> map, final String key) {
-		putMap(prefs(null), map, key);
-	}
-
-	@Override
-	public void putMap(final Preferences preferences,
-		final Map<String, String> map, final String key)
-	{
-		putMap(preferences.node(key), map);
-	}
-
-	/** Puts a list into the preferences. */
-	@Override
-	public void putMap(final Preferences preferences,
+	private void putMap(final Preferences preferences,
 		final Map<String, String> map)
 	{
 		if (preferences == null) {
@@ -296,24 +417,10 @@ public class DefaultPrefService extends AbstractPrefService {
 			preferences.put(entry.getKey().toString(), value == null ? null : value
 				.toString());
 		}
+
 	}
 
-	/** Gets a Map from the preferences. */
-	@Override
-	public Map<String, String> getMap(final String key) {
-		return getMap(prefs(null), key);
-	}
-
-	@Override
-	public Map<String, String> getMap(final Preferences preferences,
-		final String key)
-	{
-		return getMap(preferences.node(key));
-	}
-
-	/** Gets a Map from the preferences. */
-	@Override
-	public Map<String, String> getMap(final Preferences preferences) {
+	private Map<String, String> getMap(final Preferences preferences) {
 		if (preferences == null) {
 			throw new IllegalArgumentException("Preferences not set.");
 		}
@@ -330,22 +437,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		return map;
 	}
 
-	/** Puts a list into the preferences. */
-	@Override
-	public void putList(final List<String> list, final String key) {
-		putList(prefs(null), list, key);
-	}
-
-	@Override
-	public void putList(final Preferences preferences, final List<String> list,
-		final String key)
-	{
-		putList(preferences.node(key), list);
-	}
-
-	/** Puts a list into the preferences. */
-	@Override
-	public void putList(final Preferences preferences, final List<String> list) {
+	private void putList(final Preferences preferences, final List<String> list) {
 		if (preferences == null) {
 			throw new IllegalArgumentException("Preferences not set.");
 		}
@@ -355,23 +447,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 	}
 
-	/** Gets a List from the preferences. */
-	@Override
-	public List<String> getList(final String key) {
-		return getList(prefs(null), key);
-	}
-
-	@Override
-	public List<String> getList(final Preferences preferences, final String key) {
-		return getList(preferences.node(key));
-	}
-
-	/**
-	 * Gets a List from the preferences. Returns an empty list if nothing in
-	 * prefs.
-	 */
-	@Override
-	public List<String> getList(final Preferences preferences) {
+	private List<String> getList(final Preferences preferences) {
 		if (preferences == null) {
 			throw new IllegalArgumentException("Preferences not set.");
 		}
@@ -386,10 +462,12 @@ public class DefaultPrefService extends AbstractPrefService {
 		return list;
 	}
 
-	// -- Helper methods --
-
 	private Preferences prefs(final Class<?> c) {
 		return Preferences.userNodeForPackage(c == null ? Prefs.class : c);
+	}
+
+	private Preferences prefs(final String absolutePath) {
+		return Preferences.systemRoot().node(absolutePath);
 	}
 
 	private String key(final Class<?> c, final String name) {
