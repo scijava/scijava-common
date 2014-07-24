@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +55,8 @@ import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.ConversionUtils;
+import org.scijava.util.DigestUtils;
+import org.scijava.util.FileUtils;
 
 /**
  * Metadata about a script.
@@ -283,6 +287,22 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Override
 	public String getLocation() {
 		return new File(path).toURI().normalize().toString();
+	}
+
+	@Override
+	public String getVersion() {
+		final File file = new File(path);
+		final Date lastModified = FileUtils.getModifiedTime(file);
+		final String datestamp =
+			new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(lastModified);
+		try {
+			final String hash = DigestUtils.bestHex(FileUtils.readFile(file));
+			return datestamp + "-" + hash;
+		}
+		catch (final IOException exc) {
+			log.error(exc);
+		}
+		return datestamp;
 	}
 
 	// -- Helper methods --
