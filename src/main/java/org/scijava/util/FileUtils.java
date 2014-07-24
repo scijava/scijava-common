@@ -37,6 +37,7 @@ package org.scijava.util;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -149,6 +150,24 @@ public final class FileUtils {
 		dis.readFully(bytes);
 		dis.close();
 		return bytes;
+	}
+
+	/**
+	 * Writes the given byte array to the specified file.
+	 * 
+	 * @see DigestUtils#bytes(String) To convert a string to a byte array.
+	 * @throws IOException If the file cannot be written.
+	 */
+	public static void writeFile(final File file, final byte[] bytes)
+		throws IOException
+	{
+		final FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(bytes);
+		}
+		finally {
+			out.close();
+		}
 	}
 
 	/**
