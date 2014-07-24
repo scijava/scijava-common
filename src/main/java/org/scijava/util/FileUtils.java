@@ -44,7 +44,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -120,6 +122,14 @@ public final class FileUtils {
 	 */
 	public static String getExtension(final String path) {
 		return getExtension(new File(path));
+	}
+
+	/** Gets the {@link Date} of the file's last modification. */
+	public static Date getModifiedTime(final File file) {
+		final long modifiedTime = file.lastModified();
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(modifiedTime);
+		return c.getTime();
 	}
 
 	/**
