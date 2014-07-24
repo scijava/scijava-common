@@ -296,7 +296,7 @@ public class DefaultScriptService extends
 	{
 		// NB: Add service type aliases after all services have joined the context.
 		for (final Service service : getContext().getServiceIndex()) {
-			addAliases(aliasMap, service.getClass());
+			addAliases(aliasMap(), service.getClass());
 		}
 	}
 
