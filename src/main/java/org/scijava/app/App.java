@@ -33,6 +33,7 @@ package org.scijava.app;
 
 import java.io.File;
 
+import org.scijava.Versioned;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
@@ -53,21 +54,10 @@ import org.scijava.util.POM;
  * @see Plugin
  * @see AppService
  */
-public interface App extends RichPlugin, SingletonPlugin {
+public interface App extends RichPlugin, SingletonPlugin, Versioned {
 
 	/** Gets the title of the application. */
 	String getTitle();
-
-	/**
-	 * Gets the version of the application.
-	 * <p>
-	 * SciJava conforms to the <a href="http://semver.org/">Semantic
-	 * Versioning</a> specification.
-	 * </p>
-	 * 
-	 * @return The application version, in {@code major.minor.micro} format.
-	 */
-	String getVersion();
 
 	/** The Maven {@code groupId} of the application. */
 	String getGroupId();
@@ -105,5 +95,19 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * suitable directory.
 	 */
 	File getBaseDirectory();
+
+	// -- Versioned methods --
+
+	/**
+	 * Gets the version of the application.
+	 * <p>
+	 * SciJava conforms to the <a href="http://semver.org/">Semantic
+	 * Versioning</a> specification.
+	 * </p>
+	 * 
+	 * @return The application version, in {@code major.minor.micro} format.
+	 */
+	@Override
+	String getVersion();
 
 }

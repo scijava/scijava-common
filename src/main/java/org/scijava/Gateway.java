@@ -116,7 +116,7 @@ import org.scijava.widget.WidgetService;
  * @author Mark Hiner
  * @author Curtis Rueden
  */
-public interface Gateway extends RichPlugin {
+public interface Gateway extends RichPlugin, Versioned {
 
 	/**
 	 * Returns an implementation of the requested {@link Service}, if it exists in
@@ -199,10 +199,13 @@ public interface Gateway extends RichPlugin {
 	/** @see org.scijava.app.App#getTitle() */
 	String getTitle();
 
-	/** @see org.scijava.app.App#getVersion() */
-	String getVersion();
-
 	/** @see org.scijava.app.App#getInfo(boolean) */
 	String getInfo(boolean mem);
+
+	// -- Versioned methods --
+
+	/** @see org.scijava.app.App#getVersion() */
+	@Override
+	String getVersion();
 
 }

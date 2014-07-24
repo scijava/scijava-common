@@ -42,6 +42,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.scijava.Versioned;
 import org.xml.sax.SAXException;
 
 /**
@@ -49,7 +50,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Curtis Rueden
  */
-public class POM extends XML implements Comparable<POM> {
+public class POM extends XML implements Comparable<POM>, Versioned {
 
 	/** Parses a POM from the given file. */
 	public POM(final File file) throws ParserConfigurationException,
@@ -91,13 +92,6 @@ public class POM extends XML implements Comparable<POM> {
 	/** Gets the POM's artifactId. */
 	public String getArtifactId() {
 		return cdata("//project/artifactId");
-	}
-
-	/** Gets the POM's version. */
-	public String getVersion() {
-		final String version = cdata("//project/version");
-		if (version != null) return version;
-		return cdata("//project/parent/version");
 	}
 
 	/** Gets the project name. */
@@ -144,6 +138,16 @@ public class POM extends XML implements Comparable<POM> {
 
 		// finally, sort by version
 		return compareVersions(getVersion(), pom.getVersion());
+	}
+
+	// -- Versioned methods --
+
+	/** Gets the POM's version. */
+	@Override
+	public String getVersion() {
+		final String version = cdata("//project/version");
+		if (version != null) return version;
+		return cdata("//project/parent/version");
 	}
 
 	// -- Utility methods --
