@@ -32,8 +32,11 @@
 package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
@@ -50,6 +53,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.plugin.Plugin;
+import org.scijava.test.TestUtils;
+import org.scijava.util.DigestUtils;
+import org.scijava.util.FileUtils;
 
 public class ScriptInfoTest {
 
@@ -87,6 +93,30 @@ public class ScriptInfoTest {
 
 		if (output == null || !(output instanceof Integer)) fail();
 		assertEquals(3, ((Integer)output).intValue());
+	}
+
+	/** Tests {@link ScriptInfo#getVersion()}. */
+	@Test
+	public void testVersion() throws IOException {
+		final String script =
+				"% @LogService log\n"
+				+ "% @OUTPUT int output";
+
+		// write script to a temporary directory on disk
+		final File tmpDir = TestUtils.createTemporaryDirectory("script-info-test-");
+		final String path = "hello.bsizes";
+		final File scriptFile = new File(tmpDir, path);
+		FileUtils.writeFile(scriptFile, DigestUtils.bytes(script));
+
+		// verify that the version is correct
+		final ScriptInfo info = new ScriptInfo(context, scriptFile);
+		final String version = info.getVersion();
+		final String timestampPattern = "\\d{4}-\\d{2}-\\d{2}-\\d{2}:\\d{2}:\\d{2}";
+		final String sha1 = "28f4a2880d604774ac5d604d35f431047a087c9e";
+		assertTrue(version.matches("^" + timestampPattern + "-" + sha1 + "$"));
+
+		// clean up the temporary directory
+		FileUtils.deleteRecursively(tmpDir);
 	}
 
 	@Plugin(type = ScriptLanguage.class)
