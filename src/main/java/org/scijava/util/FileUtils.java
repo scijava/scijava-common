@@ -34,6 +34,7 @@
 
 package org.scijava.util;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -130,6 +131,24 @@ public final class FileUtils {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(modifiedTime);
 		return c.getTime();
+	}
+
+	/**
+	 * Reads the contents of the given file into a new byte array.
+	 * 
+	 * @see DigestUtils#string(byte[]) To convert a byte array to a string.
+	 * @throws IOException If the file cannot be read.
+	 */
+	public static byte[] readFile(final File file) throws IOException {
+		final long length = file.length();
+		if (length > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("File too large");
+		}
+		final DataInputStream dis = new DataInputStream(new FileInputStream(file));
+		final byte[] bytes = new byte[(int) length];
+		dis.readFully(bytes);
+		dis.close();
+		return bytes;
 	}
 
 	/**
