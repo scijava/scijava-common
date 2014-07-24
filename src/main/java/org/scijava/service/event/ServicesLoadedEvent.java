@@ -31,10 +31,12 @@
 
 package org.scijava.service.event;
 
+import org.scijava.Context;
 import org.scijava.event.SciJavaEvent;
 
 /**
- * TODO
+ * An event which fires when a {@link Context} finishes initializing all its
+ * services.
  * 
  * @author Barry DeZonia
  */
