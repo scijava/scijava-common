@@ -34,8 +34,10 @@
 
 package org.scijava.util;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -44,7 +46,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -120,6 +124,50 @@ public final class FileUtils {
 	 */
 	public static String getExtension(final String path) {
 		return getExtension(new File(path));
+	}
+
+	/** Gets the {@link Date} of the file's last modification. */
+	public static Date getModifiedTime(final File file) {
+		final long modifiedTime = file.lastModified();
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(modifiedTime);
+		return c.getTime();
+	}
+
+	/**
+	 * Reads the contents of the given file into a new byte array.
+	 * 
+	 * @see DigestUtils#string(byte[]) To convert a byte array to a string.
+	 * @throws IOException If the file cannot be read.
+	 */
+	public static byte[] readFile(final File file) throws IOException {
+		final long length = file.length();
+		if (length > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("File too large");
+		}
+		final DataInputStream dis = new DataInputStream(new FileInputStream(file));
+		final byte[] bytes = new byte[(int) length];
+		dis.readFully(bytes);
+		dis.close();
+		return bytes;
+	}
+
+	/**
+	 * Writes the given byte array to the specified file.
+	 * 
+	 * @see DigestUtils#bytes(String) To convert a string to a byte array.
+	 * @throws IOException If the file cannot be written.
+	 */
+	public static void writeFile(final File file, final byte[] bytes)
+		throws IOException
+	{
+		final FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(bytes);
+		}
+		finally {
+			out.close();
+		}
 	}
 
 	/**

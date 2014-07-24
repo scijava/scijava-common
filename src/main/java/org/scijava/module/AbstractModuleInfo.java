@@ -41,10 +41,12 @@ import org.scijava.AbstractUIDetails;
 import org.scijava.Identifiable;
 import org.scijava.Locatable;
 import org.scijava.ValidityProblem;
+import org.scijava.Versioned;
 import org.scijava.event.EventService;
 import org.scijava.module.event.ModulesUpdatedEvent;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
+import org.scijava.util.Manifest;
 
 /**
  * Abstract superclass of {@link ModuleInfo} implementation.
@@ -56,7 +58,7 @@ import org.scijava.util.ConversionUtils;
  * @author Curtis Rueden
  */
 public abstract class AbstractModuleInfo extends AbstractUIDetails implements
-	ModuleInfo, Identifiable, Locatable
+	ModuleInfo, Identifiable, Locatable, Versioned
 {
 
 	/** Table of inputs, keyed on name. */
@@ -181,6 +183,22 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 		// it may need to override this method to indicate a different location.
 		try {
 			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
+		}
+		catch (final ClassNotFoundException exc) {
+			return null;
+		}
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		// NB: By default, we use the version of the delegate class's JAR archive.
+		// If the same delegate class is used for more than one module, though,
+		// it may need to override this method to indicate a different version.
+		try {
+			final Manifest m = Manifest.getManifest(loadDelegateClass());
+			return m == null ? null : m.getImplementationVersion();
 		}
 		catch (final ClassNotFoundException exc) {
 			return null;
