@@ -55,6 +55,7 @@ import org.scijava.InstantiableException;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.command.CommandService;
+import org.scijava.event.EventHandler;
 import org.scijava.log.LogService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleService;
@@ -65,6 +66,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
+import org.scijava.service.event.ServicesLoadedEvent;
 import org.scijava.util.AppUtils;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ColorRGB;
@@ -286,6 +288,18 @@ public class DefaultScriptService extends
 		});
 	}
 
+	// -- Event handlers --
+
+	@EventHandler
+	private void
+		onEvent(@SuppressWarnings("unused") final ServicesLoadedEvent evt)
+	{
+		// NB: Add service type aliases after all services have joined the context.
+		for (final Service service : getContext().getServiceIndex()) {
+			addAliases(aliasMap, service.getClass());
+		}
+	}
+
 	// -- Helper methods - lazy initialization --
 
 	/** Gets {@link #scriptLanguageIndex}, initializing if needed. */
@@ -400,11 +414,6 @@ public class DefaultScriptService extends
 		// built-in types
 		addAliases(map, Context.class, BigDecimal.class, BigInteger.class,
 			ColorRGB.class, ColorRGBA.class, File.class, String.class);
-
-		// service types
-		for (final Service service : getContext().getServiceIndex()) {
-			addAliases(map, service.getClass());
-		}
 
 		// gateway types
 		final List<PluginInfo<Gateway>> gatewayPlugins =
