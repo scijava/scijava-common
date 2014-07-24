@@ -89,8 +89,7 @@ public class DefaultUsageService extends AbstractService
 			return null;
 		}
 		final String id = ((Identifiable) o).getIdentifier();
-		final String url = ((Locatable) o).getLocation();
-		if (!stats.containsKey(id)) stats.put(id, new UsageStats(id, url));
+		if (!stats.containsKey(id)) stats.put(id, new UsageStats(o));
 		return stats.get(id);
 	}
 

@@ -31,15 +31,20 @@
 
 package org.scijava.usage;
 
+import org.scijava.AbstractBasicDetails;
+import org.scijava.BasicDetails;
 import org.scijava.Identifiable;
 import org.scijava.Locatable;
+import org.scijava.Versioned;
 
 /**
  * Data structure storing usage statistics for a particular identifier.
  * 
  * @author Curtis Rueden
  */
-public class UsageStats implements Identifiable, Locatable {
+public class UsageStats extends AbstractBasicDetails implements Identifiable,
+	Locatable, Versioned
+{
 
 	/** The object's unique identifier. */
 	private String id;
@@ -47,12 +52,27 @@ public class UsageStats implements Identifiable, Locatable {
 	/** This object's location URL. */
 	private String url;
 
+	/** The object's version. */
+	private String version;
+
 	/** Number of times the object was used. */
 	private long count;
 
-	public UsageStats(final String id, final String url) {
-		this.id = id;
-		this.url = url;
+	/**
+	 * Creates usage statistics for the given object. Note that while several
+	 * pieces of information are initially extracted from the object, no reference
+	 * is retained to the object itself.
+	 */
+	public UsageStats(final Object o) {
+		if (o instanceof BasicDetails) {
+			final BasicDetails basicDetails = (BasicDetails) o;
+			setName(basicDetails.getName());
+			setLabel(basicDetails.getLabel());
+			setDescription(basicDetails.getDescription());
+		}
+		id = o instanceof Identifiable ? ((Identifiable) o).getIdentifier() : null;
+		url = o instanceof Locatable ? ((Locatable) o).getLocation() : null;
+		version = o instanceof Versioned ? ((Versioned) o).getVersion() : null;
 	}
 
 	/** Gets the number of times the object has been used. */
@@ -77,6 +97,13 @@ public class UsageStats implements Identifiable, Locatable {
 	@Override
 	public String getLocation() {
 		return url;
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		return version;
 	}
 
 }
