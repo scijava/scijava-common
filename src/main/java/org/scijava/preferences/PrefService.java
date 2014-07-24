@@ -144,10 +144,4 @@ public interface PrefService extends SciJavaService {
 	 * prefs.
 	 */
 	List<String> getList(Preferences preferences);
-
-	/**
-	 * Updates the behavior of the {@link org.scijava.util.Prefs} static utility
-	 * class to use delegate to this service.
-	 */
-	void setStaticBehavior();
 }

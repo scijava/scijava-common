@@ -35,9 +35,9 @@ import org.scijava.service.AbstractService;
 import org.scijava.util.Prefs;
 
 /**
- * Abstract {@link PrefService} implementation. Provides a basic
- * {@link #setStaticBehavior()} implementation, calling it during service
- * {@link #initialize()} to set this as the delegate service.
+ * Abstract {@link PrefService} implementation. Calls
+ * {@link Prefs#setDelegateService(PrefService, double)} on this {@code Service}
+ * during initialization.
  *
  * @author Mark Hiner
  */
@@ -47,12 +47,6 @@ public abstract class AbstractPrefService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		setStaticBehavior();
-	}
-
-	@Override
-	public void setStaticBehavior() {
 		Prefs.setDelegateService(this, getPriority());
 	}
-
 }
