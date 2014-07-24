@@ -33,9 +33,6 @@ package org.scijava.welcome;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
@@ -49,6 +46,7 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.text.TextService;
 import org.scijava.ui.event.UIShownEvent;
+import org.scijava.util.DigestUtils;
 import org.scijava.util.Prefs;
 import org.scijava.welcome.event.WelcomeEvent;
 
@@ -97,7 +95,7 @@ public class DefaultWelcomeService extends AbstractService implements
 		try {
 			if (welcomeFile.exists()) {
 				final String welcomeText = textService.asHTML(welcomeFile);
-				final String checksum = getChecksum(welcomeText);
+				final String checksum = DigestUtils.bestHex(welcomeText);
 				final String previousChecksum = Prefs.get(getClass(), CHECKSUM_PREFS_KEY);
 				if (!force && checksum.equals(previousChecksum)) return;
 				Prefs.put(getClass(), CHECKSUM_PREFS_KEY, checksum);
@@ -136,36 +134,6 @@ public class DefaultWelcomeService extends AbstractService implements
 	/** Gets the preference key for ImageJ's first run. */
 	private String firstRunPrefKey() {
 		return "firstRun-" + appService.getApp().getVersion();
-	}
-
-	// TODO: move this into TextUtils or some such
-	// see https://github.com/scijava/scijava-common/issues/82
-	// get digest of the file as according to fullPath
-	private String getChecksum(final String text)
-	{
-		try {
-			final MessageDigest digest = MessageDigest.getInstance("SHA-1");
-			digest.update(text.getBytes("UTF-8"));
-			return toHex(digest.digest());
-		}
-		catch (NoSuchAlgorithmException e) {
-			return "" + text.hashCode();
-		}
-		catch (UnsupportedEncodingException e) {
-			return "" + text.hashCode();
-		}
-	}
-
-	private final static char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7',
-		'8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-
-	private String toHex(final byte[] bytes) {
-		final char[] buffer = new char[bytes.length * 2];
-		for (int i = 0; i < bytes.length; i++) {
-			buffer[i * 2] = hex[(bytes[i] & 0xf0) >> 4];
-			buffer[i * 2 + 1] = hex[bytes[i] & 0xf];
-		}
-		return new String(buffer);
 	}
 
 }
