@@ -41,6 +41,7 @@ import org.scijava.util.Prefs;
  *
  * @author Mark Hiner
  */
+@SuppressWarnings({ "javadoc", "deprecation" })
 public abstract class AbstractPrefService extends AbstractService implements
 	PrefService
 {
