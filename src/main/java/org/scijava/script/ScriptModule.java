@@ -49,8 +49,8 @@ import org.scijava.module.AbstractModule;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
-import org.scijava.util.ConversionUtils;
 import org.scijava.util.FileUtils;
+import org.scijava.util.conversion.ConversionService;
 
 /**
  * A {@link Module} which executes a script.
@@ -69,6 +69,9 @@ public class ScriptModule extends AbstractModule implements Contextual {
 
 	@Parameter
 	private ScriptService scriptService;
+
+	@Parameter
+	private ConversionService conversionService;
 
 	@Parameter
 	private LogService log;
@@ -190,7 +193,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			if (isResolved(name)) continue;
 			final Object value = engine.get(name);
 			final Object decoded = language.decode(value);
-			final Object typed = ConversionUtils.convert(decoded, item.getType());
+			final Object typed = conversionService.convert(decoded, item.getType());
 			setOutput(name, typed);
 		}
 

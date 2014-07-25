@@ -59,7 +59,7 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
-import org.scijava.util.ConversionUtils;
+import org.scijava.util.conversion.ConversionService;
 
 /**
  * Default service for keeping track of and executing available modules.
@@ -90,6 +90,9 @@ public class DefaultModuleService extends AbstractService implements
 
 	@Parameter
 	private PrefService prefService;
+
+	@Parameter
+	private ConversionService conversionService;
 
 	/** Index of registered modules. */
 	private ModuleIndex moduleIndex;
@@ -266,7 +269,7 @@ public class DefaultModuleService extends AbstractService implements
 		final String sValue = value == null ? "" : value.toString();
 
 		// do not persist if object cannot be converted back from a string
-		if (!ConversionUtils.canConvert(sValue, item.getType())) return;
+		if (!conversionService.supports(sValue, item.getType())) return;
 
 		final String persistKey = item.getPersistKey();
 		if (persistKey == null || persistKey.isEmpty()) {
@@ -304,7 +307,7 @@ public class DefaultModuleService extends AbstractService implements
 		// if persisted value has never been set before return null
 		if (sValue == null) return null;
 
-		return ConversionUtils.convert(sValue, item.getType());
+		return conversionService.convert(sValue, item.getType());
 	}
 	
 	// -- Service methods --
@@ -406,7 +409,7 @@ public class DefaultModuleService extends AbstractService implements
 			}
 			else {
 				final Class<?> type = input.getType();
-				converted = ConversionUtils.convert(value, type);
+				converted = conversionService.convert(value, type);
 				if (value != null && converted == null) {
 					log.error("For input " + name + ": incompatible object " +
 						value.getClass().getName() + " for type " + type.getName());
