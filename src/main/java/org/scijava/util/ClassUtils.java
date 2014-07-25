@@ -424,14 +424,24 @@ public final class ClassUtils {
 	 * 
 	 * @throws IllegalArgumentException if the value cannot be set.
 	 */
+	// FIXME: Move to ConvertService and deprecate this signature.
 	public static void setValue(final Field field, final Object instance,
 		final Object value)
 	{
 		try {
 			field.setAccessible(true);
-			final Type fieldType =
-				GenericUtils.getFieldType(field, instance.getClass());
-			field.set(instance, ConversionUtils.convert(value, fieldType));
+			final Object compatibleValue;
+			if (field.getType().isInstance(value)) {
+				// the given value is compatible with the field
+				compatibleValue = value;
+			}
+			else {
+				// the given value needs to be converted to a compatible type
+				final Type fieldType =
+						GenericUtils.getFieldType(field, instance.getClass());
+				compatibleValue = ConversionUtils.convert(value, fieldType);
+			}
+			field.set(instance, compatibleValue);
 		}
 		catch (final IllegalAccessException e) {
 			throw new IllegalArgumentException("No access to field: " +
