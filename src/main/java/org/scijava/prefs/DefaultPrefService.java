@@ -45,8 +45,8 @@ import org.scijava.service.Service;
 import org.scijava.util.Prefs;
 
 /**
- * Default {@link PrefService} implementation. Uses the {@link Prefs} utility
- * class to persist preferences to disk.
+ * Default {@link PrefService} implementation, which persists preferences to
+ * disk using the Java {@link Preferences} API.
  *
  * @author Mark Hiner
  */
