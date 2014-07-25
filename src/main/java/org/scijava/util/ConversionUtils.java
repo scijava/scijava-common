@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,16 +34,17 @@ package org.scijava.util;
 import java.lang.reflect.Type;
 
 import org.scijava.convert.ConversionRequest;
-import org.scijava.convert.Converter;
 import org.scijava.convert.ConvertService;
+import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
+import org.scijava.prefs.DefaultPrefService;
 
 /**
  * Useful methods for converting and casting between classes and types.
  * <p>
  * For extensible type conversion, use {@link ConvertService}.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Mark Hiner
  */
@@ -64,7 +65,7 @@ public class ConversionUtils {
 	/**
 	 * Converts the given string value to an enumeration constant of the specified
 	 * type.
-	 * 
+	 *
 	 * @param src The value to convert.
 	 * @param dest The type of the enumeration constant.
 	 * @return The converted enumeration constant, or null if the type is not an
@@ -99,7 +100,7 @@ public class ConversionUtils {
 	/**
 	 * Checks whether objects of the given class can be cast to the specified
 	 * type.
-	 * 
+	 *
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Class<?> src, final Class<?> dest) {
@@ -108,7 +109,7 @@ public class ConversionUtils {
 
 	/**
 	 * Checks whether the given object can be cast to the specified type.
-	 * 
+	 *
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Object src, final Class<?> dest) {
@@ -176,8 +177,8 @@ public class ConversionUtils {
 	/**
 	 * Sets the {@link ConvertService}
 	 */
-	public static void setDelegateService(
-		final ConvertService conversionService, final double priority)
+	public static void setDelegateService(final ConvertService conversionService,
+		final double priority)
 	{
 		if (ConversionUtils.conversionService == null ||
 			Double.compare(priority, servicePriority) > 0)
@@ -264,8 +265,8 @@ public class ConversionUtils {
 //-- Helper methods --
 
 	/**
-	 * Gets the delegate {@link ConvertService} to use for preference
-	 * operations. If this service has not been explicitly set, then a
+	 * Gets the delegate {@link ConvertService} to use for preference operations.
+	 * If this service has not been explicitly set, then a
 	 * {@link DefaultPrefService} will be used.
 	 *
 	 * @return The current {@link ConvertService} to use for delegation.
