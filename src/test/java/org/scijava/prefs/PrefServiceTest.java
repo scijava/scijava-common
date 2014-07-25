@@ -36,6 +36,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,6 +139,40 @@ public class PrefServiceTest {
 		assertEquals(dv, prefService.getLong(getClass(), "power level", dv));
 		prefService.put(getClass(), "power level", value);
 		assertTrue(prefService.getLong(getClass(), "power level", dv) > 9000);
+	}
+
+	/**
+	 * Tests {@link PrefService#putMap(Class, Map, String)} and
+	 * {@link PrefService#getMap(Class, String)}.
+	 */
+	@Test
+	public void testMap() {
+		final Map<String, String> map = new HashMap<String, String>();
+		map.put("0", "A");
+		map.put("1", "B");
+		map.put("2", "C");
+		map.put("3", "D");
+		map.put("5", "f");
+		final String mapKey = "MapKey";
+		prefService.putMap(getClass(), map, mapKey);
+		final Map<String, String> result = prefService.getMap(getClass(), mapKey);
+		assertEquals(map, result);
+	}
+
+	/**
+	 * Tests {@link PrefService#putList(Class, List, String)} and
+	 * {@link PrefService#getList(Class, String)}.
+	 */
+	@Test
+	public void testList() {
+		final String recentFilesKey = "RecentFiles";
+		final List<String> recentFiles = new ArrayList<String>();
+		recentFiles.add("some/path1");
+		recentFiles.add("some/path2");
+		recentFiles.add("some/path3");
+		prefService.putList(getClass(), recentFiles, recentFilesKey);
+		final List<String> result = prefService.getList(getClass(), recentFilesKey);
+		assertEquals(recentFiles, result);
 	}
 
 }
