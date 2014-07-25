@@ -42,7 +42,6 @@ import java.util.prefs.Preferences;
 
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
-import org.scijava.util.Prefs;
 
 /**
  * Default {@link PrefService} implementation, which persists preferences to
@@ -463,7 +462,7 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	private Preferences prefs(final Class<?> c) {
-		return Preferences.userNodeForPackage(c == null ? Prefs.class : c);
+		return Preferences.userNodeForPackage(c == null ? PrefService.class : c);
 	}
 
 	private Preferences prefs(final String absolutePath) {
