@@ -42,7 +42,7 @@ import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
-import org.scijava.preferences.PrefService;
+import org.scijava.prefs.PrefService;
 import org.scijava.thread.ThreadService;
 import org.scijava.ui.viewer.DisplayViewer;
 import org.scijava.ui.viewer.DisplayWindow;

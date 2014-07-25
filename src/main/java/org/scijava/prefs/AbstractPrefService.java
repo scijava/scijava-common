@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.preferences;
+package org.scijava.prefs;
 
 import org.scijava.service.AbstractService;
 import org.scijava.util.Prefs;

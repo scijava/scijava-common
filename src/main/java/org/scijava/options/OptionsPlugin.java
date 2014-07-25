@@ -38,7 +38,7 @@ import org.scijava.module.ModuleService;
 import org.scijava.options.event.OptionsEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.SingletonPlugin;
-import org.scijava.preferences.PrefService;
+import org.scijava.prefs.PrefService;
 
 // TODO - outline for how to address issues with options (initializing, aggregating into 1 dialog)
 

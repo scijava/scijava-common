@@ -88,7 +88,7 @@ public class ContextCreationTest {
 				org.scijava.options.DefaultOptionsService.class,
 				org.scijava.platform.DefaultPlatformService.class,
 				org.scijava.plugin.DefaultPluginService.class,
-				org.scijava.preferences.DefaultPrefService.class,
+				org.scijava.prefs.DefaultPrefService.class,
 				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.tool.DefaultToolService.class,

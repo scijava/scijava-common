@@ -42,7 +42,7 @@ import org.scijava.module.process.ModulePostprocessor;
 import org.scijava.module.process.ModulePreprocessor;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
-import org.scijava.preferences.PrefService;
+import org.scijava.prefs.PrefService;
 import org.scijava.service.SciJavaService;
 
 /**

@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
-import org.scijava.preferences.DefaultPrefService;
-import org.scijava.preferences.PrefService;
+import org.scijava.prefs.DefaultPrefService;
+import org.scijava.prefs.PrefService;
 
 /**
  * Simple utility class that stores and retrieves user preferences.

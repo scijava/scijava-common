@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.preferences;
+package org.scijava.prefs;
 
 import java.util.List;
 import java.util.Map;
