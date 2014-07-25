@@ -295,6 +295,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Override
 	public String getVersion() {
 		final File file = new File(path);
+		if (!file.exists()) return null; // no version for non-existent script
 		final Date lastModified = FileUtils.getModifiedTime(file);
 		final String datestamp =
 			new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(lastModified);
