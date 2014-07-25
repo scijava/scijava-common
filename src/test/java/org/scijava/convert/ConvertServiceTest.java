@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.util;
+package org.scijava.convert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,309 +37,230 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.scijava.Context;
+import org.scijava.util.ClassUtils;
+import org.scijava.util.LongArray;
 
 /**
- * Tests {@link ConversionUtils}.
+ * Tests {@link ConvertService}.
  * 
  * @author Mark Hiner
  * @author Curtis Rueden
  */
-public class ConversionUtilsTest {
+public class ConvertServiceTest {
 
-	/** Tests {@link ConversionUtils#canCast(Class, Class)}. */
+	private ConvertService convertService;
+
+	@Before
+	public void setUp() {
+		final Context context = new Context(ConvertService.class);
+		convertService = context.getService(ConvertService.class);
+	}
+
+	@After
+	public void tearDown() {
+		convertService.getContext().dispose();
+	}
+
+	/** Tests {@link ConvertService#supports(Class, Class)}. */
 	@Test
-	public void testCanCast() {
-		// check casting to superclass
-		assertTrue(ConversionUtils.canCast(String.class, Object.class));
+	public void testCanConvert() {
+		// check "conversion" (i.e., casting) to superclass
+		assertTrue(convertService.supports(String.class, Object.class));
 
-		// check casting to interface
-		assertTrue(ConversionUtils.canCast(ArrayList.class, Collection.class));
+		// check "conversion" (i.e., casting) to interface
+		assertTrue(convertService.supports(ArrayList.class, Collection.class));
 
-		// casting numeric primitives is not supported
-		assertFalse(ConversionUtils.canCast(double.class, float.class));
-		assertFalse(ConversionUtils.canCast(float.class, double.class));
+		// check conversion of numeric primitives
+		assertTrue(convertService.supports(double.class, float.class));
+		assertTrue(convertService.supports(float.class, double.class));
 
 		// boxing is not reported to work
 		// TODO: Consider changing this behavior.
-		assertFalse(ConversionUtils.canCast(int.class, Number.class));
+		assertFalse(convertService.supports(int.class, Number.class));
 
-		// casting from null always works
-		final Object nullObject = null;
-		assertTrue(ConversionUtils.canCast(nullObject, Object.class));
-		assertTrue(ConversionUtils.canCast(nullObject, int[].class));
+		// can convert anything to string
+		assertTrue(convertService.supports(Object.class, String.class));
+
+		// can convert string to char
+		// TODO: Consider changing this behavior to allow conversion from anything.
+		assertTrue(convertService.supports(String.class, char.class));
+		assertTrue(convertService.supports(String.class, Character.class));
+
+		// can convert string to enum
+		assertTrue(convertService.supports(String.class, Words.class));
+
+		// check conversion of various types w/ appropriate constructor
+		assertTrue(convertService.supports(String.class, Double.class));
+		assertTrue(convertService.supports(Collection.class, ArrayList.class));
+		assertTrue(convertService.supports(HashSet.class, ArrayList.class));
+		assertTrue(convertService.supports(long.class, Date.class));
+
+		// check lack of conversion of various types w/o appropriate constructor
+		assertFalse(convertService.supports(Collection.class, List.class));
+		assertFalse(convertService.supports(int.class, Date.class));
 	}
 
-	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
-	@Test
-	public void testCast() {
-		// check casting to superclass
+	/** Tests {@link ConvertService#convert(Object, Class)}. */
+	public void testConvert() {
+		// check "conversion" (i.e., casting) to superclass
 		final String string = "Hello";
-		final Object stringToObject = ConversionUtils.cast(string, Object.class);
+		final Object stringToObject = convertService.convert(string, Object.class);
 		assertSame(string, stringToObject);
 
-		// check casting to interface
+		// check "conversion" (i.e., casting) to interface
 		final ArrayList<?> arrayList = new ArrayList<Object>();
 		final Collection<?> arrayListToCollection =
-			ConversionUtils.cast(arrayList, Collection.class);
+			convertService.convert(arrayList, Collection.class);
 		assertSame(arrayList, arrayListToCollection);
 
-		// casting numeric primitives is not supported
-		final Float doubleToFloat = ConversionUtils.cast(5.1, float.class);
-		assertNull(doubleToFloat);
-		final Double floatToDouble = ConversionUtils.cast(5.1f, double.class);
-		assertNull(floatToDouble);
+		// check conversion to enum values (testConvertToEnum is more thorough)
+		final Words fubar = convertService.convert("FUBAR", Words.class);
+		assertSame(Words.FUBAR, fubar);
+		final Words noConstant = convertService.convert("NONE", Words.class);
+		assertNull(noConstant);
 
-		// boxing works though
-		final Number intToNumber = ConversionUtils.cast(5, Number.class);
+		// check conversion of numeric primitives: double to float
+		final double d = 5.1;
+		final float doubleToFloat = convertService.convert(d, float.class);
+		assertTrue((float) d == doubleToFloat);
+
+		// check conversion of numeric primitives: float to double
+		final float f = 6.2f;
+		final double floatToDouble =
+			convertService.convert(float.class, double.class);
+		assertEquals(f, floatToDouble, 0.0);
+
+		// boxing works
+		final Number intToNumber = convertService.convert(5, Number.class);
 		assertSame(Integer.class, intToNumber.getClass());
 		assertEquals(5, intToNumber.intValue());
+
+		// can convert anything to string
+		final Object object = new Object();
+		final String objectToString = convertService.convert(object, String.class);
+		assertEquals(object.toString(), objectToString);
+
+		// can convert string to char
+		// TODO: Consider changing this behavior to allow conversion from anything.
+		final String name = "Houdini";
+		final char c = convertService.convert(name, char.class);
+		assertTrue(name.charAt(0) == c);
+
+		// check conversion via constructor: String to double
+		final String ns = "8.7";
+		final double stringToDouble = convertService.convert(ns, Double.class);
+		assertEquals(8.7, stringToDouble, 0.0);
+
+		// check conversion via constructor: HashSet to ArrayList
+		final HashSet<String> set = new HashSet<String>();
+		set.add("Foo");
+		set.add("Bar");
+		@SuppressWarnings("unchecked")
+		final ArrayList<String> setToArrayList =
+			convertService.convert(set, ArrayList.class);
+		assertEquals(2, setToArrayList.size());
+		Collections.sort(setToArrayList);
+		assertEquals("Bar", setToArrayList.get(0));
+		assertEquals("Foo", setToArrayList.get(1));
+
+		// check conversion via constructor: long to Date
+		final Date date = new Date();
+		final long datestamp = date.getTime();
+		final Date longToDate = convertService.convert(datestamp, Date.class);
+		assertEquals(date, longToDate);
+
+		// check conversion failure: HashSet to List interface
+		@SuppressWarnings("unchecked")
+		final List<String> setToList = convertService.convert(set, List.class);
+		assertNull(setToList);
+
+		// check conversion failure: int to Date
+		final int intStamp = (int) datestamp;
+		final Date intToDate = convertService.convert(intStamp, Date.class);
+		assertNull(intToDate);
 	}
 
-	/** Tests {@link ConversionUtils#convertToEnum(String, Class)}. */
+	/**
+	 * Tests {@link ConvertService#convert(Object, Class)} in subclassing cases.
+	 */
 	@Test
-	public void testConvertToEnum() {
-		final Words foo = ConversionUtils.convertToEnum("FOO", Words.class);
-		assertSame(Words.FOO, foo);
-		final Words bar = ConversionUtils.convertToEnum("BAR", Words.class);
-		assertSame(Words.BAR, bar);
-		final Words fubar = ConversionUtils.convertToEnum("FUBAR", Words.class);
-		assertSame(Words.FUBAR, fubar);
-		final Words noConstant = ConversionUtils.convertToEnum("NONE", Words.class);
-		assertNull(noConstant);
-		final String notAnEnum =
-			ConversionUtils.convertToEnum("HOOYAH", String.class);
-		assertNull(notAnEnum);
-	}
+	public void testConvertSubclass() {
+		final HisList hisList = new HisList();
+		hisList.add("Foo");
+		hisList.add("Bar");
 
-	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
-	@Test
-	public void testGetNonprimitiveType() {
-		final Class<Boolean> booleanType =
-			ConversionUtils.getNonprimitiveType(boolean.class);
-		assertSame(Boolean.class, booleanType);
+		// ArrayList<String> subclass to ArrayList<String> subclass
+		final HerList herList = convertService.convert(hisList, HerList.class);
+		assertEquals(2, herList.size());
+		assertEquals("Foo", herList.get(0));
+		assertEquals("Bar", herList.get(1));
 
-		final Class<Byte> byteType =
-			ConversionUtils.getNonprimitiveType(byte.class);
-		assertSame(Byte.class, byteType);
+		// ArrayList<String> subclass to ArrayList<Object> subclass
+		final ObjectList objectList =
+			convertService.convert(hisList, ObjectList.class);
+		assertEquals(2, objectList.size());
+		assertEquals("Foo", objectList.get(0));
+		assertEquals("Bar", objectList.get(1));
 
-		final Class<Character> charType =
-			ConversionUtils.getNonprimitiveType(char.class);
-		assertSame(Character.class, charType);
+		// ArrayList<Object> subclass to ArrayList<String> subclass
+		final HisList objectToHisList =
+			convertService.convert(objectList, HisList.class);
+		assertEquals(2, objectToHisList.size());
+		assertEquals("Foo", objectToHisList.get(0));
+		assertEquals("Bar", objectToHisList.get(1));
 
-		final Class<Double> doubleType =
-			ConversionUtils.getNonprimitiveType(double.class);
-		assertSame(Double.class, doubleType);
-
-		final Class<Float> floatType =
-			ConversionUtils.getNonprimitiveType(float.class);
-		assertSame(Float.class, floatType);
-
-		final Class<Integer> intType =
-			ConversionUtils.getNonprimitiveType(int.class);
-		assertSame(Integer.class, intType);
-
-		final Class<Long> longType =
-			ConversionUtils.getNonprimitiveType(long.class);
-		assertSame(Long.class, longType);
-
-		final Class<Short> shortType =
-			ConversionUtils.getNonprimitiveType(short.class);
-		assertSame(Short.class, shortType);
-
-		final Class<Void> voidType =
-			ConversionUtils.getNonprimitiveType(void.class);
-		assertSame(Void.class, voidType);
-
-		final Class<?>[] types = { //
-			Boolean.class, Byte.class, Character.class, Double.class, //
-				Float.class, Integer.class, Long.class, Short.class, //
-				Void.class, //
-				String.class, //
-				Number.class, BigInteger.class, BigDecimal.class, //
-				boolean[].class, byte[].class, char[].class, double[].class, //
-				float[].class, int[].class, long[].class, short[].class, //
-				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
-				Float[].class, Integer[].class, Long[].class, Short[].class, //
-				Void[].class, //
-				Object.class, Object[].class, String[].class, //
-				Object[][].class, String[][].class, //
-				Collection.class, //
-				List.class, ArrayList.class, LinkedList.class, //
-				Set.class, HashSet.class, //
-				Map.class, HashMap.class, //
-				Collection[].class, List[].class, Set[].class, Map[].class };
-		for (final Class<?> c : types) {
-			final Class<?> type = ConversionUtils.getNonprimitiveType(c);
-			assertSame(c, type);
+		// ArrayList<String> subclass to ArrayList<Number> subclass
+		// This surprisingly works due to type erasure... dangerous stuff.
+		final NumberList hisToNumberList =
+			convertService.convert(hisList, NumberList.class);
+		assertEquals(2, hisToNumberList.size());
+		assertEquals("Foo", hisToNumberList.get(0));
+		assertEquals("Bar", hisToNumberList.get(1));
+		try {
+			final Number n0 = hisToNumberList.get(0);
+			fail("expected ClassCastException but got: " + n0);
 		}
-	}
-
-	/** Tests {@link ConversionUtils#getNullValue(Class)}. */
-	@Test
-	public void testGetNullValue() {
-		final boolean booleanNull = ConversionUtils.getNullValue(boolean.class);
-		assertFalse(booleanNull);
-
-		final byte byteNull = ConversionUtils.getNullValue(byte.class);
-		assertEquals(0, byteNull);
-
-		final char charNull = ConversionUtils.getNullValue(char.class);
-		assertEquals('\0', charNull);
-
-		final double doubleNull = ConversionUtils.getNullValue(double.class);
-		assertEquals(0.0, doubleNull, 0.0);
-
-		final float floatNull = ConversionUtils.getNullValue(float.class);
-		assertEquals(0f, floatNull, 0f);
-
-		final int intNull = ConversionUtils.getNullValue(int.class);
-		assertEquals(0, intNull);
-
-		final long longNull = ConversionUtils.getNullValue(long.class);
-		assertEquals(0, longNull);
-
-		final short shortNull = ConversionUtils.getNullValue(short.class);
-		assertEquals(0, shortNull);
-
-		final Void voidNull = ConversionUtils.getNullValue(void.class);
-		assertNull(voidNull);
-
-		final Class<?>[] types = { //
-			Boolean.class, Byte.class, Character.class, Double.class, //
-				Float.class, Integer.class, Long.class, Short.class, //
-				Void.class, //
-				String.class, //
-				Number.class, BigInteger.class, BigDecimal.class, //
-				boolean[].class, byte[].class, char[].class, double[].class, //
-				float[].class, int[].class, long[].class, short[].class, //
-				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
-				Float[].class, Integer[].class, Long[].class, Short[].class, //
-				Void[].class, //
-				Object.class, Object[].class, String[].class, //
-				Object[][].class, String[][].class, //
-				Collection.class, //
-				List.class, ArrayList.class, LinkedList.class, //
-				Set.class, HashSet.class, //
-				Map.class, HashMap.class, //
-				Collection[].class, List[].class, Set[].class, Map[].class };
-		for (final Class<?> c : types) {
-			final Object nullValue = ConversionUtils.getNullValue(c);
-			assertNull("Expected null for " + c.getName(), nullValue);
+		catch (final ClassCastException exc) {
+			// NB: Exception expected.
 		}
 	}
 
 	/**
-	 * Tests populating a primitive array.
+	 * Tests that {@link ConvertService#convert(Object, Type)} prefers casting to
+	 * conversion.
 	 */
 	@Test
-	public void testPrimitiveArray() {
+	public void testConvertTypeCasting() {
 		class Struct {
-
-			private int[] intArray;
+			private INumberList iNumberList;
+			private List<String> list;
 		}
 		final Struct struct = new Struct();
+		final NumberList numberList = new NumberList();
+		numberList.add(5);
 
-		final List<Integer> intVals = getValueList(4, 3, 7);
-		setFieldValue(struct, "intArray", intVals);
+		// check casting to an INumberList (Type w/o generic parameter)
+		setFieldValue(struct, "iNumberList", numberList);
+		assertSame(numberList, struct.iNumberList);
 
-		for (int i = 0; i < struct.intArray.length; i++) {
-			assertEquals(intVals.get(i).intValue(), struct.intArray[i]);
-		}
-
-		// Repeat, using a primitive array of values this time
-		setFieldValue(struct, "intArray", new int[] { 8, 6, 14 });
-
-		for (int i = 0; i < struct.intArray.length; i++) {
-			assertEquals(intVals.get(i).intValue() * 2, struct.intArray[i]);
-		}
-	}
-
-	/**
-	 * Tests populating an array type of Objects.
-	 */
-	@Test
-	public void testObjectArray() {
-		class Struct {
-
-			private Double[] doubleArray;
-		}
-		final Struct struct = new Struct();
-
-		// Verify behavior setting an array of Objects (Doubles)
-		final List<Double> doubleVals = getValueList(1.0, 2.0, 3.0);
-		setFieldValue(struct, "doubleArray", doubleVals);
-
-		for (int i = 0; i < struct.doubleArray.length; i++) {
-			assertEquals(doubleVals.get(i), struct.doubleArray[i]);
-		}
-	}
-
-	/**
-	 * Tests populating a collection.
-	 */
-	@Test
-	public void testCollection() {
-		class Struct {
-
-			private List<String> stringList;
-		}
-		final Struct struct = new Struct();
-
-		// Verify behavior setting a List of Objects (Strings)
-		final List<String> stringVals = getValueList("ok", "still ok");
-		setFieldValue(struct, "stringList", stringVals);
-
-		for (int i = 0; i < struct.stringList.size(); i++) {
-			assertEquals(stringVals.get(i), struct.stringList.get(i));
-		}
-
-		// Repeat, using an array of Strings to populate a collection
-		setFieldValue(struct, "stringList", stringVals.toArray());
-
-		for (int i = 0; i < struct.stringList.size(); i++) {
-			assertEquals(stringVals.get(i), struct.stringList.get(i));
-		}
-	}
-
-	/**
-	 * Tests conversion <em>from</em> a subclass of a collection.
-	 */
-	@Test
-	public void testFromCollectionSubclass() {
-		class RandomSet extends HashSet<Random> {
-			// NB: No implementation needed.
-		}
-		class Struct {
-
-			private List<String> stringList;
-		}
-		final Struct struct = new Struct();
-
-		final RandomSet randomSet = new RandomSet();
-		randomSet.add(new Random(567));
-		randomSet.add(new Random(321));
-
-		setFieldValue(struct, "stringList", randomSet);
-
-		assertNotNull(struct.stringList);
-		assertEquals(2, struct.stringList.size());
-		for (final String s : struct.stringList) {
-			assertTrue(s.matches("^java.util.Random@[0-9a-f]+$"));
-		}
+		// check casting to a List<String> (Type w/ generic parameter)
+		setFieldValue(struct, "list", numberList);
+		assertSame(numberList, struct.list);
 	}
 
 	/**
