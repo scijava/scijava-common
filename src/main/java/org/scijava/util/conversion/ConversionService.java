@@ -47,20 +47,58 @@ import org.scijava.plugin.HandlerService;
 public interface ConversionService extends
 	HandlerService<ConversionRequest, ConversionHandler>
 {
+	/**
+	 * @see ConversionHandler#convert(Object, Type)
+	 */
+	Object convert(Object src, Type dest);
 
+	/**
+	 * @see ConversionHandler#convert(Object, Class)
+	 */
+	<T> T convert(Object src, Class<T> dest);
+
+	/**
+	 * @see ConversionHandler#convert(ConversionRequest)
+	 */
+	Object convert(ConversionRequest request);
+
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
 	ConversionHandler getHandler(Object src, Class<?> dest);
 
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
 	ConversionHandler getHandler(Class<?> src, Class<?> dest);
 
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
 	ConversionHandler getHandler(Object src, Type dest);
 
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
 	ConversionHandler getHandler(Class<?> src, Type dest);
 
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
 	boolean supports(Object src, Class<?> dest);
 
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
 	boolean supports(Class<?> src, Class<?> dest);
 
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
 	boolean supports(Object src, Type dest);
 
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
 	boolean supports(Class<?> src, Type dest);
 }

@@ -31,15 +31,47 @@
 
 package org.scijava.util.conversion;
 
+import java.lang.reflect.Type;
+
 import org.scijava.plugin.AbstractHandlerService;
+import org.scijava.util.ConversionUtils;
 
 /**
- * Abstract superclass for {@link ConversionService} implementations
+ * Abstract superclass for {@link ConversionService} implementations. Sets
+ * this service as the active delegate service in {@link ConversionUtils}.
+ *
  * @author Mark Hiner
  */
 public abstract class AbstractConversionService extends
 	AbstractHandlerService<ConversionRequest, ConversionHandler> implements
 	ConversionService
 {
-// NB empty implementation
+
+	// -- ConversionService methods --
+
+	@Override
+	public Object convert(Object src, Type dest) {
+		return convert(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public <T> T convert(Object src, Class<T> dest) {
+		// NB: repeated code with convert(ConversionRequest), because the
+		// handler's convert method respects the T provided
+		ConversionHandler handler = getHandler(src, dest);
+		return handler == null ? null : handler.convert(src, dest);
+	}
+
+	@Override
+	public Object convert(ConversionRequest request) {
+		ConversionHandler handler = getHandler(request);
+		return handler == null ? null : handler.convert(request);
+	}
+
+	// -- Service methods --
+
+	@Override
+	public void initialize() {
+		ConversionUtils.setDelegateService(this, getPriority());
+	}
 }
