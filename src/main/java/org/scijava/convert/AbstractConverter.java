@@ -80,4 +80,9 @@ public abstract class AbstractConverter extends
 	public boolean supports(final ConversionRequest request) {
 		return canConvert(request);
 	}
+
+	@Override
+	public Class<ConversionRequest> getType() {
+		return ConversionRequest.class;
+	}
 }

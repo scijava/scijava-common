@@ -265,13 +265,6 @@ public class DefaultConverter extends AbstractConverter {
 		}
 	}
 
-	// -- Typed methods --
-
-	@Override
-	public Class<ConversionRequest> getType() {
-		return ConversionRequest.class;
-	}
-
 	// -- Helper methods --
 
 	private Constructor<?> getConstructor(final Class<?> type,
