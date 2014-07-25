@@ -37,7 +37,6 @@ import org.scijava.convert.ConversionRequest;
 import org.scijava.convert.ConvertService;
 import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
-import org.scijava.prefs.DefaultPrefService;
 
 /**
  * Useful methods for converting and casting between classes and types.
@@ -50,9 +49,9 @@ import org.scijava.prefs.DefaultPrefService;
  */
 public class ConversionUtils {
 
-	private static ConvertService conversionService;
+	private static ConvertService convertService;
 
-	private static Converter conversionHandlerNoContext;
+	private static Converter converterNoContext;
 
 	private static double servicePriority = 0.0;
 
@@ -172,18 +171,18 @@ public class ConversionUtils {
 		return result;
 	}
 
-	// -- PrefService setter --
+	// -- ConvertService setter --
 
 	/**
-	 * Sets the {@link ConvertService}
+	 * Sets the {@link ConvertService} to use for handling conversion requests.
 	 */
-	public static void setDelegateService(final ConvertService conversionService,
+	public static void setDelegateService(final ConvertService convertService,
 		final double priority)
 	{
-		if (ConversionUtils.conversionService == null ||
+		if (ConversionUtils.convertService == null ||
 			Double.compare(priority, servicePriority) > 0)
 		{
-			ConversionUtils.conversionService = conversionService;
+			ConversionUtils.convertService = convertService;
 			servicePriority = priority;
 		}
 	}
@@ -265,18 +264,17 @@ public class ConversionUtils {
 //-- Helper methods --
 
 	/**
-	 * Gets the delegate {@link ConvertService} to use for preference operations.
-	 * If this service has not been explicitly set, then a
-	 * {@link DefaultPrefService} will be used.
+	 * Gets the {@link Converter} to use for the given conversion request. If the
+	 * delegate {@link ConvertService} has not been explicitly set, then a
+	 * {@link DefaultConverter} will be used.
 	 *
-	 * @return The current {@link ConvertService} to use for delegation.
+	 * @return The {@link Converter} to use for handling the given request.
 	 */
 	private static Converter handler(final ConversionRequest data) {
-		if (conversionService != null) return conversionService.getHandler(data);
+		if (convertService != null) return convertService.getHandler(data);
 
-		if (conversionHandlerNoContext == null) conversionHandlerNoContext =
-			new DefaultConverter();
+		if (converterNoContext == null) converterNoContext = new DefaultConverter();
 
-		return conversionHandlerNoContext;
+		return converterNoContext;
 	}
 }
