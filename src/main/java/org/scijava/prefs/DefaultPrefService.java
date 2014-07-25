@@ -226,9 +226,8 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Override
 	public void clearAll() {
 		try {
-			final String[] childNames = Preferences.userRoot().childrenNames();
-			for (final String name : childNames)
-				Preferences.userRoot().node(name).removeNode();
+			for (final String name : allPrefs())
+				prefs(name).removeNode();
 		}
 		catch (final BackingStoreException e) {
 			// do nothing
@@ -465,8 +464,12 @@ public class DefaultPrefService extends AbstractPrefService {
 		return Preferences.userNodeForPackage(c == null ? PrefService.class : c);
 	}
 
+	private String[] allPrefs() throws BackingStoreException {
+		return Preferences.userRoot().childrenNames();
+	}
+
 	private Preferences prefs(final String absolutePath) {
-		return Preferences.systemRoot().node(absolutePath);
+		return Preferences.userRoot().node(absolutePath);
 	}
 
 	private String key(final Class<?> c, final String name) {
