@@ -729,11 +729,10 @@ public class ConversionUtilsTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	private static class HisList extends ArrayList<String> {
+	public static class HisList extends ArrayList<String> {
 		public HisList() {
 			super();
 		}
-		@SuppressWarnings("unused")
 		public HisList(final Collection<? extends String> c) {
 			super(c);
 		}
@@ -743,8 +742,7 @@ public class ConversionUtilsTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	private static class HerList extends ArrayList<String> {
-		@SuppressWarnings("unused")
+	public static class HerList extends ArrayList<String> {
 		public HerList(final Collection<? extends String> c) {
 			super(c);
 		}
@@ -754,8 +752,7 @@ public class ConversionUtilsTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	private static class ObjectList extends ArrayList<Object> {
-		@SuppressWarnings("unused")
+	public static class ObjectList extends ArrayList<Object> {
 		public ObjectList(final Collection<? extends Object> c) {
 			super(c);
 		}
@@ -765,13 +762,12 @@ public class ConversionUtilsTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	private static class NumberList extends ArrayList<Number> implements
+	public static class NumberList extends ArrayList<Number> implements
 		INumberList
 	{
 		public NumberList() {
 			super();
 		}
-		@SuppressWarnings("unused")
 		public NumberList(final Collection<? extends Number> c) {
 			super(c);
 		}
@@ -790,7 +786,7 @@ public class ConversionUtilsTest {
 	 * recursively convert arrays doesn't consume the array improperly when it
 	 * should be used in the constructor of an object.
 	 */
-	private static class ArrayWrapper {
+	public static class ArrayWrapper {
 
 		@SuppressWarnings("unused")
 		public ArrayWrapper(final int[] gonnaWrapThisArray) {
@@ -803,7 +799,7 @@ public class ConversionUtilsTest {
 	 * convert collections doesn't consume the list improperly when it should be
 	 * used in the constructor of an object.
 	 */
-	private static class ListWrapper {
+	public static class ListWrapper {
 
 		@SuppressWarnings("unused")
 		public ListWrapper(final List<?> gonnaWrapThisList) {

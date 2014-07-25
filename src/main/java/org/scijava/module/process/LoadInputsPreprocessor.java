@@ -31,6 +31,7 @@
 
 package org.scijava.module.process;
 
+import org.scijava.convert.ConvertService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
@@ -56,6 +57,9 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter
 	private ModuleService moduleService;
+
+	@Parameter
+	private ConvertService conversionService;
 
 	// -- ModuleProcessor methods --
 
@@ -84,9 +88,9 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 	private <T> T getBestValue(final Object prefValue,
 		final Object defaultValue, final Class<T> type)
 	{
-		if (prefValue != null) return ConversionUtils.convert(prefValue, type);
+		if (prefValue != null) return conversionService.convert(prefValue, type);
 		if (defaultValue != null) {
-			return ConversionUtils.convert(defaultValue, type);
+			return conversionService.convert(defaultValue, type);
 		}
 		return ConversionUtils.getNullValue(type);
 	}
