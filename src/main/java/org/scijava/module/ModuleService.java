@@ -42,6 +42,7 @@ import org.scijava.module.process.ModulePostprocessor;
 import org.scijava.module.process.ModulePreprocessor;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
+import org.scijava.prefs.PrefService;
 import org.scijava.service.SciJavaService;
 
 /**
@@ -273,4 +274,15 @@ public interface ModuleService extends SciJavaService {
 	 */
 	<T> ModuleItem<T> getSingleOutput(Module module, Class<T> type);
 
+	/**
+	 * Registers the given value for the given {@link ModuleItem} using the
+	 * {@link PrefService}.
+	 */
+	<T> void save(ModuleItem<T> item, T value);
+
+	/**
+	 * Returns the value, if any, stored in the {@link PrefService} for the given
+	 * {@link ModuleItem}.
+	 */
+	<T> T load(ModuleItem<T> item);
 }

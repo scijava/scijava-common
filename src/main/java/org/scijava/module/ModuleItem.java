@@ -93,13 +93,21 @@ public interface ModuleItem<T> extends BasicDetails {
 	 * Note that this is different than obtaining a module instance's current
 	 * value for the input; see {@link #getValue(Module)} for that.
 	 * </p>
+	 *
+	 * @deprecated
+	 * @see ModuleService#load(ModuleItem)
 	 */
+	@Deprecated
 	T loadValue();
 
 	/**
 	 * Saves the given value to persistent storage. This allows later restoration
 	 * of the value via {@link #loadValue()}, even from a different JVM.
+	 *
+	 * @deprecated
+	 * @see ModuleService#save(ModuleItem, Object)
 	 */
+	@Deprecated
 	void saveValue(T value);
 
 	/** Gets the function that is called to initialize the item's value. */

@@ -42,12 +42,12 @@ import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.prefs.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.text.TextService;
 import org.scijava.ui.event.UIShownEvent;
 import org.scijava.util.DigestUtils;
-import org.scijava.util.Prefs;
 import org.scijava.welcome.event.WelcomeEvent;
 
 /**
@@ -82,6 +82,9 @@ public class DefaultWelcomeService extends AbstractService implements
 	@Parameter
 	private EventService eventService;
 
+	@Parameter
+	private PrefService prefService;
+
 	// -- ReadmeService methods --
 
 	@Override
@@ -96,9 +99,9 @@ public class DefaultWelcomeService extends AbstractService implements
 			if (welcomeFile.exists()) {
 				final String welcomeText = textService.asHTML(welcomeFile);
 				final String checksum = DigestUtils.bestHex(welcomeText);
-				final String previousChecksum = Prefs.get(getClass(), CHECKSUM_PREFS_KEY);
+				final String previousChecksum = prefService.get(getClass(), CHECKSUM_PREFS_KEY);
 				if (!force && checksum.equals(previousChecksum)) return;
-				Prefs.put(getClass(), CHECKSUM_PREFS_KEY, checksum);
+				prefService.put(getClass(), CHECKSUM_PREFS_KEY, checksum);
 				displayService.createDisplay(welcomeText);
 			}
 		}
@@ -109,13 +112,13 @@ public class DefaultWelcomeService extends AbstractService implements
 
 	@Override
 	public boolean isFirstRun() {
-		final String firstRun = Prefs.get(getClass(), firstRunPrefKey());
+		final String firstRun = prefService.get(getClass(), firstRunPrefKey());
 		return firstRun == null || Boolean.parseBoolean(firstRun);
 	}
 
 	@Override
 	public void setFirstRun(final boolean firstRun) {
-		Prefs.put(getClass(), firstRunPrefKey(), firstRun);
+		prefService.put(getClass(), firstRunPrefKey(), firstRun);
 	}
 
 	// -- Event handlers --

@@ -48,10 +48,10 @@ import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.prefs.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.util.FileUtils;
-import org.scijava.util.Prefs;
 
 // TODO - DefaultRecentFileService, DefaultWindowService, and DefaultLUTService
 // all build menus dynamically (see createInfo()). We may be able to abstract a
@@ -98,6 +98,9 @@ public final class DefaultRecentFileService extends AbstractService implements
 	@Parameter
 	private CommandService commandService;
 
+	@Parameter
+	private PrefService prefService;
+
 	private List<String> recentFiles;
 	private Map<String, ModuleInfo> recentModules;
 
@@ -112,7 +115,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 		recentFiles.add(path);
 
 		// persist the updated list
-		Prefs.putList(recentFiles, RECENT_FILES_KEY);
+		prefService.putList(recentFiles, RECENT_FILES_KEY);
 
 		if (present) {
 			// path already present; update linked module info
@@ -136,7 +139,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 		final boolean success = recentFiles.remove(path);
 
 		// persist the updated list
-		Prefs.putList(recentFiles, RECENT_FILES_KEY);
+		prefService.putList(recentFiles, RECENT_FILES_KEY);
 
 		// remove linked module info
 		final ModuleInfo info = recentModules.remove(path);
@@ -148,7 +151,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 	@Override
 	public void clear() {
 		recentFiles.clear();
-		Prefs.clear(RECENT_FILES_KEY);
+		prefService.clear(RECENT_FILES_KEY);
 
 		// unregister the modules with the module service
 		moduleService.removeModules(recentModules.values());
@@ -165,7 +168,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		recentFiles = Prefs.getList(RECENT_FILES_KEY);
+		recentFiles = prefService.getList(RECENT_FILES_KEY);
 		recentModules = new HashMap<String, ModuleInfo>();
 		for (final String path : recentFiles) {
 			recentModules.put(path, createInfo(path));

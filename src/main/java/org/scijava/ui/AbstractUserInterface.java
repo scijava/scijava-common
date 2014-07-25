@@ -42,10 +42,10 @@ import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
+import org.scijava.prefs.PrefService;
 import org.scijava.thread.ThreadService;
 import org.scijava.ui.viewer.DisplayViewer;
 import org.scijava.ui.viewer.DisplayWindow;
-import org.scijava.util.Prefs;
 
 /**
  * Abstract superclass for {@link UserInterface} implementations.
@@ -79,6 +79,9 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 
 	@Parameter
 	private UIService uiService;
+
+	@Parameter
+	private PrefService prefService;
 
 	/** Whether the UI is currently being displayed. */
 	private boolean visible = false;
@@ -181,8 +184,8 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	public void saveLocation() {
 		final ApplicationFrame appFrame = getApplicationFrame();
 		if (appFrame != null) {
-			Prefs.put(getClass(), LAST_X, appFrame.getLocationX());
-			Prefs.put(getClass(), LAST_Y, appFrame.getLocationY());
+			prefService.put(getClass(), LAST_X, appFrame.getLocationX());
+			prefService.put(getClass(), LAST_Y, appFrame.getLocationY());
 		}
 	}
 
@@ -190,8 +193,8 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	public void restoreLocation() {
 		final ApplicationFrame appFrame = getApplicationFrame();
 		if (appFrame != null) {
-			final int lastX = Prefs.getInt(getClass(), LAST_X, 0);
-			final int lastY = Prefs.getInt(getClass(), LAST_Y, 0);
+			final int lastX = prefService.getInt(getClass(), LAST_X, 0);
+			final int lastY = prefService.getInt(getClass(), LAST_Y, 0);
 			appFrame.setLocation(lastX, lastY);
 		}
 	}

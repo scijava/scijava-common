@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,49 +29,25 @@
  * #L%
  */
 
-package org.scijava.module.process;
+package org.scijava.prefs;
 
-import org.scijava.Priority;
-import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
-import org.scijava.module.ModuleService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+import org.scijava.service.AbstractService;
+import org.scijava.util.Prefs;
 
 /**
- * A preprocessor for saving populated input values to persistent storage.
- * <p>
- * This preprocessor runs late in the chain, giving other preprocessors every
- * chance to populate the inputs first. In particular, it executes after the
- * {@link org.scijava.widget.InputHarvester} has run, so that user-specified values
- * are persisted for next time.
- * </p>
- * 
- * @author Curtis Rueden
+ * Abstract {@link PrefService} implementation. Calls
+ * {@link Prefs#setDelegateService(PrefService, double)} on this {@code Service}
+ * during initialization.
+ *
+ * @author Mark Hiner
  */
-@Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_LOW_PRIORITY - 1)
-public class SaveInputsPreprocessor extends AbstractPreprocessorPlugin {
-
-	@Parameter
-	private ModuleService moduleService;
-
-	// -- ModuleProcessor methods --
+@SuppressWarnings({ "javadoc", "deprecation" })
+public abstract class AbstractPrefService extends AbstractService implements
+	PrefService
+{
 
 	@Override
-	public void process(final Module module) {
-		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
-		for (final ModuleItem<?> item : inputs) {
-			saveValue(module, item);
-		}
+	public void initialize() {
+		Prefs.setDelegateService(this, getPriority());
 	}
-
-	// -- Helper methods --
-
-	/** Saves the value of the given module item to persistent storage. */
-	private <T> void saveValue(final Module module, final ModuleItem<T> item) {
-		final T value = item.getValue(module);
-		moduleService.save(item, value);
-	}
-
 }
