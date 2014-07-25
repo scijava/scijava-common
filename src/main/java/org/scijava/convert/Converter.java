@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.util.conversion;
+package org.scijava.convert;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -46,7 +46,7 @@ import org.scijava.plugin.Plugin;
  * @see ConversionRequest
  * @author Mark Hiner
  */
-public interface ConversionHandler extends HandlerPlugin<ConversionRequest> {
+public interface Converter extends HandlerPlugin<ConversionRequest> {
 
 	/**
 	 * Checks whether a given {@ConversionRequest} can be

@@ -33,15 +33,15 @@ package org.scijava.util;
 
 import java.lang.reflect.Type;
 
-import org.scijava.util.conversion.ConversionHandler;
-import org.scijava.util.conversion.ConversionRequest;
-import org.scijava.util.conversion.ConversionService;
-import org.scijava.util.conversion.DefaultConversionHandler;
+import org.scijava.convert.ConversionRequest;
+import org.scijava.convert.Converter;
+import org.scijava.convert.ConvertService;
+import org.scijava.convert.DefaultConverter;
 
 /**
  * Useful methods for converting and casting between classes and types.
  * <p>
- * For extensible type conversion, use {@link ConversionService}.
+ * For extensible type conversion, use {@link ConvertService}.
  * </p>
  * 
  * @author Curtis Rueden
@@ -49,9 +49,9 @@ import org.scijava.util.conversion.DefaultConversionHandler;
  */
 public class ConversionUtils {
 
-	private static ConversionService conversionService;
+	private static ConvertService conversionService;
 
-	private static ConversionHandler conversionHandlerNoContext;
+	private static Converter conversionHandlerNoContext;
 
 	private static double servicePriority = 0.0;
 
@@ -174,10 +174,10 @@ public class ConversionUtils {
 	// -- PrefService setter --
 
 	/**
-	 * Sets the {@link ConversionService}
+	 * Sets the {@link ConvertService}
 	 */
 	public static void setDelegateService(
-		final ConversionService conversionService, final double priority)
+		final ConvertService conversionService, final double priority)
 	{
 		if (ConversionUtils.conversionService == null ||
 			Double.compare(priority, servicePriority) > 0)
@@ -191,61 +191,61 @@ public class ConversionUtils {
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#convert(Object, Type)
+	 * @see Converter#convert(Object, Type)
 	 */
 	@Deprecated
 	public static Object convert(final Object src, final Type dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? null : handler.convert(src, dest));
 	}
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#convert(Object, Class)
+	 * @see Converter#convert(Object, Class)
 	 */
 	@Deprecated
 	public static <T> T convert(final Object src, final Class<T> dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? null : handler.convert(src, dest));
 	}
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#canConvert(Class, Type)
+	 * @see Converter#canConvert(Class, Type)
 	 */
 	@Deprecated
 	public static boolean canConvert(final Class<?> src, final Type dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#canConvert(Class, Class)
+	 * @see Converter#canConvert(Class, Class)
 	 */
 	@Deprecated
 	public static boolean canConvert(final Class<?> src, final Class<?> dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#canConvert(Object, Type)
+	 * @see Converter#canConvert(Object, Type)
 	 */
 	@Deprecated
 	public static boolean canConvert(final Object src, final Type dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
 	/**
 	 * @deprecated
-	 * @see ConversionHandler#canConvert(Object, Class)
+	 * @see Converter#canConvert(Object, Class)
 	 */
 	@Deprecated
 	public static boolean canConvert(final Object src, final Class<?> dest) {
-		final ConversionHandler handler = handler(new ConversionRequest(src, dest));
+		final Converter handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
@@ -264,17 +264,17 @@ public class ConversionUtils {
 //-- Helper methods --
 
 	/**
-	 * Gets the delegate {@link ConversionService} to use for preference
+	 * Gets the delegate {@link ConvertService} to use for preference
 	 * operations. If this service has not been explicitly set, then a
 	 * {@link DefaultPrefService} will be used.
 	 *
-	 * @return The current {@link ConversionService} to use for delegation.
+	 * @return The current {@link ConvertService} to use for delegation.
 	 */
-	private static ConversionHandler handler(final ConversionRequest data) {
+	private static Converter handler(final ConversionRequest data) {
 		if (conversionService != null) return conversionService.getHandler(data);
 
 		if (conversionHandlerNoContext == null) conversionHandlerNoContext =
-			new DefaultConversionHandler();
+			new DefaultConverter();
 
 		return conversionHandlerNoContext;
 	}

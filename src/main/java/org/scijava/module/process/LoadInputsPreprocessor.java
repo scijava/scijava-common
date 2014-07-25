@@ -31,13 +31,13 @@
 
 package org.scijava.module.process;
 
+import org.scijava.convert.ConvertService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.conversion.ConversionService;
 import org.scijava.widget.InputHarvester;
 
 /**
@@ -59,7 +59,7 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 	private ModuleService moduleService;
 
 	@Parameter
-	private ConversionService conversionService;
+	private ConvertService conversionService;
 
 	// -- ModuleProcessor methods --
 

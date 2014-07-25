@@ -29,55 +29,49 @@
  * #L%
  */
 
-package org.scijava.util.conversion;
+package org.scijava.convert;
 
-import org.scijava.plugin.AbstractHandlerPlugin;
+import java.lang.reflect.Type;
+
+import org.scijava.plugin.AbstractHandlerService;
+import org.scijava.util.ConversionUtils;
 
 /**
- * Abstract superclass for {@link ConversionHandler} plugins. Performs
- * appropriate dispatching of {@link #canConvert(ConversionRequest)} and
- * {@link #convert(ConversionRequest)} calls based on the actual state of the
- * given {@link ConversionRequest}.
- * <p>
- * Note that the {@link #supports(ConversionRequest)} method is overridden as
- * well, to delegate to the appropriate {@link #canConvert}.
- * </p>
+ * Abstract superclass for {@link ConvertService} implementations. Sets
+ * this service as the active delegate service in {@link ConversionUtils}.
  *
  * @author Mark Hiner
  */
-public abstract class AbstractConversionHandler extends
-	AbstractHandlerPlugin<ConversionRequest> implements ConversionHandler
+public abstract class AbstractConvertService extends
+	AbstractHandlerService<ConversionRequest, Converter> implements
+	ConvertService
 {
 
-	// -- ConversionHandler methods --
+	// -- ConversionService methods --
 
 	@Override
-	public boolean canConvert(final ConversionRequest request) {
-		final Class<?> src = request.sourceClass();
-		if (src == null) return true;
-
-		if (request.destClass() != null) return canConvert(src, request.destClass());
-		if (request.destType() != null) return canConvert(src, request.destType());
-
-		return false;
+	public Object convert(Object src, Type dest) {
+		return convert(new ConversionRequest(src, dest));
 	}
 
 	@Override
-	public Object convert(final ConversionRequest request) {
-		if (request.sourceObject() != null) {
-			if (request.destClass() != null) return convert(request.sourceObject(),
-				request.destClass());
-
-			if (request.destType() != null) return convert(request.sourceObject(),
-				request.destType());
-		}
-		return null;
+	public <T> T convert(Object src, Class<T> dest) {
+		// NB: repeated code with convert(ConversionRequest), because the
+		// handler's convert method respects the T provided
+		Converter handler = getHandler(src, dest);
+		return handler == null ? null : handler.convert(src, dest);
 	}
 
-	// -- Typed methods --
+	@Override
+	public Object convert(ConversionRequest request) {
+		Converter handler = getHandler(request);
+		return handler == null ? null : handler.convert(request);
+	}
+
+	// -- Service methods --
 
 	@Override
-	public boolean supports(final ConversionRequest request) {
-		return canConvert(request);
+	public void initialize() {
+		ConversionUtils.setDelegateService(this, getPriority());
 	}
 }

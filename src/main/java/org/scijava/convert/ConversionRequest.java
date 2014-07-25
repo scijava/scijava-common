@@ -29,12 +29,12 @@
  * #L%
  */
 
-package org.scijava.util.conversion;
+package org.scijava.convert;
 
 import java.lang.reflect.Type;
 
 /**
- * Currency for use in {@link ConversionHandler} and {@link ConversionService}
+ * Currency for use in {@link Converter} and {@link ConvertService}
  * methods.
  * <p>
  * {@link #ConversionRequest} provides a variety of constructors. Note that only
@@ -42,15 +42,15 @@ import java.lang.reflect.Type;
  * {@link Class}).
  * </p>
  * <p>
- * Only the {@link Class} source needs to be set for {@link ConversionHandler}
+ * Only the {@link Class} source needs to be set for {@link Converter}
  * lookup, such as through
- * {@link ConversionService#getHandler(ConversionRequest)}. However, to perform
+ * {@link ConvertService#getHandler(ConversionRequest)}. However, to perform
  * an actual conversion, e.g. using
- * {@link ConversionHandler#convert(ConversionRequest)}, you must provide an
+ * {@link Converter#convert(ConversionRequest)}, you must provide an
  * {@link Object} source.
  * </p>
  * <p>
- * NB: once a {@link ConversionHandler} has been acquired, the
+ * NB: once a {@link Converter} has been acquired, the
  * {@code ConversionRequest} used for lookup can be reused to cast to the same
  * destination type, simply by updating the source object using the
  * {@link #setSourceObject(Object)} method.

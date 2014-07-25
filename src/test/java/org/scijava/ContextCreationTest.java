@@ -95,7 +95,7 @@ public class ContextCreationTest {
 				org.scijava.ui.DefaultUIService.class,
 				org.scijava.ui.dnd.DefaultDragAndDropService.class,
 				org.scijava.usage.DefaultUsageService.class,
-				org.scijava.util.conversion.DefaultConversionService.class,
+				org.scijava.convert.DefaultConvertService.class,
 				org.scijava.welcome.DefaultWelcomeService.class,
 				org.scijava.widget.DefaultWidgetService.class,
 				org.scijava.log.StderrLogService.class,

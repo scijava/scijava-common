@@ -44,13 +44,13 @@ import javax.script.ScriptException;
 import org.scijava.Context;
 import org.scijava.Contextual;
 import org.scijava.NullContextException;
+import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.module.AbstractModule;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.FileUtils;
-import org.scijava.util.conversion.ConversionService;
 
 /**
  * A {@link Module} which executes a script.
@@ -71,7 +71,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 	private ScriptService scriptService;
 
 	@Parameter
-	private ConversionService conversionService;
+	private ConvertService conversionService;
 
 	@Parameter
 	private LogService log;

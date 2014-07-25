@@ -49,6 +49,7 @@ import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 import org.scijava.NullContextException;
 import org.scijava.command.Command;
+import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
@@ -56,7 +57,6 @@ import org.scijava.module.ModuleException;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
-import org.scijava.util.conversion.ConversionService;
 
 /**
  * Metadata about a script.
@@ -85,7 +85,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private ScriptService scriptService;
 
 	@Parameter
-	private ConversionService conversionService;
+	private ConvertService conversionService;
 
 	/**
 	 * Creates a script metadata object which describes the given script file.

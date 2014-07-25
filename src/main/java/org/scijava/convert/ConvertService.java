@@ -29,71 +29,76 @@
  * #L%
  */
 
-package org.scijava.util.conversion;
+package org.scijava.convert;
 
 import java.lang.reflect.Type;
 
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import org.scijava.plugin.HandlerService;
 
 /**
- * Default {@link ConversionService} implementation.
+ * Service for converting between types using an extensible plugin:
+ * {@link Converter}. Contains convenience signatures for the
+ * {@link #getHandler} and {@link #supports} methods to avoid the need to create
+ * {@link ConversionRequest} objects.
  *
+ * @see ConversionRequest
  * @author Mark Hiner
  */
-@Plugin(type = Service.class)
-public class DefaultConversionService extends AbstractConversionService
+public interface ConvertService extends
+	HandlerService<ConversionRequest, Converter>
 {
+	/**
+	 * @see Converter#convert(Object, Type)
+	 */
+	Object convert(Object src, Type dest);
 
-	@Override
-	public Class<ConversionHandler> getPluginType() {
-		return ConversionHandler.class;
-	}
+	/**
+	 * @see Converter#convert(Object, Class)
+	 */
+	<T> T convert(Object src, Class<T> dest);
 
-	@Override
-	public Class<ConversionRequest> getType() {
-		return ConversionRequest.class;
-	}
+	/**
+	 * @see Converter#convert(ConversionRequest)
+	 */
+	Object convert(ConversionRequest request);
 
-	// -- ConversionService methods --
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
+	Converter getHandler(Object src, Class<?> dest);
 
-	@Override
-	public ConversionHandler getHandler(final Object src, final Class<?> dest) {
-		return getHandler(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
+	Converter getHandler(Class<?> src, Class<?> dest);
 
-	@Override
-	public ConversionHandler getHandler(final Class<?> src, final Class<?> dest) {
-		return getHandler(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
+	Converter getHandler(Object src, Type dest);
 
-	@Override
-	public ConversionHandler getHandler(final Object src, final Type dest) {
-		return getHandler(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 */
+	Converter getHandler(Class<?> src, Type dest);
 
-	@Override
-	public ConversionHandler getHandler(final Class<?> src, final Type dest) {
-		return getHandler(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
+	boolean supports(Object src, Class<?> dest);
 
-	@Override
-	public boolean supports(final Object src, final Class<?> dest) {
-		return supports(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
+	boolean supports(Class<?> src, Class<?> dest);
 
-	@Override
-	public boolean supports(final Class<?> src, final Class<?> dest) {
-		return supports(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
+	boolean supports(Object src, Type dest);
 
-	@Override
-	public boolean supports(final Object src, final Type dest) {
-		return supports(new ConversionRequest(src, dest));
-	}
-
-	@Override
-	public boolean supports(final Class<?> src, final Type dest) {
-		return supports(new ConversionRequest(src, dest));
-	}
+	/**
+	 * @see #supports(ConversionRequest)
+	 */
+	boolean supports(Class<?> src, Type dest);
 }

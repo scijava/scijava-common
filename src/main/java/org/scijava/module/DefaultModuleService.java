@@ -41,6 +41,7 @@ import java.util.concurrent.Future;
 
 import org.scijava.MenuPath;
 import org.scijava.Priority;
+import org.scijava.convert.ConvertService;
 import org.scijava.event.EventService;
 import org.scijava.input.Accelerator;
 import org.scijava.log.LogService;
@@ -59,7 +60,6 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
-import org.scijava.util.conversion.ConversionService;
 
 /**
  * Default service for keeping track of and executing available modules.
@@ -92,7 +92,7 @@ public class DefaultModuleService extends AbstractService implements
 	private PrefService prefService;
 
 	@Parameter
-	private ConversionService conversionService;
+	private ConvertService conversionService;
 
 	/** Index of registered modules. */
 	private ModuleIndex moduleIndex;

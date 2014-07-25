@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.util.conversion;
+package org.scijava.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -49,13 +49,13 @@ import org.scijava.util.ConversionUtils;
 import org.scijava.util.GenericUtils;
 
 /**
- * Default {@link ConversionHandler} implementation. Provides useful conversion
+ * Default {@link Converter} implementation. Provides useful conversion
  * functionality for many common conversion cases.
  *
  * @author Mark Hiner
  */
-@Plugin(type = ConversionHandler.class)
-public class DefaultConversionHandler extends AbstractConversionHandler {
+@Plugin(type = Converter.class)
+public class DefaultConverter extends AbstractConverter {
 
 	// -- ConversionHandler methods --
 
