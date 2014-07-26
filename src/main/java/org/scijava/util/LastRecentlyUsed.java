@@ -31,6 +31,8 @@
 
 package org.scijava.util;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +44,7 @@ import java.util.Set;
  * 
  * @author Johannes Schindelin
  */
-public class LastRecentlyUsed<T> implements Iterable<T> {
+public class LastRecentlyUsed<T> implements Iterable<T>, Collection<T> {
 	private final Object[] entries;
 	private final Map<T, Integer> map;
 	/**
@@ -159,6 +161,96 @@ public class LastRecentlyUsed<T> implements Iterable<T> {
 			entries[i] = null;
 			next[i] = previous[i] = 0;
 		}
+	}
+
+	@Override
+	public boolean addAll(final Collection<? extends T> values) {
+		for (final T value : values) {
+			add(value);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean contains(final Object value) {
+		return map.containsKey(value);
+	}
+
+	@Override
+	public boolean containsAll(final Collection<?> values) {
+		return map.keySet().containsAll(values);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return top == 0;
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		final Integer index = map.get(value);
+		if (index == null) return false;
+		remove(index.intValue());
+		return true;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> values) {
+		boolean result = true;
+		for (final Object value : values) {
+			result = remove(value) && result;
+		}
+		return result;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> values) {
+		for (int index = top - 1; index >= 0; ) {
+			final int prev = previous[index] - 1;
+			if (!values.contains(get(index))) {
+				remove(index);
+			}
+			index = prev;
+		}
+		return containsAll(values);
+	}
+
+	@Override
+	public int size() {
+		return map.size();
+	}
+
+	@Override
+	public Object[] toArray() {
+		final Object[] result = new Object[size()];
+		for (int i = 0, index = top - 1; index >= 0; i++, index =
+			previous[index] - 1)
+		{
+			result[i] = get(index);
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <S> S[] toArray(final S[] array) {
+		final int size = size();
+		if (array.length >= size) {
+			for (int i = 0, index = top - 1; index >= 0; i++, index =
+					previous[index] - 1)
+				{
+					array[i] = (S) get(index);
+				}
+			return array;
+		}
+		final S[] result =
+			(S[]) Array.newInstance(array.getClass().getComponentType(), size);
+		for (int i = 0, index = top - 1; index >= 0; i++, index =
+				previous[index] - 1)
+			{
+				result[i] = (S) get(index);
+			}
+			return result;
 	}
 
 	/**
