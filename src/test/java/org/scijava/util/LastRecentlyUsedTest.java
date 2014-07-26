@@ -32,6 +32,9 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.util.Iterator;
 
 import org.junit.Test;
 
@@ -65,5 +68,37 @@ public class LastRecentlyUsedTest {
 		}
 		position = lru.previous(position);
 		assertEquals(-1, position);
+	}
+
+	@Test
+	public void testRemove() {
+		final LastRecentlyUsed<String> lru = new LastRecentlyUsed<String>(3);
+		lru.add("a");
+		lru.add("b");
+		lru.add("c");
+
+		lru.remove("b");
+
+		Iterator<String> iter = lru.iterator();
+		assertEquals("c", iter.next());
+		assertEquals("a", iter.next());
+		assertFalse(iter.hasNext());
+
+		lru.remove("a");
+
+		iter = lru.iterator();
+		assertEquals("c", iter.next());
+		assertFalse(iter.hasNext());
+
+		lru.remove("a");
+
+		iter = lru.iterator();
+		assertEquals("c", iter.next());
+		assertFalse(iter.hasNext());
+
+		lru.remove("c");
+
+		iter = lru.iterator();
+		assertFalse(iter.hasNext());
 	}
 }
