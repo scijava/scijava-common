@@ -58,6 +58,7 @@ import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 import org.scijava.tool.IconService;
 import org.scijava.tool.ToolService;
+import org.scijava.usage.UsageService;
 import org.scijava.widget.WidgetService;
 
 /**
@@ -188,6 +189,8 @@ public interface Gateway extends RichPlugin, Versioned {
 	ThreadService thread();
 
 	ToolService tool();
+
+	UsageService usage();
 
 	WidgetService widget();
 
