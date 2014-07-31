@@ -431,7 +431,7 @@ public final class ClassUtils {
 		try {
 			field.setAccessible(true);
 			final Object compatibleValue;
-			if (field.getType().isInstance(value)) {
+			if (value == null || field.getType().isInstance(value)) {
 				// the given value is compatible with the field
 				compatibleValue = value;
 			}
