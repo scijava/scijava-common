@@ -33,7 +33,9 @@ package org.scijava.plugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.log.LogService;
 import org.scijava.object.LazyObjects;
@@ -61,6 +63,8 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	/** List of singleton plugin instances. */
 	private List<PT> instances;
 
+	private Map<Class<? extends PT>, PT> instanceMap;
+
 	// -- SingletonService methods --
 
 	@Override
@@ -69,10 +73,11 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		return instances;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <P extends PT> P getInstance(final Class<P> pluginClass) {
-		final List<P> objects = objectService.getObjects(pluginClass);
-		return objects == null || objects.isEmpty() ? null : objects.get(0);
+		if (instanceMap == null) initInstances();
+		return (P) instanceMap.get(pluginClass);
 	}
 
 	// -- Service methods --
@@ -97,6 +102,14 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		instances =
 			Collections.unmodifiableList(filterInstances(getPluginService()
 				.createInstancesOfType(getPluginType())));
+
+		instanceMap = new HashMap<Class<? extends PT>, PT>();
+
+		for (PT plugin : instances) {
+			@SuppressWarnings("unchecked")
+			Class<? extends PT> ptClass = (Class<? extends PT>) plugin.getClass();
+			instanceMap.put(ptClass, plugin);
+		}
 
 		log.info("Found " + instances.size() + " " +
 			getPluginType().getSimpleName() + " plugins.");
