@@ -130,18 +130,6 @@ public interface Gateway extends RichPlugin, Versioned {
 	 */
 	<S extends Service> S get(Class<S> serviceClass);
 
-	/**
-	 * Returns an implementation of the {@link Service} with the given class name,
-	 * if it exists in the underlying {@link Context}.
-	 * 
-	 * @param serviceClassName name of the requested {@link Service}
-	 * @return The singleton instance of the requested {@link Service}
-	 * @throws NullContextException if the application context is not set.
-	 * @throws NoSuchServiceException if there is no service matching
-	 *           {@code serviceClassName}.
-	 */
-	Service get(final String serviceClassName);
-
 	// -- Gateway methods - services --
 
 	AppEventService appEvent();
