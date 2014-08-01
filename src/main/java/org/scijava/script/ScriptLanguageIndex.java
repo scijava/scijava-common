@@ -32,8 +32,8 @@
 package org.scijava.script;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +48,7 @@ import org.scijava.util.FileUtils;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-public class ScriptLanguageIndex extends HashSet<ScriptLanguage> {
+public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 
 	private static final long serialVersionUID = 1L;
 
