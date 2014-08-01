@@ -100,7 +100,8 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 
 	@Override
 	public String getLanguageName() {
-		return base.getLanguageName();
+		final String name = getInfo().getName();
+		return name != null ? name : base.getLanguageName();
 	}
 
 	@Override
