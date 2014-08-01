@@ -59,6 +59,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 		@SuppressWarnings("unchecked")
 		final WrapperPlugin<D> typedInstance = (WrapperPlugin<D>) instance;
 		typedInstance.set(data);
+		recordUsage(typedInstance);
 		return typedInstance;
 	}
 

@@ -47,7 +47,10 @@ public abstract class AbstractHandlerService<DT, PT extends HandlerPlugin<DT>>
 	@Override
 	public PT getHandler(final DT data) {
 		for (final PT handler : getInstances()) {
-			if (handler.supports(data)) return handler;
+			if (handler.supports(data)) {
+				recordUsage(handler);
+				return handler;
+			}
 		}
 		return null;
 	}
