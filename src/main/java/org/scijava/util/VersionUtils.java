@@ -1,0 +1,101 @@
+/*
+ * #%L
+ * SciJava Common shared library for SciJava software.
+ * %%
+ * Copyright (C) 2009 - 2014 Board of Regents of the University of
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+package org.scijava.util;
+
+/**
+ * Useful methods for retrieving versions from JARs and POMs associated with
+ * {@link Class} objects.
+ *
+ * @author Curtis Rueden
+ * @author Mark Hiner
+ */
+public class VersionUtils {
+
+	/**
+	 * Looks up the version of the specified class using any means available. Will
+	 * only search POMs in the base directory.
+	 *
+	 * @param c - Look up this Class's version
+	 * @return Version of specified {@link Class} or null if not found.
+	 */
+	public static String getVersion(Class<?> c) {
+		return getVersion(c, null, null);
+	}
+
+	/**
+	 * Looks up the version of the specified class using any means available.
+	 * {@code groupId} and {@code artifactId} allow specification of the POM
+	 * lookup path.
+	 *
+	 * @param c - Look up this Class's version
+	 * @param groupId - GroupID containing class
+	 * @param artifactId - ArtifactID containing class
+	 * @return Version of specified {@link Class} or null if not found.
+	 */
+	public static String
+		getVersion(Class<?> c, String groupId, String artifactId)
+	{
+		final String pomVersion = getVersionFromPOM(c, groupId, artifactId);
+		return pomVersion != null ? pomVersion : getVersionFromManifest(c);
+	}
+
+	/**
+	 * Looks up the version of the specified class using a JAR manifest if
+	 * available.
+	 *
+	 * @param c - Look up this Class's version
+	 * @return Version of specified {@link Class} or null if not found.
+	 */
+	public static String getVersionFromManifest(Class<?> c) {
+		final Manifest m = Manifest.getManifest(c);
+		if (m == null) return null;
+		final String manifestVersion = m.getImplementationVersion();
+		return manifestVersion == null ? null : m.getSpecificationVersion();
+	}
+
+	/**
+	 * Looks up the version of the specified class using the specified POM, or
+	 * base POM directory if {@code groupId} and {@code artifactId} are
+	 * {@code null}.
+	 *
+	 * @param c - Look up this Class's version
+	 * @param groupId - GroupID containing class
+	 * @param artifactId - ArtifactID containing class
+	 * @return Version of specified {@link Class} or null if not found.
+	 */
+	public static String getVersionFromPOM(Class<?> c, String groupId,
+		String artifactId)
+	{
+		final POM pom = POM.getPOM(c, groupId, artifactId);
+		return pom == null ? null : pom.getVersion();
+	}
+}
