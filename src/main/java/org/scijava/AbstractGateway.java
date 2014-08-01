@@ -241,13 +241,15 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	}
 
 	@Override
-	public String getVersion() {
-		return getApp().getVersion();
-	}
-
-	@Override
 	public String getInfo(final boolean mem) {
 		return getApp().getInfo(mem);
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		return getApp().getVersion();
 	}
 
 }

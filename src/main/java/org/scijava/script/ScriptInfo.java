@@ -292,6 +292,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		return new File(path).toURI().normalize().toString();
 	}
 
+	// -- Versioned methods --
+
 	@Override
 	public String getVersion() {
 		final File file = new File(path);

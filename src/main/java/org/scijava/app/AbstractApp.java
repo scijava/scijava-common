@@ -51,14 +51,11 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	/** JAR manifest with metadata about the application. */
 	private Manifest manifest;
 
+	// -- App methods --
+
 	@Override
 	public String getTitle() {
 		return getInfo().getName();
-	}
-
-	@Override
-	public String getVersion() {
-		return getPOM() == null ? "Unknown" : getPOM().getVersion();
 	}
 
 	@Override
@@ -106,6 +103,13 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	@Override
 	public File getBaseDirectory() {
 		return AppUtils.getBaseDirectory(getSystemProperty(), getClass(), null);
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		return getPOM() == null ? "Unknown" : getPOM().getVersion();
 	}
 
 }
