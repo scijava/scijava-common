@@ -31,6 +31,7 @@
 
 package org.scijava.plugin;
 
+import org.scijava.BasicDetails;
 import org.scijava.Contextual;
 import org.scijava.Identifiable;
 import org.scijava.Locatable;
@@ -46,7 +47,7 @@ import org.scijava.Versioned;
  * @author Curtis Rueden
  */
 public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
-	HasPluginInfo, Identifiable, Locatable, Versioned
+	HasPluginInfo, Identifiable, Locatable, Versioned, BasicDetails
 {
 
 	// -- Identifiable methods --
@@ -54,6 +55,55 @@ public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
 	@Override
 	default String getIdentifier() {
 		return "plugin:" + getClass().getName();
+	}
+
+	// -- BasicDetails methods --
+
+	@Override
+	default String getLabel() {
+		return getInfo().getLabel();
+	}
+
+	@Override
+	default String getDescription() {
+		return getInfo().getDescription();
+	}
+
+	@Override
+	default boolean is(final String key) {
+		return getInfo().is(key);
+	}
+
+	@Override
+	default String get(final String key) {
+		return getInfo().get(key);
+	}
+
+	@Override
+	default void setLabel(final String label) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default void setDescription(final String description) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default void set(final String key, final String value) {
+		throw new UnsupportedOperationException();
+	}
+
+	// -- Named methods --
+
+	@Override
+	default String getName() {
+		return getInfo().getName();
+	}
+
+	@Override
+	default void setName(final String name) {
+		throw new UnsupportedOperationException();
 	}
 
 }
