@@ -34,6 +34,7 @@ package org.scijava.plugin;
 import java.util.List;
 
 import org.scijava.service.AbstractService;
+import org.scijava.usage.UsageService;
 
 /**
  * Abstract base class for {@link PTService}s.
@@ -48,6 +49,9 @@ public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
 	@Parameter
 	private PluginService pluginService;
 
+	@Parameter(required = false)
+	private UsageService usageService;
+
 	// -- PTService methods --
 
 	@Override
@@ -58,6 +62,14 @@ public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
 	@Override
 	public List<PluginInfo<PT>> getPlugins() {
 		return pluginService.getPluginsOfType(getPluginType());
+	}
+
+	// -- Internal methods --
+
+	/** Records the usage of a plugin. */
+	protected void recordUsage(final Object plugin) {
+		if (usageService == null) return;
+		usageService.increment(plugin);
 	}
 
 }
