@@ -116,11 +116,6 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 		return context().service(serviceClass);
 	}
 
-	@Override
-	public Service get(final String serviceClassName) {
-		return context().service(serviceClassName);
-	}
-
 	// -- Gateway methods - services --
 
 	@Override
