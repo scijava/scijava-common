@@ -37,6 +37,7 @@ import org.scijava.app.SciJavaApp;
 import org.scijava.app.StatusService;
 import org.scijava.command.CommandService;
 import org.scijava.console.ConsoleService;
+import org.scijava.convert.ConvertService;
 import org.scijava.display.DisplayService;
 import org.scijava.event.EventHistory;
 import org.scijava.event.EventService;
@@ -116,6 +117,10 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public ConsoleService console() {
 		return get(ConsoleService.class);
+	}
+
+	public ConvertService convert() {
+		return get(ConvertService.class);
 	}
 
 	@Override
