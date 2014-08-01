@@ -31,10 +31,13 @@
 
 package org.scijava.plugin;
 
+import java.net.URL;
+
 import org.scijava.AbstractContextual;
 import org.scijava.Prioritized;
 import org.scijava.Priority;
 import org.scijava.util.ClassUtils;
+import org.scijava.util.Manifest;
 
 /**
  * Abstract base class for {@link RichPlugin} implementations.
@@ -81,6 +84,76 @@ public abstract class AbstractRichPlugin extends AbstractContextual implements
 	@Override
 	public void setInfo(final PluginInfo<?> info) {
 		this.info = info;
+	}
+
+	// -- Identifiable methods --
+
+	@Override
+	public String getIdentifier() {
+		return "plugin:" + getClass().getName();
+	}
+
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		final URL location = ClassUtils.getLocation(getClass());
+		return location == null ? null : location.toExternalForm();
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		final Manifest m = Manifest.getManifest(getClass());
+		return m == null ? null : m.getImplementationVersion();
+	}
+
+	// -- BasicDetails methods --
+
+	@Override
+	public String getName() {
+		return getInfo().getName();
+	}
+
+	@Override
+	public String getLabel() {
+		return getInfo().getLabel();
+	}
+
+	@Override
+	public String getDescription() {
+		return getInfo().getDescription();
+	}
+
+	@Override
+	public boolean is(String key) {
+		return getInfo().is(key);
+	}
+
+	@Override
+	public String get(String key) {
+		return getInfo().get(key);
+	}
+
+	@Override
+	public void setName(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setLabel(String label) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setDescription(String description) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void set(String key, String value) {
+		throw new UnsupportedOperationException();
 	}
 
 	// -- Comparable methods --

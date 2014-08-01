@@ -31,8 +31,12 @@
 
 package org.scijava.plugin;
 
+import org.scijava.BasicDetails;
 import org.scijava.Contextual;
+import org.scijava.Identifiable;
+import org.scijava.Locatable;
 import org.scijava.Prioritized;
+import org.scijava.Versioned;
 
 /**
  * Base interface for {@link Contextual}, {@link Prioritized} plugins that
@@ -42,8 +46,8 @@ import org.scijava.Prioritized;
  * 
  * @author Curtis Rueden
  */
-public interface RichPlugin extends Contextual, Prioritized, HasPluginInfo,
-	SciJavaPlugin
+public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
+	HasPluginInfo, Identifiable, Locatable, Versioned, BasicDetails
 {
 	// NB: Marker interface.
 }
