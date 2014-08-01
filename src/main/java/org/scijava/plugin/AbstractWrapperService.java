@@ -44,7 +44,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 	extends AbstractTypedService<DT, PT> implements WrapperService<DT, PT>
 {
 
-	@Parameter
+	@Parameter(required = false)
 	private LogService log;
 
 	// -- WrapperService methods --
@@ -66,8 +66,10 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 
 	@Override
 	public void initialize() {
-		log.info("Found " + getPlugins().size() + " " +
-			getPluginType().getSimpleName() + " plugins.");
+		if (log != null) {
+			log.info("Found " + getPlugins().size() + " " +
+				getPluginType().getSimpleName() + " plugins.");
+		}
 	}
 
 	// -- Typed methods --
