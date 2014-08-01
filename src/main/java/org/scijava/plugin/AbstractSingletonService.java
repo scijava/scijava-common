@@ -94,6 +94,18 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		});
 	}
 
+	// -- Internal methods --
+
+	/**
+	 * Allows subclasses to exclude instances.
+	 * 
+	 * @param list the initial list of instances
+	 * @return the filtered list of instances
+	 */
+	protected List<? extends PT> filterInstances(List<PT> list) {
+		return list;
+	}
+
 	// -- Helper methods --
 
 	private synchronized void initInstances() {
@@ -113,16 +125,6 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 		log.info("Found " + instances.size() + " " +
 			getPluginType().getSimpleName() + " plugins.");
-	}
-
-	/**
-	 * Allows subclasses to exclude instances.
-	 * 
-	 * @param list the initial list of instances
-	 * @return the filtered list of instances
-	 */
-	protected List<? extends PT> filterInstances(List<PT> list) {
-		return list;
 	}
 
 }
