@@ -53,6 +53,7 @@ import org.scijava.platform.AppEventService;
 import org.scijava.platform.PlatformService;
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.PluginService;
+import org.scijava.prefs.PrefService;
 import org.scijava.script.ScriptService;
 import org.scijava.service.Service;
 import org.scijava.text.TextService;
@@ -186,6 +187,10 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public PluginService plugin() {
 		return get(PluginService.class);
+	}
+
+	public PrefService prefs() {
+		return get(PrefService.class);
 	}
 
 	@Override
