@@ -37,6 +37,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.scijava.plugin.PluginInfo;
+
 /**
  * Abstract superclass for {@link ScriptLanguage} implementations which adapt an
  * existing {@link ScriptEngineFactory}.
@@ -100,7 +102,9 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 
 	@Override
 	public String getLanguageName() {
-		final String name = getInfo().getName();
+		final PluginInfo<?> info = getInfo();
+		if (info == null) return null;
+		final String name = info.getName();
 		return name != null ? name : base.getLanguageName();
 	}
 
