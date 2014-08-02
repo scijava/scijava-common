@@ -106,7 +106,7 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 	@Override
 	public String getLanguageName() {
 		final String name = getInfo().getName();
-		return name != null ? name : inferNameFromClassName();
+		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
 	}
 
 	@Override

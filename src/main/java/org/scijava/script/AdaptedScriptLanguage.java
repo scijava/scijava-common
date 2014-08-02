@@ -105,7 +105,7 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 		final PluginInfo<?> info = getInfo();
 		if (info == null) return null;
 		final String name = info.getName();
-		return name != null ? name : base.getLanguageName();
+		return name != null && !name.isEmpty() ? name : base.getLanguageName();
 	}
 
 	@Override
