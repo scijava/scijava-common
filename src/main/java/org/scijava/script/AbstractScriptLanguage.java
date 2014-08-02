@@ -38,6 +38,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.util.VersionUtils;
 
 /**
  * Abstract superclass for {@link ScriptLanguage} implementations.
@@ -116,7 +117,7 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 
 	@Override
 	public String getLanguageVersion() {
-		return "0.0";
+		return VersionUtils.getVersion(getClass());
 	}
 
 	@Override
