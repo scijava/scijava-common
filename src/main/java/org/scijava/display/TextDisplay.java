@@ -36,7 +36,7 @@ package org.scijava.display;
  * 
  * @author Curtis Rueden
  */
-public interface TextDisplay extends Display<String> {
+public interface TextDisplay extends Display<Object> {
 
 	/**
 	 * Add a line to the display.

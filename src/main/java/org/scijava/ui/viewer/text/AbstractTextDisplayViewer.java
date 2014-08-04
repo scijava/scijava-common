@@ -41,7 +41,7 @@ import org.scijava.ui.viewer.AbstractDisplayViewer;
  * @author Lee Kamentsky
  */
 public abstract class AbstractTextDisplayViewer extends
-	AbstractDisplayViewer<String>
+	AbstractDisplayViewer<Object>
 {
 
 	@Override

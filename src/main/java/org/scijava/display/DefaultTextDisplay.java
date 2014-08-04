@@ -39,14 +39,16 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Display.class, priority = Priority.LOW_PRIORITY)
-public class DefaultTextDisplay extends AbstractDisplay<String> implements
+@Plugin(type = Display.class, priority = Priority.VERY_LOW_PRIORITY)
+public class DefaultTextDisplay extends AbstractDisplay<Object> implements
 	TextDisplay
 {
 
 	public DefaultTextDisplay() {
-		super(String.class);
+		super(Object.class);
 	}
+
+	// -- TextDisplay methods --
 
 	@Override
 	public void append(final String text) {

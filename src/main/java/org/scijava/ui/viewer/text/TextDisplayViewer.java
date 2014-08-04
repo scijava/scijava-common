@@ -35,11 +35,11 @@ import org.scijava.display.TextDisplay;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
- * A display viewer for {@link String}s.
+ * A display viewer for {@link TextDisplay}s.
  * 
  * @author Lee Kamentsky
  */
-public interface TextDisplayViewer extends DisplayViewer<String> {
+public interface TextDisplayViewer extends DisplayViewer<Object> {
 
 	@Override
 	TextDisplay getDisplay();

@@ -129,7 +129,7 @@ public class DisplayTest {
 		final TextDisplay textDisplay = (TextDisplay) d;
 
 		// does the display contain the required text string?
-		final String result = textDisplay.get(0);
+		final Object result = textDisplay.get(0);
 		assertNotNull(result);
 		assertEquals(value, result);
 	}
