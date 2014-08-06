@@ -52,7 +52,13 @@ public interface AppEventService extends SciJavaService {
 	/** Quits ImageJ, prompting the user about any unsaved work first. */
 	void quit();
 
-	/** Gets the commands associated with this service. */
+	/**
+	 * Gets the commands associated with this service.
+	 * 
+	 * @deprecated Tag relevant commands instead:
+	 *             <code>attrs = { @Attr(name = "app-command") }</code>
+	 */
+	@Deprecated
 	List<Class<? extends Command>> getCommands();
 
 }
