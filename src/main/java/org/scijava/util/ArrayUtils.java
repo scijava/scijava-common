@@ -31,7 +31,6 @@
 
 package org.scijava.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -87,7 +86,7 @@ public final class ArrayUtils {
 		}
 		// This object is neither an array nor a collection.
 		// So we wrap it in a list and return.
-		final List<Object> list = new ArrayList<Object>();
+		final List<Object> list = new ObjectArray<Object>(Object.class);
 		list.add(value);
 		return list;
 	}
