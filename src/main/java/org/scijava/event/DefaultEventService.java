@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -79,6 +80,12 @@ public class DefaultEventService extends AbstractService implements
 
 	private DefaultEventBus eventBus;
 
+	/**
+	 * Set of claimed {@link EventHandler#key()}s. Additional event handlers
+	 * specifying the same key will be ignored rather than subscribed.
+	 */
+	private final HashSet<String> keys = new HashSet<String>();
+
 	// -- EventService methods --
 
 	@Override
@@ -100,11 +107,23 @@ public class DefaultEventService extends AbstractService implements
 		final List<Method> eventHandlers =
 			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
 		for (final Method m : eventHandlers) {
+			// verify that the event handler method is valid
 			final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
 			if (eventClass == null) {
 				log.warn("Invalid EventHandler method: " + m);
 				continue;
 			}
+
+			// verify that the event handler key isn't already claimed
+			final String key = m.getAnnotation(EventHandler.class).key();
+			if (!key.isEmpty()) {
+				synchronized (keys) {
+					if (keys.contains(key)) continue;
+					keys.add(key);
+				}
+			}
+
+			// subscribe the event handler
 			subscribers.add(subscribe(eventClass, o, m));
 		}
 		return subscribers;

@@ -59,5 +59,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface EventHandler {
-	// no attributes
+
+	/**
+	 * Unique subscription key. If multiple {@code @EventHandler} annotations
+	 * exist with the same key, only the first to be subscribed will be respected;
+	 * the others will be silently ignored. If no key is specified, the event
+	 * handler is always subscribed.
+	 * <p>
+	 * This feature exists to enable better extensibility of event handling: if
+	 * code exists that handles an event in an undesirable way, that logic can be
+	 * completely intercepted and overridden by writing more code that handles the
+	 * event in a better way, specifying the same key as the original.
+	 * </p>
+	 */
+	String key() default "";
+
 }
