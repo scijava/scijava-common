@@ -40,7 +40,14 @@ import org.scijava.AbstractContextual;
  */
 public abstract class SciJavaEvent extends AbstractContextual {
 
+	/** Whether the event has been handled already. */
 	private boolean consumed;
+
+	/** The thread which published this event. */
+	private Thread callingThread;
+
+	/** The stack trace of the calling thread when the event was published. */
+	private StackTraceElement[] stackTrace;
 
 	// -- SciJavaEvent methods --
 
@@ -54,6 +61,25 @@ public abstract class SciJavaEvent extends AbstractContextual {
 
 	public void consume() {
 		setConsumed(true);
+	}
+
+	/** Gets the thread that published the event. */
+	public Thread getCallingThread() {
+		return callingThread;
+	}
+
+	/** Sets the thread that published the event. */
+	public void setCallingThread(final Thread callingThread) {
+		this.callingThread = callingThread;
+		stackTrace = callingThread.getStackTrace();
+	}
+
+	/**
+	 * Gets the stack trace of the calling thread when the event was published.
+	 * This method is useful for debugging what triggered an event.
+	 */
+	public StackTraceElement[] getStackTrace() {
+		return stackTrace;
 	}
 
 	// Object methods --
