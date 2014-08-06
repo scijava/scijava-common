@@ -85,20 +85,20 @@ public class DefaultAppEventService extends AbstractService implements
 
 	// -- Event handlers --
 
-	@EventHandler
+	@EventHandler(key = "org.scijava.platform.AppEventService#about")
 	protected void onEvent(@SuppressWarnings("unused") final AppAboutEvent event)
 	{
 		about();
 	}
 
-	@EventHandler
+	@EventHandler(key = "org.scijava.platform.AppEventService#prefs")
 	protected void onEvent(
 		@SuppressWarnings("unused") final AppPreferencesEvent event)
 	{
 		prefs();
 	}
 
-	@EventHandler
+	@EventHandler(key = "org.scijava.platform.AppEventService#quit")
 	protected void onEvent(@SuppressWarnings("unused") final AppQuitEvent event) {
 		quit();
 	}
