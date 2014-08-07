@@ -102,7 +102,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	 * @param list the initial list of instances
 	 * @return the filtered list of instances
 	 */
-	protected List<? extends PT> filterInstances(List<PT> list) {
+	protected List<? extends PT> filterInstances(final List<PT> list) {
 		return list;
 	}
 
@@ -117,9 +117,10 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 		instanceMap = new HashMap<Class<? extends PT>, PT>();
 
-		for (PT plugin : instances) {
+		for (final PT plugin : instances) {
 			@SuppressWarnings("unchecked")
-			Class<? extends PT> ptClass = (Class<? extends PT>) plugin.getClass();
+			final Class<? extends PT> ptClass =
+				(Class<? extends PT>) plugin.getClass();
 			instanceMap.put(ptClass, plugin);
 		}
 
