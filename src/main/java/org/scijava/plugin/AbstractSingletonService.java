@@ -118,7 +118,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		final HashMap<Class<? extends PT>, PT> map =
 			new HashMap<Class<? extends PT>, PT>();
 
-		for (final PT plugin : instances) {
+		for (final PT plugin : list) {
 			@SuppressWarnings("unchecked")
 			final Class<? extends PT> ptClass =
 				(Class<? extends PT>) plugin.getClass();
