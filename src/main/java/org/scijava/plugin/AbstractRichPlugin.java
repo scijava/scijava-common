@@ -34,10 +34,12 @@ package org.scijava.plugin;
 import java.net.URL;
 
 import org.scijava.AbstractContextual;
+import org.scijava.BasicDetails;
 import org.scijava.Prioritized;
 import org.scijava.Priority;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.Manifest;
+import org.scijava.util.MiscUtils;
 
 /**
  * Abstract base class for {@link RichPlugin} implementations.
@@ -167,7 +169,16 @@ public abstract class AbstractRichPlugin extends AbstractContextual implements
 		if (priorityCompare != 0) return priorityCompare;
 
 		// compare classes
-		return ClassUtils.compare(getClass(), that.getClass());
+		final int classCompare = ClassUtils.compare(getClass(), that.getClass());
+		if (classCompare != 0) return classCompare;
+
+		if (!(that instanceof BasicDetails)) return 1;
+		final BasicDetails basicDetails = (BasicDetails) that;
+
+		// compare names
+		final String thisName = getName();
+		final String thatName = basicDetails.getName();
+		return MiscUtils.compare(thisName, thatName);
 	}
 
 }
