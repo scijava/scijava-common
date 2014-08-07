@@ -37,6 +37,7 @@ import org.scijava.Identifiable;
 import org.scijava.Locatable;
 import org.scijava.Prioritized;
 import org.scijava.Versioned;
+import org.scijava.util.MiscUtils;
 
 /**
  * Base interface for {@link Contextual}, {@link Prioritized} plugins that
@@ -104,6 +105,22 @@ public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
 	@Override
 	default void setName(final String name) {
 		throw new UnsupportedOperationException();
+	}
+
+	// -- Comparable methods --
+
+	@Override
+	default int compareTo(final Prioritized that) {
+		final int compare = Prioritized.super.compareTo(that);
+		if (compare != 0) return compare;
+
+		if (!(that instanceof BasicDetails)) return 1;
+		final BasicDetails basicDetails = (BasicDetails) that;
+
+		// compare names
+		final String thisName = getName();
+		final String thatName = basicDetails.getName();
+		return MiscUtils.compare(thisName, thatName);
 	}
 
 }
