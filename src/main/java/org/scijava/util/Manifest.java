@@ -36,6 +36,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+import java.util.jar.Attributes;
 
 /**
  * Helper class for working with JAR manifests.
@@ -115,11 +116,17 @@ public class Manifest {
 	}
 
 	public String get(final String key) {
-		return manifest.getMainAttributes().getValue(key);
+		if (manifest == null) return null;
+		final Attributes mainAttrs = manifest.getMainAttributes();
+		if (mainAttrs == null) return null;
+		return mainAttrs.getValue(key);
 	}
 
 	public Map<Object, Object> getAll() {
-		return Collections.unmodifiableMap(manifest.getMainAttributes());
+		if (manifest == null) return null;
+		final Attributes mainAttrs = manifest.getMainAttributes();
+		if (mainAttrs == null) return null;
+		return Collections.unmodifiableMap(mainAttrs);
 	}
 
 	// -- Utility methods --
