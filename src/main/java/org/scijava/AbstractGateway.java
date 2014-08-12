@@ -60,7 +60,6 @@ import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 import org.scijava.tool.IconService;
 import org.scijava.tool.ToolService;
-import org.scijava.usage.UsageService;
 import org.scijava.widget.WidgetService;
 
 /**
@@ -221,11 +220,6 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public ToolService tool() {
 		return get(ToolService.class);
-	}
-
-	@Override
-	public UsageService usage() {
-		return get(UsageService.class);
 	}
 
 	@Override
