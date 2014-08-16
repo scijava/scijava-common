@@ -99,12 +99,28 @@ public class VersionUtils {
 		return pom == null ? null : pom.getVersion();
 	}
 
+	/**
+	 * Looks up the build number (typically an SCM revision) of the specified
+	 * class. This information is retrieved from the JAR manifest's
+	 * <code>Implementation-Build</code> entry, or null if no such value exists.
+	 *
+	 * @param c - Look up this class's build number
+	 * @return Build number of specified {@link Class} or null if not found.
+	 */
+	public static String getBuildNumber(final Class<?> c) {
+		return getBuildNumber(Manifest.getManifest(c));
+	}
+
 	// -- Helper methods --
 
 	private static String getVersionFromManifest(final Manifest m) {
 		final String manifestVersion = m.getImplementationVersion();
 		if (manifestVersion != null) return manifestVersion;
 		return m.getSpecificationVersion();
+	}
+
+	private static String getBuildNumber(final Manifest m) {
+		return m == null ? null : m.getImplementationBuild();
 	}
 
 }
