@@ -64,8 +64,9 @@ public class VersionUtils {
 	public static String getVersion(final Class<?> c, final String groupId,
 		final String artifactId)
 	{
-		final String pomVersion = getVersionFromPOM(c, groupId, artifactId);
-		return pomVersion != null ? pomVersion : getVersionFromManifest(c);
+		final String version = getVersionFromManifest(c);
+		if (version != null) return version;
+		return getVersionFromPOM(c, groupId, artifactId);
 	}
 
 	/**
