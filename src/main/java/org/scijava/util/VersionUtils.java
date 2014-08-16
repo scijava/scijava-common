@@ -79,8 +79,7 @@ public class VersionUtils {
 	public static String getVersionFromManifest(final Class<?> c) {
 		final Manifest m = Manifest.getManifest(c);
 		if (m == null) return null;
-		final String manifestVersion = m.getImplementationVersion();
-		return manifestVersion == null ? null : m.getSpecificationVersion();
+		return getVersionFromManifest(m);
 	}
 
 	/**
@@ -99,4 +98,13 @@ public class VersionUtils {
 		final POM pom = POM.getPOM(c, groupId, artifactId);
 		return pom == null ? null : pom.getVersion();
 	}
+
+	// -- Helper methods --
+
+	private static String getVersionFromManifest(final Manifest m) {
+		final String manifestVersion = m.getImplementationVersion();
+		if (manifestVersion != null) return manifestVersion;
+		return m.getSpecificationVersion();
+	}
+
 }
