@@ -44,7 +44,7 @@ public class VersionUtils {
 	 * Looks up the version of the specified class using any means available. Will
 	 * only search POMs in the base directory.
 	 *
-	 * @param c - Look up this Class's version
+	 * @param c - Look up this class's version
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
 	public static String getVersion(final Class<?> c) {
@@ -53,12 +53,12 @@ public class VersionUtils {
 
 	/**
 	 * Looks up the version of the specified class using any means available.
-	 * {@code groupId} and {@code artifactId} allow specification of the POM
-	 * lookup path.
+	 * The {@code groupId} and {@code artifactId} parameters allow
+	 * specification of the POM lookup path.
 	 *
-	 * @param c - Look up this Class's version
-	 * @param groupId - GroupID containing class
-	 * @param artifactId - ArtifactID containing class
+	 * @param c - Look up this class's version
+	 * @param groupId - Maven group ID containing class
+	 * @param artifactId - Maven artifact ID containing class
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
 	public static String getVersion(final Class<?> c, final String groupId,
@@ -72,7 +72,7 @@ public class VersionUtils {
 	 * Looks up the version of the specified class using a JAR manifest if
 	 * available.
 	 *
-	 * @param c - Look up this Class's version
+	 * @param c - Look up this class's version
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
 	public static String getVersionFromManifest(final Class<?> c) {
@@ -87,9 +87,9 @@ public class VersionUtils {
 	 * base POM directory if {@code groupId} and {@code artifactId} are
 	 * {@code null}.
 	 *
-	 * @param c - Look up this Class's version
-	 * @param groupId - GroupID containing class
-	 * @param artifactId - ArtifactID containing class
+	 * @param c - Look up this class's version
+	 * @param groupId - Maven group ID containing class
+	 * @param artifactId - Maven artifact ID containing class
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
 	public static String getVersionFromPOM(final Class<?> c,
