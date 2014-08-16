@@ -47,7 +47,7 @@ public class VersionUtils {
 	 * @param c - Look up this Class's version
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
-	public static String getVersion(Class<?> c) {
+	public static String getVersion(final Class<?> c) {
 		return getVersion(c, null, null);
 	}
 
@@ -61,8 +61,8 @@ public class VersionUtils {
 	 * @param artifactId - ArtifactID containing class
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
-	public static String
-		getVersion(Class<?> c, String groupId, String artifactId)
+	public static String getVersion(final Class<?> c, final String groupId,
+		final String artifactId)
 	{
 		final String pomVersion = getVersionFromPOM(c, groupId, artifactId);
 		return pomVersion != null ? pomVersion : getVersionFromManifest(c);
@@ -75,7 +75,7 @@ public class VersionUtils {
 	 * @param c - Look up this Class's version
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
-	public static String getVersionFromManifest(Class<?> c) {
+	public static String getVersionFromManifest(final Class<?> c) {
 		final Manifest m = Manifest.getManifest(c);
 		if (m == null) return null;
 		final String manifestVersion = m.getImplementationVersion();
@@ -92,8 +92,8 @@ public class VersionUtils {
 	 * @param artifactId - ArtifactID containing class
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
-	public static String getVersionFromPOM(Class<?> c, String groupId,
-		String artifactId)
+	public static String getVersionFromPOM(final Class<?> c,
+		final String groupId, final String artifactId)
 	{
 		final POM pom = POM.getPOM(c, groupId, artifactId);
 		return pom == null ? null : pom.getVersion();
