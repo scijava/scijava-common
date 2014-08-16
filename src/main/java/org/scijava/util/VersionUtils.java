@@ -41,8 +41,9 @@ package org.scijava.util;
 public class VersionUtils {
 
 	/**
-	 * Looks up the version of the specified class using any means available. Will
-	 * only search POMs in the base directory.
+	 * Looks up the version of the specified class using any means available,
+	 * appending the build number to any {@code SNAPSHOT} version. Will only
+	 * search POMs in the base directory.
 	 *
 	 * @param c - Look up this class's version
 	 * @return Version of specified {@link Class} or null if not found.
@@ -52,9 +53,10 @@ public class VersionUtils {
 	}
 
 	/**
-	 * Looks up the version of the specified class using any means available.
-	 * The {@code groupId} and {@code artifactId} parameters allow
-	 * specification of the POM lookup path.
+	 * Looks up the version of the specified class using any means available,
+	 * appending the build number to any {@code SNAPSHOT} version. The
+	 * {@code groupId} and {@code artifactId} parameters allow specification of
+	 * the POM lookup path.
 	 *
 	 * @param c - Look up this class's version
 	 * @param groupId - Maven group ID containing class
@@ -71,7 +73,7 @@ public class VersionUtils {
 
 	/**
 	 * Looks up the version of the specified class using a JAR manifest if
-	 * available.
+	 * available, appending the build number to any {@code SNAPSHOT} version.
 	 *
 	 * @param c - Look up this class's version
 	 * @return Version of specified {@link Class} or null if not found.
@@ -79,7 +81,12 @@ public class VersionUtils {
 	public static String getVersionFromManifest(final Class<?> c) {
 		final Manifest m = Manifest.getManifest(c);
 		if (m == null) return null;
-		return getVersionFromManifest(m);
+		final String version = getVersionFromManifest(m);
+		if (version == null || !version.endsWith("-SNAPSHOT")) return version;
+
+		// append commit hash to differentiate between development versions
+		final String buildNumber = getBuildNumber(m);
+		return buildNumber == null ? version : version + "-" + buildNumber;
 	}
 
 	/**
