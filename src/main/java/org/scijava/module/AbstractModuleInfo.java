@@ -46,7 +46,7 @@ import org.scijava.event.EventService;
 import org.scijava.module.event.ModulesUpdatedEvent;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.Manifest;
+import org.scijava.util.VersionUtils;
 
 /**
  * Abstract superclass of {@link ModuleInfo} implementation.
@@ -197,8 +197,7 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 		// If the same delegate class is used for more than one module, though,
 		// it may need to override this method to indicate a different version.
 		try {
-			final Manifest m = Manifest.getManifest(loadDelegateClass());
-			return m == null ? null : m.getImplementationVersion();
+			return VersionUtils.getVersion(loadDelegateClass());
 		}
 		catch (final ClassNotFoundException exc) {
 			return null;

@@ -59,8 +59,8 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
 import org.scijava.util.ClassUtils;
-import org.scijava.util.Manifest;
 import org.scijava.util.StringMaker;
+import org.scijava.util.VersionUtils;
 
 /**
  * A collection of metadata about a particular {@link Command}.
@@ -442,8 +442,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
 	@Override
 	public String getVersion() {
 		try {
-			final Manifest m = Manifest.getManifest(loadDelegateClass());
-			return m == null ? null : m.getImplementationVersion();
+			return VersionUtils.getVersion(loadDelegateClass());
 		}
 		catch (final ClassNotFoundException exc) {
 			return null;
