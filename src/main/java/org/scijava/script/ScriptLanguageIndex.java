@@ -89,6 +89,7 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 		final ScriptLanguage language = wrap(factory);
 
 		// add language names
+		byName.put(language.getLanguageName(), language);
 		for (final String name : language.getNames()) {
 			byName.put(name, language);
 		}
