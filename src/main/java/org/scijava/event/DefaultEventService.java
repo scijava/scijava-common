@@ -91,12 +91,14 @@ public class DefaultEventService extends AbstractService implements
 	@Override
 	public <E extends SciJavaEvent> void publish(final E e) {
 		e.setContext(getContext());
+		e.setCallingThread(Thread.currentThread());
 		eventBus.publishNow(e);
 	}
 
 	@Override
 	public <E extends SciJavaEvent> void publishLater(final E e) {
 		e.setContext(getContext());
+		e.setCallingThread(Thread.currentThread());
 		eventBus.publishLater(e);
 	}
 
