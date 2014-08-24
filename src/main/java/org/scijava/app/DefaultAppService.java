@@ -36,7 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.scijava.event.EventHandler;
 import org.scijava.log.LogService;
+import org.scijava.platform.event.AppAboutEvent;
+import org.scijava.platform.event.AppPreferencesEvent;
+import org.scijava.platform.event.AppQuitEvent;
 import org.scijava.plugin.AbstractSingletonService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -84,6 +88,26 @@ public class DefaultAppService extends AbstractSingletonService<App> implements 
 	@Override
 	public Class<App> getPluginType() {
 		return App.class;
+	}
+
+	// -- Event handlers --
+
+	@EventHandler(key = "org.scijava.app.AppService#about")
+	protected void onEvent(@SuppressWarnings("unused") final AppAboutEvent event)
+	{
+		getApp().about();
+	}
+
+	@EventHandler(key = "org.scijava.app.AppService#prefs")
+	protected void onEvent(
+		@SuppressWarnings("unused") final AppPreferencesEvent event)
+	{
+		getApp().prefs();
+	}
+
+	@EventHandler(key = "org.scijava.app.AppService#quit")
+	protected void onEvent(@SuppressWarnings("unused") final AppQuitEvent event) {
+		getApp().quit();
 	}
 
 	// -- Helper methods - lazy initialization --
