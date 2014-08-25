@@ -50,17 +50,15 @@ public class DefaultScriptHeaderService extends
 
 	@Override
 	public String getHeader(final ScriptLanguage language) {
-		String header = null;
+		StringBuilder header = new StringBuilder();
 		for (final ScriptHeader scriptHeader : getInstances()) {
 			if (scriptHeader.supports(language)) {
-				if (header == null) {
-					header = "";
-				}
-				header += scriptHeader.getHeader() + "\n";
+				header.append(scriptHeader.getHeader());
+				header.append("\n");
 			}
 		}
 
-		return header;
+		return header.toString();
 	}
 
 	// -- HandlerService methods --

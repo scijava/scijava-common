@@ -55,8 +55,7 @@ public interface ScriptHeaderService extends
 	 * {@link ScriptHeader#getHeader()} output to a single string.
 	 *
 	 * @param language - Language to look up
-	 * @return The combined header text to insert at the top of a script, or null
-	 *         if no {@link ScriptHeader}s were found.
+	 * @return The combined header text to insert at the top of a script.
 	 */
 	String getHeader(final ScriptLanguage language);
 }
