@@ -35,47 +35,42 @@ import java.util.Collections;
 import java.util.List;
 
 import org.scijava.Priority;
+import org.scijava.app.App;
+import org.scijava.app.AppService;
 import org.scijava.command.Command;
-import org.scijava.event.EventHandler;
 import org.scijava.platform.event.AppAboutEvent;
 import org.scijava.platform.event.AppPreferencesEvent;
 import org.scijava.platform.event.AppQuitEvent;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 
-/**
- * Default service for handling application-level events.
- * <p>
- * An {@link AppAboutEvent} triggers a callback to {@link #about()}. An
- * {@link AppPreferencesEvent} triggers a callback to {@link #prefs()}. Finally,
- * an {@link AppQuitEvent} triggers a callback to {@link #quit()}. Note that
- * this class's implementations of the former two methods do nothing, and the
- * latter simply disposes the application context with no user checks.
- * </p>
- * 
- * @author Curtis Rueden
- */
+/** @deprecated Use {@link AppService} and {@link App} instead. */
+@Deprecated
 @Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
 public class DefaultAppEventService extends AbstractService implements
 	AppEventService
 {
 
+	@Parameter
+	private AppService appService;
+
 	// -- AppService methods --
 
 	@Override
 	public void about() {
-		// NB: Do nothing.
+		appService.getApp().about();
 	}
 
 	@Override
 	public void prefs() {
-		// NB: Do nothing.
+		appService.getApp().prefs();
 	}
 
 	@Override
 	public void quit() {
-		getContext().dispose();
+		appService.getApp().quit();
 	}
 
 	@Override
@@ -83,22 +78,20 @@ public class DefaultAppEventService extends AbstractService implements
 		return Collections.emptyList();
 	}
 
-	// -- Event handlers --
-
-	@EventHandler(key = "org.scijava.platform.AppEventService#about")
+	@Deprecated
 	protected void onEvent(@SuppressWarnings("unused") final AppAboutEvent event)
 	{
 		about();
 	}
 
-	@EventHandler(key = "org.scijava.platform.AppEventService#prefs")
+	@Deprecated
 	protected void onEvent(
 		@SuppressWarnings("unused") final AppPreferencesEvent event)
 	{
 		prefs();
 	}
 
-	@EventHandler(key = "org.scijava.platform.AppEventService#quit")
+	@Deprecated
 	protected void onEvent(@SuppressWarnings("unused") final AppQuitEvent event) {
 		quit();
 	}

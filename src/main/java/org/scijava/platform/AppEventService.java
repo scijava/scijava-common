@@ -33,28 +33,28 @@ package org.scijava.platform;
 
 import java.util.List;
 
+import org.scijava.app.App;
+import org.scijava.app.AppService;
 import org.scijava.command.Command;
 import org.scijava.service.SciJavaService;
 
-/**
- * Interface for service that handles application-level events.
- * 
- * @author Curtis Rueden
- */
+/** @deprecated Use {@link AppService} and {@link App} instead. */
+@Deprecated
 public interface AppEventService extends SciJavaService {
 
-	/** Displays an About ImageJ dialog. */
+	/** @deprecated Use {@link App#about()} instead. */
+	@Deprecated
 	void about();
 
-	/** Displays the ImageJ preferences dialog. */
+	/** @deprecated Use {@link App#prefs()} instead. */
+	@Deprecated
 	void prefs();
 
-	/** Quits ImageJ, prompting the user about any unsaved work first. */
+	/** @deprecated Use {@link App#quit()} instead. */
+	@Deprecated
 	void quit();
 
 	/**
-	 * Gets the commands associated with this service.
-	 * 
 	 * @deprecated Tag relevant commands instead:
 	 *             <code>attrs = { @Attr(name = "app-command") }</code>
 	 */

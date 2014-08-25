@@ -96,6 +96,24 @@ public interface App extends RichPlugin, SingletonPlugin, Versioned {
 	 */
 	File getBaseDirectory();
 
+	/**
+	 * Displays information about the application. Typically this action
+	 * takes the form as About dialog in the UI, and/or a message on the console.
+	 */
+	void about();
+
+	/**
+	 * Displays application preferences. The behavior is application-specific, but
+	 * typically a preferences dialog will be shown onscreen.
+	 */
+	void prefs();
+
+	/**
+	 * Quits the application. Typically this action will prompt the user about any
+	 * unsaved work first.
+	 */
+	void quit();
+
 	// -- Versioned methods --
 
 	/**

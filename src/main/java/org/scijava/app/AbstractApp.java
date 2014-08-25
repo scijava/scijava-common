@@ -33,7 +33,9 @@ package org.scijava.app;
 
 import java.io.File;
 
+import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.plugin.Parameter;
 import org.scijava.util.AppUtils;
 import org.scijava.util.Manifest;
 import org.scijava.util.POM;
@@ -44,6 +46,9 @@ import org.scijava.util.POM;
  * @author Curtis Rueden
  */
 public abstract class AbstractApp extends AbstractRichPlugin implements App {
+
+	@Parameter(required = false)
+	private LogService log;
 
 	/** Maven POM with metadata about the application. */
 	private POM pom;
@@ -106,6 +111,21 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	@Override
 	public File getBaseDirectory() {
 		return AppUtils.getBaseDirectory(getSystemProperty(), getClass(), null);
+	}
+
+	@Override
+	public void about() {
+		if (log != null) log.info(getInfo(false));
+	}
+
+	@Override
+	public void prefs() {
+		// NB: Do nothing.
+	}
+
+	@Override
+	public void quit() {
+		getContext().dispose();
 	}
 
 }
