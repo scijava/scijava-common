@@ -50,16 +50,13 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 	// -- WrapperService methods --
 
 	@Override
-	public <D extends DT> WrapperPlugin<D> create(final D data) {
+	public <D extends DT> PT create(final D data) {
 		final PT instance = wrap(data);
 		if (instance == null) {
 			throw new IllegalArgumentException("No compatible " +
 				getPluginType().getSimpleName() + " for data object: " + data);
 		}
-		@SuppressWarnings("unchecked")
-		final WrapperPlugin<D> typedInstance = (WrapperPlugin<D>) instance;
-		typedInstance.set(data);
-		return typedInstance;
+		return instance;
 	}
 
 	// -- Service methods --

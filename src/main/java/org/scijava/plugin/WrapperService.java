@@ -62,6 +62,6 @@ public interface WrapperService<DT, PT extends WrapperPlugin<DT>> extends
 	 * @throws IllegalArgumentException if the data is not compatible with any
 	 *           available plugin.
 	 */
-	<D extends DT> WrapperPlugin<D> create(D data);
+	<D extends DT> PT create(D data);
 
 }
