@@ -32,6 +32,7 @@
 package org.scijava.convert;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.scijava.plugin.HandlerService;
 
@@ -101,4 +102,6 @@ public interface ConvertService extends
 	 * @see #supports(ConversionRequest)
 	 */
 	boolean supports(Class<?> src, Type dest);
+
+	List<Object> getCompatibleInputs(Class<?> dest);
 }

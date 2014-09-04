@@ -31,16 +31,24 @@
 
 package org.scijava.convert;
 
+import java.util.Set;
+
 import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
- * Abstract superclass for {@link Converter} plugins. Performs
- * appropriate dispatching of {@link #canConvert(ConversionRequest)} and
+ * Abstract superclass for {@link Converter} plugins. Performs appropriate
+ * dispatching of {@link #canConvert(ConversionRequest)} and
  * {@link #convert(ConversionRequest)} calls based on the actual state of the
  * given {@link ConversionRequest}.
  * <p>
  * Note that the {@link #supports(ConversionRequest)} method is overridden as
  * well, to delegate to the appropriate {@link #canConvert}.
+ * </p>
+ * <p>
+ * NB: by default, the {@link #populateInputs(Set)} method has a dummy
+ * implementation. Effectively, this is opt-in behavior. If a subclass of this
+ * would like to declare automatic mappings between input and output conversion
+ * types, this method can be overridden.
  * </p>
  *
  * @author Mark Hiner
@@ -48,6 +56,18 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractConverter extends
 	AbstractHandlerPlugin<ConversionRequest> implements Converter
 {
+
+	// -- Fields --
+
+	private final Class<?> inClass;
+	private final Class<?> outClass;
+
+	// -- Constructor --
+
+	public AbstractConverter(final Class<?> inClass, final Class<?> outClass) {
+		this.inClass = inClass;
+		this.outClass = outClass;
+	}
 
 	// -- ConversionHandler methods --
 
@@ -72,6 +92,21 @@ public abstract class AbstractConverter extends
 				request.destType());
 		}
 		return null;
+	}
+
+	@Override
+	public void populateInputs(Set<Object> objects) {
+		// No-op
+	}
+
+	@Override
+	public Class<?> getOutputType() {
+		return outClass;
+	}
+
+	@Override
+	public Class<?> getInputType() {
+		return inClass;
 	}
 
 	// -- Typed methods --

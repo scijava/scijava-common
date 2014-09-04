@@ -46,7 +46,8 @@ import org.scijava.plugin.Plugin;
  * @see ConversionRequest
  * @author Mark Hiner
  */
-public interface Converter extends HandlerPlugin<ConversionRequest> {
+public interface Converter extends HandlerPlugin<ConversionRequest>
+{
 
 	/**
 	 * Checks whether a given {@ConversionRequest} can be
@@ -155,4 +156,24 @@ public interface Converter extends HandlerPlugin<ConversionRequest> {
 	 * @return The conversion output
 	 */
 	Object convert(ConversionRequest request);
+
+	/**
+	 * Fills the given {@code Object} set with the potential input types known to
+	 * this {@code Converter}.
+	 *
+	 * @param objects A pre-allocated {@link Set} of potential input objects.
+	 *          Input objects known to this {@code Converter} will be added to
+	 *          this set.
+	 */
+	void populateInputs(Set<Object> objects);
+
+	/**
+	 * @return The base {@code Class} this {@code Converter} produces as output.
+	 */
+	Class<?> getOutputType();
+
+	/**
+	 * @return The base {@code Class} this {@code Converter} accepts as input.
+	 */
+	Class<?> getInputType();
 }

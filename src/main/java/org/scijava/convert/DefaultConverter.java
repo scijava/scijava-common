@@ -57,6 +57,12 @@ import org.scijava.util.GenericUtils;
 @Plugin(type = Converter.class)
 public class DefaultConverter extends AbstractConverter {
 
+	// -- Constructor --
+
+	public DefaultConverter() {
+		super(Object.class, Object.class);
+	}
+
 	// -- ConversionHandler methods --
 
 	@Override
