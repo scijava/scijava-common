@@ -33,10 +33,13 @@ package org.scijava.widget;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
 import org.scijava.ItemVisibility;
+import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
@@ -59,9 +62,13 @@ public class WidgetModel extends AbstractContextual {
 	private final Module module;
 	private final ModuleItem<?> item;
 	private final List<?> objectPool;
+	private final Map<Object, Object> convertedObjectPool;
 
 	@Parameter
 	private ThreadService threadService;
+
+	@Parameter
+	private ConvertService convertService;
 
 	@Parameter(required = false)
 	private LogService log;
@@ -76,6 +83,7 @@ public class WidgetModel extends AbstractContextual {
 		this.module = module;
 		this.item = item;
 		this.objectPool = objectPool;
+		convertedObjectPool = new WeakHashMap<Object, Object>();
 	}
 
 	/** Gets the input panel intended to house the widget. */
@@ -159,7 +167,25 @@ public class WidgetModel extends AbstractContextual {
 	public void setValue(final Object value) {
 		final String name = item.getName();
 		if (MiscUtils.equal(item.getValue(module), value)) return; // no change
-		module.setInput(name, value);
+
+		// Check if a converted value is present
+		Object convertedInput = convertedObjectPool.get(value);
+		if (convertedInput != null &&
+			MiscUtils.equal(item.getValue(module), convertedInput))
+		{
+			return; // no change
+		}
+
+		// Pass the vale through the convertService
+		convertedInput = convertService.convert(value, item.getType());
+
+		// If we get a different (covnerted) value back, cache it weakly.
+		if (convertedInput != value) {
+			convertedObjectPool.put(value, convertedInput);
+		}
+
+		module.setInput(name, convertedInput);
+
 		if (initialized) {
 			threadService.run(new Runnable() {
 
@@ -363,6 +389,11 @@ public class WidgetModel extends AbstractContextual {
 	private Object ensureValid(final Object value, final List<?> list) {
 		for (final Object o : list) {
 			if (o.equals(value)) return value; // value is valid
+			// check if value was converted and cached
+			final Object convertedValue = convertedObjectPool.get(o);
+			if (convertedValue != null && value.equals(convertedValue)) {
+				return convertedValue;
+			}
 		}
 
 		// value is not valid; override with the first item on the list instead

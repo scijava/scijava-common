@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.AbstractContextual;
+import org.scijava.convert.ConvertService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleCanceledException;
 import org.scijava.module.ModuleException;
@@ -62,6 +63,9 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 	@Parameter
 	private ObjectService objectService;
+
+	@Parameter
+	private ConvertService convertService;
 
 	// -- InputHarvester methods --
 
@@ -142,9 +146,13 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		return null;
 	}
 
-	/** Asks the object service for valid choices */
-	private <T> List<T> getObjects(final Class<T> type) {
-		return objectService.getObjects(type);
+	/** Asks the object service and convert service for valid choices */
+	@SuppressWarnings("unchecked")
+	private List<?> getObjects(final Class<?> type) {
+		@SuppressWarnings("rawtypes")
+		List compatibleInputs = convertService.getCompatibleInputs(type);
+		compatibleInputs.addAll(objectService.getObjects(type));
+		return compatibleInputs;
 	}
 
 }
