@@ -62,7 +62,7 @@ public class WidgetModel extends AbstractContextual {
 	private final Module module;
 	private final ModuleItem<?> item;
 	private final List<?> objectPool;
-	private final Map<Object, Object> convertedObjectPool;
+	private final Map<Object, Object> convertedObjects;
 
 	@Parameter
 	private ThreadService threadService;
@@ -83,7 +83,7 @@ public class WidgetModel extends AbstractContextual {
 		this.module = module;
 		this.item = item;
 		this.objectPool = objectPool;
-		convertedObjectPool = new WeakHashMap<Object, Object>();
+		convertedObjects = new WeakHashMap<Object, Object>();
 	}
 
 	/** Gets the input panel intended to house the widget. */
@@ -169,7 +169,7 @@ public class WidgetModel extends AbstractContextual {
 		if (MiscUtils.equal(item.getValue(module), value)) return; // no change
 
 		// Check if a converted value is present
-		Object convertedInput = convertedObjectPool.get(value);
+		Object convertedInput = convertedObjects.get(value);
 		if (convertedInput != null &&
 			MiscUtils.equal(item.getValue(module), convertedInput))
 		{
@@ -181,7 +181,7 @@ public class WidgetModel extends AbstractContextual {
 
 		// If we get a different (covnerted) value back, cache it weakly.
 		if (convertedInput != value) {
-			convertedObjectPool.put(value, convertedInput);
+			convertedObjects.put(value, convertedInput);
 		}
 
 		module.setInput(name, convertedInput);
@@ -390,7 +390,7 @@ public class WidgetModel extends AbstractContextual {
 		for (final Object o : list) {
 			if (o.equals(value)) return value; // value is valid
 			// check if value was converted and cached
-			final Object convertedValue = convertedObjectPool.get(o);
+			final Object convertedValue = convertedObjects.get(o);
 			if (convertedValue != null && value.equals(convertedValue)) {
 				return convertedValue;
 			}
