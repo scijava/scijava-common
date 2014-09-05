@@ -57,18 +57,6 @@ public abstract class AbstractConverter extends
 	AbstractHandlerPlugin<ConversionRequest> implements Converter
 {
 
-	// -- Fields --
-
-	private final Class<?> inClass;
-	private final Class<?> outClass;
-
-	// -- Constructor --
-
-	public AbstractConverter(final Class<?> inClass, final Class<?> outClass) {
-		this.inClass = inClass;
-		this.outClass = outClass;
-	}
-
 	// -- ConversionHandler methods --
 
 	@Override
@@ -97,16 +85,6 @@ public abstract class AbstractConverter extends
 	@Override
 	public void populateInputs(Set<Object> objects) {
 		// No-op
-	}
-
-	@Override
-	public Class<?> getOutputType() {
-		return outClass;
-	}
-
-	@Override
-	public Class<?> getInputType() {
-		return inClass;
 	}
 
 	// -- Typed methods --
