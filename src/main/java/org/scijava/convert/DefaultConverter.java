@@ -55,7 +55,7 @@ import org.scijava.util.GenericUtils;
  * @author Mark Hiner
  */
 @Plugin(type = Converter.class)
-public class DefaultConverter extends AbstractConverter {
+public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	// -- ConversionHandler methods --
 
@@ -266,12 +266,12 @@ public class DefaultConverter extends AbstractConverter {
 	}
 
 	@Override
-	public Class<?> getOutputType() {
+	public Class<Object> getOutputType() {
 		return Object.class;
 	}
 
 	@Override
-	public Class<?> getInputType() {
+	public Class<Object> getInputType() {
 		return Object.class;
 	}
 

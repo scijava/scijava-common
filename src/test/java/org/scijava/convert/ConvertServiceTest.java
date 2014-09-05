@@ -578,7 +578,9 @@ public class ConvertServiceTest {
 	 * methods are not implemented and are unnecessary.
 	 */
 	@Plugin(type = Converter.class, priority = Priority.LAST_PRIORITY)
-	public static class StringHisListConverter extends AbstractConverter {
+	public static class StringHisListConverter extends
+		AbstractConverter<String, HisList>
+	{
 
 		// Sample strings
 
@@ -598,12 +600,12 @@ public class ConvertServiceTest {
 		}
 
 		@Override
-		public Class<?> getOutputType() {
+		public Class<HisList> getOutputType() {
 			return HisList.class;
 		}
 
 		@Override
-		public Class<?> getInputType() {
+		public Class<String> getInputType() {
 			return String.class;
 		}
 

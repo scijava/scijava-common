@@ -53,8 +53,8 @@ import org.scijava.plugin.AbstractHandlerPlugin;
  *
  * @author Mark Hiner
  */
-public abstract class AbstractConverter extends
-	AbstractHandlerPlugin<ConversionRequest> implements Converter
+public abstract class AbstractConverter<I, O> extends
+	AbstractHandlerPlugin<ConversionRequest> implements Converter<I, O>
 {
 
 	// -- ConversionHandler methods --

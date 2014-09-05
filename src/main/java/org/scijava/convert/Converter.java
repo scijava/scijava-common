@@ -47,7 +47,7 @@ import org.scijava.plugin.Plugin;
  * @see ConversionRequest
  * @author Mark Hiner
  */
-public interface Converter extends HandlerPlugin<ConversionRequest>
+public interface Converter<I, O> extends HandlerPlugin<ConversionRequest>
 {
 
 	/**
@@ -183,10 +183,10 @@ public interface Converter extends HandlerPlugin<ConversionRequest>
 	/**
 	 * @return The base {@code Class} this {@code Converter} produces as output.
 	 */
-	Class<?> getOutputType();
+	Class<O> getOutputType();
 
 	/**
 	 * @return The base {@code Class} this {@code Converter} accepts as input.
 	 */
-	Class<?> getInputType();
+	Class<I> getInputType();
 }

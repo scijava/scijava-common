@@ -46,7 +46,7 @@ import org.scijava.plugin.HandlerService;
  * @author Mark Hiner
  */
 public interface ConvertService extends
-	HandlerService<ConversionRequest, Converter>
+	HandlerService<ConversionRequest, Converter<?, ?>>
 {
 	/**
 	 * @see Converter#convert(Object, Type)
@@ -66,22 +66,22 @@ public interface ConvertService extends
 	/**
 	 * @see #getHandler(ConversionRequest)
 	 */
-	Converter getHandler(Object src, Class<?> dest);
+	Converter<?, ?> getHandler(Object src, Class<?> dest);
 
 	/**
 	 * @see #getHandler(ConversionRequest)
 	 */
-	Converter getHandler(Class<?> src, Class<?> dest);
+	Converter<?, ?> getHandler(Class<?> src, Class<?> dest);
 
 	/**
 	 * @see #getHandler(ConversionRequest)
 	 */
-	Converter getHandler(Object src, Type dest);
+	Converter<?, ?> getHandler(Object src, Type dest);
 
 	/**
 	 * @see #getHandler(ConversionRequest)
 	 */
-	Converter getHandler(Class<?> src, Type dest);
+	Converter<?, ?> getHandler(Class<?> src, Type dest);
 
 	/**
 	 * @see #supports(ConversionRequest)
