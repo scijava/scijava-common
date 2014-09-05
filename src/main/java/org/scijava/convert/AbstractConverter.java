@@ -31,7 +31,7 @@
 
 package org.scijava.convert;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
 
@@ -83,7 +83,7 @@ public abstract class AbstractConverter extends
 	}
 
 	@Override
-	public void populateInputs(Set<Object> objects) {
+	public void populateInputCandidates(final Collection<Object> objects) {
 		// No-op
 	}
 

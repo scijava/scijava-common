@@ -107,7 +107,7 @@ public class DefaultConvertService extends AbstractConvertService
 
 		for (final Converter c : getInstances()) {
 			if (dest.isAssignableFrom(c.getOutputType())) {
-				c.populateInputs(objects);
+				c.populateInputCandidates(objects);
 			}
 		}
 
