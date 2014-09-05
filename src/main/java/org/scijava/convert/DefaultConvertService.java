@@ -33,8 +33,8 @@ package org.scijava.convert;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.scijava.plugin.Plugin;
@@ -102,7 +102,7 @@ public class DefaultConvertService extends AbstractConvertService
 	}
 
 	@Override
-	public List<Object> getCompatibleInputs(Class<?> dest) {
+	public Collection<Object> getCompatibleInputs(Class<?> dest) {
 		Set<Object> objects = new HashSet<Object>();
 
 		for (final Converter c : getInstances()) {

@@ -150,7 +150,8 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	@SuppressWarnings("unchecked")
 	private List<?> getObjects(final Class<?> type) {
 		@SuppressWarnings("rawtypes")
-		List compatibleInputs = convertService.getCompatibleInputs(type);
+		List compatibleInputs =
+			new ArrayList(convertService.getCompatibleInputs(type));
 		compatibleInputs.addAll(objectService.getObjects(type));
 		return compatibleInputs;
 	}
