@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.scijava.object.ObjectService;
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
 
@@ -158,14 +159,26 @@ public interface Converter extends HandlerPlugin<ConversionRequest>
 	Object convert(ConversionRequest request);
 
 	/**
-	 * Fills the given {@code Object} set with the potential input types known to
-	 * this {@code Converter}.
-	 *
-	 * @param objects A pre-allocated {@link Set} of potential input objects.
-	 *          Input objects known to this {@code Converter} will be added to
-	 *          this set.
+	 * Populates the given collection with objects which are known to exist, and
+	 * which are usable as inputs for this converter.
+	 * <p>
+	 * That is: each such object added to the collection would return {@code true}
+	 * if queried with {@code converter.canConvert(object)}, and hence would
+	 * produce an output of type {@link #getOutputType()} if passed to
+	 * {@code converter.convert(object)}.
+	 * </p>
+	 * <p>
+	 * The means by which "known objects" are determined is implementation
+	 * dependent, although the most typical use case is to query the
+	 * {@link ObjectService} for known objects of type {@link #getInputType()},
+	 * and return those. But other behaviors are possible, depending on the
+	 * converter implementation.
+	 * </p>
+	 * 
+	 * @param objects an initialized collection into which appropriate objects
+	 *          will be inserted.
 	 */
-	void populateInputs(Set<Object> objects);
+	void populateInputCandidates(Collection<Object> objects);
 
 	/**
 	 * @return The base {@code Class} this {@code Converter} produces as output.
