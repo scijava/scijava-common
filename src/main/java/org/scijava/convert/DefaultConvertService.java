@@ -34,7 +34,7 @@ package org.scijava.convert;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.scijava.plugin.Plugin;
@@ -103,7 +103,7 @@ public class DefaultConvertService extends AbstractConvertService
 
 	@Override
 	public Collection<Object> getCompatibleInputs(Class<?> dest) {
-		Set<Object> objects = new HashSet<Object>();
+		Set<Object> objects = new LinkedHashSet<Object>();
 
 		for (final Converter c : getInstances()) {
 			if (dest.isAssignableFrom(c.getOutputType())) {
