@@ -45,10 +45,10 @@ import org.scijava.plugin.AbstractHandlerPlugin;
  * well, to delegate to the appropriate {@link #canConvert}.
  * </p>
  * <p>
- * NB: by default, the {@link #populateInputs(Set)} method has a dummy
- * implementation. Effectively, this is opt-in behavior. If a subclass of this
- * would like to declare automatic mappings between input and output conversion
- * types, this method can be overridden.
+ * NB: by default, the {@link #populateInputCandidates(Collection)} method has a
+ * dummy implementation. Effectively, this is opt-in behavior. If a converter
+ * implementation would like to suggest candidates for conversion, this method
+ * can be overridden.
  * </p>
  *
  * @author Mark Hiner
