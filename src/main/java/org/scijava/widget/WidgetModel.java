@@ -176,10 +176,10 @@ public class WidgetModel extends AbstractContextual {
 			return; // no change
 		}
 
-		// Pass the vale through the convertService
+		// Pass the value through the convertService
 		convertedInput = convertService.convert(value, item.getType());
 
-		// If we get a different (covnerted) value back, cache it weakly.
+		// If we get a different (converted) value back, cache it weakly.
 		if (convertedInput != value) {
 			convertedObjects.put(value, convertedInput);
 		}
