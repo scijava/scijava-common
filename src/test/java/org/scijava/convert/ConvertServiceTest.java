@@ -52,6 +52,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.Priority;
+import org.scijava.plugin.Plugin;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.LongArray;
 
@@ -431,6 +433,24 @@ public class ConvertServiceTest {
 		assertNotNull(struct.listWrapper);
 	}
 
+	/**
+	 * Test that a {@link Converter} with the appropriate {@link
+	 * Converter#populateInputCandidates(Collection)} implementation will populate
+	 * candidate input lists with objects it can convert to a requested output
+	 * type.
+	 */
+	@Test
+	public void testGetCompatibleInputs() {
+		final List<Object> compatibleInputs =
+			new ArrayList<Object>(convertService.getCompatibleInputs(HisList.class));
+
+		assertEquals(4, compatibleInputs.size());
+		assertEquals(StringHisListConverter.S1, compatibleInputs.get(0));
+		assertEquals(StringHisListConverter.S2, compatibleInputs.get(1));
+		assertEquals(StringHisListConverter.S3, compatibleInputs.get(2));
+		assertEquals(StringHisListConverter.S4, compatibleInputs.get(3));
+	}
+
 // -- Helper Methods --
 
 	/**
@@ -552,4 +572,73 @@ public class ConvertServiceTest {
 		FOO, BAR, FUBAR
 	}
 
+	/**
+	 * Dummy {@link Converter} implementation that provides two {@code String}
+	 * input candidates for converting to {@link HisList}s. The actual conversion
+	 * methods are not implemented and are unnecessary.
+	 */
+	@Plugin(type = Converter.class, priority = Priority.LAST_PRIORITY)
+	public static class StringHisListConverter extends
+		AbstractConverter<String, HisList>
+	{
+
+		// Sample strings
+
+		private static final String S1 = "THIS_IS_A_TEST";
+		private static final String S2 = "WHY_AM_I_HERE";
+		private static final String S3 = "I_LIKE_TURTLES";
+		private static final String S4 = "OVER_9000";
+
+		// -- Converter methods --
+
+		@Override
+		public void populateInputCandidates(final Collection<Object> objects) {
+			objects.add(S1);
+			objects.add(S2);
+			objects.add(S3);
+			objects.add(S4);
+		}
+
+		@Override
+		public Class<HisList> getOutputType() {
+			return HisList.class;
+		}
+
+		@Override
+		public Class<String> getInputType() {
+			return String.class;
+		}
+
+		// -- Dummy conversion methods --
+
+		@Override
+		public boolean canConvert(Class<?> src, Type dest) {
+			return false;
+		}
+
+		@Override
+		public boolean canConvert(Class<?> src, Class<?> dest) {
+			return false;
+		}
+
+		@Override
+		public boolean canConvert(Object src, Type dest) {
+			return false;
+		}
+
+		@Override
+		public boolean canConvert(Object src, Class<?> dest) {
+			return false;
+		}
+
+		@Override
+		public Object convert(Object src, Type dest) {
+			return null;
+		}
+
+		@Override
+		public <T> T convert(Object src, Class<T> dest) {
+			return null;
+		}
+	}
 }

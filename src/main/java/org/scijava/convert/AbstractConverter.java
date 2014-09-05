@@ -31,22 +31,30 @@
 
 package org.scijava.convert;
 
+import java.util.Collection;
+
 import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
- * Abstract superclass for {@link Converter} plugins. Performs
- * appropriate dispatching of {@link #canConvert(ConversionRequest)} and
+ * Abstract superclass for {@link Converter} plugins. Performs appropriate
+ * dispatching of {@link #canConvert(ConversionRequest)} and
  * {@link #convert(ConversionRequest)} calls based on the actual state of the
  * given {@link ConversionRequest}.
  * <p>
  * Note that the {@link #supports(ConversionRequest)} method is overridden as
  * well, to delegate to the appropriate {@link #canConvert}.
  * </p>
+ * <p>
+ * NB: by default, the {@link #populateInputCandidates(Collection)} method has a
+ * dummy implementation. Effectively, this is opt-in behavior. If a converter
+ * implementation would like to suggest candidates for conversion, this method
+ * can be overridden.
+ * </p>
  *
  * @author Mark Hiner
  */
-public abstract class AbstractConverter extends
-	AbstractHandlerPlugin<ConversionRequest> implements Converter
+public abstract class AbstractConverter<I, O> extends
+	AbstractHandlerPlugin<ConversionRequest> implements Converter<I, O>
 {
 
 	// -- ConversionHandler methods --
@@ -72,6 +80,11 @@ public abstract class AbstractConverter extends
 				request.destType());
 		}
 		return null;
+	}
+
+	@Override
+	public void populateInputCandidates(final Collection<Object> objects) {
+		// No-op
 	}
 
 	// -- Typed methods --

@@ -32,6 +32,10 @@
 package org.scijava.convert;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
@@ -45,9 +49,10 @@ import org.scijava.service.Service;
 public class DefaultConvertService extends AbstractConvertService
 {
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Class<Converter> getPluginType() {
-		return Converter.class;
+	public Class<Converter<?, ?>> getPluginType() {
+		return (Class)Converter.class;
 	}
 
 	@Override
@@ -58,22 +63,22 @@ public class DefaultConvertService extends AbstractConvertService
 	// -- ConversionService methods --
 
 	@Override
-	public Converter getHandler(final Object src, final Class<?> dest) {
+	public Converter<?, ?> getHandler(final Object src, final Class<?> dest) {
 		return getHandler(new ConversionRequest(src, dest));
 	}
 
 	@Override
-	public Converter getHandler(final Class<?> src, final Class<?> dest) {
+	public Converter<?, ?> getHandler(final Class<?> src, final Class<?> dest) {
 		return getHandler(new ConversionRequest(src, dest));
 	}
 
 	@Override
-	public Converter getHandler(final Object src, final Type dest) {
+	public Converter<?, ?> getHandler(final Object src, final Type dest) {
 		return getHandler(new ConversionRequest(src, dest));
 	}
 
 	@Override
-	public Converter getHandler(final Class<?> src, final Type dest) {
+	public Converter<?, ?> getHandler(final Class<?> src, final Type dest) {
 		return getHandler(new ConversionRequest(src, dest));
 	}
 
@@ -95,5 +100,18 @@ public class DefaultConvertService extends AbstractConvertService
 	@Override
 	public boolean supports(final Class<?> src, final Type dest) {
 		return supports(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public Collection<Object> getCompatibleInputs(Class<?> dest) {
+		Set<Object> objects = new LinkedHashSet<Object>();
+
+		for (final Converter<?, ?> c : getInstances()) {
+			if (dest.isAssignableFrom(c.getOutputType())) {
+				c.populateInputCandidates(objects);
+			}
+		}
+
+		return new ArrayList<Object>(objects);
 	}
 }

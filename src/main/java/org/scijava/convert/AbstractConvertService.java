@@ -43,7 +43,7 @@ import org.scijava.util.ConversionUtils;
  * @author Mark Hiner
  */
 public abstract class AbstractConvertService extends
-	AbstractHandlerService<ConversionRequest, Converter> implements
+	AbstractHandlerService<ConversionRequest, Converter<?, ?>> implements
 	ConvertService
 {
 
@@ -58,13 +58,13 @@ public abstract class AbstractConvertService extends
 	public <T> T convert(Object src, Class<T> dest) {
 		// NB: repeated code with convert(ConversionRequest), because the
 		// handler's convert method respects the T provided
-		Converter handler = getHandler(src, dest);
+		Converter<?, ?> handler = getHandler(src, dest);
 		return handler == null ? null : handler.convert(src, dest);
 	}
 
 	@Override
 	public Object convert(ConversionRequest request) {
-		Converter handler = getHandler(request);
+		Converter<?, ?> handler = getHandler(request);
 		return handler == null ? null : handler.convert(request);
 	}
 

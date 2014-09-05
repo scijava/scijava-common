@@ -51,7 +51,7 @@ public class ConversionUtils {
 
 	private static ConvertService convertService;
 
-	private static Converter converterNoContext;
+	private static Converter<?, ?> converterNoContext;
 
 	private static double servicePriority = 0.0;
 
@@ -195,7 +195,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static Object convert(final Object src, final Type dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? null : handler.convert(src, dest));
 	}
 
@@ -205,7 +205,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static <T> T convert(final Object src, final Class<T> dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? null : handler.convert(src, dest));
 	}
 
@@ -215,7 +215,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static boolean canConvert(final Class<?> src, final Type dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
@@ -225,7 +225,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static boolean canConvert(final Class<?> src, final Class<?> dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
@@ -235,7 +235,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static boolean canConvert(final Object src, final Type dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
@@ -245,7 +245,7 @@ public class ConversionUtils {
 	 */
 	@Deprecated
 	public static boolean canConvert(final Object src, final Class<?> dest) {
-		final Converter handler = handler(new ConversionRequest(src, dest));
+		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
@@ -270,7 +270,7 @@ public class ConversionUtils {
 	 *
 	 * @return The {@link Converter} to use for handling the given request.
 	 */
-	private static Converter handler(final ConversionRequest data) {
+	private static Converter<?, ?> handler(final ConversionRequest data) {
 		if (convertService != null) return convertService.getHandler(data);
 
 		if (converterNoContext == null) converterNoContext = new DefaultConverter();
