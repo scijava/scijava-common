@@ -31,9 +31,11 @@
 
 package org.scijava.convert;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.util.GenericUtils;
 
 /**
  * Abstract superclass for {@link Converter} plugins. Performs appropriate
@@ -68,6 +70,32 @@ public abstract class AbstractConverter<I, O> extends
 		if (request.destType() != null) return canConvert(src, request.destType());
 
 		return false;
+	}
+
+	@Override
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return canConvert(src, destClass);
+	}
+
+	@Override
+	public boolean canConvert(final Object src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return canConvert(src, destClass);
+	}
+
+	@Override
+	public boolean canConvert(final Object src, final Class<?> dest) {
+		if (src == null) return false;
+		final Class<?> srcClass = src.getClass();
+
+		return canConvert(srcClass, dest);
+	}
+
+	@Override
+	public Object convert(final Object src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return convert(src, destClass);
 	}
 
 	@Override
