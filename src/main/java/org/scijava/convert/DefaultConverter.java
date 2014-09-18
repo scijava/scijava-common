@@ -61,16 +61,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Type dest) {
-		// NB: Regardless of whether the destination type is an array or collection,
-		// we still want to cast directly if doing so is possible. But note that in
-		// general, this check does not detect cases of incompatible generic
-		// parameter types. If this limitation becomes a problem in the future we
-		// can extend the logic here to provide additional signatures of canCast
-		// which operate on Types in general rather than only Classes. However, the
-		// logic could become complex very quickly in various subclassing cases,
-		// generic parameters resolved vs. propagated, etc.
-		final Class<?> c = GenericUtils.getClass(dest);
-		if (c != null && ConversionUtils.canCast(src, c)) return true;
 
 		// Handle array types, including generic array types.
 		if (isArray(dest)) return true;
@@ -80,8 +70,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			return createCollection(GenericUtils.getClass(dest)) != null;
 		}
 
-		// This wasn't a collection or array, so convert it as a single element.
-		return canConvert(src, GenericUtils.getClass(dest));
+		return super.canConvert(src, dest);
 	}
 
 	@Override
@@ -126,18 +115,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	}
 
 	@Override
-	public boolean canConvert(final Object src, final Type dest) {
-		if (src == null) return true;
-		return canConvert(src.getClass(), dest);
-	}
-
-	@Override
-	public boolean canConvert(final Object src, final Class<?> dest) {
-		if (src == null) return true;
-		return canConvert(src.getClass(), dest);
-	}
-
-	@Override
 	public Object convert(final Object src, final Type dest) {
 		// NB: Regardless of whether the destination type is an array or collection,
 		// we still want to cast directly if doing so is possible. But note that in
@@ -167,9 +144,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		// TODO: Would be better to split up this method into some helpers.
-		if (dest == null) return null;
-		if (src == null) return ConversionUtils.getNullValue(dest);
 
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<T> saneDest = ConversionUtils.getNonprimitiveType(dest);
