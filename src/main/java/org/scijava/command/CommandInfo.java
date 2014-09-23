@@ -42,12 +42,9 @@ import java.util.Map;
 
 import org.scijava.Cancelable;
 import org.scijava.Context;
-import org.scijava.Identifiable;
 import org.scijava.InstantiableException;
 import org.scijava.ItemVisibility;
-import org.scijava.Locatable;
 import org.scijava.ValidityProblem;
-import org.scijava.Versioned;
 import org.scijava.event.EventService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleException;
@@ -60,7 +57,6 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
-import org.scijava.util.VersionUtils;
 
 /**
  * A collection of metadata about a particular {@link Command}.
@@ -78,9 +74,7 @@ import org.scijava.util.VersionUtils;
  * @see CommandModule - An adapter class that bridges the gap between ImageJ
  *      commands and the rich {@link Module} interface.
  */
-public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
-	Identifiable, Locatable, Versioned
-{
+public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/** Wrapped {@link PluginInfo}, if any. */
 	private final PluginInfo<Command> info;
@@ -423,30 +417,6 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo,
 			sb.append(")");
 		}
 		return sb.toString();
-	}
-
-	// -- Locatable methods --
-
-	@Override
-	public String getLocation() {
-		try {
-			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
-		}
-		catch (final ClassNotFoundException exc) {
-			return null;
-		}
-	}
-
-	// -- Versioned methods --
-
-	@Override
-	public String getVersion() {
-		try {
-			return VersionUtils.getVersion(loadDelegateClass());
-		}
-		catch (final ClassNotFoundException exc) {
-			return null;
-		}
 	}
 
 	// -- Helper methods --
