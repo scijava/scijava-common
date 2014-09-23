@@ -34,15 +34,19 @@ package org.scijava.plugin;
 import java.net.URL;
 
 import org.scijava.AbstractUIDetails;
+import org.scijava.Identifiable;
 import org.scijava.Instantiable;
 import org.scijava.InstantiableException;
+import org.scijava.Locatable;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.UIDetails;
+import org.scijava.Versioned;
 import org.scijava.input.Accelerator;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
+import org.scijava.util.VersionUtils;
 
 /**
  * A collection of metadata about a particular plugin.
@@ -61,7 +65,7 @@ import org.scijava.util.StringMaker;
  * @see PluginService
  */
 public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
-	implements Instantiable<PT>
+	implements Instantiable<PT>, Identifiable, Locatable, Versioned
 {
 
 	/** Fully qualified class name of this plugin. */
@@ -302,6 +306,42 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 			throw new InstantiableException(e);
 		}
 		return instance;
+	}
+
+	// -- Identifiable methods --
+
+	@Override
+	public String getIdentifier() {
+		try {
+			return "plugin:" + loadClass();
+		}
+		catch (final InstantiableException exc) {
+			return null;
+		}
+	}
+
+	// -- Locatable methods --
+
+	@Override
+	public String getLocation() {
+		try {
+			return ClassUtils.getLocation(loadClass()).toExternalForm();
+		}
+		catch (InstantiableException exc) {
+			return null;
+		}
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		try {
+			return VersionUtils.getVersion(loadClass());
+		}
+		catch (InstantiableException exc) {
+			return null;
+		}
 	}
 
 	// -- Helper methods --
