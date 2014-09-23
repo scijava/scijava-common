@@ -177,10 +177,14 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		setPluginType(pluginType);
 		setMenuPath(null);
 		setMenuRoot(UIDetails.APPLICATION_MENU_ROOT);
-		if (annotation != null) {
-			this.annotation = annotation;
-			populateValues();
+		if (annotation == null) {
+			// attempt to obtain the annotation from the plugin class, if available
+			if (pluginClass != null) {
+				this.annotation = pluginClass.getAnnotation(Plugin.class);
+			}
 		}
+		else this.annotation = annotation;
+		populateValues();
 		this.classLoader = classLoader;
 	}
 
