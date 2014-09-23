@@ -612,28 +612,8 @@ public class ConvertServiceTest {
 		// -- Dummy conversion methods --
 
 		@Override
-		public boolean canConvert(Class<?> src, Type dest) {
-			return false;
-		}
-
-		@Override
 		public boolean canConvert(Class<?> src, Class<?> dest) {
 			return false;
-		}
-
-		@Override
-		public boolean canConvert(Object src, Type dest) {
-			return false;
-		}
-
-		@Override
-		public boolean canConvert(Object src, Class<?> dest) {
-			return false;
-		}
-
-		@Override
-		public Object convert(Object src, Type dest) {
-			return null;
 		}
 
 		@Override
