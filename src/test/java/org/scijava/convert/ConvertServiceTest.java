@@ -109,6 +109,18 @@ public class ConvertServiceTest {
 		assertNull(convertService.convert(new ConversionRequest(new Object(), (Type)null)));
 	}
 
+	/**
+	 * Test conversion between primitive types.
+	 */
+	@Test
+	public void testPrimitives() {
+		assertTrue(1d == convertService.convert(1, double.class));
+		assertTrue(1d == convertService.convert(1l, double.class));
+		assertTrue(1d == convertService.convert(1.0f, double.class));
+		assertTrue(1d == convertService.convert((short)1, double.class));
+		assertTrue(1d == convertService.convert(1.0, double.class));
+	}
+
 	/** Tests {@link ConvertService#supports(Class, Class)}. */
 	@Test
 	public void testCanConvert() {
