@@ -43,6 +43,11 @@ import org.scijava.util.ConversionUtils;
  * By running at {@link Priority#FIRST_PRIORITY}, other converters should
  * not need to worry about {@code null} source or destination parameters.
  * </p>
+ * <p>
+ * NB: if a {@link Class} source is queried for the {@link #canConvert},
+ * this converter will always return false (as there is no way of knowing
+ * if the source object will be null or not).
+ * </p>
  *
  * @author Mark Hiner
  */
@@ -51,12 +56,7 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
-		return src == null || super.canConvert(src, dest);
-	}
-
-	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		return src == null || dest == null;
+		return src == null;
 	}
 
 	@Override
@@ -78,4 +78,11 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 		return Object.class;
 	}
 
+	// -- Deprecated API --
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		return false;
+	}
 }

@@ -71,17 +71,7 @@ public interface ConvertService extends
 	/**
 	 * @see #getHandler(ConversionRequest)
 	 */
-	Converter<?, ?> getHandler(Class<?> src, Class<?> dest);
-
-	/**
-	 * @see #getHandler(ConversionRequest)
-	 */
 	Converter<?, ?> getHandler(Object src, Type dest);
-
-	/**
-	 * @see #getHandler(ConversionRequest)
-	 */
-	Converter<?, ?> getHandler(Class<?> src, Type dest);
 
 	/**
 	 * @see #supports(ConversionRequest)
@@ -91,16 +81,36 @@ public interface ConvertService extends
 	/**
 	 * @see #supports(ConversionRequest)
 	 */
+	boolean supports(Object src, Type dest);
+
+	// -- Deprecated API --
+
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 * @deprecated Use {@link #getHandler(Object, Class)}
+	 */
+	@Deprecated
+	Converter<?, ?> getHandler(Class<?> src, Class<?> dest);
+
+	/**
+	 * @see #getHandler(ConversionRequest)
+	 * @deprecated Use {@link #getHandler(Object, Type)}
+	 */
+	@Deprecated
+	Converter<?, ?> getHandler(Class<?> src, Type dest);
+
+	/**
+	 * @see #supports(ConversionRequest)
+	 * @deprecated Use {@link #supports(Object, Class)}
+	 */
+	@Deprecated
 	boolean supports(Class<?> src, Class<?> dest);
 
 	/**
 	 * @see #supports(ConversionRequest)
+	 * @deprecated Use {@link #supports(Object, Type)}
 	 */
-	boolean supports(Object src, Type dest);
-
-	/**
-	 * @see #supports(ConversionRequest)
-	 */
+	@Deprecated
 	boolean supports(Class<?> src, Type dest);
 
 	Collection<Object> getCompatibleInputs(Class<?> dest);

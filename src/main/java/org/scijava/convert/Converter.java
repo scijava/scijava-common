@@ -62,22 +62,6 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest>
 	boolean canConvert(ConversionRequest request);
 
 	/**
-	 * Checks whether objects of the given class can be converted to the specified
-	 * type.
-	 *
-	 * @see #convert(Object, Type)
-	 */
-	boolean canConvert(Class<?> src, Type dest);
-
-	/**
-	 * Checks whether objects of the given class can be converted to the specified
-	 * type.
-	 *
-	 * @see #convert(Object, Class)
-	 */
-	boolean canConvert(Class<?> src, Class<?> dest);
-
-	/**
 	 * Checks whether the given object's type can be converted to the specified
 	 * type.
 	 * <p>
@@ -189,4 +173,26 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest>
 	 * @return The base {@code Class} this {@code Converter} accepts as input.
 	 */
 	Class<I> getInputType();
+
+	// -- Deprecated API --
+
+	/**
+	 * Checks whether objects of the given class can be converted to the specified
+	 * type.
+	 *
+	 * @see #convert(Object, Type)
+	 * @deprecated Use {@link #canConvert(Object, Type)}
+	 */
+	@Deprecated
+	boolean canConvert(Class<?> src, Type dest);
+
+	/**
+	 * Checks whether objects of the given class can be converted to the specified
+	 * type.
+	 *
+	 * @see #convert(Object, Class)
+	 * @deprecated Use {@link #canConvert(Object, Class)}
+	 */
+	@Deprecated
+	boolean canConvert(Class<?> src, Class<?> dest);
 }

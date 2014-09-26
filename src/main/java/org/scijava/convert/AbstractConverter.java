@@ -61,6 +61,7 @@ public abstract class AbstractConverter<I, O> extends
 
 	// -- ConversionHandler methods --
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canConvert(final ConversionRequest request) {
 		Object src = request.sourceObject();
@@ -75,18 +76,13 @@ public abstract class AbstractConverter<I, O> extends
 	}
 
 	@Override
-	public boolean canConvert(final Class<?> src, final Type dest) {
-		final Class<?> destClass = GenericUtils.getClass(dest);
-		return canConvert(src, destClass);
-	}
-
-	@Override
 	public boolean canConvert(final Object src, final Type dest) {
 		if (src == null) return false;
 		final Class<?> srcClass = src.getClass();
 		return canConvert(srcClass, dest);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
 		if (src == null) return false;
@@ -125,5 +121,14 @@ public abstract class AbstractConverter<I, O> extends
 	@Override
 	public Class<ConversionRequest> getType() {
 		return ConversionRequest.class;
+	}
+
+	// -- Deprecated API --
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return canConvert(src, destClass);
 	}
 }
