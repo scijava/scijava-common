@@ -78,6 +78,49 @@ public class ConvertServiceTest {
 		convertService.getContext().dispose();
 	}
 
+	@Test
+	public void testNull() {
+		// Test convertService.supports for null parameters
+		assertTrue(convertService.supports((Object)null, Object.class));
+		assertTrue(convertService.supports((Class<Object>)null, Object.class));
+		assertTrue(convertService.supports(Object.class, (Class<Object>)null));
+		assertTrue(convertService.supports(Object.class, (Type)null));
+		assertTrue(convertService.supports(new Object(), (Class<Object>)null));
+		assertTrue(convertService.supports(new Object(), (Type)null));
+		assertTrue(convertService.supports(new ConversionRequest((Object)null, Object.class)));
+		assertTrue(convertService.supports(new ConversionRequest((Class<Object>)null, Object.class)));
+		assertTrue(convertService.supports(new ConversionRequest(Object.class, (Class<Object>)null)));
+		assertTrue(convertService.supports(new ConversionRequest(Object.class, (Type)null)));
+		assertTrue(convertService.supports(new ConversionRequest(new Object(), (Class<Object>)null)));
+		assertTrue(convertService.supports(new ConversionRequest(new Object(), (Type)null)));
+
+		// Test convertService.convert for null parameters
+		assertNull(convertService.convert((Object)null, Object.class));
+		assertNull(convertService.convert((Class<Object>)null, Object.class));
+		assertNull(convertService.convert(Object.class, (Class<Object>)null));
+		assertNull(convertService.convert(Object.class, (Type)null));
+		assertNull(convertService.convert(new Object(), (Class<Object>)null));
+		assertNull(convertService.convert(new Object(), (Type)null));
+		assertNull(convertService.convert(new ConversionRequest((Object)null, Object.class)));
+		assertNull(convertService.convert(new ConversionRequest((Class<Object>)null, Object.class)));
+		assertNull(convertService.convert(new ConversionRequest(Object.class, (Class<Object>)null)));
+		assertNull(convertService.convert(new ConversionRequest(Object.class, (Type)null)));
+		assertNull(convertService.convert(new ConversionRequest(new Object(), (Class<Object>)null)));
+		assertNull(convertService.convert(new ConversionRequest(new Object(), (Type)null)));
+	}
+
+	/**
+	 * Test conversion between primitive types.
+	 */
+	@Test
+	public void testPrimitives() {
+		assertTrue(1d == convertService.convert(1, double.class));
+		assertTrue(1d == convertService.convert(1l, double.class));
+		assertTrue(1d == convertService.convert(1.0f, double.class));
+		assertTrue(1d == convertService.convert((short)1, double.class));
+		assertTrue(1d == convertService.convert(1.0, double.class));
+	}
+
 	/** Tests {@link ConvertService#supports(Class, Class)}. */
 	@Test
 	public void testCanConvert() {
@@ -612,28 +655,8 @@ public class ConvertServiceTest {
 		// -- Dummy conversion methods --
 
 		@Override
-		public boolean canConvert(Class<?> src, Type dest) {
-			return false;
-		}
-
-		@Override
 		public boolean canConvert(Class<?> src, Class<?> dest) {
 			return false;
-		}
-
-		@Override
-		public boolean canConvert(Object src, Type dest) {
-			return false;
-		}
-
-		@Override
-		public boolean canConvert(Object src, Class<?> dest) {
-			return false;
-		}
-
-		@Override
-		public Object convert(Object src, Type dest) {
-			return null;
 		}
 
 		@Override

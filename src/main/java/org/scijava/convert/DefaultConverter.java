@@ -60,84 +60,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	// -- ConversionHandler methods --
 
 	@Override
-	public boolean canConvert(final Class<?> src, final Type dest) {
-		// NB: Regardless of whether the destination type is an array or collection,
-		// we still want to cast directly if doing so is possible. But note that in
-		// general, this check does not detect cases of incompatible generic
-		// parameter types. If this limitation becomes a problem in the future we
-		// can extend the logic here to provide additional signatures of canCast
-		// which operate on Types in general rather than only Classes. However, the
-		// logic could become complex very quickly in various subclassing cases,
-		// generic parameters resolved vs. propagated, etc.
-		final Class<?> c = GenericUtils.getClass(dest);
-		if (c != null && ConversionUtils.canCast(src, c)) return true;
-
-		// Handle array types, including generic array types.
-		if (isArray(dest)) return true;
-
-		// Handle parameterized collection types.
-		if (dest instanceof ParameterizedType && isCollection(dest)) {
-			return createCollection(GenericUtils.getClass(dest)) != null;
-		}
-
-		// This wasn't a collection or array, so convert it as a single element.
-		return canConvert(src, GenericUtils.getClass(dest));
-	}
-
-	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		// ensure type is well-behaved, rather than a primitive type
-		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
-
-		// OK if the existing object can be casted
-		if (ConversionUtils.canCast(src, saneDest)) return true;
-
-		// OK for numerical conversions
-		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
-			Number.class) &&
-			(ClassUtils.isByte(dest) || ClassUtils.isDouble(dest) ||
-				ClassUtils.isFloat(dest) || ClassUtils.isInteger(dest) ||
-				ClassUtils.isLong(dest) || ClassUtils.isShort(dest)))
-		{
-			return true;
-		}
-
-		// OK if string
-		if (saneDest == String.class) return true;
-
-		if (ConversionUtils.canCast(src, String.class)) {
-			// OK if source type is string and destination type is character
-			// (in this case, the first character of the string would be used)
-			if (saneDest == Character.class) return true;
-
-			// OK if source type is string and destination type is an enum
-			if (dest.isEnum()) return true;
-		}
-
-		// OK if appropriate wrapper constructor exists
-		try {
-			return getConstructor(saneDest, src) != null;
-		}
-		catch (final Exception exc) {
-			// TODO: Best not to catch blanket Exceptions here.
-			// no known way to convert
-			return false;
-		}
-	}
-
-	@Override
-	public boolean canConvert(final Object src, final Type dest) {
-		if (src == null) return true;
-		return canConvert(src.getClass(), dest);
-	}
-
-	@Override
-	public boolean canConvert(final Object src, final Class<?> dest) {
-		if (src == null) return true;
-		return canConvert(src.getClass(), dest);
-	}
-
-	@Override
 	public Object convert(final Object src, final Type dest) {
 		// NB: Regardless of whether the destination type is an array or collection,
 		// we still want to cast directly if doing so is possible. But note that in
@@ -167,7 +89,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		// TODO: Would be better to split up this method into some helpers.
 		if (dest == null) return null;
 		if (src == null) return ConversionUtils.getNullValue(dest);
 
@@ -358,6 +279,68 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		}
 		catch (final IllegalAccessException exc) {
 			return null;
+		}
+	}
+
+	// -- Deprecated API --
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		
+		// Handle array types, including generic array types.
+		if (isArray(dest)) return true;
+		
+		// Handle parameterized collection types.
+		if (dest instanceof ParameterizedType && isCollection(dest)) {
+			return createCollection(GenericUtils.getClass(dest)) != null;
+		}
+		
+		return super.canConvert(src, dest);
+	}
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+
+		if (src == null || dest == null) return true;
+
+		// ensure type is well-behaved, rather than a primitive type
+		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		
+		// OK if the existing object can be casted
+		if (ConversionUtils.canCast(src, saneDest)) return true;
+		
+		// OK for numerical conversions
+		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
+			Number.class) &&
+			(ClassUtils.isByte(dest) || ClassUtils.isDouble(dest) ||
+					ClassUtils.isFloat(dest) || ClassUtils.isInteger(dest) ||
+					ClassUtils.isLong(dest) || ClassUtils.isShort(dest)))
+		{
+			return true;
+		}
+		
+		// OK if string
+		if (saneDest == String.class) return true;
+		
+		if (ConversionUtils.canCast(src, String.class)) {
+			// OK if source type is string and destination type is character
+			// (in this case, the first character of the string would be used)
+			if (saneDest == Character.class) return true;
+			
+			// OK if source type is string and destination type is an enum
+			if (dest.isEnum()) return true;
+		}
+		
+		// OK if appropriate wrapper constructor exists
+		try {
+			return getConstructor(saneDest, src) != null;
+		}
+		catch (final Exception exc) {
+			// TODO: Best not to catch blanket Exceptions here.
+			// no known way to convert
+			return false;
 		}
 	}
 }

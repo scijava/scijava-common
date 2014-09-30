@@ -31,9 +31,11 @@
 
 package org.scijava.convert;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.util.GenericUtils;
 
 /**
  * Abstract superclass for {@link Converter} plugins. Performs appropriate
@@ -59,27 +61,49 @@ public abstract class AbstractConverter<I, O> extends
 
 	// -- ConversionHandler methods --
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canConvert(final ConversionRequest request) {
-		final Class<?> src = request.sourceClass();
-		if (src == null) return true;
+		Object src = request.sourceObject();
+		if (src == null) {
+			Class<?> srcClass = request.sourceClass();
+			if (request.destType() != null) return canConvert(srcClass, request.destType());
+			return canConvert(srcClass, request.destClass());
+		}
 
-		if (request.destClass() != null) return canConvert(src, request.destClass());
 		if (request.destType() != null) return canConvert(src, request.destType());
+		return canConvert(src, request.destClass());
+	}
 
-		return false;
+	@Override
+	public boolean canConvert(final Object src, final Type dest) {
+		if (src == null) return false;
+		final Class<?> srcClass = src.getClass();
+		return canConvert(srcClass, dest);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean canConvert(final Object src, final Class<?> dest) {
+		if (src == null) return false;
+		final Class<?> srcClass = src.getClass();
+
+		return canConvert(srcClass, dest);
+	}
+
+	@Override
+	public Object convert(final Object src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return convert(src, destClass);
 	}
 
 	@Override
 	public Object convert(final ConversionRequest request) {
-		if (request.sourceObject() != null) {
-			if (request.destClass() != null) return convert(request.sourceObject(),
-				request.destClass());
-
-			if (request.destType() != null) return convert(request.sourceObject(),
-				request.destType());
+		if (request.destType() != null) {
+			return convert(request.sourceObject(), request.destType());
 		}
-		return null;
+		
+		return convert(request.sourceObject(), request.destClass());
 	}
 
 	@Override
@@ -97,5 +121,14 @@ public abstract class AbstractConverter<I, O> extends
 	@Override
 	public Class<ConversionRequest> getType() {
 		return ConversionRequest.class;
+	}
+
+	// -- Deprecated API --
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		final Class<?> destClass = GenericUtils.getClass(dest);
+		return canConvert(src, destClass);
 	}
 }
