@@ -42,20 +42,21 @@ import org.scijava.prefs.PrefService;
  */
 public class DefaultScriptInterpreter implements ScriptInterpreter {
 
+	private final ScriptLanguage language;
 	private final ScriptEngine engine;
 	private final History history;
-	private String currentCommand = "";
 
 	/**
 	 * Constructs a new {@link DefaultScriptInterpreter}.
 	 * 
 	 * @param scriptService the script service
-	 * @param engine the script engine
+	 * @param language the script language
 	 */
 	public DefaultScriptInterpreter(final PrefService prefs,
-		final ScriptService scriptService, final ScriptEngine engine)
+		final ScriptService scriptService, final ScriptLanguage language)
 	{
-		this.engine = engine;
+		this.language = language;
+		engine = language.getScriptEngine();
 		history = new History(prefs, engine.getClass().getName());
 		readHistory();
 	}
@@ -74,7 +75,6 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 
 	@Override
 	public synchronized String walkHistory(final String currentCommand, boolean forward) {
-		this.currentCommand = currentCommand;
 		if (history == null) return currentCommand;
 		history.replace(currentCommand);
 		return forward ? history.next() : history.previous();
@@ -85,6 +85,11 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		if (history != null) history.add(command);
 		if (engine == null) throw new java.lang.IllegalArgumentException();
 		engine.eval(command);
+	}
+
+	@Override
+	public ScriptLanguage getLanguage() {
+		return language;
 	}
 
 	@Override

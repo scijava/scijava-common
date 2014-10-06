@@ -70,6 +70,11 @@ public interface ScriptInterpreter {
 	void eval(String command) throws ScriptException;
 
 	/**
+	 * Returns the associated {@link ScriptLanguage}.
+	 */
+	ScriptLanguage getLanguage();
+
+	/**
 	 * Returns the associated {@link ScriptEngine}.
 	 * 
 	 * @return the script engine
