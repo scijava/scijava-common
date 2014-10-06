@@ -78,12 +78,6 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		return forward ? history.next() : history.previous();
 	}
 
-	/**
-	 * Evaluates a command.
-	 * 
-	 * @param command the command to evaluate
-	 * @throws ScriptException
-	 */
 	@Override
 	public void eval(String command) throws ScriptException {
 		if (history != null) history.add(command);
@@ -91,11 +85,6 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		engine.eval(command);
 	}
 
-	/**
-	 * Returns the current script engine.
-	 * 
-	 * @return
-	 */
 	@Override
 	public ScriptEngine getEngine() {
 		return engine;
