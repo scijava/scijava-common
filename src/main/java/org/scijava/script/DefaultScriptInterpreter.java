@@ -74,14 +74,16 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	}
 
 	@Override
-	public synchronized String walkHistory(final String currentCommand, boolean forward) {
+	public synchronized String walkHistory(final String currentCommand,
+		final boolean forward)
+	{
 		if (history == null) return currentCommand;
 		history.replace(currentCommand);
 		return forward ? history.next() : history.previous();
 	}
 
 	@Override
-	public void eval(String command) throws ScriptException {
+	public void eval(final String command) throws ScriptException {
 		if (history != null) history.add(command);
 		if (engine == null) throw new java.lang.IllegalArgumentException();
 		engine.eval(command);
