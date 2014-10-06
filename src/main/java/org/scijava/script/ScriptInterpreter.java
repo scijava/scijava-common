@@ -44,12 +44,12 @@ public interface ScriptInterpreter {
 	/**
 	 * Reads the persisted history of the current script interpreter.
 	 */
-	public void readHistory();
+	void readHistory();
 
 	/**
 	 * Persists the history of the current script interpreter.
 	 */
-	public void writeHistory();
+	void writeHistory();
 
 	/**
 	 * Obtains the next/previous command in the command history.
@@ -59,7 +59,7 @@ public interface ScriptInterpreter {
 	 *          if false, the previous one
 	 * @return the next/previous command
 	 */
-	public String walkHistory(final String currentCommand, boolean forward);
+	String walkHistory(String currentCommand, boolean forward);
 
 	/**
 	 * Evaluates a command.
@@ -67,12 +67,12 @@ public interface ScriptInterpreter {
 	 * @param command the command to evaluate
 	 * @throws ScriptException
 	 */
-	public void eval(String command) throws ScriptException;
+	void eval(String command) throws ScriptException;
 
 	/**
 	 * Returns the associated {@link ScriptEngine}
 	 * 
 	 * @return the script engine
 	 */
-	public ScriptEngine getEngine();
+	ScriptEngine getEngine();
 }
