@@ -93,14 +93,14 @@ public class AnnotationProcessor extends AbstractProcessor {
 		try {
 			writer.write(writer);
 		}
-		catch (IOException e) {
+		catch (final IOException e) {
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			e.printStackTrace(new PrintStream(out));
 			try {
 				out.close();
 				processingEnv.getMessager().printMessage(Kind.ERROR, out.toString());
 			}
-			catch (IOException e2) {
+			catch (final IOException e2) {
 				processingEnv.getMessager().printMessage(Kind.ERROR,
 					e2.getMessage() + " while printing " + e.getMessage());
 			}
@@ -155,8 +155,9 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		@SuppressWarnings("unchecked")
-		private Map<String, Object> adapt(List<? extends AnnotationMirror> mirrors,
-			TypeMirror annotationType)
+		private Map<String, Object> adapt(
+			final List<? extends AnnotationMirror> mirrors,
+			final TypeMirror annotationType)
 		{
 			final Map<String, Object> result = new TreeMap<String, Object>();
 			for (final AnnotationMirror mirror : mirrors) {
@@ -211,7 +212,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		private AnnotationMirror getMirror(final TypeElement element) {
-			for (AnnotationMirror candidate : utils.getAllAnnotationMirrors(element))
+			for (final AnnotationMirror candidate : utils
+				.getAllAnnotationMirrors(element))
 			{
 				final Name binaryName =
 					utils.getBinaryName((TypeElement) candidate.getAnnotationType()
@@ -224,7 +226,9 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		@Override
-		public InputStream openInput(String annotationName) throws IOException {
+		public InputStream openInput(final String annotationName)
+			throws IOException
+		{
 			try {
 				return filer.getResource(StandardLocation.CLASS_OUTPUT, "",
 					Index.INDEX_PREFIX + annotationName).openInputStream();
@@ -235,11 +239,14 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		@Override
-		public OutputStream openOutput(String annotationName) throws IOException {
+		public OutputStream openOutput(final String annotationName)
+			throws IOException
+		{
 			final List<Element> originating = originatingElements.get(annotationName);
 			final String path = Index.INDEX_PREFIX + annotationName;
-			final FileObject fileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "",
-				path, originating.toArray(new Element[originating.size()]));
+			final FileObject fileObject =
+				filer.createResource(StandardLocation.CLASS_OUTPUT, "", path,
+					originating.toArray(new Element[originating.size()]));
 
 			/*
 			 * Verify that the generated file is in the META-INF/json/ subdirectory;
@@ -251,7 +258,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 			if (uri != null && uri.endsWith("/" + path)) {
 				return fileObject.openOutputStream();
 			}
-			final String prefix = uri.substring(0, uri.length() - annotationName.length());
+			final String prefix =
+				uri.substring(0, uri.length() - annotationName.length());
 			final File file = new File(prefix + path);
 			final File parent = file.getParentFile();
 			if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
@@ -261,7 +269,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		@Override
-		public boolean isClassObsolete(String className) {
+		public boolean isClassObsolete(final String className) {
 			return false;
 		}
 
