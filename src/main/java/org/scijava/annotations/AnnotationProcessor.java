@@ -32,7 +32,9 @@
 package org.scijava.annotations;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,6 +64,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
 import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
@@ -234,10 +237,27 @@ public class AnnotationProcessor extends AbstractProcessor {
 		@Override
 		public OutputStream openOutput(String annotationName) throws IOException {
 			final List<Element> originating = originatingElements.get(annotationName);
-			return filer.createResource(StandardLocation.CLASS_OUTPUT, "",
-				Index.INDEX_PREFIX + annotationName,
-				originating.toArray(new Element[originating.size()]))
-				.openOutputStream();
+			final String path = Index.INDEX_PREFIX + annotationName;
+			final FileObject fileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "",
+				path, originating.toArray(new Element[originating.size()]));
+
+			/*
+			 * Verify that the generated file is in the META-INF/json/ subdirectory;
+			 * Despite our asking for it explicitly, the DefaultFileManager will
+			 * strip out the directory if javac was called without an explicit
+			 * output directory (i.e. without <code>-d</code> option).
+			 */
+			final String uri = fileObject.toUri().toString();
+			if (uri != null && uri.endsWith("/" + path)) {
+				return fileObject.openOutputStream();
+			}
+			final String prefix = uri.substring(0, uri.length() - annotationName.length());
+			final File file = new File(prefix + path);
+			final File parent = file.getParentFile();
+			if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
+				throw new IOException("Could not create directory: " + parent);
+			}
+			return new FileOutputStream(file);
 		}
 
 		@Override
