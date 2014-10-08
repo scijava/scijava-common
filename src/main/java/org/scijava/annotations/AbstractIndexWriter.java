@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.lang.model.element.AnnotationValue;
+
 /**
  * Writes annotations as JSON-formatted files.
  * <p>
@@ -169,6 +171,9 @@ public abstract class AbstractIndexWriter {
 	protected Object adapt(final Object o) {
 		if (o instanceof Annotation) {
 			return adapt((Annotation) o);
+		}
+		else if (o instanceof AnnotationValue) {
+			return adapt(((AnnotationValue) o).getValue());
 		}
 		else if (o instanceof Enum) {
 			return adapt((Enum<?>) o);
