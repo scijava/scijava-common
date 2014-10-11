@@ -73,6 +73,7 @@ class IndexReader {
 
 	public Object next() throws IOException {
 		int c = in.read();
+		while (Character.isWhitespace(c)) c = in.read();
 		if (c < 0) {
 			return null;
 		}
