@@ -49,6 +49,7 @@ class History {
 	private final PrefService prefs;
 	private final String name;
 	private final LastRecentlyUsed<String> entries = new LastRecentlyUsed<String>(MAX_ENTRIES);
+	private String currentCommand = "";
 	private int position = -1;
 
 	/**
@@ -88,10 +89,14 @@ class History {
 	public void add(final String command) {
 		entries.add(command);
 		position = -1;
+		currentCommand = "";
 	}
 
 	public boolean replace(final String currentCommand) {
-		if (position < 0) return false;
+		if (position < 0) {
+			this.currentCommand = currentCommand;
+			return false;
+		}
 		return entries.replace(position, currentCommand);
 	}
 
@@ -106,7 +111,7 @@ class History {
 	 */
 	public String next() {
 		position = entries.next(position);
-		return position < 0 ? null : entries.get(position);
+		return position < 0 ? currentCommand : entries.get(position);
 	}
 
 	/**
@@ -120,7 +125,7 @@ class History {
 	 */
 	public String previous() {
 		position = entries.previous(position);
-		return position < 0 ? null : entries.get(position);
+		return position < 0 ? currentCommand : entries.get(position);
 	}
 
 	@Override
