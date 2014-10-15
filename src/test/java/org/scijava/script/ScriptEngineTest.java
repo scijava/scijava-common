@@ -138,5 +138,7 @@ public class ScriptEngineTest {
 		}
 	}
 
-	private static class Rot13Bindings extends HashMap<String, Object> implements Bindings {	}
+	private static class Rot13Bindings extends HashMap<String, Object> implements Bindings {
+		private static final long serialVersionUID = 1L;
+	}
 }

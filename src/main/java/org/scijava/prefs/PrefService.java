@@ -194,4 +194,24 @@ public interface PrefService extends SciJavaService {
 	 * prefs.
 	 */
 	List<String> getList(Class<?> prefClass);
+
+	/**
+	 * Puts an iterable into the preferences.
+	 */
+	void putIterable(Iterable<String> iterable, String key);
+
+	/**
+	 * Puts an iterable into the preferences.
+	 */
+	void putIterable(Class<?> prefClass, Iterable<String> iterable, String key);
+
+	/**
+	 * Gets an iterable from the preferences.
+	 */
+	Iterable<String> getIterable(String key);
+
+	/**
+	 * Gets an iterable from the preferences.
+	 */
+	Iterable<String> getIterable(Class<?> prefClass, String key);
 }
