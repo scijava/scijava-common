@@ -43,9 +43,6 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import org.scijava.log.LogService;
-import org.scijava.log.StderrLogService;
-
 /**
  * A general-purpose reflection wrapper class.
  * <p>
@@ -71,18 +68,11 @@ public class ReflectedUniverse {
 	/** Whether to force our way past restrictive access modifiers. */
 	private boolean force;
 
-	private final LogService log;
-
 	// -- Constructors --
 
 	/** Constructs a new reflected universe. */
 	public ReflectedUniverse() {
-		this(null, null);
-	}
-
-	/** Constructs a new reflected universe. */
-	public ReflectedUniverse(final LogService log) {
-		this(null, log);
+		this((ClassLoader) null);
 	}
 
 	/**
@@ -96,13 +86,8 @@ public class ReflectedUniverse {
 
 	/** Constructs a new reflected universe that uses the given class loader. */
 	public ReflectedUniverse(final ClassLoader loader) {
-		this(loader, null);
-	}
-
-	public ReflectedUniverse(final ClassLoader loader, final LogService log) {
 		variables = new HashMap<String, Object>();
 		this.loader = loader == null ? getClass().getClassLoader() : loader;
-		this.log = log == null ? new StderrLogService() : log;
 	}
 
 	// -- Utility methods --
@@ -166,18 +151,15 @@ public class ReflectedUniverse {
 				c = Class.forName(command, true, loader);
 			}
 			catch (final NoClassDefFoundError err) {
-				log.debug("No such class: " + command, err);
 				throw new ReflectException("No such class: " + command, err);
 			}
 			catch (final ClassNotFoundException exc) {
-				log.debug("No such class: " + command, exc);
 				throw new ReflectException("No such class: " + command, exc);
 			}
 			catch (final RuntimeException exc) {
 				// HACK: workaround for bug in Apache Axis2
 				final String msg = exc.getMessage();
 				if (msg != null && msg.indexOf("ClassNotFound") < 0) throw exc;
-				log.debug("No such class: " + command, exc);
 				throw new ReflectException("No such class: " + command, exc);
 			}
 			setVar(varName, c);
@@ -280,7 +262,6 @@ public class ReflectedUniverse {
 				exc = e;
 			}
 			if (exc != null) {
-				log.debug("Cannot instantiate object", exc);
 				throw new ReflectException("Cannot instantiate object", exc);
 			}
 		}
@@ -339,7 +320,6 @@ public class ReflectedUniverse {
 				exc = e;
 			}
 			if (exc != null) {
-				log.debug("Cannot execute method: " + methodName, exc);
 				throw new ReflectException("Cannot execute method: " + methodName, exc);
 			}
 		}
@@ -450,7 +430,6 @@ public class ReflectedUniverse {
 				if (force) field.setAccessible(true);
 			}
 			catch (final NoSuchFieldException exc) {
-				log.debug("No such field: " + varName, exc);
 				throw new ReflectException("No such field: " + varName, exc);
 			}
 			Object fieldVal;
@@ -458,7 +437,6 @@ public class ReflectedUniverse {
 				fieldVal = field.get(var);
 			}
 			catch (final IllegalAccessException exc) {
-				log.debug("Cannot get field value: " + varName, exc);
 				throw new ReflectException("Cannot get field value: " + varName, exc);
 			}
 			return fieldVal;
@@ -501,7 +479,8 @@ public class ReflectedUniverse {
 				r.exec(line);
 			}
 			catch (final ReflectException exc) {
-				r.log.debug("Could not execute '" + line + "'", exc);
+				System.err.println("Could not execute '" + line + "':");
+				exc.printStackTrace();
 			}
 		}
 		System.out.println();
