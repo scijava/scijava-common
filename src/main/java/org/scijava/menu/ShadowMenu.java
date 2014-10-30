@@ -529,14 +529,15 @@ public class ShadowMenu extends AbstractContextual implements
 		if (!leaf) child.addChild(info, depth + 1);
 		else if (existingChild != null) {
 			if (log != null) {
-				if (info.getPriority() == existingChild.getModuleInfo().getPriority()) {
+				final ModuleInfo childInfo = existingChild.getModuleInfo();
+				if (childInfo != null && info.getPriority() == childInfo.getPriority())
+				{
 					log.warn("ShadowMenu: menu item already exists:\n\texisting: " +
-						existingChild.getModuleInfo() + "\n\t ignored: " + info);
+						childInfo + "\n\t ignored: " + info);
 				}
 				else {
 					log.debug("ShadowMenu: higher-priority menu item already exists:\n" +
-						"\texisting: " + existingChild.getModuleInfo() + "\n\t ignored: " +
-						info);
+						"\texisting: " + childInfo + "\n\t ignored: " + info);
 				}
 			}
 		}
