@@ -235,7 +235,7 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 		// compare titles
 		final String thisTitle = getTitle();
 		final String thatTitle = uiDetails.getTitle();
-		return thisTitle.compareTo(thatTitle);
+		return MiscUtils.compare(thisTitle, thatTitle);
 	}
 
 }
