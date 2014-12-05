@@ -94,6 +94,7 @@ public class OptionsTest {
 			final FooOptions fooOptions = optionsService.getOptions(FooOptions.class);
 
 			// bar should initially be 0
+			fooOptions.setBar(0);
 			assertEquals(0, fooOptions.getBar());
 
 			// verify that we can set bar to a desired value at all

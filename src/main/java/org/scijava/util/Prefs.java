@@ -223,7 +223,7 @@ public final class Prefs {
 		service().remove(preferences.absolutePath(), key);
 	}
 
-	/** Puts a list into the preferences. */
+	/** Puts a map into the preferences. */
 	public static void putMap(final Map<String, String> map, final String key) {
 		service().putMap(map, key);
 	}
@@ -234,7 +234,7 @@ public final class Prefs {
 		service().putMap(preferences.absolutePath(), map, key);
 	}
 
-	/** Puts a list into the preferences. */
+	/** Puts a map into the preferences. */
 	public static void putMap(final Preferences preferences,
 		final Map<String, String> map)
 	{

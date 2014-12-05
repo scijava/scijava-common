@@ -105,7 +105,8 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 
 		// use the unique identifier, if available
 		if (this instanceof Identifiable) {
-			return ((Identifiable) this).getIdentifier();
+			final String id = ((Identifiable) this).getIdentifier();
+			if (id != null) return id;
 		}
 
 		// use class name as a last resort
@@ -235,7 +236,7 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 		// compare titles
 		final String thisTitle = getTitle();
 		final String thatTitle = uiDetails.getTitle();
-		return thisTitle.compareTo(thatTitle);
+		return MiscUtils.compare(thisTitle, thatTitle);
 	}
 
 }
