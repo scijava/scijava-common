@@ -138,7 +138,8 @@ public abstract class AbstractIndexWriter {
 		int changedCount = map.size();
 		boolean hasObsoletes = false;
 
-		final IndexReader reader = new IndexReader(in);
+		final IndexReader reader =
+			new IndexReader(in, annotationName + " from " + in);
 		try {
 			for (;;) {
 				@SuppressWarnings("unchecked")
