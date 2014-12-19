@@ -125,7 +125,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 			map.put(ptClass, plugin);
 		}
 
-		log.info("Found " + list.size() + " " + getPluginType().getSimpleName() +
+		log.debug("Found " + list.size() + " " + getPluginType().getSimpleName() +
 			" plugins.");
 
 		instanceMap = map;

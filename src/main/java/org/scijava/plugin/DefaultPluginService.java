@@ -249,7 +249,7 @@ public class DefaultPluginService extends AbstractService implements
 	public void initialize() {
 		pluginIndex = context().getPluginIndex();
 
-		log.info("Found " + pluginIndex.size() + " plugins.");
+		log.debug("Found " + pluginIndex.size() + " plugins.");
 		if (log.isDebug()) {
 			for (final PluginInfo<?> info : pluginIndex) {
 				log.debug("- " + info);

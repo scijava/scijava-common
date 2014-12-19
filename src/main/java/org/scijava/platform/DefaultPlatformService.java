@@ -164,7 +164,7 @@ public final class DefaultPlatformService extends
 			log.debug("Configuring platform: " + platform.getClass().getName());
 			platform.configure(this);
 		}
-		if (platforms.size() == 0) log.info("No platforms to configure.");
+		if (platforms.size() == 0) log.debug("No platforms to configure.");
 	}
 
 	// -- Disposable methods --
