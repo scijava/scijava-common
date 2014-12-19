@@ -176,7 +176,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void showUI(final UserInterface ui) {
-		log.info("Launching user interface: " + ui.getClass().getName());
+		log.debug("Launching user interface: " + ui.getClass().getName());
 		ui.show();
 		// NB: Also show all the current displays.
 		for (final Display<?> display : displayService.getDisplays()) {
@@ -499,7 +499,7 @@ public final class DefaultUIService extends AbstractService implements
 			// instantiate user interface
 			final UserInterface ui = pluginService.createInstance(info);
 			if (ui == null) continue;
-			log.info("Discovered user interface: " + ui.getClass().getName());
+			log.debug("Discovered user interface: " + ui.getClass().getName());
 			addUserInterface(info.getName(), ui);
 		}
 

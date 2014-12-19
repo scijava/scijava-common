@@ -94,7 +94,7 @@ public class ScriptFinder extends AbstractContextual {
 				discoverScripts(scripts, scriptFiles, directory, menuPath);
 		}
 
-		log.info("Found " + scriptCount + " scripts");
+		log.debug("Found " + scriptCount + " scripts");
 	}
 
 	// -- Helper methods --
