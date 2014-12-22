@@ -62,10 +62,11 @@ public class Context implements Disposable {
 
 	/**
 	 * System property indicating whether the context should fail fast when
-	 * is attempts to instantiate a required service which is invalid or missing.
+	 * attempting to instantiate a required service which is invalid or missing.
 	 * If this property is set to "false" then the context creation will attempt
 	 * to continue even when a required service cannot be instantiated. Otherwise,
-	 * the constructor will throw an {@link IllegalArgumentException} in that situation.
+	 * the constructor will throw an {@link IllegalArgumentException} in that
+	 * situation.
 	 */
 	public static final String STRICT_PROPERTY = "scijava.context.strict";
 
