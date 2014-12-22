@@ -42,6 +42,7 @@ import java.util.List;
 import org.scijava.event.ContextDisposingEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
@@ -400,46 +401,72 @@ public class Context implements Disposable {
 	// -- Helper methods --
 
 	private List<Field> getParameterFields(Object o) {
-		return ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
+		try {
+			return ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
+		}
+		catch (final Throwable t) {
+			handleSafely(t);
+		}
+		return Collections.emptyList();
 	}
 
 	private void inject(final Field f, final Object o) {
-		f.setAccessible(true); // expose private fields
+		try {
+			f.setAccessible(true); // expose private fields
 
-		final Class<?> type = f.getType();
-		if (Service.class.isAssignableFrom(type)) {
-			final Service existingService = (Service) ClassUtils.getValue(f, o);
-			if (existingService != null) {
-				throw new IllegalStateException("Context already injected: " +
-						f.getDeclaringClass().getName() + "#" + f.getName());
-			}
+			final Class<?> type = f.getType();
+			if (Service.class.isAssignableFrom(type)) {
+				final Service existingService = (Service) ClassUtils.getValue(f, o);
+				if (existingService != null) {
+					throw new IllegalStateException("Context already injected: " +
+							f.getDeclaringClass().getName() + "#" + f.getName());
+				}
 
-			// populate Service parameter
-			@SuppressWarnings("unchecked")
-			final Class<? extends Service> serviceType =
-			(Class<? extends Service>) type;
-			final Service service = getService(serviceType);
-			if (service == null && f.getAnnotation(Parameter.class).required()) {
-				throw new IllegalArgumentException(
-					createMissingServiceMessage(serviceType));
+				// populate Service parameter
+				@SuppressWarnings("unchecked")
+				final Class<? extends Service> serviceType =
+				(Class<? extends Service>) type;
+				final Service service = getService(serviceType);
+				if (service == null && f.getAnnotation(Parameter.class).required()) {
+					throw new IllegalArgumentException(
+						createMissingServiceMessage(serviceType));
+				}
+				ClassUtils.setValue(f, o, service);
 			}
-			ClassUtils.setValue(f, o, service);
+			else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
+				final Context existingContext = (Context) ClassUtils.getValue(f, o);
+				if (existingContext != null) {
+					throw new IllegalStateException("Context already injected: " +
+							f.getDeclaringClass().getName() + "#" + f.getName());
+				}
+
+				// populate Context parameter
+				ClassUtils.setValue(f, o, this);
+			}
 		}
-		else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
-			final Context existingContext = (Context) ClassUtils.getValue(f, o);
-			if (existingContext != null) {
-				throw new IllegalStateException("Context already injected: " +
-						f.getDeclaringClass().getName() + "#" + f.getName());
-			}
-
-			// populate Context parameter
-			ClassUtils.setValue(f, o, this);
+		catch (final Throwable t) {
+			handleSafely(t);
 		}
 	}
 
 	private void subscribeToEvents(final Object o) {
-		final EventService eventService = getService(EventService.class);
-		if (eventService != null) eventService.subscribe(o);
+		try {
+			final EventService eventService = getService(EventService.class);
+			if (eventService != null) eventService.subscribe(o);
+		}
+		catch (final Throwable t) {
+			handleSafely(t);
+		}
+	}
+
+	private void handleSafely(final Throwable t) {
+		if (isStrict()) {
+			// NB: Only rethrow unchecked exceptions.
+			if (t instanceof RuntimeException) throw (RuntimeException) t;
+			if (t instanceof Error) throw (Error) t;
+		}
+		final LogService log = getService(LogService.class);
+		if (log != null) log.error(t);
 	}
 
 	private String createMissingServiceMessage(
