@@ -79,6 +79,23 @@ public class Context implements Disposable {
 	private final PluginIndex pluginIndex;
 
 	/**
+	 * Whether context creation and injection should behave strictly, failing fast
+	 * when attempting to instantiate a required service which is invalid or
+	 * missing.
+	 * <ul>
+	 * <li>If the flag is false, then the context creation will attempt to
+	 * continue even when a required service cannot be instantiated. Otherwise,
+	 * the constructor will throw an {@link IllegalArgumentException} in that
+	 * situation.</li>
+	 * <li>If this flag is false, then a call to {@link Context#inject(Object)}
+	 * will attempt to catch any errors that occur during context injection
+	 * (notably: {@link NoClassDefFoundError} when scanning for event handler
+	 * methods), logging them as errors.</li>
+	 * </ul>
+	 */
+	private boolean strict;
+
+	/**
 	 * Creates a new SciJava application context with all available services.
 	 * 
 	 * @see #Context(Collection, PluginIndex, boolean)
@@ -240,6 +257,8 @@ public class Context implements Disposable {
 		this.pluginIndex = pluginIndex == null ? new PluginIndex() : pluginIndex;
 		this.pluginIndex.discover();
 
+		setStrict(strict);
+
 		final ServiceHelper serviceHelper =
 			new ServiceHelper(this, serviceClasses, strict);
 		serviceHelper.loadServices();
@@ -253,6 +272,14 @@ public class Context implements Disposable {
 
 	public PluginIndex getPluginIndex() {
 		return pluginIndex;
+	}
+
+	public boolean isStrict() {
+		return strict;
+	}
+
+	public void setStrict(final boolean strict) {
+		this.strict = strict;
 	}
 
 	/**
