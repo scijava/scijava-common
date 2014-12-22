@@ -357,46 +357,14 @@ public class Context implements Disposable {
 	 */
 	public void inject(final Object o) {
 		// iterate over all @Parameter annotated fields
-		final List<Field> fields =
-			ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
+		final List<Field> fields = getParameterFields(o);
 		for (final Field f : fields) {
-			f.setAccessible(true); // expose private fields
-
-			final Class<?> type = f.getType();
-			if (Service.class.isAssignableFrom(type)) {
-				final Service existingService = (Service) ClassUtils.getValue(f, o);
-				if (existingService != null) {
-					throw new IllegalStateException("Context already injected: " +
-						f.getDeclaringClass().getName() + "#" + f.getName());
-				}
-
-				// populate Service parameter
-				@SuppressWarnings("unchecked")
-				final Class<? extends Service> serviceType =
-					(Class<? extends Service>) type;
-				final Service service = getService(serviceType);
-				if (service == null && f.getAnnotation(Parameter.class).required()) {
-					throw new IllegalArgumentException(
-						createMissingServiceMessage(serviceType));
-				}
-				ClassUtils.setValue(f, o, service);
-			}
-			else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
-				final Context existingContext = (Context) ClassUtils.getValue(f, o);
-				if (existingContext != null) {
-					throw new IllegalStateException("Context already injected: " +
-						f.getDeclaringClass().getName() + "#" + f.getName());
-				}
-
-				// populate Context parameter
-				ClassUtils.setValue(f, o, this);
-			}
+			inject(f, o);
 		}
 
 		// NB: Subscribe to all events handled by this object.
 		// This greatly simplifies event handling.
-		final EventService eventService = getService(EventService.class);
-		if (eventService != null) eventService.subscribe(o);
+		subscribeToEvents(o);
 	}
 
 	// -- Disposable methods --
@@ -430,6 +398,49 @@ public class Context implements Disposable {
 	}
 
 	// -- Helper methods --
+
+	private List<Field> getParameterFields(Object o) {
+		return ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
+	}
+
+	private void inject(final Field f, final Object o) {
+		f.setAccessible(true); // expose private fields
+
+		final Class<?> type = f.getType();
+		if (Service.class.isAssignableFrom(type)) {
+			final Service existingService = (Service) ClassUtils.getValue(f, o);
+			if (existingService != null) {
+				throw new IllegalStateException("Context already injected: " +
+						f.getDeclaringClass().getName() + "#" + f.getName());
+			}
+
+			// populate Service parameter
+			@SuppressWarnings("unchecked")
+			final Class<? extends Service> serviceType =
+			(Class<? extends Service>) type;
+			final Service service = getService(serviceType);
+			if (service == null && f.getAnnotation(Parameter.class).required()) {
+				throw new IllegalArgumentException(
+					createMissingServiceMessage(serviceType));
+			}
+			ClassUtils.setValue(f, o, service);
+		}
+		else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
+			final Context existingContext = (Context) ClassUtils.getValue(f, o);
+			if (existingContext != null) {
+				throw new IllegalStateException("Context already injected: " +
+						f.getDeclaringClass().getName() + "#" + f.getName());
+			}
+
+			// populate Context parameter
+			ClassUtils.setValue(f, o, this);
+		}
+	}
+
+	private void subscribeToEvents(final Object o) {
+		final EventService eventService = getService(EventService.class);
+		if (eventService != null) eventService.subscribe(o);
+	}
 
 	private String createMissingServiceMessage(
 		final Class<? extends Service> serviceType)
