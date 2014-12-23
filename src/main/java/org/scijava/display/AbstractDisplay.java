@@ -150,6 +150,8 @@ public abstract class AbstractDisplay<T> extends AbstractRichPlugin implements
 		isClosed = true;
 	}
 
+	// -- Named methods --
+
 	@Override
 	public String getName() {
 		return name;

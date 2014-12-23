@@ -249,11 +249,6 @@ public class DynamicCommandInfo extends DefaultMutableModuleInfo {
 	// -- BasicDetails methods --
 
 	@Override
-	public String getName() {
-		return info.getName();
-	}
-
-	@Override
 	public String getLabel() {
 		return info.getLabel();
 	}
@@ -264,11 +259,6 @@ public class DynamicCommandInfo extends DefaultMutableModuleInfo {
 	}
 
 	@Override
-	public void setName(final String name) {
-		info.setName(name);
-	}
-
-	@Override
 	public void setLabel(final String label) {
 		info.setLabel(label);
 	}
@@ -276,6 +266,18 @@ public class DynamicCommandInfo extends DefaultMutableModuleInfo {
 	@Override
 	public void setDescription(final String description) {
 		info.setDescription(description);
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return info.getName();
+	}
+
+	@Override
+	public void setName(final String name) {
+		info.setName(name);
 	}
 
 	// -- Validated methods --
