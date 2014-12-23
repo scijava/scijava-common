@@ -72,11 +72,6 @@ public abstract class AbstractBasicDetails implements BasicDetails {
 	// -- BasicDetails methods --
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -97,11 +92,6 @@ public abstract class AbstractBasicDetails implements BasicDetails {
 	}
 
 	@Override
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	@Override
 	public void setLabel(final String label) {
 		this.label = label;
 	}
@@ -114,6 +104,18 @@ public abstract class AbstractBasicDetails implements BasicDetails {
 	@Override
 	public void set(String key, String value) {
 		values.put(key, value);
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 }
