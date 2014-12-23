@@ -37,10 +37,7 @@ package org.scijava;
  * 
  * @author Curtis Rueden
  */
-public interface BasicDetails {
-
-	/** Gets the unique name of the object. */
-	String getName();
+public interface BasicDetails extends Named {
 
 	/** Gets the name to appear in a UI, if applicable. */
 	String getLabel();
@@ -53,9 +50,6 @@ public interface BasicDetails {
 
 	/** Gets the value of the given key, or null if undefined. */
 	public String get(String key);
-
-	/** Sets the unique name of the object. */
-	void setName(String name);
 
 	/** Sets the name to appear in a UI, if applicable. */
 	void setLabel(String label);
