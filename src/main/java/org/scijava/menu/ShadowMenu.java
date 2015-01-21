@@ -45,6 +45,7 @@ import org.scijava.AbstractContextual;
 import org.scijava.Context;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
+import org.scijava.Named;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.menu.event.MenusAddedEvent;
@@ -79,7 +80,7 @@ import org.scijava.util.MiscUtils;
  * @see MenuEntry
  */
 public class ShadowMenu extends AbstractContextual implements
-	Comparable<ShadowMenu>, Collection<ModuleInfo>, Runnable
+	Comparable<ShadowMenu>, Collection<ModuleInfo>, Runnable, Named
 {
 
 	/** Icon to use for leaf entries by default, if no icon is specified. */
@@ -177,11 +178,6 @@ public class ShadowMenu extends AbstractContextual implements
 		return menuDepth;
 	}
 
-	/** Gets the name of the menu. */
-	public String getName() {
-		return menuEntry == null ? null : menuEntry.getName();
-	}
-
 	/** Gets this node's parent, or null if it is a root node. */
 	public ShadowMenu getParent() {
 		return parent;
@@ -277,6 +273,19 @@ public class ShadowMenu extends AbstractContextual implements
 		if (nodes.isEmpty()) return false;
 		if (es != null) es.publish(new MenusUpdatedEvent(nodes));
 		return true;
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return menuEntry == null ? null : menuEntry.getName();
+	}
+
+	@Override
+	public void setName(final String name) {
+		if (menuEntry == null) return;
+		menuEntry.setName(name);
 	}
 
 	// -- Object methods --
