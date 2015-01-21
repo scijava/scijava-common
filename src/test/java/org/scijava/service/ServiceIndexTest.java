@@ -32,6 +32,7 @@
 package org.scijava.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.List;
@@ -40,6 +41,8 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.event.DefaultEventService;
 import org.scijava.log.StderrLogService;
+import org.scijava.options.DefaultOptionsService;
+import org.scijava.options.OptionsService;
 import org.scijava.plugin.DefaultPluginService;
 import org.scijava.plugin.PluginService;
 import org.scijava.thread.DefaultThreadService;
@@ -63,4 +66,80 @@ public class ServiceIndexTest {
 		assertSame(StderrLogService.class, all.get(3).getClass());
 	}
 
+	/**
+	 * Test the {@link ServiceIndex#getPrevService(Class, Class)} operation.
+	 */
+	@Test
+	public void testGetPrevService() {
+		// Create a service index where the OptionsService hierarchy should be:
+		// HigherOptionsService > DefaultOptionsService > LowerOptionsService
+		final ServiceIndex serviceIndex = setUpPrivateServices();
+
+		// DefaultOptionsService should be the previous service to LowerOptionsService
+		assertEquals(DefaultOptionsService.class, serviceIndex.getPrevService(
+			OptionsService.class, LowerOptionsService.class).getClass());
+
+		// HigherOptionsService should be the previous service to
+		// DefaultOptionsService
+		assertEquals(HigherOptionsService.class, serviceIndex.getPrevService(
+			OptionsService.class, DefaultOptionsService.class).getClass());
+
+		// There should not be a previous service before HigherOptionsService
+		assertNull(serviceIndex.getPrevService(OptionsService.class,
+			HigherOptionsService.class));
+	}
+
+	/**
+	 * Test the {@link ServiceIndex#getNextService(Class, Class)} operation.
+	 */
+	@Test
+	public void testGetNextService() {
+		// Create a service index where the OptionsService hierarchy should be:
+		// HigherOptionService > DefaultOptionService > LowerOptionService
+		final ServiceIndex serviceIndex = setUpPrivateServices();
+
+		// DefaultOptionsService should be the next service to HigherOptionsService
+		assertEquals(DefaultOptionsService.class, serviceIndex.getNextService(
+			OptionsService.class, HigherOptionsService.class).getClass());
+
+		// HigherOptionsService should be the previous service to
+		// DefaultOptionsService
+		assertEquals(LowerOptionsService.class, serviceIndex.getNextService(
+			OptionsService.class, DefaultOptionsService.class).getClass());
+
+		// There should not be a next service after LowerOptionsService
+		assertNull(serviceIndex.getNextService(OptionsService.class,
+			LowerOptionsService.class));
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * @return A {@link ServiceIndex} with all private services manually added.
+	 */
+	private ServiceIndex setUpPrivateServices() {
+		final Context context = new Context(SciJavaService.class);
+		final ServiceIndex serviceIndex = context.getServiceIndex();
+		serviceIndex.add(new HigherOptionsService());
+		serviceIndex.add(new LowerOptionsService());
+		return serviceIndex;
+	}
+
+	// -- Private services --
+
+	private static class HigherOptionsService extends DefaultOptionsService {
+
+		@Override
+		public double getPriority() {
+			return super.getPriority() + 25;
+		}
+	}
+
+	private static class LowerOptionsService extends DefaultOptionsService {
+
+		@Override
+		public double getPriority() {
+			return super.getPriority() - 30;
+		}
+	}
 }
