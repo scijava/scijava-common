@@ -64,7 +64,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 	@Override
 	public void initialize() {
 		if (log != null) {
-			log.info("Found " + getPlugins().size() + " " +
+			log.debug("Found " + getPlugins().size() + " " +
 				getPluginType().getSimpleName() + " plugins.");
 		}
 	}

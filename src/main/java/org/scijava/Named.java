@@ -32,32 +32,16 @@
 package org.scijava;
 
 /**
- * An interface defining basic characteristics including name, label,
- * description, and a table of key/value pairs.
+ * Interface for things that have names.
  * 
- * @author Curtis Rueden
+ * @author Lee Kamentsky
  */
-public interface BasicDetails extends Named {
+public interface Named {
 
-	/** Gets the name to appear in a UI, if applicable. */
-	String getLabel();
+	/** Gets the name of the object. */
+	String getName();
 
-	/** Gets a string describing the object. */
-	String getDescription();
-
-	/** Returns true iff the given key is defined. */
-	public boolean is(String key);
-
-	/** Gets the value of the given key, or null if undefined. */
-	public String get(String key);
-
-	/** Sets the name to appear in a UI, if applicable. */
-	void setLabel(String label);
-
-	/** Sets a string describing the object. */
-	void setDescription(String description);
-
-	/** Sets the value of the given key. */
-	public void set(final String key, final String value);
+	/** Sets the name of the object. */
+	void setName(String name);
 
 }

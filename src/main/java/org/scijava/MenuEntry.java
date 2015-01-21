@@ -39,7 +39,7 @@ import org.scijava.input.Accelerator;
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
-public class MenuEntry {
+public class MenuEntry implements Named {
 
 	public static final double DEFAULT_WEIGHT = Double.POSITIVE_INFINITY;
 
@@ -66,14 +66,6 @@ public class MenuEntry {
 		setMnemonic(mnemonic);
 		setAccelerator(acc);
 		setIconPath(iconPath);
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public void setWeight(final double weight) {
@@ -119,6 +111,20 @@ public class MenuEntry {
 		if (accelerator == null) accelerator = entry.getAccelerator();
 		if (iconPath == null) iconPath = entry.getIconPath();
 	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	// -- Object methods --
 
 	@Override
 	public String toString() {

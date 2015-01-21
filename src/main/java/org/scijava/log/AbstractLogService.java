@@ -44,7 +44,7 @@ import org.scijava.service.AbstractService;
  */
 public abstract class AbstractLogService extends AbstractService implements LogService {
 
-	private int currentLevel = System.getenv("DEBUG") == null ? WARN : DEBUG;
+	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
 
 	private Map<String, Integer> classAndPackageLevels =
 		new HashMap<String, Integer>();
@@ -77,7 +77,7 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 
 		if (getLevel() == 0) {
 			// use the default, which is WARN unless the DEBUG env. variable is set
-			setLevel(System.getenv("DEBUG") == null ? WARN : DEBUG);
+			setLevel(System.getenv("DEBUG") == null ? INFO : DEBUG);
 		}
 
 		// populate custom class- and package-specific log level properties

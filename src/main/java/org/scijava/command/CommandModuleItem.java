@@ -168,11 +168,6 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	// -- BasicDetails methods --
 
 	@Override
-	public String getName() {
-		return field.getName();
-	}
-
-	@Override
 	public String getLabel() {
 		return getParameter().label();
 	}
@@ -196,6 +191,13 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 			if (attr.name().equals(key)) return attr.value();
 		}
 		return null;
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return field.getName();
 	}
 
 }

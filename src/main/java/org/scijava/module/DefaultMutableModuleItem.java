@@ -297,11 +297,6 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	// -- BasicDetails methods --
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -312,11 +307,6 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	}
 
 	@Override
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	@Override
 	public void setLabel(final String label) {
 		this.label = label;
 	}
@@ -324,6 +314,18 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 }

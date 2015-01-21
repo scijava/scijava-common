@@ -33,6 +33,7 @@ package org.scijava.display;
 
 import java.util.List;
 
+import org.scijava.Named;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 
@@ -52,7 +53,7 @@ import org.scijava.plugin.RichPlugin;
  * @see Plugin
  * @see DisplayService
  */
-public interface Display<T> extends List<T>, RichPlugin {
+public interface Display<T> extends List<T>, RichPlugin, Named {
 
 	/**
 	 * Tests whether the display is capable of visualizing objects of the given
@@ -98,11 +99,5 @@ public interface Display<T> extends List<T>, RichPlugin {
 
 	/** Closes the display and disposes its resources. */
 	void close();
-
-	/** Gets the name of the display. */
-	String getName();
-
-	/** Sets the name of the display. */
-	void setName(String name);
 
 }
