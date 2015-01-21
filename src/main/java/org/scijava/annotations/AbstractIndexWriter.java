@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.lang.model.element.AnnotationValue;
 
@@ -60,7 +61,7 @@ import javax.lang.model.element.AnnotationValue;
 public abstract class AbstractIndexWriter {
 
 	private final Map<String, Map<String, Object>> map =
-		new TreeMap<String, Map<String, Object>>();
+		new ConcurrentSkipListMap<String, Map<String, Object>>();
 
 	protected synchronized boolean foundAnnotations() {
 		return !map.isEmpty();
@@ -137,7 +138,8 @@ public abstract class AbstractIndexWriter {
 		int changedCount = map.size();
 		boolean hasObsoletes = false;
 
-		final IndexReader reader = new IndexReader(in);
+		final IndexReader reader =
+			new IndexReader(in, annotationName + " from " + in);
 		try {
 			for (;;) {
 				@SuppressWarnings("unchecked")
