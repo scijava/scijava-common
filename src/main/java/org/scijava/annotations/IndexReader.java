@@ -64,12 +64,22 @@ import org.scijava.annotations.legacy.LegacyReader;
 class IndexReader {
 
 	private final PushbackInputStream in;
+	private final String originalISName;
 
 	IndexReader(final InputStream in) {
 		this.in =
 			in instanceof PushbackInputStream ? (PushbackInputStream) in
 				: new PushbackInputStream(new BufferedInputStream(in));
+		this.originalISName="";
 	}
+
+	IndexReader(final InputStream in,final String isName) {
+		this.in =
+				in instanceof PushbackInputStream ? (PushbackInputStream) in
+						: new PushbackInputStream(new BufferedInputStream(in));
+		this.originalISName=isName;
+	}
+
 
 	public Object next() throws IOException {
 		int c = in.read();
@@ -155,7 +165,8 @@ class IndexReader {
 		if (c == '"') {
 			return readString();
 		}
-		throw new IOException("Unexpected char: '" + (char) c + "'");
+		throw new IOException("Unexpected char: '" + (char) c + "'"+
+				((originalISName.length()>0) ? " from "+originalISName : ""));
 	}
 
 	public void close() throws IOException {
@@ -206,7 +217,7 @@ class IndexReader {
 			return 1;
 		}
 		throw new IOException("Expected '" + a + "' or '" + b + "', got '" +
-			(char) c + "'");
+			(char) c + "'"+((originalISName.length()>0) ? " from "+originalISName : ""));
 	}
 
 	private void expect(String match) throws IOException {
@@ -217,6 +228,7 @@ class IndexReader {
 
 	private IndexReader() {
 		this.in = null;
+		this.originalISName="";
 	}
 
 	static IndexReader getLegacyReader(final InputStream in) throws IOException {
