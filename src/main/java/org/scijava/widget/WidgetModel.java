@@ -31,75 +31,28 @@
 
 package org.scijava.widget;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
-import org.scijava.AbstractContextual;
-import org.scijava.Context;
+import org.scijava.Contextual;
 import org.scijava.ItemVisibility;
-import org.scijava.convert.ConvertService;
-import org.scijava.log.LogService;
-import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
-import org.scijava.plugin.Parameter;
-import org.scijava.thread.ThreadService;
-import org.scijava.util.ClassUtils;
-import org.scijava.util.ConversionUtils;
-import org.scijava.util.MiscUtils;
-import org.scijava.util.NumberUtils;
 
 /**
  * The backing data model for a particular {@link InputWidget}.
  * 
  * @author Curtis Rueden
  */
-public class WidgetModel extends AbstractContextual {
-
-	private final InputPanel<?, ?> inputPanel;
-	private final Module module;
-	private final ModuleItem<?> item;
-	private final List<?> objectPool;
-	private final Map<Object, Object> convertedObjects;
-
-	@Parameter
-	private ThreadService threadService;
-
-	@Parameter
-	private ConvertService convertService;
-
-	@Parameter(required = false)
-	private LogService log;
-
-	private boolean initialized;
-
-	public WidgetModel(final Context context, final InputPanel<?, ?> inputPanel,
-		final Module module, final ModuleItem<?> item, final List<?> objectPool)
-	{
-		setContext(context);
-		this.inputPanel = inputPanel;
-		this.module = module;
-		this.item = item;
-		this.objectPool = objectPool;
-		convertedObjects = new WeakHashMap<Object, Object>();
-	}
+public interface WidgetModel extends Contextual {
 
 	/** Gets the input panel intended to house the widget. */
-	public InputPanel<?, ?> getPanel() {
-		return inputPanel;
-	}
+	InputPanel<?, ?> getPanel();
 
 	/** Gets the module's associated module instance. */
-	public Module getModule() {
-		return module;
-	}
+	Module getModule();
 
 	/** Gets the module input's associated item descriptor. */
-	public ModuleItem<?> getItem() {
-		return item;
-	}
+	ModuleItem<?> getItem();
 
 	/**
 	 * Gets the available objects for use with the widget. For example,
@@ -113,9 +66,7 @@ public class WidgetModel extends AbstractContextual {
 	 * 
 	 * @see ObjectWidget
 	 */
-	public List<?> getObjectPool() {
-		return objectPool;
-	}
+	List<?> getObjectPool();
 
 	/**
 	 * Gets the text to use when labeling this widget. The linked item's label
@@ -123,29 +74,14 @@ public class WidgetModel extends AbstractContextual {
 	 * Otherwise, a capitalized version of the item's name is given (i.e.,
 	 * {@link ModuleItem#getName()}).
 	 */
-	public String getWidgetLabel() {
-		// Do this dynamically. Don't cache this result.
-		// Some controls change their labels at runtime.
-		final String label = item.getLabel();
-		if (label != null && !label.isEmpty()) return label;
-
-		final String name = item.getName();
-		return name.substring(0, 1).toUpperCase() + name.substring(1);
-	}
+	String getWidgetLabel();
 
 	/**
 	 * Gets whether the widget is the given style. A widget may have multiple
 	 * styles separated by commas, so this method is more correct than using
 	 * {@code style.equals(getItem().getWidgetStyle())}.
 	 */
-	public boolean isStyle(final String style) {
-		final String widgetStyle = getItem().getWidgetStyle();
-		if (widgetStyle == null) return style == null;
-		for (final String s : widgetStyle.split(",")) {
-			if (s.equals(style)) return true;
-		}
-		return false;
-	}
+	boolean isStyle(String style);
 
 	/**
 	 * Gets the current value of the module input.
@@ -155,81 +91,27 @@ public class WidgetModel extends AbstractContextual {
 	 * value is in the set; if not, it returns the first item of the set.
 	 * </p>
 	 */
-	public Object getValue() {
-		final Object value = item.getValue(module);
-
-		if (isMultipleChoice()) return ensureValidChoice(value);
-		if (getObjectPool().size() > 0) return ensureValidObject(value);
-		return value;
-	}
+	Object getValue();
 
 	/** Sets the current value of the module input. */
-	public void setValue(final Object value) {
-		final String name = item.getName();
-		if (MiscUtils.equal(item.getValue(module), value)) return; // no change
-
-		// Check if a converted value is present
-		Object convertedInput = convertedObjects.get(value);
-		if (convertedInput != null &&
-			MiscUtils.equal(item.getValue(module), convertedInput))
-		{
-			return; // no change
-		}
-
-		// Pass the value through the convertService
-		convertedInput = convertService.convert(value, item.getType());
-
-		// If we get a different (converted) value back, cache it weakly.
-		if (convertedInput != value) {
-			convertedObjects.put(value, convertedInput);
-		}
-
-		module.setInput(name, convertedInput);
-
-		if (initialized) {
-			threadService.run(new Runnable() {
-
-				@Override
-				public void run() {
-					callback();
-					inputPanel.refresh(); // must be on AWT thread?
-					module.preview();
-				}
-			});
-		}
-	}
+	void setValue(Object value);
 
 	/** Executes the callback associated with this widget's associated input. */
-	public void callback() {
-		try {
-			item.callback(module);
-		}
-		catch (final MethodCallException exc) {
-			if (log != null) log.error(exc);
-		}
-	}
+	void callback();
 
 	/**
 	 * Gets the minimum value for the module input.
 	 * 
 	 * @return The minimum value, or null if the type is unbounded.
 	 */
-	public Number getMin() {
-		final Number min = toNumber(item.getMinimumValue());
-		if (min != null) return min;
-		return NumberUtils.getMinimumNumber(item.getType());
-	}
+	Number getMin();
 
 	/**
 	 * Gets the maximum value for the module input.
 	 * 
 	 * @return The maximum value, or null if the type is unbounded.
 	 */
-	public Number getMax() {
-		final Number max = toNumber(item.getMaximumValue());
-		if (max != null) return max;
-		return NumberUtils.getMaximumNumber(item.getType());
-	}
+	Number getMax();
 
 	/**
 	 * Gets the "soft" minimum value for the module input.
@@ -237,11 +119,7 @@ public class WidgetModel extends AbstractContextual {
 	 * @return The "soft" minimum value, or {@link #getMin()} if none.
 	 * @see ModuleItem#getSoftMinimum()
 	 */
-	public Number getSoftMin() {
-		final Number softMin = toNumber(item.getSoftMinimum());
-		if (softMin != null) return softMin;
-		return getMin();
-	}
+	Number getSoftMin();
 
 	/**
 	 * Gets the "soft" maximum value for the module input.
@@ -249,22 +127,14 @@ public class WidgetModel extends AbstractContextual {
 	 * @return The "soft" maximum value, or {@link #getMax()} if none.
 	 * @see ModuleItem#getSoftMaximum()
 	 */
-	public Number getSoftMax() {
-		final Number softMax = toNumber(item.getSoftMaximum());
-		if (softMax != null) return softMax;
-		return getMax();
-	}
+	Number getSoftMax();
 
 	/**
 	 * Gets the step size between values for the module input.
 	 * 
 	 * @return The step size, or 1 by default.
 	 */
-	public Number getStepSize() {
-		final Number stepSize = toNumber(item.getStepSize());
-		if (stepSize != null) return stepSize;
-		return NumberUtils.toNumber("1", item.getType());
-	}
+	Number getStepSize();
 
 	/**
 	 * Gets the multiple choice list for the module input.
@@ -272,14 +142,7 @@ public class WidgetModel extends AbstractContextual {
 	 * @return The available choices, or an empty list if not multiple choice.
 	 * @see ChoiceWidget
 	 */
-	public String[] getChoices() {
-		final List<?> choicesList = item.getChoices();
-		final String[] choices = new String[choicesList.size()];
-		for (int i = 0; i < choices.length; i++) {
-			choices[i] = choicesList.get(i).toString();
-		}
-		return choices;
-	}
+	String[] getChoices();
 
 	/**
 	 * Gets the input's value rendered as a string.
@@ -287,127 +150,55 @@ public class WidgetModel extends AbstractContextual {
 	 * @return String representation of the input value, or the empty string if
 	 *         the value is null or the null character ('\0').
 	 */
-	public String getText() {
-		final Object value = getValue();
-		if (value == null) return "";
-		final String text = value.toString();
-		if (text.equals("\0")) return ""; // render null character as empty
-		return text;
-	}
+	String getText();
 
 	/**
 	 * Gets whether the input is a message.
 	 * 
 	 * @see ItemVisibility#MESSAGE
 	 */
-	public boolean isMessage() {
-		return getItem().getVisibility() == ItemVisibility.MESSAGE;
-	}
+	boolean isMessage();
 
 	/**
 	 * Gets whether the input is a text type (i.e., {@link String},
 	 * {@link Character} or {@code char}.
 	 */
-	public boolean isText() {
-		return ClassUtils.isText(getItem().getType());
-	}
+	boolean isText();
 
 	/**
 	 * Gets whether the input is a character type (i.e., {@link Character} or
 	 * {@code char}).
 	 */
-	public boolean isCharacter() {
-		return ClassUtils.isCharacter(getItem().getType());
-	}
+	boolean isCharacter();
 
 	/**
 	 * Gets whether the input is a number type (e.g., {@code int}, {@code float}
 	 * or any {@link Number} implementation.
 	 */
-	public boolean isNumber() {
-		return ClassUtils.isNumber(getItem().getType());
-	}
+	boolean isNumber();
 
 	/**
 	 * Gets whether the input is a boolean type (i.e., {@link Boolean} or
 	 * {@code boolean}).
 	 */
-	public boolean isBoolean() {
-		return ClassUtils.isBoolean(getItem().getType());
-	}
+	boolean isBoolean();
 
 	/** Gets whether the input provides a restricted set of choices. */
-	public boolean isMultipleChoice() {
-		final List<?> choices = item.getChoices();
-		return choices != null && !choices.isEmpty();
-	}
+	boolean isMultipleChoice();
 
 	/** Gets whether the input is compatible with the given type. */
-	public boolean isType(final Class<?> type) {
-		return type.isAssignableFrom(getItem().getType());
-	}
+	boolean isType(Class<?> type);
 
 	/**
 	 * Toggles the widget's initialization state. An initialized widget can be
 	 * assumed to be an active part of a container {@link InputPanel}.
 	 */
-	public void setInitialized(final boolean initialized) {
-		this.initialized = initialized;
-	}
+	void setInitialized(boolean initialized);
 
 	/**
 	 * Gets the widget's initialization state. An initialized widget can be
 	 * assumed to be an active part of a container {@link InputPanel}.
 	 */
-	public boolean isInitialized() {
-		return initialized;
-	}
-
-	// -- Helper methods --
-
-	/**
-	 * For multiple choice widgets, ensure the value is a valid choice.
-	 * 
-	 * @see #getChoices()
-	 * @see ChoiceWidget
-	 */
-	private Object ensureValidChoice(final Object value) {
-		return ensureValid(value, Arrays.asList(getChoices()));
-	}
-
-	/**
-	 * For object widgets, ensure the value is a valid object.
-	 * 
-	 * @see #getObjectPool()
-	 * @see ObjectWidget
-	 */
-	private Object ensureValidObject(final Object value) {
-		return ensureValid(value, getObjectPool());
-	}
-
-	/** Ensures the value is on the given list. */
-	private Object ensureValid(final Object value, final List<?> list) {
-		for (final Object o : list) {
-			if (o.equals(value)) return value; // value is valid
-			// check if value was converted and cached
-			final Object convertedValue = convertedObjects.get(o);
-			if (convertedValue != null && value.equals(convertedValue)) {
-				return convertedValue;
-			}
-		}
-
-		// value is not valid; override with the first item on the list instead
-		final Object validValue = list.get(0);
-		// CTR TODO: Mutating the model in a getter is dirty. Find a better way?
-		setValue(validValue);
-		return validValue;
-	}
-
-	/** Converts the given object to a number matching the input type. */
-	private Number toNumber(final Object value) {
-		final Class<?> type = item.getType();
-		final Class<?> saneType = ConversionUtils.getNonprimitiveType(type);
-		return NumberUtils.toNumber(value, saneType);
-	}
+	boolean isInitialized();
 
 }

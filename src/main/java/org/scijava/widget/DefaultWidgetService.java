@@ -31,7 +31,11 @@
 
 package org.scijava.widget;
 
+import java.util.List;
+
 import org.scijava.log.LogService;
+import org.scijava.module.Module;
+import org.scijava.module.ModuleItem;
 import org.scijava.plugin.AbstractWrapperService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -51,6 +55,16 @@ public class DefaultWidgetService extends
 
 	@Parameter
 	private LogService log;
+
+	// -- WidgetService methods --
+
+	@Override
+	public WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
+		ModuleItem<?> item, List<?> objectPool)
+	{
+		return new DefaultWidgetModel(getContext(), inputPanel, module, item,
+			objectPool);
+	}
 
 	// -- WrapperService methods --
 

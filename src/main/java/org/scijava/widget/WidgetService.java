@@ -31,6 +31,10 @@
 
 package org.scijava.widget;
 
+import java.util.List;
+
+import org.scijava.module.Module;
+import org.scijava.module.ModuleItem;
 import org.scijava.plugin.WrapperService;
 import org.scijava.service.SciJavaService;
 
@@ -50,5 +54,16 @@ public interface WidgetService extends
 	/** Creates a widget that represents the given widget model. */
 	@Override
 	InputWidget<?, ?> create(WidgetModel model);
+
+	/**
+	 * Create a {@link WidgetModel} for the given module input.
+	 * 
+	 * @param inputPanel
+	 * @param module
+	 * @param item
+	 * @param objectPool
+	 */
+	WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
+		ModuleItem<?> item, List<?> objectPool);
 
 }
