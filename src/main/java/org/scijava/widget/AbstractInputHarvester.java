@@ -126,7 +126,7 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 		final Class<T> type = item.getType();
 		final WidgetModel model =
-			new DefaultWidgetModel(getContext(), inputPanel, module, item, getObjects(type));
+			widgetService.createModel(inputPanel, module, item, getObjects(type));
 
 		final Class<W> widgetType = inputPanel.getWidgetComponentType();
 		final InputWidget<?, ?> widget = widgetService.create(model);
