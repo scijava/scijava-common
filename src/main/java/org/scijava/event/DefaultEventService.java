@@ -35,8 +35,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.bushe.swing.event.annotation.AbstractProxySubscriber;
@@ -79,6 +81,12 @@ public class DefaultEventService extends AbstractService implements
 	private ThreadService threadService;
 
 	private DefaultEventBus eventBus;
+
+	/**
+	 * A cache for mapping {@link Method}s to the {@link SciJavaEvent} class taken
+	 * as parameters. Only methods with event parameters will cached here.
+	 */
+	private final Map<Method, Class<?>> eventClasses = new HashMap<Method, Class<?>>();
 
 	/**
 	 * Set of claimed {@link EventHandler#key()}s. Additional event handlers
@@ -198,14 +206,24 @@ public class DefaultEventService extends AbstractService implements
 
 	/** Gets the event class parameter of the given method. */
 	private Class<? extends SciJavaEvent> getEventClass(final Method m) {
-		final Class<?>[] c = m.getParameterTypes();
-		if (c == null || c.length != 1) return null; // wrong number of args
-		if (!SciJavaEvent.class.isAssignableFrom(c[0])) return null; // wrong class
+		// Check for a cached entry for the given method
+		Class<?> eventClass = eventClasses.get(m);
+
+		if (eventClass == null) {
+			final Class<?>[] c = m.getParameterTypes();
+			if (c == null || c.length != 1) return null; // wrong number of args
+			if (!SciJavaEvent.class.isAssignableFrom(c[0])) return null; // wrong class
+
+			// Cache the eventClass
+			eventClass = c[0];
+			eventClasses.put(m, eventClass);
+		}
 
 		@SuppressWarnings("unchecked")
-		final Class<? extends SciJavaEvent> eventClass =
-			(Class<? extends SciJavaEvent>) c[0];
-		return eventClass;
+		final Class<? extends SciJavaEvent> typedClass =
+		(Class<? extends SciJavaEvent>) eventClass;
+
+		return typedClass;
 	}
 
 	// -- Event handlers garbage collection preventer --
