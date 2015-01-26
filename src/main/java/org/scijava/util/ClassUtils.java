@@ -67,6 +67,18 @@ public final class ClassUtils {
 	private static final Map<Class<?>, Map<Class<?>, List<Field>>> fields =
 		new HashMap<Class<?>, Map<Class<?>, List<Field>>>();
 
+	/**
+	 * This maps a base class (key1) to a map of annotation classes (key2), which
+	 * then maps to a list of {@link Method} instances, being the set of methods
+	 * in the base class with the specified annotation.
+	 * <p>
+	 * This map serves as a cache, as these annotations should not change at
+	 * runtime and thus can alleviate the frequency of method querying.
+	 * </p>
+	 */
+	private static final Map<Class<?>, Map<Class<?>, List<Method>>> methods =
+		new HashMap<Class<?>, Map<Class<?>, List<Method>>>();
+
 	// -- Class loading, querying and reflection --
 
 	/**
@@ -300,8 +312,13 @@ public final class ClassUtils {
 	public static <A extends Annotation> List<Method> getAnnotatedMethods(
 		final Class<?> c, final Class<A> annotationClass)
 	{
-		final ArrayList<Method> methods = new ArrayList<Method>();
-		getAnnotatedMethods(c, annotationClass, methods);
+		List<Method> methods = lookupMethods(c, annotationClass);
+
+		if (methods == null) {
+			methods = new ArrayList<Method>();
+			getAnnotatedMethods(c, annotationClass, methods);
+		}
+
 		return methods;
 	}
 
@@ -344,6 +361,8 @@ public final class ClassUtils {
 			final A ann = m.getAnnotation(annotationClass);
 			if (ann != null) methods.add(m);
 		}
+
+		mapMethods(c, annotationClass, methods);
 	}
 
 	/**
@@ -561,6 +580,26 @@ public final class ClassUtils {
 	}
 
 	/**
+	 * Populates the provided list with {@link Method} entries of the given base
+	 * class which are annotated with the specified annotation type.
+	 *
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @param annotatedFields Method list to populate
+	 */
+	private static <A extends Annotation> void mapMethods(final Class<?> c,
+		final Class<A> annotationClass, List<Method> annotatedMethods)
+	{
+		Map<Class<?>, List<Method>> map = methods.get(c);
+		if (map == null) {
+			map = new HashMap<Class<?>, List<Method>>();
+			methods.put(c, map);
+		}
+
+		map.put(annotationClass, annotatedMethods);
+	}
+
+	/**
 	 * @param c Base class
 	 * @param annotationClass Annotation type
 	 * @return Cached list of Fields in the base class with the specified
@@ -577,6 +616,22 @@ public final class ClassUtils {
 		return annotatedFields;
 	}
 
+	/**
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @return Cached list of Methods in the base class with the specified
+	 *         annotation, or null if a cached list does not exist.
+	 */
+	private static <A extends Annotation> List<Method> lookupMethods(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		List<Method> annotatedFields = null;
+		Map<Class<?>, List<Method>> annotationTypes = methods.get(c);
+		if (annotationTypes != null) {
+			annotatedFields = annotationTypes.get(annotationClass);
+		}
+		return annotatedFields;
+	}
 	// -- Deprecated methods --
 
 	/** @deprecated use {@link ConversionUtils#convert(Object, Class)} */
