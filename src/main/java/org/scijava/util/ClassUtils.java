@@ -40,7 +40,9 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Useful methods for working with {@link Class} objects and primitive types.
@@ -52,6 +54,18 @@ public final class ClassUtils {
 	private ClassUtils() {
 		// prevent instantiation of utility class
 	}
+
+	/**
+	 * This maps a base class (key1) to a map of annotation classes (key2), which
+	 * then maps to a list of {@link Field} instances, being the set of fields in
+	 * the base class with the specified annotation.
+	 * <p>
+	 * This map serves as a cache, as these annotations should not change at
+	 * runtime and thus can alleviate the frequency field querying.
+	 * </p>
+	 */
+	private static final Map<Class<?>, Map<Class<?>, List<Field>>> fields =
+		new HashMap<Class<?>, Map<Class<?>, List<Field>>>();
 
 	// -- Class loading, querying and reflection --
 
@@ -347,8 +361,12 @@ public final class ClassUtils {
 	public static <A extends Annotation> List<Field> getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass)
 	{
-		final ArrayList<Field> fields = new ArrayList<Field>();
+		List<Field> fields = lookupFields(c, annotationClass);
+
+		if (fields != null) return fields;
+		fields = new ArrayList<Field>();
 		getAnnotatedFields(c, annotationClass, fields);
+
 		return fields;
 	}
 
@@ -383,6 +401,8 @@ public final class ClassUtils {
 			final A ann = f.getAnnotation(annotationClass);
 			if (ann != null) fields.add(f);
 		}
+
+		mapFields(c, annotationClass, fields);
 	}
 
 	/**
@@ -516,6 +536,45 @@ public final class ClassUtils {
 		final String name1 = c1 == null ? null : c1.getName();
 		final String name2 = c2 == null ? null : c2.getName();
 		return MiscUtils.compare(name1, name2);
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * Populates the provided list with {@link Field} entries of the given base
+	 * class which are annotated with the specified annotation type.
+	 *
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @param annotatedFields Field list to populate
+	 */
+	private static <A extends Annotation> void mapFields(Class<?> c,
+		Class<A> annotationClass, List<Field> annotatedFields)
+	{
+		Map<Class<?>, List<Field>> map = fields.get(c);
+		if (map == null) {
+			map = new HashMap<Class<?>, List<Field>>();
+			fields.put(c, map);
+		}
+
+		map.put(annotationClass, annotatedFields);
+	}
+
+	/**
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @return Cached list of Fields in the base class with the specified
+	 *         annotation, or null if a cached list does not exist.
+	 */
+	private static <A extends Annotation> List<Field> lookupFields(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		List<Field> annotatedFields = null;
+		Map<Class<?>, List<Field>> annotationTypes = fields.get(c);
+		if (annotationTypes != null) {
+			annotatedFields = annotationTypes.get(annotationClass);
+		}
+		return annotatedFields;
 	}
 
 	// -- Deprecated methods --
