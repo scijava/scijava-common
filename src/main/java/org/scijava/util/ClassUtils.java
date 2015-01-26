@@ -344,8 +344,17 @@ public final class ClassUtils {
 		// are the main sorts of methods we are interested in.
 		if (c == null || c == Object.class) return;
 
-		// check supertypes for annotated methods first
-		getAnnotatedMethods(c.getSuperclass(), annotationClass, methods);
+		final Class<?> sc = c.getSuperclass();
+		if (sc != null) {
+			List<Method> superMethods = lookupMethods(sc, annotationClass);
+			if (superMethods == null) {
+				superMethods = new ArrayList<Method>();
+				// check supertypes for annotated methods first
+				getAnnotatedMethods(sc, annotationClass, superMethods);
+			}
+			methods.addAll(superMethods);
+		}
+
 		// NB: In some cases, we may not need to recursively scan interfaces.
 		// In particular, for the @EventHandler annotation, we only care about
 		// concrete methods, not interface method declarations. So we could have
@@ -354,7 +363,13 @@ public final class ClassUtils {
 		// suggest that the performance difference, even when creating a
 		// full-blown Context with a large classpath, is negligible.
 		for (final Class<?> iface : c.getInterfaces()) {
-			getAnnotatedMethods(iface, annotationClass, methods);
+			List<Method> ifaceMethods = lookupMethods(iface, annotationClass);
+
+			if (ifaceMethods == null) {
+				ifaceMethods = new ArrayList<Method>();
+				getAnnotatedMethods(iface, annotationClass, ifaceMethods);
+			}
+			methods.addAll(ifaceMethods);
 		}
 
 		for (final Method m : c.getDeclaredMethods()) {
@@ -410,10 +425,24 @@ public final class ClassUtils {
 		// are the main sorts of fields we are interested in.
 		if (c == null || c == Object.class) return;
 
-		// check supertypes for annotated fields first
-		getAnnotatedFields(c.getSuperclass(), annotationClass, fields);
+		final Class<?> sc = c.getSuperclass();
+		if (sc != null) {
+			List<Field> superFields = lookupFields(sc, annotationClass);
+			if (superFields == null) {
+				superFields = new ArrayList<Field>();
+				// check supertypes for annotated fields first
+				getAnnotatedFields(sc, annotationClass, superFields);
+			}
+			fields.addAll(superFields);
+		}
+
 		for (final Class<?> iface : c.getInterfaces()) {
-			getAnnotatedFields(iface, annotationClass, fields);
+			List<Field> ifaceFields = lookupFields(iface, annotationClass);
+			if (ifaceFields == null) {
+				ifaceFields = new ArrayList<Field>();
+				getAnnotatedFields(iface, annotationClass, ifaceFields);
+			}
+			fields.addAll(ifaceFields);
 		}
 
 		for (final Field f : c.getDeclaredFields()) {
