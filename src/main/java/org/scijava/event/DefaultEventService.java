@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -112,29 +113,32 @@ public class DefaultEventService extends AbstractService implements
 
 	@Override
 	public List<EventSubscriber<?>> subscribe(final Object o) {
-		final List<EventSubscriber<?>> subscribers =
-			new ArrayList<EventSubscriber<?>>();
+		List<EventSubscriber<?>> subscribers = Collections.emptyList();
 		final List<Method> eventHandlers =
 			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
-		for (final Method m : eventHandlers) {
-			// verify that the event handler method is valid
-			final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
-			if (eventClass == null) {
-				log.warn("Invalid EventHandler method: " + m);
-				continue;
-			}
 
-			// verify that the event handler key isn't already claimed
-			final String key = m.getAnnotation(EventHandler.class).key();
-			if (!key.isEmpty()) {
-				synchronized (keys) {
-					if (keys.contains(key)) continue;
-					keys.add(key);
+		if (!eventHandlers.isEmpty()) {
+			subscribers = new ArrayList<EventSubscriber<?>>();
+			for (final Method m : eventHandlers) {
+				// verify that the event handler method is valid
+				final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
+				if (eventClass == null) {
+					log.warn("Invalid EventHandler method: " + m);
+					continue;
 				}
-			}
 
-			// subscribe the event handler
-			subscribers.add(subscribe(eventClass, o, m));
+				// verify that the event handler key isn't already claimed
+				final String key = m.getAnnotation(EventHandler.class).key();
+				if (!key.isEmpty()) {
+					synchronized (keys) {
+						if (keys.contains(key)) continue;
+						keys.add(key);
+					}
+				}
+
+				// subscribe the event handler
+				subscribers.add(subscribe(eventClass, o, m));
+			}
 		}
 		return subscribers;
 	}
