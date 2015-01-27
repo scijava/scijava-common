@@ -31,13 +31,18 @@
 
 package org.scijava;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.event.ContextDisposingEvent;
 import org.scijava.event.EventHandler;
@@ -357,6 +362,14 @@ public class Context implements Disposable {
 	 *           which is not available from this context.
 	 */
 	public void inject(final Object o) {
+		// Ensure parameter fields and event handler methods are cached for this
+		// object.
+		Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query =
+				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>();
+		query.put(Parameter.class, Field.class);
+		query.put(EventHandler.class, Method.class);
+		ClassUtils.cacheAnnotatedObjects(o.getClass(), query);
+
 		// iterate over all @Parameter annotated fields
 		final List<Field> fields = getParameterFields(o);
 		for (final Field f : fields) {

@@ -33,6 +33,7 @@ package org.scijava.util;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -40,9 +41,12 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Useful methods for working with {@link Class} objects and primitive types.
@@ -338,46 +342,17 @@ public final class ClassUtils {
 		getAnnotatedMethods(final Class<?> c, final Class<A> annotationClass,
 			final List<Method> methods)
 	{
-		// NB: The java.lang.Object class does not have any annotated methods.
-		// And even if it did, it definitely does not have any methods annotated
-		// with SciJava annotations such as org.scijava.event.EventHandler, which
-		// are the main sorts of methods we are interested in.
-		if (c == null || c == Object.class) return;
+		List<Method> cachedMethods = lookupMethods(c, annotationClass);
 
-		final Class<?> sc = c.getSuperclass();
-		if (sc != null) {
-			List<Method> superMethods = lookupMethods(sc, annotationClass);
-			if (superMethods == null) {
-				superMethods = new ArrayList<Method>();
-				// check supertypes for annotated methods first
-				getAnnotatedMethods(sc, annotationClass, superMethods);
-			}
-			methods.addAll(superMethods);
+		if (cachedMethods == null) {
+			Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query =
+				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>();
+			query.put(annotationClass, Method.class);
+			cacheAnnotatedObjects(c, query);
+			cachedMethods = lookupMethods(c, annotationClass);
 		}
 
-		// NB: In some cases, we may not need to recursively scan interfaces.
-		// In particular, for the @EventHandler annotation, we only care about
-		// concrete methods, not interface method declarations. So we could have
-		// additional method signatures with a boolean toggle indicating whether
-		// to include interfaces in the recursive scan. But initial benchmarks
-		// suggest that the performance difference, even when creating a
-		// full-blown Context with a large classpath, is negligible.
-		for (final Class<?> iface : c.getInterfaces()) {
-			List<Method> ifaceMethods = lookupMethods(iface, annotationClass);
-
-			if (ifaceMethods == null) {
-				ifaceMethods = new ArrayList<Method>();
-				getAnnotatedMethods(iface, annotationClass, ifaceMethods);
-			}
-			methods.addAll(ifaceMethods);
-		}
-
-		for (final Method m : c.getDeclaredMethods()) {
-			final A ann = m.getAnnotation(annotationClass);
-			if (ann != null) methods.add(m);
-		}
-
-		mapMethods(c, annotationClass, methods);
+		methods.addAll(cachedMethods);
 	}
 
 	/**
@@ -397,17 +372,18 @@ public final class ClassUtils {
 	{
 		List<Field> fields = lookupFields(c, annotationClass);
 
-		if (fields != null) return fields;
-		fields = new ArrayList<Field>();
-		getAnnotatedFields(c, annotationClass, fields);
+		if (fields == null) {
+			fields = new ArrayList<Field>();
+			getAnnotatedFields(c, annotationClass, fields);
+		}
 
 		return fields;
 	}
 
 	/**
-	 * Gets the given class's {@link Field}s marked with the annotation of the
-	 * specified class.
-	 * <p>
+ * Gets the given class's {@link Field}s marked with the annotation of the
+ * specified class.
+ * <p>
 	 * Unlike {@link Class#getFields()}, the result will include any non-public
 	 * fields, including fields defined in supertypes of the given class.
 	 * </p>
@@ -419,38 +395,169 @@ public final class ClassUtils {
 	public static <A extends Annotation> void getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
-		// NB: The java.lang.Object class does not have any annotated fields.
-		// And even if it did, it definitely does not have any fields annotated
-		// with SciJava annotations such as org.scijava.plugin.Parameter, which
-		// are the main sorts of fields we are interested in.
-		if (c == null || c == Object.class) return;
+		List<Field> cachedFields = lookupFields(c, annotationClass);
 
-		final Class<?> sc = c.getSuperclass();
-		if (sc != null) {
-			List<Field> superFields = lookupFields(sc, annotationClass);
-			if (superFields == null) {
-				superFields = new ArrayList<Field>();
-				// check supertypes for annotated fields first
-				getAnnotatedFields(sc, annotationClass, superFields);
+		if (cachedFields == null) {
+			Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query =
+				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>();
+			query.put(annotationClass, Field.class);
+			cacheAnnotatedObjects(c, query);
+			cachedFields = lookupFields(c, annotationClass);
+		}
+
+		fields.addAll(cachedFields);
+	}
+
+	/**
+	 * This method scans the provided class, its superclasses and interfaces for
+	 * all supported {@code {@link Annotation} : {@link AccessibleObject} pairs.
+	 * These are then cached to remove the need for future queries.
+	 * <p>
+	 * By combining multiple {@code Annotation : AccessibleObject} pairs in one
+	 * query, we can limit the number of times a class's superclass and interface
+	 * hierarchy are traversed.
+	 * </p>
+	 *
+	 * @param scannedClass Class to scan
+	 * @param query Pairs of {@link Annotation} and {@link AccessibleObject}s to
+	 *          discover.
+	 */
+	public static void cacheAnnotatedObjects(
+			final Class<?> scannedClass,
+			final Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query)
+	{
+		// NB: The java.lang.Object class does not have any annotated methods.
+		// And even if it did, it definitely does not have any methods annotated
+		// with SciJava annotations such as org.scijava.event.EventHandler, which
+		// are the main sorts of methods we are interested in.
+		if (scannedClass == null || scannedClass == Object.class) return;
+
+		// Initialize step - determine which queries are solved
+		final Set<Class<? extends Annotation>> keysToDrop =
+			new HashSet<Class<? extends Annotation>>();
+		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
+			final Class<? extends AccessibleObject> objectClass =
+				query.get(annotationClass);
+
+			// Fields
+			if (Field.class.isAssignableFrom(objectClass)) {
+				if (lookupFields(scannedClass, annotationClass) != null) keysToDrop
+					.add(annotationClass);
 			}
-			fields.addAll(superFields);
-		}
-
-		for (final Class<?> iface : c.getInterfaces()) {
-			List<Field> ifaceFields = lookupFields(iface, annotationClass);
-			if (ifaceFields == null) {
-				ifaceFields = new ArrayList<Field>();
-				getAnnotatedFields(iface, annotationClass, ifaceFields);
+			// Methods
+			else if (Method.class.isAssignableFrom(objectClass)) {
+				if (lookupMethods(scannedClass, annotationClass) != null) keysToDrop
+					.add(annotationClass);
 			}
-			fields.addAll(ifaceFields);
 		}
 
-		for (final Field f : c.getDeclaredFields()) {
-			final A ann = f.getAnnotation(annotationClass);
-			if (ann != null) fields.add(f);
+		// Clean up resolved keys
+		for (final Class<? extends Annotation> key : keysToDrop) {
+			query.remove(key);
 		}
 
-		mapFields(c, annotationClass, fields);
+		// Stop now if we know all requested information is cached
+		if (query.isEmpty()) return;
+
+		final List<Class<?>> inherited = new ArrayList<Class<?>>();
+
+		// cache all parents recursively
+		final Class<?> superClass = scannedClass.getSuperclass();
+		if (superClass != null) {
+			// Recursive step
+			cacheAnnotatedObjects(
+				superClass,
+				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>(
+					query));
+			inherited.add(superClass);
+		}
+
+		// cache all interfaces recursively
+		for (final Class<?> ifaceClass : scannedClass.getInterfaces()) {
+			// Recursive step
+			cacheAnnotatedObjects(
+				ifaceClass,
+				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>(
+					query));
+			inherited.add(ifaceClass);
+		}
+
+		// Populate supported objects for scanned class
+		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
+			final Class<? extends AccessibleObject> objectClass =
+					query.get(annotationClass);
+
+			// Methods
+			if (Method.class.isAssignableFrom(objectClass)) {
+				for (final Class<?> inheritedClass : inherited) {
+					final List<Method> annotatedMethods =
+							lookupMethods(inheritedClass, annotationClass);
+
+					if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
+						final List<Method> scannedMethods =
+								makeMethodsArray(scannedClass, annotationClass);
+
+						scannedMethods.addAll(annotatedMethods);
+					}
+				}
+
+				// Add declared methods
+				final Method[] declaredMethods = scannedClass.getDeclaredMethods();
+				if (declaredMethods != null && declaredMethods.length > 0) {
+					List<Method> scannedMethods = null;
+
+					for (final Method m : declaredMethods) {
+						if (m.getAnnotation(annotationClass) != null) {
+							if (scannedMethods == null) {
+								scannedMethods = makeMethodsArray(scannedClass, annotationClass);
+							}
+							scannedMethods.add(m);
+						}
+					}
+				}
+
+				// If there were no methods for this query, map an empty
+				// list to mark the query complete
+				if (lookupMethods(scannedClass, annotationClass) == null) {
+					mapMethods(scannedClass, annotationClass, Collections.<Method>emptyList());
+				}
+			}
+			// Fields
+			else if (Field.class.isAssignableFrom(objectClass)) {
+				for (final Class<?> inheritedClass : inherited) {
+					final List<Field> annotatedFields =
+							lookupFields(inheritedClass, annotationClass);
+
+					if (annotatedFields != null && !annotatedFields.isEmpty()) {
+						final List<Field> scannedFields =
+								makeFieldsArray(scannedClass, annotationClass);
+
+						scannedFields.addAll(annotatedFields);
+					}
+				}
+
+				// Add declared fields
+				final Field[] declaredFields = scannedClass.getDeclaredFields();
+				if (declaredFields != null && declaredFields.length > 0) {
+					List<Field> scannedFields = null;
+
+					for (final Field f : declaredFields) {
+						if (f.getAnnotation(annotationClass) != null) {
+							if (scannedFields == null) {
+								scannedFields = makeFieldsArray(scannedClass, annotationClass);
+							}
+							scannedFields.add(f);
+						}
+					}
+				}
+
+				// If there were no fields for this query, map an empty
+				// list to mark the query complete
+				if (lookupFields(scannedClass, annotationClass) == null) {
+					mapFields(scannedClass, annotationClass, Collections.<Field>emptyList());
+				}
+			}
+		}
 	}
 
 	/**
@@ -626,6 +733,46 @@ public final class ClassUtils {
 		}
 
 		map.put(annotationClass, annotatedMethods);
+	}
+
+	/**
+	 * As {@link #lookupFields(Class, Class)} but ensures an array is
+	 * created and mapped, if it doesn't exist already.
+	 *
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @return Cached list of Fields in the base class with the specified
+	 *         annotation.
+	 */
+	private static <A extends Annotation> List<Field> makeFieldsArray(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		List<Field> fields = lookupFields(c, annotationClass);
+		if (fields == null) {
+			fields = new ArrayList<Field>();
+			mapFields(c, annotationClass, fields);
+		}
+		return fields;
+	}
+
+	/**
+	 * As {@link #lookupMethods(Class, Class)} but ensures an array is
+	 * created and mapped, if it doesn't already exist.
+	 *
+	 * @param c Base class
+	 * @param annotationClass Annotation type
+	 * @return Cached list of Fields in the base class with the specified
+	 *         annotation.
+	 */
+	private static <A extends Annotation> List<Method> makeMethodsArray(
+		final Class<?> c, final Class<A> annotationClass)
+	{
+		List<Method> methods = lookupMethods(c, annotationClass);
+		if (methods == null) {
+			methods = new ArrayList<Method>();
+			mapMethods(c, annotationClass, methods);
+		}
+		return methods;
 	}
 
 	/**
