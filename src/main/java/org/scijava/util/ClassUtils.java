@@ -67,6 +67,7 @@ public final class ClassUtils {
 	 * This map serves as a cache, as these annotations should not change at
 	 * runtime and thus can alleviate the frequency field querying.
 	 * </p>
+	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
 	 */
 	private static final Map<Class<?>, Map<Class<?>, List<Field>>> fields =
 		new HashMap<Class<?>, Map<Class<?>, List<Field>>>();
@@ -79,6 +80,7 @@ public final class ClassUtils {
 	 * This map serves as a cache, as these annotations should not change at
 	 * runtime and thus can alleviate the frequency of method querying.
 	 * </p>
+	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
 	 */
 	private static final Map<Class<?>, Map<Class<?>, List<Method>>> methods =
 		new HashMap<Class<?>, Map<Class<?>, List<Method>>>();
