@@ -33,7 +33,7 @@ package org.scijava.util;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -69,8 +69,7 @@ public final class ClassUtils {
 	 * </p>
 	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
 	 */
-	private static final Map<Class<?>, Map<Class<?>, List<Field>>> fields =
-		new HashMap<Class<?>, Map<Class<?>, List<Field>>>();
+	private static final FieldCache fieldCache = new FieldCache();
 
 	/**
 	 * This maps a base class (key1) to a map of annotation classes (key2), which
@@ -82,8 +81,7 @@ public final class ClassUtils {
 	 * </p>
 	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
 	 */
-	private static final Map<Class<?>, Map<Class<?>, List<Method>>> methods =
-		new HashMap<Class<?>, Map<Class<?>, List<Method>>>();
+	private static final MethodCache methodCache = new MethodCache();
 
 	// -- Class loading, querying and reflection --
 
@@ -318,7 +316,7 @@ public final class ClassUtils {
 	public static <A extends Annotation> List<Method> getAnnotatedMethods(
 		final Class<?> c, final Class<A> annotationClass)
 	{
-		List<Method> methods = lookupMethods(c, annotationClass);
+		List<Method> methods = methodCache.getList(c, annotationClass);
 
 		if (methods == null) {
 			methods = new ArrayList<Method>();
@@ -344,14 +342,13 @@ public final class ClassUtils {
 		getAnnotatedMethods(final Class<?> c, final Class<A> annotationClass,
 			final List<Method> methods)
 	{
-		List<Method> cachedMethods = lookupMethods(c, annotationClass);
+		List<Method> cachedMethods = methodCache.getList(c, annotationClass);
 
 		if (cachedMethods == null) {
-			Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query =
-				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>();
+			Query query = new Query();
 			query.put(annotationClass, Method.class);
 			cacheAnnotatedObjects(c, query);
-			cachedMethods = lookupMethods(c, annotationClass);
+			cachedMethods = methodCache.getList(c, annotationClass);
 		}
 
 		methods.addAll(cachedMethods);
@@ -372,7 +369,7 @@ public final class ClassUtils {
 	public static <A extends Annotation> List<Field> getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass)
 	{
-		List<Field> fields = lookupFields(c, annotationClass);
+		List<Field> fields = fieldCache.getList(c, annotationClass);
 
 		if (fields == null) {
 			fields = new ArrayList<Field>();
@@ -397,14 +394,13 @@ public final class ClassUtils {
 	public static <A extends Annotation> void getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass, final List<Field> fields)
 	{
-		List<Field> cachedFields = lookupFields(c, annotationClass);
+		List<Field> cachedFields = fieldCache.getList(c, annotationClass);
 
 		if (cachedFields == null) {
-			Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query =
-				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>();
+			Query query = new Query();
 			query.put(annotationClass, Field.class);
 			cacheAnnotatedObjects(c, query);
-			cachedFields = lookupFields(c, annotationClass);
+			cachedFields = fieldCache.getList(c, annotationClass);
 		}
 
 		fields.addAll(cachedFields);
@@ -412,21 +408,20 @@ public final class ClassUtils {
 
 	/**
 	 * This method scans the provided class, its superclasses and interfaces for
-	 * all supported {@code {@link Annotation} : {@link AccessibleObject} pairs.
+	 * all supported {@code {@link Annotation} : {@link AnnotatedObject} pairs.
 	 * These are then cached to remove the need for future queries.
 	 * <p>
-	 * By combining multiple {@code Annotation : AccessibleObject} pairs in one
+	 * By combining multiple {@code Annotation : AnnotatedObject} pairs in one
 	 * query, we can limit the number of times a class's superclass and interface
 	 * hierarchy are traversed.
 	 * </p>
 	 *
 	 * @param scannedClass Class to scan
-	 * @param query Pairs of {@link Annotation} and {@link AccessibleObject}s to
+	 * @param query Pairs of {@link Annotation} and {@link AnnotatedObject}s to
 	 *          discover.
 	 */
-	public static void cacheAnnotatedObjects(
-			final Class<?> scannedClass,
-			final Map<Class<? extends Annotation>, Class<? extends AccessibleObject>> query)
+	public static void cacheAnnotatedObjects(final Class<?> scannedClass,
+		final Query query)
 	{
 		// NB: The java.lang.Object class does not have any annotated methods.
 		// And even if it did, it definitely does not have any methods annotated
@@ -438,17 +433,17 @@ public final class ClassUtils {
 		final Set<Class<? extends Annotation>> keysToDrop =
 			new HashSet<Class<? extends Annotation>>();
 		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
-			final Class<? extends AccessibleObject> objectClass =
+			final Class<? extends AnnotatedElement> objectClass =
 				query.get(annotationClass);
 
 			// Fields
 			if (Field.class.isAssignableFrom(objectClass)) {
-				if (lookupFields(scannedClass, annotationClass) != null) keysToDrop
+				if (fieldCache.getList(scannedClass, annotationClass) != null) keysToDrop
 					.add(annotationClass);
 			}
 			// Methods
 			else if (Method.class.isAssignableFrom(objectClass)) {
-				if (lookupMethods(scannedClass, annotationClass) != null) keysToDrop
+				if (methodCache.getList(scannedClass, annotationClass) != null) keysToDrop
 					.add(annotationClass);
 			}
 		}
@@ -468,9 +463,7 @@ public final class ClassUtils {
 		if (superClass != null) {
 			// Recursive step
 			cacheAnnotatedObjects(
-				superClass,
-				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>(
-					query));
+				superClass, new Query(query));
 			inherited.add(superClass);
 		}
 
@@ -479,25 +472,24 @@ public final class ClassUtils {
 			// Recursive step
 			cacheAnnotatedObjects(
 				ifaceClass,
-				new HashMap<Class<? extends Annotation>, Class<? extends AccessibleObject>>(
-					query));
+				new Query(query));
 			inherited.add(ifaceClass);
 		}
 
 		// Populate supported objects for scanned class
 		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
-			final Class<? extends AccessibleObject> objectClass =
-					query.get(annotationClass);
+			final Class<? extends AnnotatedElement> objectClass =
+				query.get(annotationClass);
 
 			// Methods
 			if (Method.class.isAssignableFrom(objectClass)) {
 				for (final Class<?> inheritedClass : inherited) {
 					final List<Method> annotatedMethods =
-							lookupMethods(inheritedClass, annotationClass);
+							methodCache.getList(inheritedClass, annotationClass);
 
 					if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
 						final List<Method> scannedMethods =
-								makeMethodsArray(scannedClass, annotationClass);
+								methodCache.makeList(scannedClass, annotationClass);
 
 						scannedMethods.addAll(annotatedMethods);
 					}
@@ -511,7 +503,7 @@ public final class ClassUtils {
 					for (final Method m : declaredMethods) {
 						if (m.getAnnotation(annotationClass) != null) {
 							if (scannedMethods == null) {
-								scannedMethods = makeMethodsArray(scannedClass, annotationClass);
+								scannedMethods = methodCache.makeList(scannedClass, annotationClass);
 							}
 							scannedMethods.add(m);
 						}
@@ -520,19 +512,19 @@ public final class ClassUtils {
 
 				// If there were no methods for this query, map an empty
 				// list to mark the query complete
-				if (lookupMethods(scannedClass, annotationClass) == null) {
-					mapMethods(scannedClass, annotationClass, Collections.<Method>emptyList());
+				if (methodCache.getList(scannedClass, annotationClass) == null) {
+					methodCache.putList(scannedClass, annotationClass, Collections.<Method>emptyList());
 				}
 			}
 			// Fields
 			else if (Field.class.isAssignableFrom(objectClass)) {
 				for (final Class<?> inheritedClass : inherited) {
 					final List<Field> annotatedFields =
-							lookupFields(inheritedClass, annotationClass);
+							fieldCache.getList(inheritedClass, annotationClass);
 
 					if (annotatedFields != null && !annotatedFields.isEmpty()) {
 						final List<Field> scannedFields =
-								makeFieldsArray(scannedClass, annotationClass);
+								fieldCache.makeList(scannedClass, annotationClass);
 
 						scannedFields.addAll(annotatedFields);
 					}
@@ -546,7 +538,7 @@ public final class ClassUtils {
 					for (final Field f : declaredFields) {
 						if (f.getAnnotation(annotationClass) != null) {
 							if (scannedFields == null) {
-								scannedFields = makeFieldsArray(scannedClass, annotationClass);
+								scannedFields = fieldCache.makeList(scannedClass, annotationClass);
 							}
 							scannedFields.add(f);
 						}
@@ -555,8 +547,8 @@ public final class ClassUtils {
 
 				// If there were no fields for this query, map an empty
 				// list to mark the query complete
-				if (lookupFields(scannedClass, annotationClass) == null) {
-					mapFields(scannedClass, annotationClass, Collections.<Field>emptyList());
+				if (fieldCache.getList(scannedClass, annotationClass) == null) {
+					fieldCache.putList(scannedClass, annotationClass, Collections.<Field>emptyList());
 				}
 			}
 		}
@@ -697,119 +689,8 @@ public final class ClassUtils {
 
 	// -- Helper methods --
 
-	/**
-	 * Populates the provided list with {@link Field} entries of the given base
-	 * class which are annotated with the specified annotation type.
-	 *
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @param annotatedFields Field list to populate
-	 */
-	private static <A extends Annotation> void mapFields(Class<?> c,
-		Class<A> annotationClass, List<Field> annotatedFields)
-	{
-		Map<Class<?>, List<Field>> map = fields.get(c);
-		if (map == null) {
-			map = new HashMap<Class<?>, List<Field>>();
-			fields.put(c, map);
-		}
 
-		map.put(annotationClass, annotatedFields);
-	}
 
-	/**
-	 * Populates the provided list with {@link Method} entries of the given base
-	 * class which are annotated with the specified annotation type.
-	 *
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @param annotatedFields Method list to populate
-	 */
-	private static <A extends Annotation> void mapMethods(final Class<?> c,
-		final Class<A> annotationClass, List<Method> annotatedMethods)
-	{
-		Map<Class<?>, List<Method>> map = methods.get(c);
-		if (map == null) {
-			map = new HashMap<Class<?>, List<Method>>();
-			methods.put(c, map);
-		}
-
-		map.put(annotationClass, annotatedMethods);
-	}
-
-	/**
-	 * As {@link #lookupFields(Class, Class)} but ensures an array is
-	 * created and mapped, if it doesn't exist already.
-	 *
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @return Cached list of Fields in the base class with the specified
-	 *         annotation.
-	 */
-	private static <A extends Annotation> List<Field> makeFieldsArray(
-		final Class<?> c, final Class<A> annotationClass)
-	{
-		List<Field> fields = lookupFields(c, annotationClass);
-		if (fields == null) {
-			fields = new ArrayList<Field>();
-			mapFields(c, annotationClass, fields);
-		}
-		return fields;
-	}
-
-	/**
-	 * As {@link #lookupMethods(Class, Class)} but ensures an array is
-	 * created and mapped, if it doesn't already exist.
-	 *
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @return Cached list of Fields in the base class with the specified
-	 *         annotation.
-	 */
-	private static <A extends Annotation> List<Method> makeMethodsArray(
-		final Class<?> c, final Class<A> annotationClass)
-	{
-		List<Method> methods = lookupMethods(c, annotationClass);
-		if (methods == null) {
-			methods = new ArrayList<Method>();
-			mapMethods(c, annotationClass, methods);
-		}
-		return methods;
-	}
-
-	/**
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @return Cached list of Fields in the base class with the specified
-	 *         annotation, or null if a cached list does not exist.
-	 */
-	private static <A extends Annotation> List<Field> lookupFields(
-		final Class<?> c, final Class<A> annotationClass)
-	{
-		List<Field> annotatedFields = null;
-		Map<Class<?>, List<Field>> annotationTypes = fields.get(c);
-		if (annotationTypes != null) {
-			annotatedFields = annotationTypes.get(annotationClass);
-		}
-		return annotatedFields;
-	}
-
-	/**
-	 * @param c Base class
-	 * @param annotationClass Annotation type
-	 * @return Cached list of Methods in the base class with the specified
-	 *         annotation, or null if a cached list does not exist.
-	 */
-	private static <A extends Annotation> List<Method> lookupMethods(
-		final Class<?> c, final Class<A> annotationClass)
-	{
-		List<Method> annotatedFields = null;
-		Map<Class<?>, List<Method>> annotationTypes = methods.get(c);
-		if (annotationTypes != null) {
-			annotatedFields = annotationTypes.get(annotationClass);
-		}
-		return annotatedFields;
-	}
 	// -- Deprecated methods --
 
 	/** @deprecated use {@link ConversionUtils#convert(Object, Class)} */
@@ -873,4 +754,84 @@ public final class ClassUtils {
 		return GenericUtils.getFieldType(field, type);
 	}
 
+	/**
+	 * Convenience class to further type narrow {@link CacheMap} to {@link Field}s.
+	 */
+	private static class FieldCache extends CacheMap<Field> { }
+
+	/**
+	 * Convenience class to further type narrow {@link CacheMap} to {@link Method}s.
+	 */
+	private static class MethodCache extends CacheMap<Method> { }
+
+	/**
+	 * Convenience class for {@code Map > Map > List} hierarchy. Cleans up generics
+	 * and contains helper methods for traversing the two map levels.
+	 *
+	 * @param <T> - {@link AnnotatedElement} {@link List} ultimately referenced by
+	 *          this map
+	 */
+	private static class CacheMap<T extends AnnotatedElement> extends
+		HashMap<Class<?>, Map<Class<? extends Annotation>, List<T>>>
+	{
+
+		/**
+		 * @param c Base class
+		 * @param annotationClass Annotation type
+		 * @return Cached list of Methods in the base class with the specified
+		 *         annotation, or null if a cached list does not exist.
+		 */
+		public List<T> getList(final Class<?> c,
+			final Class<? extends Annotation> annotationClass)
+		{
+			List<T> annotatedFields = null;
+			Map<Class<? extends Annotation>, List<T>> annotationTypes = get(c);
+			if (annotationTypes != null) {
+				annotatedFields = annotationTypes.get(annotationClass);
+			}
+			return annotatedFields;
+		}
+
+		/**
+		 * Populates the provided list with {@link Method} entries of the given base
+		 * class which are annotated with the specified annotation type.
+		 *
+		 * @param c Base class
+		 * @param annotationClass Annotation type
+		 * @param annotatedFields Method list to populate
+		 */
+		public void putList(final Class<?> c,
+			final Class<? extends Annotation> annotationClass,
+			List<T> annotatedMethods)
+		{
+			Map<Class<? extends Annotation>, List<T>> map = get(c);
+			if (map == null) {
+				map = new HashMap<Class<? extends Annotation>, List<T>>();
+				put(c, map);
+			}
+
+			map.put(annotationClass, annotatedMethods);
+		}
+
+		/**
+		 * As {@link #getList(Class, Class)} but ensures an array is created and
+		 * mapped, if it doesn't already exist.
+		 *
+		 * @param c Base class
+		 * @param annotationClass Annotation type
+		 * @return Cached list of Fields in the base class with the specified
+		 *         annotation.
+		 */
+		public List<T> makeList(final Class<?> c,
+			final Class<? extends Annotation> annotationClass)
+		{
+			List<T> methods = getList(c, annotationClass);
+			if (methods == null) {
+				methods = new ArrayList<T>();
+				putList(c, annotationClass, methods);
+			}
+			return methods;
+		}
+
+	}
 }
