@@ -433,18 +433,12 @@ public final class ClassUtils {
 		final Set<Class<? extends Annotation>> keysToDrop =
 			new HashSet<Class<? extends Annotation>>();
 		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
-			final Class<? extends AnnotatedElement> objectClass =
-				query.get(annotationClass);
-
 			// Fields
-			if (Field.class.isAssignableFrom(objectClass)) {
-				if (fieldCache.getList(scannedClass, annotationClass) != null) keysToDrop
-					.add(annotationClass);
+			if (fieldCache.getList(scannedClass, annotationClass) != null) {
+				keysToDrop.add(annotationClass);
 			}
-			// Methods
-			else if (Method.class.isAssignableFrom(objectClass)) {
-				if (methodCache.getList(scannedClass, annotationClass) != null) keysToDrop
-					.add(annotationClass);
+			else if (methodCache.getList(scannedClass, annotationClass) != null) {
+				keysToDrop.add(annotationClass);
 			}
 		}
 
@@ -483,74 +477,53 @@ public final class ClassUtils {
 
 			// Methods
 			if (Method.class.isAssignableFrom(objectClass)) {
-				for (final Class<?> inheritedClass : inherited) {
-					final List<Method> annotatedMethods =
-							methodCache.getList(inheritedClass, annotationClass);
-
-					if (annotatedMethods != null && !annotatedMethods.isEmpty()) {
-						final List<Method> scannedMethods =
-								methodCache.makeList(scannedClass, annotationClass);
-
-						scannedMethods.addAll(annotatedMethods);
-					}
-				}
-
-				// Add declared methods
-				final Method[] declaredMethods = scannedClass.getDeclaredMethods();
-				if (declaredMethods != null && declaredMethods.length > 0) {
-					List<Method> scannedMethods = null;
-
-					for (final Method m : declaredMethods) {
-						if (m.getAnnotation(annotationClass) != null) {
-							if (scannedMethods == null) {
-								scannedMethods = methodCache.makeList(scannedClass, annotationClass);
-							}
-							scannedMethods.add(m);
-						}
-					}
-				}
-
-				// If there were no methods for this query, map an empty
-				// list to mark the query complete
-				if (methodCache.getList(scannedClass, annotationClass) == null) {
-					methodCache.putList(scannedClass, annotationClass, Collections.<Method>emptyList());
-				}
+				populateCache(scannedClass, inherited, annotationClass, methodCache,
+					scannedClass.getDeclaredMethods());
 			}
 			// Fields
 			else if (Field.class.isAssignableFrom(objectClass)) {
-				for (final Class<?> inheritedClass : inherited) {
-					final List<Field> annotatedFields =
-							fieldCache.getList(inheritedClass, annotationClass);
+				populateCache(scannedClass, inherited, annotationClass, fieldCache,
+					scannedClass.getDeclaredFields());
+			}
+		}
+	}
 
-					if (annotatedFields != null && !annotatedFields.isEmpty()) {
-						final List<Field> scannedFields =
-								fieldCache.makeList(scannedClass, annotationClass);
+	private static <T extends AnnotatedElement> void
+		populateCache(final Class<?> scannedClass, final List<Class<?>> inherited,
+			final Class<? extends Annotation> annotationClass,
+			CacheMap<T> cacheMap, T[] declaredElements)
+	{
+		// Add inherited elements
+		for (final Class<?> inheritedClass : inherited) {
+			final List<T> annotatedElements =
+					cacheMap.getList(inheritedClass, annotationClass);
 
-						scannedFields.addAll(annotatedFields);
+			if (annotatedElements != null && !annotatedElements.isEmpty()) {
+				final List<T> scannedElements =
+						cacheMap.makeList(scannedClass, annotationClass);
+
+				scannedElements.addAll(annotatedElements);
+			}
+		}
+
+		// Add declared elements
+		if (declaredElements != null && declaredElements.length > 0) {
+			List<T> scannedElements = null;
+
+			for (final T t : declaredElements) {
+				if (t.getAnnotation(annotationClass) != null) {
+					if (scannedElements == null) {
+						scannedElements = cacheMap.makeList(scannedClass, annotationClass);
 					}
-				}
-
-				// Add declared fields
-				final Field[] declaredFields = scannedClass.getDeclaredFields();
-				if (declaredFields != null && declaredFields.length > 0) {
-					List<Field> scannedFields = null;
-
-					for (final Field f : declaredFields) {
-						if (f.getAnnotation(annotationClass) != null) {
-							if (scannedFields == null) {
-								scannedFields = fieldCache.makeList(scannedClass, annotationClass);
-							}
-							scannedFields.add(f);
-						}
-					}
-				}
-
-				// If there were no fields for this query, map an empty
-				// list to mark the query complete
-				if (fieldCache.getList(scannedClass, annotationClass) == null) {
-					fieldCache.putList(scannedClass, annotationClass, Collections.<Field>emptyList());
+					scannedElements.add(t);
 				}
 			}
+		}
+
+		// If there were no elements for this query, map an empty
+		// list to mark the query complete
+		if (cacheMap.getList(scannedClass, annotationClass) == null) {
+			cacheMap.putList(scannedClass, annotationClass, Collections.<T>emptyList());
 		}
 	}
 
