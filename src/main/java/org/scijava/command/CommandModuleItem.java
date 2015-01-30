@@ -44,8 +44,8 @@ import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Attr;
 import org.scijava.plugin.Parameter;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
+import org.scijava.util.GenericUtils;
 import org.scijava.util.NumberUtils;
 
 /**
@@ -76,7 +76,8 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public Class<T> getType() {
-		final Class<?> type = ClassUtils.getTypes(field, getDelegateClass()).get(0);
+		final Class<?> type =
+			GenericUtils.getFieldClasses(field, getDelegateClass()).get(0);
 		@SuppressWarnings("unchecked")
 		final Class<T> typedType = (Class<T>) type;
 		return typedType;
@@ -84,7 +85,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public Type getGenericType() {
-		return ClassUtils.getGenericType(field, getDelegateClass());
+		return GenericUtils.getFieldType(field, getDelegateClass());
 	}
 
 	@Override

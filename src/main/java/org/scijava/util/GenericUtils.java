@@ -121,9 +121,9 @@ public final class GenericUtils {
 	 * field.getType(); // Object
 	 * field.getGenericType(); // T
 	 * 
-	 * ClassUtils.getGenericType(field, Thing.class); // T
-	 * ClassUtils.getGenericType(field, NumberThing.class); // N extends Number
-	 * ClassUtils.getGenericType(field, IntegerThing.class); // Integer
+	 * GenericUtils.getFieldType(field, Thing.class); // T
+	 * GenericUtils.getFieldType(field, NumberThing.class); // N extends Number
+	 * GenericUtils.getFieldType(field, IntegerThing.class); // Integer
 	 * </pre>
 	 */
 	public static Type getFieldType(final Field field, final Class<?> type) {
