@@ -43,6 +43,7 @@ import java.util.Map;
 import org.scijava.Cancelable;
 import org.scijava.Context;
 import org.scijava.InstantiableException;
+import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
 import org.scijava.ValidityProblem;
 import org.scijava.event.EventService;
@@ -470,6 +471,15 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 				valid = false;
 			}
 
+			if (param.type() == ItemIO.BOTH && isImmutable(f.getType())) {
+				// NB: The BOTH type signifies that the parameter will be changed
+				// in-place somehow. But immutable parameters cannot be changed in
+				// such a manner, so it makes no sense to label them as BOTH.
+				final String error = "Immutable BOTH parameter: " + f;
+				problems.add(new ValidityProblem(error));
+				valid = false;
+			}
+
 			if (!valid) {
 				// NB: Skip invalid parameters.
 				continue;
@@ -489,6 +499,13 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 				if (!isPreset) outputList.add(item);
 			}
 		}
+	}
+
+	private boolean isImmutable(final Class<?> type) {
+		// NB: All eight primitive types, as well as the boxed primitive
+		// wrapper classes, as well as strings, are immutable objects.
+		return ClassUtils.isNumber(type) || ClassUtils.isText(type) ||
+			ClassUtils.isBoolean(type);
 	}
 
 	private Class<?> loadCommandClass() {
