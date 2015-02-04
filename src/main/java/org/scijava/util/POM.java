@@ -52,6 +52,8 @@ import org.xml.sax.SAXException;
  */
 public class POM extends XML implements Comparable<POM>, Versioned {
 
+	private String version;
+
 	/** Parses a POM from the given file. */
 	public POM(final File file) throws ParserConfigurationException,
 		SAXException, IOException
@@ -145,9 +147,15 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	/** Gets the POM's version. */
 	@Override
 	public String getVersion() {
-		final String version = cdata("//project/version");
-		if (version != null) return version;
-		return cdata("//project/parent/version");
+		if (version == null) {
+			synchronized (this) {
+				if (version == null) {
+					version = cdata("//project/version");
+					if (version == null) version = cdata("//project/parent/version");
+				}
+			}
+		}
+		return version;
 	}
 
 	// -- Utility methods --
