@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,7 +50,7 @@ import java.util.Set;
 
 /**
  * Useful methods for working with {@link Class} objects and primitive types.
- * 
+ *
  * @author Curtis Rueden
  */
 public final class ClassUtils {
@@ -67,7 +67,9 @@ public final class ClassUtils {
 	 * This map serves as a cache, as these annotations should not change at
 	 * runtime and thus can alleviate the frequency field querying.
 	 * </p>
-	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
+	 * 
+	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue
+	 *      #142</a>
 	 */
 	private static final FieldCache fieldCache = new FieldCache();
 
@@ -79,7 +81,9 @@ public final class ClassUtils {
 	 * This map serves as a cache, as these annotations should not change at
 	 * runtime and thus can alleviate the frequency of method querying.
 	 * </p>
-	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue #142</a>
+	 * 
+	 * @see <a href="https://github.com/scijava/scijava-common/issues/142">issue
+	 *      #142</a>
 	 */
 	private static final MethodCache methodCache = new MethodCache();
 
@@ -88,7 +92,7 @@ public final class ClassUtils {
 	/**
 	 * Loads the class with the given name, using the current thread's context
 	 * class loader, or null if it cannot be loaded.
-	 * 
+	 *
 	 * @see #loadClass(String, ClassLoader)
 	 */
 	public static Class<?> loadClass(final String className) {
@@ -99,10 +103,9 @@ public final class ClassUtils {
 	 * Loads the class with the given name, using the specified
 	 * {@link ClassLoader}, or null if it cannot be loaded.
 	 * <p>
-	 * This method is capable of parsing several different class name syntaxes.
-	 * In particular, array classes (including primitives) represented using
-	 * either square brackets or internal Java array name syntax are supported.
-	 * Examples:
+	 * This method is capable of parsing several different class name syntaxes. In
+	 * particular, array classes (including primitives) represented using either
+	 * square brackets or internal Java array name syntax are supported. Examples:
 	 * </p>
 	 * <ul>
 	 * <li>{@code boolean} is loaded as {@code boolean.class}</li>
@@ -111,7 +114,7 @@ public final class ClassUtils {
 	 * <li>{@code string[]} is loaded as {@code java.lang.String.class}</li>
 	 * <li>{@code [F} is loaded as {@code float[].class}</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param name The name of the class to load.
 	 * @param classLoader The class loader with which to load the class; if null,
 	 *          the current thread's context class loader will be used.
@@ -208,7 +211,7 @@ public final class ClassUtils {
 	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
 	 * path to the JAR (e.g., "/path/to/my-jar.jar").
 	 * </p>
-	 * 
+	 *
 	 * @param className The name of the class whose location is desired.
 	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
 	 */
@@ -228,7 +231,7 @@ public final class ClassUtils {
 	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
 	 * path to the JAR (e.g., "/path/to/my-jar.jar").
 	 * </p>
-	 * 
+	 *
 	 * @param className The name of the class whose location is desired.
 	 * @param classLoader The class loader to use when loading the class.
 	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
@@ -252,7 +255,7 @@ public final class ClassUtils {
 	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
 	 * path to the JAR (e.g., "file:/path/to/my-jar.jar").
 	 * </p>
-	 * 
+	 *
 	 * @param c The class whose location is desired.
 	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
 	 */
@@ -345,7 +348,7 @@ public final class ClassUtils {
 		List<Method> cachedMethods = methodCache.getList(c, annotationClass);
 
 		if (cachedMethods == null) {
-			Query query = new Query();
+			final Query query = new Query();
 			query.put(annotationClass, Method.class);
 			cacheAnnotatedObjects(c, query);
 			cachedMethods = methodCache.getList(c, annotationClass);
@@ -361,7 +364,7 @@ public final class ClassUtils {
 	 * Unlike {@link Class#getFields()}, the result will include any non-public
 	 * fields, including fields defined in supertypes of the given class.
 	 * </p>
-	 * 
+	 *
 	 * @param c The class to scan for annotated fields.
 	 * @param annotationClass The type of annotation for which to scan.
 	 * @return A new list containing all fields with the requested annotation.
@@ -380,13 +383,13 @@ public final class ClassUtils {
 	}
 
 	/**
- * Gets the given class's {@link Field}s marked with the annotation of the
- * specified class.
- * <p>
+	 * Gets the given class's {@link Field}s marked with the annotation of the
+	 * specified class.
+	 * <p>
 	 * Unlike {@link Class#getFields()}, the result will include any non-public
 	 * fields, including fields defined in supertypes of the given class.
 	 * </p>
-	 * 
+	 *
 	 * @param c The class to scan for annotated fields.
 	 * @param annotationClass The type of annotation for which to scan.
 	 * @param fields The list to which matching fields will be added.
@@ -397,7 +400,7 @@ public final class ClassUtils {
 		List<Field> cachedFields = fieldCache.getList(c, annotationClass);
 
 		if (cachedFields == null) {
-			Query query = new Query();
+			final Query query = new Query();
 			query.put(annotationClass, Field.class);
 			cacheAnnotatedObjects(c, query);
 			cachedFields = fieldCache.getList(c, annotationClass);
@@ -456,17 +459,14 @@ public final class ClassUtils {
 		final Class<?> superClass = scannedClass.getSuperclass();
 		if (superClass != null) {
 			// Recursive step
-			cacheAnnotatedObjects(
-				superClass, new Query(query));
+			cacheAnnotatedObjects(superClass, new Query(query));
 			inherited.add(superClass);
 		}
 
 		// cache all interfaces recursively
 		for (final Class<?> ifaceClass : scannedClass.getInterfaces()) {
 			// Recursive step
-			cacheAnnotatedObjects(
-				ifaceClass,
-				new Query(query));
+			cacheAnnotatedObjects(ifaceClass, new Query(query));
 			inherited.add(ifaceClass);
 		}
 
@@ -524,7 +524,7 @@ public final class ClassUtils {
 
 	/**
 	 * Sets the given field's value of the specified object instance.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the value cannot be set.
 	 */
 	// FIXME: Move to ConvertService and deprecate this signature.
@@ -541,7 +541,7 @@ public final class ClassUtils {
 			else {
 				// the given value needs to be converted to a compatible type
 				final Type fieldType =
-						GenericUtils.getFieldType(field, instance.getClass());
+					GenericUtils.getFieldType(field, instance.getClass());
 				compatibleValue = ConversionUtils.convert(value, fieldType);
 			}
 			field.set(instance, compatibleValue);
@@ -610,7 +610,7 @@ public final class ClassUtils {
 	 * impose logic beyond that of this method, for breaking ties, if a total
 	 * ordering consistent with equals is always required.
 	 * </p>
-	 * 
+	 *
 	 * @see org.scijava.Priority#compare(org.scijava.Prioritized,
 	 *      org.scijava.Prioritized)
 	 */
@@ -629,19 +629,19 @@ public final class ClassUtils {
 	 * annotationClass. If no matches are found, an empty mapping is created to
 	 * mark this class complete.
 	 */
-	private static <T extends AnnotatedElement> void
-		populateCache(final Class<?> scannedClass, final List<Class<?>> inherited,
-			final Class<? extends Annotation> annotationClass,
-			CacheMap<T> cacheMap, T[] declaredElements)
+	private static <T extends AnnotatedElement> void populateCache(
+		final Class<?> scannedClass, final List<Class<?>> inherited,
+		final Class<? extends Annotation> annotationClass,
+		final CacheMap<T> cacheMap, final T[] declaredElements)
 	{
 		// Add inherited elements
 		for (final Class<?> inheritedClass : inherited) {
 			final List<T> annotatedElements =
-					cacheMap.getList(inheritedClass, annotationClass);
+				cacheMap.getList(inheritedClass, annotationClass);
 
 			if (annotatedElements != null && !annotatedElements.isEmpty()) {
 				final List<T> scannedElements =
-						cacheMap.makeList(scannedClass, annotationClass);
+					cacheMap.makeList(scannedClass, annotationClass);
 
 				scannedElements.addAll(annotatedElements);
 			}
@@ -664,7 +664,8 @@ public final class ClassUtils {
 		// If there were no elements for this query, map an empty
 		// list to mark the query complete
 		if (cacheMap.getList(scannedClass, annotationClass) == null) {
-			cacheMap.putList(scannedClass, annotationClass, Collections.<T>emptyList());
+			cacheMap.putList(scannedClass, annotationClass, Collections
+				.<T> emptyList());
 		}
 	}
 
@@ -734,18 +735,20 @@ public final class ClassUtils {
 	// -- Helper classes --
 
 	/**
-	 * Convenience class to further type narrow {@link CacheMap} to {@link Field}s.
+	 * Convenience class to further type narrow {@link CacheMap} to {@link Field}
+	 * s.
 	 */
-	private static class FieldCache extends CacheMap<Field> { }
+	private static class FieldCache extends CacheMap<Field> {}
 
 	/**
-	 * Convenience class to further type narrow {@link CacheMap} to {@link Method}s.
+	 * Convenience class to further type narrow {@link CacheMap} to {@link Method}
+	 * s.
 	 */
-	private static class MethodCache extends CacheMap<Method> { }
+	private static class MethodCache extends CacheMap<Method> {}
 
 	/**
-	 * Convenience class for {@code Map > Map > List} hierarchy. Cleans up generics
-	 * and contains helper methods for traversing the two map levels.
+	 * Convenience class for {@code Map > Map > List} hierarchy. Cleans up
+	 * generics and contains helper methods for traversing the two map levels.
 	 *
 	 * @param <T> - {@link AnnotatedElement} {@link List} ultimately referenced by
 	 *          this map
@@ -764,7 +767,7 @@ public final class ClassUtils {
 			final Class<? extends Annotation> annotationClass)
 		{
 			List<T> annotatedFields = null;
-			Map<Class<? extends Annotation>, List<T>> annotationTypes = get(c);
+			final Map<Class<? extends Annotation>, List<T>> annotationTypes = get(c);
 			if (annotationTypes != null) {
 				annotatedFields = annotationTypes.get(annotationClass);
 			}
@@ -781,7 +784,7 @@ public final class ClassUtils {
 		 */
 		public void putList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass,
-			List<T> annotatedMethods)
+			final List<T> annotatedMethods)
 		{
 			Map<Class<? extends Annotation>, List<T>> map = get(c);
 			if (map == null) {
