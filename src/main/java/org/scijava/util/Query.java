@@ -36,7 +36,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 
 /**
- * Trivial extension for convenience since we don't have diamond notation.
+ * A map of annotations to annotated elements.
+ *
+ * @author Mark Hiner
  */
 public class Query extends HashMap<Class<? extends Annotation>, Class<? extends AnnotatedElement>> {
 
