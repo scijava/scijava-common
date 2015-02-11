@@ -488,45 +488,6 @@ public final class ClassUtils {
 		}
 	}
 
-	private static <T extends AnnotatedElement> void
-		populateCache(final Class<?> scannedClass, final List<Class<?>> inherited,
-			final Class<? extends Annotation> annotationClass,
-			CacheMap<T> cacheMap, T[] declaredElements)
-	{
-		// Add inherited elements
-		for (final Class<?> inheritedClass : inherited) {
-			final List<T> annotatedElements =
-					cacheMap.getList(inheritedClass, annotationClass);
-
-			if (annotatedElements != null && !annotatedElements.isEmpty()) {
-				final List<T> scannedElements =
-						cacheMap.makeList(scannedClass, annotationClass);
-
-				scannedElements.addAll(annotatedElements);
-			}
-		}
-
-		// Add declared elements
-		if (declaredElements != null && declaredElements.length > 0) {
-			List<T> scannedElements = null;
-
-			for (final T t : declaredElements) {
-				if (t.getAnnotation(annotationClass) != null) {
-					if (scannedElements == null) {
-						scannedElements = cacheMap.makeList(scannedClass, annotationClass);
-					}
-					scannedElements.add(t);
-				}
-			}
-		}
-
-		// If there were no elements for this query, map an empty
-		// list to mark the query complete
-		if (cacheMap.getList(scannedClass, annotationClass) == null) {
-			cacheMap.putList(scannedClass, annotationClass, Collections.<T>emptyList());
-		}
-	}
-
 	/**
 	 * Gets the specified field of the given class, or null if it does not exist.
 	 */
@@ -662,7 +623,50 @@ public final class ClassUtils {
 
 	// -- Helper methods --
 
+	/**
+	 * Populates the cache of annotated elements for a particular class by looking
+	 * for all inherited and declared instances annotated with the specified
+	 * annotationClass. If no matches are found, an empty mapping is created to
+	 * mark this class complete.
+	 */
+	private static <T extends AnnotatedElement> void
+		populateCache(final Class<?> scannedClass, final List<Class<?>> inherited,
+			final Class<? extends Annotation> annotationClass,
+			CacheMap<T> cacheMap, T[] declaredElements)
+	{
+		// Add inherited elements
+		for (final Class<?> inheritedClass : inherited) {
+			final List<T> annotatedElements =
+					cacheMap.getList(inheritedClass, annotationClass);
 
+			if (annotatedElements != null && !annotatedElements.isEmpty()) {
+				final List<T> scannedElements =
+						cacheMap.makeList(scannedClass, annotationClass);
+
+				scannedElements.addAll(annotatedElements);
+			}
+		}
+
+		// Add declared elements
+		if (declaredElements != null && declaredElements.length > 0) {
+			List<T> scannedElements = null;
+
+			for (final T t : declaredElements) {
+				if (t.getAnnotation(annotationClass) != null) {
+					if (scannedElements == null) {
+						scannedElements = cacheMap.makeList(scannedClass, annotationClass);
+					}
+					scannedElements.add(t);
+				}
+			}
+		}
+
+		// If there were no elements for this query, map an empty
+		// list to mark the query complete
+		if (cacheMap.getList(scannedClass, annotationClass) == null) {
+			cacheMap.putList(scannedClass, annotationClass, Collections.<T>emptyList());
+		}
+	}
 
 	// -- Deprecated methods --
 
@@ -726,6 +730,8 @@ public final class ClassUtils {
 	public static Type getGenericType(final Field field, final Class<?> type) {
 		return GenericUtils.getFieldType(field, type);
 	}
+
+	// -- Helper classes --
 
 	/**
 	 * Convenience class to further type narrow {@link CacheMap} to {@link Field}s.
