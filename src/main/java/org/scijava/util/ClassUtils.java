@@ -426,64 +426,87 @@ public final class ClassUtils {
 	public static void cacheAnnotatedObjects(final Class<?> scannedClass,
 		final Query query)
 	{
-		// NB: The java.lang.Object class does not have any annotated methods.
-		// And even if it did, it definitely does not have any methods annotated
-		// with SciJava annotations such as org.scijava.event.EventHandler, which
-		// are the main sorts of methods we are interested in.
-		if (scannedClass == null || scannedClass == Object.class) return;
+		// Only allow one thread at a time to populate cached objects for a given
+		// class. This lock is technically overkill - the minimal lock would be
+		// on the provided Query contents + class. Devising a way to obtain this
+		// lock could be useful - as if Query A and Query B were executed on the
+		// same class by different threads, there are three scenarios:
+		// 1) intersection of A + B is empty - then they can run on separate threads
+		// 2) A == B - whichever was received second must wait for the first to
+		// 	  finish.
+		// 3) A != B and intersection of A + B is not empty - the intersection subset
+		//    can be safely performed on a separate thread, but the later query must
+		//    still wait for the earlier query to complete.
+		//
+		// NB: an alternative would be to update the getAnnotatedxxx methods to
+		// return Sets instead of Lists. Then threads can pretty much go nuts
+		// as long as you double lock the Set creation in a synchronized block.
+		//
+		// NB: another possibility would be to keep this synchronized entry point
+		// but divide the work for each Query into asynchronous blocks. However, it
+		// has not been investigated how much of a performance boost that would
+		// provide as it would then cause multiple traversals of the class hierarchy
+		// - which is exactly what the Query notation was created to avoid.
+		synchronized (scannedClass) {
+			// NB: The java.lang.Object class does not have any annotated methods.
+			// And even if it did, it definitely does not have any methods annotated
+			// with SciJava annotations such as org.scijava.event.EventHandler, which
+			// are the main sorts of methods we are interested in.
+			if (scannedClass == null || scannedClass == Object.class) return;
 
-		// Initialize step - determine which queries are solved
-		final Set<Class<? extends Annotation>> keysToDrop =
-			new HashSet<Class<? extends Annotation>>();
-		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
-			// Fields
-			if (fieldCache.getList(scannedClass, annotationClass) != null) {
-				keysToDrop.add(annotationClass);
+			// Initialize step - determine which queries are solved
+			final Set<Class<? extends Annotation>> keysToDrop =
+				new HashSet<Class<? extends Annotation>>();
+			for (final Class<? extends Annotation> annotationClass : query.keySet()) {
+				// Fields
+				if (fieldCache.getList(scannedClass, annotationClass) != null) {
+					keysToDrop.add(annotationClass);
+				}
+				else if (methodCache.getList(scannedClass, annotationClass) != null) {
+					keysToDrop.add(annotationClass);
+				}
 			}
-			else if (methodCache.getList(scannedClass, annotationClass) != null) {
-				keysToDrop.add(annotationClass);
+
+			// Clean up resolved keys
+			for (final Class<? extends Annotation> key : keysToDrop) {
+				query.remove(key);
 			}
-		}
 
-		// Clean up resolved keys
-		for (final Class<? extends Annotation> key : keysToDrop) {
-			query.remove(key);
-		}
+			// Stop now if we know all requested information is cached
+			if (query.isEmpty()) return;
 
-		// Stop now if we know all requested information is cached
-		if (query.isEmpty()) return;
+			final List<Class<?>> inherited = new ArrayList<Class<?>>();
 
-		final List<Class<?>> inherited = new ArrayList<Class<?>>();
-
-		// cache all parents recursively
-		final Class<?> superClass = scannedClass.getSuperclass();
-		if (superClass != null) {
-			// Recursive step
-			cacheAnnotatedObjects(superClass, new Query(query));
-			inherited.add(superClass);
-		}
-
-		// cache all interfaces recursively
-		for (final Class<?> ifaceClass : scannedClass.getInterfaces()) {
-			// Recursive step
-			cacheAnnotatedObjects(ifaceClass, new Query(query));
-			inherited.add(ifaceClass);
-		}
-
-		// Populate supported objects for scanned class
-		for (final Class<? extends Annotation> annotationClass : query.keySet()) {
-			final Class<? extends AnnotatedElement> objectClass =
-				query.get(annotationClass);
-
-			// Methods
-			if (Method.class.isAssignableFrom(objectClass)) {
-				populateCache(scannedClass, inherited, annotationClass, methodCache,
-					scannedClass.getDeclaredMethods());
+			// cache all parents recursively
+			final Class<?> superClass = scannedClass.getSuperclass();
+			if (superClass != null) {
+				// Recursive step
+				cacheAnnotatedObjects(superClass, new Query(query));
+				inherited.add(superClass);
 			}
-			// Fields
-			else if (Field.class.isAssignableFrom(objectClass)) {
-				populateCache(scannedClass, inherited, annotationClass, fieldCache,
-					scannedClass.getDeclaredFields());
+
+			// cache all interfaces recursively
+			for (final Class<?> ifaceClass : scannedClass.getInterfaces()) {
+				// Recursive step
+				cacheAnnotatedObjects(ifaceClass, new Query(query));
+				inherited.add(ifaceClass);
+			}
+
+			// Populate supported objects for scanned class
+			for (final Class<? extends Annotation> annotationClass : query.keySet()) {
+				final Class<? extends AnnotatedElement> objectClass =
+					query.get(annotationClass);
+
+				// Methods
+				if (Method.class.isAssignableFrom(objectClass)) {
+					populateCache(scannedClass, inherited, annotationClass, methodCache,
+						scannedClass.getDeclaredMethods());
+				}
+				// Fields
+				else if (Field.class.isAssignableFrom(objectClass)) {
+					populateCache(scannedClass, inherited, annotationClass, fieldCache,
+						scannedClass.getDeclaredFields());
+				}
 			}
 		}
 	}
