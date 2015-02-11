@@ -40,6 +40,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
+import java.util.RandomAccess;
 
 import org.junit.Test;
 
@@ -135,6 +136,26 @@ public class GenericUtilsTest {
 			Serializable.class, Cloneable.class);
 	}
 
+	@Test
+	public void testGetFieldTypeString() {
+		final Field f1 = ClassUtils.getField(Thing.class, "thing");
+		assertFieldString("T", Thing.class, f1);
+		assertFieldString("N extends java.lang.Number", NumberThing.class, f1);
+		assertFieldString("java.lang.Integer", IntegerThing.class, f1);
+		assertFieldString("java.lang.Integer", SpecificIntegerThing.class, f1);
+		assertFieldString("java.util.List<T>", ListThing.class, f1);
+		assertFieldString("java.util.List<Double>", ListDoubleThing.class, f1);
+		assertFieldString(
+			"RT extends org.scijava.util.GenericUtilsTest.RecursiveThing<RT>",
+			RecursiveThing.class, f1);
+
+		final Field f2 = ClassUtils.getField(Superclass.class, "thing");
+		assertFieldString("A extends java.io.Serializable", Superclass.class, f2);
+		assertFieldString(
+			"B extends java.util.RandomAccess & java.io.Serializable",
+			Subclass.class, f2);
+	}
+
 	// -- Helper classes --
 
 	private static class Thing<T> {
@@ -154,6 +175,36 @@ public class GenericUtilsTest {
 		Thing<T>
 	{
 		// NB: No implementation needed.
+	}
+
+	private static class SpecificIntegerThing extends IntegerThing {
+		// NB: No implementation needed.
+	}
+
+	private static class ListThing<T> extends Thing<List<T>> {
+		// NB: No implementation needed.
+	}
+
+	private static class ListDoubleThing extends ListThing<Double> {
+		// NB: No implementation needed.
+	}
+
+	private static class RecursiveThing<RT extends RecursiveThing<RT>> extends
+		Thing<RT>
+	{
+		// NB: No implementation needed.
+	}
+
+	private static class Superclass<A extends Serializable, B> {
+		@SuppressWarnings("unused")
+		private A thing;
+	}
+
+	/** NB: A and B are reversed in the extends clause! */
+	private static class Subclass<A, B extends RandomAccess & Serializable>
+		extends Superclass<B, A>
+	{
+		// NB: Marker class.
 	}
 
 	// -- Helper methods --
@@ -183,6 +234,12 @@ public class GenericUtilsTest {
 		for (int i = 0; i < values.length; i++) {
 			assertSame(list.get(i), values[i]);
 		}
+	}
+
+	private void assertFieldString(final String expected, final Class<?> c,
+		final Field field)
+	{
+		assertEquals(expected, GenericUtils.getFieldTypeString(c, field));
 	}
 
 }

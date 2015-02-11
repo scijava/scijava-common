@@ -35,8 +35,11 @@ import com.googlecode.gentyref.GenericTypeReflector;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Useful methods for working with {@link Type} objects, particularly generic
@@ -223,6 +226,160 @@ public final class GenericUtils {
 	{
 		return GenericTypeReflector.getTypeParameter(type,
 			c.getTypeParameters()[paramNo]);
+	}
+
+	/**
+	 * Obtains a string for the given field when viewed through the specified
+	 * subclass, which matches the syntax of Java source code.
+	 * <p>
+	 * Many thanks to <a
+	 * href="http://stackoverflow.com/questions/28143029">rgettman on
+	 * StackOverflow</a> for developing this logic.
+	 * </p>
+	 *
+	 * @param c The class from which to view the field in question.
+	 * @param field The field for which to generate a type string.
+	 * @return A type string describing the method, which matches the syntax of
+	 *         Java source code.
+	 */
+	public static String getFieldTypeString(final Class<?> c, final Field field) {
+		final Type genericType = field.getGenericType();
+		// Declared as actual type name...
+		if (genericType instanceof Class) {
+			final Class<?> genericTypeClass = (Class<?>) genericType;
+			return genericTypeClass.getName();
+		}
+		// .. or as a generic type?
+		else if (genericType instanceof TypeVariable) {
+			final TypeVariable<?> typeVariable = (TypeVariable<?>) genericType;
+			final Class<?> declaringClass = field.getDeclaringClass();
+
+			// Create a Stack of classes going from c up to, but not including,
+			// the declaring class.
+			final Stack<Class<?>> stack = new Stack<Class<?>>();
+			Class<?> currClass = c;
+			while (!currClass.equals(declaringClass)) {
+				stack.push(currClass);
+				currClass = currClass.getSuperclass();
+			}
+			// Get the original type parameter from the declaring class.
+			int typeVariableIndex = -1;
+			String typeVariableName = typeVariable.getName();
+			TypeVariable<?>[] currTypeParameters = currClass.getTypeParameters();
+			for (int i = 0; i < currTypeParameters.length; i++) {
+				final TypeVariable<?> currTypeVariable = currTypeParameters[i];
+				if (currTypeVariable.getName().equals(typeVariableName)) {
+					typeVariableIndex = i;
+					break;
+				}
+			}
+
+			if (typeVariableIndex == -1) {
+				throw new IllegalStateException("Expected Type variable \"" +
+					typeVariable.getName() + "\" in class " + c +
+					"; but it was not found.");
+			}
+
+			// If the type parameter is from the same class, don't bother walking down
+			// a non-existent hierarchy.
+			if (declaringClass.equals(c)) {
+				return getTypeVariableString(typeVariable);
+			}
+
+			// Pop them in order, keeping track of which index is the type variable.
+			while (!stack.isEmpty()) {
+				currClass = stack.pop();
+				// Must be ParameterizedType, not Class, because type arguments must be
+				// supplied to the generic superclass.
+				final ParameterizedType superclassParameterizedType =
+					(ParameterizedType) currClass.getGenericSuperclass();
+				final Type currType =
+					superclassParameterizedType.getActualTypeArguments()[typeVariableIndex];
+				if (currType instanceof Class) {
+					// Type argument is an actual Class, e.g.
+					// "extends ArrayList<Integer>".
+					currClass = (Class<?>) currType;
+					return currClass.getName();
+				}
+				else if (currType instanceof TypeVariable) {
+					// e.g., "T"
+					TypeVariable<?> currTypeVariable = (TypeVariable<?>) currType;
+					typeVariableName = currTypeVariable.getName();
+					// Reached passed-in class (bottom of hierarchy)? Report it.
+					if (currClass.equals(c)) {
+						return getTypeVariableString(currTypeVariable);
+					}
+					// Not at bottom? Find the type parameter to set up for next loop.
+					typeVariableIndex = -1;
+					currTypeParameters = currClass.getTypeParameters();
+					for (int i = 0; i < currTypeParameters.length; i++) {
+						currTypeVariable = currTypeParameters[i];
+						if (currTypeVariable.getName().equals(typeVariableName)) {
+							typeVariableIndex = i;
+							break;
+						}
+					}
+
+					if (typeVariableIndex == -1) {
+						// Shouldn't get here.
+						throw new IllegalStateException("Expected Type variable \"" +
+							typeVariable.getName() + "\" in class " + currClass.getName() +
+							"; but it was not found.");
+					}
+				}
+				else if (currType instanceof ParameterizedType) {
+					final ParameterizedType pType = (ParameterizedType) currType;
+					// e.g., "List<T>"
+					return pType.toString();
+				}
+			}
+		}
+		// Shouldn't get here.
+		final String genericTypeClassName = genericType == null ? "null" : genericType.getClass().getName();
+		throw new IllegalStateException("Unsupported type of Type: " + genericTypeClassName);
+	}
+
+	/** Gets a string describing a generic type parameter including its bounds. */
+	public static String
+		getTypeVariableString(final TypeVariable<?> typeVariable)
+	{
+		final StringBuilder buf = new StringBuilder();
+		buf.append(typeVariable.getName());
+		final Type[] bounds = typeVariable.getBounds();
+		boolean first = true;
+		// Don't report explicit "extends Object".
+		if (bounds.length == 1 && bounds[0].equals(Object.class)) {
+			return buf.toString();
+		}
+		for (final Type bound : bounds) {
+			if (first) {
+				buf.append(" extends ");
+				first = false;
+			}
+			else {
+				buf.append(" & ");
+			}
+			if (bound instanceof Class) {
+				// e.g., "java.util.RandomAccess"
+				final Class<?> boundClass = (Class<?>) bound;
+				buf.append(boundClass.getName());
+			}
+			else if (bound instanceof TypeVariable) {
+				// e.g., "T"
+				final TypeVariable<?> typeVariableBound = (TypeVariable<?>) bound;
+				buf.append(typeVariableBound.getName());
+			}
+			else if (bound instanceof ParameterizedType) {
+				// e.g., "java.util.Collection<T>"
+				final ParameterizedType pType = (ParameterizedType) bound;
+				buf.append(pType.toString());
+			}
+			else {
+				throw new IllegalStateException("Unknown bound type: " +
+					bound.getClass().getName());
+			}
+		}
+		return buf.toString();
 	}
 
 }
