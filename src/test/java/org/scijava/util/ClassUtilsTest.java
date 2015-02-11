@@ -42,7 +42,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarOutputStream;
@@ -187,26 +186,6 @@ public class ClassUtilsTest {
 
 	private void assertLoaded(final Class<?> c, final String name) {
 		assertSame(c, ClassUtils.loadClass(name));
-	}
-
-	// -- Helper classes --
-
-	public static class Thing<T> {
-		public T thing;
-	}
-
-	public static class NumberThing<N extends Number> extends Thing<N> {
-		// NB: No implementation needed.
-	}
-
-	public static class IntegerThing extends NumberThing<Integer> {
-		// NB: No implementation needed.
-	}
-
-	public static class ComplexThing<T extends Serializable & Cloneable> extends
-		Thing<T>
-	{
-		// NB: No implementation needed.
 	}
 
 }

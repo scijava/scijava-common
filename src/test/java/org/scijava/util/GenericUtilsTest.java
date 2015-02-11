@@ -42,10 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
-import org.scijava.util.ClassUtilsTest.ComplexThing;
-import org.scijava.util.ClassUtilsTest.IntegerThing;
-import org.scijava.util.ClassUtilsTest.NumberThing;
-import org.scijava.util.ClassUtilsTest.Thing;
 
 /**
  * Tests {@link GenericUtils}.
@@ -137,6 +133,27 @@ public class GenericUtilsTest {
 		// Serializable & Cloneable
 		assertAllTheSame(GenericUtils.getFieldClasses(field, ComplexThing.class),
 			Serializable.class, Cloneable.class);
+	}
+
+	// -- Helper classes --
+
+	private static class Thing<T> {
+		@SuppressWarnings("unused")
+		private T thing;
+	}
+
+	private static class NumberThing<N extends Number> extends Thing<N> {
+		// NB: No implementation needed.
+	}
+
+	private static class IntegerThing extends NumberThing<Integer> {
+		// NB: No implementation needed.
+	}
+
+	private static class ComplexThing<T extends Serializable & Cloneable> extends
+		Thing<T>
+	{
+		// NB: No implementation needed.
 	}
 
 	// -- Helper methods --
