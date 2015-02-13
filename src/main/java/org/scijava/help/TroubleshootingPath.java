@@ -20,4 +20,15 @@ public interface TroubleshootingPath extends SingletonPlugin, Iterable<String> {
 	 */
 	String getDescription(String name);
 
+	/**
+	 * just used to identify the language to run the script with.
+	 * @return
+	 */
+	String getScriptName();
+
+	/**
+	 * Script body to run
+	 * @return
+	 */
+	String getScript();
 }
