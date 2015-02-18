@@ -173,12 +173,19 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	 */
 	private HashMap<String, ShadowMenu> rootMenus() {
 		if (rootMenus == null) {
-			rootMenus = new HashMap<String, ShadowMenu>();
-
-			final List<ModuleInfo> allModules = moduleService.getModules();
-			addModules(allModules);
+			initRootMenus();
 		}
 		return rootMenus;
+	}
+
+	/** Initializes {@link #rootMenus}. */
+	private synchronized void initRootMenus() {
+		if (rootMenus != null) return;
+		final HashMap<String, ShadowMenu> map = new HashMap<String, ShadowMenu>();
+
+		final List<ModuleInfo> allModules = moduleService.getModules();
+		addModules(allModules);
+		rootMenus = map;
 	}
 
 }
