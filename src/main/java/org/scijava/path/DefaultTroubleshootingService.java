@@ -1,5 +1,5 @@
 
-package org.scijava.help;
+package org.scijava.path;
 
 import org.scijava.path.BranchingPathNode;
 import org.scijava.path.DefaultBranchingPathNode;
@@ -12,7 +12,7 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public class DefaultTroubleshootingService extends
-	AbstractSingletonService<TroubleshootingPath> implements
+	AbstractSingletonService<Path> implements
 	TroubleshootingService
 {
 
@@ -29,7 +29,7 @@ public class DefaultTroubleshootingService extends
 					root = new DefaultBranchingPathNode();
 					// For each path we start from the root node and build the
 					// specified path.
-					for (final TroubleshootingPath path : getInstances()) {
+					for (final Path path : getInstances()) {
 						BranchingPathNode currentNode = root;
 						for (final String name : path) {
 							currentNode.appendDescription(path.getDescription(name));
@@ -48,8 +48,8 @@ public class DefaultTroubleshootingService extends
 	// -- SingletonService API --
 
 	@Override
-	public Class<TroubleshootingPath> getPluginType() {
-		return TroubleshootingPath.class;
+	public Class<Path> getPluginType() {
+		return Path.class;
 	}
 
 	// -- Helper methods --

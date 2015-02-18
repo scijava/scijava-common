@@ -4,6 +4,7 @@ package org.scijava.help;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.path.BranchingPathNode;
+import org.scijava.path.TroubleshootingService;
 
 public class TroubleshooterTest {
 

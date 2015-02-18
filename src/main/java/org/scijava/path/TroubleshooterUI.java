@@ -1,5 +1,5 @@
 
-package org.scijava.help;
+package org.scijava.path;
 
 import org.scijava.command.Command;
 

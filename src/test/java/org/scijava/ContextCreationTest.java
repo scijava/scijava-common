@@ -80,7 +80,7 @@ public class ContextCreationTest {
 				org.scijava.convert.DefaultConvertService.class,
 				org.scijava.display.DefaultDisplayService.class,
 				org.scijava.event.DefaultEventHistory.class,
-				org.scijava.help.DefaultTroubleshootingService.class,
+				org.scijava.path.DefaultTroubleshootingService.class,
 				org.scijava.input.DefaultInputService.class,
 				org.scijava.io.DefaultDataHandleService.class,
 				org.scijava.io.DefaultIOService.class,

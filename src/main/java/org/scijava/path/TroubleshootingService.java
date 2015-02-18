@@ -1,5 +1,5 @@
 
-package org.scijava.help;
+package org.scijava.path;
 
 import org.scijava.path.BranchingPathNode;
 import org.scijava.plugin.SingletonService;
@@ -8,12 +8,12 @@ import org.scijava.plugin.SingletonService;
  *
  */
 public interface TroubleshootingService extends
-	SingletonService<TroubleshootingPath>
+	SingletonService<Path>
 {
 
 	/**
 	 * @return A root {@link BranchingPathNode} generated from all discovered
-	 *         {@link TroubleshootingPath} plugins.
+	 *         {@link Path} plugins.
 	 */
 	BranchingPathNode getRoot();
 }
