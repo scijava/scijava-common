@@ -1,7 +1,6 @@
 
 package org.scijava.path;
 
-import org.scijava.path.BranchingPathNode;
 import org.scijava.plugin.SingletonService;
 
 /**
@@ -12,8 +11,10 @@ public interface TroubleshootingService extends
 {
 
 	/**
-	 * @return A root {@link BranchingPathNode} generated from all discovered
-	 *         {@link Path} plugins.
+	 * TODO this method needs to take a menu root type,
+	 * get the shadow menu and assemble it together with
+	 * the labels of each plugin in the given root to create
+	 * a decorated path object that can then be consumed.
 	 */
-	BranchingPathNode getRoot();
+	LabeledMap getPath(String root);
 }

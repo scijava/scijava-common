@@ -1,6 +1,7 @@
 
 package org.scijava.path;
 
+import org.scijava.module.Module;
 import org.scijava.plugin.SingletonPlugin;
 
 /**
@@ -11,18 +12,18 @@ public interface Path extends SingletonPlugin {
 	public static final String TAIL = "PATH_TAIL";
 
 	/**
-	 * All paths of a given pathtype will have a common root and tail node.
+	 * Each path plugin can define its own set of labels to use when navigating
+	 * its menu path. There should be a number of entries in this array equal
+	 * to the number of non-TAIL entries in the plugin's path plus one. The
+	 * first label in this array will be attached to the ROOT, while the last
+	 * entry will perform the associated module action and lead to the TAIL.
 	 *
-	 * TODO should we make this a TypedPlugin instead..? Seems like maybe unnecessary overhead..
-	 *
-	 * @return A string identifying the path containing this plugin
+	 * @return List of navigation labels to use to advance to each menu path
 	 */
-	String getPathType();
-
-	String getPosition();
+	String[] getPathLabels();
 
 	/**
 	 * @return Thing to run
 	 */
-	String getModule();
+	Module getModule();
 }

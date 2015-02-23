@@ -6,15 +6,14 @@ import org.scijava.plugin.Plugin;
 
 @Plugin(type = Path.class, menuRoot = TroubleshootingPath.ROOT,
 	menuPath = "ImageProblems>Black Image>" + TroubleshootingPath.TAIL)
-public class SciJavaHelp implements TroubleshootingPath {
+public class SciJavasNoHelp implements TroubleshootingPath {
 
 	public final static String[] descs = { "My image looks wrong",
-		"My image is black", "Let's try running Brightness/Contrast" };
+		"My image is black", "Let's try punching someone" };
 
 	@Override
 	public Module getModule() {
-		// TODO
-//		return "run(\"Enhance Contrast...\", \"saturated=0.4\");";
+//		return "run(\"Clown (14K)\");";
 		return null;
 	}
 
@@ -22,5 +21,4 @@ public class SciJavaHelp implements TroubleshootingPath {
 	public String[] getPathLabels() {
 		return descs;
 	}
-
 }
