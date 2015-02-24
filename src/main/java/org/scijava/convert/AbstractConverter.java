@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.util.ConversionUtils;
 import org.scijava.util.GenericUtils;
 
 /**
@@ -89,6 +90,12 @@ public abstract class AbstractConverter<I, O> extends
 		final Class<?> srcClass = src.getClass();
 
 		return canConvert(srcClass, dest);
+	}
+
+	@Override
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		return ConversionUtils.canCast(src, getInputType()) &&
+			ConversionUtils.canCast(dest, getOutputType());
 	}
 
 	@Override
