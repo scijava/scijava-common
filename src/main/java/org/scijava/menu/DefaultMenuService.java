@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.UIDetails;
 import org.scijava.event.EventHandler;
@@ -132,6 +133,16 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	 * </p>
 	 */
 	private synchronized void addModules(final Collection<ModuleInfo> items) {
+		addModules(items, rootMenus());
+	}
+
+	/**
+	 * As {@link #addModules(Collection)} adding modules to the provided menu
+	 * root.
+	 */
+	private synchronized void addModules(final Collection<ModuleInfo> items,
+		final Map<String, ShadowMenu> rootMenu)
+	{
 		// categorize modules by menu root
 		final HashMap<String, ArrayList<ModuleInfo>> modulesByMenuRoot =
 			new HashMap<String, ArrayList<ModuleInfo>>();
@@ -148,11 +159,11 @@ public class DefaultMenuService extends AbstractService implements MenuService
 		// process each menu root separately
 		for (final String menuRoot : modulesByMenuRoot.keySet()) {
 			final ArrayList<ModuleInfo> modules = modulesByMenuRoot.get(menuRoot);
-			ShadowMenu menu = rootMenus().get(menuRoot);
+			ShadowMenu menu = rootMenu.get(menuRoot);
 			if (menu == null) {
 				// new menu root: create new menu structure
 				menu = new ShadowMenu(getContext(), modules);
-				rootMenus().put(menuRoot, menu);
+				rootMenu.put(menuRoot, menu);
 			}
 			else {
 				// existing menu root: add to menu structure
@@ -184,7 +195,7 @@ public class DefaultMenuService extends AbstractService implements MenuService
 		final HashMap<String, ShadowMenu> map = new HashMap<String, ShadowMenu>();
 
 		final List<ModuleInfo> allModules = moduleService.getModules();
-		addModules(allModules);
+		addModules(allModules, map);
 		rootMenus = map;
 	}
 
