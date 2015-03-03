@@ -273,14 +273,9 @@ public class DefaultModuleService extends AbstractService implements
 
 		final String persistKey = item.getPersistKey();
 		if (persistKey == null || persistKey.isEmpty()) {
-			// Attempt to use prefService
-			if (AbstractModuleItem.class.isAssignableFrom(item.getClass())) {
-				final Class<?> prefClass = ((AbstractModuleItem<T>)item).getDelegateClass();
-				final String prefKey = item.getName();
-				prefService.put(prefClass, prefKey, sValue);
-			}
-			// Have to use ModuleItem#saveValue
-			else item.saveValue(value);
+			final Class<?> prefClass = delegateClass(item);
+			final String prefKey = item.getName();
+			prefService.put(prefClass, prefKey, sValue);
 		}
 		else prefService.put(persistKey, sValue);
 	}
@@ -293,14 +288,9 @@ public class DefaultModuleService extends AbstractService implements
 		final String sValue;
 		final String persistKey = item.getPersistKey();
 		if (persistKey == null || persistKey.isEmpty()) {
-			// Attempt to use prefService
-			if (AbstractModuleItem.class.isAssignableFrom(item.getClass())) {
-				final Class<?> prefClass = ((AbstractModuleItem<T>)item).getDelegateClass();
-				final String prefKey = item.getName();
-				sValue = prefService.get(prefClass, prefKey);
-			}
-			// Have to use ModuleItem#loadValue
-			else return item.loadValue();
+			final Class<?> prefClass = delegateClass(item);
+			final String prefKey = item.getName();
+			sValue = prefService.get(prefClass, prefKey);
 		}
 		else sValue = prefService.get(persistKey);
 
@@ -438,4 +428,14 @@ public class DefaultModuleService extends AbstractService implements
 		}
 		return result;
 	}
+
+	private <T> Class<?> delegateClass(final ModuleItem<T> item) {
+		try {
+			return item.getInfo().loadDelegateClass();
+		}
+		catch (final ClassNotFoundException exc) {
+			throw new IllegalStateException(exc);
+		}
+	}
+
 }
