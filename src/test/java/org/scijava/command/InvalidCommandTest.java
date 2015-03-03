@@ -81,15 +81,18 @@ public class InvalidCommandTest {
 
 		final List<ValidityProblem> problems = info.getProblems();
 		assertNotNull(problems);
-		assertEquals(2, problems.size());
+		assertEquals(3, problems.size());
 
 		final String p0 = problems.get(0).getMessage();
-		assertEquals("Invalid duplicate parameter: private int "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.x", p0);
+		assertEquals("Delegate class is abstract", p0);
 
 		final String p1 = problems.get(1).getMessage();
+		assertEquals("Invalid duplicate parameter: private int "
+			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.x", p1);
+
+		final String p2 = problems.get(2).getMessage();
 		assertEquals("Invalid final parameter: private final float "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.y", p1);
+			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.y", p2);
 	}
 
 	// -- Helper classes --

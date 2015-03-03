@@ -439,6 +439,12 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 	/** Processes the given class's @{@link Parameter}-annotated fields. */
 	private void checkFields(final Class<?> type) {
 		if (type == null) return;
+
+		// NB: Reject abstract classes.
+		if (Modifier.isAbstract(type.getModifiers())) {
+			problems.add(new ValidityProblem("Delegate class is abstract"));
+		}
+
 		final List<Field> fields =
 			ClassUtils.getAnnotatedFields(type, Parameter.class);
 
