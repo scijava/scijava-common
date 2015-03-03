@@ -85,6 +85,11 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	// -- ModuleItem methods --
 
 	@Override
+	public ModuleInfo getInfo() {
+		return info;
+	}
+
+	@Override
 	public Type getGenericType() {
 		return getType();
 	}

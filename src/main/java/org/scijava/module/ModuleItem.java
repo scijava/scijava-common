@@ -47,6 +47,9 @@ import org.scijava.ItemVisibility;
  */
 public interface ModuleItem<T> extends BasicDetails {
 
+	/** Gets the {@link ModuleInfo} to which this item belongs. */
+	ModuleInfo getInfo();
+
 	/** Gets the type of the item. */
 	Class<T> getType();
 
