@@ -251,7 +251,7 @@ public abstract class AbstractLogService extends AbstractService implements
 		currentLevel = level;
 	}
 
-//	@Override
+	@Override
 	public void setLevel(final String classOrPackageName, final int level) {
 		classAndPackageLevels.put(classOrPackageName, level);
 	}

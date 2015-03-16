@@ -100,4 +100,6 @@ public interface LogService extends SciJavaService {
 
 	void setLevel(int level);
 
+	void setLevel(String classOrPackageName, int level);
+
 }
