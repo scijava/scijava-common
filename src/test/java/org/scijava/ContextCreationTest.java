@@ -98,7 +98,7 @@ public class ContextCreationTest {
 				org.scijava.ui.dnd.DefaultDragAndDropService.class,
 				org.scijava.welcome.DefaultWelcomeService.class,
 				org.scijava.widget.DefaultWidgetService.class,
-				org.scijava.log.StderrLogService.class,
+				org.scijava.log.DefaultLogService.class,
 				org.scijava.platform.DefaultAppEventService.class };
 
 		final Context context = new Context();
