@@ -62,7 +62,6 @@ public abstract class AbstractConverter<I, O> extends
 
 	// -- ConversionHandler methods --
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canConvert(final ConversionRequest request) {
 		Object src = request.sourceObject();
@@ -83,7 +82,6 @@ public abstract class AbstractConverter<I, O> extends
 		return canConvert(srcClass, dest);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
 		if (src == null) return false;

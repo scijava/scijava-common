@@ -69,7 +69,7 @@ class History {
 		entries.clear();
 		for (final String item : prefs.getIterable(getClass(), PREFIX + name)) {
 			entries.addToEnd(item);
-		};
+		}
 	}
 
 	/**
