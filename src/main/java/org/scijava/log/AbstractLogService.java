@@ -31,6 +31,7 @@
 
 package org.scijava.log;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -50,22 +51,6 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels =
 		new HashMap<>();
-
-	// -- abstract methods --
-
-	/**
-	 * Displays a message.
-	 *
-	 * @param msg the message to display.
-	 */
-	protected abstract void log(final String msg);
-
-	/**
-	 * Displays an exception.
-	 *
-	 * @param t the exception to display.
-	 */
-	protected abstract void log(final Throwable t);
 
 	// -- constructor --
 
@@ -98,15 +83,30 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	// -- Internal methods --
 
-	protected void log(final int level, final Object msg, final Throwable t) {
-		if (msg != null || t == null) {
-			log(level, msg);
-		}
-		if (t != null) log(t);
-	}
+	/**
+	 * Displays a message and/or exception at the given logging level.
+	 *
+	 * @param level The logging level of the information.
+	 * @param msg The message to display.
+	 * @param t The exception to display.
+	 */
+	protected abstract void log(final int level, final Object msg,
+		final Throwable t);
 
-	protected void log(final int level, final Object msg) {
-		log(getPrefix(level) + msg);
+	/**
+	 * Displays a message and/or exception at the given logging level, using the
+	 * specific output stream.
+	 *
+	 * @param stream The output stream to which the information should be sent.
+	 * @param level The logging level of the information.
+	 * @param msg The message to display.
+	 * @param t The exception to display.
+	 */
+	protected void log(final PrintStream stream, final int level,
+		final Object msg, final Throwable t)
+	{
+		if (msg != null || t == null) stream.println(getPrefix(level) + msg);
+		if (t != null) t.printStackTrace(stream);
 	}
 
 	// -- LogService methods --

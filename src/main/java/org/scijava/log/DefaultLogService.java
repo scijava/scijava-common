@@ -36,32 +36,23 @@ import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
+ * Default implementation of {@link LogService}.
+ * <p>
+ * It uses the standard output and error streams, logging critical messages (
+ * {@link LogService#WARN} and {@link LogService#ERROR} levels) to
+ * {@code stderr}, and non-critical messages ({@link LogService#INFO},
+ * {@link LogService#DEBUG} and {@link LogService#TRACE} levels) to
+ * {@code stdout}.
+ * </p>
  * 
- * @author Johannes Schindelin
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
 public class DefaultLogService extends AbstractLogService {
 
-	/**
-	 * Prints a message to stderr.
-	 * 
-	 * @param message the message
-	 */
 	@Override
-	protected void log(final String message) {
-		System.err.println(message);
-	}
-
-	/**
-	 * Prints an exception to stderr.
-	 * 
-	 * @param t the exception
-	 */
-	@Override
-	protected void log(final Throwable t) {
-		t.printStackTrace();
+	protected void log(final int level, final Object msg, final Throwable t) {
+		log(level > WARN ? System.out : System.err, level, msg, t);
 	}
 
 }
