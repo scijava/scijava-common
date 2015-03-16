@@ -42,7 +42,7 @@ import org.scijava.service.Service;
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public class DefaultLogService extends AbstractLogService {
 
 	/**
 	 * Prints a message to stderr.

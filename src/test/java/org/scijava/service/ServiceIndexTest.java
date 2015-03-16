@@ -41,7 +41,7 @@ import java.util.List;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.event.DefaultEventService;
-import org.scijava.log.StderrLogService;
+import org.scijava.log.DefaultLogService;
 import org.scijava.options.DefaultOptionsService;
 import org.scijava.options.OptionsService;
 import org.scijava.plugin.DefaultPluginService;
@@ -64,7 +64,7 @@ public class ServiceIndexTest {
 		assertSame(DefaultEventService.class, all.get(0).getClass());
 		assertSame(DefaultPluginService.class, all.get(1).getClass());
 		assertSame(DefaultThreadService.class, all.get(2).getClass());
-		assertSame(StderrLogService.class, all.get(3).getClass());
+		assertSame(DefaultLogService.class, all.get(3).getClass());
 		context.dispose();
 	}
 

@@ -44,7 +44,7 @@ import org.junit.Test;
 public class LogServiceTest {
 	@Test
 	public void testDefaultLevel() {
-		final LogService log = new StderrLogService();
+		final LogService log = new DefaultLogService();
 		int level = log.getLevel();
 		assertTrue("default level (" + level + ") is at least INFO(" + WARN + ")", level >= WARN);
 	}

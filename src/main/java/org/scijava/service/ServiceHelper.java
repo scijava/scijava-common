@@ -43,8 +43,8 @@ import org.scijava.Context;
 import org.scijava.Optional;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
+import org.scijava.log.DefaultLogService;
 import org.scijava.log.LogService;
-import org.scijava.log.StderrLogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.service.event.ServicesLoadedEvent;
@@ -114,7 +114,7 @@ public class ServiceHelper extends AbstractContextual {
 	{
 		setContext(context);
 		log = context.getService(LogService.class);
-		if (log == null) log = new StderrLogService();
+		if (log == null) log = new DefaultLogService();
 		classPoolMap = new HashMap<>();
 		classPoolList = new ArrayList<>();
 		findServiceClasses(classPoolMap, classPoolList);
