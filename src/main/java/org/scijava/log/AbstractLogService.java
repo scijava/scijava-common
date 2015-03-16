@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,29 +38,31 @@ import java.util.Properties;
 import org.scijava.service.AbstractService;
 
 /**
- * Base class for {@link LogService} implementations.
- * 
+ * Base class for {@link LogService} implementationst.
+ *
  * @author Johannes Schindelin
  */
-public abstract class AbstractLogService extends AbstractService implements LogService {
+public abstract class AbstractLogService extends AbstractService implements
+	LogService
+{
 
 	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
 
-	private Map<String, Integer> classAndPackageLevels =
+	private final Map<String, Integer> classAndPackageLevels =
 		new HashMap<>();
 
 	// -- abstract methods --
 
 	/**
 	 * Displays a message.
-	 * 
+	 *
 	 * @param msg the message to display.
 	 */
 	protected abstract void log(final String msg);
 
 	/**
 	 * Displays an exception.
-	 * 
+	 *
 	 * @param t the exception to display.
 	 */
 	protected abstract void log(final Throwable t);
@@ -87,7 +89,8 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 			if (!(propKey instanceof String)) continue;
 			final String propName = (String) propKey;
 			if (!propName.startsWith(logLevelPrefix)) continue;
-			final String classOrPackageName = propName.substring(logLevelPrefix.length());
+			final String classOrPackageName =
+				propName.substring(logLevelPrefix.length());
 			setLevel(classOrPackageName, level(props.getProperty(propName)));
 		}
 
@@ -109,97 +112,97 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 		log((prefix == null ? "" : prefix + " ") + msg);
 	}
 
-	protected String getPrefix(int level) {
+	protected String getPrefix(final int level) {
 		switch (level) {
-		case ERROR:
-			return "[ERROR]";
-		case WARN:
-			return "[WARNING]";
-		case INFO:
-			return "[INFO]";
-		case DEBUG:
-			return "[DEBUG]";
-		case TRACE:
-			return "[TRACE]";
-		default:
-			return null;
+			case ERROR:
+				return "[ERROR]";
+			case WARN:
+				return "[WARNING]";
+			case INFO:
+				return "[INFO]";
+			case DEBUG:
+				return "[DEBUG]";
+			case TRACE:
+				return "[TRACE]";
+			default:
+				return null;
 		}
 	}
 
 	// -- LogService methods --
 
 	@Override
-	public void debug(Object msg) {
+	public void debug(final Object msg) {
 		log(DEBUG, msg, null);
 	}
 
 	@Override
-	public void debug(Throwable t) {
+	public void debug(final Throwable t) {
 		log(DEBUG, null, t);
 	}
 
 	@Override
-	public void debug(Object msg, Throwable t) {
+	public void debug(final Object msg, final Throwable t) {
 		log(DEBUG, msg, t);
 	}
 
 	@Override
-	public void error(Object msg) {
+	public void error(final Object msg) {
 		log(ERROR, msg, null);
 	}
 
 	@Override
-	public void error(Throwable t) {
+	public void error(final Throwable t) {
 		log(ERROR, null, t);
 	}
 
 	@Override
-	public void error(Object msg, Throwable t) {
+	public void error(final Object msg, final Throwable t) {
 		log(ERROR, msg, t);
 	}
 
 	@Override
-	public void info(Object msg) {
+	public void info(final Object msg) {
 		log(INFO, msg, null);
 	}
 
 	@Override
-	public void info(Throwable t) {
+	public void info(final Throwable t) {
 		log(INFO, null, t);
 	}
 
 	@Override
-	public void info(Object msg, Throwable t) {
+	public void info(final Object msg, final Throwable t) {
 		log(INFO, msg, t);
 	}
 
 	@Override
-	public void trace(Object msg) {
+	public void trace(final Object msg) {
 		log(TRACE, msg, null);
 	}
 
 	@Override
-	public void trace(Throwable t) {
+	public void trace(final Throwable t) {
 		log(TRACE, null, t);
 	}
 
 	@Override
-	public void trace(Object msg, Throwable t) {
+	public void trace(final Object msg, final Throwable t) {
 		log(TRACE, msg, t);
 	}
 
 	@Override
-	public void warn(Object msg) {
+	public void warn(final Object msg) {
 		log(WARN, msg, null);
 	}
 
 	@Override
-	public void warn(Throwable t) {
+	public void warn(final Throwable t) {
 		log(WARN, null, t);
 	}
 
 	@Override
-	public void warn(Object msg, Throwable t) {
+	public void warn(final Object msg, final Throwable t) {
 		log(WARN, msg, t);
 	}
 
@@ -248,7 +251,7 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 		currentLevel = level;
 	}
 
-	//@Override
+//	@Override
 	public void setLevel(final String classOrPackageName, final int level) {
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
@@ -289,7 +292,7 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 	}
 
 	private String parentPackage(final String classOrPackageName) {
-		int dot = classOrPackageName.lastIndexOf(".");
+		final int dot = classOrPackageName.lastIndexOf(".");
 		if (dot < 0) return null;
 		return classOrPackageName.substring(0, dot);
 	}
