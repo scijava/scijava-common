@@ -99,8 +99,6 @@ public abstract class AbstractLogService extends AbstractService implements
 	// -- helper methods --
 
 	protected void log(final int level, final Object msg, final Throwable t) {
-		if (level > getLevel()) return;
-
 		if (msg != null || t == null) {
 			log(level, msg);
 		}
@@ -116,77 +114,77 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	@Override
 	public void debug(final Object msg) {
-		log(DEBUG, msg, null);
+		if (isDebug()) log(DEBUG, msg, null);
 	}
 
 	@Override
 	public void debug(final Throwable t) {
-		log(DEBUG, null, t);
+		if (isDebug()) log(DEBUG, null, t);
 	}
 
 	@Override
 	public void debug(final Object msg, final Throwable t) {
-		log(DEBUG, msg, t);
+		if (isDebug()) log(DEBUG, msg, t);
 	}
 
 	@Override
 	public void error(final Object msg) {
-		log(ERROR, msg, null);
+		if (isError()) log(ERROR, msg, null);
 	}
 
 	@Override
 	public void error(final Throwable t) {
-		log(ERROR, null, t);
+		if (isError()) log(ERROR, null, t);
 	}
 
 	@Override
 	public void error(final Object msg, final Throwable t) {
-		log(ERROR, msg, t);
+		if (isError()) log(ERROR, msg, t);
 	}
 
 	@Override
 	public void info(final Object msg) {
-		log(INFO, msg, null);
+		if (isInfo()) log(INFO, msg, null);
 	}
 
 	@Override
 	public void info(final Throwable t) {
-		log(INFO, null, t);
+		if (isInfo()) log(INFO, null, t);
 	}
 
 	@Override
 	public void info(final Object msg, final Throwable t) {
-		log(INFO, msg, t);
+		if (isInfo()) log(INFO, msg, t);
 	}
 
 	@Override
 	public void trace(final Object msg) {
-		log(TRACE, msg, null);
+		if (isTrace()) log(TRACE, msg, null);
 	}
 
 	@Override
 	public void trace(final Throwable t) {
-		log(TRACE, null, t);
+		if (isTrace()) log(TRACE, null, t);
 	}
 
 	@Override
 	public void trace(final Object msg, final Throwable t) {
-		log(TRACE, msg, t);
+		if (isTrace()) log(TRACE, msg, t);
 	}
 
 	@Override
 	public void warn(final Object msg) {
-		log(WARN, msg, null);
+		if (isWarn()) log(WARN, msg, null);
 	}
 
 	@Override
 	public void warn(final Throwable t) {
-		log(WARN, null, t);
+		if (isWarn()) log(WARN, null, t);
 	}
 
 	@Override
 	public void warn(final Object msg, final Throwable t) {
-		log(WARN, msg, t);
+		if (isWarn()) log(WARN, msg, t);
 	}
 
 	@Override
