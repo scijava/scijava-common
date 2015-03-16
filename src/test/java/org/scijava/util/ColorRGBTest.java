@@ -37,8 +37,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
-import org.scijava.util.ColorRGB;
-import org.scijava.util.Colors;
 
 /**
  * Tests {@link ColorRGB}.

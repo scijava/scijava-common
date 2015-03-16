@@ -34,7 +34,6 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.scijava.util.UnitUtils;
 
 /**
  * Tests {@link UnitUtils}.

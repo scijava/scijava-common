@@ -33,6 +33,7 @@ package org.scijava.script;
 
 import org.scijava.prefs.PrefService;
 import org.scijava.util.LastRecentlyUsed;
+import org.scijava.util.Prefs;
 
 /**
  * Container for a script language's interpreter history.
