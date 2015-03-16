@@ -96,7 +96,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	}
 
-	// -- helper methods --
+	// -- Internal methods --
 
 	protected void log(final int level, final Object msg, final Throwable t) {
 		if (msg != null || t == null) {
