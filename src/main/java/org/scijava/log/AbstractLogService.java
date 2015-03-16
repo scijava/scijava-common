@@ -112,23 +112,6 @@ public abstract class AbstractLogService extends AbstractService implements
 		log((prefix == null ? "" : prefix + " ") + msg);
 	}
 
-	protected String getPrefix(final int level) {
-		switch (level) {
-			case ERROR:
-				return "[ERROR]";
-			case WARN:
-				return "[WARNING]";
-			case INFO:
-				return "[INFO]";
-			case DEBUG:
-				return "[DEBUG]";
-			case TRACE:
-				return "[TRACE]";
-			default:
-				return null;
-		}
-	}
-
 	// -- LogService methods --
 
 	@Override
@@ -257,6 +240,23 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
+
+	private String getPrefix(final int level) {
+		switch (level) {
+			case ERROR:
+				return "[ERROR]";
+			case WARN:
+				return "[WARNING]";
+			case INFO:
+				return "[INFO]";
+			case DEBUG:
+				return "[DEBUG]";
+			case TRACE:
+				return "[TRACE]";
+			default:
+				return null;
+		}
+	}
 
 	/** Extracts the log level value from a string. */
 	private int level(final String logProp) {
