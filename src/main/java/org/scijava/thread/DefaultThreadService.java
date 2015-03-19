@@ -55,6 +55,8 @@ public final class DefaultThreadService extends AbstractService implements
 	ThreadService
 {
 
+	private static final String SCIJAVA_THREAD_PREFIX = "SciJava-";
+
 	@Parameter
 	private LogService log;
 
@@ -121,9 +123,7 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public Thread newThread(final Runnable r) {
-		final String contextHash = Integer.toHexString(context().hashCode());
-		final String threadName =
-			"SciJava-" + contextHash + "-Thread-" + nextThread++;
+		final String threadName = contextThreadPrefix() + nextThread++;
 		return new Thread(r, threadName);
 	}
 
@@ -169,4 +169,10 @@ public final class DefaultThreadService extends AbstractService implements
 			}
 		};
 	}
+
+	private String contextThreadPrefix() {
+		final String contextHash = Integer.toHexString(context().hashCode());
+		return SCIJAVA_THREAD_PREFIX + contextHash + "-Thread-";
+	}
+
 }
