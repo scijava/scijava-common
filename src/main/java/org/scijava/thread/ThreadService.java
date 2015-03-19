@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import org.scijava.Context;
 import org.scijava.service.SciJavaService;
 
 /**
@@ -45,6 +46,26 @@ import org.scijava.service.SciJavaService;
  * @author Curtis Rueden
  */
 public interface ThreadService extends SciJavaService, ThreadFactory {
+
+	public enum ThreadContext {
+		/**
+		 * The thread was spawned by this thread service; i.e., it belongs to the
+		 * same {@link Context}.
+		 */
+		SAME,
+
+		/**
+		 * The thread was spawned by a SciJava thread service, but not this one;
+		 * i.e., it belongs to a different {@link Context}.
+		 */
+		OTHER,
+
+		/**
+		 * The thread was not spawned via a SciJava thread service, and its
+		 * {@link Context} is unknown or inapplicable.
+		 */
+		NONE
+	}
 
 	/**
 	 * Asynchronously executes the given code in a new thread, as decided by the
@@ -123,4 +144,22 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 * @return the thread that asked the {@link ThreadService} to spawn the specified thread
 	 */
 	Thread getParent(Thread thread);
+
+	/**
+	 * Analyzes the {@link Context} of the given thread.
+	 *
+	 * @param thread The thread to analyze.
+	 * @return Information about the thread's {@link Context}. Either:
+	 *         <ul>
+	 *         <li>{@link ThreadContext#SAME} - The thread was spawned by this
+	 *         very thread service, and thus shares the same {@link Context}.</li>
+	 *         <li>{@link ThreadContext#OTHER} - The thread was spawned by a
+	 *         different thread service, and thus has a different {@link Context}.
+	 *         </li>
+	 *         <li>{@link ThreadContext#NONE} - It is unknown what spawned the
+	 *         thread, so it is effectively {@link Context}-free.</li>
+	 *         </ul>
+	 */
+	ThreadContext getThreadContext(Thread thread);
+
 }

@@ -111,6 +111,22 @@ public final class DefaultThreadService extends AbstractService implements
 		return parents.get(thread != null ? thread : Thread.currentThread());
 	}
 
+	@Override
+	public ThreadContext getThreadContext(final Thread thread) {
+		final String name = thread.getName();
+
+		// check for same context
+		if (name.startsWith(contextThreadPrefix())) return ThreadContext.SAME;
+
+		// check for different context
+		if (name.startsWith(SCIJAVA_THREAD_PREFIX)) return ThreadContext.OTHER;
+
+		// recursively check parent thread
+		final Thread parent = getParent(thread);
+		if (parent == thread || parent == null) return ThreadContext.NONE;
+		return getThreadContext(parent);
+	}
+
 	// -- Disposable methods --
 
 	@Override
