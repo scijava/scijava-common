@@ -98,7 +98,7 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 * @throws InvocationTargetException If an uncaught exception occurs in the
 	 *           code during execution.
 	 */
-	void invoke(final Runnable code) throws InterruptedException,
+	void invoke(Runnable code) throws InterruptedException,
 		InvocationTargetException;
 
 	/**
@@ -111,7 +111,7 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 * 
 	 * @param code The code to execute.
 	 */
-	void queue(final Runnable code);
+	void queue(Runnable code);
 
 	/**
 	 * Returns the thread that called the specified thread.
@@ -122,5 +122,5 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 * @param thread the managed thread, null refers to the current thread
 	 * @return the thread that asked the {@link ThreadService} to spawn the specified thread
 	 */
-	Thread getParent(final Thread thread);
+	Thread getParent(Thread thread);
 }
