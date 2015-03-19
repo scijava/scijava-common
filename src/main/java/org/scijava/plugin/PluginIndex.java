@@ -98,8 +98,8 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	// -- PluginIndex methods --
 
 	/**
-	 * Adds all plugins discovered by the attached {@link PluginFinder} to
-	 * this index, or does nothing if the attached PluginFiner is null.
+	 * Adds all plugins discovered by the attached {@link PluginFinder} to this
+	 * index, or does nothing if the attached {@link PluginFinder} is null.
 	 */
 	public void discover() {
 		if (pluginFinder == null) return;
