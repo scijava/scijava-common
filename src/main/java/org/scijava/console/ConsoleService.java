@@ -42,7 +42,7 @@ import org.scijava.service.SciJavaService;
  * In particular, this is the service that defines how command line arguments
  * are handled.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public interface ConsoleService extends
