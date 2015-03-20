@@ -108,7 +108,7 @@ public class DefaultConsoleService extends
 		if (listeners == null) initListeners();
 		synchronized (listeners) {
 			cachedListeners = null;
-			listeners.add(l);
+			listeners.remove(l);
 		}
 	}
 
