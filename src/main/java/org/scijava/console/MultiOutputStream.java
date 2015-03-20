@@ -62,6 +62,7 @@ public class MultiOutputStream extends OutputStream {
 		for (int i = 0; i < os.length; i++) {
 			streams.add(os[i]);
 		}
+		cachedStreams = streams.toArray(new OutputStream[streams.size()]);
 	}
 
 	// -- MultiOutputStream methods --
@@ -69,16 +70,16 @@ public class MultiOutputStream extends OutputStream {
 	/** Adds an output stream to those receiving this stream's output. */
 	public void addOutputStream(final OutputStream os) {
 		synchronized (streams) {
-			cachedStreams = null;
 			streams.add(os);
+			cachedStreams = streams.toArray(new OutputStream[streams.size()]);
 		}
 	}
 
 	/** Removes an output stream from those receiving this stream's output. */
 	public void removeOutputStream(final OutputStream os) {
 		synchronized (streams) {
-			cachedStreams = null;
 			streams.remove(os);
+			cachedStreams = streams.toArray(new OutputStream[streams.size()]);
 		}
 	}
 
@@ -86,7 +87,8 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void write(final int b) throws IOException {
-		for (final OutputStream stream : streams())
+		final OutputStream[] toWrite = cachedStreams;
+		for (final OutputStream stream : toWrite)
 			stream.write(b);
 	}
 
@@ -94,7 +96,8 @@ public class MultiOutputStream extends OutputStream {
 	public void write(final byte[] buf, final int off, final int len)
 		throws IOException
 	{
-		for (final OutputStream stream : streams())
+		final OutputStream[] toWrite = cachedStreams;
+		for (final OutputStream stream : toWrite)
 			stream.write(buf, off, len);
 	}
 
@@ -102,7 +105,8 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void close() throws IOException {
-		for (final OutputStream stream : streams())
+		final OutputStream[] toClose = cachedStreams;
+		for (final OutputStream stream : toClose)
 			stream.close();
 	}
 
@@ -110,24 +114,9 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void flush() throws IOException {
-		for (final OutputStream stream : streams())
+		final OutputStream[] toFlush = cachedStreams;
+		for (final OutputStream stream : toFlush)
 			stream.flush();
-	}
-
-	// -- Helper methods --
-
-	/**
-	 * Returns a cached copy of {@link #streams}. This is done to avoid
-	 * concurrency issues when streams are added or removed while stream
-	 * operations are ongoing, without the overhead of synchronizing all the
-	 * stream operations themselves.
-	 */
-	private OutputStream[] streams() {
-		if (cachedStreams != null) return cachedStreams;
-		synchronized (streams) {
-			cachedStreams = streams.toArray(new OutputStream[streams.size()]);
-			return cachedStreams;
-		}
 	}
 
 }

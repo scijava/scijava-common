@@ -98,8 +98,8 @@ public class DefaultConsoleService extends
 	public void addOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
 		synchronized (listeners) {
-			cachedListeners = null;
 			listeners.add(l);
+			cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
 		}
 	}
 
@@ -107,15 +107,16 @@ public class DefaultConsoleService extends
 	public void removeOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
 		synchronized (listeners) {
-			cachedListeners = null;
 			listeners.remove(l);
+			cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
 		}
 	}
 
 	@Override
 	public void notifyListeners(final OutputEvent event) {
 		if (listeners == null) initListeners();
-		for (final OutputListener l : listeners())
+		final OutputListener[] toNotify = cachedListeners;
+		for (final OutputListener l : toNotify)
 			l.outputOccurred(event);
 	}
 
@@ -159,6 +160,7 @@ public class DefaultConsoleService extends
 		syserr.getParent().addOutputStream(err);
 
 		listeners = new ArrayList<OutputListener>();
+		cachedListeners = listeners.toArray(new OutputListener[0]);
 	}
 
 	// -- Helper methods --
@@ -166,20 +168,6 @@ public class DefaultConsoleService extends
 	private MultiPrintStream multiPrintStream(final PrintStream ps) {
 		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;
 		return new MultiPrintStream(ps);
-	}
-
-	/**
-	 * Returns a cached copy of {@link #listeners}. This is done to avoid
-	 * concurrency issues when listeners are added or removed while listener
-	 * notification is ongoing, without the overhead of synchronizing the listener
-	 * notification itself.
-	 */
-	private OutputListener[] listeners() {
-		if (cachedListeners != null) return cachedListeners;
-		synchronized (listeners) {
-			cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
-			return cachedListeners;
-		}
 	}
 
 	// -- Helper classes --
