@@ -46,7 +46,7 @@ import org.scijava.plugin.Plugin;
  * is encouraged to instead extend {@link AbstractConsoleArgument}, for
  * convenience.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public interface ConsoleArgument extends HandlerPlugin<LinkedList<String>> {

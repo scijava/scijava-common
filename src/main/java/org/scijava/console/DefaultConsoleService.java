@@ -41,7 +41,7 @@ import org.scijava.service.Service;
 
 /**
  * Default service for managing interaction with the console.
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
