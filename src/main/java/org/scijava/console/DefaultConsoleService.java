@@ -31,6 +31,8 @@
 
 package org.scijava.console;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.scijava.log.LogService;
@@ -52,6 +54,11 @@ public class DefaultConsoleService extends
 
 	@Parameter
 	private LogService log;
+
+	private MultiPrintStream sysout, syserr;
+
+	/** List of listeners for {@code stdout} and {@code stderr} output. */
+	private ArrayList<OutputListener> listeners;
 
 	// -- ConsoleService methods --
 
@@ -76,6 +83,32 @@ public class DefaultConsoleService extends
 		}
 	}
 
+	@Override
+	public void addOutputListener(final OutputListener l) {
+		if (listeners == null) initListeners();
+		synchronized (listeners) {
+			listeners.add(l);
+		}
+	}
+
+	@Override
+	public void removeOutputListener(final OutputListener l) {
+		if (listeners == null) initListeners();
+		synchronized (listeners) {
+			listeners.add(l);
+		}
+	}
+
+	@Override
+	public void notifyListeners(final OutputEvent event) {
+		if (listeners == null) initListeners();
+		synchronized (listeners) {
+			for (final OutputListener l : listeners) {
+				l.outputOccurred(event);
+			}
+		}
+	}
+
 	// -- PTService methods --
 
 	@Override
@@ -89,6 +122,27 @@ public class DefaultConsoleService extends
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Class<LinkedList<String>> getType() {
 		return (Class) LinkedList.class;
+	}
+
+	// -- Helper methods - lazy initialization --
+
+	/** Initializes {@link #listeners} and related data structures. */
+	private synchronized void initListeners() {
+		if (listeners != null) return; // already initialized
+
+		sysout = multiPrintStream(System.out);
+		if (System.out != sysout) System.setOut(sysout);
+		syserr = multiPrintStream(System.err);
+		if (System.err != syserr) System.setErr(syserr);
+
+		listeners = new ArrayList<OutputListener>();
+	}
+
+	// -- Helper methods --
+
+	private MultiPrintStream multiPrintStream(final PrintStream ps) {
+		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;
+		return new MultiPrintStream(ps);
 	}
 
 }
