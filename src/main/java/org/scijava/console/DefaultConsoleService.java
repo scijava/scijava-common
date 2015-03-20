@@ -69,6 +69,8 @@ public class DefaultConsoleService extends
 	/** List of listeners for {@code stdout} and {@code stderr} output. */
 	private ArrayList<OutputListener> listeners;
 
+	private OutputListener[] cachedListeners;
+
 	// -- ConsoleService methods --
 
 	@Override
@@ -97,6 +99,7 @@ public class DefaultConsoleService extends
 		if (listeners == null) initListeners();
 		synchronized (listeners) {
 			listeners.add(l);
+			cacheListeners();
 		}
 	}
 
@@ -105,17 +108,16 @@ public class DefaultConsoleService extends
 		if (listeners == null) initListeners();
 		synchronized (listeners) {
 			listeners.remove(l);
+			cacheListeners();
 		}
 	}
 
 	@Override
 	public void notifyListeners(final OutputEvent event) {
 		if (listeners == null) initListeners();
-		synchronized (listeners) {
-			for (final OutputListener l : listeners) {
-				l.outputOccurred(event);
-			}
-		}
+		final OutputListener[] toNotify = cachedListeners;
+		for (final OutputListener l : toNotify)
+			l.outputOccurred(event);
 	}
 
 	// -- PTService methods --
@@ -158,9 +160,14 @@ public class DefaultConsoleService extends
 		syserr.getParent().addOutputStream(err);
 
 		listeners = new ArrayList<OutputListener>();
+		cachedListeners = listeners.toArray(new OutputListener[0]);
 	}
 
 	// -- Helper methods --
+
+	private void cacheListeners() {
+		cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
+	}
 
 	private MultiPrintStream multiPrintStream(final PrintStream ps) {
 		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;

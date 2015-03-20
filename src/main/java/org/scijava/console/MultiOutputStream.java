@@ -50,6 +50,8 @@ public class MultiOutputStream extends OutputStream {
 
 	private final ArrayList<OutputStream> streams;
 
+	private OutputStream[] cachedStreams;
+
 	/**
 	 * Forwards output to a list of output streams.
 	 *
@@ -60,6 +62,7 @@ public class MultiOutputStream extends OutputStream {
 		for (int i = 0; i < os.length; i++) {
 			streams.add(os[i]);
 		}
+		cacheStreams();
 	}
 
 	// -- MultiOutputStream methods --
@@ -68,6 +71,7 @@ public class MultiOutputStream extends OutputStream {
 	public void addOutputStream(final OutputStream os) {
 		synchronized (streams) {
 			streams.add(os);
+			cacheStreams();
 		}
 	}
 
@@ -75,6 +79,7 @@ public class MultiOutputStream extends OutputStream {
 	public void removeOutputStream(final OutputStream os) {
 		synchronized (streams) {
 			streams.remove(os);
+			cacheStreams();
 		}
 	}
 
@@ -82,7 +87,8 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void write(final int b) throws IOException {
-		for (final OutputStream stream : streams)
+		final OutputStream[] toWrite = cachedStreams;
+		for (final OutputStream stream : toWrite)
 			stream.write(b);
 	}
 
@@ -90,7 +96,8 @@ public class MultiOutputStream extends OutputStream {
 	public void write(final byte[] buf, final int off, final int len)
 		throws IOException
 	{
-		for (final OutputStream stream : streams)
+		final OutputStream[] toWrite = cachedStreams;
+		for (final OutputStream stream : toWrite)
 			stream.write(buf, off, len);
 	}
 
@@ -98,7 +105,8 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void close() throws IOException {
-		for (final OutputStream stream : streams)
+		final OutputStream[] toClose = cachedStreams;
+		for (final OutputStream stream : toClose)
 			stream.close();
 	}
 
@@ -106,8 +114,15 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void flush() throws IOException {
-		for (final OutputStream stream : streams)
+		final OutputStream[] toFlush = cachedStreams;
+		for (final OutputStream stream : toFlush)
 			stream.flush();
+	}
+
+	// -- Helper methods --
+
+	private void cacheStreams() {
+		cachedStreams = streams.toArray(new OutputStream[streams.size()]);
 	}
 
 }
