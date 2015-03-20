@@ -31,15 +31,20 @@
 
 package org.scijava.console;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.scijava.Context;
+import org.scijava.console.OutputEvent.Source;
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
+import org.scijava.thread.ThreadService.ThreadContext;
 
 /**
  * Default service for managing interaction with the console.
@@ -53,9 +58,13 @@ public class DefaultConsoleService extends
 {
 
 	@Parameter
+	private ThreadService threadService;
+
+	@Parameter
 	private LogService log;
 
 	private MultiPrintStream sysout, syserr;
+	private OutputStreamReporter out, err;
 
 	/** List of listeners for {@code stdout} and {@code stderr} output. */
 	private ArrayList<OutputListener> listeners;
@@ -124,6 +133,14 @@ public class DefaultConsoleService extends
 		return (Class) LinkedList.class;
 	}
 
+	// -- Disposable methods --
+
+	@Override
+	public void dispose() {
+		if (out != null) sysout.getParent().removeOutputStream(out);
+		if (err != null) syserr.getParent().removeOutputStream(err);
+	}
+
 	// -- Helper methods - lazy initialization --
 
 	/** Initializes {@link #listeners} and related data structures. */
@@ -132,8 +149,13 @@ public class DefaultConsoleService extends
 
 		sysout = multiPrintStream(System.out);
 		if (System.out != sysout) System.setOut(sysout);
+		out = new OutputStreamReporter(Source.STDOUT);
+		sysout.getParent().addOutputStream(out);
+
 		syserr = multiPrintStream(System.err);
 		if (System.err != syserr) System.setErr(syserr);
+		err = new OutputStreamReporter(Source.STDERR);
+		syserr.getParent().addOutputStream(err);
 
 		listeners = new ArrayList<OutputListener>();
 	}
@@ -143,6 +165,52 @@ public class DefaultConsoleService extends
 	private MultiPrintStream multiPrintStream(final PrintStream ps) {
 		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;
 		return new MultiPrintStream(ps);
+	}
+
+	// -- Helper classes --
+
+	/**
+	 * An output stream that publishes its output to the {@link OutputListener}s
+	 * of its associated {@link ConsoleService}.
+	 */
+	private class OutputStreamReporter extends OutputStream {
+
+		/** Source of the output stream; i.e., {@code stdout} or {@code stderr}. */
+		private final Source source;
+
+		public OutputStreamReporter(final Source source) {
+			this.source = source;
+		}
+
+		// -- OutputStream methods --
+
+		@Override
+		public void write(final int b) {
+			final ThreadContext relevance = getRelevance();
+			if (relevance == ThreadContext.OTHER) return; // different context
+			publish(relevance, "" + b);
+		}
+
+		@Override
+		public void write(final byte[] buf, final int off, final int len) {
+			final ThreadContext relevance = getRelevance();
+			if (relevance == ThreadContext.OTHER) return; // different context
+			publish(relevance, new String(buf, off, len));
+		}
+
+		// -- Helper methods --
+
+		private ThreadContext getRelevance() {
+			return threadService.getThreadContext(Thread.currentThread());
+		}
+
+		private void publish(final ThreadContext relevance, final String output) {
+			final Context context = getContext();
+			final boolean contextual = relevance == ThreadContext.SAME;
+			final OutputEvent event =
+				new OutputEvent(context, source, output, contextual);
+			notifyListeners(event);
+		}
 	}
 
 }
