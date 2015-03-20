@@ -142,7 +142,7 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 	// -- Helper methods --
 
 	private static ScriptEngineFactory findFactory(final String factoryName) {
-		final ScriptEngineManager manager = new javax.script.ScriptEngineManager();
+		final ScriptEngineManager manager = new ScriptEngineManager();
 		for (final ScriptEngineFactory factory : manager.getEngineFactories()) {
 			for (final String name : factory.getNames()) {
 				if (factoryName.equals(name)) return factory;
