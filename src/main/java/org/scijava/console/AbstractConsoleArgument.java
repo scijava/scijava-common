@@ -37,7 +37,7 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
  * Abstract superclass of {@link ConsoleArgument} implementations.
- * 
+ *
  * @author Curtis Rueden
  */
 public abstract class AbstractConsoleArgument extends

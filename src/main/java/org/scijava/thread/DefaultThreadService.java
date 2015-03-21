@@ -55,6 +55,11 @@ public final class DefaultThreadService extends AbstractService implements
 	ThreadService
 {
 
+	private static final String SCIJAVA_THREAD_PREFIX = "SciJava-";
+
+	private static WeakHashMap<Thread, Thread> parents =
+		new WeakHashMap<Thread, Thread>();
+
 	@Parameter
 	private LogService log;
 
@@ -63,8 +68,6 @@ public final class DefaultThreadService extends AbstractService implements
 	private int nextThread = 0;
 
 	private boolean disposed;
-
-	private WeakHashMap<Thread, Thread> parents = new WeakHashMap<Thread, Thread>();
 
 	// -- ThreadService methods --
 
@@ -109,6 +112,22 @@ public final class DefaultThreadService extends AbstractService implements
 		return parents.get(thread != null ? thread : Thread.currentThread());
 	}
 
+	@Override
+	public ThreadContext getThreadContext(final Thread thread) {
+		final String name = thread.getName();
+
+		// check for same context
+		if (name.startsWith(contextThreadPrefix())) return ThreadContext.SAME;
+
+		// check for different context
+		if (name.startsWith(SCIJAVA_THREAD_PREFIX)) return ThreadContext.OTHER;
+
+		// recursively check parent thread
+		final Thread parent = getParent(thread);
+		if (parent == thread || parent == null) return ThreadContext.NONE;
+		return getThreadContext(parent);
+	}
+
 	// -- Disposable methods --
 
 	@Override
@@ -121,9 +140,7 @@ public final class DefaultThreadService extends AbstractService implements
 
 	@Override
 	public Thread newThread(final Runnable r) {
-		final String contextHash = Integer.toHexString(context().hashCode());
-		final String threadName =
-			"SciJava-" + contextHash + "-Thread-" + nextThread++;
+		final String threadName = contextThreadPrefix() + nextThread++;
 		return new Thread(r, threadName);
 	}
 
@@ -169,4 +186,10 @@ public final class DefaultThreadService extends AbstractService implements
 			}
 		};
 	}
+
+	private String contextThreadPrefix() {
+		final String contextHash = Integer.toHexString(context().hashCode());
+		return SCIJAVA_THREAD_PREFIX + contextHash + "-Thread-";
+	}
+
 }

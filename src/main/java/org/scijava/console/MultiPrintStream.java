@@ -31,27 +31,31 @@
 
 package org.scijava.console;
 
-import java.util.LinkedList;
-
-import org.scijava.plugin.HandlerPlugin;
-import org.scijava.plugin.Plugin;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
- * A plugin which extends an application's command line argument handling.
- * <p>
- * Console argument plugins discoverable at runtime must implement this
- * interface and be annotated with @{@link Plugin} with attribute
- * {@link Plugin#type()} = {@link ConsoleArgument}.class. While it possible to
- * create an console argument plugin merely by implementing this interface, it
- * is encouraged to instead extend {@link AbstractConsoleArgument}, for
- * convenience.
- * </p>
+ * A {@link PrintStream} that wraps a {@link MultiOutputStream}.
  *
  * @author Curtis Rueden
  */
-public interface ConsoleArgument extends HandlerPlugin<LinkedList<String>> {
+public class MultiPrintStream extends PrintStream {
 
-	/** Handles the <em>front</em> of the given list of arguments. */
-	void handle(final LinkedList<String> args);
+	public MultiPrintStream(final OutputStream os) {
+		super(multi(os));
+	}
+
+	// -- MultiPrintStream methods --
+
+	public MultiOutputStream getParent() {
+		return (MultiOutputStream) out;
+	}
+
+	// -- Helper methods --
+
+	private static OutputStream multi(final OutputStream os) {
+		if (os instanceof MultiOutputStream) return os;
+		return new MultiOutputStream(os);
+	}
 
 }

@@ -40,9 +40,10 @@ import org.scijava.service.SciJavaService;
  * Interface for service that manages interaction with the console.
  * <p>
  * In particular, this is the service that defines how command line arguments
- * are handled.
+ * are handled. It also provides an extension mechanism for {@code stdout} and
+ * {@code stderr} logging.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public interface ConsoleService extends
@@ -54,5 +55,14 @@ public interface ConsoleService extends
 	 * command line.
 	 */
 	void processArgs(String... args);
+
+	/** Adds a listener for output sent to {@code stdout} or {@code stderr}. */
+	void addOutputListener(OutputListener l);
+
+	/** Removes a listener for output sent to {@code stdout} or {@code stderr}. */
+	void removeOutputListener(OutputListener l);
+
+	/** Notifies listeners of output sent to {@code stdout} or {@code stderr}. */
+	void notifyListeners(OutputEvent event);
 
 }

@@ -31,27 +31,15 @@
 
 package org.scijava.console;
 
-import java.util.LinkedList;
-
-import org.scijava.plugin.HandlerPlugin;
-import org.scijava.plugin.Plugin;
-
 /**
- * A plugin which extends an application's command line argument handling.
- * <p>
- * Console argument plugins discoverable at runtime must implement this
- * interface and be annotated with @{@link Plugin} with attribute
- * {@link Plugin#type()} = {@link ConsoleArgument}.class. While it possible to
- * create an console argument plugin merely by implementing this interface, it
- * is encouraged to instead extend {@link AbstractConsoleArgument}, for
- * convenience.
- * </p>
+ * Listener for output on {@code stdout} or {@code stderr}.
  *
  * @author Curtis Rueden
+ * @see ConsoleService
  */
-public interface ConsoleArgument extends HandlerPlugin<LinkedList<String>> {
+public interface OutputListener {
 
-	/** Handles the <em>front</em> of the given list of arguments. */
-	void handle(final LinkedList<String> args);
+	/** Method called when output occurs on {@code stdout} or {@code stderr}. */
+	void outputOccurred(final OutputEvent event);
 
 }
