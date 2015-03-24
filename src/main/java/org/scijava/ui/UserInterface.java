@@ -37,6 +37,7 @@ import org.scijava.Disposable;
 import org.scijava.display.Display;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
+import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.viewer.DisplayWindow;
 import org.scijava.widget.FileWidget;
 
@@ -93,6 +94,9 @@ public interface UserInterface extends RichPlugin, Disposable {
 
 	/** Gets the main ImageJ status bar, or null if not applicable. */
 	StatusBar getStatusBar();
+
+	/** Gets the main SciJava console pane, or null if not applicable. */
+	ConsolePane getConsolePane();
 
 	/** Gets the system clipboard associated with this UI. */
 	SystemClipboard getSystemClipboard();

@@ -44,6 +44,7 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.thread.ThreadService;
+import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.viewer.DisplayViewer;
 import org.scijava.ui.viewer.DisplayWindow;
 
@@ -177,6 +178,11 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 
 	@Override
 	public StatusBar getStatusBar() {
+		return null;
+	}
+
+	@Override
+	public ConsolePane getConsolePane() {
 		return null;
 	}
 
