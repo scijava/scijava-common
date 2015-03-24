@@ -90,7 +90,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/**
 	 * Creates a script metadata object which describes the given script file.
 	 * 
-	 * @param context The ImageJ application context to use when populating
+	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param file The script file.
 	 */
@@ -101,7 +101,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/**
 	 * Creates a script metadata object which describes the given script file.
 	 * 
-	 * @param context The ImageJ application context to use when populating
+	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param path Path to the script file.
 	 */
@@ -113,7 +113,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * Creates a script metadata object which describes a script provided by the
 	 * given {@link Reader}.
 	 * 
-	 * @param context The ImageJ application context to use when populating
+	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param path Pseudo-path to the script file. This file does not actually
 	 *          need to exist, but rather provides a name for the script with file
@@ -162,7 +162,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * method is called ({@link #getInput}, {@link #getOutput}, {@link #inputs()},
 	 * {@link #outputs()}, etc.). Subsequent calls will reparse the parameters.
 	 * <p>
-	 * ImageJ's scripting framework supports specifying @{@link Parameter}-style
+	 * SciJava's scripting framework supports specifying @{@link Parameter}-style
 	 * inputs and outputs in a preamble. The format is a simplified version of the
 	 * Java @{@link Parameter} annotation syntax. The following syntaxes are
 	 * supported:

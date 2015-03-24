@@ -117,9 +117,8 @@ public class XML {
 		this.path = path;
 		this.doc = doc;
 
-		// Protect against class skew: some ImageJ projects find it funny to ship
-		// outdated xalan, sometimes causing problems due to incompatible
-		// xalan/xerces combinations.
+		// Protect against class skew: some projects find it funny to ship outdated
+		// xalan, causing problems due to incompatible xalan/xerces combinations.
 		// 
 		// We work around that by letting the XPathFactory try with the current
 		// context class loader, and fall back onto its parent until it succeeds

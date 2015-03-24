@@ -54,21 +54,21 @@ import org.scijava.util.ClassUtils;
  * with inputs and outputs.
  * </p>
  * <p>
- * Conceptually, an ImageJ command is such a piece of functionality. However,
- * the {@link Command} interface is intended to be as simple to implement as
+ * Conceptually, a command is such a piece of functionality. However, the
+ * {@link Command} interface is intended to be as simple to implement as
  * possible; the only required method is {@link Command#run()}, which is
  * inherited from {@link Runnable}. The command's inputs and outputs are
  * indicated using @{@link Parameter} annotations.
  * </p>
  * <p>
- * To bridge the gap, this class adapts an ImageJ {@link Command} instance into
- * an object that fully implements the {@link Module} interface.
+ * To bridge the gap, this class adapts a {@link Command} instance into an
+ * object that fully implements the {@link Module} interface.
  * </p>
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
  * @author Grant Harris
- * @see CommandInfo - An adapter class that bridges the gap between ImageJ
+ * @see CommandInfo - An adapter class that bridges the gap between SciJava
  *      commands and the rich {@link ModuleInfo} interface.
  * @see Module - The interface which provides many methods for interrogating an
  *      encapsulated piece of functionality with inputs and outputs.

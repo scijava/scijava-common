@@ -44,7 +44,7 @@ import org.scijava.util.VersionUtils;
  * Abstract superclass for {@link ScriptLanguage} implementations.
  * <p>
  * This class implements dummy versions of {@link ScriptEngineFactory}'s methods
- * that are not needed by ImageJ's scripting interface.
+ * that are not needed by the SciJava scripting framework.
  * </p>
  * 
  * @author Johannes Schindelin

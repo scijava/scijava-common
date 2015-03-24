@@ -71,7 +71,7 @@ import org.scijava.ui.event.UIShownEvent;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
- * Default service for handling ImageJ user interfaces.
+ * Default service for handling SciJava user interfaces.
  * 
  * @author Curtis Rueden
  */

@@ -59,10 +59,10 @@ import org.scijava.service.SciJavaService;
  * </p>
  * <p>
  * A <em>module</em> is distinct from a <em>plugin</em> in that plugins extend
- * ImageJ's functionality in some way, taking many forms, whereas modules are
- * always runnable code with typed inputs and outputs. There is a particular
- * type of plugin called a {@link org.scijava.command.Command} which is also a
- * module, but many plugins (e.g., {@link org.scijava.tool.Tool}s and
+ * a program's functionality in some way, taking many forms, whereas modules
+ * are always runnable code with typed inputs and outputs. There is a
+ * particular type of plugin called a {@link org.scijava.command.Command} which
+ * is also a module, but many plugins (e.g., {@link org.scijava.tool.Tool}s and
  * {@link org.scijava.display.Display}s) are not modules.
  * </p>
  * 

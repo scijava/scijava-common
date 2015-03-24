@@ -45,8 +45,8 @@ import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
 
 /**
- * Interface for ImageJ tools. A tool is a collection of rules binding user
- * input (e.g., keyboard and mouse events) to display and data manipulation in a
+ * Interface for tools. A tool is a collection of rules binding user input
+ * (e.g., keyboard and mouse events) to display and data manipulation in a
  * coherent way.
  * <p>
  * For example, a {@code PanTool} might pan a display when the mouse is dragged
@@ -72,9 +72,8 @@ public interface Tool extends RichPlugin, SingletonPlugin {
 	boolean isAlwaysActive();
 
 	/**
-	 * When true, tool receives events when the main ImageJ application frame is
-	 * active. When false, tool only receives events when a display window is
-	 * active.
+	 * When true, tool receives events when the main application frame is active.
+	 * When false, tool only receives events when a display window is active.
 	 */
 	boolean isActiveInAppFrame();
 

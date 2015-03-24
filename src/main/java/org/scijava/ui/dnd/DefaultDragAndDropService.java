@@ -130,7 +130,7 @@ public class DefaultDragAndDropService extends
 		// determine whether the given drop operation is supported
 		final boolean compatible = supports(e.getData(), e.getDisplay());
 
-		// update the ImageJ status accordingly
+		// update the status accordingly
 		final String message = compatible ? SUPPORTED : UNSUPPORTED;
 		statusService.showStatus("< <" + message + "> >");
 

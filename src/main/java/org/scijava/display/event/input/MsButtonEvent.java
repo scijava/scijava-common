@@ -43,8 +43,8 @@ import org.scijava.input.InputModifiers;
 public abstract class MsButtonEvent extends MsEvent {
 
 	// TODO - Use an enum for the buttons. Perhaps an extensible enum (see Axis &
-	// Axes)? In util-awt, add a mechanism for mapping AWT mouse buttons to and
-	// from ImageJ mouse buttons (similar to AWTCursors).
+	// Axes)? In scijava-ui-awt, add a mechanism for mapping AWT mouse buttons to
+	// and from SciJava mouse buttons (similar to AWTCursors).
 
 	public static final int LEFT_BUTTON = 0;
 	public static final int MIDDLE_BUTTON = 1;

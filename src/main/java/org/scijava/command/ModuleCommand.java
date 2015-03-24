@@ -39,9 +39,9 @@ import org.scijava.module.Module;
 import org.scijava.plugin.Parameter;
 
 /**
- * An ImageJ command which implements {@link Module} directly (rather than using
- * the {@link CommandModule} adapter class). This is useful for commands which
- * want to inspect and manipulate their own inputs and outputs programmatically.
+ * A command which implements {@link Module} directly (rather than using the
+ * {@link CommandModule} adapter class). This is useful for commands which want
+ * to inspect and manipulate their own inputs and outputs programmatically.
  * 
  * @author Curtis Rueden
  */

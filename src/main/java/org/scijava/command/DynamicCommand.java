@@ -42,10 +42,10 @@ import org.scijava.plugin.Parameter;
 import org.scijava.util.ClassUtils;
 
 /**
- * An ImageJ command with a variable number of inputs and outputs. This class
- * provides greater configurability, but also greater complexity, than
- * implementing the {@link Command} interface and using only @{@link Parameter}
- * annotations on instance fields.
+ * A command with a variable number of inputs and outputs. This class provides
+ * greater configurability, but also greater complexity, than implementing the
+ * {@link Command} interface and using only @{@link Parameter} annotations on
+ * instance fields.
  * 
  * @author Curtis Rueden
  */

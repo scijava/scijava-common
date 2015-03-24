@@ -50,10 +50,7 @@ public interface ConsoleService extends
 	HandlerService<LinkedList<String>, ConsoleArgument>, SciJavaService
 {
 
-	/**
-	 * Handles arguments to ImageJ coming from an external source such as the
-	 * command line.
-	 */
+	/** Handles arguments from an external source such as the command line. */
 	void processArgs(String... args);
 
 	/** Adds a listener for output sent to {@code stdout} or {@code stderr}. */

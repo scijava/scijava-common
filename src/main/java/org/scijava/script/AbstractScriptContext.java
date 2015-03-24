@@ -79,7 +79,8 @@ public class AbstractScriptContext implements ScriptContext {
 		this.errorWriter = errorWriter;
 	}
 
-	// (Possibly) unsupported operations (modern ImageJ does not need them)
+	// (Possibly) unsupported operations
+	// The SciJava scripting framework does not require them to work properly.
 
 	@Override
 	public Object getAttribute(final String key) {

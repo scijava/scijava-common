@@ -42,15 +42,15 @@ import org.scijava.plugin.SingletonPlugin;
 /**
  * The base interface for scripting language adapters.
  * <p>
- * Every ImageJ scripting language implements this interface, which is based on
+ * Every SciJava scripting language implements this interface, which is based on
  * <a href="https://jcp.org/aboutJava/communityprocess/final/jsr223/">JSR
  * 223</a>, Scripting for the Java Platform, included in Java 6 and later in the
  * {@link javax.script} package. This {@link ScriptLanguage} interface extends
  * {@link ScriptEngineFactory}, meaning it can act as a JSR 223 Java scripting
  * language, while also providing additional functionality necessary for full
- * support within ImageJ. In particular, this interface adds API for code
- * generation of scripts to replicate ImageJ {@link Module} executions (i.e.,
- * for "script recording" of ImageJ commands).
+ * support within applications such as ImageJ. In particular, this interface
+ * adds API for code generation of scripts to replicate SciJava {@link Module}
+ * executions (i.e., for "script recording" of SciJava commands).
  * </p>
  * <p>
  * Script languages discoverable at runtime must implement this interface and be

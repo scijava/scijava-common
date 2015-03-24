@@ -44,7 +44,7 @@ import org.scijava.log.StderrLogService;
 
 /**
  * This class implements dummy versions for ScriptEngine's methods that are not
- * needed by ImageJ's scripting interface.
+ * needed by the SciJava scripting framework.
  * 
  * @author Johannes Schindelin
  */
@@ -111,7 +111,7 @@ public abstract class AbstractScriptEngine implements ScriptEngine {
 
 	// (Possibly) unsupported operations
 	// (subclasses may, or may not, override with proper implementations)
-	// ImageJ2's scripting framework does not require them to work properly
+	// The SciJava scripting framework does not require them to work properly.
 
 	@Override
 	public ScriptEngineFactory getFactory() {

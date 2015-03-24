@@ -35,8 +35,7 @@ import org.scijava.event.SciJavaEvent;
 import org.scijava.options.OptionsPlugin;
 
 /**
- * Fired when an modern ImageJ plugin has changed an option. Used by the legacy
- * layer keep legacy and modern ImageJ options in sync.
+ * Fired when an {@link OptionsPlugin} has changed an option.
  * 
  * @author Barry DeZonia
  * @author Curtis Rueden

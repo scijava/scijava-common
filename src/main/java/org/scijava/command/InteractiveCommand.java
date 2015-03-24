@@ -43,7 +43,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 
 /**
- * An ImageJ command intended to be run interactively.
+ * A command intended to be run interactively.
  * <p>
  * It is {@link Interactive} and {@link Previewable}, with the previews used for
  * interactive exploration.

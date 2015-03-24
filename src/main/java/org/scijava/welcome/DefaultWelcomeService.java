@@ -134,7 +134,7 @@ public class DefaultWelcomeService extends AbstractService implements
 
 	// -- Helper methods --
 
-	/** Gets the preference key for ImageJ's first run. */
+	/** Gets the preference key for the SciJava application's first run. */
 	private String firstRunPrefKey() {
 		return "firstRun-" + appService.getApp().getVersion();
 	}

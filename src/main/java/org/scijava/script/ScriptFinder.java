@@ -49,7 +49,7 @@ import org.scijava.plugin.Parameter;
  * To accomplish this, we crawl the directories specified by
  * {@link ScriptService#getScriptDirectories()}. By default, those directories
  * include the {@code scripts} and {@code plugins/Scripts} folders off the
- * ImageJ base directory.
+ * SciJava application's base directory.
  * </p>
  * 
  * @author Johannes Schindelin

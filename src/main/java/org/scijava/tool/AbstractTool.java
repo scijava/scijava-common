@@ -43,7 +43,7 @@ import org.scijava.input.MouseCursor;
 import org.scijava.plugin.AbstractRichPlugin;
 
 /**
- * Abstract base class for ImageJ tools.
+ * Abstract base class for {@link Tool} implementations.
  * 
  * @author Curtis Rueden
  * @author Grant Harris

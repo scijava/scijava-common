@@ -32,7 +32,7 @@
 package org.scijava.menu;
 
 /**
- * Useful constants when defining ImageJ menu entries.
+ * Useful constants when defining application menu entries.
  * 
  * @author Curtis Rueden
  */
@@ -43,9 +43,9 @@ public final class MenuConstants {
 	}
 
 	// TODO - Finalize the location of these constants. The potential confusion is
-	// that ij-core supposedly provides a general-purpose extensibility framework,
-	// which could be used by applications other than ImageJ, except for these
-	// constants, which are very specific to the ImageJ user interface.
+	// that SciJava Common supposedly provides a general-purpose extensibility
+	// framework, which could be used by applications other than ImageJ, except
+	// for these constants, which are very specific to the ImageJ user interface.
 
 	public static final String FILE_LABEL = "File";
 	public static final String EDIT_LABEL = "Edit";
