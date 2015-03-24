@@ -170,12 +170,7 @@ public final class FileUtils {
 		}
 	}
 
-	/**
-	 * A regular expression to match filenames containing version information.
-	 * <p>
-	 * This is kept synchronized with {@code imagej.updater.core.FileObject}.
-	 * </p>
-	 */
+	/** A regular expression to match filenames containing version information. */
 	private final static Pattern versionPattern =
 		Pattern
 			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|shaded|sources|javadoc|native))?(\\.jar(-[a-z]*)?))");
