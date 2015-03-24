@@ -58,13 +58,6 @@ public class DefaultEventBus extends ThreadSafeEventService {
 	private final ThreadService threadService;
 	private final LogService log;
 
-	// TODO - Think more about how publishing events should work.
-	// Unfortunately, without further care elsewhere in the code (subject to
-	// further investigation), event publication can result in a race condition
-	// where JHotDraw partially repaints images before they are done being
-	// processed.
-	// See ticket #719: http://trac.imagej.net/ticket/719
-
 	public DefaultEventBus(final ThreadService threadService,
 		final LogService log)
 	{
