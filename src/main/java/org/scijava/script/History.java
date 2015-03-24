@@ -92,12 +92,12 @@ class History {
 		currentCommand = "";
 	}
 
-	public boolean replace(final String currentCommand) {
+	public boolean replace(final String command) {
 		if (position < 0) {
-			this.currentCommand = currentCommand;
+			currentCommand = command;
 			return false;
 		}
-		return entries.replace(position, currentCommand);
+		return entries.replace(position, command);
 	}
 
 	/**
@@ -131,14 +131,14 @@ class History {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		int position = -1;
+		int pos = -1;
 		for (;;) {
-			position = entries.previous(position);
-			if (position < 0) break;
+			pos = entries.previous(pos);
+			if (pos < 0) break;
 			if (builder.length() > 0) builder.append(" -> ");
-			if (this.position == position) builder.append("[");
-			builder.append(entries.get(position));
-			if (this.position == position) builder.append("]");
+			if (this.position == pos) builder.append("[");
+			builder.append(entries.get(pos));
+			if (this.position == pos) builder.append("]");
 		}
 		return builder.toString();
 	}

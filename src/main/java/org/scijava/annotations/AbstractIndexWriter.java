@@ -126,16 +126,16 @@ public abstract class AbstractIndexWriter {
 		if (in == null) {
 			return;
 		}
-		Map<String, Object> map = this.map.get(annotationName);
-		if (map == null) {
-			map = new LinkedHashMap<String, Object>();
-			this.map.put(annotationName, map);
+		Map<String, Object> m = map.get(annotationName);
+		if (m == null) {
+			m = new LinkedHashMap<String, Object>();
+			map.put(annotationName, m);
 		}
 		/*
 		 * To determine whether the index needs to be written out,
 		 * we need to keep track of changed entries.
 		 */
-		int changedCount = map.size();
+		int changedCount = m.size();
 		boolean hasObsoletes = false;
 
 		final IndexReader reader =
@@ -151,13 +151,13 @@ public abstract class AbstractIndexWriter {
 				if (factory.isClassObsolete(className)) {
 					hasObsoletes = true;
 				}
-				else if (map.containsKey(className)) {
-					if (!hasObsoletes && entry.equals(map.get(className))) {
+				else if (m.containsKey(className)) {
+					if (!hasObsoletes && entry.equals(m.get(className))) {
 						changedCount--;
 					}
 				}
 				else {
-					map.put(className, entry);
+					m.put(className, entry);
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public abstract class AbstractIndexWriter {
 		}
 		// if this annotation index is unchanged, no need to write it out again
 		if (changedCount == 0 && !hasObsoletes) {
-			this.map.remove(annotationName);
+			map.remove(annotationName);
 		}
 	}
 
@@ -278,12 +278,12 @@ public abstract class AbstractIndexWriter {
 		out.write('}');
 	}
 
-	private void writeMap(final PrintStream out, final Map<?, ?> map)
+	private void writeMap(final PrintStream out, final Map<?, ?> m)
 		throws IOException
 	{
 		out.write('{');
 		boolean first = true;
-		for (Map.Entry<?, ?> entry : map.entrySet()) {
+		for (Map.Entry<?, ?> entry : m.entrySet()) {
 			if (first) {
 				first = false;
 			}

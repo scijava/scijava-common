@@ -204,89 +204,89 @@ class ByteCodeAnalyzer {
 			new TreeMap<String, Map<String, Object>>();
 		for (final Attribute attr : attributes) {
 			if ("RuntimeVisibleAnnotations".equals(attr.getName())) {
-				final byte[] buffer = attr.attribute;
-				int count = getU2(buffer, 0);
+				final byte[] buf = attr.attribute;
+				int count = getU2(buf, 0);
 				int offset = 2;
 				for (int i = 0; i < count; i++) {
 					final String className =
-						raw2className(getStringConstant(getU2(buffer, offset)));
+						raw2className(getStringConstant(getU2(buf, offset)));
 					offset += 2;
 					final Map<String, Object> values =
 						new TreeMap<String, Object>();
 					annotations.put(className, values);
-					offset = parseAnnotationValues(buffer, offset, values);
+					offset = parseAnnotationValues(buf, offset, values);
 				}
 			}
 		}
 		return annotations;
 	}
 
-	private int parseAnnotationValues(final byte[] buffer, int offset,
+	private int parseAnnotationValues(final byte[] buf, int offset,
 		final Map<String, Object> values)
 	{
-		int count = getU2(buffer, offset);
+		int count = getU2(buf, offset);
 		offset += 2;
 		for (int i = 0; i < count; i++) {
-			final String key = getStringConstant(getU2(buffer, offset));
+			final String key = getStringConstant(getU2(buf, offset));
 			offset += 2;
-			offset = parseAnnotationValue(buffer, offset, values, key);
+			offset = parseAnnotationValue(buf, offset, values, key);
 		}
 		return offset;
 	}
 
-	private int parseAnnotationValue(byte[] buffer, int offset,
+	private int parseAnnotationValue(byte[] buf, int offset,
 		Map<String, Object> map, String key)
 	{
 		Object value;
-		switch (getU1(buffer, offset++)) {
+		switch (getU1(buf, offset++)) {
 			case 'Z':
-				value = Boolean.valueOf(getIntegerConstant(getU2(buffer, offset)) != 0);
+				value = Boolean.valueOf(getIntegerConstant(getU2(buf, offset)) != 0);
 				offset += 2;
 				break;
 			case 'B':
-				value = Byte.valueOf((byte) getIntegerConstant(getU2(buffer, offset)));
+				value = Byte.valueOf((byte) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'C':
 				value =
-					Character.valueOf((char) getIntegerConstant(getU2(buffer, offset)));
+					Character.valueOf((char) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'S':
 				value =
-					Short.valueOf((short) getIntegerConstant(getU2(buffer, offset)));
+					Short.valueOf((short) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'I':
 				value =
-					Integer.valueOf((int) getIntegerConstant(getU2(buffer, offset)));
+					Integer.valueOf((int) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'J':
-				value = Long.valueOf(getLongConstant(getU2(buffer, offset)));
+				value = Long.valueOf(getLongConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'F':
-				value = Float.valueOf(getFloatConstant(getU2(buffer, offset)));
+				value = Float.valueOf(getFloatConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'D':
-				value = Double.valueOf(getDoubleConstant(getU2(buffer, offset)));
+				value = Double.valueOf(getDoubleConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 's':
-				value = getStringConstant(getU2(buffer, offset));
+				value = getStringConstant(getU2(buf, offset));
 				offset += 2;
 				break;
 			case 'c':
-				value = raw2className(getStringConstant(getU2(buffer, offset)));
+				value = raw2className(getStringConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case '[': {
-				final Object[] array = new Object[getU2(buffer, offset)];
+				final Object[] array = new Object[getU2(buf, offset)];
 				offset += 2;
 				for (int i = 0; i < array.length; i++) {
-					offset = parseAnnotationValue(buffer, offset, map, key);
+					offset = parseAnnotationValue(buf, offset, map, key);
 					array[i] = map.get(key);
 				}
 				value = array;
@@ -295,10 +295,10 @@ class ByteCodeAnalyzer {
 			case 'e': {
 				final Map<String, Object> enumValue =
 					new TreeMap<String, Object>();
-				enumValue.put("enum", raw2className(getStringConstant(getU2(buffer,
+				enumValue.put("enum", raw2className(getStringConstant(getU2(buf,
 					offset))));
 				offset += 2;
-				enumValue.put("value", getStringConstant(getU2(buffer, offset)));
+				enumValue.put("value", getStringConstant(getU2(buf, offset)));
 				offset += 2;
 				value = enumValue;
 				break;
@@ -307,13 +307,13 @@ class ByteCodeAnalyzer {
 				// skipping annotation type
 				offset += 2;
 				final Map<String, Object> values = new TreeMap<String, Object>();
-				offset = parseAnnotationValues(buffer, offset, values);
+				offset = parseAnnotationValues(buf, offset, values);
 				value = values;
 				break;
 			}
 			default:
 				throw new RuntimeException("Unhandled annotation value type: " +
-					(char) getU1(buffer, offset - 1));
+					(char) getU1(buf, offset - 1));
 		}
 		if (value == null) {
 			throw new NullPointerException();

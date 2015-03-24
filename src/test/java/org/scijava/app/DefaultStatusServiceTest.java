@@ -53,7 +53,7 @@ public class DefaultStatusServiceTest {
 	private Context context;
 	private StatusListener statusListener;
 	private BlockingQueue<StatusEvent> queue;
-	private StatusService statusService;
+	private StatusService ss;
 
 	private class StatusListener extends AbstractContextual {
 
@@ -79,12 +79,12 @@ public class DefaultStatusServiceTest {
 		queue = new ArrayBlockingQueue<StatusEvent>(10);
 		statusListener = new StatusListener();
 		statusListener.setContext(context);
-		statusService = statusListener.statusService;
+		ss = statusListener.statusService;
 	}
 
 	@Test
 	public void testShowProgress() {
-		statusService.showProgress(15, 45);
+		ss.showProgress(15, 45);
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getProgressValue(), 15);
@@ -100,7 +100,7 @@ public class DefaultStatusServiceTest {
 	@Test
 	public void testShowStatusString() {
 		final String text = "Hello, world";
-		statusService.showStatus(text);
+		ss.showStatus(text);
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), text);
@@ -115,7 +115,7 @@ public class DefaultStatusServiceTest {
 	@Test
 	public void testShowStatusIntIntString() {
 		final String text = "Working...";
-		statusService.showStatus(25, 55, text);
+		ss.showStatus(25, 55, text);
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getProgressValue(), 25);
@@ -132,7 +132,7 @@ public class DefaultStatusServiceTest {
 	@Test
 	public void testWarn() {
 		final String text = "Totally hosed";
-		statusService.warn(text);
+		ss.warn(text);
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), text);
@@ -147,7 +147,7 @@ public class DefaultStatusServiceTest {
 	@Test
 	public void testShowStatusIntIntStringBoolean() {
 		final String text = "Working and hosed...";
-		statusService.showStatus(33, 44, text, true);
+		ss.showStatus(33, 44, text, true);
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), text);
@@ -163,7 +163,7 @@ public class DefaultStatusServiceTest {
 
 	@Test
 	public void testClearStatus() {
-		statusService.clearStatus();
+		ss.clearStatus();
 		try {
 			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
 			assertEquals(event.getStatusMessage(), "");

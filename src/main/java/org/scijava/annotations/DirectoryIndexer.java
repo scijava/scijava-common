@@ -151,11 +151,9 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 			public OutputStream openOutput(String annotationName) throws IOException {
 				final File file =
 					new File(directory, Index.INDEX_PREFIX + annotationName);
-				final File directory = file.getParentFile();
-				if (directory != null && !directory.isDirectory() &&
-					!directory.mkdirs())
-				{
-					throw new IOException("Could not make directory " + directory);
+				final File dir = file.getParentFile();
+				if (dir != null && !dir.isDirectory() && !dir.mkdirs()) {
+					throw new IOException("Could not make directory " + dir);
 				}
 				return new FileOutputStream(file) {
 
