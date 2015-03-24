@@ -189,8 +189,9 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	/** Creates a {@link ModuleInfo} to reopen data at the given path. */
 	private ModuleInfo createInfo(final String path) {
-		// CTR FIXME: Avoid circular dependency between ij-core and ij-commands.
-		final String commandClassName = "imagej.plugins.commands.io.OpenFile";
+		// CTR FIXME: Avoid circular (and compile-time-unsafe) dependency between
+		// scijava-common and scijava-plugins-commands.
+		final String commandClassName = "org.scijava.plugins.commands.io.OpenFile";
 		final CommandInfo info = new CommandInfo(commandClassName);
 
 		// hard code path to open as a preset
