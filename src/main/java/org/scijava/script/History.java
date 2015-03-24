@@ -75,7 +75,7 @@ class History {
 	/**
 	 * Persist the history.
 	 * 
-	 * @see {@link Prefs}
+	 * @see PrefService
 	 */
 	public void write() {
 		prefs.putIterable(getClass(), entries, PREFIX + name);

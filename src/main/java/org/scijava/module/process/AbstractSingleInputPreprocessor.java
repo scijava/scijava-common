@@ -38,8 +38,7 @@ import org.scijava.plugin.Parameter;
 
 /**
  * Abstract superclass for {@link PreprocessorPlugin} implementations that
- * populate singleton inputs (e.g. it is common to have modules that operate on
- * a single {@link Dataset}). Contains helper methods to facilitate this
+ * populate singleton inputs. Contains helper methods to facilitate this
  * functionality.
  *
  * @author Mark Hiner

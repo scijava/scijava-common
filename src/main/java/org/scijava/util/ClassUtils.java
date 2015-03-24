@@ -411,7 +411,7 @@ public final class ClassUtils {
 
 	/**
 	 * This method scans the provided class, its superclasses and interfaces for
-	 * all supported {@code {@link Annotation} : {@link AnnotatedObject} pairs.
+	 * all supported {@link Annotation} : {@link AnnotatedObject} pairs.
 	 * These are then cached to remove the need for future queries.
 	 * <p>
 	 * By combining multiple {@code Annotation : AnnotatedObject} pairs in one
