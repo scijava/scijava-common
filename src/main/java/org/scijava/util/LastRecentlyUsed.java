@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Johannes Schindelin
  */
-public class LastRecentlyUsed<T> implements Iterable<T>, Collection<T> {
+public class LastRecentlyUsed<T> implements Collection<T> {
 	private final Object[] entries;
 	private final Map<T, Integer> map;
 	/**
