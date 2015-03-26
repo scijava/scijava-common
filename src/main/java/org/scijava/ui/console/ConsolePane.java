@@ -45,6 +45,6 @@ public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
 	void append(OutputEvent event);
 
 	/** Makes the console visible. */
-	void popUp();
+	void show();
 
 }

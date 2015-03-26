@@ -57,7 +57,7 @@ public abstract class AbstractConsolePane<C> implements ConsolePane<C> {
 	@Override
 	public void outputOccurred(final OutputEvent event) {
 		append(event);
-		if (event.getSource() == Source.STDERR) popUp();
+		if (event.getSource() == Source.STDERR) show();
 	}
 
 }
