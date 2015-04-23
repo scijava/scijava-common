@@ -31,6 +31,9 @@
 
 package org.scijava.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
  * Useful methods for working with {@link Number} objects.
@@ -51,6 +54,21 @@ public final class NumberUtils {
 	public static Number toNumber(final Object value, final Class<?> type) {
 		final Object num = ConversionUtils.convert(value, type);
 		return num == null ? null : ConversionUtils.cast(num, Number.class);
+	}
+
+	public static BigDecimal asBigDecimal(final Number n) {
+		// Using .doubleValue on a long or BigInteger would cause loss of accuracy
+		if(BigInteger.class.isInstance(n)){
+			return new BigDecimal((BigInteger) n);
+		}
+		else if(Long.class.isInstance(n)){
+			return new BigDecimal(n.longValue());
+		}
+		return new BigDecimal(n.doubleValue());
+	}
+
+	public static BigInteger asBigInteger(final Number n) {
+		return BigInteger.valueOf(n.longValue());
 	}
 
 	public static Number getMinimumNumber(final Class<?> type) {
