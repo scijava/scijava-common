@@ -34,12 +34,10 @@ package org.scijava.convert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.scijava.util.ConversionUtils;
 
 /**
  * Tests converter plugins that convert from primitive numeric types to other
@@ -81,79 +79,8 @@ public abstract class AbstractNumberConverterTests {
 	public void testPrimitive() {
 		final Number src = getSrc();
 		final Number expect = getExpectedValue();
-		if (!destType.equals(BigInteger.class) &&
-			!destType.equals(BigDecimal.class))
-		{
-			// byte to number converters
-			if (srcType.equals(Byte.class)) {
-				final byte b = src.byteValue();
-				if (destType.equals(Short.class)) {
-					final short s = expect.shortValue();
-					assertTrue(s == converter.convert(b, short.class));
-				}
-				else if (destType.equals(Integer.class)) {
-					final int i = expect.intValue();
-					assertTrue(i == converter.convert(b, int.class));
-				}
-				else if (destType.equals(Long.class)) {
-					final long l = expect.longValue();
-					assertTrue(l == converter.convert(b, long.class));
-				}
-				else if (destType.equals(Float.class)) {
-					final float f = expect.floatValue();
-					assertTrue(f == converter.convert(b, float.class));
-				}
-				else {
-					final double d = expect.doubleValue();
-					assertTrue(d == converter.convert(b, double.class));
-				}
-			}
-			// int to number converters
-			else if (srcType.equals(Integer.class)) {
-				final int i = src.intValue();
-				if (destType.equals(Long.class)) {
-					final long l = expect.longValue();
-					assertTrue(l == converter.convert(i, long.class));
-				}
-				else {
-					final double d = expect.doubleValue();
-					assertTrue(d == converter.convert(i, double.class));
-				}
-			}
-			// short to number converters
-			else if (srcType.equals(Short.class)) {
-				final short s = src.shortValue();
-				if (destType.equals(Integer.class)) {
-					final int i = expect.intValue();
-					assertTrue(i == converter.convert(s, int.class));
-				}
-				else if (destType.equals(Long.class)) {
-					final long l = expect.longValue();
-					assertTrue(l == converter.convert(s, long.class));
-				}
-				else if (destType.equals(Float.class)) {
-					final float f = expect.floatValue();
-					assertTrue(f == converter.convert(s, float.class));
-				}
-				else {
-					final double d = expect.doubleValue();
-					assertTrue(d == converter.convert(s, double.class));
-				}
-			}
-			// float to number converters
-			else if (srcType.equals(Float.class)) {
-				final float f = expect.floatValue();
-				final double d = expect.doubleValue();
-				assertTrue(d == converter.convert(f, double.class));
-			}
-			else {
-				// longs and doubles can't be converted to anything beside bigInteger
-				// and big decimal
-			}
-		}
-		else {
-			// no prim equivalents for BigInteger and BigDecimal
-		}
+		assertEquals(expect, converter.convert(src, ConversionUtils
+			.getPrimitiveType(destType)));
 	}
 
 	/**
