@@ -123,6 +123,41 @@ public class ConversionUtils {
 	}
 
 	/**
+	 * Returns the primitive {@link Class} closest to the given type.
+	 * <p>
+	 * Specifically, the following type conversions are done:
+	 * <ul>
+	 * <li>Boolean.class becomes boolean.class</li>
+	 * <li>Byte.class becomes byte.class</li>
+	 * <li>Character.class becomes char.class</li>
+	 * <li>Double.class becomes double.class</li>
+	 * <li>Float.class becomes float.class</li>
+	 * <li>Integer.class becomes int.class</li>
+	 * <li>Long.class becomes long.class</li>
+	 * <li>Short.class becomes short.class</li>
+	 * <li>Void.class becomes void.class</li>
+	 * </ul>
+	 * All other types are unchanged.
+	 * </p>
+	 */
+	public static <T> Class<T> getPrimitiveType(final Class<T> type) {
+		final Class<?> destType;
+		if (type == Boolean.class) destType = boolean.class;
+		else if (type == Byte.class) destType = byte.class;
+		else if (type == Character.class) destType = char.class;
+		else if (type == Double.class) destType = double.class;
+		else if (type == Float.class) destType = float.class;
+		else if (type == Integer.class) destType = int.class;
+		else if (type == Long.class) destType = long.class;
+		else if (type == Short.class) destType = short.class;
+		else if (type == Void.class) destType = void.class;
+		else destType = type;
+		@SuppressWarnings("unchecked")
+		final Class<T> result = (Class<T>) destType;
+		return result;
+	}
+
+	/**
 	 * Returns the non-primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
