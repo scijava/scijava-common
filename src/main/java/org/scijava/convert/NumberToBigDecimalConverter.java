@@ -32,7 +32,8 @@
 package org.scijava.convert;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+
+import org.scijava.util.NumberUtils;
 
 /**
  * Converts numbers to BigDecimals.
@@ -43,15 +44,7 @@ public abstract class NumberToBigDecimalConverter<N extends Number> extends Numb
 
 	@Override
 	public BigDecimal convert(Number n) {
-		// cannot get doubleValue of a BigInteger
-		if(BigInteger.class.isInstance(n)){
-			return new BigDecimal((BigInteger) n);
-		}
-		// Using .doubleValue on a long would cause loss of accuracy
-		else if(Long.class.isInstance(n)){
-			return new BigDecimal(n.longValue());
-		}
-		return new BigDecimal(n.doubleValue());
+		return NumberUtils.asBigDecimal(n);
 	}
 
 	@Override
