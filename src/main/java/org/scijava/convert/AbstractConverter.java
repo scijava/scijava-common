@@ -34,7 +34,9 @@ package org.scijava.convert;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
+import org.scijava.object.ObjectService;
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.plugin.Parameter;
 import org.scijava.util.ConversionUtils;
 import org.scijava.util.GenericUtils;
 
@@ -59,6 +61,11 @@ import org.scijava.util.GenericUtils;
 public abstract class AbstractConverter<I, O> extends
 	AbstractHandlerPlugin<ConversionRequest> implements Converter<I, O>
 {
+
+	// -- Parameters --
+
+	@Parameter
+	private ObjectService objectService;
 
 	// -- ConversionHandler methods --
 
@@ -113,7 +120,9 @@ public abstract class AbstractConverter<I, O> extends
 
 	@Override
 	public void populateInputCandidates(final Collection<Object> objects) {
-		// No-op
+		for (final Object candidate : objectService.getObjects(getInputType())) {
+			if (canConvert(candidate, getOutputType())) objects.add(candidate);
+		}
 	}
 
 	// -- Typed methods --
