@@ -38,20 +38,31 @@ import org.scijava.convert.NumberConverters.ByteToIntegerConverter;
  *
  * @author Alison Walter
  */
-public class ByteToIntegerConverterTest extends NumberToIntegerTest {
+public class ByteToIntegerConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Byte((byte) 7);
-  }
+	@Override
+	public Byte getSrc() {
+		return (byte) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ByteToIntegerConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ByteToIntegerConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Long(12l);
-  }
+	@Override
+	public Integer getExpectedValue() {
+		return 7;
+	}
+
+	@Override
+	public Long getInvalidInput() {
+		return 12l;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Short.class;
+	}
+
 }

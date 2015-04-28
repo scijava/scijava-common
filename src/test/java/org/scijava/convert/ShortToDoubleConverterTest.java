@@ -38,20 +38,30 @@ import org.scijava.convert.NumberConverters.ShortToDoubleConverter;
  *
  * @author Alison Walter
  */
-public class ShortToDoubleConverterTest extends NumberToDoubleTest {
+public class ShortToDoubleConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Short((short) 7);
-  }
+	@Override
+	public Short getSrc() {
+		return (short) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ShortToDoubleConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ShortToDoubleConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Long(81l);
-  }
+	@Override
+	public Double getExpectedValue() {
+		return 7.0d;
+	}
+
+	@Override
+	public Long getInvalidInput() {
+		return 81l;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Byte.class;
+	}
 }

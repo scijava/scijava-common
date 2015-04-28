@@ -31,6 +31,7 @@
 
 package org.scijava.convert;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.scijava.convert.NumberConverters.BigIntegerToBigDecimalConverter;
@@ -40,11 +41,12 @@ import org.scijava.convert.NumberConverters.BigIntegerToBigDecimalConverter;
  *
  * @author Alison Walter
  */
-public class BigIntegerToBigDecimalConverterTest extends NumberToBigDecimalTest
+public class BigIntegerToBigDecimalConverterTest extends
+	AbstractNumberConverterTests
 {
 
 	@Override
-	public Number getSrc() {
+	public BigInteger getSrc() {
 		return BigInteger.valueOf(7l);
 	}
 
@@ -54,7 +56,17 @@ public class BigIntegerToBigDecimalConverterTest extends NumberToBigDecimalTest
 	}
 
 	@Override
-	public Number getInvalidInput() {
-		return new Long(46l);
+	public BigDecimal getExpectedValue() {
+		return new BigDecimal(7d);
+	}
+
+	@Override
+	public Long getInvalidInput() {
+		return 46l;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Float.class;
 	}
 }

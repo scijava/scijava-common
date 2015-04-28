@@ -38,20 +38,31 @@ import org.scijava.convert.NumberConverters.ByteToLongConverter;
  *
  * @author Alison Walter
  */
-public class ByteToLongConverterTest extends NumberToLongTest {
+public class ByteToLongConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Byte((byte) 7);
-  }
+	@Override
+	public Byte getSrc() {
+		return (byte) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ByteToLongConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ByteToLongConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Double(12d);
-  }
+	@Override
+	public Long getExpectedValue() {
+		return 7l;
+	}
+
+	@Override
+	public Double getInvalidInput() {
+		return 12d;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Float.class;
+	}
+
 }

@@ -38,20 +38,30 @@ import org.scijava.convert.NumberConverters.IntegerToLongConverter;
  *
  * @author Alison Walter
  */
-public class IntegerToLongConverterTest extends NumberToLongTest {
+public class IntegerToLongConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Integer(7);
-  }
+	@Override
+	public Integer getSrc() {
+		return 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.IntegerToLongConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.IntegerToLongConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Float(7.67f);
-  }
+	@Override
+	public Long getExpectedValue() {
+		return 7l;
+	}
+
+	@Override
+	public Float getInvalidInput() {
+		return 7.67f;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Float.class;
+	}
 }

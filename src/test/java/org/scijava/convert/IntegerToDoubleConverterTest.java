@@ -38,20 +38,31 @@ import org.scijava.convert.NumberConverters.IntegerToDoubleConverter;
  *
  * @author Alison Walter
  */
-public class IntegerToDoubleConverterTest extends NumberToDoubleTest {
+public class IntegerToDoubleConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Integer(7);
-  }
+	@Override
+	public Integer getSrc() {
+		return 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.IntegerToDoubleConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.IntegerToDoubleConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Byte((byte) 2);
-  }
+	@Override
+	public Double getExpectedValue() {
+		return 7.0d;
+	}
+
+	@Override
+	public Byte getInvalidInput() {
+		return (byte) 2;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Byte.class;
+	}
+
 }

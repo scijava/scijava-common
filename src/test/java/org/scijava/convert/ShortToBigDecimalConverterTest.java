@@ -31,6 +31,8 @@
 
 package org.scijava.convert;
 
+import java.math.BigDecimal;
+
 import org.scijava.convert.NumberConverters.ShortToBigDecimalConverter;
 
 /**
@@ -38,20 +40,33 @@ import org.scijava.convert.NumberConverters.ShortToBigDecimalConverter;
  *
  * @author Alison Walter
  */
-public class ShortToBigDecimalConverterTest extends NumberToBigDecimalTest {
+public class ShortToBigDecimalConverterTest extends
+	AbstractNumberConverterTests
+{
 
-  @Override
-  public Number getSrc() {
-    return new Short((short) 7);
-  }
+	@Override
+	public Short getSrc() {
+		return (short) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ShortToBigDecimalConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ShortToBigDecimalConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Long(81l);
-  }
+	@Override
+	public BigDecimal getExpectedValue() {
+		return new BigDecimal(7d);
+	}
+
+	@Override
+	public Long getInvalidInput() {
+		return 81l;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Float.class;
+	}
+
 }

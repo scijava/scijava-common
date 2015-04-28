@@ -38,20 +38,30 @@ import org.scijava.convert.NumberConverters.ShortToFloatConverter;
  *
  * @author Alison Walter
  */
-public class ShortToFloatConverterTest extends NumberToFloatTest {
+public class ShortToFloatConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Short((short) 7);
-  }
+	@Override
+	public Short getSrc() {
+		return (short) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ShortToFloatConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ShortToFloatConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Long(89l);
-  }
+	@Override
+	public Float getExpectedValue() {
+		return 7f;
+	}
+
+	@Override
+	public Long getInvalidInput() {
+		return 89l;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Long.class;
+	}
 }

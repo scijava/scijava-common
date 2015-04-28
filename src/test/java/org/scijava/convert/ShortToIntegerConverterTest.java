@@ -38,20 +38,31 @@ import org.scijava.convert.NumberConverters.ShortToIntegerConverter;
  *
  * @author Alison Walter
  */
-public class ShortToIntegerConverterTest extends NumberToIntegerTest {
+public class ShortToIntegerConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Short((short) 7);
-  }
+	@Override
+	public Short getSrc() {
+		return (short) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ShortToIntegerConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ShortToIntegerConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Float(7.67f);
-  }
+	@Override
+	public Integer getExpectedValue() {
+		return 7;
+	}
+
+	@Override
+	public Float getInvalidInput() {
+		return 7.67f;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Short.class;
+	}
+
 }

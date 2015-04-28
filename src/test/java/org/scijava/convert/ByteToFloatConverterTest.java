@@ -38,20 +38,30 @@ import org.scijava.convert.NumberConverters.ByteToFloatConverter;
  *
  * @author Alison Walter
  */
-public class ByteToFloatConverterTest extends NumberToFloatTest {
+public class ByteToFloatConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Byte((byte) 7);
-  }
+	@Override
+	public Byte getSrc() {
+		return (byte) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ByteToFloatConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ByteToFloatConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Double(7.67d);
-  }
+	@Override
+	public Float getExpectedValue() {
+		return 7f;
+	}
+
+	@Override
+	public Double getInvalidInput() {
+		return 7.67d;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Long.class;
+	}
 }

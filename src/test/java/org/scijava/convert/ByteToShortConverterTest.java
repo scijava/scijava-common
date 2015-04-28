@@ -38,21 +38,31 @@ import org.scijava.convert.NumberConverters.ByteToShortConverter;
  *
  * @author Alison Walter
  */
-public class ByteToShortConverterTest extends NumberToShortTest {
+public class ByteToShortConverterTest extends AbstractNumberConverterTests {
 
-  @Override
-  public Number getSrc() {
-    return new Byte((byte) 7);
-  }
+	@Override
+	public Byte getSrc() {
+		return (byte) 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.ByteToShortConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.ByteToShortConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Integer(12);
-  }
+	@Override
+	public Short getExpectedValue() {
+		return (short) 7;
+	}
+
+	@Override
+	public Integer getInvalidInput() {
+		return 12;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Float.class;
+	}
 
 }

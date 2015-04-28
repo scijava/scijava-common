@@ -31,6 +31,8 @@
 
 package org.scijava.convert;
 
+import java.math.BigInteger;
+
 import org.scijava.convert.NumberConverters.IntegerToBigIntegerConverter;
 
 /**
@@ -38,20 +40,33 @@ import org.scijava.convert.NumberConverters.IntegerToBigIntegerConverter;
  *
  * @author Alison Walter
  */
-public class IntegerToBigIntegerConverterTest extends NumberToBigIntegerTest {
+public class IntegerToBigIntegerConverterTest extends
+	AbstractNumberConverterTests
+{
 
-  @Override
-  public Number getSrc() {
-    return new Integer(7);
-  }
+	@Override
+	public Integer getSrc() {
+		return 7;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.IntegerToBigIntegerConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.IntegerToBigIntegerConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Byte((byte) 2);
-  }
+	@Override
+	public BigInteger getExpectedValue() {
+		return BigInteger.valueOf(7l);
+	}
+
+	@Override
+	public Byte getInvalidInput() {
+		return (byte) 2;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Byte.class;
+	}
+
 }

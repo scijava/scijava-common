@@ -31,6 +31,8 @@
 
 package org.scijava.convert;
 
+import java.math.BigInteger;
+
 import org.scijava.convert.NumberConverters.LongToBigIntegerConverter;
 
 /**
@@ -38,20 +40,31 @@ import org.scijava.convert.NumberConverters.LongToBigIntegerConverter;
  *
  * @author Alison Walter
  */
-public class LongToBigIntegerConverterTest extends NumberToBigIntegerTest {
+public class LongToBigIntegerConverterTest extends AbstractNumberConverterTests
+{
 
-  @Override
-  public Number getSrc() {
-    return new Long(7l);
-  }
+	@Override
+	public Long getSrc() {
+		return 7l;
+	}
 
-  @Override
-  public NumberToNumberConverter<?, ?> getConverter() {
-    return new NumberConverters.LongToBigIntegerConverter();
-  }
+	@Override
+	public NumberToNumberConverter<?, ?> getConverter() {
+		return new NumberConverters.LongToBigIntegerConverter();
+	}
 
-  @Override
-  public Number getInvalidInput() {
-    return new Integer(394);
-  }
+	@Override
+	public BigInteger getExpectedValue() {
+		return BigInteger.valueOf(7l);
+	}
+
+	@Override
+	public Integer getInvalidInput() {
+		return 394;
+	}
+
+	@Override
+	public Class<?> getInvalidOutput() {
+		return Byte.class;
+	}
 }
