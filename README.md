@@ -1,4 +1,4 @@
-![](http://jenkins.imagej.net/job/SciJava-common/lastBuild/badge/icon)
+[![](http://jenkins.imagej.net/job/SciJava-common/lastBuild/badge/icon)](http://jenkins.imagej.net/job/SciJava-common/)
 
 SciJava Common is a common library for SciJava software. It provides a
 plugin framework, with an extensible mechanism for service discovery, backed
