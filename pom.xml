@@ -125,7 +125,7 @@
 
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>https://jenkins.imagej.net/job/SciJava-common/</url>
+		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
 	</ciManagement>
 
 	<dependencies>
