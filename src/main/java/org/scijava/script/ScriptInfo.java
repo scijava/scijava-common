@@ -85,7 +85,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private ScriptService scriptService;
 
 	@Parameter
-	private ConvertService conversionService;
+	private ConvertService convertService;
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
@@ -370,7 +370,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private boolean isIOType(final String token) {
-		return conversionService.convert(token, ItemIO.class) != null;
+		return convertService.convert(token, ItemIO.class) != null;
 	}
 
 	private void checkValid(final boolean valid, final String param)
@@ -412,7 +412,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 //			item.setChoices(choices);
 		}
 		else if ("columns".equalsIgnoreCase(key)) {
-			item.setColumnCount(conversionService.convert(value, int.class));
+			item.setColumnCount(convertService.convert(value, int.class));
 		}
 		else if ("description".equalsIgnoreCase(key)) {
 			item.setDescription(value);
@@ -421,44 +421,44 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			item.setInitializer(value);
 		}
 		else if ("type".equalsIgnoreCase(key)) {
-			item.setIOType(conversionService.convert(value, ItemIO.class));
+			item.setIOType(convertService.convert(value, ItemIO.class));
 		}
 		else if ("label".equalsIgnoreCase(key)) {
 			item.setLabel(value);
 		}
 		else if ("max".equalsIgnoreCase(key)) {
-			item.setMaximumValue(conversionService.convert(value, item.getType()));
+			item.setMaximumValue(convertService.convert(value, item.getType()));
 		}
 		else if ("min".equalsIgnoreCase(key)) {
-			item.setMinimumValue(conversionService.convert(value, item.getType()));
+			item.setMinimumValue(convertService.convert(value, item.getType()));
 		}
 		else if ("name".equalsIgnoreCase(key)) {
 			item.setName(value);
 		}
 		else if ("persist".equalsIgnoreCase(key)) {
-			item.setPersisted(conversionService.convert(value, boolean.class));
+			item.setPersisted(convertService.convert(value, boolean.class));
 		}
 		else if ("persistKey".equalsIgnoreCase(key)) {
 			item.setPersistKey(value);
 		}
 		else if ("required".equalsIgnoreCase(key)) {
-			item.setRequired(conversionService.convert(value, boolean.class));
+			item.setRequired(convertService.convert(value, boolean.class));
 		}
 		else if ("softMax".equalsIgnoreCase(key)) {
-			item.setSoftMaximum(conversionService.convert(value, item.getType()));
+			item.setSoftMaximum(convertService.convert(value, item.getType()));
 		}
 		else if ("softMin".equalsIgnoreCase(key)) {
-			item.setSoftMinimum(conversionService.convert(value, item.getType()));
+			item.setSoftMinimum(convertService.convert(value, item.getType()));
 		}
 		else if ("stepSize".equalsIgnoreCase(key)) {
 			// FIXME
-			item.setStepSize(conversionService.convert(value, Number.class));
+			item.setStepSize(convertService.convert(value, Number.class));
 		}
 		else if ("style".equalsIgnoreCase(key)) {
 			item.setWidgetStyle(value);
 		}
 		else if ("visibility".equalsIgnoreCase(key)) {
-			item.setVisibility(conversionService.convert(value, ItemVisibility.class));
+			item.setVisibility(convertService.convert(value, ItemVisibility.class));
 		}
 		else if ("value".equalsIgnoreCase(key)) {
 			item.setWidgetStyle(value);
