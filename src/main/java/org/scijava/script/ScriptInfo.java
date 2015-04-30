@@ -454,6 +454,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			// FIXME
 			item.setStepSize(conversionService.convert(value, Number.class));
 		}
+		else if ("style".equalsIgnoreCase(key)) {
+			item.setWidgetStyle(value);
+		}
 		else if ("visibility".equalsIgnoreCase(key)) {
 			item.setVisibility(conversionService.convert(value, ItemVisibility.class));
 		}
