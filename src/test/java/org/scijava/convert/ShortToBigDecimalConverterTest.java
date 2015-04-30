@@ -34,6 +34,7 @@ package org.scijava.convert;
 import java.math.BigDecimal;
 
 import org.scijava.convert.NumberConverters.ShortToBigDecimalConverter;
+import org.scijava.util.NumberUtils;
 
 /**
  * Tests {@link ShortToBigDecimalConverter}.
@@ -56,7 +57,7 @@ public class ShortToBigDecimalConverterTest extends
 
 	@Override
 	public BigDecimal getExpectedValue() {
-		return new BigDecimal(7d);
+		return NumberUtils.asBigDecimal(7d);
 	}
 
 	@Override

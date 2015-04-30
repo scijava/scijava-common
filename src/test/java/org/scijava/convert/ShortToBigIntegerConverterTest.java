@@ -34,6 +34,7 @@ package org.scijava.convert;
 import java.math.BigInteger;
 
 import org.scijava.convert.NumberConverters.ShortToBigIntegerConverter;
+import org.scijava.util.NumberUtils;
 
 /**
  * Tests {@link ShortToBigIntegerConverter}.
@@ -56,7 +57,7 @@ public class ShortToBigIntegerConverterTest extends
 
 	@Override
 	public BigInteger getExpectedValue() {
-		return BigInteger.valueOf(7l);
+		return NumberUtils.asBigInteger(7l);
 	}
 
 	@Override

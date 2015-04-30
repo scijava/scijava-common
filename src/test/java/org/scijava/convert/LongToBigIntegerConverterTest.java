@@ -34,6 +34,7 @@ package org.scijava.convert;
 import java.math.BigInteger;
 
 import org.scijava.convert.NumberConverters.LongToBigIntegerConverter;
+import org.scijava.util.NumberUtils;
 
 /**
  * Tests {@link LongToBigIntegerConverter}.
@@ -55,7 +56,7 @@ public class LongToBigIntegerConverterTest extends AbstractNumberConverterTests
 
 	@Override
 	public BigInteger getExpectedValue() {
-		return BigInteger.valueOf(7l);
+		return NumberUtils.asBigInteger(7l);
 	}
 
 	@Override
