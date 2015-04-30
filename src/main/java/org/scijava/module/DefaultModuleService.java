@@ -92,7 +92,7 @@ public class DefaultModuleService extends AbstractService implements
 	private PrefService prefService;
 
 	@Parameter
-	private ConvertService conversionService;
+	private ConvertService convertService;
 
 	/** Index of registered modules. */
 	private ModuleIndex moduleIndex;
@@ -269,7 +269,7 @@ public class DefaultModuleService extends AbstractService implements
 		final String sValue = value == null ? "" : value.toString();
 
 		// do not persist if object cannot be converted back from a string
-		if (!conversionService.supports(sValue, item.getType())) return;
+		if (!convertService.supports(sValue, item.getType())) return;
 
 		final String persistKey = item.getPersistKey();
 		if (persistKey == null || persistKey.isEmpty()) {
@@ -297,9 +297,25 @@ public class DefaultModuleService extends AbstractService implements
 		// if persisted value has never been set before return null
 		if (sValue == null) return null;
 
-		return conversionService.convert(sValue, item.getType());
+		return convertService.convert(sValue, item.getType());
 	}
 	
+	@Override
+	public <T> T getDefaultValue(final ModuleItem<T> item) {
+		final T min = item.getMinimumValue();
+		if (min != null) return min;
+		final T softMin = item.getSoftMinimum();
+		if (softMin != null) return softMin;
+		final T max = item.getMaximumValue();
+		if (max != null) return max;
+		final T softMax = item.getSoftMaximum();
+		if (softMax != null) return softMax;
+		final T zero = convertService.convert("0", item.getType());
+		if (zero != null) return zero;
+		// no known default value
+		return null;
+	}
+
 	// -- Service methods --
 
 	@Override
@@ -399,7 +415,7 @@ public class DefaultModuleService extends AbstractService implements
 			}
 			else {
 				final Class<?> type = input.getType();
-				converted = conversionService.convert(value, type);
+				converted = convertService.convert(value, type);
 				if (value != null && converted == null) {
 					log.error("For input " + name + ": incompatible object " +
 						value.getClass().getName() + " for type " + type.getName());
