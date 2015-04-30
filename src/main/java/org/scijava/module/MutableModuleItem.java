@@ -60,6 +60,8 @@ public interface MutableModuleItem<T> extends ModuleItem<T> {
 
 	void setWidgetStyle(String widgetStyle);
 
+	void setDefaultValue(T defaultValue);
+
 	void setMinimumValue(T minimumValue);
 
 	void setMaximumValue(T maximumValue);

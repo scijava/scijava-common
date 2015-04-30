@@ -146,6 +146,9 @@ public interface ModuleItem<T> extends BasicDetails {
 	 */
 	String getWidgetStyle();
 
+	/** Gets the default value. */
+	T getDefaultValue();
+
 	/** Gets the minimum allowed value (if applicable). */
 	T getMinimumValue();
 
