@@ -76,6 +76,8 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 		sm.append("widgetStyle", getWidgetStyle());
 		sm.append("min", getMinimumValue());
 		sm.append("max", getMaximumValue());
+		sm.append("softMin", getSoftMinimum());
+		sm.append("softMax", getSoftMaximum());
 		sm.append("stepSize", getStepSize(), NumberUtils.toNumber("1", getType()));
 		sm.append("columnCount", getColumnCount(), 6);
 		sm.append("choices", getChoices());
