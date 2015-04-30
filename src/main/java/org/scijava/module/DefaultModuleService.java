@@ -92,7 +92,7 @@ public class DefaultModuleService extends AbstractService implements
 	private PrefService prefService;
 
 	@Parameter
-	private ConvertService conversionService;
+	private ConvertService convertService;
 
 	/** Index of registered modules. */
 	private ModuleIndex moduleIndex;
@@ -269,7 +269,7 @@ public class DefaultModuleService extends AbstractService implements
 		final String sValue = value == null ? "" : value.toString();
 
 		// do not persist if object cannot be converted back from a string
-		if (!conversionService.supports(sValue, item.getType())) return;
+		if (!convertService.supports(sValue, item.getType())) return;
 
 		final String persistKey = item.getPersistKey();
 		if (persistKey == null || persistKey.isEmpty()) {
@@ -297,7 +297,7 @@ public class DefaultModuleService extends AbstractService implements
 		// if persisted value has never been set before return null
 		if (sValue == null) return null;
 
-		return conversionService.convert(sValue, item.getType());
+		return convertService.convert(sValue, item.getType());
 	}
 	
 	// -- Service methods --
@@ -399,7 +399,7 @@ public class DefaultModuleService extends AbstractService implements
 			}
 			else {
 				final Class<?> type = input.getType();
-				converted = conversionService.convert(value, type);
+				converted = convertService.convert(value, type);
 				if (value != null && converted == null) {
 					log.error("For input " + name + ": incompatible object " +
 						value.getClass().getName() + " for type " + type.getName());
