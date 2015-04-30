@@ -285,4 +285,8 @@ public interface ModuleService extends SciJavaService {
 	 * {@link ModuleItem}.
 	 */
 	<T> T load(ModuleItem<T> item);
+
+	/** Gets the default value of the given {@link ModuleItem}. */
+	<T> T getDefaultValue(final ModuleItem<T> item);
+
 }

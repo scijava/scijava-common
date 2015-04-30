@@ -300,6 +300,22 @@ public class DefaultModuleService extends AbstractService implements
 		return convertService.convert(sValue, item.getType());
 	}
 	
+	@Override
+	public <T> T getDefaultValue(final ModuleItem<T> item) {
+		final T min = item.getMinimumValue();
+		if (min != null) return min;
+		final T softMin = item.getSoftMinimum();
+		if (softMin != null) return softMin;
+		final T max = item.getMaximumValue();
+		if (max != null) return max;
+		final T softMax = item.getSoftMaximum();
+		if (softMax != null) return softMax;
+		final T zero = convertService.convert("0", item.getType());
+		if (zero != null) return zero;
+		// no known default value
+		return null;
+	}
+
 	// -- Service methods --
 
 	@Override
