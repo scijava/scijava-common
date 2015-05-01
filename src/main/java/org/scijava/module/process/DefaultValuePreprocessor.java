@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,51 +29,50 @@
  * #L%
  */
 
-package org.scijava.module;
+package org.scijava.module.process;
 
-import java.util.List;
-
-import org.scijava.ItemIO;
-import org.scijava.ItemVisibility;
+import org.scijava.Priority;
+import org.scijava.module.Module;
+import org.scijava.module.ModuleItem;
+import org.scijava.module.ModuleService;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
 
 /**
- * {@link ModuleItem} extension allowing manipulation of its metadata.
- * 
+ * A preprocessor plugin that populates default parameter values.
+ * <p>
+ * Default values are determined using {@link ModuleService#getDefaultValue}.
+ * </p>
+ *
  * @author Curtis Rueden
- * @see org.scijava.command.DynamicCommand
  */
-public interface MutableModuleItem<T> extends ModuleItem<T> {
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH_PRIORITY)
+public class DefaultValuePreprocessor extends AbstractPreprocessorPlugin {
 
-	void setIOType(ItemIO ioType);
+	@Parameter
+	private ModuleService moduleService;
 
-	void setVisibility(ItemVisibility visibility);
+	// -- ModuleProcessor methods --
 
-	void setRequired(boolean required);
+	@Override
+	public void process(final Module module) {
+		for (final ModuleItem<?> input : module.getInfo().inputs()) {
+			assignDefaultValue(module, input);
+		}
+		for (final ModuleItem<?> output : module.getInfo().outputs()) {
+			assignDefaultValue(module, output);
+		}
+	}
 
-	void setPersisted(boolean persisted);
+	// -- Helper methods --
 
-	void setPersistKey(String persistKey);
-
-	void setInitializer(String initializer);
-
-	void setCallback(String callback);
-
-	void setWidgetStyle(String widgetStyle);
-
-	void setDefaultValue(T defaultValue);
-
-	void setMinimumValue(T minimumValue);
-
-	void setMaximumValue(T maximumValue);
-
-	void setSoftMinimum(T softMinimum);
-
-	void setSoftMaximum(T softMaximum);
-
-	void setStepSize(Number stepSize);
-
-	void setColumnCount(int columnCount);
-
-	void setChoices(List<? extends T> choices);
+	private <T> void assignDefaultValue(final Module module,
+		final ModuleItem<T> item)
+	{
+		if (module.isResolved(item.getName())) return;
+		final T defaultValue = moduleService.getDefaultValue(item);
+		if (defaultValue == null) return;
+		item.setValue(module, defaultValue);
+	}
 
 }

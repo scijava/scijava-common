@@ -59,6 +59,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private String initializer;
 	private String callback;
 	private String widgetStyle;
+	private T defaultValue;
 	private T minimumValue;
 	private T maximumValue;
 	private T softMinimum;
@@ -172,6 +173,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	}
 
 	@Override
+	public void setDefaultValue(final T defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	@Override
 	public void setMinimumValue(final T minimumValue) {
 		this.minimumValue = minimumValue;
 	}
@@ -257,6 +263,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public String getWidgetStyle() {
 		return widgetStyle;
+	}
+
+	@Override
+	public T getDefaultValue() {
+		return defaultValue;
 	}
 
 	@Override

@@ -302,6 +302,8 @@ public class DefaultModuleService extends AbstractService implements
 	
 	@Override
 	public <T> T getDefaultValue(final ModuleItem<T> item) {
+		final T defaultValue = item.getDefaultValue();
+		if (defaultValue != null) return defaultValue;
 		final T min = item.getMinimumValue();
 		if (min != null) return min;
 		final T softMin = item.getSoftMinimum();

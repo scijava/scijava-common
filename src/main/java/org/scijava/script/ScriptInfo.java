@@ -461,7 +461,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			item.setVisibility(convertService.convert(value, ItemVisibility.class));
 		}
 		else if ("value".equalsIgnoreCase(key)) {
-			item.setWidgetStyle(value);
+			item.setDefaultValue(convertService.convert(value, item.getType()));
 		}
 		else {
 			throw new ScriptException("Invalid attribute name: " + key);
