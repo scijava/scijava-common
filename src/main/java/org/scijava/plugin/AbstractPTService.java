@@ -60,4 +60,13 @@ public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
 		return pluginService.getPluginsOfType(getPluginType());
 	}
 
+	@Override
+	public <P extends PT> P create(final Class<P> pluginClass) {
+		final PluginInfo<PT> info =
+			pluginService.getPlugin(pluginClass, getPluginType());
+		@SuppressWarnings("unchecked")
+		final P plugin = (P) pluginService.createInstance(info);
+		return plugin;
+	}
+
 }
