@@ -80,6 +80,15 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		return (P) instanceMap.get(pluginClass);
 	}
 
+	// -- PTService methods --
+
+	@Override
+	public <P extends PT> P create(final Class<P> pluginClass) {
+		throw new UnsupportedOperationException(
+			"Cannot create singleton plugin instance. "
+				+ "Use getInstance(Class) instead.");
+	}
+
 	// -- Service methods --
 
 	@Override
