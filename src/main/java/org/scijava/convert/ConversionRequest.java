@@ -63,7 +63,7 @@ public class ConversionRequest {
 	// -- Fields --
 
 	private final Class<?> srcClass;
-	private Object srcObject;
+	private Object src;
 	private Class<?> destClass;
 	private Type destType;
 
@@ -71,7 +71,7 @@ public class ConversionRequest {
 
 	public ConversionRequest(final Object s, final Class<?> d) {
 		this(s == null ? null : s.getClass(), d);
-		srcObject = s;
+		src = s;
 	}
 
 	public ConversionRequest(final Class<?> s, final Class<?> d) {
@@ -81,7 +81,7 @@ public class ConversionRequest {
 
 	public ConversionRequest(final Object s, final Type d) {
 		this(s == null ? null : s.getClass(), d);
-		srcObject = s;
+		src = s;
 	}
 
 	public ConversionRequest(final Class<?> s, final Type d) {
@@ -102,7 +102,7 @@ public class ConversionRequest {
 	 * @return Source object for conversion.
 	 */
 	public Object sourceObject() {
-		return srcObject;
+		return src;
 	}
 
 	/**
@@ -133,6 +133,6 @@ public class ConversionRequest {
 				" provided. Expected: " + srcClass);
 		}
 
-		srcObject = o;
+		src = o;
 	}
 }
