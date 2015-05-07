@@ -42,9 +42,8 @@ public interface Typed<T> {
 	/**
 	 * Gets whether this object is compatible with the given data object.
 	 * <p>
-	 * Typically, this will be the case when {@code data.getClass()} is assignable
-	 * to the type associated with the object (i.e., the one returned by
-	 * {@link #getType()}). But individual implementations may have other
+	 * By default, this method will return {@code true} always, since the type is
+	 * known to be compatible. But individual implementations may have other
 	 * requirements beyond class assignability.
 	 * </p>
 	 */
