@@ -47,8 +47,7 @@ import org.scijava.plugin.Plugin;
  * @see ConversionRequest
  * @author Mark Hiner
  */
-public interface Converter<I, O> extends HandlerPlugin<ConversionRequest>
-{
+public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 
 	/**
 	 * Checks whether a given {@ConversionRequest} can be

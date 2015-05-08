@@ -33,6 +33,8 @@ package org.scijava.convert;
 
 import java.lang.reflect.Type;
 
+import org.scijava.util.GenericUtils;
+
 /**
  * Currency for use in {@link Converter} and {@link ConvertService}
  * methods.
@@ -57,52 +59,56 @@ import java.lang.reflect.Type;
  * </p>
  *
  * @author Mark Hiner
+ * @author Curtis Rueden
  */
 public class ConversionRequest {
 
 	// -- Fields --
 
-	private final Class<?> srcClass;
-	private Object srcObject;
-	private Class<?> destClass;
-	private Type destType;
+	private final Type srcType;
+	private final Type destType;
+
+	private Object src;
 
 	// -- Constructors --
 
-	public ConversionRequest(final Object s, final Class<?> d) {
-		this(s == null ? null : s.getClass(), d);
-		srcObject = s;
+	public ConversionRequest(final Object src, final Type destType) {
+		this(src, src == null ? null : src.getClass(), destType);
 	}
 
-	public ConversionRequest(final Class<?> s, final Class<?> d) {
-		srcClass = s;
-		destClass = d;
+	public ConversionRequest(final Type srcType, final Type destType) {
+		this(null, srcType, destType);
 	}
 
-	public ConversionRequest(final Object s, final Type d) {
-		this(s == null ? null : s.getClass(), d);
-		srcObject = s;
-	}
-
-	public ConversionRequest(final Class<?> s, final Type d) {
-		srcClass = s;
-		destType = d;
+	public ConversionRequest(final Object src, final Type srcType,
+		final Type destType)
+	{
+		this.src = src;
+		this.srcType = srcType;
+		this.destType = destType;
 	}
 
 	// -- Accessors --
 
 	/**
+	 * @return Source type for conversion or lookup.
+	 */
+	public Type sourceType() {
+		return srcType;
+	}
+
+	/**
 	 * @return Source class for conversion or lookup.
 	 */
 	public Class<?> sourceClass() {
-		return srcClass;
+		return GenericUtils.getClass(srcType);
 	}
 
 	/**
 	 * @return Source object for conversion.
 	 */
 	public Object sourceObject() {
-		return srcObject;
+		return src;
 	}
 
 	/**
@@ -116,10 +122,10 @@ public class ConversionRequest {
 	 * @return Destination class for conversion.
 	 */
 	public Class<?> destClass() {
-		return destClass;
+		return GenericUtils.getClass(destType);
 	}
 
-// -- Setters --
+	// -- Setters --
 
 	/**
 	 * Sets the source object for this {@link ConversionRequest}.
@@ -128,11 +134,13 @@ public class ConversionRequest {
 	 *           not match {@link #sourceClass()}.
 	 */
 	public void setSourceObject(final Object o) {
-		if (!srcClass.isAssignableFrom(o.getClass())) {
+		// TODO: More careful check against srcType itself.
+		if (!sourceClass().isInstance(o)) {
 			throw new IllegalArgumentException("Object of type: " + o.getClass() +
-				" provided. Expected: " + srcClass);
+				" provided. Expected: " + srcType);
 		}
 
-		srcObject = o;
+		src = o;
 	}
+
 }
