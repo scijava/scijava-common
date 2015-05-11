@@ -1,9 +1,10 @@
 /*
  * #%L
- * SciJava UI components for Java Swing.
+ * SciJava Common shared library for SciJava software.
  * %%
- * Copyright (C) 2010 - 2015 Board of Regents of the University of
- * Wisconsin-Madison.
+ * Copyright (C) 2009 - 2015 Board of Regents of the University of
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
