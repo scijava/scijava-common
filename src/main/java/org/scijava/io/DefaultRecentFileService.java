@@ -62,13 +62,9 @@ import org.scijava.util.FileUtils;
  * <p>
  * Behavior: There is a limited number of files presented (maxFilesShown),
  * regardless of the list length. When a file is opened, its path is added to
- * the top of the list. If an image has been saved as a new file, its path is
- * added to the top of the list.
+ * the top of the list. If data has been saved as a new file, its path is added
+ * to the top of the list.
  * </p>
- * <ul>
- * <li>add(String path)</li>
- * <li>remove(String path)</li>
- * </ul>
  * 
  * @author Grant Harris
  * @author Curtis Rueden
