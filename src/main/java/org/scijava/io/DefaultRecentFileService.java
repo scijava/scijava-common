@@ -111,7 +111,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 		recentFiles.add(path);
 
 		// persist the updated list
-		prefService.putList(recentFiles, RECENT_FILES_KEY);
+		saveList();
 
 		if (present) {
 			// path already present; update linked module info
@@ -135,7 +135,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 		final boolean success = recentFiles.remove(path);
 
 		// persist the updated list
-		prefService.putList(recentFiles, RECENT_FILES_KEY);
+		saveList();
 
 		// remove linked module info
 		final ModuleInfo info = recentModules.remove(path);
@@ -164,7 +164,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		recentFiles = prefService.getList(RECENT_FILES_KEY);
+		loadList();
 		recentModules = new HashMap<String, ModuleInfo>();
 		for (final String path : recentFiles) {
 			recentModules.put(path, createInfo(path));
@@ -182,6 +182,16 @@ public final class DefaultRecentFileService extends AbstractService implements
 	}
 
 	// -- Helper methods --
+
+	/** Loads the list of recent files from persistent storage. */
+	private void loadList() {
+		recentFiles = prefService.getList(RECENT_FILES_KEY);
+	}
+
+	/** Saves the list of recent files to persistent storage. */
+	private void saveList() {
+		prefService.putList(recentFiles, RECENT_FILES_KEY);
+	}
 
 	/** Creates a {@link ModuleInfo} to reopen data at the given path. */
 	private ModuleInfo createInfo(final String path) {
