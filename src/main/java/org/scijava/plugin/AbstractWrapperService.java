@@ -56,6 +56,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 			throw new IllegalArgumentException("No compatible " +
 				getPluginType().getSimpleName() + " for data object: " + data);
 		}
+		instance.set(data);
 		return instance;
 	}
 
