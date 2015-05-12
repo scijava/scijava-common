@@ -129,7 +129,7 @@ public class ObjectIndex<E> implements Collection<E> {
 	 */
 	public List<E> get(final Class<?> type) {
 		// lazily register any pending objects
-		if (!pending.isEmpty()) resolvePending();
+		if (!pending.isEmpty()) resolvePending(type);
 
 		List<E> list = retrieveList(type);
 		// NB: Return a copy of the data, to facilitate thread safety.
@@ -380,13 +380,30 @@ public class ObjectIndex<E> implements Collection<E> {
 		return list;
 	}
 
-	private void resolvePending() {
+	private void resolvePending(final Class<?> type) {
 		synchronized (pending) {
-			while (!pending.isEmpty()) {
-				final LazyObjects<? extends E> c = pending.remove(0);
+			for (int p = pending.size() - 1; p >= 0; p--) {
+				final LazyObjects<? extends E> c = pending.get(p);
+
+				// NB: If this pending callback returns objects of a different
+				// type than the one we are interested in, it can be skipped.
+				if (!isCompatibleType(c, type)) continue;
+
+				// trigger the callback and add the results
+				pending.remove(p);
 				addAll(c.get());
 			}
 		}
+	}
+
+	// -- Helper methods --
+
+	private boolean isCompatibleType(final LazyObjects<? extends E> c,
+		final Class<?> type)
+	{
+		if (type == All.class) return true;
+		final Class<?> cType = c.getType();
+		return cType.isAssignableFrom(type) || type.isAssignableFrom(cType);
 	}
 
 	// -- Helper classes --

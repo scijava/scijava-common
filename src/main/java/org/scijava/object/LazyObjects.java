@@ -45,4 +45,11 @@ public interface LazyObjects<T> {
 	/** Gets the collection of objects. */
 	Collection<T> get();
 
+	/**
+	 * The type of the objects which will be resolved from a call to
+	 * {@link #get()}. This information is used to determine whether to resolve
+	 * the objects in response to an {@link ObjectIndex#get(Class)} call.
+	 */
+	Class<?> getType();
+
 }
