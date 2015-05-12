@@ -59,8 +59,8 @@ public interface WrapperService<DT, PT extends WrapperPlugin<DT>> extends
 	/**
 	 * Creates a new plugin instance wrapping the given associated data object.
 	 * 
-	 * @throws IllegalArgumentException if the data is not compatible with any
-	 *           available plugin.
+	 * @return An appropriate plugin instance, or null if the data is not
+	 *         compatible with any available plugin.
 	 */
 	<D extends DT> PT create(D data);
 

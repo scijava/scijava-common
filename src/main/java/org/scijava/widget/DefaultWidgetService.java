@@ -39,7 +39,6 @@ import org.scijava.module.ModuleItem;
 import org.scijava.plugin.AbstractWrapperService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
 
 /**
@@ -64,22 +63,6 @@ public class DefaultWidgetService extends
 	{
 		return new DefaultWidgetModel(getContext(), inputPanel, module, item,
 			objectPool);
-	}
-
-	// -- WrapperService methods --
-
-	@Override
-	public InputWidget<?, ?> create(final WidgetModel model) {
-		for (final PluginInfo<InputWidget<?, ?>> info : getPlugins()) {
-			final InputWidget<?, ?> widget = getPluginService().createInstance(info);
-			if (widget == null) continue;
-			if (widget.supports(model)) {
-				widget.set(model);
-				return widget;
-			}
-		}
-		log.warn("No widget found for input: " + model.getItem().getName());
-		return null;
 	}
 
 	// -- PTService methods --

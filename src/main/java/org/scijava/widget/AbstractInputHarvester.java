@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
+import org.scijava.log.LogService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleCanceledException;
 import org.scijava.module.ModuleException;
@@ -57,6 +58,9 @@ import org.scijava.plugin.Parameter;
 public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	implements InputHarvester<P, W>
 {
+
+	@Parameter
+	private LogService log;
 
 	@Parameter
 	private WidgetService widgetService;
@@ -130,6 +134,9 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 		final Class<W> widgetType = inputPanel.getWidgetComponentType();
 		final InputWidget<?, ?> widget = widgetService.create(model);
+		if (widget == null) {
+			log.warn("No widget found for input: " + model.getItem().getName());
+		}
 		if (widget != null && widget.getComponentType() == widgetType) {
 			@SuppressWarnings("unchecked")
 			final InputWidget<?, W> typedWidget = (InputWidget<?, W>) widget;

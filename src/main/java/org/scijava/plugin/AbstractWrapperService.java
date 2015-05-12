@@ -52,11 +52,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 	@Override
 	public <D extends DT> PT create(final D data) {
 		final PT instance = findWrapper(data);
-		if (instance == null) {
-			throw new IllegalArgumentException("No compatible " +
-				getPluginType().getSimpleName() + " for data object: " + data);
-		}
-		instance.set(data);
+		if (instance != null) instance.set(data);
 		return instance;
 	}
 
