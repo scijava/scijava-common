@@ -29,23 +29,61 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * {@link OutputStream} backed by a {@link DataHandle}.
+ * 
  * @author Curtis Rueden
+ * @author Melissa Linkert
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class DataHandleOutputStream<L extends Location> extends OutputStream {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	// -- Fields --
 
-	/** Makes the console visible. */
-	void show();
+	private final DataHandle<L> handle;
+
+	// -- Constructor --
+
+	/** Creates an output stream around the given {@link DataHandle}. */
+	public DataHandleOutputStream(final DataHandle<L> handle) {
+		this.handle = handle;
+	}
+
+	// -- OutputStream methods --
+
+	@Override
+	public void write(final int i) throws IOException {
+		handle.write(i);
+	}
+
+	@Override
+	public void write(final byte[] b) throws IOException {
+		handle.write(b);
+	}
+
+	@Override
+	public void write(final byte[] b, final int off, final int len)
+		throws IOException
+	{
+		handle.write(b, off, len);
+	}
+
+	// -- Closeable methods --
+
+	@Override
+	public void close() throws IOException {
+		handle.close();
+	}
+
+	// -- Flushable methods --
+
+	@Override
+	public void flush() throws IOException {
+		// NB: No action needed.
+	}
 
 }

@@ -29,23 +29,36 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import org.scijava.plugin.AbstractWrapperService;
+import org.scijava.plugin.Plugin;
+import org.scijava.service.Service;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Default implementation of {@link DataHandleService}.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+@Plugin(type = Service.class)
+public class DefaultDataHandleService extends
+	AbstractWrapperService<Location, DataHandle<Location>> implements
+	DataHandleService
+{
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	// -- PTService methods --
 
-	/** Makes the console visible. */
-	void show();
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Class<DataHandle<Location>> getPluginType() {
+		return (Class) DataHandle.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	public Class<Location> getType() {
+		return Location.class;
+	}
 
 }

@@ -29,23 +29,36 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.nio.ByteBuffer;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
+ * {@link Location} backed by a {@link ByteBuffer}.
  *
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class BytesLocation extends AbstractLocation {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	private final ByteBuffer bytes;
 
-	/** Makes the console visible. */
-	void show();
+	public BytesLocation(final ByteBuffer bytes) {
+		this.bytes = bytes;
+	}
+
+	public BytesLocation(final byte[] bytes) {
+		this(ByteBuffer.wrap(bytes));
+	}
+
+	public BytesLocation(final byte[] bytes, final int offset, final int length) {
+		this(ByteBuffer.wrap(bytes, offset, length));
+	}
+
+	// -- ByteArrayLocation methods --
+
+	/** Gets the associated {@link ByteBuffer}. */
+	public ByteBuffer getByteBuffer() {
+		return bytes;
+	}
 
 }

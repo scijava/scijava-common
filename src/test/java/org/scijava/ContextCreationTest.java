@@ -81,6 +81,7 @@ public class ContextCreationTest {
 				org.scijava.display.DefaultDisplayService.class,
 				org.scijava.event.DefaultEventHistory.class,
 				org.scijava.input.DefaultInputService.class,
+				org.scijava.io.DefaultDataHandleService.class,
 				org.scijava.io.DefaultIOService.class,
 				org.scijava.io.DefaultRecentFileService.class,
 				org.scijava.menu.DefaultMenuService.class,

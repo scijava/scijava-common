@@ -51,11 +51,8 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 
 	@Override
 	public <D extends DT> PT create(final D data) {
-		final PT instance = wrap(data);
-		if (instance == null) {
-			throw new IllegalArgumentException("No compatible " +
-				getPluginType().getSimpleName() + " for data object: " + data);
-		}
+		final PT instance = findWrapper(data);
+		if (instance != null) instance.set(data);
 		return instance;
 	}
 
@@ -73,12 +70,12 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 
 	@Override
 	public boolean supports(final DT data) {
-		return wrap(data) != null;
+		return findWrapper(data) != null;
 	}
 
 	// -- Helper methods --
 
-	private <D extends DT> PT wrap(final D data) {
+	private <D extends DT> PT findWrapper(final D data) {
 		for (final PluginInfo<PT> plugin : getPlugins()) {
 			final PT instance = getPluginService().createInstance(plugin);
 			if (instance.supports(data)) return instance;

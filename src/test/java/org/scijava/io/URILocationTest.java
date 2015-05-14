@@ -29,23 +29,36 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+
+import org.junit.Test;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Tests {@link URILocation}.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class URILocationTest {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
-
-	/** Makes the console visible. */
-	void show();
+	/** Tests {@link URILocation#URILocation(URI)}. */
+	@Test
+	public void testURI() throws URISyntaxException {
+		final String uriString = "scheme://bob@big.server.somewhere:12345" +
+			"/foo/bar?pineapple=exquisite&strawberries=very%20delicious#anchor";
+		final URI uri = new URI(uriString);
+		final URILocation loc = new URILocation(uri);
+		assertSame(uri, loc.getURI());
+		final Map<String, String> queryMap = loc.getQueryMap();
+		assertEquals(2, queryMap.size());
+		assertEquals("exquisite", queryMap.get("pineapple"));
+		assertEquals("very delicious", queryMap.get("strawberries"));
+	}
 
 }

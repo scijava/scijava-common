@@ -407,7 +407,7 @@ public final class FileUtils {
 	 * </p>
 	 * <p>
 	 * It is the caller's responsibility to make sure that the directory is
-	 * deleted.
+	 * deleted; see {@link #deleteRecursively(File)}.
 	 * </p>
 	 * 
 	 * @param prefix The prefix string to be used in generating the file's name;
@@ -433,7 +433,7 @@ public final class FileUtils {
 	 * </p>
 	 * <p>
 	 * It is the caller's responsibility to make sure that the directory is
-	 * deleted.
+	 * deleted; see {@link #deleteRecursively(File)}.
 	 * </p>
 	 * 
 	 * @param prefix The prefix string to be used in generating the file's name;

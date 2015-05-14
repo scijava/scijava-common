@@ -29,23 +29,25 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Tests {@link FileLocation}.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class FileLocationTest {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
-
-	/** Makes the console visible. */
-	void show();
+	/** Tests {@link FileLocation#FileLocation(String)}. */
+	@Test
+	public void testFile() {
+		final String path = "/not/actually/a/real-file";
+		final FileLocation loc = new FileLocation(path);
+		assertEquals(path, loc.getFile().getPath());
+	}
 
 }

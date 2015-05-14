@@ -29,55 +29,91 @@
  * #L%
  */
 
-package org.scijava.widget;
+package org.scijava.io;
 
-import java.util.List;
-
-import org.scijava.log.LogService;
-import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
-import org.scijava.plugin.AbstractWrapperService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Default service for managing available {@link InputWidget}s.
+ * {@link InputStream} backed by a {@link DataHandle}.
  * 
  * @author Curtis Rueden
+ * @author Melissa Linkert
  */
-@Plugin(type = Service.class)
-public class DefaultWidgetService extends
-	AbstractWrapperService<WidgetModel, InputWidget<?, ?>> implements
-	WidgetService
-{
+public class DataHandleInputStream<L extends Location> extends InputStream {
 
-	@Parameter
-	private LogService log;
+	// -- Fields --
 
-	// -- WidgetService methods --
+	private final DataHandle<L> handle;
+
+	private long mark = -1;
+
+	// -- Constructors --
+
+	/** Creates an input stream around the given {@link DataHandle}. */
+	public DataHandleInputStream(final DataHandle<L> handle) {
+		this.handle = handle;
+	}
+
+	// -- DataHandleInputStream methods --
+
+	public DataHandle<L> getDataHandle() {
+		return handle;
+	}
+
+	// -- InputStream methods --
 
 	@Override
-	public WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
-		ModuleItem<?> item, List<?> objectPool)
+	public int read() throws IOException {
+		return handle.read();
+	}
+
+	@Override
+	public int read(final byte[] array, final int offset, final int n)
+		throws IOException
 	{
-		return new DefaultWidgetModel(getContext(), inputPanel, module, item,
-			objectPool);
+		return handle.read(array, offset, n);
 	}
 
-	// -- PTService methods --
-
 	@Override
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public Class<InputWidget<?, ?>> getPluginType() {
-		return (Class) InputWidget.class;
+	public long skip(final long n) throws IOException {
+		return handle.skip(n);
 	}
 
-	// -- Typed methods --
+	@Override
+	public int available() throws IOException {
+		long remain = handle.length() - handle.offset();
+		if (remain > Integer.MAX_VALUE) remain = Integer.MAX_VALUE;
+		return (int) remain;
+	}
 
 	@Override
-	public Class<WidgetModel> getType() {
-		return WidgetModel.class;
+	public synchronized void mark(final int readLimit) {
+		try {
+			mark = handle.offset();
+		}
+		catch (final IOException exc) {
+			throw new IllegalStateException(exc);
+		}
+	}
+
+	@Override
+	public synchronized void reset() throws IOException {
+		if (mark < 0) throw new IOException("No mark set");
+		handle.seek(mark);
+	}
+
+	@Override
+	public boolean markSupported() {
+		return true;
+	}
+
+	// -- Closeable methods --
+
+	@Override
+	public void close() throws IOException {
+		handle.close();
+		mark = -1;
 	}
 
 }

@@ -29,23 +29,47 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
+ * {@link Location} backed by a {@link URL}.
  *
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class URLLocation extends AbstractLocation {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	/** The URL backing this location. */
+	private final URL url;
 
-	/** Makes the console visible. */
-	void show();
+	public URLLocation(final URL url) {
+		this.url = url;
+	}
+
+	// -- URLLocation methods --
+
+	/** Gets the associated {@link URL}. */
+	public URL getURL() {
+		return url;
+	}
+
+	// -- Location methods --
+
+	/**
+	 * Gets the associated {@link URI}, or null if this URL is not formatted
+	 * strictly according to to RFC2396 and cannot be converted to a URI.
+	 */
+	@Override
+	public URI getURI() {
+		try {
+			return getURL().toURI();
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
+	}
 
 }

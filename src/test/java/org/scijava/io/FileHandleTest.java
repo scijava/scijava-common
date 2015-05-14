@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,23 +29,31 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
+ * Tests {@link FileHandle}.
  *
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class FileHandleTest extends DataHandleTest {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	@Override
+	public Class<? extends DataHandle<?>> getExpectedHandleType() {
+		return FileHandle.class;
+	}
 
-	/** Makes the console visible. */
-	void show();
+	@Override
+	public Location createLocation() throws IOException {
+		// create and populate a temp file
+		final File tmpFile = File.createTempFile("FileHandleTest", "test-file");
+		tmpFile.deleteOnExit();
+		populateData(new FileOutputStream(tmpFile));
+		return new FileLocation(tmpFile);
+	}
 
 }

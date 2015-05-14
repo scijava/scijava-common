@@ -29,23 +29,28 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import static org.junit.Assert.assertSame;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.junit.Test;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Tests {@link URLLocation}.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class URLLocationTest {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
-
-	/** Makes the console visible. */
-	void show();
+	/** Tests {@link URLLocation#URLLocation(URL)}. */
+	@Test
+	public void testURL() throws MalformedURLException {
+		final URL url = new URL("file:///non/existent/url");
+		final URLLocation loc = new URLLocation(url);
+		assertSame(url, loc.getURL());
+	}
 
 }

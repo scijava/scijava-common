@@ -29,23 +29,30 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.net.URI;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * A <em>location</em> is a data descriptor, such as a file on disk, a remote
+ * URL, or a database connection.
+ * <p>
+ * Analogous to a <a
+ * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
+ * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
+ * the data resides, without necessarily specifying <em>how</em> to access that
+ * data. The {@link DataHandle} interface defines a plugin that knows how to
+ * provide a stream of bytes for a particular kind of location.
+ * </p>
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public interface Location {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
-
-	/** Makes the console visible. */
-	void show();
+	/**
+	 * Gets the location expressed as a {@link URI}, or null if the location
+	 * cannot be expressed as such.
+	 */
+	URI getURI();
 
 }

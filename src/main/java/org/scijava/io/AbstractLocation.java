@@ -29,23 +29,22 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.net.URI;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Abstract base class for {@link Location} implementations.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public abstract class AbstractLocation implements Location {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	// -- Location methods --
 
-	/** Makes the console visible. */
-	void show();
+	@Override
+	public URI getURI() {
+		return null;
+	}
 
 }

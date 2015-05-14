@@ -29,23 +29,21 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import org.scijava.plugin.WrapperService;
+import org.scijava.service.SciJavaService;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Interface for low-level data I/O: reading and writing bytes using
+ * {@link DataHandle}s.
+ * 
  * @author Curtis Rueden
+ * @see IOService
+ * @see Location
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
-
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
-
-	/** Makes the console visible. */
-	void show();
-
+public interface DataHandleService extends
+	WrapperService<Location, DataHandle<Location>>, SciJavaService
+{
+	// NB: Marker interface.
 }

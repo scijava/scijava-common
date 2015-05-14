@@ -51,10 +51,6 @@ public interface WidgetService extends
 
 	// -- WrapperService methods --
 
-	/** Creates a widget that represents the given widget model. */
-	@Override
-	InputWidget<?, ?> create(WidgetModel model);
-
 	/**
 	 * Create a {@link WidgetModel} for the given module input.
 	 * 

@@ -29,23 +29,40 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import java.io.File;
+import java.net.URI;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
+ * {@link Location} backed by a {@link File} on disk.
  *
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class FileLocation extends AbstractLocation {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	private final File file;
 
-	/** Makes the console visible. */
-	void show();
+	public FileLocation(final File file) {
+		this.file = file;
+	}
+
+	public FileLocation(final String path) {
+		this(new File(path));
+	}
+
+	// -- FileLocation methods --
+
+	/** Gets the associated {@link File}. */
+	public File getFile() {
+		return file;
+	}
+
+	// -- Location methods --
+
+	@Override
+	public URI getURI() {
+		return getFile().toURI();
+	}
 
 }

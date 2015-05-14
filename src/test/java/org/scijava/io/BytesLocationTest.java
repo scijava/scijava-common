@@ -29,23 +29,39 @@
  * #L%
  */
 
-package org.scijava.ui.console;
+package org.scijava.io;
 
-import org.scijava.console.OutputEvent;
-import org.scijava.console.OutputListener;
-import org.scijava.widget.UIComponent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
 
 /**
- * A panel which displays {@code stdout} and {@code stderr} console output.
- *
+ * Tests {@link BytesLocation}.
+ * 
  * @author Curtis Rueden
  */
-public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
+public class BytesLocationTest {
 
-	/** Appends the given output to the console. */
-	void append(OutputEvent event);
+	/** Tests {@link BytesLocation#BytesLocation(byte[])}. */
+	@Test
+	public void testBytes() {
+		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final BytesLocation loc = new BytesLocation(digits);
+		assertSame(digits, loc.getByteBuffer().array());
+		assertEquals(0, loc.getByteBuffer().position());
+		assertEquals(digits.length, loc.getByteBuffer().remaining());
+	}
 
-	/** Makes the console visible. */
-	void show();
+	/** Tests {@link BytesLocation#BytesLocation(byte[], int, int)}. */
+	@Test
+	public void testBytesOffsetLength() {
+		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final int offset = 3, length = 5;
+		final BytesLocation loc = new BytesLocation(digits, offset, length);
+		assertSame(digits, loc.getByteBuffer().array());
+		assertEquals(offset, loc.getByteBuffer().position());
+		assertEquals(length, loc.getByteBuffer().remaining());
+	}
 
 }
