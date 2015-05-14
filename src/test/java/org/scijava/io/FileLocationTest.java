@@ -33,6 +33,8 @@ package org.scijava.io;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.junit.Test;
 
 /**
@@ -47,7 +49,14 @@ public class FileLocationTest {
 	public void testFile() {
 		final String path = "/not/actually/a/real-file";
 		final FileLocation loc = new FileLocation(path);
-		assertEquals(path, loc.getFile().getPath());
+		final File realFile = loc.getFile();
+		assertEquals("real-file", realFile.getName());
+		final File a = realFile.getParentFile();
+		assertEquals("a", a.getName());
+		final File actually = a.getParentFile();
+		assertEquals("actually", actually.getName());
+		final File not = actually.getParentFile();
+		assertEquals("not", not.getName());
 	}
 
 }
