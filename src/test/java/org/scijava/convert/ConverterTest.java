@@ -71,4 +71,35 @@ public class ConverterTest {
 		assertNull(nc.convert(new Object(), (Class<Object>) null));
 		assertNull(nc.convert(new Object(), (Type) null));
 	}
+
+	/**
+	 * Test the default {@link AbstractConverter#canConvert} behavior.
+	 */
+	@Test
+	public void testCanConvert() {
+		NumberConverter nc = new NumberConverter();
+
+		assertFalse(nc.canConvert(Integer.class, Double.class));
+		assertTrue(nc.canConvert(Integer.class, Number.class));
+	}
+
+	private static class NumberConverter extends AbstractConverter<Number, Number> {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public <T> T convert(Object src, Class<T> dest) {
+			return (T)src;
+		}
+
+		@Override
+		public Class<Number> getOutputType() {
+			return Number.class;
+		}
+
+		@Override
+		public Class<Number> getInputType() {
+			return Number.class;
+		}
+		
+	}
 }
