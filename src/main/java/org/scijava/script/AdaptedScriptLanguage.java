@@ -148,7 +148,7 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 				if (factoryName.equals(name)) return factory;
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("No such script engine: " + factoryName);
 	}
 
 }
