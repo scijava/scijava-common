@@ -46,7 +46,6 @@ import org.scijava.plugin.Attr;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.ConversionUtils;
 import org.scijava.util.GenericUtils;
-import org.scijava.util.NumberUtils;
 
 /**
  * {@link ModuleItem} implementation describing an input or output of a command.
@@ -136,20 +135,17 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public T getMinimumValue() {
-		final Class<T> saneType = ConversionUtils.getNonprimitiveType(getType());
-		return ConversionUtils.convert(getParameter().min(), saneType);
+		return tValue(getParameter().min());
 	}
 
 	@Override
 	public T getMaximumValue() {
-		final Class<T> saneType = ConversionUtils.getNonprimitiveType(getType());
-		return ConversionUtils.convert(getParameter().max(), saneType);
+		return tValue(getParameter().max());
 	}
 
 	@Override
 	public Number getStepSize() {
-		final Class<T> saneType = ConversionUtils.getNonprimitiveType(getType());
-		return NumberUtils.toNumber(getParameter().stepSize(), saneType);
+		return tValue(getParameter().stepSize(), Number.class);
 	}
 
 	@Override
@@ -161,7 +157,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	public List<T> getChoices() {
 		final ArrayList<T> choices = new ArrayList<T>();
 		for (final String choice : getParameter().choices()) {
-			choices.add(ConversionUtils.convert(choice, getType()));
+			choices.add(tValue(choice));
 		}
 		return choices;
 	}
@@ -199,6 +195,17 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	@Override
 	public String getName() {
 		return field.getName();
+	}
+
+	// -- Helper methods --
+
+	private T tValue(final String value) {
+		return tValue(value, getType());
+	}
+
+	private <D> D tValue(final String value, final Class<D> type) {
+		final Class<D> saneType = ConversionUtils.getNonprimitiveType(type);
+		return ConversionUtils.convert(value, saneType);
 	}
 
 }
