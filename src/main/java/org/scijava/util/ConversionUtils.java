@@ -100,18 +100,25 @@ public class ConversionUtils {
 	 * Checks whether objects of the given class can be cast to the specified
 	 * type.
 	 *
+	 * @return true If the destination class is assignable from the source one, or
+	 *         if the source class is null and destination class is non-null.
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Class<?> src, final Class<?> dest) {
-		return dest.isAssignableFrom(src);
+		if (dest == null) return false;
+		return src == null || dest.isAssignableFrom(src);
 	}
 
 	/**
 	 * Checks whether the given object can be cast to the specified type.
 	 *
+	 * @return true If the destination class is assignable from the source
+	 *         object's class, or if the source object is null and destionation
+	 *         class is non-null.
 	 * @see #cast(Object, Class)
 	 */
 	public static boolean canCast(final Object src, final Class<?> dest) {
+		if (dest == null) return false;
 		return src == null || canCast(src.getClass(), dest);
 	}
 

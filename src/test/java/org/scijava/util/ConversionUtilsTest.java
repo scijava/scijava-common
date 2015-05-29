@@ -78,9 +78,18 @@ public class ConversionUtilsTest {
 		assertFalse(ConversionUtils.canCast(int.class, Number.class));
 
 		// casting from null always works
+		final Class<?> nullClass = null;
+		assertTrue(ConversionUtils.canCast(nullClass, Object.class));
+		assertTrue(ConversionUtils.canCast(nullClass, int[].class));
 		final Object nullObject = null;
 		assertTrue(ConversionUtils.canCast(nullObject, Object.class));
 		assertTrue(ConversionUtils.canCast(nullObject, int[].class));
+
+		// casting to null is not allowed
+		assertFalse(ConversionUtils.canCast(nullClass, null));
+		assertFalse(ConversionUtils.canCast(Object.class, null));
+		assertFalse(ConversionUtils.canCast(nullObject, null));
+		assertFalse(ConversionUtils.canCast(new Object(), null));
 	}
 
 	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
