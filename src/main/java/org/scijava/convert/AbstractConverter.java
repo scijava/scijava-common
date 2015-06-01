@@ -55,6 +55,14 @@ import org.scijava.util.GenericUtils;
  * implementation would like to suggest candidates for conversion, this method
  * can be overridden.
  * </p>
+ * <p>
+ * NB: by default, the provied {@link #canConvert} methods will return
+ * {@code false} if the input is {@code null}. This allows {@link Converter}
+ * implementors to assume any input is non-{@code null} - but this behavior is
+ * overridden. Casting {@code null Object} inputs is handled by the
+ * {@link NullConverter}, while {@code null class} inputs are handled by the
+ * {@link DefaultConverter}.
+ * </p>
  *
  * @author Mark Hiner
  */
@@ -99,6 +107,7 @@ public abstract class AbstractConverter<I, O> extends
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		if (src == null) return false;
 		return ConversionUtils.canCast(src, getInputType()) &&
 			ConversionUtils.canCast(getOutputType(), dest);
 	}
