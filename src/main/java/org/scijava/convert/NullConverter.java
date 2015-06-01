@@ -31,6 +31,8 @@
 
 package org.scijava.convert;
 
+import java.lang.reflect.Type;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ConversionUtils;
@@ -55,8 +57,25 @@ import org.scijava.util.ConversionUtils;
 public class NullConverter extends AbstractConverter<Object, Object> {
 
 	@Override
+	public boolean canConvert(final ConversionRequest request) {
+		if (request == null) return false;
+		if (request.destType() == null && request.destClass() == null) return false;
+		return request.sourceObject() == null && request.sourceClass() == null;
+	}
+
+	@Override
+	public boolean canConvert(final Object src, final Type dest) {
+		return src == null && dest != null;
+	}
+
+	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
-		return src == null;
+		return src == null && dest != null;
+	}
+
+	@Override
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		return src == null && dest != null;
 	}
 
 	@Override
@@ -78,11 +97,4 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 		return Object.class;
 	}
 
-	// -- Deprecated API --
-
-	@Override
-	@Deprecated
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		return false;
-	}
 }
