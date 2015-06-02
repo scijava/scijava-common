@@ -312,8 +312,18 @@ public class DefaultModuleService extends AbstractService implements
 		if (max != null) return max;
 		final T softMax = item.getSoftMaximum();
 		if (softMax != null) return softMax;
-		final T zero = convertService.convert("0", item.getType());
-		if (zero != null) return zero;
+		// CTR: FIXME: The interaction between this logic, and the current
+		// SJC DefaultConverter's constructor-based wrapping, and the
+		// ImagePlus(String) constructor, results in this method ultimately
+		// printing the message "Unsupported format or not found", or worse.
+		// We really need to:
+		// - Eliminate the DefaultConverter
+		// - Eliminate the constructor-based wrapping, replacing it with
+		//   specific converters that do the same, but for known object types
+		//   (ColorRGB, Date, maybe numerical types, probably others).
+		// - Possibly reconsider the overzealous use of "0" below.
+//		final T zero = convertService.convert("0", item.getType());
+//		if (zero != null) return zero;
 		// no known default value
 		return null;
 	}
