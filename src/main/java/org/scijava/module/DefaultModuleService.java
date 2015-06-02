@@ -312,8 +312,10 @@ public class DefaultModuleService extends AbstractService implements
 		if (max != null) return max;
 		final T softMax = item.getSoftMaximum();
 		if (softMax != null) return softMax;
-		final T zero = convertService.convert("0", item.getType());
-		if (zero != null) return zero;
+		if (Number.class.isAssignableFrom(item.getType())) {
+			final T zero = convertService.convert("0", item.getType());
+			if (zero != null) return zero;
+		}
 		// no known default value
 		return null;
 	}
