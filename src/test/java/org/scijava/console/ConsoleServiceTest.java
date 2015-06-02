@@ -167,10 +167,14 @@ public class ConsoleServiceTest {
 		ts1.run(new Printer(c1RunOut, c1RunErr)).get();
 		ts2.run(new Printer(c2RunOut, c2RunErr)).get();
 
-		ts1.run(new EDTPrinter(ts1, c1InvokeOut, c1InvokeErr));
-		ts2.run(new EDTPrinter(ts2, c2InvokeOut, c2InvokeErr));
+		ts1.run(new EDTPrinter(ts1, c1InvokeOut, c1InvokeErr)).get();
+		ts2.run(new EDTPrinter(ts2, c2InvokeOut, c2InvokeErr)).get();
 
 		c2.dispose();
+
+		// NB: all printing is assumed to have completed. If there are test failures
+		// at this point it is likely due to a thread not having completed before
+		// the assert checks.
 
 		assertEquals(6, events1.size());
 		assertOutputEvent(Source.STDOUT, globalOut, false, events1.get(0));
