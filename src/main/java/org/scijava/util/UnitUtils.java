@@ -31,7 +31,6 @@
 
 package org.scijava.util;
 
-import java.util.Locale;
 
 /**
  * Utility methods for working with units.
@@ -50,6 +49,10 @@ public final class UnitUtils {
 		// prevent instantiation of utility class
 	}
 
+	/**
+	 * @return A properly formatted String representation of the given bytes, in
+	 *         the default {@link java.util.Locale} for this JVM.
+	 */
 	public static String getAbbreviatedByteLabel(final double totBytes) {
 		if (totBytes < 0) {
 			throw new IllegalArgumentException("Bytes must be non-negative");
@@ -65,7 +68,7 @@ public final class UnitUtils {
 
 		// format result with 0 decimal places for bytes, or 1 for larger values
 		final String format = pow == 0 ? "%.0f%s" : "%.1f%s";
-		return String.format(Locale.US, format, value, BYTE_UNITS[pow]);
+		return String.format(format, value, BYTE_UNITS[pow]);
 	}
 
 }
