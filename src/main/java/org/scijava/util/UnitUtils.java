@@ -31,7 +31,6 @@
 
 package org.scijava.util;
 
-import java.util.Locale;
 
 /**
  * Utility methods for working with units.
@@ -41,8 +40,8 @@ import java.util.Locale;
  */
 public final class UnitUtils {
 
-	private static final String[] BYTE_UNITS = { "B", "KiB", "MiB", "GiB",
-		"TiB", "PiB", "EiB", "ZiB", "YiB" };
+	private static final String[] BYTE_UNITS = { "B", "KiB", "MiB", "GiB", "TiB",
+		"PiB", "EiB", "ZiB", "YiB" };
 
 	private static final double LOG1024 = Math.log(1024);
 
@@ -50,6 +49,10 @@ public final class UnitUtils {
 		// prevent instantiation of utility class
 	}
 
+	/**
+	 * @return A properly formatted String representation of the given bytes, in
+	 *         the default {@link java.util.Locale} for this JVM.
+	 */
 	public static String getAbbreviatedByteLabel(final double totBytes) {
 		if (totBytes < 0) {
 			throw new IllegalArgumentException("Bytes must be non-negative");
@@ -63,9 +66,14 @@ public final class UnitUtils {
 		// compute value from unit
 		final double value = totBytes / Math.pow(1024.0, pow);
 
-		// format result with 0 decimal places for bytes, or 1 for larger values
-		final String format = pow == 0 ? "%.0f%s" : "%.1f%s";
-		return String.format(Locale.US, format, value, BYTE_UNITS[pow]);
+		final String format = format(pow);
+		return String.format(format, value, BYTE_UNITS[pow]);
 	}
 
+	/**
+	 * @return Format result with 0 decimal places for bytes, or 1 for larger values
+	 */
+	public static String format(final double power) {
+		return power == 0 ? "%.0f%s" : "%.1f%s";
+	}
 }
