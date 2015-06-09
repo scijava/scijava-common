@@ -34,7 +34,6 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.scijava.util.UnitUtils;
 
 /**
  * Tests {@link UnitUtils}.
@@ -45,40 +44,48 @@ public class UnitUtilsTest {
 
 	@Test
 	public void testGetAbbreviatedByteLabel() {
-		assertEquals("0B", UnitUtils.getAbbreviatedByteLabel(0));
-		assertEquals("1B", UnitUtils.getAbbreviatedByteLabel(1));
-		assertEquals("123B", UnitUtils.getAbbreviatedByteLabel(123));
+		assertEquals(local(0, "B"), UnitUtils.getAbbreviatedByteLabel(0));
+		assertEquals(local(1, "B"), UnitUtils.getAbbreviatedByteLabel(1));
+		assertEquals(local(123, "B"), UnitUtils.getAbbreviatedByteLabel(123));
 
-		assertEquals("10B", UnitUtils.getAbbreviatedByteLabel(1e1));
-		assertEquals("100B", UnitUtils.getAbbreviatedByteLabel(1e2));
-		assertEquals("1000B", UnitUtils.getAbbreviatedByteLabel(1e3));
-		assertEquals("9.8KiB", UnitUtils.getAbbreviatedByteLabel(1e4));
-		assertEquals("97.7KiB", UnitUtils.getAbbreviatedByteLabel(1e5));
-		assertEquals("976.6KiB", UnitUtils.getAbbreviatedByteLabel(1e6));
-		assertEquals("9.5MiB", UnitUtils.getAbbreviatedByteLabel(1e7));
-		assertEquals("95.4MiB", UnitUtils.getAbbreviatedByteLabel(1e8));
-		assertEquals("953.7MiB", UnitUtils.getAbbreviatedByteLabel(1e9));
-		assertEquals("9.3GiB", UnitUtils.getAbbreviatedByteLabel(1e10));
-		assertEquals("93.1GiB", UnitUtils.getAbbreviatedByteLabel(1e11));
-		assertEquals("931.3GiB", UnitUtils.getAbbreviatedByteLabel(1e12));
-		assertEquals("9.1TiB", UnitUtils.getAbbreviatedByteLabel(1e13));
-		assertEquals("90.9TiB", UnitUtils.getAbbreviatedByteLabel(1e14));
-		assertEquals("909.5TiB", UnitUtils.getAbbreviatedByteLabel(1e15));
-		assertEquals("8.9PiB", UnitUtils.getAbbreviatedByteLabel(1e16));
-		assertEquals("88.8PiB", UnitUtils.getAbbreviatedByteLabel(1e17));
-		assertEquals("888.2PiB", UnitUtils.getAbbreviatedByteLabel(1e18));
-		assertEquals("8.7EiB", UnitUtils.getAbbreviatedByteLabel(1e19));
-		assertEquals("86.7EiB", UnitUtils.getAbbreviatedByteLabel(1e20));
-		assertEquals("867.4EiB", UnitUtils.getAbbreviatedByteLabel(1e21));
-		assertEquals("8.5ZiB", UnitUtils.getAbbreviatedByteLabel(1e22));
-		assertEquals("84.7ZiB", UnitUtils.getAbbreviatedByteLabel(1e23));
-		assertEquals("847.0ZiB", UnitUtils.getAbbreviatedByteLabel(1e24));
-		assertEquals("8.3YiB", UnitUtils.getAbbreviatedByteLabel(1e25));
-		assertEquals("82.7YiB", UnitUtils.getAbbreviatedByteLabel(1e26));
-		assertEquals("827.2YiB", UnitUtils.getAbbreviatedByteLabel(1e27));
-		assertEquals("8271.8YiB", UnitUtils.getAbbreviatedByteLabel(1e28));
-		assertEquals("82718.1YiB", UnitUtils.getAbbreviatedByteLabel(1e29));
-		assertEquals("827180.6YiB", UnitUtils.getAbbreviatedByteLabel(1e30));
+		assertEquals(local(10, "B"), UnitUtils.getAbbreviatedByteLabel(1e1));
+		assertEquals(local(100, "B"), UnitUtils.getAbbreviatedByteLabel(1e2));
+		assertEquals(local(1000, "B"), UnitUtils.getAbbreviatedByteLabel(1e3));
+		assertEquals(local(9.8, "KiB"), UnitUtils.getAbbreviatedByteLabel(1e4));
+		assertEquals(local(97.7, "KiB"), UnitUtils.getAbbreviatedByteLabel(1e5));
+		assertEquals(local(976.6, "KiB"), UnitUtils.getAbbreviatedByteLabel(1e6));
+		assertEquals(local(9.5, "MiB"), UnitUtils.getAbbreviatedByteLabel(1e7));
+		assertEquals(local(95.4, "MiB"), UnitUtils.getAbbreviatedByteLabel(1e8));
+		assertEquals(local(953.7, "MiB"), UnitUtils.getAbbreviatedByteLabel(1e9));
+		assertEquals(local(9.3, "GiB"), UnitUtils.getAbbreviatedByteLabel(1e10));
+		assertEquals(local(93.1, "GiB"), UnitUtils.getAbbreviatedByteLabel(1e11));
+		assertEquals(local(931.3, "GiB"), UnitUtils.getAbbreviatedByteLabel(1e12));
+		assertEquals(local(9.1, "TiB"), UnitUtils.getAbbreviatedByteLabel(1e13));
+		assertEquals(local(90.9, "TiB"), UnitUtils.getAbbreviatedByteLabel(1e14));
+		assertEquals(local(909.5, "TiB"), UnitUtils.getAbbreviatedByteLabel(1e15));
+		assertEquals(local(8.9, "PiB"), UnitUtils.getAbbreviatedByteLabel(1e16));
+		assertEquals(local(88.8, "PiB"), UnitUtils.getAbbreviatedByteLabel(1e17));
+		assertEquals(local(888.2, "PiB"), UnitUtils.getAbbreviatedByteLabel(1e18));
+		assertEquals(local(8.7, "EiB"), UnitUtils.getAbbreviatedByteLabel(1e19));
+		assertEquals(local(86.7, "EiB"), UnitUtils.getAbbreviatedByteLabel(1e20));
+		assertEquals(local(867.4, "EiB"), UnitUtils.getAbbreviatedByteLabel(1e21));
+		assertEquals(local(8.5, "ZiB"), UnitUtils.getAbbreviatedByteLabel(1e22));
+		assertEquals(local(84.7, "ZiB"), UnitUtils.getAbbreviatedByteLabel(1e23));
+		assertEquals(local(847.0, "ZiB"), UnitUtils.getAbbreviatedByteLabel(1e24));
+		assertEquals(local(8.3, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e25));
+		assertEquals(local(82.7, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e26));
+		assertEquals(local(827.2, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e27));
+		assertEquals(local(8271.8, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e28));
+		assertEquals(local(82718.1, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e29));
+		assertEquals(local(827180.6, "YiB"), UnitUtils.getAbbreviatedByteLabel(1e30));
 	}
 
+	/**
+	 * Helper method to ensure the strings tested here match the
+	 * {@link java.util.Locale} of the current JVM.
+	 */
+	private String local(final double value, final String unit) {
+		final String format = UnitUtils.format(unit.equals("B") ? 0 : 1);
+		return String.format(format, value, unit);
+	}
 }
