@@ -66,9 +66,14 @@ public final class UnitUtils {
 		// compute value from unit
 		final double value = totBytes / Math.pow(1024.0, pow);
 
-		// format result with 0 decimal places for bytes, or 1 for larger values
-		final String format = pow == 0 ? "%.0f%s" : "%.1f%s";
+		final String format = format(pow);
 		return String.format(format, value, BYTE_UNITS[pow]);
 	}
 
+	/**
+	 * @return Format result with 0 decimal places for bytes, or 1 for larger values
+	 */
+	public static String format(final double power) {
+		return power == 0 ? "%.0f%s" : "%.1f%s";
+	}
 }
