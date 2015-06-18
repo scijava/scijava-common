@@ -126,6 +126,46 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 		return cdata("//project/organization/url");
 	}
 
+	/** Gets the SCM connection string. */
+	public String getSCMConnection() {
+		return cdata("//project/scm/connection");
+	}
+
+	/** Gets the SCM developerConnection string. */
+	public String getSCMDeveloperConnection() {
+		return cdata("//project/scm/developerConnection");
+	}
+
+	/** Gets the SCM tag. */
+	public String getSCMTag() {
+		return cdata("//project/scm/tag");
+	}
+
+	/** Gets the SCM URL. */
+	public String getSCMURL() {
+		return cdata("//project/scm/url");
+	}
+
+	/** Gets the issue management system. */
+	public String getIssueManagementSystem() {
+		return cdata("//project/issueManagement/system");
+	}
+
+	/** Gets the issue management URL. */
+	public String getIssueManagementURL() {
+		return cdata("//project/issueManagement/url");
+	}
+
+	/** Gets the CI management system. */
+	public String getCIManagementSystem() {
+		return cdata("//project/ciManagement/system");
+	}
+
+	/** Gets the CI management URL. */
+	public String getCIManagementURL() {
+		return cdata("//project/ciManagement/url");
+	}
+
 	// -- Comparable methods --
 
 	@Override
