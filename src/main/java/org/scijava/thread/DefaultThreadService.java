@@ -84,6 +84,16 @@ public final class DefaultThreadService extends AbstractService implements
 	}
 
 	@Override
+	public ExecutorService getExecutorService() {
+		return executor();
+	}
+
+	@Override
+	public void setExecutorService(final ExecutorService executor) {
+		this.executor = executor;
+	}
+
+	@Override
 	public boolean isDispatchThread() {
 		return EventQueue.isDispatchThread();
 	}

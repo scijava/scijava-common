@@ -33,6 +33,7 @@ package org.scijava.thread;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
@@ -90,6 +91,24 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	 *         finished. Call {@link Future#get()} to do so.
 	 */
 	Future<?> run(Runnable code);
+
+	/**
+	 * Gets the {@link ExecutorService} object used when {@link #run} is called.
+	 * 
+	 * @return the {@link ExecutorService}, or null if an {@link ExecutorService}
+	 *         is not used in this {@link ThreadService} implementation.
+	 */
+	ExecutorService getExecutorService();
+
+	/**
+	 * Sets the {@link ExecutorService} object used when {@link #run} is called.
+	 * 
+	 * @param executor The {@link ExecutorService} for this {@link ThreadService}
+	 *          to use internally for {@link #run} calls.
+	 * @throws UnsupportedOperationException if this {@link ThreadService} does
+	 *           not use an {@link ExecutorService} to handle {@link #run} calls.
+	 */
+	void setExecutorService(ExecutorService executor);
 
 	/**
 	 * Gets whether the current thread is a dispatch thread for use with
