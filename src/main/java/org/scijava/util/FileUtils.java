@@ -173,7 +173,7 @@ public final class FileUtils {
 	/** A regular expression to match filenames containing version information. */
 	private final static Pattern versionPattern =
 		Pattern
-			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|shaded|sources|javadoc|native))?(\\.jar(-[a-z]*)?))");
+			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|shaded|sources|javadoc|native|linux-x86_64|macosx-x86_64|windows-x86|windows-x86_64))?(\\.jar(-[a-z]*)?))");
 
 	public static String stripFilenameVersion(final String filename) {
 		final Matcher matcher = versionPattern.matcher(filename);
