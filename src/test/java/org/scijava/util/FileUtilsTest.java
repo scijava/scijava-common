@@ -34,7 +34,6 @@ package org.scijava.util;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.scijava.test.TestUtils.createTemporaryDirectory;
@@ -292,10 +291,14 @@ public class FileUtilsTest {
 		assertEquals(FileUtils.stripFilenameVersion("jars/miglayout-swing.jar"), FileUtils.stripFilenameVersion("jars/miglayout-3.7.3.1-swing.jar"));
 
 		// Test that native binary .jars don't clash with their partner hook .jar
-		assertNotEquals("jars/ffmpeg.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86.jar"));
-		assertNotEquals("jars/ffmpeg.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86_64.jar"));
-		assertNotEquals("jars/ffmpeg.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-macosx-x86_64.jar"));
-		assertNotEquals("jars/ffmpeg.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-linux-x86_64.jar"));
+		assertEquals("jars/ffmpeg-windows-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86.jar"));
+		assertEquals("jars/ffmpeg-windows-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86_64.jar"));
+		assertEquals("jars/ffmpeg-macosx-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-macosx-x86_64.jar"));
+		assertEquals("jars/ffmpeg-linux-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-linux-x86_64.jar"));
+		assertEquals("jars/ffmpeg-linux-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-linux-x86.jar"));
+		assertEquals("jars/ffmpeg-android-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-x86.jar"));
+		assertEquals("jars/ffmpeg-android-arm.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-arm.jar"));
+
 	}
 
 	@Test
