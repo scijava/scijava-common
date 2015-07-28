@@ -41,9 +41,9 @@ import org.scijava.plugin.Plugin;
  * <p>
  * Console argument plugins discoverable at runtime must implement this
  * interface and be annotated with @{@link Plugin} with attribute
- * {@link Plugin#type()} = {@link ConsoleArgument}.class. While it possible to
- * create an console argument plugin merely by implementing this interface, it
- * is encouraged to instead extend {@link AbstractConsoleArgument}, for
+ * {@link Plugin#type()} = {@link ConsoleArgument}.class. While it is possible
+ * to create an console argument plugin merely by implementing this interface,
+ * it is encouraged to instead extend {@link AbstractConsoleArgument}, for
  * convenience.
  * </p>
  *
