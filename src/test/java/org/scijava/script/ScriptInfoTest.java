@@ -93,7 +93,10 @@ public class ScriptInfoTest {
 
 		final Object output = scriptModule.getOutput("result");
 
-		if (output == null || !(output instanceof Integer)) fail();
+		if (output == null) fail("null result");
+		else if (!(output instanceof Integer)) {
+			fail("result is a " + output.getClass().getName());
+		}
 		else assertEquals(3, ((Integer) output).intValue());
 	}
 
