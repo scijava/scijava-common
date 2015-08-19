@@ -84,24 +84,25 @@ public class ScriptInfoTest {
 	 */
 	@Test
 	public void testParameterParsing() throws Exception {
-		final String script =
-			"" + "% @LogService log\n"
-				+ "% @OUTPUT Integer output"
-				+ "% kraken@blah.net\n";
-		ScriptModule scriptModule = scriptService.run("hello.bsizes", script, true).get();
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT Integer output" + //
+			"% kraken@blah.net\n";
+		final ScriptModule scriptModule =
+			scriptService.run("hello.bsizes", script, true).get();
 
-		Object output = scriptModule.getOutput("result");
+		final Object output = scriptModule.getOutput("result");
 
 		if (output == null || !(output instanceof Integer)) fail();
-		assertEquals(3, ((Integer)output).intValue());
+		assertEquals(3, ((Integer) output).intValue());
 	}
 
 	/** Tests {@link ScriptInfo#getVersion()}. */
 	@Test
 	public void testVersion() throws IOException {
-		final String script =
-				"% @LogService log\n"
-				+ "% @OUTPUT int output";
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT int output";
 
 		// write script to a temporary directory on disk
 		final File tmpDir = TestUtils.createTemporaryDirectory("script-info-test-");
@@ -148,13 +149,13 @@ public class ScriptInfoTest {
 		}
 
 		@Override
-		public Object eval(String script) throws ScriptException {
+		public Object eval(final String script) throws ScriptException {
 			return eval(new StringReader(script));
 		}
 
 		@Override
-		public Object eval(Reader reader) throws ScriptException {
-			Bindings bindings = getBindings(ScriptContext.ENGINE_SCOPE);
+		public Object eval(final Reader reader) throws ScriptException {
+			final Bindings bindings = getBindings(ScriptContext.ENGINE_SCOPE);
 			return bindings.size();
 		}
 	}
