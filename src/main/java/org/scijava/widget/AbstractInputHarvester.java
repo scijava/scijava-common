@@ -135,7 +135,7 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		final Class<W> widgetType = inputPanel.getWidgetComponentType();
 		final InputWidget<?, ?> widget = widgetService.create(model);
 		if (widget == null) {
-			log.warn("No widget found for input: " + model.getItem().getName());
+			log.debug("No widget found for input: " + model.getItem().getName());
 		}
 		if (widget != null && widget.getComponentType() == widgetType) {
 			@SuppressWarnings("unchecked")
