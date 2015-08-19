@@ -162,5 +162,8 @@ public class ScriptInfoTest {
 
 	private static class BindingSizesBindings extends HashMap<String, Object>
 		implements Bindings
-	{}
+	{
+		// NB: No implementation needed.
+	}
+
 }
