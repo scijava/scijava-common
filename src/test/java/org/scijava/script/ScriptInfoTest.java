@@ -68,7 +68,7 @@ public class ScriptInfoTest {
 	@BeforeClass
 	public static void setUp() {
 		context = new Context();
-		scriptService = context.getService(ScriptService.class);
+		scriptService = context.service(ScriptService.class);
 	}
 
 	@AfterClass
