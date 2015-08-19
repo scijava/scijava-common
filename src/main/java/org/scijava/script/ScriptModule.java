@@ -197,19 +197,17 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			setOutput(name, typed);
 		}
 
-		if (output != null) try {
-			output.flush();
-		} catch (IOException e) {
-			if (error == null) {
-				log.error(e);
-			} else {
-				e.printStackTrace(errorPrinter);
+		// flush output and error streams
+		if (output != null) {
+			try {
+				output.flush();
+			}
+			catch (final IOException e) {
+				if (error == null) log.error(e);
+				else e.printStackTrace(errorPrinter);
 			}
 		}
-
-		if (errorPrinter != null) {
-			errorPrinter.flush();
-		}
+		if (errorPrinter != null) errorPrinter.flush();
 	}
 
 	// -- Contextual methods --
