@@ -94,7 +94,7 @@ public class ScriptInfoTest {
 		final Object output = scriptModule.getOutput("result");
 
 		if (output == null || !(output instanceof Integer)) fail();
-		assertEquals(3, ((Integer) output).intValue());
+		else assertEquals(3, ((Integer) output).intValue());
 	}
 
 	/** Tests {@link ScriptInfo#getVersion()}. */
