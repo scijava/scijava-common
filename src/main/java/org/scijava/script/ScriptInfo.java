@@ -87,6 +87,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Parameter
 	private ConvertService convertService;
 
+	/** True iff the return value is explicitly declared as an output. */
+	private boolean returnValueDeclared;
+
 	/**
 	 * Creates a script metadata object which describes the given script file.
 	 * 
@@ -207,6 +210,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Override
 	public void parseParameters() {
 		clearParameters();
+		returnValueDeclared = false;
 
 		try {
 			final BufferedReader in;
@@ -233,7 +237,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			if (reader == null) in.close();
 			else in.reset();
 
-			addReturnValue();
+			if (!returnValueDeclared) addReturnValue();
 		}
 		catch (final IOException exc) {
 			log.error("Error reading script: " + path, exc);
@@ -241,6 +245,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		catch (final ScriptException exc) {
 			log.error("Invalid parameter syntax for script: " + path, exc);
 		}
+	}
+
+	/** Gets whether the return value is explicitly declared as an output. */
+	public boolean isReturnValueDeclared() {
+		return returnValueDeclared;
 	}
 
 	// -- ModuleInfo methods --
@@ -347,6 +356,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		}
 		final Class<?> type = scriptService.lookupClass(typeName);
 		addItem(varName, type, attrs);
+		if (ScriptModule.RETURN_VALUE.equals(varName)) returnValueDeclared = true;
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */

@@ -189,17 +189,16 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		for (final ModuleItem<?> item : getInfo().outputs()) {
 			final String name = item.getName();
 			if (isResolved(name)) continue;
-			final Object value = engine.get(name);
+			final Object value;
+			if (RETURN_VALUE.equals(name) && !getInfo().isReturnValueDeclared()) {
+				// NB: This is the special implicit return value output!
+				value = returnValue;
+			}
+			else value = engine.get(name);
 			final Object decoded = language.decode(value);
 			final Object typed = conversionService.convert(decoded, item.getType());
 			setOutput(name, typed);
-		}
-
-		// populate the return value as a special output
-		// NB: This only occurs if there was no declared output called "result".
-		if (!isResolved(RETURN_VALUE)) {
-			setOutput(RETURN_VALUE, language.decode(returnValue));
-			setResolved(RETURN_VALUE, true);
+			setResolved(name, true);
 		}
 
 		// flush output and error streams
