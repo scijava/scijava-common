@@ -57,6 +57,7 @@ import org.scijava.test.TestUtils;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
+/** Tests {@link ScriptInfo}. */
 public class ScriptInfoTest {
 
 	private static Context context;
