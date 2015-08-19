@@ -83,7 +83,7 @@ public class ScriptInfoTest {
 	 * of noise like e-mail addresses.
 	 */
 	@Test
-	public void testParameterParsing() throws Exception {
+	public void testNoisyParameters() throws Exception {
 		final String script = "" + //
 			"% @LogService log\n" + //
 			"% @OUTPUT Integer output" + //
