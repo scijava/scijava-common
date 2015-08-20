@@ -188,9 +188,9 @@ public class ConvertServiceTest {
 		assertTrue(convertService.supports(double.class, float.class));
 		assertTrue(convertService.supports(float.class, double.class));
 
-		// boxing is not reported to work
-		// TODO: Consider changing this behavior.
-		assertFalse(convertService.supports(int.class, Number.class));
+		// check that boxing works
+		assertTrue(convertService.supports(int.class, Number.class));
+		assertTrue(convertService.supports(Integer.class, double.class));
 
 		// can convert anything to string
 		assertTrue(convertService.supports(Object.class, String.class));
