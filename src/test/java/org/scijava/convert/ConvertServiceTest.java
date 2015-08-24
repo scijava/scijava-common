@@ -54,8 +54,15 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
+import org.scijava.util.BoolArray;
+import org.scijava.util.CharArray;
 import org.scijava.util.ClassUtils;
+import org.scijava.util.DoubleArray;
+import org.scijava.util.FloatArray;
+import org.scijava.util.IntArray;
 import org.scijava.util.LongArray;
+import org.scijava.util.PrimitiveArray;
+import org.scijava.util.ShortArray;
 
 /**
  * Tests {@link ConvertService}.
@@ -119,6 +126,47 @@ public class ConvertServiceTest {
 		assertTrue(1d == convertService.convert(1.0f, double.class));
 		assertTrue(1d == convertService.convert((short)1, double.class));
 		assertTrue(1d == convertService.convert(1.0, double.class));
+	}
+
+	/**
+	 * Test conversion between primitive types, {@link PrimitiveArray}s and
+	 * {@link List}s of {@link Number}s.
+	 */
+	@Test
+	public void testArrays() {
+		testIntechangeable(int[].class, IntArray.class);
+		testIntechangeable(long[].class, LongArray.class);
+		testIntechangeable(double[].class, DoubleArray.class);
+		testIntechangeable(float[].class, FloatArray.class);
+		testIntechangeable(short[].class, ShortArray.class);
+		testIntechangeable(char[].class, CharArray.class);
+		testIntechangeable(boolean[].class, BoolArray.class);
+
+		assertTrue(convertService.supports(List.class, int[].class));
+		assertTrue(convertService.supports(List.class, long[].class));
+		assertTrue(convertService.supports(List.class, double[].class));
+		assertTrue(convertService.supports(List.class, float[].class));
+		assertTrue(convertService.supports(List.class, short[].class));
+		assertTrue(convertService.supports(List.class, char[].class));
+		assertTrue(convertService.supports(List.class, boolean[].class));
+
+		final List<Integer> list = new ArrayList<Integer>();
+
+		for (int i=0; i<100; i++) list.add((int) (10000 * Math.random()));
+
+		final int[] primitives = convertService.convert(list, int[].class);
+
+		final IntArray intArray = convertService.convert(primitives, IntArray.class);
+
+		// Should just unwrap the IntArray
+		assertTrue(primitives == convertService.convert(intArray, int[].class));
+
+		// Verify all our lists are the same
+
+		for (int i=0; i<list.size(); i++) {
+			assertTrue(list.get(i) == primitives[i]);
+			assertTrue(list.get(i) == intArray.getValue(i));
+		}
 	}
 
 	/** Tests {@link ConvertService#supports(Class, Class)}. */
@@ -663,5 +711,15 @@ public class ConvertServiceTest {
 		public <T> T convert(Object src, Class<T> dest) {
 			return null;
 		}
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * Verify bi-direciotnal conversion is supported between the two classes
+	 */
+	private void testIntechangeable(final Class<?> c1, final Class<?> c2) {
+		assertTrue(convertService.supports(c1, c2));
+		assertTrue(convertService.supports(c2, c1));
 	}
 }
