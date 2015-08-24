@@ -31,22 +31,18 @@
 
 package org.scijava.convert;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 
-import org.scijava.util.ArrayUtils;
 import org.scijava.util.GenericUtils;
-import org.scijava.util.PrimitiveArray;
 
 /**
  * Abstract {@link Converter} for converting from {@link List}s of
  * {@link Number}s to corresponding primitive arrays.
  */
 @SuppressWarnings("rawtypes")
-public abstract class ListConverter<I, N> extends
-	AbstractConverter<List<N>, I>
+public abstract class AbstractListConverter<I, O> extends
+	AbstractConverter<List<I>, O>
 {
 
 	@Override
@@ -60,26 +56,12 @@ public abstract class ListConverter<I, N> extends
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<List<N>> getInputType() {
+	public Class<List<I>> getInputType() {
 		return (Class)List.class;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T convert(Object src, Class<T> dest) {
-		final List<N> list = (List<N>) src;
-		final Object array =
-			Array.newInstance(dest.getComponentType(), list.size());
-		final PrimitiveArray<T, N> destWrapper =
-			(PrimitiveArray<T, N>) ArrayUtils.toCollection(array);
-
-		Collections.copy(destWrapper, list);
-
-		return destWrapper.getArray();
 	}
 
 	/**
 	 * @return The generic parameter of {@link List} supported by this converter.
 	 */
-	protected abstract Class<N> getListType();
+	protected abstract Class<I> getListType();
 }

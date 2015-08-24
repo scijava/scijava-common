@@ -45,7 +45,7 @@ import org.scijava.util.ShortArray;
 /**
  * Container class for all desired combinations of
  * {@link PrimitiveArrayUnwrapper}, {@link PrimitiveArrayWrapper} and
- * {@link ListConverter} implementations.
+ * {@link AbstractListToPrimitiveConverter} implementations.
  *
  * @author Mark Hiner
  */
@@ -86,7 +86,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class IntListConverter extends ListConverter<int[], Integer> {
+	public static class IntListConverter extends AbstractListToPrimitiveConverter<Integer, int[]> {
 
 		@Override
 		public Class<int[]> getOutputType() {
@@ -135,7 +135,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class ByteListConverter extends ListConverter<byte[], Byte> {
+	public static class ByteListConverter extends AbstractListToPrimitiveConverter<Byte, byte[]> {
 
 		@Override
 		public Class<byte[]> getOutputType() {
@@ -184,7 +184,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class BoolListConverter extends ListConverter<boolean[], Boolean> {
+	public static class BoolListConverter extends AbstractListToPrimitiveConverter<Boolean, boolean[]> {
 
 		@Override
 		public Class<boolean[]> getOutputType() {
@@ -233,7 +233,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class CharListConverter extends ListConverter<char[], Character> {
+	public static class CharListConverter extends AbstractListToPrimitiveConverter<Character, char[]> {
 
 		@Override
 		public Class<char[]> getOutputType() {
@@ -282,7 +282,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class ShortListConverter extends ListConverter<short[], Short> {
+	public static class ShortListConverter extends AbstractListToPrimitiveConverter<Short, short[]> {
 
 		@Override
 		public Class<short[]> getOutputType() {
@@ -331,7 +331,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class FloatListConverter extends ListConverter<float[], Float> {
+	public static class FloatListConverter extends AbstractListToPrimitiveConverter<Float, float[]> {
 
 		@Override
 		public Class<float[]> getOutputType() {
@@ -380,7 +380,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class DoubleListConverter extends ListConverter<double[], Double> {
+	public static class DoubleListConverter extends AbstractListToPrimitiveConverter<Double, double[]> {
 
 		@Override
 		public Class<double[]> getOutputType() {
@@ -429,7 +429,7 @@ public class ArrayConverters {
 	}
 
 	@Plugin(type = Converter.class)
-	public static class LongListConverter extends ListConverter<long[], Long> {
+	public static class LongListConverter extends AbstractListToPrimitiveConverter<Long, long[]> {
 
 		@Override
 		public Class<long[]> getOutputType() {
