@@ -99,6 +99,13 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		if (ConversionUtils.canCast(src, saneDest)) return ConversionUtils.cast(
 			src, saneDest);
 
+		// Handle array types
+		if (isArray(dest)) {
+			@SuppressWarnings("unchecked")
+			T array = (T) convertToArray(src, GenericUtils.getComponentClass(dest));
+			return array;
+		}
+
 		// special case for conversion from number to number
 		if (src instanceof Number) {
 			final Number number = (Number) src;
