@@ -44,8 +44,8 @@ import org.scijava.util.ShortArray;
 
 /**
  * Container class for all desired combinations of
- * {@link PrimitiveArrayUnwrapper}, {@link PrimitiveArrayWrapper} and
- * {@link AbstractListToPrimitiveConverter} implementations.
+ * {@link PrimitiveArrayUnwrapper} and {@link PrimitiveArrayWrapper}
+ * implementations.
  *
  * @author Mark Hiner
  */
@@ -85,21 +85,6 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class)
-	public static class IntListConverter extends AbstractListToPrimitiveConverter<Integer, int[]> {
-
-		@Override
-		public Class<int[]> getOutputType() {
-			return int[].class;
-		}
-
-		@Override
-		protected Class<Integer> getListType() {
-			return Integer.class;
-		}
-
-	}
-
 	// -- Byte array converters --
 
 	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
@@ -132,21 +117,6 @@ public class ArrayConverters {
 		public Class<ByteArray> getInputType() {
 			return ByteArray.class;
 		}
-	}
-
-	@Plugin(type = Converter.class)
-	public static class ByteListConverter extends AbstractListToPrimitiveConverter<Byte, byte[]> {
-
-		@Override
-		public Class<byte[]> getOutputType() {
-			return byte[].class;
-		}
-
-		@Override
-		protected Class<Byte> getListType() {
-			return Byte.class;
-		}
-
 	}
 
 	// -- Bool array converters --
@@ -183,21 +153,6 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class)
-	public static class BoolListConverter extends AbstractListToPrimitiveConverter<Boolean, boolean[]> {
-
-		@Override
-		public Class<boolean[]> getOutputType() {
-			return boolean[].class;
-		}
-
-		@Override
-		protected Class<Boolean> getListType() {
-			return Boolean.class;
-		}
-
-	}
-
 	// -- Char array converters --
 
 	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
@@ -230,21 +185,6 @@ public class ArrayConverters {
 		public Class<CharArray> getInputType() {
 			return CharArray.class;
 		}
-	}
-
-	@Plugin(type = Converter.class)
-	public static class CharListConverter extends AbstractListToPrimitiveConverter<Character, char[]> {
-
-		@Override
-		public Class<char[]> getOutputType() {
-			return char[].class;
-		}
-
-		@Override
-		protected Class<Character> getListType() {
-			return Character.class;
-		}
-
 	}
 
 	// -- Short array converters --
@@ -281,21 +221,6 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class)
-	public static class ShortListConverter extends AbstractListToPrimitiveConverter<Short, short[]> {
-
-		@Override
-		public Class<short[]> getOutputType() {
-			return short[].class;
-		}
-
-		@Override
-		protected Class<Short> getListType() {
-			return Short.class;
-		}
-
-	}
-
 	// -- Float array converters --
 
 	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
@@ -328,21 +253,6 @@ public class ArrayConverters {
 		public Class<FloatArray> getInputType() {
 			return FloatArray.class;
 		}
-	}
-
-	@Plugin(type = Converter.class)
-	public static class FloatListConverter extends AbstractListToPrimitiveConverter<Float, float[]> {
-
-		@Override
-		public Class<float[]> getOutputType() {
-			return float[].class;
-		}
-
-		@Override
-		protected Class<Float> getListType() {
-			return Float.class;
-		}
-
 	}
 
 	// -- Double array converters --
@@ -379,21 +289,6 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class)
-	public static class DoubleListConverter extends AbstractListToPrimitiveConverter<Double, double[]> {
-
-		@Override
-		public Class<double[]> getOutputType() {
-			return double[].class;
-		}
-
-		@Override
-		protected Class<Double> getListType() {
-			return Double.class;
-		}
-
-	}
-
 	// -- Long array converters --
 
 	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
@@ -426,21 +321,6 @@ public class ArrayConverters {
 		public Class<LongArray> getInputType() {
 			return LongArray.class;
 		}
-	}
-
-	@Plugin(type = Converter.class)
-	public static class LongListConverter extends AbstractListToPrimitiveConverter<Long, long[]> {
-
-		@Override
-		public Class<long[]> getOutputType() {
-			return long[].class;
-		}
-
-		@Override
-		protected Class<Long> getListType() {
-			return Long.class;
-		}
-
 	}
 
 }
