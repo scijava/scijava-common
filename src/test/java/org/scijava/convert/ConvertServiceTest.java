@@ -134,6 +134,8 @@ public class ConvertServiceTest {
 	 */
 	@Test
 	public void testArrays() {
+		// Test that each primitive [] is compatible in either direciton with its
+		// paired PrimitiveArray
 		testIntechangeable(int[].class, IntArray.class);
 		testIntechangeable(long[].class, LongArray.class);
 		testIntechangeable(double[].class, DoubleArray.class);
@@ -142,18 +144,22 @@ public class ConvertServiceTest {
 		testIntechangeable(char[].class, CharArray.class);
 		testIntechangeable(boolean[].class, BoolArray.class);
 
-		assertTrue(convertService.supports(List.class, int[].class));
-		assertTrue(convertService.supports(List.class, long[].class));
-		assertTrue(convertService.supports(List.class, double[].class));
-		assertTrue(convertService.supports(List.class, float[].class));
-		assertTrue(convertService.supports(List.class, short[].class));
-		assertTrue(convertService.supports(List.class, char[].class));
-		assertTrue(convertService.supports(List.class, boolean[].class));
+		// Test that primitive [] can not be convertied to mismatched PrimitiveArray
+		assertFalse(convertService.supports(int[].class, LongArray.class));
 
+		// Test that lists can be converted to any primitive []
 		final List<Integer> list = new ArrayList<Integer>();
-
 		for (int i=0; i<100; i++) list.add((int) (10000 * Math.random()));
 
+		assertTrue(convertService.supports(list, int[].class));
+		assertTrue(convertService.supports(list, long[].class));
+		assertTrue(convertService.supports(list, double[].class));
+		assertTrue(convertService.supports(list, float[].class));
+		assertTrue(convertService.supports(list, short[].class));
+		assertTrue(convertService.supports(list, char[].class));
+		assertTrue(convertService.supports(list, boolean[].class));
+
+		// Verify PrimitiveArray conversion
 		final int[] primitives = convertService.convert(list, int[].class);
 
 		final IntArray intArray = convertService.convert(primitives, IntArray.class);
