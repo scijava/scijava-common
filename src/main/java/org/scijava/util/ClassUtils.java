@@ -803,7 +803,7 @@ public final class ClassUtils {
 		 *
 		 * @param c Base class
 		 * @param annotationClass Annotation type
-		 * @param annotatedFields Method list to populate
+		 * @param annotatedMethods Method list to populate
 		 */
 		public void putList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass,
