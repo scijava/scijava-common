@@ -143,52 +143,172 @@ public interface Gateway extends RichPlugin, Versioned {
 
 	// -- Gateway methods - services --
 
+	/**
+	 * Gets this application context's {@link AppEventService}.
+	 *
+	 * @return The {@link AppEventService} of this application context.
+	 */
 	AppEventService appEvent();
 
+	/**
+	 * Gets this application context's {@link AppService}.
+	 *
+	 * @return The {@link AppService} of this application context.
+	 */
 	AppService app();
 
+	/**
+	 * Gets this application context's {@link CommandService}.
+	 *
+	 * @return The {@link CommandService} of this application context.
+	 */
 	CommandService command();
 
+	/**
+	 * Gets this application context's {@link ConsoleService}.
+	 *
+	 * @return The {@link ConsoleService} of this application context.
+	 */
 	ConsoleService console();
 
+	/**
+	 * Gets this application context's {@link DisplayService}.
+	 *
+	 * @return The {@link DisplayService} of this application context.
+	 */
 	DisplayService display();
 
+	/**
+	 * Gets this application context's {@link EventHistory}.
+	 *
+	 * @return The {@link EventHistory} of this application context.
+	 */
 	EventHistory eventHistory();
 
+	/**
+	 * Gets this application context's {@link EventService}.
+	 *
+	 * @return The {@link EventService} of this application context.
+	 */
 	EventService event();
 
+	/**
+	 * Gets this application context's {@link IconService}.
+	 *
+	 * @return The {@link IconService} of this application context.
+	 */
 	IconService icon();
 
+	/**
+	 * Gets this application context's {@link InputService}.
+	 *
+	 * @return The {@link InputService} of this application context.
+	 */
 	InputService input();
 
+	/**
+	 * Gets this application context's {@link IOService}.
+	 *
+	 * @return The {@link IOService} of this application context.
+	 */
 	IOService io();
 
+	/**
+	 * Gets this application context's {@link LogService}.
+	 *
+	 * @return The {@link LogService} of this application context.
+	 */
 	LogService log();
 
+	/**
+	 * Gets this application context's {@link MenuService}.
+	 *
+	 * @return The {@link MenuService} of this application context.
+	 */
 	MenuService menu();
 
+	/**
+	 * Gets this application context's {@link ModuleService}.
+	 *
+	 * @return The {@link ModuleService} of this application context.
+	 */
 	ModuleService module();
 
+	/**
+	 * Gets this application context's {@link ObjectService}.
+	 *
+	 * @return The {@link ObjectService} of this application context.
+	 */
 	ObjectService object();
 
+	/**
+	 * Gets this application context's {@link OptionsService}.
+	 *
+	 * @return The {@link OptionsService} of this application context.
+	 */
 	OptionsService options();
 
+	/**
+	 * Gets this application context's {@link PlatformService}.
+	 *
+	 * @return The {@link PlatformService} of this application context.
+	 */
 	PlatformService platform();
 
+	/**
+	 * Gets this application context's {@link PluginService}.
+	 *
+	 * @return The {@link PluginService} of this application context.
+	 */
 	PluginService plugin();
 
+	/**
+	 * Gets this application context's {@link RecentFileService}.
+	 *
+	 * @return The {@link RecentFileService} of this application context.
+	 */
 	RecentFileService recentFile();
 
+	/**
+	 * Gets this application context's {@link ScriptService}.
+	 *
+	 * @return The {@link ScriptService} of this application context.
+	 */
 	ScriptService script();
 
+	/**
+	 * Gets this application context's {@link StatusService}.
+	 *
+	 * @return The {@link StatusService} of this application context.
+	 */
 	StatusService status();
 
+	/**
+	 * Gets this application context's {@link TextService}.
+	 *
+	 * @return The {@link TextService} of this application context.
+	 */
 	TextService text();
 
+	/**
+	 * Gets this application context's {@link ThreadService}.
+	 *
+	 * @return The {@link ThreadService} of this application context.
+	 */
 	ThreadService thread();
 
+	/**
+	 * Gets this application context's {@link ToolService}.
+	 *
+	 * @return The {@link ToolService} of this application context.
+	 */
 	ToolService tool();
 
+	/**
+	 * Gets this application context's {@link WidgetService}.
+	 *
+	 * @return The {@link WidgetService} of this application context.
+	 */
 	WidgetService widget();
 
 	// -- Gateway methods - application --
