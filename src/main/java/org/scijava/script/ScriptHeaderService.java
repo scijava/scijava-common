@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import org.scijava.plugin.HandlerService;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for a {@link HandlerService} capable of mapping
@@ -46,7 +47,7 @@ import org.scijava.plugin.HandlerService;
  * @author Mark Hiner
  */
 public interface ScriptHeaderService extends
-	HandlerService<ScriptLanguage, ScriptHeader>
+	HandlerService<ScriptLanguage, ScriptHeader>, SciJavaService
 {
 
 	/**
