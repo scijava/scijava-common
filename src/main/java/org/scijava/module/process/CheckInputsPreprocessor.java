@@ -36,7 +36,6 @@ import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.widget.InputHarvester;
 
 /**
  * A preprocessor plugin that does a final check of input parameters,
@@ -45,7 +44,7 @@ import org.scijava.widget.InputHarvester;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = InputHarvester.PRIORITY - 1)
+	priority = SaveInputsPreprocessor.PRIORITY - 1)
 public class CheckInputsPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)

@@ -53,6 +53,8 @@ import org.scijava.plugin.Plugin;
 	priority = Priority.VERY_LOW_PRIORITY - 1)
 public class SaveInputsPreprocessor extends AbstractPreprocessorPlugin {
 
+	public static final double PRIORITY = Priority.VERY_LOW_PRIORITY - 1;
+
 	@Parameter
 	private ModuleService moduleService;
 
