@@ -47,13 +47,13 @@ public interface CacheService extends SciJavaService {
 	 * @param key A key.
 	 * @param value A value.
 	 */
-	<K, V> void put(K key, V value);
+	void put(Object key, Object value);
 
 	/**
 	 * @param key A key
 	 * @return The cached object, or null if the object is not in the cache.
 	 */
-	<K, V> V get(K key);
+	Object get(Object key);
 
 	/**
 	 * @param key A key
@@ -63,5 +63,5 @@ public interface CacheService extends SciJavaService {
 	 *         of the value loader.
 	 * @throws ExecutionException
 	 */
-	<K, V> V get(K key, Callable<V> valueLoader) throws ExecutionException;
+	<V> V get(Object key, Callable<V> valueLoader) throws ExecutionException;
 }

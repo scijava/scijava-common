@@ -52,21 +52,21 @@ public class DefaultCacheService extends AbstractService implements
 	private Map<Object, Object> map;
 
 	@Override
-	public <K, V> void put(final K key, final V value) {
+	public void put(final Object key, final Object value) {
 		map.put(key, value);
+	}
+
+	@Override
+	public Object get(final Object key) {
+		return map.get(key);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <K, V> V get(final K key) {
-		return (V) map.get(key);
-	}
-
-	@Override
-	public <K, V> V get(final K key, final Callable<V> valueLoader)
+	public <V> V get(final Object key, final Callable<V> valueLoader)
 		throws ExecutionException
 	{
-		return get(key);
+		return (V)get(key);
 	}
 
 	// -- Service Methods --
