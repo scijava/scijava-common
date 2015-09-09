@@ -100,7 +100,8 @@ public class ContextCreationTest {
 				org.scijava.welcome.DefaultWelcomeService.class,
 				org.scijava.widget.DefaultWidgetService.class,
 				org.scijava.log.StderrLogService.class,
-				org.scijava.platform.DefaultAppEventService.class };
+				org.scijava.platform.DefaultAppEventService.class,
+				org.scijava.cache.DefaultCacheService.class};
 
 		final Context context = new Context();
 		verifyServiceOrder(expected, context);
