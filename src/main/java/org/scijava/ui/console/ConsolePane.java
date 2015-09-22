@@ -42,6 +42,9 @@ import org.scijava.widget.UIComponent;
  */
 public interface ConsolePane<C> extends UIComponent<C>, OutputListener {
 
+	/** System property which, if set, suppresses the SciJava console window. */
+	String NO_CONSOLE_PROPERTY = "scijava.noConsole";
+
 	/** Appends the given output to the console. */
 	void append(OutputEvent event);
 
