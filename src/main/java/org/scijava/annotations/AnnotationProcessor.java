@@ -248,12 +248,10 @@ public class AnnotationProcessor extends AbstractProcessor {
 				filer.createResource(StandardLocation.CLASS_OUTPUT, "", path,
 					originating.toArray(new Element[originating.size()]));
 
-			/*
-			 * Verify that the generated file is in the META-INF/json/ subdirectory;
-			 * Despite our asking for it explicitly, the DefaultFileManager will
-			 * strip out the directory if javac was called without an explicit
-			 * output directory (i.e. without <code>-d</code> option).
-			 */
+			// Verify that the generated file is in the META-INF/json/ subdirectory;
+			// Despite our asking for it explicitly, the DefaultFileManager will
+			// strip out the directory if javac was called without an explicit
+			// output directory (i.e. without <code>-d</code> option).
 			final String uri = fileObject.toUri().toString();
 			if (uri != null && uri.endsWith("/" + path)) {
 				return fileObject.openOutputStream();
