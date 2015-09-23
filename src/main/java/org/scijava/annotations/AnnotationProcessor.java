@@ -257,7 +257,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 				return fileObject.openOutputStream();
 			}
 			final String prefix =
-				uri.substring(0, uri.length() - annotationName.length());
+				uri == null ? "" : uri.substring(0, uri.length() -
+					annotationName.length());
 			final File file = new File(prefix + path);
 			final File parent = file.getParentFile();
 			if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
