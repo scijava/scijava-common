@@ -182,7 +182,7 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	}
 
 	@Override
-	public ConsolePane getConsolePane() {
+	public ConsolePane<?> getConsolePane() {
 		return null;
 	}
 

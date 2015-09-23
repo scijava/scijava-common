@@ -96,7 +96,7 @@ public interface UserInterface extends RichPlugin, Disposable {
 	StatusBar getStatusBar();
 
 	/** Gets the main SciJava console pane, or null if not applicable. */
-	ConsolePane getConsolePane();
+	ConsolePane<?> getConsolePane();
 
 	/** Gets the system clipboard associated with this UI. */
 	SystemClipboard getSystemClipboard();
