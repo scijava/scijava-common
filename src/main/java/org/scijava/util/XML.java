@@ -129,35 +129,38 @@ public class XML {
 			System.err.println(ClassUtils.getLocation(XPathFactory.class));
 		}
 
-		XPath xpath = null;
+		XPath xp = null;
 		final Thread thread = Thread.currentThread();
 		final ClassLoader contextClassLoader = thread.getContextClassLoader();
 		try {
 			ClassLoader loader = contextClassLoader;
-			for (;;) try {
-				xpath = XPathFactory.newInstance().newXPath();
+			while (true) {
 				try {
-					// make sure that the current xalan/xerces pair can evaluate
-					// expressions (i.e. *not* throw NoSuchMethodErrors).
-					xpath.evaluate("//dummy", doc);
-				} catch (Throwable t) {
-					if (debug) {
-						System.err.println("There was a problem with " +
-							xpath.getClass() + " in " +
-							ClassUtils.getLocation(xpath.getClass()) + ":");
-						t.printStackTrace();
+					xp = XPathFactory.newInstance().newXPath();
+					try {
+						// make sure that the current xalan/xerces pair can evaluate
+						// expressions (i.e. *not* throw NoSuchMethodErrors).
+						xp.evaluate("//dummy", doc);
+					} catch (Throwable t) {
+						if (debug) {
+							System.err.println("There was a problem with " + xp.getClass() +
+								" in " + ClassUtils.getLocation(xp.getClass()) + ":");
+							t.printStackTrace();
+						}
+						throw new Error(t);
 					}
-					throw new Error(t);
+					break;
 				}
-				break;
-			} catch (Error e) {
-				if (debug) e.printStackTrace();
-				loader = loader.getParent();
-				if (loader == null) throw e;
-				thread.setContextClassLoader(loader);
+				catch (Error e) {
+					if (debug) e.printStackTrace();
+					loader = loader.getParent();
+					if (loader == null) throw e;
+					thread.setContextClassLoader(loader);
+				}
 			}
-			this.xpath = xpath;
-		} finally {
+			xpath = xp;
+		}
+		finally {
 			thread.setContextClassLoader(contextClassLoader);
 		}
 	}
