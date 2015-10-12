@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -122,6 +123,26 @@ public class ScriptInfoTest {
 
 		// clean up the temporary directory
 		FileUtils.deleteRecursively(tmpDir);
+	}
+
+	/**
+	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
+	 * script.
+	 */
+	@Test
+	public void testReaderSanity() throws Exception {
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT Integer output";
+
+		ScriptInfo info = new ScriptInfo(context, "hello.bsizes", new StringReader(
+			script));
+		BufferedReader reader1 = info.getReader();
+		BufferedReader reader2 = info.getReader();
+
+		assertEquals("Readers are not independent.", reader1.read(), reader2
+			.read());
+
 	}
 
 	@Plugin(type = ScriptLanguage.class)

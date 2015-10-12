@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private static final int PARAM_CHAR_MAX = 640 * 1024; // should be enough ;-)
 
 	private final String path;
-	private final BufferedReader reader;
+	private final String script;
 
 	@Parameter
 	private Context context;
@@ -128,8 +129,17 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	{
 		setContext(context);
 		this.path = path;
-		this.reader =
-			reader == null ? null : new BufferedReader(reader, PARAM_CHAR_MAX);
+
+		String script = null;
+		if (reader != null) {
+			try {
+				script = getReaderContentsAsString(reader);
+			}
+			catch (final IOException exc) {
+				log.error("Error reading script: " + path, exc);
+			}
+		}
+		this.script = script;
 	}
 
 	// -- ScriptInfo methods --
@@ -148,14 +158,17 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/**
-	 * Gets the reader which delivers the script's content.
+	 * Gets a reader which delivers the script's content.
 	 * <p>
 	 * This might be null, in which case the content is stored in a file on disk
 	 * given by {@link #getPath()}.
 	 * </p>
 	 */
 	public BufferedReader getReader() {
-		return reader;
+		if (script == null) {
+			return null;
+		}
+		return new BufferedReader(new StringReader(script), PARAM_CHAR_MAX);
 	}
 
 	/**
@@ -214,12 +227,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 		try {
 			final BufferedReader in;
-			if (reader == null) {
+			if (script == null) {
 				in = new BufferedReader(new FileReader(getPath()));
 			}
 			else {
-				in = reader;
-				in.mark(PARAM_CHAR_MAX);
+				in = getReader();
 			}
 			while (true) {
 				final String line = in.readLine();
@@ -234,8 +246,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 				}
 				else if (line.matches(".*\\w.*")) break;
 			}
-			if (reader == null) in.close();
-			else in.reset();
+			in.close();
 
 			if (!returnValueDeclared) addReturnValue();
 		}
@@ -476,6 +487,29 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		else {
 			throw new ScriptException("Invalid attribute name: " + key);
 		}
+	}
+
+	/**
+	 * Read entire contents of a Reader and return as String.
+	 *
+	 * @param reader {@link Reader} whose contents should be returned as String.
+	 *          Expected to never be <code>null</code>.
+	 * @return contents of reader as String.
+	 * @throws IOException If an I/O error occurs
+	 * @throws NullPointerException If reader is <code>null</code>
+	 */
+	private static String getReaderContentsAsString(final Reader reader)
+		throws IOException, NullPointerException
+	{
+		final char[] buffer = new char[8192];
+		final StringBuilder builder = new StringBuilder();
+
+		int read;
+		while ((read = reader.read(buffer)) != -1) {
+			builder.append(buffer, 0, read);
+		}
+
+		return builder.toString();
 	}
 
 }
