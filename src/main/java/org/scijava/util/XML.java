@@ -241,6 +241,13 @@ public class XML {
 		return null;
 	}
 
+	/** Gets the CData beneath the given element's specified child. */
+	public static String cdata(final Element el, final String child) {
+		NodeList children = el.getElementsByTagName(child);
+		if (children == null || children.getLength() == 0) return null;
+		return cdata(children.item(0));
+	}
+
 	// -- Helper methods --
 
 	/** Loads an XML document from the given file. */
