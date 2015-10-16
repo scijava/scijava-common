@@ -252,6 +252,13 @@ public class XML {
 		return elements;
 	}
 
+	/** Gets the given element's specified child elements. */
+	public static ArrayList<Element>
+		elements(final Element el, final String child)
+	{
+		return elements(el.getElementsByTagName(child));
+	}
+
 	// -- Helper methods --
 
 	/** Loads an XML document from the given file. */
