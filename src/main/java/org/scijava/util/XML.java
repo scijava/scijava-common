@@ -188,15 +188,7 @@ public class XML {
 
 	/** Obtains the elements identified by the given XPath expression. */
 	public ArrayList<Element> elements(final String expression) {
-		final NodeList nodes = xpath(expression);
-		final ArrayList<Element> elements = new ArrayList<Element>();
-		if (nodes != null) {
-			for (int i=0; i<nodes.getLength(); i++) {
-				final Node node = nodes.item(i);
-				if (node instanceof Element) elements.add((Element) node);
-			}
-		}
-		return elements;
+		return elements(xpath(expression));
 	}
 
 	/** Obtains the nodes identified by the given XPath expression. */
@@ -246,6 +238,18 @@ public class XML {
 		NodeList children = el.getElementsByTagName(child);
 		if (children == null || children.getLength() == 0) return null;
 		return cdata(children.item(0));
+	}
+
+	/** Gets the element nodes from the given node list. */
+	public static ArrayList<Element> elements(final NodeList nodes) {
+		final ArrayList<Element> elements = new ArrayList<Element>();
+		if (nodes != null) {
+			for (int i=0; i<nodes.getLength(); i++) {
+				final Node node = nodes.item(i);
+				if (node instanceof Element) elements.add((Element) node);
+			}
+		}
+		return elements;
 	}
 
 	// -- Helper methods --
