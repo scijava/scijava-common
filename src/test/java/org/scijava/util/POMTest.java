@@ -31,9 +31,20 @@
 
 package org.scijava.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.Test;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Tests methods of {@link POM}.
@@ -71,6 +82,65 @@ public class POMTest {
 		assertTrue(POM.compareVersions("2.0.0", "2.0.0.1") < 0);
 		// check that SemVer prerelease versions are handled properly
 		assertTrue(POM.compareVersions("2.0.0", "2.0.0-beta-1") > 0);
+	}
+
+	@Test
+	public void testAccessors() throws ParserConfigurationException,
+		SAXException, IOException
+	{
+		final POM pom = new POM(new File("pom.xml"));
+		assertEquals("org.scijava", pom.getParentGroupId());
+		assertEquals("pom-scijava", pom.getParentArtifactId());
+		assertNotNull(pom.getParentVersion());
+		assertEquals("org.scijava", pom.getGroupId());
+		assertEquals("scijava-common", pom.getArtifactId());
+		assertNotNull(pom.getVersion());
+		assertEquals("Jenkins", pom.getCIManagementSystem());
+		final String ciManagementURL = pom.getCIManagementURL();
+		assertEquals("http://jenkins.imagej.net/job/SciJava-common/",
+			ciManagementURL);
+		assertEquals("GitHub Issues", pom.getIssueManagementSystem());
+		final String issueManagementURL = pom.getIssueManagementURL();
+		assertEquals("https://github.com/scijava/scijava-common/issues",
+			issueManagementURL);
+		assertNull(pom.getOrganizationName());
+		assertNull(pom.getOrganizationURL());
+		assertTrue(pom.getPath().endsWith("pom.xml"));
+		assertTrue(pom.getProjectDescription().startsWith(
+			"SciJava Common is a shared library for SciJava software."));
+		assertEquals("2009", pom.getProjectInceptionYear());
+		assertEquals("SciJava Common", pom.getProjectName());
+		assertEquals("http://scijava.org/", pom.getProjectURL());
+		final String scmConnection = pom.getSCMConnection();
+		assertEquals("scm:git:git://github.com/scijava/scijava-common",
+			scmConnection);
+		final String scmDeveloperConnection = pom.getSCMDeveloperConnection();
+		assertEquals("scm:git:git@github.com:scijava/scijava-common",
+			scmDeveloperConnection);
+		assertNotNull(pom.getSCMTag()); // won't be HEAD for release tags
+		assertEquals("https://github.com/scijava/scijava-common", pom.getSCMURL());
+	}
+
+	@Test
+	public void testCdata() throws ParserConfigurationException,
+		SAXException, IOException
+	{
+		final POM pom = new POM(new File("pom.xml"));
+		assertEquals("repo", pom.cdata("//project/licenses/license/distribution"));
+		assertEquals("http://scijava.org/", pom.cdata("//project/url"));
+	}
+
+	@Test
+	public void testElements() throws ParserConfigurationException,
+		SAXException, IOException
+	{
+		final POM pom = new POM(new File("pom.xml"));
+		final ArrayList<Element> developers =
+			pom.elements("//project/developers/developer");
+		assertEquals(3, developers.size());
+		assertEquals("ctrueden", XML.cdata(developers.get(0), "id"));
+		assertEquals("dscho", XML.cdata(developers.get(1), "id"));
+		assertEquals("hinerm", XML.cdata(developers.get(2), "id"));
 	}
 
 }
