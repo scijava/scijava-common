@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,6 +57,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -181,7 +183,20 @@ public class XML {
 	public String cdata(final String expression) {
 		final NodeList nodes = xpath(expression);
 		if (nodes == null || nodes.getLength() == 0) return null;
-		return getCData(nodes.item(0));
+		return cdata(nodes.item(0));
+	}
+
+	/** Obtains the elements identified by the given XPath expression. */
+	public ArrayList<Element> elements(final String expression) {
+		final NodeList nodes = xpath(expression);
+		final ArrayList<Element> elements = new ArrayList<Element>();
+		if (nodes != null) {
+			for (int i=0; i<nodes.getLength(); i++) {
+				final Node node = nodes.item(i);
+				if (node instanceof Element) elements.add((Element) node);
+			}
+		}
+		return elements;
 	}
 
 	/** Obtains the nodes identified by the given XPath expression. */
@@ -210,6 +225,27 @@ public class XML {
 			exc.printStackTrace(new PrintStream(out));
 			return out.toString();
 		}
+	}
+
+	// -- Utility methods --
+
+	/** Gets the CData beneath the given node. */
+	public static String cdata(final Node item) {
+		final NodeList children = item.getChildNodes();
+		if (children == null || children.getLength() == 0) return null;
+		for (int i = 0; i < children.getLength(); i++) {
+			final Node child = children.item(i);
+			if (child.getNodeType() != Node.TEXT_NODE) continue;
+			return child.getNodeValue();
+		}
+		return null;
+	}
+
+	/** Gets the CData beneath the given element's specified child. */
+	public static String cdata(final Element el, final String child) {
+		NodeList children = el.getElementsByTagName(child);
+		if (children == null || children.getLength() == 0) return null;
+		return cdata(children.item(0));
 	}
 
 	// -- Helper methods --
@@ -250,18 +286,6 @@ public class XML {
 		throws ParserConfigurationException
 	{
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
-	}
-
-	/** Gets the CData beneath the given node. */
-	private static String getCData(final Node item) {
-		final NodeList children = item.getChildNodes();
-		if (children == null || children.getLength() == 0) return null;
-		for (int i = 0; i < children.getLength(); i++) {
-			final Node child = children.item(i);
-			if (child.getNodeType() != Node.TEXT_NODE) continue;
-			return child.getNodeValue();
-		}
-		return null;
 	}
 
 	/** Converts the given DOM to a string. */

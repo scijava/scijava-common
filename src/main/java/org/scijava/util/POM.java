@@ -84,11 +84,26 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 
 	// -- POM methods --
 
+	/** Gets the POM's parent groupId. */
+	public String getParentGroupId() {
+		return cdata("//project/parent/groupId");
+	}
+
+	/** Gets the POM's parent artifactId. */
+	public String getParentArtifactId() {
+		return cdata("//project/parent/artifactId");
+	}
+
+	/** Gets the POM's parent artifactId. */
+	public String getParentVersion() {
+		return cdata("//project/parent/version");
+	}
+
 	/** Gets the POM's groupId. */
 	public String getGroupId() {
 		final String groupId = cdata("//project/groupId");
 		if (groupId != null) return groupId;
-		return cdata("//project/parent/groupId");
+		return getParentGroupId();
 	}
 
 	/** Gets the POM's artifactId. */
@@ -191,7 +206,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 			synchronized (this) {
 				if (version == null) {
 					version = cdata("//project/version");
-					if (version == null) version = cdata("//project/parent/version");
+					if (version == null) version = getParentVersion();
 				}
 			}
 		}
