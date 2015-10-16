@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,6 +57,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -182,6 +184,19 @@ public class XML {
 		final NodeList nodes = xpath(expression);
 		if (nodes == null || nodes.getLength() == 0) return null;
 		return cdata(nodes.item(0));
+	}
+
+	/** Obtains the elements identified by the given XPath expression. */
+	public ArrayList<Element> elements(final String expression) {
+		final NodeList nodes = xpath(expression);
+		final ArrayList<Element> elements = new ArrayList<Element>();
+		if (nodes != null) {
+			for (int i=0; i<nodes.getLength(); i++) {
+				final Node node = nodes.item(i);
+				if (node instanceof Element) elements.add((Element) node);
+			}
+		}
+		return elements;
 	}
 
 	/** Obtains the nodes identified by the given XPath expression. */
