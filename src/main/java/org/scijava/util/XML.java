@@ -181,7 +181,7 @@ public class XML {
 	public String cdata(final String expression) {
 		final NodeList nodes = xpath(expression);
 		if (nodes == null || nodes.getLength() == 0) return null;
-		return getCData(nodes.item(0));
+		return cdata(nodes.item(0));
 	}
 
 	/** Obtains the nodes identified by the given XPath expression. */
@@ -210,6 +210,20 @@ public class XML {
 			exc.printStackTrace(new PrintStream(out));
 			return out.toString();
 		}
+	}
+
+	// -- Utility methods --
+
+	/** Gets the CData beneath the given node. */
+	public static String cdata(final Node item) {
+		final NodeList children = item.getChildNodes();
+		if (children == null || children.getLength() == 0) return null;
+		for (int i = 0; i < children.getLength(); i++) {
+			final Node child = children.item(i);
+			if (child.getNodeType() != Node.TEXT_NODE) continue;
+			return child.getNodeValue();
+		}
+		return null;
 	}
 
 	// -- Helper methods --
@@ -250,18 +264,6 @@ public class XML {
 		throws ParserConfigurationException
 	{
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
-	}
-
-	/** Gets the CData beneath the given node. */
-	private static String getCData(final Node item) {
-		final NodeList children = item.getChildNodes();
-		if (children == null || children.getLength() == 0) return null;
-		for (int i = 0; i < children.getLength(); i++) {
-			final Node child = children.item(i);
-			if (child.getNodeType() != Node.TEXT_NODE) continue;
-			return child.getNodeValue();
-		}
-		return null;
 	}
 
 	/** Converts the given DOM to a string. */
