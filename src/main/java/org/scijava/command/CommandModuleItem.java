@@ -155,11 +155,14 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public List<T> getChoices() {
-		final ArrayList<T> choices = new ArrayList<T>();
+		final String[] choices = getParameter().choices();
+		if (choices.length == 0) return super.getChoices();
+
+		final ArrayList<T> choiceList = new ArrayList<T>();
 		for (final String choice : getParameter().choices()) {
-			choices.add(tValue(choice));
+			choiceList.add(tValue(choice));
 		}
-		return choices;
+		return choiceList;
 	}
 
 	// -- BasicDetails methods --

@@ -32,6 +32,7 @@
 package org.scijava.module;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 import org.scijava.AbstractBasicDetails;
@@ -258,7 +259,8 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 
 	@Override
 	public List<T> getChoices() {
-		return null;
+		final T[] choices = getType().getEnumConstants();
+		return choices == null ? null : Arrays.asList(choices);
 	}
 
 	@Override
