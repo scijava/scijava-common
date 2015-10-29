@@ -143,6 +143,23 @@ public class Manifest {
 		}
 	}
 
+	/**
+	 * Gets the JAR manifest associated with the given XML document. Assumes the
+	 * XML document was loaded as a resource from inside a JAR.
+	 */
+	public static Manifest getManifest(final XML xml) throws IOException {
+		final String path = xml.getPath();
+		if (path == null || !path.startsWith("file:")) return null;
+		final int dotJAR = path.indexOf(".jar!/");
+		return getManifest(new File(path.substring(5, dotJAR + 4)));
+	}
+
+	/** Gets the JAR manifest associated with the given JAR file. */
+	public static Manifest getManifest(final File jarFile) throws IOException {
+		if (!jarFile.exists()) throw new FileNotFoundException();
+		return getManifest(new URL("jar:file:" + jarFile.getAbsolutePath() + "!/"));
+	}
+
 	private static Manifest getManifest(final URL jarURL) throws IOException {
 		final JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
 		return new Manifest(conn.getManifest());
