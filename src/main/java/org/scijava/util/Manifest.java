@@ -31,6 +31,8 @@
 
 package org.scijava.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -134,13 +136,16 @@ public class Manifest {
 	/** Gets the JAR manifest associated with the given class. */
 	public static Manifest getManifest(final Class<?> c) {
 		try {
-			// try to grab manifest from the JAR
-			final URL location = new URL("jar:" + ClassUtils.getLocation(c) + "!/");
-			return new Manifest(((JarURLConnection)location.openConnection()).getManifest());
+			return getManifest(new URL("jar:" + ClassUtils.getLocation(c) + "!/"));
 		}
 		catch (final IOException e) {
 			return null;
 		}
+	}
+
+	private static Manifest getManifest(final URL jarURL) throws IOException {
+		final JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
+		return new Manifest(conn.getManifest());
 	}
 
 }
