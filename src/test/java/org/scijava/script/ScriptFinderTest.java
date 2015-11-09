@@ -66,18 +66,23 @@ public class ScriptFinderTest {
 	@BeforeClass
 	public static void setUp() throws IOException {
 		scriptsDir = TestUtils.createTemporaryDirectory("script-finder-");
-		TestUtils.createPath(scriptsDir, "ignored.foo");
-		TestUtils.createPath(scriptsDir, "Scripts/quick.foo");
-		TestUtils.createPath(scriptsDir, "Scripts/brown.foo");
-		TestUtils.createPath(scriptsDir, "Scripts/fox.foo");
-		TestUtils.createPath(scriptsDir, "Scripts/The_Lazy_Dog.foo");
-		TestUtils.createPath(scriptsDir, "Math/add.foo");
-		TestUtils.createPath(scriptsDir, "Math/subtract.foo");
-		TestUtils.createPath(scriptsDir, "Math/multiply.foo");
-		TestUtils.createPath(scriptsDir, "Math/divide.foo");
-		TestUtils.createPath(scriptsDir, "Math/Trig/cos.foo");
-		TestUtils.createPath(scriptsDir, "Math/Trig/sin.foo");
-		TestUtils.createPath(scriptsDir, "Math/Trig/tan.foo");
+		final String[] scriptPaths = { //
+			"ignored.foo", //
+			"Scripts/quick.foo", //
+			"Scripts/brown.foo", //
+			"Scripts/fox.foo", //
+			"Scripts/The_Lazy_Dog.foo", //
+			"Math/add.foo", //
+			"Math/subtract.foo", //
+			"Math/multiply.foo", //
+			"Math/divide.foo", //
+			"Math/Trig/cos.foo", //
+			"Math/Trig/sin.foo", //
+			"Math/Trig/tan.foo", //
+		};
+		for (final String scriptPath : scriptPaths) {
+			TestUtils.createPath(scriptsDir, scriptPath);
+		}
 	}
 
 	@AfterClass
@@ -94,18 +99,20 @@ public class ScriptFinderTest {
 
 		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
 
-		assertEquals(11, scripts.size());
-		assertMenuPath("Scripts > The Lazy Dog", scripts, 0);
-		assertMenuPath("Math > add", scripts, 1);
-		assertMenuPath("Scripts > brown", scripts, 2);
-		assertMenuPath("Math > Trig > cos", scripts, 3);
-		assertMenuPath("Math > divide", scripts, 4);
-		assertMenuPath("Scripts > fox", scripts, 5);
-		assertMenuPath("Math > multiply", scripts, 6);
-		assertMenuPath("Scripts > quick", scripts, 7);
-		assertMenuPath("Math > Trig > sin", scripts, 8);
-		assertMenuPath("Math > subtract", scripts, 9);
-		assertMenuPath("Math > Trig > tan", scripts, 10);
+		final String[] expected = { //
+			"Scripts > The Lazy Dog", //
+			"Math > add", //
+			"Scripts > brown", //
+			"Math > Trig > cos", //
+			"Math > divide", //
+			"Scripts > fox", //
+			"Math > multiply", //
+			"Scripts > quick", //
+			"Math > Trig > sin", //
+			"Math > subtract", //
+			"Math > Trig > tan", //
+		};
+		assertMenuPaths(expected, scripts);
 	}
 
 	/**
@@ -124,19 +131,21 @@ public class ScriptFinderTest {
 
 		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
 
-		assertEquals(12, scripts.size());
-		assertMenuPath("Foo > Bar > Scripts > The Lazy Dog", scripts, 0);
-		assertMenuPath("Foo > Bar > Math > add", scripts, 1);
-		assertMenuPath("Foo > Bar > Scripts > brown", scripts, 2);
-		assertMenuPath("Foo > Bar > Math > Trig > cos", scripts, 3);
-		assertMenuPath("Foo > Bar > Math > divide", scripts, 4);
-		assertMenuPath("Foo > Bar > Scripts > fox", scripts, 5);
-		assertMenuPath("Foo > Bar > ignored", scripts, 6);
-		assertMenuPath("Foo > Bar > Math > multiply", scripts, 7);
-		assertMenuPath("Foo > Bar > Scripts > quick", scripts, 8);
-		assertMenuPath("Foo > Bar > Math > Trig > sin", scripts, 9);
-		assertMenuPath("Foo > Bar > Math > subtract", scripts, 10);
-		assertMenuPath("Foo > Bar > Math > Trig > tan", scripts, 11);
+		final String[] expected = { //
+			"Foo > Bar > Scripts > The Lazy Dog", //
+			"Foo > Bar > Math > add", //
+			"Foo > Bar > Scripts > brown", //
+			"Foo > Bar > Math > Trig > cos", //
+			"Foo > Bar > Math > divide", //
+			"Foo > Bar > Scripts > fox", //
+			"Foo > Bar > ignored", //
+			"Foo > Bar > Math > multiply", //
+			"Foo > Bar > Scripts > quick", //
+			"Foo > Bar > Math > Trig > sin", //
+			"Foo > Bar > Math > subtract", //
+			"Foo > Bar > Math > Trig > tan", //
+		};
+		assertMenuPaths(expected, scripts);
 	}
 
 	/**
@@ -155,18 +164,20 @@ public class ScriptFinderTest {
 
 		final ArrayList<ScriptInfo> scripts = findScripts(scriptService);
 
-		assertEquals(11, scripts.size());
-		assertMenuPath("Plugins > The Lazy Dog", scripts, 0);
-		assertMenuPath("Math > add", scripts, 1);
-		assertMenuPath("Plugins > brown", scripts, 2);
-		assertMenuPath("Math > Trig > cos", scripts, 3);
-		assertMenuPath("Math > divide", scripts, 4);
-		assertMenuPath("Plugins > fox", scripts, 5);
-		assertMenuPath("Math > multiply", scripts, 6);
-		assertMenuPath("Plugins > quick", scripts, 7);
-		assertMenuPath("Math > Trig > sin", scripts, 8);
-		assertMenuPath("Math > subtract", scripts, 9);
-		assertMenuPath("Math > Trig > tan", scripts, 10);
+		final String[] expected = { //
+			"Plugins > The Lazy Dog", //
+			"Math > add", //
+			"Plugins > brown", //
+			"Math > Trig > cos", //
+			"Math > divide", //
+			"Plugins > fox", //
+			"Math > multiply", //
+			"Plugins > quick", //
+			"Math > Trig > sin", //
+			"Math > subtract", //
+			"Math > Trig > tan", //
+		};
+		assertMenuPaths(expected, scripts);
 	}
 
 	// -- Helper methods --
@@ -188,10 +199,14 @@ public class ScriptFinderTest {
 		return scripts;
 	}
 
-	private void assertMenuPath(final String menuString,
-		final ArrayList<ScriptInfo> scripts, final int i)
+	private void assertMenuPaths(final String[] expected,
+		final ArrayList<ScriptInfo> scripts)
 	{
-		assertEquals(menuString, scripts.get(i).getMenuPath().getMenuString());
+		assertEquals(expected.length, scripts.size());
+		for (int i=0; i<expected.length; i++) {
+			final String actual = scripts.get(i).getMenuPath().getMenuString();
+			assertEquals(expected[i], actual);
+		}
 	}
 
 	// -- Helper classes --
