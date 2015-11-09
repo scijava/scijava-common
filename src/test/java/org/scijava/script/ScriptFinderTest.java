@@ -79,6 +79,8 @@ public class ScriptFinderTest {
 			"Math/Trig/cos.foo", //
 			"Math/Trig/sin.foo", //
 			"Math/Trig/tan.foo", //
+			"one/Stuff/my_foo.foo", //
+			"two/Stuff/my_bar.foo", //
 		};
 		for (final String scriptPath : scriptPaths) {
 			TestUtils.createPath(scriptsDir, scriptPath);
@@ -107,6 +109,8 @@ public class ScriptFinderTest {
 			"Math > divide", //
 			"Scripts > fox", //
 			"Math > multiply", //
+			"two > Stuff > my bar", //
+			"one > Stuff > my foo", //
 			"Scripts > quick", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
@@ -140,6 +144,8 @@ public class ScriptFinderTest {
 			"Foo > Bar > Scripts > fox", //
 			"Foo > Bar > ignored", //
 			"Foo > Bar > Math > multiply", //
+			"Foo > Bar > two > Stuff > my bar", //
+			"Foo > Bar > one > Stuff > my foo", //
 			"Foo > Bar > Scripts > quick", //
 			"Foo > Bar > Math > Trig > sin", //
 			"Foo > Bar > Math > subtract", //
@@ -172,6 +178,8 @@ public class ScriptFinderTest {
 			"Math > divide", //
 			"Plugins > fox", //
 			"Math > multiply", //
+			"two > Stuff > my bar", //
+			"one > Stuff > my foo", //
 			"Plugins > quick", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
