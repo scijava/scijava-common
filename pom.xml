@@ -33,21 +33,12 @@
 			<organization>UW-Madison LOCI</organization>
 			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
 			<roles>
-				<role>architect</role>
+				<role>lead</role>
 				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-		<developer>
-			<id>dscho</id>
-			<name>Johannes Schindelin</name>
-			<email>schindelin@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
 			<timezone>-6</timezone>
 		</developer>
@@ -59,7 +50,12 @@
 			<organization>UW-Madison LOCI</organization>
 			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
 			<roles>
+				<role>lead</role>
 				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
 			<timezone>-6</timezone>
 		</developer>
@@ -67,38 +63,41 @@
 
 	<contributors>
 		<contributor>
+			<name>Johannes Schindelin</name>
+			<url>http://imagej.net/User:Schindelin</url>
+			<properties><id>dscho</id></properties>
+		</contributor>
+		<contributor>
 			<name>Barry DeZonia</name>
-			<url>http://loci.wisc.edu/people/barry-dezonia</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
+			<url>http://imagej.net/User:Bdezonia</url>
+			<properties><id>bdezonia</id></properties>
 		</contributor>
 		<contributor>
 			<name>Lee Kamentsky</name>
-			<email>leek@broadinstitute.org</email>
-			<url>http://www.broadinstitute.org/~leek/</url>
-			<organization>Broad Institute of MIT and Harvard</organization>
-			<organizationUrl>http://www.broadinstitute.org/</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-5</timezone>
+			<url>http://imagej.net/User:Leek</url>
+			<properties><id>LeeKamentsky</id></properties>
 		</contributor>
 		<contributor>
 			<name>Christian Dietz</name>
-			<email>christian.dietz@uni-konstanz.de</email>
-			<url>http://www.informatik.uni-konstanz.de/berthold/mitglieder/christian-dietz/</url>
-			<organization>University of Konstanz</organization>
-			<organizationUrl>http://www.informatik.uni-konstanz.de/</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>+1</timezone>
+			<url>http://imagej.net/User:Dietzc</url>
+			<properties><id>dietzc</id></properties>
 		</contributor>
-		<contributor><name>Jay Warrick</name></contributor>
+		<contributor>
+			<name>Gabriel Einsdorf</name>
+			<properties><id>gab1one</id></properties>
+		</contributor>
+		<contributor>
+			<name>Jonathan Hale</name>
+			<properties><id>Squareys</id></properties>
+		</contributor>
+		<contributor>
+			<name>Kevin Mader</name>
+			<properties><id>kmader</id></properties>
+		</contributor>
+		<contributor>
+			<name>Jay Warrick</name>
+			<properties><id>jaywarrick</id></properties>
+		</contributor>
 	</contributors>
 
 	<scm>

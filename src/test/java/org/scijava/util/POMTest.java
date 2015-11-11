@@ -137,10 +137,9 @@ public class POMTest {
 		final POM pom = new POM(new File("pom.xml"));
 		final ArrayList<Element> developers =
 			pom.elements("//project/developers/developer");
-		assertEquals(3, developers.size());
+		assertEquals(2, developers.size());
 		assertEquals("ctrueden", XML.cdata(developers.get(0), "id"));
-		assertEquals("dscho", XML.cdata(developers.get(1), "id"));
-		assertEquals("hinerm", XML.cdata(developers.get(2), "id"));
+		assertEquals("hinerm", XML.cdata(developers.get(1), "id"));
 	}
 
 }
