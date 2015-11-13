@@ -299,6 +299,18 @@ public class FileUtilsTest {
 		assertEquals("jars/ffmpeg-android-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-x86.jar"));
 		assertEquals("jars/ffmpeg-android-arm.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-arm.jar"));
 
+		// Test the jogamp style of native binary .jars
+		assertEquals("jars/jogl-all-natives-android-aarch64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-aarch64.jar"));
+		assertEquals("jars/jogl-all-natives-android-armv6.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-armv6.jar"));
+		assertEquals("jars/jogl-all-natives-linux-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-linux-armv6.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6.jar"));
+		assertEquals("jars/jogl-all-natives-linux-armv6hf.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6hf.jar"));
+		assertEquals("jars/jogl-all-natives-linux-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-i586.jar"));
+		assertEquals("jars/jogl-all-natives-macosx-universal.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-macosx-universal.jar"));
+		assertEquals("jars/jogl-all-natives-solaris-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-solaris-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-i586.jar"));
+		assertEquals("jars/jogl-all-natives-windows-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-windows-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-i586.jar"));
 	}
 
 	@Test
