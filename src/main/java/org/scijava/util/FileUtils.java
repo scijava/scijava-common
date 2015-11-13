@@ -70,6 +70,9 @@ public final class FileUtils {
 	public static final String SHORTENER_SLASH = "/";
 	public static final String SHORTENER_ELLIPSE = "...";
 
+	/** A regular expression to match filenames containing version information. */
+	private static final Pattern VERSION_PATTERN = buildVersionPattern();
+
 	private FileUtils() {
 		// prevent instantiation of utility class
 	}
@@ -170,13 +173,8 @@ public final class FileUtils {
 		}
 	}
 
-	/** A regular expression to match filenames containing version information. */
-	private final static Pattern versionPattern =
-		Pattern
-			.compile("(.+?)(-\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?)?((-(swing|swt|shaded|sources|javadoc|native|linux-x86|linux-x86_64|macosx-x86_64|windows-x86|windows-x86_64|android-arm|android-x86))?(\\.jar(-[a-z]*)?))");
-
 	public static String stripFilenameVersion(final String filename) {
-		final Matcher matcher = versionPattern.matcher(filename);
+		final Matcher matcher = VERSION_PATTERN.matcher(filename);
 		if (!matcher.matches()) return filename;
 		return matcher.group(1) + matcher.group(5);
 	}
@@ -191,7 +189,7 @@ public final class FileUtils {
 	public static File[] getAllVersions(final File directory,
 		final String filename)
 	{
-		final Matcher matcher = versionPattern.matcher(filename);
+		final Matcher matcher = VERSION_PATTERN.matcher(filename);
 		if (!matcher.matches()) {
 			final File file = new File(directory, filename);
 			return file.exists() ? new File[] { file } : null;
@@ -203,7 +201,7 @@ public final class FileUtils {
 			@Override
 			public boolean accept(final File dir, final String name) {
 				if (!name.startsWith(baseName)) return false;
-				final Matcher matcher2 = versionPattern.matcher(name);
+				final Matcher matcher2 = VERSION_PATTERN.matcher(name);
 				return matcher2.matches() && baseName.equals(matcher2.group(1)) &&
 						equals(classifier, matcher2.group(6));
 			}
@@ -609,6 +607,38 @@ public final class FileUtils {
 		return result;
 	}
 
+	// -- Helper methods --
+
+	/** Builds the {@link #VERSION_PATTERN} constant. */
+	private static Pattern buildVersionPattern() {
+		final String version =
+			"\\d+(\\.\\d+|\\d{7})+[a-z]?\\d?(-[A-Za-z0-9.]+?|\\.GA)*?";
+		final String suffix = "\\.jar(-[a-z]*)?";
+		return Pattern.compile("(.+?)(-" + version + ")?((-(" + classifiers() +
+			"))?(" + suffix + "))");
+	}
+
+	/** Helper method of {@link #buildVersionPattern()}. */
+	private static String classifiers() {
+		final String[] classifiers = {
+			"swing",
+			"swt",
+			"shaded",
+			"sources",
+			"javadoc",
+			"native",
+			"(natives-)?(android|linux|macosx|solaris|windows)-" +
+				"(aarch64|amd64|arm|armv6|armv6hf|i586|universal|x86|x86_64)",
+		};
+		final StringBuilder sb = new StringBuilder("(");
+		for (final String classifier : classifiers) {
+			if (sb.length() > 1) sb.append("|");
+			sb.append(classifier);
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+
 	// -- Deprecated methods --
 
 	/**
@@ -620,7 +650,7 @@ public final class FileUtils {
 	 */
 	@Deprecated
 	public static Matcher matchVersionedFilename(final String filename) {
-		return versionPattern.matcher(filename);
+		return VERSION_PATTERN.matcher(filename);
 	}
 
 }
