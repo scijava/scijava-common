@@ -627,8 +627,8 @@ public final class FileUtils {
 			"sources",
 			"javadoc",
 			"native",
-			"(android|linux|macosx|windows)-" +
-				"(arm|x86|x86_64)",
+			"(android|linux|macosx|solaris|windows)-" +
+				"(aarch64|amd64|arm|armv6|armv6hf|i586|universal|x86|x86_64)",
 		};
 		final StringBuilder sb = new StringBuilder("(");
 		for (final String classifier : classifiers) {
