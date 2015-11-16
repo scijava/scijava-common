@@ -34,14 +34,14 @@ package org.scijava.event;
 
 import java.util.Set;
 
-import org.scijava.service.Service;
+import org.scijava.service.SciJavaService;
 
 /**
  * Interface for service that keeps a history of SciJava events.
  * 
  * @author Curtis Rueden
  */
-public interface EventHistory extends Service {
+public interface EventHistory extends SciJavaService {
 
 	/** Activates or deactivates event history tracking. */
 	void setActive(boolean active);
