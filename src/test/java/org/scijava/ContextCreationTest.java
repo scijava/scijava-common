@@ -47,6 +47,7 @@ import org.scijava.plugin.PluginIndex;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.service.AbstractService;
+import org.scijava.service.SciJavaService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
@@ -105,6 +106,26 @@ public class ContextCreationTest {
 
 		final Context context = new Context();
 		verifyServiceOrder(expected, context);
+	}
+
+	/**
+	 * Tests that a new fully populated {@link Context} has exactly the same
+	 * {@link Service}s available as one created with only {@link SciJavaService}
+	 * implementations.
+	 * <p>
+	 * In other words: tests that all {@link Service}s implemented in SciJava
+	 * Common are tagged with the {@link SciJavaService} interface.
+	 * </p>
+	 */
+	@Test
+	public void testSciJavaServices() {
+		final Context full = new Context();
+		final Context sciJava = new Context(SciJavaService.class);
+		for (final Service s : full.getServiceIndex()) {
+			final Class<? extends Service> c = s.getClass();
+			final Service sjs = sciJava.getService(c);
+			if (sjs == null) fail("Not a SciJavaService? " + s.getClass().getName());
+		}
 	}
 
 	/**
