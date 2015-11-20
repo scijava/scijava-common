@@ -472,8 +472,14 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			item.setSoftMinimum(convertService.convert(value, item.getType()));
 		}
 		else if ("stepSize".equalsIgnoreCase(key)) {
-			// FIXME
-			item.setStepSize(convertService.convert(value, Number.class));
+			try {
+				final double stepSize = Double.parseDouble(value);
+				item.setStepSize(stepSize);
+			}
+			catch (final NumberFormatException exc) {
+				log.warn("Script parameter " + item.getName() +
+					" has an invalid stepSize: " + value);
+			}
 		}
 		else if ("style".equalsIgnoreCase(key)) {
 			item.setWidgetStyle(value);

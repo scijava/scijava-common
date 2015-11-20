@@ -152,7 +152,7 @@ public class ScriptInfoTest {
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, "slider", 11, null, null, 5, 15, 3, sliderValue);
+			true, null, "slider", 11, null, null, 5, 15, 3.0, sliderValue);
 
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
@@ -195,7 +195,7 @@ public class ScriptInfoTest {
 		assertEquals(max, item.getMaximumValue());
 		assertEquals(softMin, item.getSoftMinimum());
 		assertEquals(softMax, item.getSoftMaximum());
-//		assertEquals(stepSize, item.getStepSize());
+		assertEquals(stepSize, item.getStepSize());
 	}
 
 	/**
