@@ -135,13 +135,12 @@ public class ScriptInfoTest {
 			"% @LogService log\n" + //
 			"% @OUTPUT Integer output";
 
-		ScriptInfo info = new ScriptInfo(context, "hello.bsizes", new StringReader(
-			script));
-		BufferedReader reader1 = info.getReader();
-		BufferedReader reader2 = info.getReader();
+		final ScriptInfo info =
+			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
+		final BufferedReader reader1 = info.getReader();
+		final BufferedReader reader2 = info.getReader();
 
-		assertEquals("Readers are not independent.", reader1.read(), reader2
-			.read());
+		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
 
 	}
 
