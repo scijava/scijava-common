@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -53,6 +54,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.ItemIO;
+import org.scijava.log.LogService;
+import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
 import org.scijava.test.TestUtils;
 import org.scijava.util.DigestUtils;
@@ -123,6 +127,75 @@ public class ScriptInfoTest {
 
 		// clean up the temporary directory
 		FileUtils.deleteRecursively(tmpDir);
+	}
+
+	/**
+	 * Tests {@link ScriptInfo} parameter declarations, including
+	 * {@link ScriptInfo#inputs()}, {@link ScriptInfo#outputs()},
+	 * {@link ScriptInfo#getInput(String)} and
+	 * {@link ScriptInfo#getOutput(String)}.
+	 */
+	@Test
+	public void testParameters() {
+		final String script = "" + //
+			"% @LogService(required = false) log\n" + //
+			"% @int(label=\"Slider Value\", softMin=5, softMax=15, " + //
+			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
+			"% @BOTH java.lang.StringBuilder buffer";
+
+		final ScriptInfo info =
+			new ScriptInfo(context, "params.bsizes", new StringReader(script));
+
+		final ModuleItem<?> log = info.getInput("log");
+		assertItem("log", LogService.class, null, ItemIO.INPUT, false, true, null,
+			null, null, null, null, null, null, null, log);
+
+		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
+		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
+			true, null, "slider", 11, null, null, 5, 15, 3, sliderValue);
+
+		final ModuleItem<?> buffer = info.getOutput("buffer");
+		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
+			null, null, null, null, null, null, null, null, buffer);
+
+		final ModuleItem<?> result = info.getOutput("result");
+		assertItem("result", Object.class, null, ItemIO.OUTPUT, true, true, null,
+			null, null, null, null, null, null, null, result);
+
+		int inputCount = 0;
+		final ModuleItem<?>[] inputs = { log, sliderValue, buffer };
+		for (final ModuleItem<?> inItem : info.inputs()) {
+			assertSame(inputs[inputCount++], inItem);
+		}
+
+		int outputCount = 0;
+		final ModuleItem<?>[] outputs = { buffer, result };
+		for (final ModuleItem<?> outItem : info.outputs()) {
+			assertSame(outputs[outputCount++], outItem);
+		}
+	}
+
+	private void assertItem(final String name, final Class<?> type,
+		final String label, final ItemIO ioType, final boolean required,
+		final boolean persist, final String persistKey, final String style,
+		final Object value, final Object min, final Object max,
+		final Object softMin, final Object softMax, final Number stepSize,
+		final ModuleItem<?> item)
+	{
+		assertEquals(name, item.getName());
+		assertSame(type, item.getType());
+		assertEquals(label, item.getLabel());
+		assertSame(ioType, item.getIOType());
+		assertEquals(required, item.isRequired());
+		assertEquals(persist, item.isPersisted());
+		assertEquals(persistKey, item.getPersistKey());
+		assertEquals(style, item.getWidgetStyle());
+		assertEquals(value, item.getDefaultValue());
+		assertEquals(min, item.getMinimumValue());
+		assertEquals(max, item.getMaximumValue());
+		assertEquals(softMin, item.getSoftMinimum());
+		assertEquals(softMax, item.getSoftMaximum());
+//		assertEquals(stepSize, item.getStepSize());
 	}
 
 	/**
