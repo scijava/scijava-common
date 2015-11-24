@@ -71,7 +71,9 @@ import org.scijava.prefs.PrefService;
  * @author Barry DeZonia
  * @author Curtis Rueden
  */
-public class OptionsPlugin extends DynamicCommand implements SingletonPlugin {
+public abstract class OptionsPlugin extends DynamicCommand implements
+	SingletonPlugin
+{
 
 	// -- Parameters --
 
