@@ -159,7 +159,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 		if (choices.length == 0) return super.getChoices();
 
 		final ArrayList<T> choiceList = new ArrayList<T>();
-		for (final String choice : getParameter().choices()) {
+		for (final String choice : choices) {
 			choiceList.add(tValue(choice));
 		}
 		return choiceList;
