@@ -71,6 +71,10 @@ public class InvalidCommandTest {
 		final List<ValidityProblem> problems = info.getProblems();
 		assertNotNull(problems);
 		assertEquals(0, problems.size());
+		
+		final Number stepSize = info.getInput("x").getStepSize();
+		assertNotNull(stepSize);
+		assertEquals(10, stepSize.intValue());
 	}
 
 	@Test
@@ -101,7 +105,7 @@ public class InvalidCommandTest {
 	@Plugin(type = Command.class)
 	public static class ValidCommand implements Command {
 
-		@Parameter
+		@Parameter(stepSize = "10")
 		private double x;
 
 		@Parameter(type = ItemIO.OUTPUT)
