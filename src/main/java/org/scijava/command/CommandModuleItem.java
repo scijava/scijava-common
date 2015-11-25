@@ -145,7 +145,14 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public Number getStepSize() {
-		return tValue(getParameter().stepSize(), Number.class);
+		final String value = getParameter().stepSize();
+		try {
+			final double stepSize = Double.parseDouble(value);
+			return stepSize;
+		}
+		catch (final NumberFormatException exc) {
+			return tValue(value, Number.class);
+		}
 	}
 
 	@Override
