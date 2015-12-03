@@ -145,6 +145,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public Number getStepSize() {
+		// FIXME: stepSize should be typed on T, not Number!
 		final String value = getParameter().stepSize();
 		try {
 			final double stepSize = Double.parseDouble(value);
