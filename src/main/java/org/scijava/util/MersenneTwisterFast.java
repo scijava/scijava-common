@@ -229,6 +229,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
     private boolean __haveNextNextGaussian;
     
     /* We're overriding all internal data, to my knowledge, so this should be okay */
+    @Override
     public Object clone()
         {
         try
