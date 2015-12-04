@@ -32,6 +32,7 @@
 package org.scijava;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -63,6 +64,17 @@ public class ContextCreationTest {
 	public void testEmpty() {
 		final Context context = new Context(true);
 		assertTrue(context.getServiceIndex().isEmpty());
+		assertFalse(context.getPluginIndex().isEmpty());
+	}
+
+	/**
+	 * Tests {@link Context#Context(boolean, boolean)} with {@code (true, true)}.
+	 */
+	@Test
+	public void testNoPlugins() {
+		final Context context = new Context(true, true);
+		assertTrue(context.getServiceIndex().isEmpty());
+		assertTrue(context.getPluginIndex().isEmpty());
 	}
 
 	/**
