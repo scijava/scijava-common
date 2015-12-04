@@ -110,14 +110,25 @@ public class Context implements Disposable {
 	/**
 	 * Creates a new SciJava application context.
 	 * 
-	 * @param empty If true, the context will be empty; otherwise, it will be
-	 *          initialized with all available services.
+	 * @param empty If true, the context will be empty of services; otherwise, it
+	 *          will be initialized with all available services.
+	 * @see #Context(boolean, boolean)
+	 */
+	public Context(final boolean empty) {
+		this(empty, false);
+	}
+
+	/**
+	 * Creates a new SciJava application context.
+	 * 
+	 * @param noServices If true, the context will contain no services; otherwise,
+	 *          it will be initialized with all available services.
+	 * @param noPlugins If true, the context will contain no plugins; otherwise,
+	 *          it will be initialized with all available plugins.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
-	@SuppressWarnings("unchecked")
-	public Context(final boolean empty) {
-		this(empty ? Collections.<Class<? extends Service>> emptyList() : Arrays
-			.<Class<? extends Service>> asList(Service.class));
+	public Context(final boolean noServices, final boolean noPlugins) {
+		this(services(noServices), plugins(noPlugins));
 	}
 
 	/**
@@ -195,9 +206,8 @@ public class Context implements Disposable {
 	 *          result in a default plugin index being constructed and used.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
-	@SuppressWarnings("unchecked")
 	public Context(final PluginIndex pluginIndex) {
-		this(Arrays.<Class<? extends Service>> asList(Service.class), pluginIndex);
+		this(services(false), pluginIndex);
 	}
 
 	/**
@@ -508,6 +518,16 @@ public class Context implements Disposable {
 				.append("ClassLoader was not a URLClassLoader. Could not print classpath.");
 		}
 		return msg.toString();
+	}
+
+	private static PluginIndex plugins(final boolean empty) {
+		return empty ? new PluginIndex(null) : null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<Class<? extends Service>> services(final boolean empty) {
+		if (empty) return Collections.<Class<? extends Service>> emptyList();
+		return Arrays.<Class<? extends Service>> asList(Service.class);
 	}
 
 	private static boolean strict() {
