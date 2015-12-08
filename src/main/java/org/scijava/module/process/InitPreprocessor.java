@@ -31,6 +31,7 @@
 
 package org.scijava.module.process;
 
+import org.scijava.Cancelable;
 import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.module.MethodCallException;
@@ -58,12 +59,25 @@ public class InitPreprocessor extends AbstractPreprocessorPlugin {
 	public void process(final Module module) {
 		try {
 			module.initialize();
+			if (isCanceled(module)) cancel(getCancelReason(module));
 		}
 		catch (final MethodCallException exc) {
 			if (log != null) log.error(exc);
 			final String moduleClass = module.getInfo().getDelegateClassName();
 			cancel("The module \"" + moduleClass + "\" failed to initialize.");
 		}
+	}
+
+	// -- Helper methods --
+
+	private boolean isCanceled(final Module module) {
+		return module instanceof Cancelable && ((Cancelable) module).isCanceled();
+	}
+
+	private String getCancelReason(final Module module) {
+		if (!(module instanceof Cancelable)) return null;
+		final String cancelReason = ((Cancelable) module).getCancelReason();
+		return cancelReason == null ? "" : cancelReason;
 	}
 
 }
