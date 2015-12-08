@@ -163,7 +163,11 @@ public final class ClassUtils {
 					: classLoader;
 			return cl.loadClass(className);
 		}
-		catch (final ClassNotFoundException e) {
+		catch (final Throwable t) {
+			// NB: Do not allow any failure to load the class to crash us.
+			// Not ClassNotFoundException.
+			// Not NoClassDefFoundError.
+			// Not UnsupportedClassVersionError!
 			return null;
 		}
 	}
