@@ -358,7 +358,7 @@ public final class ClassUtils {
 			cachedMethods = methodCache.getList(c, annotationClass);
 		}
 
-		methods.addAll(cachedMethods);
+		if (cachedMethods != null) methods.addAll(cachedMethods);
 	}
 
 	/**
@@ -501,15 +501,20 @@ public final class ClassUtils {
 				final Class<? extends AnnotatedElement> objectClass =
 					query.get(annotationClass);
 
-				// Methods
-				if (Method.class.isAssignableFrom(objectClass)) {
-					populateCache(scannedClass, inherited, annotationClass, methodCache,
-						scannedClass.getDeclaredMethods());
+				try {
+					// Methods
+					if (Method.class.isAssignableFrom(objectClass)) {
+						populateCache(scannedClass, inherited, annotationClass, methodCache,
+							scannedClass.getDeclaredMethods());
+					}
+					// Fields
+					else if (Field.class.isAssignableFrom(objectClass)) {
+						populateCache(scannedClass, inherited, annotationClass, fieldCache,
+							scannedClass.getDeclaredFields());
+					}
 				}
-				// Fields
-				else if (Field.class.isAssignableFrom(objectClass)) {
-					populateCache(scannedClass, inherited, annotationClass, fieldCache,
-						scannedClass.getDeclaredFields());
+				catch (final Throwable t) {
+					// NB: No action needed?
 				}
 			}
 		}
