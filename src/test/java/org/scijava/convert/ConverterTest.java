@@ -35,10 +35,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Test;
+import org.scijava.util.ClassUtils;
+import org.scijava.util.GenericUtils;
 
 /**
  * Tests individual {@link Converter}s.
@@ -49,6 +53,7 @@ import org.junit.Test;
  * </p>
  *
  * @author Mark Hiner
+ * @author Curtis Rueden
  */
 public class ConverterTest {
 
@@ -81,6 +86,18 @@ public class ConverterTest {
 
 		assertFalse(nc.canConvert(Integer.class, Double.class));
 		assertTrue(nc.canConvert(Integer.class, Number.class));
+	}
+
+	@SuppressWarnings("unused")
+	private Collection<Number> collection;
+
+	@Test
+	public void testCanConvertToGenericCollection() {
+		final DefaultConverter dc = new DefaultConverter();
+
+		final Field destField = ClassUtils.getField(getClass(), "collection");
+		final Type destType = GenericUtils.getFieldType(destField, getClass());
+		assertTrue(dc.canConvert(ArrayList.class, destType));
 	}
 
 	private static class NumberConverter extends AbstractConverter<Number, Number> {
