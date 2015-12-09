@@ -758,33 +758,43 @@ public final class ClassUtils {
 	// -- Helper classes --
 
 	/**
-	 * Convenience class to further type narrow {@link CacheMap} to {@link Field}
-	 * s.
+	 * Convenience class for a {@link CacheMap} that stores annotated
+	 * {@link Field}s.
 	 */
 	private static class FieldCache extends CacheMap<Field> {}
 
 	/**
-	 * Convenience class to further type narrow {@link CacheMap} to {@link Method}
-	 * s.
+	 * Convenience class for a {@link CacheMap} that stores annotated
+	 * {@link Method}s.
 	 */
 	private static class MethodCache extends CacheMap<Method> {}
 
 	/**
 	 * Convenience class for {@code Map > Map > List} hierarchy. Cleans up
 	 * generics and contains helper methods for traversing the two map levels.
+	 * <p>
+	 * The intent for this class is to allow subclasses to specify the generic
+	 * parameter ultimately referenced by the at the end of these maps.
+	 * </p>
+	 * <p>
+	 * The first map key is a base class, presumably with various types of
+	 * annotations. The second map key is the annotation class, for example
+	 * {@link Method} or {@link Field}. The list then contains all instances of
+	 * the annotated type within the original base class.
+	 * </p>
 	 *
-	 * @param <T> - {@link AnnotatedElement} {@link List} ultimately referenced by
-	 *          this map
+	 * @param <T> - The type of {@link AnnotatedElement} contained by the
+	 *          {@link List} ultimately referenced by these {@link Map}s
 	 */
 	private static class CacheMap<T extends AnnotatedElement> extends
 		HashMap<Class<?>, Map<Class<? extends Annotation>, List<T>>>
 	{
 
 		/**
-		 * @param c Base class
-		 * @param annotationClass Annotation type
-		 * @return Cached list of Methods in the base class with the specified
-		 *         annotation, or null if a cached list does not exist.
+		 * @param c Base class of interest
+		 * @param annotationClass {@link Annotation type within the base class
+		 * @return A {@link List} of instances in the base class with the specified
+		 *         {@link Annotation}, or null if a cached list does not exist.
 		 */
 		public List<T> getList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass)
@@ -798,16 +808,16 @@ public final class ClassUtils {
 		}
 
 		/**
-		 * Populates the provided list with {@link Method} entries of the given base
-		 * class which are annotated with the specified annotation type.
+		 * Creates a {@code base class > annotation > list of elements} mapping to
+		 * the provided list, creating the intermediate map if needed.
 		 *
-		 * @param c Base class
-		 * @param annotationClass Annotation type
-		 * @param annotatedMethods Method list to populate
+		 * @param c Base class of interest
+		 * @param annotationClass {@link Annotation} type of interest
+		 * @param annotatedElements List of {@link AnnotatedElement}s to map
 		 */
 		public void putList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass,
-			final List<T> annotatedMethods)
+			final List<T> annotatedElements)
 		{
 			Map<Class<? extends Annotation>, List<T>> map = get(c);
 			if (map == null) {
@@ -815,27 +825,28 @@ public final class ClassUtils {
 				put(c, map);
 			}
 
-			map.put(annotationClass, annotatedMethods);
+			map.put(annotationClass, annotatedElements);
 		}
 
 		/**
-		 * As {@link #getList(Class, Class)} but ensures an array is created and
-		 * mapped, if it doesn't already exist.
+		 * Generates mappings as in {@link #putList(Class, Class, List)}, but also
+		 * creates the {@link List} if it doesn't already exist. Returns the final
+		 * list at this mapping, for external population.
 		 *
-		 * @param c Base class
-		 * @param annotationClass Annotation type
-		 * @return Cached list of Fields in the base class with the specified
-		 *         annotation.
+		 * @param c Base class of interest
+		 * @param annotationClass {@link Annotation} type of interest
+		 * @return Cached list of {@link AnnotatedElement}s in the base class with
+		 *         the specified {@link Annotation}.
 		 */
 		public List<T> makeList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass)
 		{
-			List<T> methods = getList(c, annotationClass);
-			if (methods == null) {
-				methods = new ArrayList<T>();
-				putList(c, annotationClass, methods);
+			List<T> elements = getList(c, annotationClass);
+			if (elements == null) {
+				elements = new ArrayList<T>();
+				putList(c, annotationClass, elements);
 			}
-			return methods;
+			return elements;
 		}
 
 	}
