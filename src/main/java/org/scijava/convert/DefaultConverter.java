@@ -294,13 +294,15 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Override
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Type dest) {
-		
+
 		// Handle array types, including generic array types.
 		if (isArray(dest)) return true;
-		
+
 		// Handle parameterized collection types.
-		if (dest instanceof ParameterizedType && isCollection(dest)) {
-			return createCollection(GenericUtils.getClass(dest)) != null;
+		if (dest instanceof ParameterizedType && isCollection(dest) &&
+			createCollection(GenericUtils.getClass(dest)) != null)
+		{
+			return true;
 		}
 		
 		return super.canConvert(src, dest);
