@@ -415,16 +415,16 @@ public final class ClassUtils {
 
 	/**
 	 * This method scans the provided class, its superclasses and interfaces for
-	 * all supported {@link Annotation} : {@link AnnotatedObject} pairs.
+	 * all supported {@link Annotation} : {@link AnnotatedElement} pairs.
 	 * These are then cached to remove the need for future queries.
 	 * <p>
-	 * By combining multiple {@code Annotation : AnnotatedObject} pairs in one
+	 * By combining multiple {@code Annotation : AnnotatedElement} pairs in one
 	 * query, we can limit the number of times a class's superclass and interface
 	 * hierarchy are traversed.
 	 * </p>
 	 *
 	 * @param scannedClass Class to scan
-	 * @param query Pairs of {@link Annotation} and {@link AnnotatedObject}s to
+	 * @param query Pairs of {@link Annotation} and {@link AnnotatedElement}s to
 	 *          discover.
 	 */
 	public static void cacheAnnotatedObjects(final Class<?> scannedClass,
