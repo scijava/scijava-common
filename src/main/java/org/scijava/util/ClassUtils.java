@@ -574,7 +574,9 @@ public final class ClassUtils {
 				// the given value needs to be converted to a compatible type
 				final Type fieldType =
 					GenericUtils.getFieldType(field, instance.getClass());
-				compatibleValue = ConversionUtils.convert(value, fieldType);
+				@SuppressWarnings("deprecation")
+				final Object convertedValue = ConversionUtils.convert(value, fieldType);
+				compatibleValue = convertedValue;
 			}
 			field.set(instance, compatibleValue);
 		}
@@ -770,13 +772,17 @@ public final class ClassUtils {
 	 * Convenience class for a {@link CacheMap} that stores annotated
 	 * {@link Field}s.
 	 */
-	private static class FieldCache extends CacheMap<Field> {}
+	private static class FieldCache extends CacheMap<Field> {
+		// Trivial subclass to narrow generic params
+	}
 
 	/**
 	 * Convenience class for a {@link CacheMap} that stores annotated
 	 * {@link Method}s.
 	 */
-	private static class MethodCache extends CacheMap<Method> {}
+	private static class MethodCache extends CacheMap<Method> {
+		// Trivial subclass to narrow generic params
+	}
 
 	/**
 	 * Convenience class for {@code Map > Map > List} hierarchy. Cleans up
@@ -801,7 +807,7 @@ public final class ClassUtils {
 
 		/**
 		 * @param c Base class of interest
-		 * @param annotationClass {@link Annotation type within the base class
+		 * @param annotationClass {@link Annotation} type within the base class
 		 * @return A {@link List} of instances in the base class with the specified
 		 *         {@link Annotation}, or null if a cached list does not exist.
 		 */
