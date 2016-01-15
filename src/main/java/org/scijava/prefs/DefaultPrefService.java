@@ -507,7 +507,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		/** @see java.util.prefs.Preferences#put */
 		public void put(final String key, final Object value) {
-			p.put(key, value == null ? null : value.toString());
+			p.put(safeKey(key), value == null ? null : value.toString());
 		}
 
 		/** @see java.util.prefs.Preferences#get(String, String) */
@@ -517,7 +517,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		/** @see java.util.prefs.Preferences#get(String, String) */
 		public String get(final String key, final String def) {
-			return p.get(key, def);
+			return p.get(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#clear() */
@@ -532,58 +532,62 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		/** @see java.util.prefs.Preferences#putInt(String, int) */
 		public void putInt(final String key, final int value) {
-			p.putInt(key, value);
+			p.putInt(safeKey(key), value);
 		}
 
 		/** @see java.util.prefs.Preferences#getInt(String, int) */
 		public int getInt(final String key, final int def) {
-			return p.getInt(key, def);
+			return p.getInt(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#putLong(String, long) */
 		public void putLong(final String key, final long value) {
-			p.putLong(key, value);
+			p.putLong(safeKey(key), value);
 		}
 
 		/** @see java.util.prefs.Preferences#getLong(String, long) */
 		public long getLong(final String key, final long def) {
-			return p.getLong(key, def);
+			return p.getLong(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#putBoolean(String, boolean) */
 		public void putBoolean(final String key, final boolean value) {
-			p.putBoolean(key, value);
+			p.putBoolean(safeKey(key), value);
 		}
 
 		/** @see java.util.prefs.Preferences#getFloat(String, float) */
 		public boolean getBoolean(final String key, final boolean def) {
-			return p.getBoolean(key, def);
+			return p.getBoolean(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#putFloat(String, float) */
 		public void putFloat(final String key, final float value) {
-			p.putFloat(key, value);
+			p.putFloat(safeKey(key), value);
 		}
 
 		/** @see java.util.prefs.Preferences#getFloat(String, float) */
 		public float getFloat(final String key, final float def) {
-			return p.getFloat(key, def);
+			return p.getFloat(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#putDouble(String, double) */
 		public void putDouble(final String key, final double value) {
-			p.putDouble(key, value);
+			p.putDouble(safeKey(key), value);
 		}
 
 		/** @see java.util.prefs.Preferences#getDouble(String, double) */
 		public double getDouble(final String key, final double def) {
-			return p.getDouble(key, def);
+			return p.getDouble(safeKey(key), def);
 		}
 
 		/** @see java.util.prefs.Preferences#keys() */
 		public String[] keys() {
 			try {
-				return p.keys();
+				final String[] keys = p.keys();
+				for (int i = 0; i < keys.length; i++) {
+					keys[i] = safeKey(keys[i]);
+				}
+				return keys;
 			}
 			catch (final java.util.prefs.BackingStoreException exc) {
 				log.error(exc);
@@ -615,6 +619,33 @@ public class DefaultPrefService extends AbstractPrefService {
 			catch (final java.util.prefs.BackingStoreException exc) {
 				log.error(exc);
 			}
+		}
+
+		// -- Helper methods --
+
+		private String safeKey(final String key) {
+			return makeSafe(key, java.util.prefs.Preferences.MAX_KEY_LENGTH);
+		}
+
+		/**
+		 * This method limits the given string to the specified maximum length using
+		 * its latter characters prepended with "..." as needed.
+		 * <p>
+		 * This is necessary because the Java Preferences API does not allow:
+		 * </p>
+		 * <ul>
+		 * <li>Keys longer than {@link java.util.prefs.Preferences#MAX_KEY_LENGTH}
+		 * </li>
+		 * <li>Values longer than
+		 * {@link java.util.prefs.Preferences#MAX_VALUE_LENGTH}</li>
+		 * <li>Node names longer than
+		 * {@link java.util.prefs.Preferences#MAX_NAME_LENGTH}</li>
+		 * </ul>
+		 */
+		private String makeSafe(final String s, final int max) {
+			final int len = s.length();
+			if (len < max) return s;
+			return "..." + s.substring(len - max + 3, len);
 		}
 
 	}
