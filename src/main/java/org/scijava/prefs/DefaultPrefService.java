@@ -54,16 +54,6 @@ import org.scijava.service.Service;
 @Plugin(type = Service.class)
 public class DefaultPrefService extends AbstractPrefService {
 
-	// TODO - with the conversion from a static utility class to a service, we
-	// have unfortunately lost some power to adapt behavior to individual data
-	// types - either the whole service is superceded, or it's not. For example,
-	// see the saveValue/loadValue of the ModuleItem class, where each item could
-	// decide how it was saved and loaded.
-	// Thus it would be nice to refactor this service to use the Handler pattern,
-	// such that there would just be a few base put/get methods that delegated
-	// to appropriate handlers. Then the handlers of a single type could be
-	// provided and overridden.
-
 	// -- Global preferences --
 
 	@Override
