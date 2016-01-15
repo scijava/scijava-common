@@ -507,7 +507,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		/** @see java.util.prefs.Preferences#put */
 		public void put(final String key, final Object value) {
-			p.put(safeKey(key), value == null ? null : value.toString());
+			p.put(safeKey(key), safeValue(value));
 		}
 
 		/** @see java.util.prefs.Preferences#get(String, String) */
@@ -597,13 +597,13 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		/** @see java.util.prefs.Preferences#node(String) */
 		public SmartPrefs node(final String pathName) {
-			return new SmartPrefs(p.node(pathName), log);
+			return new SmartPrefs(p.node(safeName(pathName)), log);
 		}
 
 		/** @see java.util.prefs.Preferences#nodeExists(String) */
 		public boolean nodeExists(final String pathName) {
 			try {
-				return p.nodeExists(pathName);
+				return p.nodeExists(safeName(pathName));
 			}
 			catch (final java.util.prefs.BackingStoreException exc) {
 				log.error(exc);
@@ -625,6 +625,16 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		private String safeKey(final String key) {
 			return makeSafe(key, java.util.prefs.Preferences.MAX_KEY_LENGTH);
+		}
+
+		private String safeValue(final Object value) {
+			if (value == null) return null;
+			return makeSafe(value.toString(),
+				java.util.prefs.Preferences.MAX_VALUE_LENGTH);
+		}
+
+		private String safeName(final String name) {
+			return makeSafe(name, java.util.prefs.Preferences.MAX_NAME_LENGTH);
 		}
 
 		/**
