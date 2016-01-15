@@ -175,4 +175,24 @@ public class PrefServiceTest {
 		assertEquals(recentFiles, result);
 	}
 
+	/**
+	 * The Java Preferences API does not support keys longer than 80 characters.
+	 * Let's test that our service does not fall victim to this limitation.
+	 */
+	@Test
+	public void testLongKeys() {
+		final String longKey = "" + //
+			"abcdefghijklmnopqrstuvwxyz" + //
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ" + //
+			"0123456789" + //
+			"9876543210" + //
+			"ZYXWVUTSRQPONMLKJIHGFEDCBA" + //
+			"zyxwvutsrqponmlkjihgfedcba";
+		final String lyrics =
+			"Now I know my ABC's. Next time won't you sing with me?";
+		prefService.put(longKey, lyrics);
+		final String recovered = prefService.get(longKey);
+		assertEquals(lyrics, recovered);
+	}
+
 }
