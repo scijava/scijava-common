@@ -37,15 +37,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
 /**
  * Default {@link PrefService} implementation, which persists preferences to
- * disk using the Java {@link Preferences} API.
+ * disk using the {@link java.util.prefs.Preferences} API.
  *
  * @author Mark Hiner
  * @author Curtis Rueden
@@ -53,6 +53,9 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public class DefaultPrefService extends AbstractPrefService {
+
+	@Parameter(required = false)
+	private LogService log;
 
 	// -- Global preferences --
 
@@ -202,12 +205,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void clear(final Class<?> c) {
-		try {
-			prefs(c).clear();
-		}
-		catch (final BackingStoreException e) {
-			// do nothing
-		}
+		prefs(c).clear();
 	}
 
 	// -- Other/unsorted --
@@ -217,13 +215,8 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void clearAll() {
-		try {
-			for (final String name : allPrefs())
-				prefs(name).removeNode();
-		}
-		catch (final BackingStoreException e) {
-			// do nothing
-		}
+		for (final String name : allPrefs())
+			prefs(name).removeNode();
 	}
 
 	@Override
@@ -233,26 +226,22 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void clear(final Class<?> prefClass, final String key) {
-		final Preferences preferences = prefs(prefClass);
-		clear(preferences, key);
+		prefs(prefClass).clear(key);
 	}
 
 	@Override
 	public void clear(final String absolutePath, final String key) {
-		final Preferences preferences = prefs(absolutePath);
-		clear(preferences, key);
+		prefs(absolutePath).clear(key);
 	}
 
 	@Override
 	public void remove(final Class<?> prefClass, final String key) {
-		final Preferences preferences = prefs(prefClass);
-		remove(preferences, key);
+		prefs(prefClass).remove(key);
 	}
 
 	@Override
 	public void remove(final String absolutePath, final String key) {
-		final Preferences preferences = prefs(absolutePath);
-		remove(preferences, key);
+		prefs(absolutePath).remove(key);
 	}
 
 	@Override
@@ -264,28 +253,24 @@ public class DefaultPrefService extends AbstractPrefService {
 	public void putMap(final Class<?> prefClass, final Map<String, String> map,
 		final String key)
 	{
-		final Preferences preferences = prefs(prefClass);
-		putMap(preferences.node(key), map);
+		prefs(prefClass).node(key).putMap(map);
 	}
 
 	@Override
 	public void putMap(final String absolutePath, final Map<String, String> map,
 		final String key)
 	{
-		final Preferences preferences = prefs(absolutePath);
-		putMap(preferences.node(key), map);
+		prefs(absolutePath).node(key).putMap(map);
 	}
 
 	@Override
 	public void putMap(final Class<?> prefClass, final Map<String, String> map) {
-		final Preferences preferences = prefs(prefClass);
-		putMap(preferences, map);
+		prefs(prefClass).putMap(map);
 	}
 
 	@Override
 	public void putMap(final String absolutePath, final Map<String, String> map) {
-		final Preferences preferences = prefs(absolutePath);
-		putMap(preferences, map);
+		prefs(absolutePath).putMap(map);
 	}
 
 	@Override
@@ -296,22 +281,19 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Override
 	public Map<String, String> getMap(final Class<?> prefClass, final String key)
 	{
-		final Preferences preferences = prefs(prefClass);
-		return getMap(preferences.node(key));
+		return prefs(prefClass).node(key).getMap();
 	}
 
 	@Override
 	public Map<String, String>
 		getMap(final String absolutePath, final String key)
 	{
-		final Preferences preferences = prefs(absolutePath);
-		return getMap(preferences.node(key));
+		return prefs(absolutePath).node(key).getMap();
 	}
 
 	@Override
 	public Map<String, String> getMap(final Class<?> prefClass) {
-		final Preferences preferences = prefs(prefClass);
-		return getMap(preferences);
+		return prefs(prefClass).getMap();
 	}
 
 	@Override
@@ -323,28 +305,24 @@ public class DefaultPrefService extends AbstractPrefService {
 	public void putList(final Class<?> prefClass, final List<String> list,
 		final String key)
 	{
-		final Preferences preferences = prefs(prefClass);
-		putList(preferences.node(key), list);
+		prefs(prefClass).node(key).putList(list);
 	}
 
 	@Override
 	public void putList(final String absolutePath, final List<String> list,
 		final String key)
 	{
-		final Preferences preferences = prefs(absolutePath);
-		putList(preferences.node(key), list);
+		prefs(absolutePath).node(key).putList(list);
 	}
 
 	@Override
 	public void putList(final Class<?> prefClass, final List<String> list) {
-		final Preferences preferences = prefs(prefClass);
-		putList(preferences, list);
+		prefs(prefClass).putList(list);
 	}
 
 	@Override
 	public void putList(final String absolutePath, final List<String> list) {
-		final Preferences preferences = prefs(absolutePath);
-		putList(preferences, list);
+		prefs(absolutePath).putList(list);
 	}
 
 	@Override
@@ -354,20 +332,17 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public List<String> getList(final Class<?> prefClass, final String key) {
-		final Preferences preferences = prefs(prefClass);
-		return getList(preferences.node(key));
+		return prefs(prefClass).node(key).getList();
 	}
 
 	@Override
 	public List<String> getList(final String absolutePath, final String key) {
-		final Preferences preferences = prefs(absolutePath);
-		return getList(preferences.node(key));
+		return prefs(absolutePath).node(key).getList();
 	}
 
 	@Override
 	public List<String> getList(final Class<?> prefClass) {
-		final Preferences preferences = prefs(prefClass);
-		return getList(preferences);
+		return prefs(prefClass).getList();
 	}
 
 	@Override
@@ -377,8 +352,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public Iterable<String> getIterable(final Class<?> prefClass, final String key) {
-		final Preferences preferences = prefs(prefClass);
-		return getIterable(preferences.node(key));
+		return prefs(prefClass).node(key).getIterable();
 	}
 
 	@Override
@@ -388,159 +362,261 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String key) {
-		final Preferences preferences = prefs(prefClass);
-		putIterable(preferences.node(key), iterable);
+		prefs(prefClass).node(key).node(key).putIterable(iterable);
 	}
 
 	// -- Helper methods --
 
-	private void clear(final Preferences preferences, final String key) {
-		try {
-			if (preferences.nodeExists(key)) {
-				preferences.node(key).clear();
-			}
-		}
-		catch (final BackingStoreException bse) {
-			bse.printStackTrace();
-		}
-	}
-
-	private void remove(final Preferences preferences, final String key) {
-		try {
-			if (preferences.nodeExists(key)) {
-				preferences.node(key).removeNode();
-			}
-		}
-		catch (final BackingStoreException bse) {
-			bse.printStackTrace();
-		}
-	}
-
-	private void putMap(final Preferences preferences,
-		final Map<String, String> map)
-	{
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		final Iterator<Entry<String, String>> iter = map.entrySet().iterator();
-		while (iter.hasNext()) {
-			final Entry<String, String> entry = iter.next();
-			final Object value = entry.getValue();
-			preferences.put(entry.getKey().toString(), value == null ? null : value
-				.toString());
-		}
-
-	}
-
-	private Map<String, String> getMap(final Preferences preferences) {
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		final Map<String, String> map = new HashMap<String, String>();
-		try {
-			final String[] keys = preferences.keys();
-			for (int index = 0; index < keys.length; index++) {
-				map.put(keys[index], preferences.get(keys[index], null));
-			}
-		}
-		catch (final BackingStoreException bse) {
-			bse.printStackTrace();
-		}
-		return map;
-	}
-
-	private void putList(final Preferences preferences, final List<String> list) {
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		for (int index = 0; list != null && index < list.size(); index++) {
-			final Object value = list.get(index);
-			preferences.put("" + index, value == null ? null : value.toString());
-		}
-	}
-
-	private List<String> getList(final Preferences preferences) {
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		final List<String> list = new ArrayList<String>();
-		for (int index = 0; index < 1000; index++) {
-			final String value = preferences.get("" + index, null);
-			if (value == null) {
-				break;
-			}
-			list.add(value);
-		}
-		return list;
-	}
-
-	private void putIterable(final Preferences preferences,
-		final Iterable<String> iterable)
-	{
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		int index = 0;
-		for (final String value : iterable) {
-			preferences.put("" + index++, value == null ? null : value.toString());
-		}
-	}
-
-	private Iterable<String> getIterable(final Preferences preferences)
-	{
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences not set.");
-		}
-		return new Iterable<String>() {
-			@Override
-			public Iterator<String> iterator() {
-				return new Iterator<String>() {
-					private String value;
-					private int index;
-					{
-						findNext();
-					}
-
-					@Override
-					public String next() {
-						final String result = value;
-						findNext();
-						return result;
-					}
-
-					@Override
-					public boolean hasNext() {
-						return value != null;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
-					private void findNext() {
-						if (index < 0) return;
-						value = preferences.get("" + index, null);
-						index = value == null ? -1 : index + 1;
-					}
-				};
-			}
-		};
-	}
-
-	private Preferences prefs(final Class<?> c) {
-		return Preferences.userNodeForPackage(c == null ? PrefService.class : c);
-	}
-
-	private String[] allPrefs() throws BackingStoreException {
-		return Preferences.userRoot().childrenNames();
-	}
-
-	private Preferences prefs(final String absolutePath) {
-		return Preferences.userRoot().node(absolutePath);
-	}
-
-	private String key(final Class<?> c, final String name) {
+	private static String key(final Class<?> c, final String name) {
 		return c == null ? name : c.getSimpleName() + "." + name;
 	}
+
+	private SmartPrefs prefs(final Class<?> c) {
+		return new SmartPrefs(java.util.prefs.Preferences.userNodeForPackage(
+			c == null ? PrefService.class : c), log);
+	}
+
+	private SmartPrefs prefs(final String absolutePath) {
+		return new SmartPrefs(java.util.prefs.Preferences.userRoot().node(
+			absolutePath), log);
+	}
+
+	private String[] allPrefs() {
+		try {
+			return java.util.prefs.Preferences.userRoot().childrenNames();
+		}
+		catch (java.util.prefs.BackingStoreException exc) {
+			log.error(exc);
+			return new String[0];
+		}
+	}
+
+	// -- Helper classes --
+
+	/**
+	 * Smart wrapper around {@link java.util.prefs.Preferences} which
+	 * encapsulates, improves and enhances its behavior.
+	 */
+	private static class SmartPrefs {
+
+		private final java.util.prefs.Preferences p;
+		private final LogService log;
+
+		public SmartPrefs(final java.util.prefs.Preferences p,
+			final LogService log)
+		{
+			this.p = p;
+			this.log = log;
+		}
+
+		// -- SmartPrefs methods --
+
+		public void clear(final String key) {
+			if (nodeExists(key)) node(key).clear();
+		}
+
+		public void remove(final String key) {
+			if (nodeExists(key)) node(key).removeNode();
+		}
+
+		public void putMap(final Map<String, String> map) {
+			final Iterator<Entry<String, String>> iter = map.entrySet().iterator();
+			while (iter.hasNext()) {
+				final Entry<String, String> entry = iter.next();
+				final String key = entry.getKey().toString();
+				final Object value = entry.getValue();
+				put(key, value);
+			}
+
+		}
+
+		public Map<String, String> getMap() {
+			final Map<String, String> map = new HashMap<String, String>();
+			final String[] keys = keys();
+			for (int index = 0; index < keys.length; index++) {
+				map.put(keys[index], get(keys[index]));
+			}
+			return map;
+		}
+
+		public void putList(final List<String> list) {
+			for (int index = 0; list != null && index < list.size(); index++) {
+				final Object value = list.get(index);
+				put("" + index, value);
+			}
+		}
+
+		public List<String> getList() {
+			final List<String> list = new ArrayList<String>();
+			for (int index = 0; index < 1000; index++) {
+				final String value = get("" + index);
+				if (value == null) {
+					break;
+				}
+				list.add(value);
+			}
+			return list;
+		}
+
+		public void putIterable(final Iterable<String> iterable) {
+			int index = 0;
+			for (final String value : iterable) {
+				put("" + index++, value);
+			}
+		}
+
+		public Iterable<String> getIterable() {
+			return new Iterable<String>() {
+				@Override
+				public Iterator<String> iterator() {
+					return new Iterator<String>() {
+						private String value;
+						private int index;
+						{
+							findNext();
+						}
+
+						@Override
+						public String next() {
+							final String result = value;
+							findNext();
+							return result;
+						}
+
+						@Override
+						public boolean hasNext() {
+							return value != null;
+						}
+
+						@Override
+						public void remove() {
+							throw new UnsupportedOperationException();
+						}
+
+						private void findNext() {
+							if (index < 0) return;
+							value = get("" + index);
+							index = value == null ? -1 : index + 1;
+						}
+					};
+				}
+			};
+		}
+
+		// -- Adapted Preferences methods --
+
+		/** @see java.util.prefs.Preferences#put */
+		public void put(final String key, final Object value) {
+			p.put(key, value == null ? null : value.toString());
+		}
+
+		/** @see java.util.prefs.Preferences#get(String, String) */
+		public String get(final String key) {
+			return get(key, null);
+		}
+
+		/** @see java.util.prefs.Preferences#get(String, String) */
+		public String get(final String key, final String def) {
+			return p.get(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#clear() */
+		public void clear() {
+			try {
+				p.clear();
+			}
+			catch (java.util.prefs.BackingStoreException exc) {
+				log.error(exc);
+			}
+		}
+
+		/** @see java.util.prefs.Preferences#putInt(String, int) */
+		public void putInt(final String key, final int value) {
+			p.putInt(key, value);
+		}
+
+		/** @see java.util.prefs.Preferences#getInt(String, int) */
+		public int getInt(final String key, final int def) {
+			return p.getInt(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#putLong(String, long) */
+		public void putLong(final String key, final long value) {
+			p.putLong(key, value);
+		}
+
+		/** @see java.util.prefs.Preferences#getLong(String, long) */
+		public long getLong(final String key, final long def) {
+			return p.getLong(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#putBoolean(String, boolean) */
+		public void putBoolean(final String key, final boolean value) {
+			p.putBoolean(key, value);
+		}
+
+		/** @see java.util.prefs.Preferences#getFloat(String, float) */
+		public boolean getBoolean(final String key, final boolean def) {
+			return p.getBoolean(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#putFloat(String, float) */
+		public void putFloat(final String key, final float value) {
+			p.putFloat(key, value);
+		}
+
+		/** @see java.util.prefs.Preferences#getFloat(String, float) */
+		public float getFloat(final String key, final float def) {
+			return p.getFloat(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#putDouble(String, double) */
+		public void putDouble(final String key, final double value) {
+			p.putDouble(key, value);
+		}
+
+		/** @see java.util.prefs.Preferences#getDouble(String, double) */
+		public double getDouble(final String key, final double def) {
+			return p.getDouble(key, def);
+		}
+
+		/** @see java.util.prefs.Preferences#keys() */
+		public String[] keys() {
+			try {
+				return p.keys();
+			}
+			catch (final java.util.prefs.BackingStoreException exc) {
+				log.error(exc);
+				return new String[0];
+			}
+		}
+
+		/** @see java.util.prefs.Preferences#node(String) */
+		public SmartPrefs node(final String pathName) {
+			return new SmartPrefs(p.node(pathName), log);
+		}
+
+		/** @see java.util.prefs.Preferences#nodeExists(String) */
+		public boolean nodeExists(final String pathName) {
+			try {
+				return p.nodeExists(pathName);
+			}
+			catch (final java.util.prefs.BackingStoreException exc) {
+				log.error(exc);
+				return false;
+			}
+		}
+
+		/** @see java.util.prefs.Preferences#removeNode() */
+		public void removeNode() {
+			try {
+				p.removeNode();
+			}
+			catch (final java.util.prefs.BackingStoreException exc) {
+				log.error(exc);
+			}
+		}
+
+	}
+
 }
