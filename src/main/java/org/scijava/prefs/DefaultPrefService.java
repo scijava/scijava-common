@@ -386,7 +386,7 @@ public class DefaultPrefService extends AbstractPrefService {
 			return java.util.prefs.Preferences.userRoot().childrenNames();
 		}
 		catch (java.util.prefs.BackingStoreException exc) {
-			log.error(exc);
+			if (log != null) log.error(exc);
 			return new String[0];
 		}
 	}
@@ -526,7 +526,7 @@ public class DefaultPrefService extends AbstractPrefService {
 				p.clear();
 			}
 			catch (java.util.prefs.BackingStoreException exc) {
-				log.error(exc);
+				if (log != null) log.error(exc);
 			}
 		}
 
@@ -590,7 +590,7 @@ public class DefaultPrefService extends AbstractPrefService {
 				return keys;
 			}
 			catch (final java.util.prefs.BackingStoreException exc) {
-				log.error(exc);
+				if (log != null) log.error(exc);
 				return new String[0];
 			}
 		}
@@ -606,7 +606,7 @@ public class DefaultPrefService extends AbstractPrefService {
 				return p.nodeExists(safeName(pathName));
 			}
 			catch (final java.util.prefs.BackingStoreException exc) {
-				log.error(exc);
+				if (log != null) log.error(exc);
 				return false;
 			}
 		}
@@ -617,7 +617,7 @@ public class DefaultPrefService extends AbstractPrefService {
 				p.removeNode();
 			}
 			catch (final java.util.prefs.BackingStoreException exc) {
-				log.error(exc);
+				if (log != null) log.error(exc);
 			}
 		}
 
