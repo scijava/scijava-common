@@ -48,6 +48,8 @@ import org.scijava.service.Service;
  * disk using the Java {@link Preferences} API.
  *
  * @author Mark Hiner
+ * @author Curtis Rueden
+ * @author Grant Harris
  */
 @Plugin(type = Service.class)
 public class DefaultPrefService extends AbstractPrefService {
