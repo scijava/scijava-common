@@ -61,17 +61,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public Object convert(final Object src, final Type dest) {
-		// NB: Regardless of whether the destination type is an array or collection,
-		// we still want to cast directly if doing so is possible. But note that in
-		// general, this check does not detect cases of incompatible generic
-		// parameter types. If this limitation becomes a problem in the future we
-		// can extend the logic here to provide additional signatures of canCast
-		// which operate on Types in general rather than only Classes. However, the
-		// logic could become complex very quickly in various subclassing cases,
-		// generic parameters resolved vs. propagated, etc.
-		final Class<?> c = GenericUtils.getClass(dest);
-		if (c != null && ConversionUtils.canCast(src, c)) return ConversionUtils
-			.cast(src, c);
 
 		// Handle array types, including generic array types.
 		if (isArray(dest)) {
