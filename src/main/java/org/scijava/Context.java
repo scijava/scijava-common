@@ -436,7 +436,7 @@ public class Context implements Disposable {
 			final Class<?> type = f.getType();
 			if (Service.class.isAssignableFrom(type)) {
 				final Service existingService = (Service) ClassUtils.getValue(f, o);
-				if (existingService != null) {
+				if (strict && existingService != null) {
 					throw new IllegalStateException("Context already injected: " +
 							f.getDeclaringClass().getName() + "#" + f.getName());
 				}
@@ -450,12 +450,22 @@ public class Context implements Disposable {
 					throw new IllegalArgumentException(
 						createMissingServiceMessage(serviceType));
 				}
+				if (existingService != null && existingService != service) {
+					// NB: Can only happen in non-strict mode.
+					throw new IllegalStateException("Mismatched context: " +
+							f.getDeclaringClass().getName() + "#" + f.getName());
+				}
 				ClassUtils.setValue(f, o, service);
 			}
 			else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
 				final Context existingContext = (Context) ClassUtils.getValue(f, o);
-				if (existingContext != null) {
+				if (strict && existingContext != null) {
 					throw new IllegalStateException("Context already injected: " +
+							f.getDeclaringClass().getName() + "#" + f.getName());
+				}
+				if (existingContext != null && existingContext != this) {
+					// NB: Can only happen in non-strict mode.
+					throw new IllegalStateException("Mismatched context: " +
 							f.getDeclaringClass().getName() + "#" + f.getName());
 				}
 
