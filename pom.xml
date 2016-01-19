@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>9.1.0</version>
+		<version>9.3.0</version>
 		<relativePath />
 	</parent>
 
@@ -113,6 +113,10 @@
 		<system>Jenkins</system>
 		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
 	</ciManagement>
+
+	<properties>
+		<scijava.jvm.test.version>1.8</scijava.jvm.test.version>
+	</properties>
 
 	<dependencies>
 		<!-- Third-party dependencies -->
