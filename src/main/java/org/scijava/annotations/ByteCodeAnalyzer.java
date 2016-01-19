@@ -116,9 +116,10 @@ class ByteCodeAnalyzer {
 		for (int i = 0; i < poolCount; i++) {
 			poolOffsets[i] = offset;
 			final int tag = getU1(offset);
-			if (tag == 7 || tag == 8) offset += 3;
+			if (tag == 7 || tag == 8 || tag == 16) offset += 3;
+			else if (tag == 15) offset += 4;
 			else if (tag == 3 || tag == 4 || tag == 9 || tag == 10 
-					|| tag == 11 || tag == 12) offset += 5;
+					|| tag == 11 || tag == 12 || tag == 18) offset += 5;
 			else if (tag == 5 || tag == 6) {
 				poolOffsets[++i] = offset;
 				offset += 9;
