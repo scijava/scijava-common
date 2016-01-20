@@ -112,4 +112,11 @@ public class SciJava extends AbstractGateway {
 		super(SciJavaApp.NAME, context);
 	}
 
+	// -- Gateway methods --
+
+	@Override
+	public String getShortName() {
+		return "sj";
+	}
+
 }

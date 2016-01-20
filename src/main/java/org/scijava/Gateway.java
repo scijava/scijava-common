@@ -119,6 +119,12 @@ import org.scijava.widget.WidgetService;
 public interface Gateway extends RichPlugin, Versioned {
 
 	/**
+	 * Gets a very succinct name for use referring to this gateway, e.g. as a
+	 * variable name for scripting.
+	 */
+	String getShortName();
+
+	/**
 	 * Returns an implementation of the requested {@link Service}, if it exists in
 	 * the underlying {@link Context}.
 	 * 

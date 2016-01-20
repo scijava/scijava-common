@@ -88,6 +88,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	// -- Gateway methods --
 
 	@Override
+	public String getShortName() {
+		return getClass().getName().toLowerCase();
+	}
+
+	@Override
 	public <S extends Service> S get(final Class<S> serviceClass) {
 		return context().service(serviceClass);
 	}
