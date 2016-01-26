@@ -93,6 +93,7 @@ public final class ClassUtils {
 	 * Loads the class with the given name, using the current thread's context
 	 * class loader, or null if it cannot be loaded.
 	 *
+	 * @return The loaded class, or null if the class could not be loaded.
 	 * @see #loadClass(String, ClassLoader)
 	 */
 	public static Class<?> loadClass(final String className) {
@@ -118,6 +119,7 @@ public final class ClassUtils {
 	 * @param name The name of the class to load.
 	 * @param classLoader The class loader with which to load the class; if null,
 	 *          the current thread's context class loader will be used.
+	 * @return The loaded class, or null if the class could not be loaded.
 	 */
 	public static Class<?> loadClass(final String name,
 		final ClassLoader classLoader)
