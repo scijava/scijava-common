@@ -122,7 +122,7 @@ public class DirectoryIndexerTest {
 			assertFalse(seen.contains(name));
 			seen.add(name);
 		}
-		assertEquals(2, seen.size());
+		assertEquals(3, seen.size());
 	}
 
 	public static void

@@ -114,6 +114,10 @@
 		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
 	</ciManagement>
 
+	<properties>
+		<scijava.jvm.test.version>1.8</scijava.jvm.test.version>
+	</properties>
+
 	<dependencies>
 		<!-- Third-party dependencies -->
 		<dependency>

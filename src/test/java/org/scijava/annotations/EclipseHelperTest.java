@@ -71,7 +71,7 @@ public class EclipseHelperTest {
 	public void testIndexing() throws Exception {
 		final File dir = createTemporaryDirectory("eclipse-test-");
 		copyClasses(dir, Complex.class, Simple.class, Fruit.class,
-			AnnotatedA.class, AnnotatedB.class, AnnotatedC.class);
+			AnnotatedA.class, AnnotatedB.class, AnnotatedC.class, AnnotatedD.class);
 		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
 		for (final Class<?> clazz : new Class<?>[] { Complex.class, Simple.class })
 		{
@@ -104,7 +104,7 @@ public class EclipseHelperTest {
 		// deleted
 		jsonDir.setLastModified(123456789);
 		for (final Class<?> clazz : new Class<?>[] { AnnotatedA.class,
-			AnnotatedB.class, AnnotatedC.class })
+			AnnotatedB.class, AnnotatedC.class, AnnotatedD.class })
 		{
 			assertTrue(new File(dir, DirectoryIndexerTest.getResourcePath(clazz))
 				.delete());
