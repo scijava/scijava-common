@@ -40,8 +40,15 @@ import javax.script.ScriptException;
  * The contract for script interpreters.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public interface ScriptInterpreter {
+
+	/**
+	 * A special object returned by {@link #interpret(String)} when the
+	 * interpreter is expecting additional input before finishing the evaluation.
+	 */
+	Object MORE_INPUT_PENDING = new Object();
 
 	/**
 	 * Reads the persisted history of the current script interpreter.
@@ -73,6 +80,26 @@ public interface ScriptInterpreter {
 	Object eval(String command) throws ScriptException;
 
 	/**
+	 * Interprets the given line of code, which might be part of a multi-line
+	 * statement.
+	 * 
+	 * @param line line of code to interpret
+	 * @return value of the line, or {@link #MORE_INPUT_PENDING} if there is still
+	 *         pending input
+	 * @throws ScriptException in case of an exception
+	 */
+	Object interpret(String line) throws ScriptException;
+
+	/**
+	 * Clears the buffer of not-yet-evaluated lines of code, accumulated from
+	 * previous calls to {@link #interpret}. In other words: start over with a new
+	 * (potentially multi-line) statement, discarding the current partial one.
+	 * 
+	 * @see #interpret
+	 */
+	void reset();
+
+	/**
 	 * Returns the associated {@link ScriptLanguage}.
 	 */
 	ScriptLanguage getLanguage();
@@ -89,5 +116,21 @@ public interface ScriptInterpreter {
 	 * {@link ScriptContext#ENGINE_SCOPE} scope.
 	 */
 	Bindings getBindings();
+
+	/**
+	 * @return whether the interpreter is ready for a brand new statement.
+	 * @see #interpret(String)
+	 */
+	boolean isReady();
+
+	/**
+	 * @return whether the interpreter expects more input. A true value means
+	 *         there is definitely more input needed. A false value means no more
+	 *         input is needed, but it may not yet be appropriate to evaluate all
+	 *         the pending lines. (there's some ambiguity depending on the
+	 *         language)
+	 * @see #interpret(String)
+	 */
+	boolean isExpectingMoreInput();
 
 }
