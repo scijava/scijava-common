@@ -65,9 +65,10 @@ public interface ScriptInterpreter {
 	 * Evaluates a command.
 	 * 
 	 * @param command the command to evaluate
+	 * @return result of the evaluation
 	 * @throws ScriptException
 	 */
-	void eval(String command) throws ScriptException;
+	Object eval(String command) throws ScriptException;
 
 	/**
 	 * Returns the associated {@link ScriptLanguage}.

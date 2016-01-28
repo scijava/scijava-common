@@ -83,10 +83,10 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	}
 
 	@Override
-	public void eval(final String command) throws ScriptException {
+	public Object eval(final String command) throws ScriptException {
 		if (history != null) history.add(command);
 		if (engine == null) throw new java.lang.IllegalArgumentException();
-		engine.eval(command);
+		return engine.eval(command);
 	}
 
 	@Override
