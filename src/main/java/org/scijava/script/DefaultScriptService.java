@@ -351,6 +351,12 @@ public class DefaultScriptService extends
 			index.add(factory, true);
 		}
 
+		// Inject the context into languages which need it: the
+		// wrapped engine factories from the ScriptEngineManager.
+		for (final ScriptLanguage language : index) {
+			if (language.getContext() == null) language.setContext(getContext());
+		}
+
 		scriptLanguageIndex = index;
 	}
 
