@@ -46,20 +46,49 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	private final ScriptEngine engine;
 	private final History history;
 
+	@Parameter(required = false)
+	private PrefService prefs;
+
 	/**
-	 * Constructs a new {@link DefaultScriptInterpreter}.
-	 * 
-	 * @param scriptService the script service
-	 * @param language the script language
+	 * @deprecated Use {@link #DefaultScriptInterpreter(ScriptLanguage)} instead.
 	 */
+	@Deprecated
+	@SuppressWarnings("unused")
 	public DefaultScriptInterpreter(final PrefService prefs,
 		final ScriptService scriptService, final ScriptLanguage language)
 	{
+		this(language);
+	}
+
+	/**
+	 * Creates a new script interpreter for the given script language.
+	 * 
+	 * @param language {@link ScriptLanguage} of the interpreter
+	 */
+	public DefaultScriptInterpreter(final ScriptLanguage language) {
+		this(language, null);
+	}
+
+	/**
+	 * Creates a new script interpreter for the given script language, using the
+	 * specified script engine.
+	 * 
+	 * @param language {@link ScriptLanguage} of the interpreter
+	 * @param engine {@link ScriptEngine} to use, or null for the specified
+	 *          language's default engine
+	 */
+	public DefaultScriptInterpreter(final ScriptLanguage language,
+		final ScriptEngine engine)
+	{
+		language.getContext().inject(this);
 		this.language = language;
-		engine = language.getScriptEngine();
-		history = new History(prefs, engine.getClass().getName());
+		this.engine = engine == null ? language.getScriptEngine() : engine;
+		history = prefs == null ? null :
+			new History(prefs, this.engine.getClass().getName());
 		readHistory();
 	}
+
+	// -- ScriptInterpreter methods --
 
 	@Override
 	public synchronized void readHistory() {
