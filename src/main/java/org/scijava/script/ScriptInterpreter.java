@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -81,4 +83,11 @@ public interface ScriptInterpreter {
 	 * @return the script engine
 	 */
 	ScriptEngine getEngine();
+
+	/**
+	 * Returns the {@link Bindings} of the associated {@link ScriptEngine} at
+	 * {@link ScriptContext#ENGINE_SCOPE} scope.
+	 */
+	Bindings getBindings();
+
 }

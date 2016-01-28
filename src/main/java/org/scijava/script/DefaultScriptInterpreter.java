@@ -30,6 +30,8 @@
  */
 package org.scijava.script;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
@@ -126,6 +128,11 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	@Override
 	public ScriptEngine getEngine() {
 		return engine;
+	}
+
+	@Override
+	public Bindings getBindings() {
+		return engine.getBindings(ScriptContext.ENGINE_SCOPE);
 	}
 
 }
