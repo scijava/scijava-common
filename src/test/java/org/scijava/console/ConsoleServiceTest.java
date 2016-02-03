@@ -220,6 +220,10 @@ public class ConsoleServiceTest {
 			argsHandled = true;
 		}
 
+		@Override
+		public boolean supports(final LinkedList<String> args) {
+			return !args.isEmpty() && args.getFirst().equals("--foo");
+		}
 	}
 
 	private static class OutputTracker implements OutputListener {
