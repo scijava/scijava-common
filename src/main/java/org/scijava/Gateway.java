@@ -43,6 +43,7 @@ import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
+import org.scijava.main.MainService;
 import org.scijava.menu.MenuService;
 import org.scijava.module.ModuleService;
 import org.scijava.object.ObjectService;
@@ -225,6 +226,13 @@ public interface Gateway extends RichPlugin, Versioned {
 	 * @return The {@link LogService} of this application context.
 	 */
 	LogService log();
+
+	/**
+	 * Gets this application context's {@link MainService}.
+	 *
+	 * @return The {@link MainService} of this application context.
+	 */
+	MainService main();
 
 	/**
 	 * Gets this application context's {@link MenuService}.
