@@ -86,9 +86,9 @@ public class MainServiceTest {
 
 		final ConsoleService consoleService = mainService.context().service(
 			ConsoleService.class);
-		consoleService.processArgs("-Dfoo=bar", //
+		consoleService.processArgs("-Dmain.test.foo=bar", //
 			"--main", "org.scijava.main.MainServiceTest$MathMain", "5", "+", "6", //
-			"--", "-Dwhiz=bang", //
+			"--", "-Dmain.test.whiz=bang", //
 			"--main", "org.scijava.main.MainServiceTest$MathMain", "7", "-", "4");
 
 		final MainService.Main[] m = mainService.getMains();
@@ -103,8 +103,8 @@ public class MainServiceTest {
 		assertEquals(System.getProperty(key(0)), "11.0");
 		assertEquals(System.getProperty(key(1)), "3.0");
 
-		assertEquals(System.getProperty("foo"), "bar");
-		assertEquals(System.getProperty("whiz"), "bang");
+		assertEquals(System.getProperty("main.test.foo"), "bar");
+		assertEquals(System.getProperty("main.test.whiz"), "bang");
 	}
 
 	// -- Helper methods --
