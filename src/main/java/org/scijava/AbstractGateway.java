@@ -45,6 +45,7 @@ import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
 import org.scijava.log.LogService;
+import org.scijava.main.MainService;
 import org.scijava.menu.MenuService;
 import org.scijava.module.ModuleService;
 import org.scijava.object.ObjectService;
@@ -161,6 +162,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public LogService log() {
 		return get(LogService.class);
+	}
+
+	@Override
+	public MainService main() {
+		return get(MainService.class);
 	}
 
 	@Override
