@@ -279,13 +279,13 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 	}
 
 	@Override
-	public Iterable<ModuleItem<?>> inputs() {
+	public List<ModuleItem<?>> inputs() {
 		parseParams();
 		return Collections.unmodifiableList(inputList);
 	}
 
 	@Override
-	public Iterable<ModuleItem<?>> outputs() {
+	public List<ModuleItem<?>> outputs() {
 		parseParams();
 		return Collections.unmodifiableList(outputList);
 	}
