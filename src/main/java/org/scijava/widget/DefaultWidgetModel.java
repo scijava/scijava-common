@@ -44,6 +44,7 @@ import org.scijava.log.LogService;
 import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
+import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
@@ -70,6 +71,9 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	@Parameter
 	private ConvertService convertService;
 
+	@Parameter
+	private ModuleService moduleService;
+
 	@Parameter(required = false)
 	private LogService log;
 
@@ -84,6 +88,11 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		this.item = item;
 		this.objectPool = objectPool;
 		convertedObjects = new WeakHashMap<Object, Object>();
+
+		if (item.getValue(module) == null) {
+			// assign the item's default value as the current value
+			setValue(moduleService.getDefaultValue(item));
+		}
 	}
 
 	@Override
