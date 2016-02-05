@@ -99,12 +99,12 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 	}
 
 	@Override
-	public List<ModuleItem<?>> inputs() {
+	public Iterable<ModuleItem<?>> inputs() {
 		return Collections.unmodifiableList(inputList());
 	}
 
 	@Override
-	public List<ModuleItem<?>> outputs() {
+	public Iterable<ModuleItem<?>> outputs() {
 		return Collections.unmodifiableList(outputList());
 	}
 

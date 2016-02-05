@@ -31,8 +31,6 @@
 
 package org.scijava.module;
 
-import java.util.List;
-
 import org.scijava.UIDetails;
 import org.scijava.Validated;
 import org.scijava.event.EventService;
@@ -76,10 +74,10 @@ public interface ModuleInfo extends UIDetails, Validated {
 	<T> ModuleItem<T> getOutput(String name, Class<T> type);
 
 	/** Gets the list of input items. */
-	List<ModuleItem<?>> inputs();
+	Iterable<ModuleItem<?>> inputs();
 
 	/** Gets the list of output items. */
-	List<ModuleItem<?>> outputs();
+	Iterable<ModuleItem<?>> outputs();
 
 	/**
 	 * Gets the fully qualified name of the class containing the module's actual
