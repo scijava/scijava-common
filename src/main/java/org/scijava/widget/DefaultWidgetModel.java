@@ -285,7 +285,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	// -- Helper methods --
 
 	/**
-	 * For multiple choice widgets, ensure the value is a valid choice.
+	 * For multiple choice widgets, ensures the value is a valid choice.
 	 * 
 	 * @see #getChoices()
 	 * @see ChoiceWidget
@@ -295,7 +295,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	}
 
 	/**
-	 * For object widgets, ensure the value is a valid object.
+	 * For object widgets, ensures the value is a valid object.
 	 * 
 	 * @see #getObjectPool()
 	 * @see ObjectWidget
