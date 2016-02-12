@@ -35,8 +35,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.scijava.command.CommandInfo;
+import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
@@ -106,7 +109,7 @@ public class RunArgument extends AbstractConsoleArgument {
 		final File scriptFile = new File(commandToRun);
 		if (scriptFile.exists() && scriptService.canHandleFile(commandToRun)) {
 			try {
-				scriptService.run(scriptFile, true, inputMap);
+				scriptService.run(scriptFile, true, inputMap).get();
 			} catch (final Exception exc) {
 				logService.error(exc);
 			}
@@ -129,7 +132,10 @@ public class RunArgument extends AbstractConsoleArgument {
 		// couldn't find anything to run
 		if (info == null) return;
 		// TODO: parse the optionString a la ImageJ1
-		commandService.run(info, true, inputMap);
+		try {
+			commandService.run(info, true, inputMap).get();
+		} catch (final Exception exc) {
+			logService.error(exc);
+		}
 	}
-
 }
