@@ -57,6 +57,12 @@ public class MainArgument extends AbstractConsoleArgument {
 	@Parameter(required = false)
 	private LogService log;
 
+	// -- Constructor --
+
+	public MainArgument() {
+		super(2, "--main", "--main-class");
+	}
+
 	// -- ConsoleArgument methods --
 
 	@Override
@@ -67,7 +73,7 @@ public class MainArgument extends AbstractConsoleArgument {
 		final String className = args.removeFirst();
 
 		final List<String> argList = new ArrayList<String>();
-		while (!args.isEmpty() && !isMainFlag(args) && !isSeparator(args)) {
+		while (!args.isEmpty() && !isAlias(args) && !isSeparator(args)) {
 			argList.add(args.removeFirst());
 		}
 		if (isSeparator(args)) args.removeFirst(); // remove the -- separator
@@ -80,16 +86,10 @@ public class MainArgument extends AbstractConsoleArgument {
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		return mainService != null && isMainFlag(args);
+		return mainService != null && super.supports(args);
 	}
 
 	// -- Helper methods --
-
-	private boolean isMainFlag(final LinkedList<String> args) {
-		if (args == null || args.isEmpty()) return false;
-		final String arg = args.getFirst();
-		return arg.equals("--main") || arg.equals("--main-class");
-	}
 
 	private boolean isSeparator(final LinkedList<String> args) {
 		if (args == null || args.isEmpty()) return false;

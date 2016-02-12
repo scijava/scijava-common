@@ -49,6 +49,12 @@ public class SystemPropertyArgument extends AbstractConsoleArgument {
 	private static final String SYS_PROP_REGEX = "-D([\\w\\._-]+)(=(.*))?";
 	private static final Pattern SYS_PROP_PAT = Pattern.compile(SYS_PROP_REGEX);
 
+	// -- Constructor --
+
+	public SystemPropertyArgument() {
+		super(1);
+	}
+
 	// -- ConsoleArgument methods --
 
 	@Override
@@ -69,7 +75,7 @@ public class SystemPropertyArgument extends AbstractConsoleArgument {
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		if (args == null || args.isEmpty()) return false;
+		if (!super.supports(args)) return false;
 		final String arg = args.getFirst();
 		if (!arg.startsWith("-D")) return false;
 		return SYS_PROP_PAT.matcher(arg).matches();

@@ -35,11 +35,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.scijava.command.CommandInfo;
-import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
@@ -67,6 +64,12 @@ public class RunArgument extends AbstractConsoleArgument {
 	@Parameter
 	private LogService logService;
 
+	// -- Constructor --
+
+	public RunArgument() {
+		super(2, "--run");
+	}
+
 	// -- ConsoleArgument methods --
 
 	@Override
@@ -78,13 +81,6 @@ public class RunArgument extends AbstractConsoleArgument {
 		final String optionString = args.isEmpty() ? "" : args.removeFirst();
 
 		run(commandToRun, optionString);
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return args != null && args.size() >= 2 && args.getFirst().equals("--run");
 	}
 
 	// -- Helper methods --

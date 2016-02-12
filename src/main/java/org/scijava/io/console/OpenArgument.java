@@ -59,6 +59,12 @@ public class OpenArgument extends AbstractConsoleArgument {
 	@Parameter
 	private LogService log;
 
+	// -- Constructor --
+
+	public OpenArgument() {
+		super(2, "--open");
+	}
+
 	// -- ConsoleArgument methods --
 
 	@Override
@@ -76,12 +82,4 @@ public class OpenArgument extends AbstractConsoleArgument {
 			log.error(exc);
 		}
 	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return args != null && args.size() >= 2 && args.getFirst().equals("--open");
-	}
-
 }

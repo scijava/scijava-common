@@ -31,7 +31,9 @@
 
 package org.scijava.console;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
 
@@ -43,8 +45,30 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractConsoleArgument extends
 	AbstractHandlerPlugin<LinkedList<String>> implements ConsoleArgument
 {
+	private int numArgs;
+	private Set<String> aliasFlags;
+
+	public AbstractConsoleArgument() {
+		this(1, new String[0]);
+	}
+
+	public AbstractConsoleArgument(final String... aliases) {
+		this(1, aliases);
+	}
+	
+	public AbstractConsoleArgument(final int requiredArgs, final String... aliases) {
+		numArgs = requiredArgs;
+		aliasFlags = new HashSet<String>();
+		for (final String s : aliases) aliasFlags.add(s);
+	}
 
 	// -- Typed methods --
+
+	@Override
+	public boolean supports(final LinkedList<String> args) {
+		if (args == null || args.size() < numArgs) return false;
+		return isAlias(args);
+	}
 
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -52,4 +76,12 @@ public abstract class AbstractConsoleArgument extends
 		return (Class) String.class;
 	}
 
+	/**
+	 * @return true if there are no aliases for this {@code ConsoleArgument}, or
+	 *         at least one alias matches the first argument in the provided
+	 *         list
+	 */
+	protected boolean isAlias(final LinkedList<String> args) {
+		return aliasFlags.isEmpty() || aliasFlags.contains(args.getFirst());
+	}
 }
