@@ -31,26 +31,38 @@
 
 package org.scijava.command.console;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.scijava.command.CommandInfo;
 import org.scijava.command.CommandService;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 
 /**
  * Handles the {@code --run} command line argument.
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
+ * @author Mark Hiner hinerm at gmail.com
  */
 @Plugin(type = ConsoleArgument.class)
 public class RunArgument extends AbstractConsoleArgument {
 
 	@Parameter
 	private CommandService commandService;
+
+	@Parameter
+	private ScriptService scriptService;
+
+	@Parameter
+	private LogService logService;
 
 	// -- ConsoleArgument methods --
 
@@ -76,6 +88,32 @@ public class RunArgument extends AbstractConsoleArgument {
 
 	/** Implements the {@code --run} command line argument. */
 	private void run(final String commandToRun, final String optionString) {
+		final Map<String, Object> inputMap = new HashMap<String, Object>();
+
+		if (!optionString.isEmpty()) {
+			final String[] pairs = optionString.split(",");
+			for (final String pair : pairs) {
+				final String[] split = pair.split("=");
+				if (split.length != 2) {
+					logService.error("Parameters must be formatted as a comma-separated list of key=value pairs");
+					return;
+				}
+				inputMap.put(split[0], split[1]);
+			}
+		}
+
+		// first check if this is a script
+		final File scriptFile = new File(commandToRun);
+		if (scriptFile.exists() && scriptService.canHandleFile(commandToRun)) {
+			try {
+				scriptService.run(scriptFile, true, inputMap);
+			} catch (final Exception exc) {
+				logService.error(exc);
+			}
+			return;
+		}
+
+		// Not a script, check if it's a command class
 		CommandInfo info = commandService.getCommand(commandToRun);
 		if (info == null) {
 			// command was not a class name; search for command by title instead
@@ -87,9 +125,11 @@ public class RunArgument extends AbstractConsoleArgument {
 				}
 			}
 		}
+
+		// couldn't find anything to run
 		if (info == null) return;
 		// TODO: parse the optionString a la ImageJ1
-		commandService.run(info, true);
+		commandService.run(info, true, inputMap);
 	}
 
 }
