@@ -1,9 +1,10 @@
 /*
  * #%L
- * SCIFIO library for reading and converting scientific file formats.
+ * SciJava Common shared library for SciJava software.
  * %%
- * Copyright (C) 2011 - 2014 Board of Regents of the University of
- * Wisconsin-Madison
+ * Copyright (C) 2009 - 2016 Board of Regents of the University of
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
