@@ -28,72 +28,91 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.script.console;
 
-package org.scijava.main.console;
-
-import java.util.ArrayList;
+import java.io.File;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
+import org.scijava.console.ConsoleUtils;
 import org.scijava.log.LogService;
-import org.scijava.main.MainService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 
 /**
- * Handles the {@code --main} command line argument, which launches an
- * alternative main class.
- * 
- * @author Curtis Rueden
+ * {@link ConsoleArgument} for executing scripts directly.
+ *
+ * @author Mark Hiner hinerm at gmail.com
  */
 @Plugin(type = ConsoleArgument.class)
-public class MainArgument extends AbstractConsoleArgument {
+public class RunScriptArgument extends AbstractConsoleArgument {
 
-	@Parameter(required = false)
-	private MainService mainService;
+	@Parameter
+	private ScriptService scriptService;
 
-	@Parameter(required = false)
-	private LogService log;
+	@Parameter
+	private LogService logService;
 
 	// -- Constructor --
 
-	public MainArgument() {
-		super(2, "--main", "--main-class");
+	public RunScriptArgument() {
+		super(2, "--run", "--script");
 	}
 
 	// -- ConsoleArgument methods --
 
 	@Override
 	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
+		if (!supports(args))
+			return;
 
-		args.removeFirst(); // --main / --main-class
-		final String className = args.removeFirst();
+		args.removeFirst(); // --run
+		final String scriptToRun = args.removeFirst();
+		final String paramString = args.isEmpty() ? "" : args.removeFirst();
 
-		final List<String> argList = new ArrayList<String>();
-		while (!args.isEmpty() && !isAlias(args) && !isSeparator(args)) {
-			argList.add(args.removeFirst());
-		}
-		if (isSeparator(args)) args.removeFirst(); // remove the -- separator
-		final String[] mainArgs = argList.toArray(new String[argList.size()]);
-
-		mainService.addMain(className, mainArgs);
+		run(scriptToRun, paramString);
 	}
 
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		return mainService != null && super.supports(args);
+		if (!super.supports(args))
+			return false;
+		return getScript(args.get(1)) != null;
 	}
 
 	// -- Helper methods --
 
-	private boolean isSeparator(final LinkedList<String> args) {
-		if (args == null || args.isEmpty()) return false;
-		return args.getFirst().equals("--");
+	/**
+	 * Run the script
+	 */
+	private void run(final String scriptToRun, final String paramString) {
+		final File script = getScript(scriptToRun);
+
+		// couldn't find anything to run
+		if (script == null)
+			return;
+
+		// TODO: parse the optionString a la ImageJ1
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, logService);
+
+		try {
+			scriptService.run(script, true, inputMap).get();
+		} catch (final Exception exc) {
+			logService.error(exc);
+		}
 	}
 
+	/**
+	 * Try to convert the given string to a {@link File} representing a
+	 * supported script type.
+	 */
+	private File getScript(final String string) {
+		final File scriptFile = new File(string);
+		return scriptFile.exists() && scriptService.canHandleFile(scriptFile) ? scriptFile : null;
+	}
 }

@@ -28,60 +28,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-
 package org.scijava.console;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
-import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.Context;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.ui.UIService;
 
 /**
- * Abstract superclass of {@link ConsoleArgument} implementations.
+ * Handles the {@code --headless} argument to signal that no UI will be opened
+ * and the enclosing {@link Context} will not be used after the
+ * {@link ConsoleService} argument processing is complete.
  *
- * @author Curtis Rueden
+ * @author Mark Hiner hinerm at gmail.com
  */
-public abstract class AbstractConsoleArgument extends
-	AbstractHandlerPlugin<LinkedList<String>> implements ConsoleArgument
-{
-	private int numArgs;
-	private Set<String> aliasFlags;
+@Plugin(type = ConsoleArgument.class)
+public class HeadlessArgument extends AbstractConsoleArgument {
 
-	public AbstractConsoleArgument() {
-		this(1, new String[0]);
+	@Parameter(required = false)
+	private UIService uiService;
+
+	// -- Constructor --
+
+	public HeadlessArgument() {
+		super(1, "--headless");
 	}
 
-	public AbstractConsoleArgument(final String... aliases) {
-		this(1, aliases);
-	}
-	
-	public AbstractConsoleArgument(final int requiredArgs, final String... aliases) {
-		numArgs = requiredArgs;
-		aliasFlags = new HashSet<String>();
-		for (final String s : aliases) aliasFlags.add(s);
-	}
+	// -- ConsoleArgument methods --
 
+	@Override
+	public void handle(final LinkedList<String> args) {
+		if (!supports(args)) return;
+
+		args.removeFirst(); // --headless
+
+		uiService.setHeadless(true);
+	}
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		if (args == null || args.size() < numArgs) return false;
-		return isAlias(args);
+		return uiService != null && super.supports(args);
 	}
 
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<LinkedList<String>> getType() {
-		return (Class) String.class;
-	}
-
-	/**
-	 * @return true if there are no aliases for this {@code ConsoleArgument}, or
-	 *         at least one alias matches the first argument in the provided
-	 *         list
-	 */
-	protected boolean isAlias(final LinkedList<String> args) {
-		return aliasFlags.isEmpty() || aliasFlags.contains(args.getFirst());
-	}
 }

@@ -55,6 +55,12 @@ public class UIArgument extends AbstractConsoleArgument {
 	@Parameter
 	private LogService log;
 
+	// -- Constructor --
+
+	public UIArgument() {
+		super(2, "--ui");
+	}
+
 	// -- ConsoleArgument methods --
 
 	@Override
@@ -71,13 +77,6 @@ public class UIArgument extends AbstractConsoleArgument {
 			else {
 				uiService.setDefaultUI(ui);
 			}
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return args != null && args.size() >= 2 && args.getFirst().equals("--ui");
 	}
 
 }

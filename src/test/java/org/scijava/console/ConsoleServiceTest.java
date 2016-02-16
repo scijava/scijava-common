@@ -208,6 +208,10 @@ public class ConsoleServiceTest {
 	@Plugin(type = ConsoleArgument.class, priority = Priority.HIGH_PRIORITY)
 	public static class FooArgument extends AbstractConsoleArgument {
 
+		public FooArgument() {
+			super(1, "--foo");
+		}
+
 		private boolean argsHandled;
 
 		@Override
@@ -218,11 +222,6 @@ public class ConsoleServiceTest {
 			assertEquals("--bar", args.get(1));
 			args.clear();
 			argsHandled = true;
-		}
-
-		@Override
-		public boolean supports(final LinkedList<String> args) {
-			return !args.isEmpty() && args.getFirst().equals("--foo");
 		}
 	}
 

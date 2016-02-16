@@ -28,60 +28,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-
 package org.scijava.console;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.log.LogService;
 
 /**
- * Abstract superclass of {@link ConsoleArgument} implementations.
+ * Helper class for {@link ConsoleArgument}s.
  *
- * @author Curtis Rueden
+ * @author Mark Hiner hinerm at gmail.com
  */
-public abstract class AbstractConsoleArgument extends
-	AbstractHandlerPlugin<LinkedList<String>> implements ConsoleArgument
-{
-	private int numArgs;
-	private Set<String> aliasFlags;
+public final class ConsoleUtils {
 
-	public AbstractConsoleArgument() {
-		this(1, new String[0]);
+	public static Map<String, Object> parseParameterString(final String parameterString) {
+		return parseParameterString(parameterString, null);
 	}
 
-	public AbstractConsoleArgument(final String... aliases) {
-		this(1, aliases);
-	}
-	
-	public AbstractConsoleArgument(final int requiredArgs, final String... aliases) {
-		numArgs = requiredArgs;
-		aliasFlags = new HashSet<String>();
-		for (final String s : aliases) aliasFlags.add(s);
-	}
+	public static Map<String, Object> parseParameterString(final String parameterString, final LogService logService) {
+		final Map<String, Object> inputMap = new HashMap<String, Object>();
 
-	// -- Typed methods --
+		if (!parameterString.isEmpty()) {
+			final String[] pairs = parameterString.split(",");
+			for (final String pair : pairs) {
+				final String[] split = pair.split("=");
+				if (split.length == 2)
+					inputMap.put(split[0], split[1]);
+				else if (logService != null)
+					logService.error("Parameters must be formatted as a comma-separated list of key=value pairs");
 
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		if (args == null || args.size() < numArgs) return false;
-		return isAlias(args);
-	}
+			}
+		}
 
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<LinkedList<String>> getType() {
-		return (Class) String.class;
-	}
-
-	/**
-	 * @return true if there are no aliases for this {@code ConsoleArgument}, or
-	 *         at least one alias matches the first argument in the provided
-	 *         list
-	 */
-	protected boolean isAlias(final LinkedList<String> args) {
-		return aliasFlags.isEmpty() || aliasFlags.contains(args.getFirst());
+		return inputMap;
 	}
 }

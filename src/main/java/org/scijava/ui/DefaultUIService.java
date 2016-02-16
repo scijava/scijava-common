@@ -203,6 +203,17 @@ public final class DefaultUIService extends AbstractService implements
 		return ui.isVisible();
 	}
 
+
+	@Override
+	public void setHeadless(final boolean headless) {
+		System.setProperty("java.awt.headless", String.valueOf(headless));
+	}
+
+	@Override
+	public boolean isHeadless() {
+		return Boolean.getBoolean("java.awt.headless");
+	}
+
 	@Override
 	public UserInterface getDefaultUI() {
 		if (defaultUI != null) return defaultUI;
@@ -527,5 +538,4 @@ public final class DefaultUIService extends AbstractService implements
 	private String getTitle() {
 		return appService.getApp().getTitle();
 	}
-
 }

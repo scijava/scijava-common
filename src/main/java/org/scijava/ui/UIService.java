@@ -102,6 +102,12 @@ public interface UIService extends SciJavaService {
 	/** Gets whether the UI with the given name or class name is visible. */
 	boolean isVisible(String name);
 
+	/** Sets whether the application is running in headless mode (no UI). */
+	void setHeadless(boolean isHeadless);
+
+	/** Gets whether the UI is running in headless mode (no UI). */
+	boolean isHeadless();
+
 	/**
 	 * Gets the default user interface.
 	 * 
