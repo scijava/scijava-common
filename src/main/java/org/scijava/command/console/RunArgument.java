@@ -100,7 +100,7 @@ public class RunArgument extends AbstractConsoleArgument {
 			return;
 
 		// TODO: parse the optionString a la ImageJ1
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, logService);
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, info, logService);
 
 		try {
 			commandService.run(info, true, inputMap).get();

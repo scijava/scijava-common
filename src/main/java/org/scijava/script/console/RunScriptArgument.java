@@ -40,6 +40,7 @@ import org.scijava.console.ConsoleUtils;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptInfo;
 import org.scijava.script.ScriptService;
 
 /**
@@ -97,11 +98,12 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 		if (script == null)
 			return;
 
-		// TODO: parse the optionString a la ImageJ1
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, logService);
+		final ScriptInfo info = scriptService.getScript(script);
+
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, info, logService);
 
 		try {
-			scriptService.run(script, true, inputMap).get();
+			scriptService.run(info, true, inputMap).get();
 		} catch (final Exception exc) {
 			logService.error(exc);
 		}

@@ -31,9 +31,13 @@
 package org.scijava.console;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.scijava.command.CommandInfo;
 import org.scijava.log.LogService;
+import org.scijava.module.ModuleInfo;
+import org.scijava.module.ModuleItem;
 
 /**
  * Helper class for {@link ConsoleArgument}s.
@@ -43,18 +47,33 @@ import org.scijava.log.LogService;
 public final class ConsoleUtils {
 
 	public static Map<String, Object> parseParameterString(final String parameterString) {
-		return parseParameterString(parameterString, null);
+		return parseParameterString(parameterString, (CommandInfo)null);
+	}
+
+	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info) {
+		return parseParameterString(parameterString, info, null);
 	}
 
 	public static Map<String, Object> parseParameterString(final String parameterString, final LogService logService) {
+		return parseParameterString(parameterString, null, logService);
+	}
+
+	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService logService) {
 		final Map<String, Object> inputMap = new HashMap<String, Object>();
 
 		if (!parameterString.isEmpty()) {
+			Iterator<ModuleItem<?>> inputs = null;
+			if (info != null) {
+				inputs = info.inputs().iterator();
+			}
 			final String[] pairs = parameterString.split(",");
 			for (final String pair : pairs) {
 				final String[] split = pair.split("=");
 				if (split.length == 2)
 					inputMap.put(split[0], split[1]);
+				else if (inputs != null && inputs.hasNext() && split.length == 1) {
+					inputMap.put(inputs.next().getName(), split[0]);
+				}
 				else if (logService != null)
 					logService.error("Parameters must be formatted as a comma-separated list of key=value pairs");
 
@@ -62,5 +81,6 @@ public final class ConsoleUtils {
 		}
 
 		return inputMap;
+
 	}
 }
