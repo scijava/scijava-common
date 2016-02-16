@@ -113,13 +113,9 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 			}
 			else {
 				// create a new display for the output
-				final Display<?> display = displayService.createDisplay(output);
+				final Display<?> display = displayService.createDisplay(defaultName, output);
 				if (display != null) {
 					displays.add(display);
-					if (display.getName() == null) {
-						// set a default name based on the parameter
-						display.setName(defaultName);
-					}
 				}
 			}
 		}
