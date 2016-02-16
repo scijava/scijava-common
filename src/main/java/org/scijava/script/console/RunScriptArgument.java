@@ -28,41 +28,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.script.console;
 
-package org.scijava.command.console;
-
+import java.io.File;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.scijava.command.CommandInfo;
-import org.scijava.command.CommandService;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
 import org.scijava.console.ConsoleUtils;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptService;
 
 /**
- * Handles the {@code --run} command line argument.
+ * {@link ConsoleArgument} for executing scripts directly.
  *
- * @author Curtis Rueden
- * @author Johannes Schindelin
  * @author Mark Hiner hinerm at gmail.com
  */
 @Plugin(type = ConsoleArgument.class)
-public class RunArgument extends AbstractConsoleArgument {
+public class RunScriptArgument extends AbstractConsoleArgument {
 
 	@Parameter
-	private CommandService commandService;
+	private ScriptService scriptService;
 
 	@Parameter
 	private LogService logService;
 
 	// -- Constructor --
 
-	public RunArgument() {
-		super(2, "--run", "--class");
+	public RunScriptArgument() {
+		super(2, "--run", "--script");
 	}
 
 	// -- ConsoleArgument methods --
@@ -73,10 +70,10 @@ public class RunArgument extends AbstractConsoleArgument {
 			return;
 
 		args.removeFirst(); // --run
-		final String commandToRun = args.removeFirst();
+		final String scriptToRun = args.removeFirst();
 		final String paramString = args.isEmpty() ? "" : args.removeFirst();
 
-		run(commandToRun, paramString);
+		run(scriptToRun, paramString);
 	}
 
 	// -- Typed methods --
@@ -85,45 +82,37 @@ public class RunArgument extends AbstractConsoleArgument {
 	public boolean supports(final LinkedList<String> args) {
 		if (!super.supports(args))
 			return false;
-		return getInfo(args.get(1)) != null;
+		return getScript(args.get(1)) != null;
 	}
 
 	// -- Helper methods --
 
-	/** Implements the {@code --run} command line argument. */
-	private void run(final String commandToRun, final String optionString) {
-		// get the command info
-		final CommandInfo info = getInfo(commandToRun);
+	/**
+	 * Run the script
+	 */
+	private void run(final String scriptToRun, final String paramString) {
+		final File script = getScript(scriptToRun);
 
 		// couldn't find anything to run
-		if (info == null)
+		if (script == null)
 			return;
 
 		// TODO: parse the optionString a la ImageJ1
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, logService);
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, logService);
 
 		try {
-			commandService.run(info, true, inputMap).get();
+			scriptService.run(script, true, inputMap).get();
 		} catch (final Exception exc) {
 			logService.error(exc);
 		}
 	}
 
 	/**
-	 * Try to convert the given string to a {@link CommandInfo}
+	 * Try to convert the given string to a {@link File} representing a
+	 * supported script type.
 	 */
-	private CommandInfo getInfo(final String commandToRun) {
-		CommandInfo info = commandService.getCommand(commandToRun);
-		if (info == null) {
-			// command was not a class name; search for command by title instead
-			final String label = commandToRun.replace('_', ' ');
-			for (final CommandInfo ci : commandService.getCommands()) {
-				if (label.equals(ci.getTitle())) {
-					info = ci;
-					break;
-				}
-			}
-		}
-		return info;
+	private File getScript(final String string) {
+		final File scriptFile = new File(string);
+		return scriptFile.exists() && scriptService.canHandleFile(scriptFile) ? scriptFile : null;
 	}
 }
