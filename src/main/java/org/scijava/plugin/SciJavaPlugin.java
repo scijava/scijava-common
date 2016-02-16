@@ -45,8 +45,11 @@ package org.scijava.plugin;
  * <li>{@link org.scijava.command.Command} - plugins that are executable. These
  * plugins typically perform a discrete operation, and are accessible via the
  * application menus.</li>
+ * <li>{@link org.scijava.console.ConsoleArgument} - plugins that handle
+ * arguments passed to the application as command line parameters.</li>
  * <li>{@link org.scijava.display.Display} - plugins that visualize objects,
  * often used to display module outputs.</li>
+ * <li>{@link org.scijava.io.IOPlugin} - plugins that read or write data.</li>
  * <li>{@link org.scijava.module.process.PreprocessorPlugin} - plugins that
  * perform preprocessing on modules. A preprocessor plugin is a discoverable
  * {@link org.scijava.module.process.ModulePreprocessor}.</li>
@@ -56,6 +59,8 @@ package org.scijava.plugin;
  * {@link org.scijava.module.process.ModulePostprocessor}.</li>
  * <li>{@link org.scijava.platform.Platform} - plugins for defining
  * platform-specific behavior.</li>
+ * <li>{@link org.scijava.script.ScriptLanguage} - plugins that enable executing
+ * scripts in particular languages as SciJava modules.</li>
  * <li>{@link org.scijava.service.Service} - plugins that define new API in a
  * particular area.</li>
  * <li>{@link org.scijava.tool.Tool} - plugins that map user input (e.g.,
