@@ -169,7 +169,7 @@ public class DefaultScriptService extends
 
 	@Override
 	public ScriptInfo getScript(final File scriptFile) {
-		return scripts().get(scriptFile);
+		return getOrCreate(scriptFile);
 	}
 
 	@Override
@@ -455,7 +455,7 @@ public class DefaultScriptService extends
 	 * are registered with the service.
 	 */
 	private ScriptInfo getOrCreate(final File file) {
-		final ScriptInfo info = getScript(file);
+		final ScriptInfo info = scripts().get(file);
 		if (info != null) return info;
 		return new ScriptInfo(getContext(), file);
 	}

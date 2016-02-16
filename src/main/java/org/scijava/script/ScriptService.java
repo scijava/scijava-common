@@ -117,8 +117,8 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	Collection<ScriptInfo> getScripts();
 
 	/**
-	 * Gets the {@link ScriptInfo} metadata for the script at the given file, or
-	 * null if none.
+	 * Gets the cached {@link ScriptInfo} metadata for the script at the given
+	 * file, creating it if it does not already exist.
 	 */
 	ScriptInfo getScript(File scriptFile);
 
