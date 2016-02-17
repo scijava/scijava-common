@@ -106,7 +106,7 @@ public abstract class AbstractConvertService extends
 
 	@Override
 	public Collection<Object> getCompatibleInputs(Class<?> dest) {
-		Set<Object> objects = new LinkedHashSet<Object>();
+		Set<Object> objects = new HashSet<Object>();
 
 		for (final Converter<?, ?> c : getInstances()) {
 			if (dest.isAssignableFrom(c.getOutputType())) {
@@ -114,7 +114,7 @@ public abstract class AbstractConvertService extends
 			}
 		}
 
-		return new ArrayList<Object>(objects);
+		return objects;
 	}
 
 	@Override
