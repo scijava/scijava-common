@@ -32,8 +32,10 @@
 package org.scijava.convert;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.scijava.plugin.AbstractHandlerService;
@@ -51,6 +53,69 @@ public abstract class AbstractConvertService extends
 {
 
 	// -- ConversionService methods --
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public Class<Converter<?, ?>> getPluginType() {
+		return (Class)Converter.class;
+	}
+
+	@Override
+	public Class<ConversionRequest> getType() {
+		return ConversionRequest.class;
+	}
+
+	@Override
+	public Converter<?, ?> getHandler(final Object src, final Class<?> dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public Converter<?, ?> getHandler(final Class<?> src, final Class<?> dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public Converter<?, ?> getHandler(final Object src, final Type dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public Converter<?, ?> getHandler(final Class<?> src, final Type dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public boolean supports(final Object src, final Class<?> dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public boolean supports(final Class<?> src, final Class<?> dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public boolean supports(final Object src, final Type dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public boolean supports(final Class<?> src, final Type dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	@Override
+	public Collection<Object> getCompatibleInputs(Class<?> dest) {
+		Set<Object> objects = new LinkedHashSet<Object>();
+
+		for (final Converter<?, ?> c : getInstances()) {
+			if (dest.isAssignableFrom(c.getOutputType())) {
+				c.populateInputCandidates(objects);
+			}
+		}
+
+		return new ArrayList<Object>(objects);
+	}
 
 	@Override
 	public Object convert(Object src, Type dest) {
