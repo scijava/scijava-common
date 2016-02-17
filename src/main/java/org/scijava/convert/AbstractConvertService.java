@@ -32,31 +32,27 @@
 package org.scijava.convert;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.util.ConversionUtils;
 
 /**
- * Abstract superclass for {@link ConvertService} implementations. Sets
- * this service as the active delegate service in {@link ConversionUtils}.
+ * Abstract superclass for {@link ConvertService} implementations. Sets this
+ * service as the active delegate service in {@link ConversionUtils}.
  *
  * @author Mark Hiner
  */
-public abstract class AbstractConvertService extends
-	AbstractHandlerService<ConversionRequest, Converter<?, ?>> implements
-	ConvertService
-{
+public abstract class AbstractConvertService extends AbstractHandlerService<ConversionRequest, Converter<?, ?>>
+		implements ConvertService {
 
 	// -- ConversionService methods --
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<Converter<?, ?>> getPluginType() {
-		return (Class)Converter.class;
+		return (Class) Converter.class;
 	}
 
 	@Override
@@ -105,8 +101,8 @@ public abstract class AbstractConvertService extends
 	}
 
 	@Override
-	public Collection<Object> getCompatibleInputs(Class<?> dest) {
-		Set<Object> objects = new HashSet<Object>();
+	public Collection<Object> getCompatibleInputs(final Class<?> dest) {
+		final Set<Object> objects = new HashSet<Object>();
 
 		for (final Converter<?, ?> c : getInstances()) {
 			if (dest.isAssignableFrom(c.getOutputType())) {
@@ -118,29 +114,29 @@ public abstract class AbstractConvertService extends
 	}
 
 	@Override
-	public Object convert(Object src, Type dest) {
+	public Object convert(final Object src, final Type dest) {
 		return convert(new ConversionRequest(src, dest));
 	}
 
 	@Override
-	public <T> T convert(Object src, Class<T> dest) {
+	public <T> T convert(final Object src, final Class<T> dest) {
 		// NB: repeated code with convert(ConversionRequest), because the
 		// handler's convert method respects the T provided
-		Converter<?, ?> handler = getHandler(src, dest);
+		final Converter<?, ?> handler = getHandler(src, dest);
 		return handler == null ? null : handler.convert(src, dest);
 	}
 
 	@Override
-	public Object convert(ConversionRequest request) {
-		Converter<?, ?> handler = getHandler(request);
+	public Object convert(final ConversionRequest request) {
+		final Converter<?, ?> handler = getHandler(request);
 		return handler == null ? null : handler.convert(request);
 	}
 
 	@Override
-	public Collection<Class<?>> getCompatibleInputClasses(Class<?> dest) {
-		Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+	public Collection<Class<?>> getCompatibleInputClasses(final Class<?> dest) {
+		final Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
 
-		for (Converter<?, ?> converter : getInstances()) {
+		for (final Converter<?, ?> converter : getInstances()) {
 			addIfMatches(dest, converter.getOutputType(), converter.getInputType(), compatibleClasses);
 		}
 
@@ -148,10 +144,10 @@ public abstract class AbstractConvertService extends
 	}
 
 	@Override
-	public Collection<Class<?>> getCompatibleOutputClasses(Class<?> source) {
-		Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+	public Collection<Class<?>> getCompatibleOutputClasses(final Class<?> source) {
+		final Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
 
-		for (Converter<?, ?> converter : getInstances()) {
+		for (final Converter<?, ?> converter : getInstances()) {
 			addIfMatches(source, converter.getInputType(), converter.getOutputType(), compatibleClasses);
 		}
 
@@ -168,9 +164,11 @@ public abstract class AbstractConvertService extends
 	// -- Helper methods --
 
 	/**
-	 * Test two classes; if they match, a third class is added to the provided set of classes.
+	 * Test two classes; if they match, a third class is added to the provided
+	 * set of classes.
 	 */
-	private void addIfMatches(Class<?> c1, Class<?> c2, Class<?> toAdd, Set<Class<?>> classes) {
-		if (c1 == c2) classes.add(toAdd);
+	private void addIfMatches(final Class<?> c1, final Class<?> c2, final Class<?> toAdd, final Set<Class<?>> classes) {
+		if (c1 == c2)
+			classes.add(toAdd);
 	}
 }
