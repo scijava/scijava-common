@@ -32,6 +32,9 @@
 package org.scijava.convert;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.util.ConversionUtils;
@@ -68,10 +71,41 @@ public abstract class AbstractConvertService extends
 		return handler == null ? null : handler.convert(request);
 	}
 
+	@Override
+	public Collection<Class<?>> getCompatibleInputClasses(Class<?> dest) {
+		Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+
+		for (Converter<?, ?> converter : getInstances()) {
+			addIfMatches(dest, converter.getOutputType(), converter.getInputType(), compatibleClasses);
+		}
+
+		return compatibleClasses;
+	}
+
+	@Override
+	public Collection<Class<?>> getCompatibleOutputClasses(Class<?> source) {
+		Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+
+		for (Converter<?, ?> converter : getInstances()) {
+			addIfMatches(source, converter.getInputType(), converter.getOutputType(), compatibleClasses);
+		}
+
+		return compatibleClasses;
+	}
+
 	// -- Service methods --
 
 	@Override
 	public void initialize() {
 		ConversionUtils.setDelegateService(this, getPriority());
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * Test two classes; if they match, a third class is added to the provided set of classes.
+	 */
+	private void addIfMatches(Class<?> c1, Class<?> c2, Class<?> toAdd, Set<Class<?>> classes) {
+		if (c1 == c2) classes.add(toAdd);
 	}
 }

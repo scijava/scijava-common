@@ -89,6 +89,18 @@ public interface ConvertService extends
 	 */
 	Collection<Object> getCompatibleInputs(Class<?> dest);
 
+	/**
+	 * @return A collection of all classes that could potentially be converted
+	 *         <b>to</b> the specified class.
+	 */
+	Collection<Class<?>> getCompatibleInputClasses(Class<?> dest);
+
+	/**
+	 * @return A collection of all classes that could potentially be converted
+	 *         <b>from</b> the specified class.
+	 */
+	Collection<Class<?>> getCompatibleOutputClasses(Class<?> dest);
+
 	// -- Deprecated API --
 
 	/**
