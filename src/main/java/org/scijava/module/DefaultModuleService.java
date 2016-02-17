@@ -33,8 +33,10 @@ package org.scijava.module;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -252,14 +254,24 @@ public class DefaultModuleService extends AbstractService implements
 	public <T> ModuleItem<T> getSingleInput(final Module module,
 		final Class<T> type)
 	{
-		return getSingleItem(module, type, module.getInfo().inputs());
+		return getTypedSingleItem(module, type, module.getInfo().inputs());
 	}
 
 	@Override
 	public <T> ModuleItem<T> getSingleOutput(final Module module,
 		final Class<T> type)
 	{
-		return getSingleItem(module, type, module.getInfo().outputs());
+		return getTypedSingleItem(module, type, module.getInfo().outputs());
+	}
+
+	@Override
+	public ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types) {
+		return getSingleItem(module, types, module.getInfo().inputs());
+	}
+
+	@Override
+	public ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types) {
+		return getSingleItem(module, types, module.getInfo().outputs());
 	}
 
 	@Override
@@ -431,20 +443,35 @@ public class DefaultModuleService extends AbstractService implements
 		}
 	}
 
-	private <T> ModuleItem<T> getSingleItem(final Module module,
+	private <T> ModuleItem<T> getTypedSingleItem(final Module module,
 		final Class<T> type, final Iterable<ModuleItem<?>> items)
 	{
-		ModuleItem<T> result = null;
+		Set<Class<?>> types = new HashSet<Class<?>>();
+		types.add(type);
+		@SuppressWarnings("unchecked")
+		ModuleItem<T> result = (ModuleItem<T>) getSingleItem(module, types, items);
+		return result;
+	}
+
+	private ModuleItem<?> getSingleItem(final Module module,
+		final Collection<Class<?>> types, final Iterable<ModuleItem<?>> items)
+	{
+		ModuleItem<?> result = null;
+
 		for (final ModuleItem<?> item : items) {
 			final String name = item.getName();
 			final boolean resolved = module.isResolved(name);
 			if (resolved) continue; // skip resolved inputs
 			if (!item.isAutoFill()) continue; // skip unfillable inputs
-			if (!type.isAssignableFrom(item.getType())) continue;
-			if (result != null) return null; // multiple matching items
-			@SuppressWarnings("unchecked")
-			final ModuleItem<T> typedItem = (ModuleItem<T>) item;
-			result = typedItem;
+			final Class<?> itemType = item.getType();
+			for (final Class<?> type : types) {
+				if (type.isAssignableFrom(itemType)) {
+					if (result != null) return null; // multiple matching module items
+					result = item;
+					// This module item matches, so no need to check more classes.
+					break;
+				}
+			}
 		}
 		return result;
 	}

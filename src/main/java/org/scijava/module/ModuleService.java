@@ -275,6 +275,18 @@ public interface ModuleService extends SciJavaService {
 	<T> ModuleItem<T> getSingleOutput(Module module, Class<T> type);
 
 	/**
+	 * As {@link #getSingleInput(Module, Class)} but will match with a set of
+	 * potential classes, at the cost of generic parameter safety.
+	 */
+	ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types);
+
+	/**
+	 * As {@link #getSingleOutput(Module, Class)} but will match with a set of
+	 * potential classes, at the cost of generic parameter safety.
+	 */
+	ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types);
+
+	/**
 	 * Registers the given value for the given {@link ModuleItem} using the
 	 * {@link PrefService}.
 	 */
