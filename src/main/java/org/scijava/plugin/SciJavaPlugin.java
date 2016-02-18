@@ -47,6 +47,8 @@ package org.scijava.plugin;
  * application menus.</li>
  * <li>{@link org.scijava.console.ConsoleArgument} - plugins that handle
  * arguments passed to the application as command line parameters.</li>
+ * <li>{@link org.scijava.convert.Converter} - plugins which translate objects
+ * between data types.</li>
  * <li>{@link org.scijava.display.Display} - plugins that visualize objects,
  * often used to display module outputs.</li>
  * <li>{@link org.scijava.io.IOPlugin} - plugins that read or write data.</li>
