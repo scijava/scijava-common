@@ -59,6 +59,7 @@ import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 import org.scijava.tool.IconService;
 import org.scijava.tool.ToolService;
+import org.scijava.ui.UIService;
 import org.scijava.widget.WidgetService;
 
 /**
@@ -317,6 +318,13 @@ public interface Gateway extends RichPlugin, Versioned {
 	 * @return The {@link ToolService} of this application context.
 	 */
 	ToolService tool();
+
+	/**
+	 * Gets this application context's {@link UIService}.
+	 *
+	 * @return The {@link UIService} of this application context.
+	 */
+	UIService ui();
 
 	/**
 	 * Gets this application context's {@link WidgetService}.
