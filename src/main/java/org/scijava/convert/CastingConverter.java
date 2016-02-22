@@ -41,7 +41,7 @@ import org.scijava.util.GenericUtils;
  *
  * @author Mark Hiner hinerm at gmail.com
  */
-@Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY - 1)
+@Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY)
 public class CastingConverter extends AbstractConverter<Object, Object> {
 
 	@SuppressWarnings("deprecation")
@@ -63,17 +63,14 @@ public class CastingConverter extends AbstractConverter<Object, Object> {
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
 		// NB: Regardless of whether the destination type is an array or
-		// collection,
-		// we still want to cast directly if doing so is possible. But note that
-		// in
-		// general, this check does not detect cases of incompatible generic
-		// parameter types. If this limitation becomes a problem in the future
-		// we
-		// can extend the logic here to provide additional signatures of canCast
-		// which operate on Types in general rather than only Classes. However,
-		// the
-		// logic could become complex very quickly in various subclassing cases,
-		// generic parameters resolved vs. propagated, etc.
+		// collection, we still want to cast directly if doing so is possible.
+		// But note that in general, this check does not detect cases of
+		// incompatible generic parameter types. If this limitation becomes a
+		// problem in the future we can extend the logic here to provide
+		// additional signatures of canCast which operate on Types in general
+		// rather than only Classes. However, the logic could become complex
+		// very quickly in various subclassing cases, generic parameters
+		// resolved vs. propagated, etc.
 		final Class<?> c = GenericUtils.getClass(dest);
 		return (T) ConversionUtils.cast(src, c);
 	}
