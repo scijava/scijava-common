@@ -277,6 +277,23 @@ public interface UIService extends SciJavaService {
 	File chooseFile(File file, String style);
 
 	/**
+	 * Prompts the user to choose a file.
+	 * <p>
+	 * The prompt is displayed in the default user interface.
+	 * </p>
+	 * 
+	 * @param title Title to use in the file chooser dialog.
+	 * @param file The initial value displayed in the file chooser prompt.
+	 * @param style The style of chooser to use:
+	 *          <ul>
+	 *          <li>{@link FileWidget#OPEN_STYLE}</li>
+	 *          <li>{@link FileWidget#SAVE_STYLE}</li>
+	 *          <li>{@link FileWidget#DIRECTORY_STYLE}</li>
+	 *          </ul>
+	 */
+	File chooseFile(String title, File file, String style);
+
+	/**
 	 * Displays a popup context menu for the given display at the specified
 	 * position.
 	 * <p>

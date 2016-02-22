@@ -341,6 +341,15 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@Override
+	public File
+		chooseFile(final String title, final File file, final String style)
+	{
+		final UserInterface ui = getDefaultUI();
+		if (ui == null) return null;
+		return ui.chooseFile(title, file, style);
+	}
+
+	@Override
 	public void showContextMenu(final String menuRoot, final Display<?> display,
 		final int x, final int y)
 	{
