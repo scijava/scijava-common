@@ -272,9 +272,11 @@ public class Context implements Disposable {
 
 		setStrict(strict);
 
-		final ServiceHelper serviceHelper =
-			new ServiceHelper(this, serviceClasses, strict);
-		serviceHelper.loadServices();
+		if (!serviceClasses.isEmpty()){
+			final ServiceHelper serviceHelper =
+					new ServiceHelper(this, serviceClasses, strict);
+			serviceHelper.loadServices();
+		}
 	}
 
 	// -- Context methods --
