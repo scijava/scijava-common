@@ -41,7 +41,7 @@ import org.scijava.util.GenericUtils;
  *
  * @author Mark Hiner hinerm at gmail.com
  */
-@Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY - 1)
+@Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY)
 public class CastingConverter extends AbstractConverter<Object, Object> {
 
 	@SuppressWarnings("deprecation")
