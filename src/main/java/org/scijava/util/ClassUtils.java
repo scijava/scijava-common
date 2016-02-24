@@ -93,11 +93,48 @@ public final class ClassUtils {
 	 * Loads the class with the given name, using the current thread's context
 	 * class loader, or null if it cannot be loaded.
 	 *
+	 * @param name The name of the class to load.
 	 * @return The loaded class, or null if the class could not be loaded.
-	 * @see #loadClass(String, ClassLoader)
+	 * @see #loadClass(String, ClassLoader, boolean)
 	 */
-	public static Class<?> loadClass(final String className) {
-		return loadClass(className, null);
+	public static Class<?> loadClass(final String name) {
+		return loadClass(name, null, true);
+	}
+
+	/**
+	 * Loads the class with the given name, using the specified
+	 * {@link ClassLoader}, or null if it cannot be loaded.
+	 *
+	 * @param name The name of the class to load.
+	 * @param classLoader The class loader with which to load the class; if null,
+	 *          the current thread's context class loader will be used.
+	 * @return The loaded class, or null if the class could not be loaded.
+	 * @see #loadClass(String, ClassLoader, boolean)
+	 */
+	public static Class<?> loadClass(final String name,
+		final ClassLoader classLoader)
+	{
+		return loadClass(name, classLoader, true);
+	}
+
+	/**
+	 * Loads the class with the given name, using the current thread's context
+	 * class loader.
+	 *
+	 * @param className the name of the class to load
+	 * @param quietly Whether to return {@code null} (rather than throwing
+	 *          {@link IllegalArgumentException}) if something goes wrong loading
+	 *          the class
+	 * @return The loaded class, or {@code null} if the class could not be loaded
+	 *         and the {@code quietly} flag is set.
+	 * @see #loadClass(String, ClassLoader, boolean)
+	 * @throws IllegalArgumentException If the class cannot be loaded and the
+	 *           {@code quietly} flag is not set.
+	 */
+	public static Class<?> loadClass(final String className,
+		final boolean quietly)
+	{
+		return loadClass(className, null, quietly);
 	}
 
 	/**
@@ -119,10 +156,16 @@ public final class ClassUtils {
 	 * @param name The name of the class to load.
 	 * @param classLoader The class loader with which to load the class; if null,
 	 *          the current thread's context class loader will be used.
-	 * @return The loaded class, or null if the class could not be loaded.
+	 * @param quietly Whether to return {@code null} (rather than throwing
+	 *          {@link IllegalArgumentException}) if something goes wrong loading
+	 *          the class
+	 * @return The loaded class, or {@code null} if the class could not be loaded
+	 *         and the {@code quietly} flag is set.
+	 * @throws IllegalArgumentException If the class cannot be loaded and the
+	 *           {@code quietly} flag is not set.
 	 */
 	public static Class<?> loadClass(final String name,
-		final ClassLoader classLoader)
+		final ClassLoader classLoader, final boolean quietly)
 	{
 		// handle primitive types
 		if (name.equals("Z") || name.equals("boolean")) return boolean.class;
@@ -170,7 +213,8 @@ public final class ClassUtils {
 			// Not ClassNotFoundException.
 			// Not NoClassDefFoundError.
 			// Not UnsupportedClassVersionError!
-			return null;
+			if (quietly) return null;
+			throw new IllegalArgumentException("Cannot load class: " + className, t);
 		}
 	}
 

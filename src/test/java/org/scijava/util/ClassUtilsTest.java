@@ -117,6 +117,16 @@ public class ClassUtilsTest {
 	}
 
 	@Test
+	public void testFailureQuiet() {
+		assertNull(ClassUtils.loadClass("a.non.existent.class"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testFailureLoud() {
+		ClassUtils.loadClass("a.non.existent.class", false);
+	}
+
+	@Test
 	public void testGetArrayClass() {
 		assertSame(boolean[].class, ClassUtils.getArrayClass(boolean.class));
 		assertSame(String[].class, ClassUtils.getArrayClass(String.class));

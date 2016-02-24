@@ -231,13 +231,20 @@ public class ShadowMenu extends AbstractContextual implements
 			else return null;
 		}
 		final String className = moduleInfo.getDelegateClassName();
-		final Class<?> c = ClassUtils.loadClass(className);
-		if (c == null) return null;
-		final URL iconURL = c.getResource(iconPath);
-		if (iconURL == null) {
-			if (log != null) log.error("Could not load icon: " + iconPath);
+		try {
+			final Class<?> c = ClassUtils.loadClass(className, false);
+			final URL iconURL = c.getResource(iconPath);
+			if (iconURL == null) {
+				if (log != null) log.error("Could not load icon: " + iconPath);
+			}
+			return iconURL;
 		}
-		return iconURL;
+		catch (final IllegalArgumentException exc) {
+			final String message = "Could not load icon for class: " + className;
+			if (log.isDebug()) log.debug(message, exc);
+			else log.error(message);
+			return null;
+		}
 	}
 
 	/**
