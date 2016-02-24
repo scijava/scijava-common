@@ -101,9 +101,12 @@ public class DefaultMainService extends AbstractService implements MainService {
 		@Override
 		public void exec() {
 			try {
-				final Class<?> mainClass = ClassUtils.loadClass(className);
+				final Class<?> mainClass = ClassUtils.loadClass(className, false);
 				final Method main = mainClass.getMethod("main", String[].class);
 				main.invoke(null, new Object[] { args });
+			}
+			catch (final IllegalArgumentException exc) {
+				if (log != null) log.error(exc);
 			}
 			catch (final NoSuchMethodException exc) {
 				if (log != null) {

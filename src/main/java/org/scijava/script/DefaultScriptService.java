@@ -255,13 +255,16 @@ public class DefaultScriptService extends
 		final Class<?> type = aliasMap().get(alias);
 		if (type != null) return type;
 
-		final Class<?> c = ClassUtils.loadClass(alias);
-		if (c != null) {
+		try {
+			final Class<?> c = ClassUtils.loadClass(alias, false);
 			aliasMap().put(alias, c);
 			return c;
 		}
-
-		throw new ScriptException("Unknown type: " + alias);
+		catch (final IllegalArgumentException exc) {
+			final ScriptException se = new ScriptException("Unknown type: " + alias);
+			se.initCause(exc);
+			throw se;
+		}
 	}
 
 	// -- PTService methods --

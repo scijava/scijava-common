@@ -320,10 +320,7 @@ public class Context implements Disposable {
 	 *           service.
 	 */
 	public Service service(final String className) {
-		final Class<?> c = ClassUtils.loadClass(className);
-		if (c == null) {
-			throw new IllegalArgumentException("No such class: " + className);
-		}
+		final Class<?> c = ClassUtils.loadClass(className, false);
 		if (!Service.class.isAssignableFrom(c)) {
 			throw new IllegalArgumentException("Not a service class: " + c.getName());
 		}

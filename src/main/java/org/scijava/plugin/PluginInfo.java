@@ -280,13 +280,15 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	@Override
 	public Class<? extends PT> loadClass() throws InstantiableException {
 		if (pluginClass == null) {
-			final Class<?> c = ClassUtils.loadClass(className, classLoader);
-			if (c == null) {
-				throw new InstantiableException("Class not found: " + className);
+			try {
+				final Class<?> c = ClassUtils.loadClass(className, classLoader, false);
+				@SuppressWarnings("unchecked")
+				final Class<? extends PT> typedClass = (Class<? extends PT>) c;
+				pluginClass = typedClass;
 			}
-			@SuppressWarnings("unchecked")
-			final Class<? extends PT> typedClass = (Class<? extends PT>) c;
-			pluginClass = typedClass;
+			catch (final IllegalArgumentException exc) {
+				throw new InstantiableException("Class not found: " + className, exc);
+			}
 		}
 
 		return pluginClass;
