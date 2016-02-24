@@ -87,8 +87,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		this.module = module;
 		this.item = item;
 		this.objectPool = objectPool;
-		if (!item.isRequired())
-			this.objectPool.add(0, null);
 		convertedObjects = new WeakHashMap<Object, Object>();
 
 		if (item.getValue(module) == null) {
@@ -317,10 +315,8 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	/** Ensures the value is on the given list. */
 	private Object ensureValid(final Object value, final List<?> list) {
-		if (value == null)
-			return list.contains(null);
 		for (final Object o : list) {
-			if (value.equals(o)) return value; // value is valid
+			if (o.equals(value)) return value; // value is valid
 			// check if value was converted and cached
 			final Object convertedValue = convertedObjects.get(o);
 			if (convertedValue != null && value.equals(convertedValue)) {
