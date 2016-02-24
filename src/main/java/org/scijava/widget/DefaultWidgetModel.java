@@ -317,13 +317,17 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	/** Ensures the value is on the given list. */
 	private Object ensureValid(final Object value, final List<?> list) {
-		if (value == null)
-			return list.contains(null);
+		Number nValue = toNumber(value);
+		// If the value is a number, check if it's within the valid min/max
+		if (nValue != null && Double.compare(getMin().doubleValue(), nValue.doubleValue()) <= 0
+				&& Double.compare(getMax().doubleValue(), nValue.doubleValue()) >= 0) {
+			return nValue;
+		}
 		for (final Object o : list) {
-			if (value.equals(o)) return value; // value is valid
+			if (MiscUtils.equal(value, o)) return value; // value is valid
 			// check if value was converted and cached
 			final Object convertedValue = convertedObjects.get(o);
-			if (convertedValue != null && value.equals(convertedValue)) {
+			if (convertedValue != null && MiscUtils.equal(value, convertedValue)) {
 				return convertedValue;
 			}
 		}
