@@ -96,8 +96,8 @@ public final class ClassUtils {
 	 * @return The loaded class, or null if the class could not be loaded.
 	 * @see #loadClass(String, ClassLoader)
 	 */
-	public static Class<?> loadClass(final String className) {
-		return loadClass(className, null);
+	public static Class<?> loadClass(final String name) {
+		return loadClass(name, null);
 	}
 
 	/**
