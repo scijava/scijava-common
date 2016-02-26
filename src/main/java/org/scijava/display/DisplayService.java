@@ -33,6 +33,8 @@ package org.scijava.display;
 
 import java.util.List;
 
+import org.scijava.display.event.DisplayCreatedEvent;
+import org.scijava.display.event.DisplayDeletedEvent;
 import org.scijava.event.EventService;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.PluginInfo;
@@ -114,7 +116,13 @@ public interface DisplayService extends SciJavaService {
 	boolean isUniqueName(String name);
 
 	/**
-	 * Creates a display for the given object.
+	 * Creates a display for the given object, publishing a
+	 * {@link DisplayCreatedEvent} to notify interested parties. In particular:
+	 * <ul>
+	 * <li>Visible UIs will respond to this event by showing the display.</li>
+	 * <li>The {@link ObjectService} will add the new display to its index, until
+	 * a corresponding {@link DisplayDeletedEvent} is later published.</li>
+	 * </ul>
 	 * 
 	 * @param o The object for which a display should be created. The object is
 	 *          then added to the display.
@@ -129,7 +137,13 @@ public interface DisplayService extends SciJavaService {
 	Display<?> createDisplay(Object o);
 
 	/**
-	 * Creates a display for the given object.
+	 * Creates a display for the given object, publishing a
+	 * {@link DisplayCreatedEvent} to notify interested parties. In particular:
+	 * <ul>
+	 * <li>Visible UIs will respond to this event by showing the display.</li>
+	 * <li>The {@link ObjectService} will add the new display to its index, until
+	 * a corresponding {@link DisplayDeletedEvent} is later published.</li>
+	 * </ul>
 	 * 
 	 * @param name The name to be assigned to the display.
 	 * @param o The object for which a display should be created. The object is
