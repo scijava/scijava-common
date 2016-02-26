@@ -90,6 +90,23 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	// -- Gateway methods --
 
 	@Override
+	public void launch(final String... args) {
+		// parse command line arguments
+		console().processArgs(args);
+
+		// launch main methods
+		final int mainCount = main().execMains();
+
+		// display the user interface (NB: does not block)
+		if (mainCount == 0 && !ui().isHeadless()) ui().showUI();
+
+		if (ui().isHeadless()) {
+			// now that CLI processing/execution is done, we can shut down
+			getContext().dispose();
+		}
+	}
+
+	@Override
 	public String getShortName() {
 		return getClass().getName().toLowerCase();
 	}

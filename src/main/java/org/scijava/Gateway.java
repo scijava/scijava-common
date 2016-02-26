@@ -121,6 +121,24 @@ import org.scijava.widget.WidgetService;
 public interface Gateway extends RichPlugin, Versioned {
 
 	/**
+	 * Perform launch operations associated with this gateway.
+	 * <p>
+	 * Typical operations might include:
+	 * </p>
+	 * <ul>
+	 * <li>Handle the given command line arguments using the
+	 * {@link ConsoleService}.</li>
+	 * <li>Execute registered main classes of the {@link MainService}.</li>
+	 * <li>Display the default user interface using the {@link UIService}.</li>
+	 * <li>In some circumstances (e.g., when running headless), dispose the
+	 * context after launch operations are complete.</li>
+	 * </ul>
+	 * 
+	 * @param args The arguments to pass to the application.
+	 */
+	void launch(String... args);
+
+	/**
 	 * Gets a very succinct name for use referring to this gateway, e.g. as a
 	 * variable name for scripting.
 	 */
