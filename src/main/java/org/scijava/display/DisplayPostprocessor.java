@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.scijava.Named;
 import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.module.Module;
@@ -113,13 +114,16 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 			}
 			else {
 				// create a new display for the output
-				final Display<?> display = displayService.createDisplay(output);
+				String name = null;
+
+				// TODO rework how displays are named
+				if (output instanceof Named) name = ((Named)output).getName();
+
+				if (name == null) name = defaultName;
+
+				final Display<?> display = displayService.createDisplay(name, output);
 				if (display != null) {
 					displays.add(display);
-					if (display.getName() == null) {
-						// set a default name based on the parameter
-						display.setName(defaultName);
-					}
 				}
 			}
 		}
