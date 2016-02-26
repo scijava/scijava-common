@@ -46,20 +46,20 @@ public abstract class AbstractConsoleArgument extends
 	AbstractHandlerPlugin<LinkedList<String>> implements ConsoleArgument
 {
 	private int numArgs;
-	private Set<String> aliasFlags;
+	private Set<String> flags;
 
 	public AbstractConsoleArgument() {
 		this(1, new String[0]);
 	}
 
-	public AbstractConsoleArgument(final String... aliases) {
-		this(1, aliases);
+	public AbstractConsoleArgument(final String... flags) {
+		this(1, flags);
 	}
 	
-	public AbstractConsoleArgument(final int requiredArgs, final String... aliases) {
+	public AbstractConsoleArgument(final int requiredArgs, final String... flags) {
 		numArgs = requiredArgs;
-		aliasFlags = new HashSet<String>();
-		for (final String s : aliases) aliasFlags.add(s);
+		this.flags = new HashSet<String>();
+		for (final String s : flags) this.flags.add(s);
 	}
 
 	// -- Typed methods --
@@ -67,7 +67,7 @@ public abstract class AbstractConsoleArgument extends
 	@Override
 	public boolean supports(final LinkedList<String> args) {
 		if (args == null || args.size() < numArgs) return false;
-		return isAlias(args);
+		return isFlag(args);
 	}
 
 	@Override
@@ -77,11 +77,13 @@ public abstract class AbstractConsoleArgument extends
 	}
 
 	/**
-	 * @return true if there are no aliases for this {@code ConsoleArgument}, or
-	 *         at least one alias matches the first argument in the provided
-	 *         list
+	 * Check if the given list of arguments starts with a flag that matches this
+	 * {@link ConsoleArgument}.
+	 *
+	 * @return true iff one of this argument's flags matches the first string in
+	 *         the given list, or this argument has no explicit flags.
 	 */
-	protected boolean isAlias(final LinkedList<String> args) {
-		return aliasFlags.isEmpty() || aliasFlags.contains(args.getFirst());
+	protected boolean isFlag(final LinkedList<String> args) {
+		return flags.isEmpty() || flags.contains(args.getFirst());
 	}
 }

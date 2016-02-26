@@ -73,7 +73,7 @@ public class MainArgument extends AbstractConsoleArgument {
 		final String className = args.removeFirst();
 
 		final List<String> argList = new ArrayList<String>();
-		while (!args.isEmpty() && !isAlias(args) && !isSeparator(args)) {
+		while (!args.isEmpty() && !isFlag(args) && !isSeparator(args)) {
 			argList.add(args.removeFirst());
 		}
 		if (isSeparator(args)) args.removeFirst(); // remove the -- separator
