@@ -32,6 +32,7 @@ package org.scijava.console;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.scijava.command.CommandInfo;
@@ -82,5 +83,16 @@ public final class ConsoleUtils {
 
 		return inputMap;
 
+	}
+
+	/**
+	 * Test if the next argument is an appropriate parameter to a
+	 * {@link ConsoleArgument}.
+	 *
+	 * @return {@code true} if the first argument of the given list does not
+	 *         start with a {@code '-'} character.
+	 */
+	public static boolean hasParam(final LinkedList<String> args) {
+		return !(args.isEmpty() || args.getFirst().startsWith("-"));
 	}
 }
