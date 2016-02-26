@@ -123,6 +123,10 @@ public interface DisplayService extends SciJavaService {
 	 * <li>The {@link ObjectService} will add the new display to its index, until
 	 * a corresponding {@link DisplayDeletedEvent} is later published.</li>
 	 * </ul>
+	 * <p>
+	 * To create a {@link Display} without publishing an event, see
+	 * {@link #createDisplayQuietly}.
+	 * </p>
 	 * 
 	 * @param o The object for which a display should be created. The object is
 	 *          then added to the display.
@@ -144,6 +148,10 @@ public interface DisplayService extends SciJavaService {
 	 * <li>The {@link ObjectService} will add the new display to its index, until
 	 * a corresponding {@link DisplayDeletedEvent} is later published.</li>
 	 * </ul>
+	 * <p>
+	 * To create a {@link Display} without publishing an event, see
+	 * {@link #createDisplayQuietly}.
+	 * </p>
 	 * 
 	 * @param name The name to be assigned to the display.
 	 * @param o The object for which a display should be created. The object is
@@ -157,5 +165,22 @@ public interface DisplayService extends SciJavaService {
 	 *         taking care of wrapping them in a DataView as needed.
 	 */
 	Display<?> createDisplay(String name, Object o);
+
+	/**
+	 * Creates a display for the given object, without publishing a
+	 * {@link DisplayCreatedEvent}. Hence, the display will not be automatically
+	 * shown or tracked.
+	 * 
+	 * @param o The object for which a display should be created. The object is
+	 *          then added to the display.
+	 * @return Newly created {@code Display<?>} containing the given object. The
+	 *         Display is typed with ? rather than T matching the Object because
+	 *         it is possible for the Display to be a collection of some other
+	 *         sort of object than the one being added. For example, ImageDisplay
+	 *         is a {@code Display<DataView>} with the DataView wrapping a
+	 *         Dataset, yet the ImageDisplay supports adding Datasets directly,
+	 *         taking care of wrapping them in a DataView as needed.
+	 */
+	Display<?> createDisplayQuietly(Object o);
 
 }
