@@ -47,18 +47,36 @@ import org.scijava.module.ModuleItem;
  */
 public final class ConsoleUtils {
 
+	/**
+	 * @see #parseParameterString(String, ModuleInfo, LogService)
+	 */
 	public static Map<String, Object> parseParameterString(final String parameterString) {
 		return parseParameterString(parameterString, (CommandInfo)null);
 	}
 
+	/**
+	 * @see #parseParameterString(String, ModuleInfo, LogService)
+	 */
 	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info) {
 		return parseParameterString(parameterString, info, null);
 	}
 
+	/**
+	 * @see #parseParameterString(String, ModuleInfo, LogService)
+	 */
 	public static Map<String, Object> parseParameterString(final String parameterString, final LogService logService) {
 		return parseParameterString(parameterString, null, logService);
 	}
 
+	/**
+	 * Helper method for turning a parameter string into a {@code Map} of
+	 * key:value pairs. If a {@link ModuleInfo} is provided, the parameter
+	 * string is assumed to be a comma-separated list of values, ordered
+	 * according to the {@code ModuleInfo's} inputs. Otherwise, the parameter
+	 * string is assumed to be a comma-separated list of "key=value" pairs.
+	 *
+	 * TODO reconcile with attribute parsing of {@link ScriptInfo}
+	 */
 	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService logService) {
 		final Map<String, Object> inputMap = new HashMap<String, Object>();
 
