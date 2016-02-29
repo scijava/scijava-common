@@ -31,7 +31,7 @@
 
 package org.scijava.run;
 
-import javax.script.ScriptException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
@@ -53,6 +53,6 @@ import org.scijava.plugin.Plugin;
 public interface ClassRunner extends HandlerPlugin<Class<?>> {
 
 	/** Executes the given class. */
-	void run(Class<?> c) throws ScriptException;
+	void run(Class<?> c) throws InvocationTargetException;
 
 }

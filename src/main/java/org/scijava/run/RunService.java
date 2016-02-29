@@ -31,7 +31,7 @@
 
 package org.scijava.run;
 
-import javax.script.ScriptException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
@@ -46,6 +46,6 @@ public interface RunService extends
 {
 
 	/** Executes the given class using the most appropriate handler. */
-	void run(Class<?> c) throws ScriptException;
+	void run(Class<?> c) throws InvocationTargetException;
 
 }

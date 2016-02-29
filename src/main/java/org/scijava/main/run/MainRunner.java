@@ -34,8 +34,6 @@ package org.scijava.main.run;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.script.ScriptException;
-
 import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -57,18 +55,15 @@ public class MainRunner extends AbstractClassRunner {
 	// -- ClassRunner methods --
 
 	@Override
-	public void run(final Class<?> c) throws ScriptException {
+	public void run(final Class<?> c) throws InvocationTargetException {
 		try {
 			getMain(c).invoke(null, new Object[] { new String[0] });
 		}
 		catch (final IllegalArgumentException exc) {
-			throw new ScriptException(exc);
+			throw new InvocationTargetException(exc);
 		}
 		catch (final IllegalAccessException exc) {
-			throw new ScriptException(exc);
-		}
-		catch (final InvocationTargetException exc) {
-			throw new ScriptException(exc);
+			throw new InvocationTargetException(exc);
 		}
 	}
 

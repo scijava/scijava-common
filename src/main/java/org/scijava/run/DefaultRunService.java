@@ -31,7 +31,7 @@
 
 package org.scijava.run;
 
-import javax.script.ScriptException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
@@ -55,14 +55,14 @@ public class DefaultRunService extends
 	// -- RunService methods --
 
 	@Override
-	public void run(final Class<?> c) throws ScriptException {
+	public void run(final Class<?> c) throws InvocationTargetException {
 		for (final ClassRunner runner : getInstances()) {
 			if (runner.supports(c)) {
 				runner.run(c);
 				return;
 			}
 		}
-		log.error("Unknown class type: " + c.getName());
+		throw new IllegalArgumentException("Unknown class type: " + c.getName());
 	}
 
 	// -- PTService methods --
