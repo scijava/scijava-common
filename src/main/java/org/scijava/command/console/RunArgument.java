@@ -74,7 +74,7 @@ public class RunArgument extends AbstractConsoleArgument {
 
 		args.removeFirst(); // --run
 		final String commandToRun = args.removeFirst();
-		final String paramString = ConsoleUtils.hasParam(args) ? "" : args.removeFirst();
+		final String paramString = ConsoleUtils.hasParam(args) ? args.removeFirst() : "";
 
 		run(commandToRun, paramString);
 	}
