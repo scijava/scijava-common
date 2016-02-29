@@ -55,7 +55,9 @@ public class DefaultRunService extends
 	// -- RunService methods --
 
 	@Override
-	public void run(final Class<?> c) throws InvocationTargetException {
+	public void run(final Class<?> c, final Object... args)
+		throws InvocationTargetException
+	{
 		for (final ClassRunner runner : getInstances()) {
 			if (runner.supports(c)) {
 				runner.run(c);

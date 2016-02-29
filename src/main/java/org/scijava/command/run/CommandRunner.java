@@ -57,13 +57,13 @@ public class CommandRunner extends AbstractClassRunner {
 	// -- ClassRunner methods --
 
 	@Override
-	public void run(final Class<?> c) {
+	public void run(final Class<?> c, final Object... args) {
 		@SuppressWarnings("unchecked")
 		final Class<? extends Command> commandClass =  (Class<? extends Command>) c;
 		final Plugin annotation = c.getAnnotation(Plugin.class);
 		final CommandInfo info = new CommandInfo(commandClass, annotation);
 		pluginService.addPlugin(info);
-		commandService.run(info, true);
+		commandService.run(info, true, args);
 	}
 
 	// -- Typed methods --

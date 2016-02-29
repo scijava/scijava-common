@@ -55,9 +55,12 @@ public class MainRunner extends AbstractClassRunner {
 	// -- ClassRunner methods --
 
 	@Override
-	public void run(final Class<?> c) throws InvocationTargetException {
+	public void run(final Class<?> c, final Object... args)
+		throws InvocationTargetException
+	{
+		final Object[] sArgs = stringify(args);
 		try {
-			getMain(c).invoke(null, new Object[] { new String[0] });
+			getMain(c).invoke(null, new Object[] { sArgs });
 		}
 		catch (final IllegalArgumentException exc) {
 			throw new InvocationTargetException(exc);
@@ -88,6 +91,21 @@ public class MainRunner extends AbstractClassRunner {
 			if (log != null) log.debug(exc);
 			return null;
 		}
+	}
+
+	/** Ensures each element is a {@link String}. */
+	private String[] stringify(final Object... o) {
+		final String[] s;
+		if (o == null) s = null;
+		else {
+			s = new String[o.length];
+			for (int i = 0; i < o.length; i++) {
+				if (o[i] == null) s[i] = null;
+				else if (o[i] instanceof String) s[i] = (String) o[i];
+				else s[i] = o[i].toString();
+			}
+		}
+		return s;
 	}
 
 }

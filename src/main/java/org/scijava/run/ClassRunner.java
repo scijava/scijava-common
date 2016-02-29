@@ -52,7 +52,7 @@ import org.scijava.plugin.Plugin;
  */
 public interface ClassRunner extends HandlerPlugin<Class<?>> {
 
-	/** Executes the given class. */
-	void run(Class<?> c) throws InvocationTargetException;
+	/** Executes the given class, with the specified arguments. */
+	void run(Class<?> c, Object... args) throws InvocationTargetException;
 
 }

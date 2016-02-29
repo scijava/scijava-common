@@ -45,7 +45,10 @@ public interface RunService extends
 	HandlerService<Class<?>, ClassRunner>, SciJavaService
 {
 
-	/** Executes the given class using the most appropriate handler. */
-	void run(Class<?> c) throws InvocationTargetException;
+	/**
+	 * Executes the given class using the most appropriate handler, passing the
+	 * given arguments to the execution.
+	 */
+	void run(Class<?> c, Object... args) throws InvocationTargetException;
 
 }
