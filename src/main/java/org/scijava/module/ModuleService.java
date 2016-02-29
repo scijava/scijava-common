@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import org.scijava.Identifiable;
 import org.scijava.Prioritized;
 import org.scijava.input.Accelerator;
 import org.scijava.module.process.ModulePostprocessor;
@@ -89,6 +90,14 @@ public interface ModuleService extends SciJavaService {
 
 	/** Gets the list of available modules. */
 	List<ModuleInfo> getModules();
+
+	/**
+	 * Gets the module with the given identifier string.
+	 * 
+	 * @param id The identifier string corresponding to the desired module.
+	 * @return The {@link Identifiable} module with the given identifier.
+	 */
+	ModuleInfo getModuleById(String id);
 
 	/**
 	 * Gets the module for a given keyboard shortcut.
