@@ -38,6 +38,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.plugin.PluginInfo;
 import org.scijava.util.VersionUtils;
 
 /**
@@ -106,7 +107,9 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 
 	@Override
 	public String getLanguageName() {
-		final String name = getInfo().getName();
+		String name = null;
+		final PluginInfo<?> info = getInfo();
+		if (info != null) name = info.getName();
 		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
 	}
 
