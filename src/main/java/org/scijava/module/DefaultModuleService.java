@@ -291,6 +291,9 @@ public class DefaultModuleService extends AbstractService implements
 	public <T> void save(final ModuleItem<T> item, final T value) {
 		if (!item.isPersisted()) return;
 
+		// NB: Do not persist values which are computed via an initializer.
+		if (item.getInitializer() != null && !item.getInitializer().isEmpty()) return;
+
 		if (MiscUtils.equal(item.getDefaultValue(), value)) {
 			// NB: Do not persist the value if it is the default.
 			// This is nice if the default value might change later,
