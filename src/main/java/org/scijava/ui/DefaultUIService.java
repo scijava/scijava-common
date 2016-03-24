@@ -159,9 +159,7 @@ public final class DefaultUIService extends AbstractService implements
 	public void showUI() {
 		if (disposed) return;
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) {
-			throw new IllegalStateException("No UIs available.");
-		}
+		if (ui == null) throw noUIsAvailableException();
 		showUI(ui);
 	}
 
@@ -188,9 +186,7 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public boolean isVisible() {
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) {
-			throw new IllegalStateException("No UIs available.");
-		}
+		if (ui == null) throw noUIsAvailableException();
 		return ui.isVisible();
 	}
 
@@ -546,5 +542,11 @@ public final class DefaultUIService extends AbstractService implements
 
 	private String getTitle() {
 		return appService.getApp().getTitle();
+	}
+
+	private IllegalStateException noUIsAvailableException() {
+		return new IllegalStateException("No UIs available. " +
+			"Please add a component containing a UIPlugin " +
+			"(e.g., scijava-ui-swing) to your class-path.");
 	}
 }
