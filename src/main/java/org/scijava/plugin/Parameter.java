@@ -116,7 +116,11 @@ public @interface Parameter {
 	/** Defines a key to use for saving the value persistently. */
 	String persistKey() default "";
 
-	/** Defines a function that is called to initialize the parameter. */
+	/**
+	 * Defines a function that is called to initialize the parameter. If an
+	 * initializer is defined, it takes precedence over {@link #persist()}, i.e.
+	 * the parameter is not persisted even if {@code persist=true} is set.
+	 */
 	String initializer() default "";
 
 	/**
