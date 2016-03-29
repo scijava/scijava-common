@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -450,10 +450,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		// CTR: There must be an easier way to do this.
 		// Just compile the thing using javac? Or parse via javascript, maybe?
 		if (is(k, "callback")) item.setCallback(as(v, String.class));
-		else if (is(k, "choices")) {
-			// FIXME: Regex above won't handle {a,b,c} syntax.
-//			item.setChoices(list(v, item.getType()));
-		}
+		else if (is(k, "choices")) item.setChoices(asList(v, item.getType()));
 		else if (is(k, "columns")) item.setColumnCount(as(v, int.class));
 		else if (is(k, "description")) item.setDescription(as(v, String.class));
 		else if (is(k, "initializer")) item.setInitializer(as(v, String.class));
@@ -482,6 +479,15 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/** Super terse conversion helper method. */
 	private <T> T as(final Object v, final Class<T> type) {
 		return convertService.convert(v, type);
+	}
+
+	private <T> List<T> asList(final Object v, final Class<T> type) {
+		final ArrayList<T> result = new ArrayList<T>();
+		final List<?> list = as(v, List.class);
+		for (final Object item : list) {
+			result.add(as(item, type));
+		}
+		return result;
 	}
 
 	/**
