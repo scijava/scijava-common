@@ -347,7 +347,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private void parseParam(final String param,
-		final HashMap<String, String> attrs) throws ScriptException
+		final HashMap<String, Object> attrs) throws ScriptException
 	{
 		final String[] tokens = param.trim().split("[ \t\n]+");
 		checkValid(tokens.length >= 1, param);
@@ -371,11 +371,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
-	private HashMap<String, String> parseAttrs(final String attrs)
+	private HashMap<String, Object> parseAttrs(final String attrs)
 		throws ScriptException
 	{
 		// TODO: We probably want to use a real CSV parser.
-		final HashMap<String, String> attrsMap = new HashMap<String, String>();
+		final HashMap<String, Object> attrsMap = new HashMap<String, Object>();
 		for (final String token : attrs.split(",")) {
 			if (token.isEmpty()) continue;
 			final int equals = token.indexOf("=");
@@ -402,18 +402,18 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Adds an output for the value returned by the script itself. */
 	private void addReturnValue() throws ScriptException {
-		final HashMap<String, String> attrs = new HashMap<String, String>();
+		final HashMap<String, Object> attrs = new HashMap<String, Object>();
 		attrs.put("type", "OUTPUT");
 		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
 	}
 
 	private <T> void addItem(final String name, final Class<T> type,
-		final Map<String, String> attrs) throws ScriptException
+		final Map<String, Object> attrs) throws ScriptException
 	{
 		final DefaultMutableModuleItem<T> item =
 			new DefaultMutableModuleItem<T>(this, name, type);
 		for (final String key : attrs.keySet()) {
-			final String value = attrs.get(key);
+			final Object value = attrs.get(key);
 			assignAttribute(item, key, value);
 		}
 		if (item.isInput()) registerInput(item);
