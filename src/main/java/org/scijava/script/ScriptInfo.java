@@ -421,78 +421,43 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
-		final String key, final String value) throws ScriptException
+		final String k, final Object v) throws ScriptException
 	{
 		// CTR: There must be an easier way to do this.
 		// Just compile the thing using javac? Or parse via javascript, maybe?
-		if ("callback".equalsIgnoreCase(key)) {
-			item.setCallback(value);
-		}
-		else if ("choices".equalsIgnoreCase(key)) {
+		if (is(k, "callback")) item.setCallback(as(v, String.class));
+		else if (is(k, "choices")) {
 			// FIXME: Regex above won't handle {a,b,c} syntax.
-//			item.setChoices(choices);
+//			item.setChoices(list(v, item.getType()));
 		}
-		else if ("columns".equalsIgnoreCase(key)) {
-			item.setColumnCount(convertService.convert(value, int.class));
-		}
-		else if ("description".equalsIgnoreCase(key)) {
-			item.setDescription(value);
-		}
-		else if ("initializer".equalsIgnoreCase(key)) {
-			item.setInitializer(value);
-		}
-		else if ("type".equalsIgnoreCase(key)) {
-			item.setIOType(convertService.convert(value, ItemIO.class));
-		}
-		else if ("label".equalsIgnoreCase(key)) {
-			item.setLabel(value);
-		}
-		else if ("max".equalsIgnoreCase(key)) {
-			item.setMaximumValue(convertService.convert(value, item.getType()));
-		}
-		else if ("min".equalsIgnoreCase(key)) {
-			item.setMinimumValue(convertService.convert(value, item.getType()));
-		}
-		else if ("name".equalsIgnoreCase(key)) {
-			item.setName(value);
-		}
-		else if ("persist".equalsIgnoreCase(key)) {
-			item.setPersisted(convertService.convert(value, boolean.class));
-		}
-		else if ("persistKey".equalsIgnoreCase(key)) {
-			item.setPersistKey(value);
-		}
-		else if ("required".equalsIgnoreCase(key)) {
-			item.setRequired(convertService.convert(value, boolean.class));
-		}
-		else if ("softMax".equalsIgnoreCase(key)) {
-			item.setSoftMaximum(convertService.convert(value, item.getType()));
-		}
-		else if ("softMin".equalsIgnoreCase(key)) {
-			item.setSoftMinimum(convertService.convert(value, item.getType()));
-		}
-		else if ("stepSize".equalsIgnoreCase(key)) {
-			try {
-				final double stepSize = Double.parseDouble(value);
-				item.setStepSize(stepSize);
-			}
-			catch (final NumberFormatException exc) {
-				log.warn("Script parameter " + item.getName() +
-					" has an invalid stepSize: " + value);
-			}
-		}
-		else if ("style".equalsIgnoreCase(key)) {
-			item.setWidgetStyle(value);
-		}
-		else if ("visibility".equalsIgnoreCase(key)) {
-			item.setVisibility(convertService.convert(value, ItemVisibility.class));
-		}
-		else if ("value".equalsIgnoreCase(key)) {
-			item.setDefaultValue(convertService.convert(value, item.getType()));
-		}
-		else {
-			throw new ScriptException("Invalid attribute name: " + key);
-		}
+		else if (is(k, "columns")) item.setColumnCount(as(v, int.class));
+		else if (is(k, "description")) item.setDescription(as(v, String.class));
+		else if (is(k, "initializer")) item.setInitializer(as(v, String.class));
+		else if (is(k, "type")) item.setIOType(as(v, ItemIO.class));
+		else if (is(k, "label")) item.setLabel(as(v, String.class));
+		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));
+		else if (is(k, "min")) item.setMinimumValue(as(v, item.getType()));
+		else if (is(k, "name")) item.setName(as(v, String.class));
+		else if (is(k, "persist")) item.setPersisted(as(v, boolean.class));
+		else if (is(k, "persistKey")) item.setPersistKey(as(v, String.class));
+		else if (is(k, "required")) item.setRequired(as(v, boolean.class));
+		else if (is(k, "softMax")) item.setSoftMaximum(as(v, item.getType()));
+		else if (is(k, "softMin")) item.setSoftMinimum(as(v, item.getType()));
+		else if (is(k, "stepSize")) item.setStepSize(as(v, double.class));
+		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
+		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
+		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
+		else throw new ScriptException("Invalid attribute name: " + k);
+	}
+
+	/** Super terse comparison helper method. */
+	private boolean is(final String key, final String desired) {
+		return desired.equalsIgnoreCase(key);
+	}
+
+	/** Super terse conversion helper method. */
+	private <T> T as(final Object v, final Class<T> type) {
+		return convertService.convert(v, type);
 	}
 
 	/**
