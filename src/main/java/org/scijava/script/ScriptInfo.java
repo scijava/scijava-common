@@ -38,8 +38,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptException;
@@ -56,6 +59,8 @@ import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
 import org.scijava.plugin.Parameter;
+import org.scijava.sjep.Variable;
+import org.scijava.sjep.eval.DefaultEvaluator;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
@@ -337,11 +342,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		if (rParen < lParen) {
 			throw new ScriptException("Invalid parameter: " + param);
 		}
-		if (lParen < 0) parseParam(param, parseAttrs(""));
+		if (lParen < 0) parseParam(param, parseAttrs("()"));
 		else {
 			final String cutParam =
 				param.substring(0, lParen) + param.substring(rParen + 1);
-			final String attrs = param.substring(lParen + 1, rParen);
+			final String attrs = param.substring(lParen, rParen + 1);
 			parseParam(cutParam, parseAttrs(attrs));
 		}
 	}
@@ -374,20 +379,39 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private HashMap<String, Object> parseAttrs(final String attrs)
 		throws ScriptException
 	{
-		// TODO: We probably want to use a real CSV parser.
-		final HashMap<String, Object> attrsMap = new HashMap<String, Object>();
-		for (final String token : attrs.split(",")) {
-			if (token.isEmpty()) continue;
-			final int equals = token.indexOf("=");
-			if (equals < 0) throw new ScriptException("Invalid attribute: " + token);
-			final String key = token.substring(0, equals).trim();
-			String value = token.substring(equals + 1).trim();
-			if (value.startsWith("\"") && value.endsWith("\"")) {
-				value = value.substring(1, value.length() - 1);
+		// NB: Parse the attributes using the SciJava Expression Parser.
+		final DefaultEvaluator e = new DefaultEvaluator();
+		try {
+			final Object result = e.evaluate(attrs);
+			if (result == null) throw new ScriptException("Unparseable attributes");
+			final List<?> list;
+			if (result instanceof List) list = (List<?>) result;
+			else if (result instanceof Variable) {
+				list = Collections.singletonList(result);
 			}
-			attrsMap.put(key, value);
+			else {
+				throw new ScriptException("Unexpected attributes type: " +
+					result.getClass().getName());
+			}
+
+			final HashMap<String, Object> attrsMap = new HashMap<String, Object>();
+			for (final Object o : list) {
+				if (o instanceof Variable) {
+					final Variable v = (Variable) o;
+					attrsMap.put(v.getToken(), e.value(v));
+				}
+				else {
+					throw new ScriptException("Invalid attribute: " + o);
+				}
+			}
+			return attrsMap;
 		}
-		return attrsMap;
+		catch (final IllegalArgumentException exc) {
+			final ScriptException se = new ScriptException(
+				"Error parsing attributes");
+			se.initCause(exc);
+			throw se;
+		}
 	}
 
 	private boolean isIOType(final String token) {
