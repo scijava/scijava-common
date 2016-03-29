@@ -142,6 +142,8 @@ public class ScriptInfoTest {
 			"% @LogService(required = false) log\n" + //
 			"% @int(label=\"Slider Value\", softMin=5, softMax=15, " + //
 			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
+			"% @String(persist = false, " + //
+			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
 			"% @BOTH java.lang.StringBuilder buffer";
 
 		final ScriptInfo info =
@@ -157,6 +159,12 @@ public class ScriptInfoTest {
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
 			true, null, "slider", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
 
+		final ModuleItem<?> animal = info.getInput("animal");
+		final List<String> animalChoices = //
+			Arrays.asList("quick brown fox", "lazy dog");
+		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
+			null, null, null, null, null, null, null, null, animalChoices, animal);
+
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
 			null, null, null, null, null, null, null, null, noChoices, buffer);
@@ -166,7 +174,7 @@ public class ScriptInfoTest {
 			null, null, null, null, null, null, null, noChoices, result);
 
 		int inputCount = 0;
-		final ModuleItem<?>[] inputs = { log, sliderValue, buffer };
+		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
 			assertSame(inputs[inputCount++], inItem);
 		}
