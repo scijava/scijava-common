@@ -38,8 +38,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptException;
@@ -56,6 +59,8 @@ import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
 import org.scijava.plugin.Parameter;
+import org.scijava.sjep.Variable;
+import org.scijava.sjep.eval.DefaultEvaluator;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
@@ -337,17 +342,17 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		if (rParen < lParen) {
 			throw new ScriptException("Invalid parameter: " + param);
 		}
-		if (lParen < 0) parseParam(param, parseAttrs(""));
+		if (lParen < 0) parseParam(param, parseAttrs("()"));
 		else {
 			final String cutParam =
 				param.substring(0, lParen) + param.substring(rParen + 1);
-			final String attrs = param.substring(lParen + 1, rParen);
+			final String attrs = param.substring(lParen, rParen + 1);
 			parseParam(cutParam, parseAttrs(attrs));
 		}
 	}
 
 	private void parseParam(final String param,
-		final HashMap<String, String> attrs) throws ScriptException
+		final HashMap<String, Object> attrs) throws ScriptException
 	{
 		final String[] tokens = param.trim().split("[ \t\n]+");
 		checkValid(tokens.length >= 1, param);
@@ -371,23 +376,42 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
-	private HashMap<String, String> parseAttrs(final String attrs)
+	private HashMap<String, Object> parseAttrs(final String attrs)
 		throws ScriptException
 	{
-		// TODO: We probably want to use a real CSV parser.
-		final HashMap<String, String> attrsMap = new HashMap<String, String>();
-		for (final String token : attrs.split(",")) {
-			if (token.isEmpty()) continue;
-			final int equals = token.indexOf("=");
-			if (equals < 0) throw new ScriptException("Invalid attribute: " + token);
-			final String key = token.substring(0, equals).trim();
-			String value = token.substring(equals + 1).trim();
-			if (value.startsWith("\"") && value.endsWith("\"")) {
-				value = value.substring(1, value.length() - 1);
+		// NB: Parse the attributes using the SciJava Expression Parser.
+		final DefaultEvaluator e = new DefaultEvaluator();
+		try {
+			final Object result = e.evaluate(attrs);
+			if (result == null) throw new ScriptException("Unparseable attributes");
+			final List<?> list;
+			if (result instanceof List) list = (List<?>) result;
+			else if (result instanceof Variable) {
+				list = Collections.singletonList(result);
 			}
-			attrsMap.put(key, value);
+			else {
+				throw new ScriptException("Unexpected attributes type: " +
+					result.getClass().getName());
+			}
+
+			final HashMap<String, Object> attrsMap = new HashMap<String, Object>();
+			for (final Object o : list) {
+				if (o instanceof Variable) {
+					final Variable v = (Variable) o;
+					attrsMap.put(v.getToken(), e.value(v));
+				}
+				else {
+					throw new ScriptException("Invalid attribute: " + o);
+				}
+			}
+			return attrsMap;
 		}
-		return attrsMap;
+		catch (final IllegalArgumentException exc) {
+			final ScriptException se = new ScriptException(
+				"Error parsing attributes");
+			se.initCause(exc);
+			throw se;
+		}
 	}
 
 	private boolean isIOType(final String token) {
@@ -402,18 +426,18 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Adds an output for the value returned by the script itself. */
 	private void addReturnValue() throws ScriptException {
-		final HashMap<String, String> attrs = new HashMap<String, String>();
+		final HashMap<String, Object> attrs = new HashMap<String, Object>();
 		attrs.put("type", "OUTPUT");
 		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
 	}
 
 	private <T> void addItem(final String name, final Class<T> type,
-		final Map<String, String> attrs) throws ScriptException
+		final Map<String, Object> attrs) throws ScriptException
 	{
 		final DefaultMutableModuleItem<T> item =
 			new DefaultMutableModuleItem<T>(this, name, type);
 		for (final String key : attrs.keySet()) {
-			final String value = attrs.get(key);
+			final Object value = attrs.get(key);
 			assignAttribute(item, key, value);
 		}
 		if (item.isInput()) registerInput(item);
@@ -421,78 +445,49 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
-		final String key, final String value) throws ScriptException
+		final String k, final Object v) throws ScriptException
 	{
 		// CTR: There must be an easier way to do this.
 		// Just compile the thing using javac? Or parse via javascript, maybe?
-		if ("callback".equalsIgnoreCase(key)) {
-			item.setCallback(value);
+		if (is(k, "callback")) item.setCallback(as(v, String.class));
+		else if (is(k, "choices")) item.setChoices(asList(v, item.getType()));
+		else if (is(k, "columns")) item.setColumnCount(as(v, int.class));
+		else if (is(k, "description")) item.setDescription(as(v, String.class));
+		else if (is(k, "initializer")) item.setInitializer(as(v, String.class));
+		else if (is(k, "type")) item.setIOType(as(v, ItemIO.class));
+		else if (is(k, "label")) item.setLabel(as(v, String.class));
+		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));
+		else if (is(k, "min")) item.setMinimumValue(as(v, item.getType()));
+		else if (is(k, "name")) item.setName(as(v, String.class));
+		else if (is(k, "persist")) item.setPersisted(as(v, boolean.class));
+		else if (is(k, "persistKey")) item.setPersistKey(as(v, String.class));
+		else if (is(k, "required")) item.setRequired(as(v, boolean.class));
+		else if (is(k, "softMax")) item.setSoftMaximum(as(v, item.getType()));
+		else if (is(k, "softMin")) item.setSoftMinimum(as(v, item.getType()));
+		else if (is(k, "stepSize")) item.setStepSize(as(v, double.class));
+		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
+		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
+		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
+		else throw new ScriptException("Invalid attribute name: " + k);
+	}
+
+	/** Super terse comparison helper method. */
+	private boolean is(final String key, final String desired) {
+		return desired.equalsIgnoreCase(key);
+	}
+
+	/** Super terse conversion helper method. */
+	private <T> T as(final Object v, final Class<T> type) {
+		return convertService.convert(v, type);
+	}
+
+	private <T> List<T> asList(final Object v, final Class<T> type) {
+		final ArrayList<T> result = new ArrayList<T>();
+		final List<?> list = as(v, List.class);
+		for (final Object item : list) {
+			result.add(as(item, type));
 		}
-		else if ("choices".equalsIgnoreCase(key)) {
-			// FIXME: Regex above won't handle {a,b,c} syntax.
-//			item.setChoices(choices);
-		}
-		else if ("columns".equalsIgnoreCase(key)) {
-			item.setColumnCount(convertService.convert(value, int.class));
-		}
-		else if ("description".equalsIgnoreCase(key)) {
-			item.setDescription(value);
-		}
-		else if ("initializer".equalsIgnoreCase(key)) {
-			item.setInitializer(value);
-		}
-		else if ("type".equalsIgnoreCase(key)) {
-			item.setIOType(convertService.convert(value, ItemIO.class));
-		}
-		else if ("label".equalsIgnoreCase(key)) {
-			item.setLabel(value);
-		}
-		else if ("max".equalsIgnoreCase(key)) {
-			item.setMaximumValue(convertService.convert(value, item.getType()));
-		}
-		else if ("min".equalsIgnoreCase(key)) {
-			item.setMinimumValue(convertService.convert(value, item.getType()));
-		}
-		else if ("name".equalsIgnoreCase(key)) {
-			item.setName(value);
-		}
-		else if ("persist".equalsIgnoreCase(key)) {
-			item.setPersisted(convertService.convert(value, boolean.class));
-		}
-		else if ("persistKey".equalsIgnoreCase(key)) {
-			item.setPersistKey(value);
-		}
-		else if ("required".equalsIgnoreCase(key)) {
-			item.setRequired(convertService.convert(value, boolean.class));
-		}
-		else if ("softMax".equalsIgnoreCase(key)) {
-			item.setSoftMaximum(convertService.convert(value, item.getType()));
-		}
-		else if ("softMin".equalsIgnoreCase(key)) {
-			item.setSoftMinimum(convertService.convert(value, item.getType()));
-		}
-		else if ("stepSize".equalsIgnoreCase(key)) {
-			try {
-				final double stepSize = Double.parseDouble(value);
-				item.setStepSize(stepSize);
-			}
-			catch (final NumberFormatException exc) {
-				log.warn("Script parameter " + item.getName() +
-					" has an invalid stepSize: " + value);
-			}
-		}
-		else if ("style".equalsIgnoreCase(key)) {
-			item.setWidgetStyle(value);
-		}
-		else if ("visibility".equalsIgnoreCase(key)) {
-			item.setVisibility(convertService.convert(value, ItemVisibility.class));
-		}
-		else if ("value".equalsIgnoreCase(key)) {
-			item.setDefaultValue(convertService.convert(value, item.getType()));
-		}
-		else {
-			throw new ScriptException("Invalid attribute name: " + key);
-		}
+		return result;
 	}
 
 	/**

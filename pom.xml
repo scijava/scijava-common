@@ -116,9 +116,16 @@
 
 	<properties>
 		<scijava.jvm.test.version>1.8</scijava.jvm.test.version>
+		<scijava-expression-parser.version>3.0.0</scijava-expression-parser.version>
 	</properties>
 
 	<dependencies>
+		<!-- SciJava dependencies -->
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-expression-parser</artifactId>
+		</dependency>
+
 		<!-- Third-party dependencies -->
 		<dependency>
 			<groupId>com.googlecode.gentyref</groupId>

@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -141,29 +142,39 @@ public class ScriptInfoTest {
 			"% @LogService(required = false) log\n" + //
 			"% @int(label=\"Slider Value\", softMin=5, softMax=15, " + //
 			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
+			"% @String(persist = false, " + //
+			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
 			"% @BOTH java.lang.StringBuilder buffer";
 
 		final ScriptInfo info =
 			new ScriptInfo(context, "params.bsizes", new StringReader(script));
 
+		final List<?> noChoices = Collections.emptyList();
+
 		final ModuleItem<?> log = info.getInput("log");
 		assertItem("log", LogService.class, null, ItemIO.INPUT, false, true, null,
-			null, null, null, null, null, null, null, log);
+			null, null, null, null, null, null, null, noChoices, log);
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, "slider", 11, null, null, 5, 15, 3.0, sliderValue);
+			true, null, "slider", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
+
+		final ModuleItem<?> animal = info.getInput("animal");
+		final List<String> animalChoices = //
+			Arrays.asList("quick brown fox", "lazy dog");
+		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
+			null, null, null, null, null, null, null, null, animalChoices, animal);
 
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
-			null, null, null, null, null, null, null, null, buffer);
+			null, null, null, null, null, null, null, null, noChoices, buffer);
 
 		final ModuleItem<?> result = info.getOutput("result");
 		assertItem("result", Object.class, null, ItemIO.OUTPUT, true, true, null,
-			null, null, null, null, null, null, null, result);
+			null, null, null, null, null, null, null, noChoices, result);
 
 		int inputCount = 0;
-		final ModuleItem<?>[] inputs = { log, sliderValue, buffer };
+		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
 			assertSame(inputs[inputCount++], inItem);
 		}
@@ -180,7 +191,7 @@ public class ScriptInfoTest {
 		final boolean persist, final String persistKey, final String style,
 		final Object value, final Object min, final Object max,
 		final Object softMin, final Object softMax, final Number stepSize,
-		final ModuleItem<?> item)
+		final List<?> choices, final ModuleItem<?> item)
 	{
 		assertEquals(name, item.getName());
 		assertSame(type, item.getType());
@@ -196,6 +207,7 @@ public class ScriptInfoTest {
 		assertEquals(softMin, item.getSoftMinimum());
 		assertEquals(softMax, item.getSoftMaximum());
 		assertEquals(stepSize, item.getStepSize());
+		assertEquals(choices, item.getChoices());
 	}
 
 	/**
