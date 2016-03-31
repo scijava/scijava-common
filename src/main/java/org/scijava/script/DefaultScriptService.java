@@ -343,7 +343,7 @@ public class DefaultScriptService extends
 
 		// add ScriptLanguage plugins
 		for (final ScriptLanguage language : getInstances()) {
-			index.add(language, false);
+			index.add(language, true);
 		}
 
 		// Now look for the ScriptEngines in javax.scripting. We only do that
