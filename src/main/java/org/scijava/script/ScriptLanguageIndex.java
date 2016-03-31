@@ -75,32 +75,24 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	}
 
 	public boolean add(final ScriptEngineFactory factory, final boolean gently) {
-		final String duplicateName = checkDuplicate(factory);
-		if (duplicateName != null) {
-			if (gently) return false;
-			if (log != null) {
-				log.warn("Duplicate scripting language '" +
-					duplicateName + "': existing=" +
-					byName.get(duplicateName).getClass().getName() +
-					", new=" + factory.getClass().getName());
-			}
-		}
+		boolean result = false;
 
 		final ScriptLanguage language = wrap(factory);
 
 		// add language names
-		byName.put(language.getLanguageName(), language);
+		result |= put("name", byName, language.getLanguageName(), language, gently);
 		for (final String name : language.getNames()) {
-			byName.put(name, language);
+			result |= put("name", byName, name, language, gently);
 		}
 
 		// add file extensions
 		for (final String extension : language.getExtensions()) {
 			if ("".equals(extension)) continue;
-			byExtension.put(extension, language);
+			result |= put("extension", byExtension, extension, language, gently);
 		}
 
-		return super.add(language);
+		result |= super.add(language);
+		return result;
 	}
 
 	public ScriptLanguage getByExtension(final String extension) {
@@ -137,13 +129,19 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 
 	// -- Helper methods --
 
-	private String checkDuplicate(final ScriptEngineFactory factory) {
-		for (final String name : factory.getNames()) {
-			if (byName.containsKey(name)) {
-				return name;
+	private boolean put(final String type, final Map<String, ScriptLanguage> map,
+		final String key, final ScriptLanguage value, final boolean gently)
+	{
+		if (gently && map.containsKey(key)) {
+			if (log != null) {
+				log.warn("Not registering " + type + " '" + key +
+					"' for scripting language " + value.getClass().getName() +
+					": existing=" + map.get(key).getClass().getName());
 			}
+			return false;
 		}
-		return null;
+		map.put(key, value);
+		return true;
 	}
 
 	private ScriptLanguage wrap(final ScriptEngineFactory factory) {
