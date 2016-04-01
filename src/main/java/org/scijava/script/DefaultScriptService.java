@@ -346,20 +346,6 @@ public class DefaultScriptService extends
 			index.add(language, true);
 		}
 
-		// Now look for the ScriptEngines in javax.scripting. We only do that
-		// now since the javax.scripting framework does not provide all the
-		// functionality we might want to use in a SciJava application.
-		final ScriptEngineManager manager = new ScriptEngineManager();
-		for (final ScriptEngineFactory factory : manager.getEngineFactories()) {
-			index.add(factory, true);
-		}
-
-		// Inject the context into languages which need it: the
-		// wrapped engine factories from the ScriptEngineManager.
-		for (final ScriptLanguage language : index) {
-			if (language.getContext() == null) language.setContext(getContext());
-		}
-
 		scriptLanguageIndex = index;
 	}
 
