@@ -162,6 +162,7 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 		return true;
 	}
 
+	/** Helper method of {@link #add(ScriptEngineFactory, boolean)}. */
 	private ScriptLanguage wrap(final ScriptEngineFactory factory) {
 		if (factory instanceof ScriptLanguage) return (ScriptLanguage) factory;
 		return new AdaptedScriptLanguage(factory);
