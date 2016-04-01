@@ -132,14 +132,32 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	private boolean put(final String type, final Map<String, ScriptLanguage> map,
 		final String key, final ScriptLanguage value, final boolean gently)
 	{
-		if (gently && map.containsKey(key)) {
-			if (log != null) {
-				log.warn("Not registering " + type + " '" + key +
-					"' for scripting language " + value.getClass().getName() +
-					": existing=" + map.get(key).getClass().getName());
+		final ScriptLanguage existing = map.get(key);
+
+		if (existing == value) {
+			// Duplicate key/value pair; do not overwrite.
+			if (log != null && log.isDebug()) {
+				// In debug mode, warn about the duplicate (since it is atypical).
+				log.debug(overwriteMessage(false, type, key, value, existing));
 			}
 			return false;
 		}
+
+		if (existing != null) {
+			// Conflicting value; behavior depends on mode.
+			if (gently) {
+				// Do not overwrite the previous value.
+				if (log != null && log.isWarn()) {
+					log.warn(overwriteMessage(false, type, key, value, existing));
+				}
+				return false;
+			}
+			if (log != null && log.isDebug()) {
+				// In debug mode, warn about overwriting.
+				log.debug(overwriteMessage(true, type, key, value, existing));
+			}
+		}
+
 		map.put(key, value);
 		return true;
 	}
@@ -147,6 +165,16 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	private ScriptLanguage wrap(final ScriptEngineFactory factory) {
 		if (factory instanceof ScriptLanguage) return (ScriptLanguage) factory;
 		return new AdaptedScriptLanguage(factory);
+	}
+
+	/** Helper method of {@link #put}. */
+	private String overwriteMessage(final boolean overwrite, final String type,
+		final String key, final ScriptLanguage proposed,
+		final ScriptLanguage existing)
+	{
+		return (overwrite ? "Overwriting " : "Not overwriting ") + type + //
+			" '" + key + "':\n\tproposed = " + proposed.getClass().getName() +
+			"\n\texisting = " + existing.getClass().getName();
 	}
 
 }
