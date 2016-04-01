@@ -75,32 +75,24 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	}
 
 	public boolean add(final ScriptEngineFactory factory, final boolean gently) {
-		final String duplicateName = checkDuplicate(factory);
-		if (duplicateName != null) {
-			if (gently) return false;
-			if (log != null) {
-				log.warn("Duplicate scripting language '" +
-					duplicateName + "': existing=" +
-					byName.get(duplicateName).getClass().getName() +
-					", new=" + factory.getClass().getName());
-			}
-		}
+		boolean result = false;
 
 		final ScriptLanguage language = wrap(factory);
 
 		// add language names
-		byName.put(language.getLanguageName(), language);
+		result |= put("name", byName, language.getLanguageName(), language, gently);
 		for (final String name : language.getNames()) {
-			byName.put(name, language);
+			result |= put("name", byName, name, language, gently);
 		}
 
 		// add file extensions
 		for (final String extension : language.getExtensions()) {
 			if ("".equals(extension)) continue;
-			byExtension.put(extension, language);
+			result |= put("extension", byExtension, extension, language, gently);
 		}
 
-		return super.add(language);
+		result |= super.add(language);
+		return result;
 	}
 
 	public ScriptLanguage getByExtension(final String extension) {
@@ -137,18 +129,53 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 
 	// -- Helper methods --
 
-	private String checkDuplicate(final ScriptEngineFactory factory) {
-		for (final String name : factory.getNames()) {
-			if (byName.containsKey(name)) {
-				return name;
+	private boolean put(final String type, final Map<String, ScriptLanguage> map,
+		final String key, final ScriptLanguage value, final boolean gently)
+	{
+		final ScriptLanguage existing = map.get(key);
+
+		if (existing == value) {
+			// Duplicate key/value pair; do not overwrite.
+			if (log != null && log.isDebug()) {
+				// In debug mode, warn about the duplicate (since it is atypical).
+				log.debug(overwriteMessage(false, type, key, value, existing));
+			}
+			return false;
+		}
+
+		if (existing != null) {
+			// Conflicting value; behavior depends on mode.
+			if (gently) {
+				// Do not overwrite the previous value.
+				if (log != null && log.isWarn()) {
+					log.warn(overwriteMessage(false, type, key, value, existing));
+				}
+				return false;
+			}
+			if (log != null && log.isDebug()) {
+				// In debug mode, warn about overwriting.
+				log.debug(overwriteMessage(true, type, key, value, existing));
 			}
 		}
-		return null;
+
+		map.put(key, value);
+		return true;
 	}
 
+	/** Helper method of {@link #add(ScriptEngineFactory, boolean)}. */
 	private ScriptLanguage wrap(final ScriptEngineFactory factory) {
 		if (factory instanceof ScriptLanguage) return (ScriptLanguage) factory;
 		return new AdaptedScriptLanguage(factory);
+	}
+
+	/** Helper method of {@link #put}. */
+	private String overwriteMessage(final boolean overwrite, final String type,
+		final String key, final ScriptLanguage proposed,
+		final ScriptLanguage existing)
+	{
+		return (overwrite ? "Overwriting " : "Not overwriting ") + type + //
+			" '" + key + "':\n\tproposed = " + proposed.getClass().getName() +
+			"\n\texisting = " + existing.getClass().getName();
 	}
 
 }
