@@ -94,9 +94,11 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 	private void run(final String scriptToRun, final String paramString) {
 		final File script = getScript(scriptToRun);
 
-		// couldn't find anything to run
-		if (script == null)
-			return;
+		if (script == null) {
+			// couldn't find anything to run
+			throw new UnsupportedOperationException(//
+				"Not a script: '" + scriptToRun + "'");
+		}
 
 		final ScriptInfo info = scriptService.getScript(script);
 
