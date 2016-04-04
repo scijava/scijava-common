@@ -38,21 +38,21 @@ import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.run.AbstractClassRunner;
-import org.scijava.run.ClassRunner;
+import org.scijava.run.AbstractCodeRunner;
+import org.scijava.run.CodeRunner;
 
 /**
  * Executes the given class's {@code main} method.
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = ClassRunner.class, priority = Priority.LOW_PRIORITY)
-public class MainRunner extends AbstractClassRunner {
+@Plugin(type = CodeRunner.class, priority = Priority.LOW_PRIORITY)
+public class MainRunner extends AbstractCodeRunner {
 
 	@Parameter(required = false)
 	private LogService log;
 
-	// -- ClassRunner methods --
+	// -- CodeRunner methods --
 
 	@Override
 	public void run(final Class<?> c, final Object... args)

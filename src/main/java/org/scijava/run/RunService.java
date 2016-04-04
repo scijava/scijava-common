@@ -37,12 +37,12 @@ import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
 /**
- * Interface for service that manages available {@link ClassRunner} plugins.
+ * Interface for service that manages available {@link CodeRunner} plugins.
  * 
  * @author Curtis Rueden
  */
 public interface RunService extends
-	HandlerService<Class<?>, ClassRunner>, SciJavaService
+	HandlerService<Class<?>, CodeRunner>, SciJavaService
 {
 
 	/**

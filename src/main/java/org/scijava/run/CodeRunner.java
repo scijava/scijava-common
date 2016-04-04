@@ -38,19 +38,19 @@ import org.scijava.plugin.Plugin;
 
 /**
  * A plugin which extends the {@link RunService}'s execution handling. A
- * {@link ClassRunner} knows how to execute certain classes, beyond just Java's
+ * {@link CodeRunner} knows how to execute certain classes, beyond just Java's
  * usual {@code main} method.
  * <p>
  * Class runner plugins discoverable at runtime must implement this interface
  * and be annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
- * {@link ClassRunner}.class. While it possible to create a class runner plugin
+ * {@link CodeRunner}.class. While it possible to create a class runner plugin
  * merely by implementing this interface, it is encouraged to instead extend
- * {@link AbstractClassRunner}, for convenience.
+ * {@link AbstractCodeRunner}, for convenience.
  * </p>
  * 
  * @author Curtis Rueden
  */
-public interface ClassRunner extends HandlerPlugin<Class<?>> {
+public interface CodeRunner extends HandlerPlugin<Class<?>> {
 
 	/** Executes the given class, with the specified arguments. */
 	void run(Class<?> c, Object... args) throws InvocationTargetException;

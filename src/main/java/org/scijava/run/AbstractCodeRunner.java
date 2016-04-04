@@ -34,12 +34,12 @@ package org.scijava.run;
 import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
- * Abstract superclass of {@link ClassRunner} implementations.
+ * Abstract superclass of {@link CodeRunner} implementations.
  * 
  * @author Curtis Rueden
  */
-public abstract class AbstractClassRunner extends
-	AbstractHandlerPlugin<Class<?>> implements ClassRunner
+public abstract class AbstractCodeRunner extends
+	AbstractHandlerPlugin<Class<?>> implements CodeRunner
 {
 
 	// -- Typed methods --

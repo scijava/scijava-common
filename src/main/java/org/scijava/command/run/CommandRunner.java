@@ -36,16 +36,16 @@ import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
-import org.scijava.run.AbstractClassRunner;
-import org.scijava.run.ClassRunner;
+import org.scijava.run.AbstractCodeRunner;
+import org.scijava.run.CodeRunner;
 
 /**
  * Runs the given {@link Command} class.
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = ClassRunner.class)
-public class CommandRunner extends AbstractClassRunner {
+@Plugin(type = CodeRunner.class)
+public class CommandRunner extends AbstractCodeRunner {
 
 	@Parameter
 	private PluginService pluginService;
@@ -53,7 +53,7 @@ public class CommandRunner extends AbstractClassRunner {
 	@Parameter
 	private CommandService commandService;
 
-	// -- ClassRunner methods --
+	// -- CodeRunner methods --
 
 	@Override
 	public void run(final Class<?> c, final Object... args) {

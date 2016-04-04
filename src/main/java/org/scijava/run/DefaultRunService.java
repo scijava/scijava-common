@@ -40,13 +40,13 @@ import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
 /**
- * Default service for managing available {@link ClassRunner} plugins.
+ * Default service for managing available {@link CodeRunner} plugins.
  * 
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
 public class DefaultRunService extends
-	AbstractHandlerService<Class<?>, ClassRunner> implements RunService
+	AbstractHandlerService<Class<?>, CodeRunner> implements RunService
 {
 
 	@Parameter
@@ -58,7 +58,7 @@ public class DefaultRunService extends
 	public void run(final Class<?> c, final Object... args)
 		throws InvocationTargetException
 	{
-		for (final ClassRunner runner : getInstances()) {
+		for (final CodeRunner runner : getInstances()) {
 			if (runner.supports(c)) {
 				runner.run(c);
 				return;
@@ -70,8 +70,8 @@ public class DefaultRunService extends
 	// -- PTService methods --
 
 	@Override
-	public Class<ClassRunner> getPluginType() {
-		return ClassRunner.class;
+	public Class<CodeRunner> getPluginType() {
+		return CodeRunner.class;
 	}
 
 	// -- Typed methods --
