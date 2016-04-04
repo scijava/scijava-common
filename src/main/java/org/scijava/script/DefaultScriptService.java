@@ -60,6 +60,7 @@ import org.scijava.log.LogService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleService;
 import org.scijava.object.LazyObjects;
+import org.scijava.parse.ParseService;
 import org.scijava.plugin.AbstractSingletonService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -91,6 +92,9 @@ public class DefaultScriptService extends
 
 	@Parameter
 	private CommandService commandService;
+
+	@Parameter
+	private ParseService parser;
 
 	@Parameter
 	private LogService log;
