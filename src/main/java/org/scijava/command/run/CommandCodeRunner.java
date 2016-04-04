@@ -45,7 +45,7 @@ import org.scijava.run.CodeRunner;
  * @author Curtis Rueden
  */
 @Plugin(type = CodeRunner.class)
-public class CommandRunner extends AbstractCodeRunner {
+public class CommandCodeRunner extends AbstractCodeRunner {
 
 	@Parameter
 	private PluginService pluginService;
