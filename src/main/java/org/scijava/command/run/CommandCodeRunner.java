@@ -55,15 +55,17 @@ public class CommandCodeRunner extends AbstractCodeRunner {
 	// -- CodeRunner methods --
 
 	@Override
-	public void run(final Object code, final Object... args) {
-		commandService.run(getCommandClass(code), true, args);
+	public void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		waitFor(commandService.run(getCommandClass(code), true, args));
 	}
 
 	@Override
 	public void run(final Object code, final Map<String, Object> inputMap)
 		throws InvocationTargetException
 	{
-		commandService.run(getCommandClass(code), true, inputMap);
+		waitFor(commandService.run(getCommandClass(code), true, inputMap));
 	}
 
 	// -- Typed methods --

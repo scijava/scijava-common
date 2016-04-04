@@ -31,6 +31,10 @@
 
 package org.scijava.run;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
@@ -47,6 +51,22 @@ public abstract class AbstractCodeRunner extends
 	@Override
 	public Class<Object> getType() {
 		return Object.class;
+	}
+
+	// -- Internal methods --
+
+	protected <T> T waitFor(final Future<T> future)
+		throws InvocationTargetException
+	{
+		try {
+			return future.get();
+		}
+		catch (final InterruptedException exc) {
+			throw new InvocationTargetException(exc);
+		}
+		catch (final ExecutionException exc) {
+			throw new InvocationTargetException(exc);
+		}
 	}
 
 }

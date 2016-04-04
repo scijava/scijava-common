@@ -57,15 +57,17 @@ public class ModuleCodeRunner extends AbstractCodeRunner {
 	// -- CodeRunner methods --
 
 	@Override
-	public void run(final Object code, final Object... args) {
-		moduleService.run(getModuleInfo(code), true, args);
+	public void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		waitFor(moduleService.run(getModuleInfo(code), true, args));
 	}
 
 	@Override
 	public void run(final Object code, final Map<String, Object> inputMap)
 		throws InvocationTargetException
 	{
-		moduleService.run(getModuleInfo(code), true, inputMap);
+		waitFor(moduleService.run(getModuleInfo(code), true, inputMap));
 	}
 
 	// -- Typed methods --
