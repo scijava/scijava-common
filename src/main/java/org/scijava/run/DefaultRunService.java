@@ -32,6 +32,7 @@
 package org.scijava.run;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
@@ -46,7 +47,7 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public class DefaultRunService extends
-	AbstractHandlerService<Class<?>, CodeRunner> implements RunService
+	AbstractHandlerService<Object, CodeRunner> implements RunService
 {
 
 	@Parameter
@@ -55,16 +56,29 @@ public class DefaultRunService extends
 	// -- RunService methods --
 
 	@Override
-	public void run(final Class<?> c, final Object... args)
+	public void run(final Object code, final Object... args)
 		throws InvocationTargetException
 	{
 		for (final CodeRunner runner : getInstances()) {
-			if (runner.supports(c)) {
-				runner.run(c);
+			if (runner.supports(code)) {
+				runner.run(code, args);
 				return;
 			}
 		}
-		throw new IllegalArgumentException("Unknown class type: " + c.getName());
+		throw new IllegalArgumentException("Unknown code type: " + code);
+	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		for (final CodeRunner runner : getInstances()) {
+			if (runner.supports(code)) {
+				runner.run(code, inputMap);
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unknown code type: " + code);
 	}
 
 	// -- PTService methods --
@@ -77,9 +91,8 @@ public class DefaultRunService extends
 	// -- Typed methods --
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<Class<?>> getType() {
-		return (Class) Class.class;
+	public Class<Object> getType() {
+		return Object.class;
 	}
 
 }

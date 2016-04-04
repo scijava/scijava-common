@@ -39,15 +39,14 @@ import org.scijava.plugin.AbstractHandlerPlugin;
  * @author Curtis Rueden
  */
 public abstract class AbstractCodeRunner extends
-	AbstractHandlerPlugin<Class<?>> implements CodeRunner
+	AbstractHandlerPlugin<Object> implements CodeRunner
 {
 
 	// -- Typed methods --
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<Class<?>> getType() {
-		return (Class) Class.class;
+	public Class<Object> getType() {
+		return Object.class;
 	}
 
 }

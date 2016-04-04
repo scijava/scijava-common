@@ -56,17 +56,26 @@ public class CommandCodeRunner extends AbstractCodeRunner {
 	// -- CodeRunner methods --
 
 	@Override
-	public void run(final Class<?> c, final Object... args) {
-		@SuppressWarnings("unchecked")
-		final Class<? extends Command> commandClass =  (Class<? extends Command>) c;
-		commandService.run(commandClass, true, args);
+	public void run(final Object code, final Object... args) {
+		commandService.run(getCommandClass(code), true, args);
 	}
 
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final Class<?> c) {
-		return Command.class.isAssignableFrom(c);
+	public boolean supports(final Object code) {
+		return getCommandClass(code) != null;
+	}
+
+	// -- Helper methods --
+
+	private Class<? extends Command> getCommandClass(final Object code) {
+		if (!(code instanceof Class)) return null;
+		final Class<?> c = (Class<?>) code;
+		if (!Command.class.isAssignableFrom(c)) return null;
+		@SuppressWarnings("unchecked")
+		final Class<? extends Command> commandClass = (Class<? extends Command>) c;
+		return commandClass;
 	}
 
 }

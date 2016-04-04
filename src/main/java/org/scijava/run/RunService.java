@@ -32,6 +32,7 @@
 package org.scijava.run;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
@@ -42,13 +43,20 @@ import org.scijava.service.SciJavaService;
  * @author Curtis Rueden
  */
 public interface RunService extends
-	HandlerService<Class<?>, CodeRunner>, SciJavaService
+	HandlerService<Object, CodeRunner>, SciJavaService
 {
 
 	/**
-	 * Executes the given class using the most appropriate handler, passing the
-	 * given arguments to the execution.
+	 * Executes the given code using the most appropriate handler, passing the
+	 * specified arguments as inputs.
 	 */
-	void run(Class<?> c, Object... args) throws InvocationTargetException;
+	void run(Object code, Object... args) throws InvocationTargetException;
+
+	/**
+	 * Executes the given code using the most appropriate handler, passing the
+	 * arguments in the specified map as inputs.
+	 */
+	void run(Object code, Map<String, Object> inputMap)
+		throws InvocationTargetException;
 
 }

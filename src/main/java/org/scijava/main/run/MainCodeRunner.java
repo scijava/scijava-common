@@ -40,6 +40,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.run.AbstractCodeRunner;
 import org.scijava.run.CodeRunner;
+import org.scijava.util.ClassUtils;
 
 /**
  * Executes the given class's {@code main} method.
@@ -55,12 +56,12 @@ public class MainCodeRunner extends AbstractCodeRunner {
 	// -- CodeRunner methods --
 
 	@Override
-	public void run(final Class<?> c, final Object... args)
+	public void run(final Object code, final Object... args)
 		throws InvocationTargetException
 	{
 		final Object[] sArgs = stringify(args);
 		try {
-			getMain(c).invoke(null, new Object[] { sArgs });
+			getMain(code).invoke(null, new Object[] { sArgs });
 		}
 		catch (final IllegalArgumentException exc) {
 			throw new InvocationTargetException(exc);
@@ -73,13 +74,15 @@ public class MainCodeRunner extends AbstractCodeRunner {
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final Class<?> c) {
-		return getMain(c) != null;
+	public boolean supports(final Object code) {
+		return getMain(code) != null;
 	}
 
 	// -- Helper methods --
 
-	private Method getMain(final Class<?> c) {
+	private Method getMain(final Object code) {
+		final Class<?> c = getClass(code);
+		if (c == null) return null;
 		try {
 			return c.getMethod("main", String[].class);
 		}
@@ -91,6 +94,12 @@ public class MainCodeRunner extends AbstractCodeRunner {
 			if (log != null) log.debug(exc);
 			return null;
 		}
+	}
+
+	private Class<?> getClass(final Object code) {
+		if (code instanceof Class) return (Class<?>) code;
+		if (code instanceof String) return ClassUtils.loadClass((String) code);
+		return null;
 	}
 
 	/** Ensures each element is a {@link String}. */

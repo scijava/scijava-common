@@ -33,15 +33,17 @@ package org.scijava.run;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.scijava.Identifiable;
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
 
 /**
  * A plugin which extends the {@link RunService}'s execution handling. A
- * {@link CodeRunner} knows how to execute certain classes, beyond just Java's
- * usual {@code main} method.
+ * {@link CodeRunner} knows how to execute code of a certain form, such as the
+ * {@code main} method of a Java {@link Class}, or an {@link Identifiable}
+ * SciJava module.
  * <p>
- * Class runner plugins discoverable at runtime must implement this interface
+ * Code runner plugins discoverable at runtime must implement this interface
  * and be annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
  * {@link CodeRunner}.class. While it possible to create a class runner plugin
  * merely by implementing this interface, it is encouraged to instead extend
@@ -50,9 +52,12 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-public interface CodeRunner extends HandlerPlugin<Class<?>> {
+public interface CodeRunner extends HandlerPlugin<Object> {
 
-	/** Executes the given class, with the specified arguments. */
-	void run(Class<?> c, Object... args) throws InvocationTargetException;
+	/**
+	 * Executes the code identified by the given object, passing the
+	 * specified arguments as inputs.
+	 */
+	void run(Object code, Object... args) throws InvocationTargetException;
 
 }
