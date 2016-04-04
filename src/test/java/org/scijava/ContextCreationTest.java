@@ -102,6 +102,7 @@ public class ContextCreationTest {
 				org.scijava.module.DefaultModuleService.class,
 				org.scijava.object.DefaultObjectService.class,
 				org.scijava.options.DefaultOptionsService.class,
+				org.scijava.parse.DefaultParseService.class,
 				org.scijava.platform.DefaultPlatformService.class,
 				org.scijava.plugin.DefaultPluginService.class,
 				org.scijava.prefs.DefaultPrefService.class,
