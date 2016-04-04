@@ -55,7 +55,7 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 	private ScriptService scriptService;
 
 	@Parameter
-	private LogService logService;
+	private LogService log;
 
 	// -- Constructor --
 
@@ -100,12 +100,12 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 
 		final ScriptInfo info = scriptService.getScript(script);
 
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, info, logService);
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, info, log);
 
 		try {
 			scriptService.run(info, true, inputMap).get();
 		} catch (final Exception exc) {
-			logService.error(exc);
+			log.error(exc);
 		}
 	}
 

@@ -64,8 +64,8 @@ public final class ConsoleUtils {
 	/**
 	 * @see #parseParameterString(String, ModuleInfo, LogService)
 	 */
-	public static Map<String, Object> parseParameterString(final String parameterString, final LogService logService) {
-		return parseParameterString(parameterString, null, logService);
+	public static Map<String, Object> parseParameterString(final String parameterString, final LogService log) {
+		return parseParameterString(parameterString, null, log);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public final class ConsoleUtils {
 	 *
 	 * TODO reconcile with attribute parsing of {@link ScriptInfo}
 	 */
-	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService logService) {
+	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService log) {
 		final Map<String, Object> inputMap = new HashMap<String, Object>();
 
 		if (!parameterString.isEmpty()) {
@@ -93,8 +93,8 @@ public final class ConsoleUtils {
 				else if (inputs != null && inputs.hasNext() && split.length == 1) {
 					inputMap.put(inputs.next().getName(), split[0]);
 				}
-				else if (logService != null)
-					logService.error("Parameters must be formatted as a comma-separated list of key=value pairs");
+				else if (log != null)
+					log.error("Parameters must be formatted as a comma-separated list of key=value pairs");
 
 			}
 		}

@@ -68,10 +68,10 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	/**
 	 * Instantiates an index of the available script languages.
 	 * 
-	 * @param logService the log service for errors and warnings
+	 * @param log the log service for errors and warnings
 	 */
-	public ScriptLanguageIndex(final LogService logService) {
-		log = logService;
+	public ScriptLanguageIndex(final LogService log) {
+		this.log = log;
 	}
 
 	public boolean add(final ScriptEngineFactory factory, final boolean gently) {

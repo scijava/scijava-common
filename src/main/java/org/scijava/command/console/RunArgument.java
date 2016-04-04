@@ -57,7 +57,7 @@ public class RunArgument extends AbstractConsoleArgument {
 	private CommandService commandService;
 
 	@Parameter
-	private LogService logService;
+	private LogService log;
 
 	// -- Constructor --
 
@@ -100,12 +100,12 @@ public class RunArgument extends AbstractConsoleArgument {
 			return;
 
 		// TODO: parse the optionString a la ImageJ1
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, info, logService);
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, info, log);
 
 		try {
 			commandService.run(info, true, inputMap).get();
 		} catch (final Exception exc) {
-			logService.error(exc);
+			log.error(exc);
 		}
 	}
 
