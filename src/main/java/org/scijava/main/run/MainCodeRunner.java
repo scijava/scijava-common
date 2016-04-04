@@ -47,7 +47,7 @@ import org.scijava.run.CodeRunner;
  * @author Curtis Rueden
  */
 @Plugin(type = CodeRunner.class, priority = Priority.LOW_PRIORITY)
-public class MainRunner extends AbstractCodeRunner {
+public class MainCodeRunner extends AbstractCodeRunner {
 
 	@Parameter(required = false)
 	private LogService log;
