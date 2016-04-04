@@ -33,6 +33,7 @@ package org.scijava.main.run;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.scijava.Priority;
 import org.scijava.log.LogService;
@@ -69,6 +70,14 @@ public class MainCodeRunner extends AbstractCodeRunner {
 		catch (final IllegalAccessException exc) {
 			throw new InvocationTargetException(exc);
 		}
+	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		throw new UnsupportedOperationException(
+			"Cannot execute main method with a map of inputs");
 	}
 
 	// -- Typed methods --

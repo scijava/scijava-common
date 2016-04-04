@@ -32,6 +32,7 @@
 package org.scijava.run;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import org.scijava.Identifiable;
 import org.scijava.plugin.HandlerPlugin;
@@ -59,5 +60,12 @@ public interface CodeRunner extends HandlerPlugin<Object> {
 	 * specified arguments as inputs.
 	 */
 	void run(Object code, Object... args) throws InvocationTargetException;
+
+	/**
+	 * Executes the code identified by the given object, passing the arguments in
+	 * the specified map as inputs.
+	 */
+	void run(Object code, Map<String, Object> inputMap)
+		throws InvocationTargetException;
 
 }

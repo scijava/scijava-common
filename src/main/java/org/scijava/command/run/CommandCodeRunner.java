@@ -31,6 +31,9 @@
 
 package org.scijava.command.run;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
@@ -58,6 +61,13 @@ public class CommandCodeRunner extends AbstractCodeRunner {
 	@Override
 	public void run(final Object code, final Object... args) {
 		commandService.run(getCommandClass(code), true, args);
+	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		commandService.run(getCommandClass(code), true, inputMap);
 	}
 
 	// -- Typed methods --
