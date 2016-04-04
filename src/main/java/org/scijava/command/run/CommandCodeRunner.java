@@ -38,7 +38,6 @@ import org.scijava.command.Command;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.PluginService;
 import org.scijava.run.AbstractCodeRunner;
 import org.scijava.run.CodeRunner;
 
@@ -49,9 +48,6 @@ import org.scijava.run.CodeRunner;
  */
 @Plugin(type = CodeRunner.class)
 public class CommandCodeRunner extends AbstractCodeRunner {
-
-	@Parameter
-	private PluginService pluginService;
 
 	@Parameter
 	private CommandService commandService;
