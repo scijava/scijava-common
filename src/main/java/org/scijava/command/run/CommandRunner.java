@@ -32,7 +32,6 @@
 package org.scijava.command.run;
 
 import org.scijava.command.Command;
-import org.scijava.command.CommandInfo;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -60,10 +59,7 @@ public class CommandRunner extends AbstractClassRunner {
 	public void run(final Class<?> c, final Object... args) {
 		@SuppressWarnings("unchecked")
 		final Class<? extends Command> commandClass =  (Class<? extends Command>) c;
-		final Plugin annotation = c.getAnnotation(Plugin.class);
-		final CommandInfo info = new CommandInfo(commandClass, annotation);
-		pluginService.addPlugin(info);
-		commandService.run(info, true, args);
+		commandService.run(commandClass, true, args);
 	}
 
 	// -- Typed methods --
