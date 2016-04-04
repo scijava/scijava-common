@@ -42,7 +42,7 @@ import org.scijava.ui.UIService;
  * and the enclosing {@link Context} will not be used after the
  * {@link ConsoleService} argument processing is complete.
  *
- * @author Mark Hiner hinerm at gmail.com
+ * @author Mark Hiner
  */
 @Plugin(type = ConsoleArgument.class)
 public class HeadlessArgument extends AbstractConsoleArgument {

@@ -46,7 +46,7 @@ import org.scijava.script.ScriptService;
 /**
  * {@link ConsoleArgument} for executing scripts directly.
  *
- * @author Mark Hiner hinerm at gmail.com
+ * @author Mark Hiner
  */
 @Plugin(type = ConsoleArgument.class)
 public class RunScriptArgument extends AbstractConsoleArgument {

@@ -48,7 +48,7 @@ import org.scijava.plugin.Plugin;
  *
  * @author Curtis Rueden
  * @author Johannes Schindelin
- * @author Mark Hiner hinerm at gmail.com
+ * @author Mark Hiner
  */
 @Plugin(type = ConsoleArgument.class)
 public class RunArgument extends AbstractConsoleArgument {

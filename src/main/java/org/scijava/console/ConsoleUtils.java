@@ -43,7 +43,7 @@ import org.scijava.module.ModuleItem;
 /**
  * Helper class for {@link ConsoleArgument}s.
  *
- * @author Mark Hiner hinerm at gmail.com
+ * @author Mark Hiner
  */
 public final class ConsoleUtils {
 
