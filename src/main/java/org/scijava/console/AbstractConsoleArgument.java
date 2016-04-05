@@ -86,4 +86,17 @@ public abstract class AbstractConsoleArgument extends
 	protected boolean isFlag(final LinkedList<String> args) {
 		return flags.isEmpty() || flags.contains(args.getFirst());
 	}
+
+	/**
+	 * If the next argument is an appropriate parameter to a
+	 * {@link ConsoleArgument}, retrieves it; otherwise, returns null.
+	 *
+	 * @return The first argument of the given list, if it does not
+	 *         start with a {@code '-'} character; or null otherwise.
+	 */
+	protected String getParam(final LinkedList<String> args) {
+		if (args.isEmpty()) return null;
+		final String arg = args.getFirst();
+		return arg.startsWith("-") ? null : arg;
+	}
 }
