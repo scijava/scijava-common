@@ -39,44 +39,32 @@ import org.scijava.command.CommandInfo;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleItem;
+import org.scijava.parse.ParseService;
 
-/**
- * Helper class for {@link ConsoleArgument}s.
- *
- * @author Mark Hiner
- */
+/** @deprecated Use alternatives instead (see individual method docs). */
+@Deprecated
 public final class ConsoleUtils {
 
-	/**
-	 * @see #parseParameterString(String, ModuleInfo, LogService)
-	 */
+	/** @deprecated Use {@link ParseService} instead. */
+	@Deprecated
 	public static Map<String, Object> parseParameterString(final String parameterString) {
 		return parseParameterString(parameterString, (CommandInfo)null);
 	}
 
-	/**
-	 * @see #parseParameterString(String, ModuleInfo, LogService)
-	 */
+	/** @deprecated Use {@link ParseService} instead. */
+	@Deprecated
 	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info) {
 		return parseParameterString(parameterString, info, null);
 	}
 
-	/**
-	 * @see #parseParameterString(String, ModuleInfo, LogService)
-	 */
+	/** @deprecated Use {@link ParseService} instead. */
+	@Deprecated
 	public static Map<String, Object> parseParameterString(final String parameterString, final LogService log) {
 		return parseParameterString(parameterString, null, log);
 	}
 
-	/**
-	 * Helper method for turning a parameter string into a {@code Map} of
-	 * key:value pairs. If a {@link ModuleInfo} is provided, the parameter
-	 * string is assumed to be a comma-separated list of values, ordered
-	 * according to the {@code ModuleInfo's} inputs. Otherwise, the parameter
-	 * string is assumed to be a comma-separated list of "key=value" pairs.
-	 *
-	 * TODO reconcile with attribute parsing of {@link ScriptInfo}
-	 */
+	/** @deprecated Use {@link ParseService} instead. */
+	@Deprecated
 	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService log) {
 		final Map<String, Object> inputMap = new HashMap<String, Object>();
 
@@ -104,12 +92,10 @@ public final class ConsoleUtils {
 	}
 
 	/**
-	 * Test if the next argument is an appropriate parameter to a
-	 * {@link ConsoleArgument}.
-	 *
-	 * @return {@code true} if the first argument of the given list does not
-	 *         start with a {@code '-'} character.
+	 * @deprecated Use {@link AbstractConsoleArgument#getParam(LinkedList)}
+	 *             instead.
 	 */
+	@Deprecated
 	public static boolean hasParam(final LinkedList<String> args) {
 		return !(args.isEmpty() || args.getFirst().startsWith("-"));
 	}
