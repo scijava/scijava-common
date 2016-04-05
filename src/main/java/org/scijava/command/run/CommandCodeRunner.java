@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.scijava.command.Command;
+import org.scijava.command.CommandInfo;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -58,21 +59,29 @@ public class CommandCodeRunner extends AbstractCodeRunner {
 	public void run(final Object code, final Object... args)
 		throws InvocationTargetException
 	{
-		waitFor(commandService.run(getCommandClass(code), true, args));
+		final Class<? extends Command> c = getCommandClass(code);
+		if (c != null) waitFor(commandService.run(c, true, args));
+
+		final CommandInfo info = getCommandInfo(code);
+		if (info != null) waitFor(commandService.run(info, true, args));
 	}
 
 	@Override
 	public void run(final Object code, final Map<String, Object> inputMap)
 		throws InvocationTargetException
 	{
-		waitFor(commandService.run(getCommandClass(code), true, inputMap));
+		final Class<? extends Command> c = getCommandClass(code);
+		if (c != null) waitFor(commandService.run(c, true, inputMap));
+
+		final CommandInfo info = getCommandInfo(code);
+		if (info != null) waitFor(commandService.run(info, true, inputMap));
 	}
 
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final Object code) {
-		return getCommandClass(code) != null;
+		return getCommandClass(code) != null || getCommandInfo(code) != null;
 	}
 
 	// -- Helper methods --
@@ -84,6 +93,21 @@ public class CommandCodeRunner extends AbstractCodeRunner {
 		@SuppressWarnings("unchecked")
 		final Class<? extends Command> commandClass = (Class<? extends Command>) c;
 		return commandClass;
+	}
+
+	private CommandInfo getCommandInfo(final Object code) {
+		if (!(code instanceof String)) return null;
+		final String command = (String) code;
+
+		final CommandInfo info = commandService.getCommand(command);
+		if (info != null) return info;
+
+		// command was not a class name; search for command by title instead
+		for (final CommandInfo ci : commandService.getCommands()) {
+			if (command.equals(ci.getTitle())) return ci;
+		}
+
+		return null;
 	}
 
 }
