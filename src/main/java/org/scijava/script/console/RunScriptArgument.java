@@ -44,10 +44,9 @@ import org.scijava.script.ScriptInfo;
 import org.scijava.script.ScriptService;
 
 /**
- * {@link ConsoleArgument} for executing scripts directly.
- *
- * @author Mark Hiner
+ * @deprecated Use {@link org.scijava.run.console.RunArgument} instead.
  */
+@Deprecated
 @Plugin(type = ConsoleArgument.class)
 public class RunScriptArgument extends AbstractConsoleArgument {
 
@@ -60,7 +59,7 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 	// -- Constructor --
 
 	public RunScriptArgument() {
-		super(2, "--run", "--script");
+		super(2, "--script");
 	}
 
 	// -- ConsoleArgument methods --
@@ -70,7 +69,10 @@ public class RunScriptArgument extends AbstractConsoleArgument {
 		if (!supports(args))
 			return;
 
-		args.removeFirst(); // --run
+		log.warn("The --script flag is deprecated, and will\n" +
+			"be removed in a future release. Use --run instead.");
+
+		args.removeFirst(); // --script
 		final String scriptToRun = args.removeFirst();
 		final String paramString = ConsoleUtils.hasParam(args) ? args.removeFirst() : "";
 
