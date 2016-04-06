@@ -1,20 +1,19 @@
 /*
  * #%L
- * SciJava Common shared library for SciJava software.
+ * SCIFIO library for reading and converting scientific file formats.
  * %%
- * Copyright (C) 2009 - 2016 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
- * Institute of Molecular Cell Biology and Genetics.
+ * Copyright (C) 2011 - 2015 Board of Regents of the University of
+ * Wisconsin-Madison
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,29 +30,25 @@
 
 package org.scijava.module.process;
 
-import org.scijava.Contextual;
+import org.scijava.plugin.AbstractSingletonService;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.SingletonPlugin;
+import org.scijava.service.Service;
 
 /**
- * A preprocessor plugin defines a step that occurs just prior to the actual
- * execution of a {@link org.scijava.module.Module}. Typically, a preprocessor
- * prepares the module for execution in some way, such as populating module
- * inputs or checking prerequisites.
- * <p>
- * Preprocessor plugins discoverable at runtime must implement this interface
- * and be annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
- * {@link PreprocessorPlugin}.class. While it possible to create a preprocessor
- * plugin merely by implementing this interface, it is encouraged to instead
- * extend {@link AbstractPreprocessorPlugin}, for convenience.
- * </p>
- * 
+ * Default service for managing available {@link PostprocessorPlugin}s.
+ *
  * @author Curtis Rueden
- * @see ModulePreprocessor
  */
-public interface PreprocessorPlugin extends SingletonPlugin, Contextual,
-	ModulePreprocessor
+@Plugin(type = Service.class)
+public class DefaultPostprocessorService extends
+	AbstractSingletonService<PostprocessorPlugin> implements PostprocessorService
 {
-	// PreprocessorPlugin is a module preprocessor,
-	// discoverable via the plugin discovery mechanism.
+
+	// -- PTService methods --
+
+	@Override
+	public Class<PostprocessorPlugin> getPluginType() {
+		return PostprocessorPlugin.class;
+	}
+
 }
