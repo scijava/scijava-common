@@ -28,49 +28,71 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.run;
 
-import org.scijava.Context;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import org.scijava.log.LogService;
+import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import org.scijava.service.Service;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * Default service for managing available {@link CodeRunner} plugins.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+@Plugin(type = Service.class)
+public class DefaultRunService extends
+	AbstractHandlerService<Object, CodeRunner> implements RunService
+{
 
-	@Parameter(required = false)
-	private UIService uiService;
+	@Parameter
+	private LogService log;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
+	// -- RunService methods --
 
 	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
+	public void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		for (final CodeRunner runner : getInstances()) {
+			if (runner.supports(code)) {
+				runner.run(code, args);
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unknown code type: " + code);
 	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		for (final CodeRunner runner : getInstances()) {
+			if (runner.supports(code)) {
+				runner.run(code, inputMap);
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unknown code type: " + code);
+	}
+
+	// -- PTService methods --
+
+	@Override
+	public Class<CodeRunner> getPluginType() {
+		return CodeRunner.class;
+	}
+
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
+	public Class<Object> getType() {
+		return Object.class;
 	}
 
 }

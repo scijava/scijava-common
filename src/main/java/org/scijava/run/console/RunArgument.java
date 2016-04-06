@@ -28,97 +28,77 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.script.console;
 
-import java.io.File;
+package org.scijava.run.console;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-import java.util.Map;
 
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
 import org.scijava.console.ConsoleUtils;
 import org.scijava.log.LogService;
+import org.scijava.parse.Items;
+import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.script.ScriptInfo;
-import org.scijava.script.ScriptService;
+import org.scijava.run.RunService;
 
 /**
- * @deprecated Use {@link org.scijava.run.console.RunArgument} instead.
+ * Handles the {@code --run} command line argument.
+ *
+ * @author Curtis Rueden
  */
-@Deprecated
 @Plugin(type = ConsoleArgument.class)
-public class RunScriptArgument extends AbstractConsoleArgument {
+public class RunArgument extends AbstractConsoleArgument {
 
 	@Parameter
-	private ScriptService scriptService;
+	private RunService runService;
+
+	@Parameter
+	private ParseService parser;
 
 	@Parameter
 	private LogService log;
 
 	// -- Constructor --
 
-	public RunScriptArgument() {
-		super(2, "--script");
+	public RunArgument() {
+		super(2, "--run");
 	}
 
 	// -- ConsoleArgument methods --
 
 	@Override
 	public void handle(final LinkedList<String> args) {
-		if (!supports(args))
-			return;
+		if (!supports(args)) return;
 
-		log.warn("The --script flag is deprecated, and will\n" +
-			"be removed in a future release. Use --run instead.");
+		args.removeFirst(); // --run
+		final String code = args.removeFirst();
+		final String arg = getParam(args);
 
-		args.removeFirst(); // --script
-		final String scriptToRun = args.removeFirst();
-		final String paramString = ConsoleUtils.hasParam(args) ? args.removeFirst() : "";
-
-		run(scriptToRun, paramString);
+		final Items items = parser.parse(arg);
+		try {
+			if (arg == null) runService.run(code);
+			else if (items.isMap()) runService.run(code, items.asMap());
+			else if (items.isList()) runService.run(code, items.toArray());
+			else {
+				throw new IllegalArgumentException("Arguments are inconsistent. " +
+					"Please pass either a list of key/value pairs, " +
+					"or a list of values.");
+			}
+		}
+		catch (final InvocationTargetException exc) {
+			throw new RuntimeException(exc);
+		}
 	}
 
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		if (!super.supports(args))
-			return false;
-		return getScript(args.get(1)) != null;
+		if (!super.supports(args)) return false;
+		return runService.supports(args.get(1));
 	}
 
-	// -- Helper methods --
-
-	/**
-	 * Run the script
-	 */
-	private void run(final String scriptToRun, final String paramString) {
-		final File script = getScript(scriptToRun);
-
-		if (script == null) {
-			// couldn't find anything to run
-			throw new UnsupportedOperationException(//
-				"Not a script: '" + scriptToRun + "'");
-		}
-
-		final ScriptInfo info = scriptService.getScript(script);
-
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(paramString, info, log);
-
-		try {
-			scriptService.run(info, true, inputMap).get();
-		} catch (final Exception exc) {
-			log.error(exc);
-		}
-	}
-
-	/**
-	 * Try to convert the given string to a {@link File} representing a
-	 * supported script type.
-	 */
-	private File getScript(final String string) {
-		final File scriptFile = new File(string);
-		return scriptFile.exists() && scriptService.canHandleFile(scriptFile) ? scriptFile : null;
-	}
 }

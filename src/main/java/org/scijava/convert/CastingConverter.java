@@ -39,7 +39,7 @@ import org.scijava.util.GenericUtils;
 /**
  * Minimal {@link Converter} implementation to do direct casting.
  *
- * @author Mark Hiner hinerm at gmail.com
+ * @author Mark Hiner
  */
 @Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY)
 public class CastingConverter extends AbstractConverter<Object, Object> {

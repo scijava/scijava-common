@@ -48,7 +48,12 @@ import org.scijava.app.event.StatusEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.plugin.Parameter;
 
-public class DefaultStatusServiceTest {
+/**
+ * Tests {@link StatusService}.
+ * 
+ * @author Lee Kamentsky
+ */
+public class StatusServiceTest {
 
 	private Context context;
 	private StatusListener statusListener;

@@ -28,49 +28,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.run;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import org.scijava.Identifiable;
+import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * A plugin which extends the {@link RunService}'s execution handling. A
+ * {@link CodeRunner} knows how to execute code of a certain form, such as the
+ * {@code main} method of a Java {@link Class}, or an {@link Identifiable}
+ * SciJava module.
+ * <p>
+ * Code runner plugins discoverable at runtime must implement this interface
+ * and be annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
+ * {@link CodeRunner}.class. While it possible to create a class runner plugin
+ * merely by implementing this interface, it is encouraged to instead extend
+ * {@link AbstractCodeRunner}, for convenience.
+ * </p>
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public interface CodeRunner extends HandlerPlugin<Object> {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	/**
+	 * Executes the code identified by the given object, passing the
+	 * specified arguments as inputs.
+	 */
+	void run(Object code, Object... args) throws InvocationTargetException;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
-	}
+	/**
+	 * Executes the code identified by the given object, passing the arguments in
+	 * the specified map as inputs.
+	 */
+	void run(Object code, Map<String, Object> inputMap)
+		throws InvocationTargetException;
 
 }

@@ -39,7 +39,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,9 +57,8 @@ import org.scijava.log.LogService;
 import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
+import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
-import org.scijava.sjep.Variable;
-import org.scijava.sjep.eval.DefaultEvaluator;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
@@ -89,6 +87,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Parameter
 	private ScriptService scriptService;
+
+	@Parameter
+	private ParseService parser;
 
 	@Parameter
 	private ConvertService convertService;
@@ -346,13 +347,13 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		else {
 			final String cutParam =
 				param.substring(0, lParen) + param.substring(rParen + 1);
-			final String attrs = param.substring(lParen, rParen + 1);
+			final String attrs = param.substring(lParen + 1, rParen);
 			parseParam(cutParam, parseAttrs(attrs));
 		}
 	}
 
 	private void parseParam(final String param,
-		final HashMap<String, Object> attrs) throws ScriptException
+		final Map<String, Object> attrs) throws ScriptException
 	{
 		final String[] tokens = param.trim().split("[ \t\n]+");
 		checkValid(tokens.length >= 1, param);
@@ -376,42 +377,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
-	private HashMap<String, Object> parseAttrs(final String attrs)
-		throws ScriptException
-	{
-		// NB: Parse the attributes using the SciJava Expression Parser.
-		final DefaultEvaluator e = new DefaultEvaluator();
-		try {
-			final Object result = e.evaluate(attrs);
-			if (result == null) throw new ScriptException("Unparseable attributes");
-			final List<?> list;
-			if (result instanceof List) list = (List<?>) result;
-			else if (result instanceof Variable) {
-				list = Collections.singletonList(result);
-			}
-			else {
-				throw new ScriptException("Unexpected attributes type: " +
-					result.getClass().getName());
-			}
-
-			final HashMap<String, Object> attrsMap = new HashMap<String, Object>();
-			for (final Object o : list) {
-				if (o instanceof Variable) {
-					final Variable v = (Variable) o;
-					attrsMap.put(v.getToken(), e.value(v));
-				}
-				else {
-					throw new ScriptException("Invalid attribute: " + o);
-				}
-			}
-			return attrsMap;
-		}
-		catch (final IllegalArgumentException exc) {
-			final ScriptException se = new ScriptException(
-				"Error parsing attributes");
-			se.initCause(exc);
-			throw se;
-		}
+	private Map<String, Object> parseAttrs(final String attrs) {
+		return parser.parse(attrs).asMap();
 	}
 
 	private boolean isIOType(final String token) {

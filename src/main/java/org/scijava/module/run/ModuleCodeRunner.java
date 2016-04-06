@@ -28,49 +28,61 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.module.run;
 
-import org.scijava.Context;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import org.scijava.Identifiable;
+import org.scijava.module.ModuleInfo;
+import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import org.scijava.run.AbstractCodeRunner;
+import org.scijava.run.CodeRunner;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * Runs the given {@link Identifiable} SciJava module.
+ * 
+ * @author Curtis Rueden
+ * @see ModuleInfo
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+@Plugin(type = CodeRunner.class)
+public class ModuleCodeRunner extends AbstractCodeRunner {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	@Parameter
+	private ModuleService moduleService;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
+	// -- CodeRunner methods --
 
 	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
+	public void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		waitFor(moduleService.run(getModuleInfo(code), true, args));
 	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		waitFor(moduleService.run(getModuleInfo(code), true, inputMap));
+	}
+
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
+	public boolean supports(final Object code) {
+		return getModuleInfo(code) != null;
+	}
+
+	// -- Helper methods --
+
+	private ModuleInfo getModuleInfo(final Object code) {
+		if (!(code instanceof String)) return null;
+		final String id = (String) code;
+		return moduleService.getModuleById(id);
 	}
 
 }

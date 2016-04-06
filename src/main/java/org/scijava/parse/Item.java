@@ -28,49 +28,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
-
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+package org.scijava.parse;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * An item from the list of parsed items; i.e.: a name/value pair.
+ * <p>
+ * NB: It is unfortunate that we cannot use {@code javafx.util.Pair}, but it is:
+ * A) Java 8; and B) part of JavaFX rather than core Java.
+ * </p>
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public interface Item {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	/**
+	 * Gets the name of the item, or {@code null} if unnamed (i.e., raw value with
+	 * no equals sign).
+	 */
+	String name();
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
-	}
-
+	/** Gets the value of the item. */
+	Object value();
 }

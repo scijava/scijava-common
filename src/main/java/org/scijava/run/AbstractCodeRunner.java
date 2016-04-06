@@ -28,49 +28,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.run;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * Abstract superclass of {@link CodeRunner} implementations.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public abstract class AbstractCodeRunner extends
+	AbstractHandlerPlugin<Object> implements CodeRunner
+{
 
-	@Parameter(required = false)
-	private UIService uiService;
-
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
+	public Class<Object> getType() {
+		return Object.class;
+	}
+
+	// -- Internal methods --
+
+	protected <T> T waitFor(final Future<T> future)
+		throws InvocationTargetException
+	{
+		try {
+			return future.get();
+		}
+		catch (final InterruptedException exc) {
+			throw new InvocationTargetException(exc);
+		}
+		catch (final ExecutionException exc) {
+			throw new InvocationTargetException(exc);
+		}
 	}
 
 }

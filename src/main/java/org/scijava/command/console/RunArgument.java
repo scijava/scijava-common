@@ -44,12 +44,9 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
- * Handles the {@code --run} command line argument.
- *
- * @author Curtis Rueden
- * @author Johannes Schindelin
- * @author Mark Hiner hinerm at gmail.com
+ * @deprecated Use {@link org.scijava.run.console.RunArgument} instead.
  */
+@Deprecated
 @Plugin(type = ConsoleArgument.class)
 public class RunArgument extends AbstractConsoleArgument {
 
@@ -57,12 +54,12 @@ public class RunArgument extends AbstractConsoleArgument {
 	private CommandService commandService;
 
 	@Parameter
-	private LogService logService;
+	private LogService log;
 
 	// -- Constructor --
 
 	public RunArgument() {
-		super(2, "--run", "--class");
+		super(2, "--class");
 	}
 
 	// -- ConsoleArgument methods --
@@ -72,7 +69,10 @@ public class RunArgument extends AbstractConsoleArgument {
 		if (!supports(args))
 			return;
 
-		args.removeFirst(); // --run
+		log.warn("The --class flag is deprecated, and will\n" +
+			"be removed in a future release. Use --run instead.");
+
+		args.removeFirst(); // --class
 		final String commandToRun = args.removeFirst();
 		final String paramString = ConsoleUtils.hasParam(args) ? args.removeFirst() : "";
 
@@ -100,12 +100,12 @@ public class RunArgument extends AbstractConsoleArgument {
 			return;
 
 		// TODO: parse the optionString a la ImageJ1
-		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, info, logService);
+		final Map<String, Object> inputMap = ConsoleUtils.parseParameterString(optionString, info, log);
 
 		try {
 			commandService.run(info, true, inputMap).get();
 		} catch (final Exception exc) {
-			logService.error(exc);
+			log.error(exc);
 		}
 	}
 

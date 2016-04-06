@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,49 +28,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.parse;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import org.scijava.service.SciJavaService;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
+ * Interface for service that parses strings.
  *
- * @author Mark Hiner
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public interface ParseService extends SciJavaService {
 
-	@Parameter(required = false)
-	private UIService uiService;
-
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
-	}
+	/**
+	 * Parses a comma-delimited list of data elements.
+	 * <p>
+	 * Some data elements might be {@code key=value} pairs, while others might be
+	 * raw values (i.e., no equals sign).
+	 * </p>
+	 * 
+	 * @param arg The string to parse.
+	 * @return A parsed list of {@link Item}s.
+	 * @throws IllegalArgumentException If the string does not conform to expected
+	 *           syntax.
+	 */
+	Items parse(String arg);
 
 }

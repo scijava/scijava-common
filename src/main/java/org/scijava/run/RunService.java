@@ -28,49 +28,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.run;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import org.scijava.plugin.HandlerService;
+import org.scijava.service.SciJavaService;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * Interface for service that manages available {@link CodeRunner} plugins.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public interface RunService extends
+	HandlerService<Object, CodeRunner>, SciJavaService
+{
 
-	@Parameter(required = false)
-	private UIService uiService;
+	/**
+	 * Executes the given code using the most appropriate handler, passing the
+	 * specified arguments as inputs.
+	 */
+	void run(Object code, Object... args) throws InvocationTargetException;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
-	}
+	/**
+	 * Executes the given code using the most appropriate handler, passing the
+	 * arguments in the specified map as inputs.
+	 */
+	void run(Object code, Map<String, Object> inputMap)
+		throws InvocationTargetException;
 
 }

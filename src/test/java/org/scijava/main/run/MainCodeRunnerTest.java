@@ -28,49 +28,68 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.main.run;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * Tests {@link MainCodeRunner}.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public class MainCodeRunnerTest {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	private MainCodeRunner runner;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
+	@Before
+	public void setUp() {
+		runner = new MainCodeRunner();
 	}
 
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
+	@Test
+	public void testRunList() throws InvocationTargetException {
+		runner.run(Counter.class);
+		assertEquals(Counter.counter, 0);
+		runner.run(Counter.class, "a");
+		assertEquals(Counter.counter, 1);
+		runner.run(Counter.class, "b", "c");
+		assertEquals(Counter.counter, 3);
+		runner.run(Counter.class, "d", "e", "f");
+		assertEquals(Counter.counter, 6);
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void testRunMap() throws InvocationTargetException {
+		runner.run(Counter.class, new HashMap<String, Object>());
+	}
+
+	@Test
+	public void testSupports() {
+		assertTrue(runner.supports(Counter.class));
+		assertTrue(runner.supports(Counter.class.getName()));
+
+		assertFalse(runner.supports(getClass()));
+		assertFalse(runner.supports("Not an actual class"));
+		assertFalse(runner.supports(0));
+	}
+
+	// -- Helper classes --
+
+	public static class Counter {
+
+		public static int counter;
+
+		public static void main(final String[] args) {
+			counter += args.length;
+		}
+	}
 }

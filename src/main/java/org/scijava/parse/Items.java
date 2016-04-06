@@ -28,49 +28,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.parse;
 
-import org.scijava.Context;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
- * @author Mark Hiner
+ * An ordered list of items, some of which might be key/value pairs, and some of
+ * which might be raw values.
+ * 
+ * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+public interface Items extends List<Item> {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	/**
+	 * Gets the parsed items as a map. The map will have the same iteration
+	 * order as the original list.
+	 */
+	Map<String, Object> asMap();
 
-	// -- Constructor --
+	/** Returns true iff all items are named key/value pairs. */
+	boolean isMap();
 
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
-
-	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
-	}
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
-	}
+	/** Returns true iff there are no named key/value pairs among the items. */
+	boolean isList();
 
 }
+

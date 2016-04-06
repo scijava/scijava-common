@@ -28,49 +28,85 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
 
-import java.util.LinkedList;
+package org.scijava.script.run;
 
-import org.scijava.Context;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
+import javax.script.ScriptException;
+
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
+import org.scijava.run.AbstractCodeRunner;
+import org.scijava.run.CodeRunner;
+import org.scijava.script.ScriptService;
 
 /**
- * Handles the {@code --headless} argument to signal that no UI will be opened
- * and the enclosing {@link Context} will not be used after the
- * {@link ConsoleService} argument processing is complete.
- *
+ * Runs the given script.
+ * 
+ * @author Curtis Rueden
  * @author Mark Hiner
  */
-@Plugin(type = ConsoleArgument.class)
-public class HeadlessArgument extends AbstractConsoleArgument {
+@Plugin(type = CodeRunner.class)
+public class ScriptCodeRunner extends AbstractCodeRunner {
 
-	@Parameter(required = false)
-	private UIService uiService;
+	@Parameter
+	private ScriptService scriptService;
 
-	// -- Constructor --
-
-	public HeadlessArgument() {
-		super(1, "--headless");
-	}
-
-	// -- ConsoleArgument methods --
+	// -- CodeRunner methods --
 
 	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --headless
-
-		uiService.setHeadless(true);
+	public void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		try {
+			waitFor(scriptService.run(getScript(code), true, args));
+		}
+		catch (final FileNotFoundException exc) {
+			throw new InvocationTargetException(exc);
+		}
+		catch (final ScriptException exc) {
+			throw new InvocationTargetException(exc);
+		}
 	}
+
+	@Override
+	public void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		try {
+			waitFor(scriptService.run(getScript(code), true, inputMap));
+		}
+		catch (final FileNotFoundException exc) {
+			throw new InvocationTargetException(exc);
+		}
+		catch (final ScriptException exc) {
+			throw new InvocationTargetException(exc);
+		}
+	}
+
 	// -- Typed methods --
 
 	@Override
-	public boolean supports(final LinkedList<String> args) {
-		return uiService != null && super.supports(args);
+	public boolean supports(final Object code) {
+		return getScript(code) != null;
+	}
+
+	// -- Helper methods --
+
+	private File getScript(final Object code) {
+		final File scriptFile;
+		if (code instanceof File) scriptFile = (File) code;
+		else if (code instanceof String) scriptFile = new File((String) code);
+		else return null;
+
+		if (!scriptFile.exists()) return null;
+		if (!scriptService.canHandleFile(scriptFile)) return null;
+
+		return scriptFile;
 	}
 
 }
