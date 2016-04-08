@@ -73,6 +73,8 @@ public class PluginIndexTest {
 		final PluginInfo<SciJavaPlugin> plugin =
 			pluginService.getPlugin(FooBar.class);
 		assertSame(testPlugin, plugin);
+
+		context.dispose();
 	}
 
 	/**
@@ -102,6 +104,8 @@ public class PluginIndexTest {
 
 		final PluginInfo<SciJavaPlugin> plugin = pluginService.getPlugin(fakeClass);
 		assertSame(testPlugin, plugin);
+
+		context.dispose();
 	}
 
 	/** A dummy plugin for testing the plugin service. */
