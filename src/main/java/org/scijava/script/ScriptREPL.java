@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.script.Bindings;
+import javax.script.ScriptException;
 
 import org.scijava.Context;
 import org.scijava.Gateway;
@@ -154,7 +155,17 @@ public class ScriptREPL {
 					out.println(s(result));
 				}
 			}
+			catch (final ScriptException exc) {
+				// NB: Something went wrong interpreting the line of code.
+				// Let's just display the error message, unless we are in debug mode.
+				if (log.isDebug()) exc.printStackTrace(out);
+				else {
+					final String msg = exc.getMessage();
+					out.println(msg == null ? exc.getClass().getName() : msg);
+				}
+			}
 			catch (final Throwable exc) {
+				// NB: Something unusual went wrong. Dump the whole exception always.
 				exc.printStackTrace(out);
 			}
 		}
