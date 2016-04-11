@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.scijava.plugin.HandlerService;
+import org.scijava.service.SciJavaService;
 
 /**
  * Service for converting between types using an extensible plugin:
@@ -46,8 +47,9 @@ import org.scijava.plugin.HandlerService;
  * @author Mark Hiner
  */
 public interface ConvertService extends
-	HandlerService<ConversionRequest, Converter<?, ?>>
+	HandlerService<ConversionRequest, Converter<?, ?>>, SciJavaService
 {
+
 	/**
 	 * @see Converter#convert(Object, Type)
 	 */

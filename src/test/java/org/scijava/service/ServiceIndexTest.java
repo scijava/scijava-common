@@ -34,6 +34,7 @@ package org.scijava.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -64,6 +65,14 @@ public class ServiceIndexTest {
 		assertSame(DefaultPluginService.class, all.get(1).getClass());
 		assertSame(DefaultThreadService.class, all.get(2).getClass());
 		assertSame(StderrLogService.class, all.get(3).getClass());
+	}
+
+	@Test
+	public void testMarkerInterfaces() {
+		final Context context = new Context();
+		for (Service s : context.getServiceIndex().getAll()) {
+			assertTrue(s.getClass().getName(), s instanceof SciJavaService);
+		}
 	}
 
 	/**
