@@ -142,7 +142,7 @@ public class ScriptInfoTest {
 			"% @LogService(required = false) log\n" + //
 			"% @int(label=\"Slider Value\", softMin=5, softMax=15, " + //
 			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
-			"% @String(persist = false, " + //
+			"% @String(persist = false, family='Carnivora', " + //
 			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
 			"% @BOTH java.lang.StringBuilder buffer";
 
@@ -164,6 +164,7 @@ public class ScriptInfoTest {
 			Arrays.asList("quick brown fox", "lazy dog");
 		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
 			null, null, null, null, null, null, null, null, animalChoices, animal);
+		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
