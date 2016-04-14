@@ -399,7 +399,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private <T> void addItem(final String name, final Class<T> type,
-		final Map<String, Object> attrs) throws ScriptException
+		final Map<String, Object> attrs)
 	{
 		final DefaultMutableModuleItem<T> item =
 			new DefaultMutableModuleItem<T>(this, name, type);
@@ -412,7 +412,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
-		final String k, final Object v) throws ScriptException
+		final String k, final Object v)
 	{
 		// CTR: There must be an easier way to do this.
 		// Just compile the thing using javac? Or parse via javascript, maybe?
@@ -435,7 +435,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
 		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
 		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
-		else throw new ScriptException("Invalid attribute name: " + k);
+		else item.set(k, v.toString());
 	}
 
 	/** Super terse comparison helper method. */
