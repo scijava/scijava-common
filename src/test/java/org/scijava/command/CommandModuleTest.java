@@ -58,8 +58,12 @@ public class CommandModuleTest {
 		assertTrue(c.isCanceled());
 		assertEquals("Stop! Collaborate and listen!", ice.getCancelReason());
 		assertEquals("Stop! Collaborate and listen!", c.getCancelReason());
+
+		final CommandModule crow = commandService.run(CrowCommand.class, true).get();
+		assertFalse(crow.isCanceled());
 	}
-	
+
+
 	@Test
 	public void testNotCancelable() throws InterruptedException,
 		ExecutionException
@@ -95,6 +99,16 @@ public class CommandModuleTest {
 		@Override
 		public void run() {
 			throw new IllegalStateException("Unexpected");
+		}
+	}
+
+	/** A {@link Cancelable} command which is not auto-canceled. */
+	@Plugin(type = Command.class)
+	public static class CrowCommand extends ContextCommand {
+
+		@Override
+		public void run() {
+			// everything's good
 		}
 	}
 

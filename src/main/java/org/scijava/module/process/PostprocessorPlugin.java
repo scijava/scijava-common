@@ -33,7 +33,7 @@ package org.scijava.module.process;
 
 import org.scijava.Contextual;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.SingletonPlugin;
+import org.scijava.plugin.SciJavaPlugin;
 
 /**
  * A postprocessor plugin defines a step that occurs immediately following the
@@ -51,7 +51,7 @@ import org.scijava.plugin.SingletonPlugin;
  * @author Curtis Rueden
  * @see ModulePostprocessor
  */
-public interface PostprocessorPlugin extends SingletonPlugin, Contextual,
+public interface PostprocessorPlugin extends SciJavaPlugin, Contextual,
 	ModulePostprocessor
 {
 	// PostprocessorPlugin is a module postprocessor,

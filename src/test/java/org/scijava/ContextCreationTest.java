@@ -100,8 +100,6 @@ public class ContextCreationTest {
 				org.scijava.main.DefaultMainService.class,
 				org.scijava.menu.DefaultMenuService.class,
 				org.scijava.module.DefaultModuleService.class,
-				org.scijava.module.process.DefaultPostprocessorService.class,
-				org.scijava.module.process.DefaultPreprocessorService.class,
 				org.scijava.object.DefaultObjectService.class,
 				org.scijava.options.DefaultOptionsService.class,
 				org.scijava.parse.DefaultParseService.class,

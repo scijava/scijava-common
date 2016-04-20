@@ -53,12 +53,11 @@ import org.scijava.module.event.ModulesRemovedEvent;
 import org.scijava.module.process.ModulePostprocessor;
 import org.scijava.module.process.ModulePreprocessor;
 import org.scijava.module.process.PostprocessorPlugin;
-import org.scijava.module.process.PostprocessorService;
 import org.scijava.module.process.PreprocessorPlugin;
-import org.scijava.module.process.PreprocessorService;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -85,10 +84,7 @@ public class DefaultModuleService extends AbstractService implements
 	private EventService eventService;
 
 	@Parameter
-	private PreprocessorService preprocessorService;
-
-	@Parameter
-	private PostprocessorService postprocessorService;
+	private PluginService pluginService;
 
 	@Parameter
 	private ObjectService objectService;
@@ -368,13 +364,13 @@ public class DefaultModuleService extends AbstractService implements
 	/** Creates the preprocessor chain. */
 	private List<? extends PreprocessorPlugin> pre(final boolean process) {
 		if (!process) return null;
-		return preprocessorService.getInstances();
+		return pluginService.createInstancesOfType(PreprocessorPlugin.class);
 	}
 
 	/** Creates the postprocessor chain. */
 	private List<? extends PostprocessorPlugin> post(final boolean process) {
 		if (!process) return null;
-		return postprocessorService.getInstances();
+		return pluginService.createInstancesOfType(PostprocessorPlugin.class);
 	}
 
 	/**
