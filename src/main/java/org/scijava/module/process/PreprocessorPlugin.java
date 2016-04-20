@@ -33,7 +33,7 @@ package org.scijava.module.process;
 
 import org.scijava.Contextual;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.SingletonPlugin;
+import org.scijava.plugin.SciJavaPlugin;
 
 /**
  * A preprocessor plugin defines a step that occurs just prior to the actual
@@ -51,7 +51,7 @@ import org.scijava.plugin.SingletonPlugin;
  * @author Curtis Rueden
  * @see ModulePreprocessor
  */
-public interface PreprocessorPlugin extends SingletonPlugin, Contextual,
+public interface PreprocessorPlugin extends SciJavaPlugin, Contextual,
 	ModulePreprocessor
 {
 	// PreprocessorPlugin is a module preprocessor,
