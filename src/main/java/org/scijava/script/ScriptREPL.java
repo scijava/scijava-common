@@ -122,15 +122,24 @@ public class ScriptREPL {
 		out.println("Welcome to the SciJava REPL!");
 		out.println();
 		help();
+		final List<ScriptLanguage> langs = scriptService.getLanguages();
+		if (langs.isEmpty()) {
+			out.println("--------------------------------------------------------------");
+			out.println("Uh oh! There are no SciJava script languages available!");
+			out.println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
+			out.println("--------------------------------------------------------------");
+			out.println();
+			return;
+		}
 		out.println("Have fun!");
 		out.println();
-		lang(scriptService.getLanguages().get(0).getLanguageName());
+		lang(langs.get(0).getLanguageName());
 		populateBindings(interpreter.getBindings());
 	}
 
 	/** Outputs the prompt. */
 	public void prompt() {
-		out.print(interpreter.isReady() ? "> " : "\\ ");
+		out.print(interpreter == null || interpreter.isReady() ? "> " : "\\ ");
 	}
 
 	/**
@@ -148,6 +157,9 @@ public class ScriptREPL {
 		else if (tLine.startsWith(":lang ")) lang(line.substring(6).trim());
 		else if (line.trim().equals(":quit")) return false;
 		else {
+			// ensure that a script language is active
+			if (interpreter == null) return true;
+
 			// pass the input to the current interpreter for evaluation
 			try {
 				final Object result = interpreter.interpret(line);
@@ -190,6 +202,8 @@ public class ScriptREPL {
 
 	/** Lists variables in the script context. */
 	public void vars() {
+		if (interpreter == null) return; // no active script language
+
 		final List<String> keys = new ArrayList<String>();
 		final List<Object> types = new ArrayList<Object>();
 		final Bindings bindings = interpreter.getBindings();
@@ -213,7 +227,8 @@ public class ScriptREPL {
 		// create the new interpreter
 		final ScriptLanguage language = scriptService.getLanguageByName(langName);
 		if (language == null) {
-			throw new IllegalArgumentException("No such language: " + langName);
+			out.println("No such language: " + langName);
+			return;
 		}
 		final ScriptInterpreter newInterpreter =
 			new DefaultScriptInterpreter(language);
