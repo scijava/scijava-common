@@ -71,7 +71,7 @@ public class ServiceIndexTest {
 	@Test
 	public void testMarkerInterfaces() {
 		final Context context = new Context();
-		for (Service s : context.getServiceIndex().getAll()) {
+		for (final Service s : context.getServiceIndex().getAll()) {
 			assertTrue(s.getClass().getName(), s instanceof SciJavaService);
 		}
 		context.dispose();
