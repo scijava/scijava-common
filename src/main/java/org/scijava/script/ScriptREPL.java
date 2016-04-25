@@ -155,7 +155,7 @@ public class ScriptREPL {
 		else if (tLine.equals(":vars")) vars();
 		else if (tLine.equals(":langs")) langs();
 		else if (tLine.startsWith(":lang ")) lang(line.substring(6).trim());
-		else if (line.trim().equals(":quit")) return false;
+		else if (tLine.equals(":quit")) return false;
 		else {
 			// ensure that a script language is active
 			if (interpreter == null) return true;
