@@ -56,6 +56,10 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	private final Field field;
 
+	private Class<T> type;
+	private Type genericType;
+	private boolean initialized = false;
+
 	public CommandModuleItem(final ModuleInfo info, final Field field) {
 		super(info);
 		this.field = field;
@@ -75,16 +79,14 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	@Override
 	public Class<T> getType() {
-		final Class<?> type =
-			GenericUtils.getFieldClasses(field, getDelegateClass()).get(0);
-		@SuppressWarnings("unchecked")
-		final Class<T> typedType = (Class<T>) type;
-		return typedType;
+		if (!initialized) findTypes();
+		return type;
 	}
 
 	@Override
 	public Type getGenericType() {
-		return GenericUtils.getFieldType(field, getDelegateClass());
+		if (!initialized) findTypes();
+		return genericType;
 	}
 
 	@Override
@@ -218,6 +220,21 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 		if (value == null || value.isEmpty()) return null;
 		final Class<D> saneType = ConversionUtils.getNonprimitiveType(type);
 		return ConversionUtils.convert(value, saneType);
+	}
+
+	/**
+	 * Helper method to initialize {@link #type} and {@link #genericType} in a
+	 * thread-safe way.
+	 */
+	@SuppressWarnings("unchecked")
+	private synchronized void findTypes() {
+		if (!initialized) {
+			final Class<?> untypedType = GenericUtils.getFieldClasses(field, getDelegateClass()).get(0);
+			type = (Class<T>) untypedType;
+	
+			genericType = GenericUtils.getFieldType(field, getDelegateClass());
+			initialized = true;
+		}
 	}
 
 }
