@@ -72,7 +72,7 @@ import org.scijava.util.ColorRGB;
 import org.scijava.util.ColorRGBA;
 
 /**
- * Default service for working with scripting languages.
+ * Default service for working with scripts.
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden

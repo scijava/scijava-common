@@ -49,9 +49,8 @@ import org.scijava.plugin.SingletonService;
 import org.scijava.service.SciJavaService;
 
 /**
- * Interface for service that works with scripting languages. This service
- * discovers available scripting languages, and provides convenience methods to
- * interact with them.
+ * Interface for service that works with scripts. This service discovers
+ * available scripts, and provides convenience methods to interact with them.
  * 
  * @author Johannes Schindelin
  */
