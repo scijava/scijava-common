@@ -365,7 +365,7 @@ public class DefaultScriptService extends
 
 		// append default script directories
 		final File baseDir = appService.getApp().getBaseDirectory();
-		dirs.add(new File(baseDir, "scripts"));
+		dirs.add(new File(baseDir, SCRIPTS_RESOURCE_DIR));
 
 		// append additional script directories from system property
 		final String scriptsPath = System.getProperty(SCRIPTS_PATH_PROPERTY);

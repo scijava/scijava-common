@@ -53,6 +53,7 @@ import org.scijava.service.SciJavaService;
  * available scripts, and provides convenience methods to interact with them.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public interface ScriptService extends SingletonService<ScriptLanguage>,
 	SciJavaService
@@ -64,6 +65,12 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @see #getScriptDirectories()
 	 */
 	String SCRIPTS_PATH_PROPERTY = "scijava.scripts.path";
+
+	/**
+	 * Base directory for discovering scripts, including within classpath
+	 * resources as well as beneath the application base directory.
+	 */
+	String SCRIPTS_RESOURCE_DIR = "scripts";
 
 	// -- Scripting languages --
 
