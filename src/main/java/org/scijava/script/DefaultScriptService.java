@@ -32,7 +32,6 @@
 package org.scijava.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -106,8 +105,8 @@ public class DefaultScriptService extends
 	/** Menu prefix to use for each script directory, if any. */
 	private HashMap<File, MenuPath> menuPrefixes;
 
-	/** Index of available scripts, by script <em>file</em>. */
-	private HashMap<File, ScriptInfo> scripts;
+	/** Index of available scripts, by script path. */
+	private HashMap<String, ScriptInfo> scripts;
 
 	/** Table of short type names to associated {@link Class}. */
 	private HashMap<String, Class<?>> aliasMap;
@@ -330,7 +329,7 @@ public class DefaultScriptService extends
 	}
 
 	/** Gets {@link #scripts}, initializing if needed. */
-	private HashMap<File, ScriptInfo> scripts() {
+	private HashMap<String, ScriptInfo> scripts() {
 		if (scripts == null) initScripts();
 		return scripts;
 	}
@@ -386,13 +385,13 @@ public class DefaultScriptService extends
 	private synchronized void initScripts() {
 		if (scripts != null) return; // already initialized
 
-		final HashMap<File, ScriptInfo> map = new HashMap<>();
+		final HashMap<String, ScriptInfo> map = new HashMap<>();
 
 		final ArrayList<ScriptInfo> scriptList = new ArrayList<>();
 		new ScriptFinder(this).findScripts(scriptList);
 
 		for (final ScriptInfo info : scriptList) {
-			map.put(asFile(info.getPath()), info);
+			map.put(info.getPath(), info);
 		}
 
 		scripts = map;
@@ -459,17 +458,6 @@ public class DefaultScriptService extends
 		final ScriptInfo info = scripts().get(file);
 		if (info != null) return info;
 		return new ScriptInfo(getContext(), file);
-	}
-
-	private File asFile(final String path) {
-		final File file = new File(path);
-		try {
-			return file.getCanonicalFile();
-		}
-		catch (final IOException exc) {
-			log.warn(exc);
-			return file.getAbsoluteFile();
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
