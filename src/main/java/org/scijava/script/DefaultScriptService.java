@@ -51,6 +51,7 @@ import org.scijava.Gateway;
 import org.scijava.InstantiableException;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
+import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
 import org.scijava.event.EventHandler;
 import org.scijava.log.LogService;
@@ -65,7 +66,6 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
 import org.scijava.service.event.ServicesLoadedEvent;
-import org.scijava.util.AppUtils;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ColorRGB;
 import org.scijava.util.ColorRGBA;
@@ -89,6 +89,9 @@ public class DefaultScriptService extends
 
 	@Parameter
 	private CommandService commandService;
+
+	@Parameter
+	private AppService appService;
 
 	@Parameter
 	private ParseService parser;
@@ -361,7 +364,7 @@ public class DefaultScriptService extends
 		final ArrayList<File> dirs = new ArrayList<>();
 
 		// append default script directories
-		final File baseDir = AppUtils.getBaseDirectory(getClass()); //FIXME
+		final File baseDir = appService.getApp().getBaseDirectory();
 		dirs.add(new File(baseDir, "scripts"));
 
 		// append additional script directories from system property
