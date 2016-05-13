@@ -391,7 +391,7 @@ public class DefaultScriptService extends
 		final HashMap<String, ScriptInfo> map = new HashMap<>();
 
 		final ArrayList<ScriptInfo> scriptList = new ArrayList<>();
-		new ScriptFinder(this).findScripts(scriptList);
+		new ScriptFinder(context()).findScripts(scriptList);
 
 		for (final ScriptInfo info : scriptList) {
 			map.put(info.getPath(), info);

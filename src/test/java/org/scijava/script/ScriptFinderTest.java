@@ -192,7 +192,7 @@ public class ScriptFinderTest {
 	}
 
 	private ArrayList<ScriptInfo> findScripts(final ScriptService scriptService) {
-		final ScriptFinder scriptFinder = new ScriptFinder(scriptService);
+		final ScriptFinder scriptFinder = new ScriptFinder(scriptService.context());
 		final ArrayList<ScriptInfo> scripts = new ArrayList<>();
 		scriptFinder.findScripts(scripts);
 		Collections.sort(scripts);

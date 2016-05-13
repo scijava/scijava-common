@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.scijava.AbstractContextual;
+import org.scijava.Context;
 import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.log.LogService;
@@ -59,14 +60,14 @@ public class ScriptFinder extends AbstractContextual {
 
 	private static final String SCRIPT_ICON = "/icons/script_code.png";
 
-	private final ScriptService scriptService;
+	@Parameter
+	private ScriptService scriptService;
 
 	@Parameter
 	private LogService log;
 
-	public ScriptFinder(final ScriptService scriptService) {
-		this.scriptService = scriptService;
-		setContext(scriptService.getContext());
+	public ScriptFinder(final Context context) {
+		setContext(context);
 	}
 
 	// -- ScriptFinder methods --
@@ -159,6 +160,14 @@ public class ScriptFinder extends AbstractContextual {
 		menuPath.getLeaf().setIconPath(SCRIPT_ICON);
 
 		return info;
+	}
+
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link #ScriptFinder(Context)} instead. */
+	@Deprecated
+	public ScriptFinder(final ScriptService scriptService) {
+		this(scriptService.context());
 	}
 
 }
