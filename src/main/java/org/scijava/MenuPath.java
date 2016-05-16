@@ -56,7 +56,7 @@ public class MenuPath extends ArrayList<MenuEntry> {
 	 * the argument will make a copy.
 	 */
 	public MenuPath(final Collection<? extends MenuEntry> menuEntries) {
-		addAll(menuEntries);
+		if (menuEntries != null) addAll(menuEntries);
 	}
 
 	/**
