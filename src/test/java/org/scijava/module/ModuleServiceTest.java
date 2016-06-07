@@ -34,8 +34,12 @@ package org.scijava.module;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import java.security.GeneralSecurityException;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.prefs.PrefService;
 
 /**
  * Tests {@link ModuleService}.
@@ -72,6 +76,38 @@ public class ModuleServiceTest {
 		final ModuleItem<Double> singleDouble =
 			moduleService.getSingleInput(module, Double.class);
 		assertSame(info.getInput("double2"), singleDouble);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testPersistingWithInitialize() {
+		final Context context = new Context(ModuleService.class, PrefService.class);
+		final ModuleService moduleService = context.getService(ModuleService.class);
+
+		// reset the PrefService entries for the test
+		final PrefService prefService = context.getService(PrefService.class);
+		prefService.clear("persistInteger");
+		prefService.clear("persistDouble");
+
+		final ModuleInfo info = new FooModuleInfo();
+		final ModuleItem<Double> doubleItem = (ModuleItem<Double>) info.getInput(
+			"double1");
+		final ModuleItem<Integer> integerItem = (ModuleItem<Integer>) info.getInput(
+			"integer1");
+
+		// save ModuleItem for which getInitializer() returns "testInitializer"
+		moduleService.save(doubleItem, 5d);
+
+		// verify that the item is not persisted
+		String persistKey = doubleItem.getPersistKey();
+		Assert.assertNull(prefService.get(persistKey));
+
+		// save ModuleItem for which getInitializer() returns null
+		moduleService.save(integerItem, 5);
+
+		// verify that the item is persisted
+		persistKey = integerItem.getPersistKey();
+		Assert.assertEquals(5, prefService.getInt(persistKey, 0));
 	}
 
 	/** A sample module for testing the module service. */
@@ -115,16 +151,16 @@ public class ModuleServiceTest {
 
 		@Override
 		protected void parseParameters() {
-			addInput("string", String.class, true);
-			addInput("float", Float.class, false);
-			addInput("integer1", Integer.class, true);
-			addInput("integer2", Integer.class, true);
-			addInput("double1", Double.class, false);
-			addInput("double2", Double.class, true);
+			addInput("string", String.class, true, null, null);
+			addInput("float", Float.class, false, null, null);
+			addInput("integer1", Integer.class, true, "persistInteger", null);
+			addInput("integer2", Integer.class, true, null, null);
+			addInput("double1", Double.class, false, "persistDouble", "testInitializer");
+			addInput("double2", Double.class, true, null, null);
 		}
 
 		private <T> void addInput(final String name, final Class<T> type,
-			final boolean autoFill)
+			final boolean autoFill, final String persistKey, final String initializer)
 		{
 			registerInput(new AbstractModuleItem<T>(this) {
 
@@ -141,6 +177,16 @@ public class ModuleServiceTest {
 				@Override
 				public boolean isAutoFill() {
 					return autoFill;
+				}
+
+				@Override
+				public String getPersistKey() {
+					return persistKey;
+				}
+
+				@Override
+				public String getInitializer() {
+					return initializer;
 				}
 
 			});
