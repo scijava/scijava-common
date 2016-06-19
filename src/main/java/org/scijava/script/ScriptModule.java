@@ -190,7 +190,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			final String name = item.getName();
 			if (isResolved(name)) continue;
 			final Object value;
-			if (RETURN_VALUE.equals(name) && !getInfo().isReturnValueDeclared()) {
+			if (RETURN_VALUE.equals(name) && getInfo().isReturnValueAppended()) {
 				// NB: This is the special implicit return value output!
 				value = returnValue;
 			}
