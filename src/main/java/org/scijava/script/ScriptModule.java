@@ -88,6 +88,8 @@ public class ScriptModule extends AbstractModule implements Contextual {
 	/** Destination for standard error during script execution. */
 	private Writer error;
 
+	private Object returnValue;
+
 	public ScriptModule(final ScriptInfo info) {
 		this.info = info;
 	}
@@ -130,7 +132,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 
 	/** Gets the return value of the script. */
 	public Object getReturnValue() {
-		return getOutput(RETURN_VALUE);
+		return returnValue;
 	}
 
 	// -- Module methods --
@@ -167,7 +169,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		}
 
 		// execute script!
-		Object returnValue = null;
+		returnValue = null;
 		try {
 			final Reader reader = getInfo().getReader();
 			if (reader == null) returnValue = engine.eval(new FileReader(path));
