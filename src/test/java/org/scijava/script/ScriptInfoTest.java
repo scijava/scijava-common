@@ -97,7 +97,7 @@ public class ScriptInfoTest {
 		final ScriptModule scriptModule =
 			scriptService.run("hello.bsizes", script, true).get();
 
-		final Object output = scriptModule.getOutput("result");
+		final Object output = scriptModule.getReturnValue();
 
 		if (output == null) fail("null result");
 		else if (!(output instanceof Integer)) {
@@ -169,10 +169,6 @@ public class ScriptInfoTest {
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
 			null, null, null, null, null, null, null, null, noChoices, buffer);
 
-		final ModuleItem<?> result = info.getOutput("result");
-		assertItem("result", Object.class, null, ItemIO.OUTPUT, true, true, null,
-			null, null, null, null, null, null, null, noChoices, result);
-
 		int inputCount = 0;
 		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
@@ -180,7 +176,7 @@ public class ScriptInfoTest {
 		}
 
 		int outputCount = 0;
-		final ModuleItem<?>[] outputs = { buffer, result };
+		final ModuleItem<?>[] outputs = { buffer };
 		for (final ModuleItem<?> outItem : info.outputs()) {
 			assertSame(outputs[outputCount++], outItem);
 		}

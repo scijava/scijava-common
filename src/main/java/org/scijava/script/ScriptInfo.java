@@ -412,7 +412,12 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			assignAttribute(item, key, value);
 		}
 		if (item.isInput()) registerInput(item);
-		if (item.isOutput()) registerOutput(item);
+		if (item.isOutput()) {
+			registerOutput(item);
+			// NB: Only append the return value as an extra
+			// output when no explicit outputs are declared.
+			appendReturnValue = false;
+		}
 	}
 
 	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
