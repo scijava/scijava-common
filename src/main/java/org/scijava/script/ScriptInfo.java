@@ -391,7 +391,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/** Adds an output for the value returned by the script itself. */
-	private void addReturnValue() throws ScriptException {
+	private void addReturnValue() {
 		final HashMap<String, Object> attrs = new HashMap<>();
 		attrs.put("type", "OUTPUT");
 		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
