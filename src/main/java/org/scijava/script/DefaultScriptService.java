@@ -408,9 +408,17 @@ public class DefaultScriptService extends
 		addAliases(map, Boolean.class, Byte.class, Character.class, Double.class,
 			Float.class, Integer.class, Long.class, Short.class);
 
+		// primitive wrappers arrays
+		addAliases(map, Boolean[].class, Byte[].class, Character[].class, Double[].class,
+			Float[].class, Integer[].class, Long[].class, Short[].class);
+
 		// built-in types
 		addAliases(map, Context.class, BigDecimal.class, BigInteger.class,
 			ColorRGB.class, ColorRGBA.class, File.class, String.class);
+
+		// built-in type arrays
+		addAliases(map, Context[].class, BigDecimal[].class, BigInteger[].class,
+			ColorRGB[].class, ColorRGBA[].class, File[].class, String[].class);
 
 		// gateway types
 		final List<PluginInfo<Gateway>> gatewayPlugins =
