@@ -45,7 +45,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.prefs.PrefService;
 
 /**
  * Tests {@link PrefService}.

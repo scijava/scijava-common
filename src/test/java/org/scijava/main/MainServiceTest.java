@@ -39,7 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.console.ConsoleService;
-import org.scijava.main.console.MainArgument;
 
 /**
  * Tests {@link MainService}.

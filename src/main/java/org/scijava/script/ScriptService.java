@@ -40,13 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
 import org.scijava.MenuPath;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
-import org.scijava.plugin.Plugin;
 import org.scijava.plugin.SingletonService;
 import org.scijava.service.SciJavaService;
 

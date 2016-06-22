@@ -39,8 +39,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.options.OptionsPlugin;
-import org.scijava.options.OptionsService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;

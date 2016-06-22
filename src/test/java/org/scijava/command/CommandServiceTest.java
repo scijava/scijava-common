@@ -35,8 +35,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.command.Command;
-import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
