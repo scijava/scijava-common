@@ -148,7 +148,7 @@ public abstract class AbstractDataHandle<L extends Location> extends
 		if (n > avail) n = (int) avail;
 		final byte[] b = new byte[n];
 		readFully(b);
-		return new String(b, encoding);
+		return new String(b, getEncoding());
 	}
 
 	@Override
