@@ -53,6 +53,8 @@ public interface Location {
 	 * Gets the location expressed as a {@link URI}, or null if the location
 	 * cannot be expressed as such.
 	 */
-	URI getURI();
+	default URI getURI() {
+		return null;
+	}
 
 }
