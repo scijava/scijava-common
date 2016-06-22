@@ -43,8 +43,6 @@ import java.util.List;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.MenuPath;
-import org.scijava.menu.ShadowMenu;
-import org.scijava.menu.ShadowMenuIterator;
 import org.scijava.module.DefaultMutableModuleInfo;
 import org.scijava.module.ModuleInfo;
 
@@ -138,7 +136,7 @@ public class ShadowMenuTest {
 	private ShadowMenu createShadowMenu() {
 		final Context context = new Context(true);
 
-		final ArrayList<ModuleInfo> modules = new ArrayList<ModuleInfo>();
+		final ArrayList<ModuleInfo> modules = new ArrayList<>();
 		modules.add(createModuleInfo("Edit>Copy"));
 		modules.add(createModuleInfo("Edit>Cut"));
 		modules.add(createModuleInfo("Edit>Paste"));

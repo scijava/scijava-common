@@ -204,7 +204,7 @@ class ByteCodeAnalyzer {
 
 	private Map<String, Map<String, Object>> getAnnotations() {
 		final Map<String, Map<String, Object>> annotations =
-			new TreeMap<String, Map<String, Object>>();
+			new TreeMap<>();
 		for (final Attribute attr : attributes) {
 			if ("RuntimeVisibleAnnotations".equals(attr.getName())) {
 				final byte[] buf = attr.attribute;
@@ -215,7 +215,7 @@ class ByteCodeAnalyzer {
 						raw2className(getStringConstant(getU2(buf, offset)));
 					offset += 2;
 					final Map<String, Object> values =
-						new TreeMap<String, Object>();
+						new TreeMap<>();
 					annotations.put(className, values);
 					offset = parseAnnotationValues(buf, offset, values);
 				}
@@ -297,7 +297,7 @@ class ByteCodeAnalyzer {
 			}
 			case 'e': {
 				final Map<String, Object> enumValue =
-					new TreeMap<String, Object>();
+					new TreeMap<>();
 				enumValue.put("enum", raw2className(getStringConstant(getU2(buf,
 					offset))));
 				offset += 2;
@@ -309,7 +309,7 @@ class ByteCodeAnalyzer {
 			case '@': {
 				// skipping annotation type
 				offset += 2;
-				final Map<String, Object> values = new TreeMap<String, Object>();
+				final Map<String, Object> values = new TreeMap<>();
 				offset = parseAnnotationValues(buf, offset, values);
 				value = values;
 				break;

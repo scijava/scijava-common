@@ -259,8 +259,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
 			// We don't have a concrete class. If it's a set or a list, we use
 			// the typical default implementation. Otherwise we won't convert.
-			if (ConversionUtils.canCast(type, List.class)) return new ArrayList<Object>();
-			if (ConversionUtils.canCast(type, Set.class)) return new HashSet<Object>();
+			if (ConversionUtils.canCast(type, List.class)) return new ArrayList<>();
+			if (ConversionUtils.canCast(type, Set.class)) return new HashSet<>();
 			return null;
 		}
 

@@ -148,7 +148,7 @@ public class ConvertServiceTest {
 		assertFalse(convertService.supports(int[].class, LongArray.class));
 
 		// Test that lists can be converted to any primitive []
-		final List<Integer> list = new ArrayList<Integer>();
+		final List<Integer> list = new ArrayList<>();
 		for (int i=0; i<100; i++) list.add((int) (10000 * Math.random()));
 
 		assertTrue(convertService.supports(list, int[].class));
@@ -222,7 +222,7 @@ public class ConvertServiceTest {
 		assertSame(string, stringToObject);
 
 		// check "conversion" (i.e., casting) to interface
-		final ArrayList<?> arrayList = new ArrayList<Object>();
+		final ArrayList<?> arrayList = new ArrayList<>();
 		final Collection<?> arrayListToCollection =
 			convertService.convert(arrayList, Collection.class);
 		assertSame(arrayList, arrayListToCollection);
@@ -266,7 +266,7 @@ public class ConvertServiceTest {
 		assertEquals(8.7, stringToDouble, 0.0);
 
 		// check conversion via constructor: HashSet to ArrayList
-		final HashSet<String> set = new HashSet<String>();
+		final HashSet<String> set = new HashSet<>();
 		set.add("Foo");
 		set.add("Bar");
 		@SuppressWarnings("unchecked")
@@ -406,7 +406,7 @@ public class ConvertServiceTest {
 		final Struct struct = new Struct();
 
 		// Verify behavior setting a nesting of multi-elements (Set of Array)
-		final Set<char[]> nestedSetValues = new HashSet<char[]>();
+		final Set<char[]> nestedSetValues = new HashSet<>();
 		final char[] chars = { 'a', 'b', 'c' };
 		nestedSetValues.add(chars);
 
@@ -539,7 +539,7 @@ public class ConvertServiceTest {
 	@Test
 	public void testGetCompatibleInputs() {
 		final List<Object> compatibleInputs =
-			new ArrayList<Object>(convertService.getCompatibleInputs(HisList.class));
+			new ArrayList<>(convertService.getCompatibleInputs(HisList.class));
 
 		assertEquals(4, compatibleInputs.size());
 		assertEquals(StringHisListConverter.S1, compatibleInputs.get(0));
@@ -564,7 +564,7 @@ public class ConvertServiceTest {
 	 * Convenience method to convert an array of values to a collection.
 	 */
 	private <T> List<T> getValueList(final T... values) {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		for (final T value : values)
 			list.add(value);
 		return list;

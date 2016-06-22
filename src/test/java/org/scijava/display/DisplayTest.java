@@ -38,9 +38,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.display.Display;
-import org.scijava.display.DisplayService;
-import org.scijava.display.TextDisplay;
 
 /**
  * Unit tests for core {@link Display} classes.

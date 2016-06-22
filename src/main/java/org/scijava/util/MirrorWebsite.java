@@ -71,8 +71,8 @@ public class MirrorWebsite {
 	private String baseURL;
 	private String basePath; // the local directory for file:// baseURL, otherwise null
 	private File localDirectory;
-	private Map<String, String> linkMap = new HashMap<String, String>();
-	private Set<String> missingLinks = new LinkedHashSet<String>();
+	private Map<String, String> linkMap = new HashMap<>();
+	private Set<String> missingLinks = new LinkedHashSet<>();
 	private ExecutorService executorService;
 	private Map<String, MirrorJob> jobs;
 	private Set<String> done;
@@ -94,8 +94,8 @@ public class MirrorWebsite {
 				throw new RuntimeException("Mirroring already in progress!");
 
 			executorService = Executors.newFixedThreadPool(threadCount);
-			done = new TreeSet<String>();
-			jobs = new LinkedHashMap<String, MirrorJob>();
+			done = new TreeSet<>();
+			jobs = new LinkedHashMap<>();
 
 			mirror("index.html");
 		}
@@ -182,7 +182,7 @@ public class MirrorWebsite {
 	}
 
 	private List<String> getLinks(String relativePath, String path, String html) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 
 		int offset = -1;
 		for (;;) {
@@ -262,7 +262,7 @@ public class MirrorWebsite {
 			final String directory = path.substring(0, path.length() - 10);
 			final File[] list = new File(basePath + directory).listFiles();
 			if (list == null) return Collections.emptyList();
-			final List<String> result = new ArrayList<String>();
+			final List<String> result = new ArrayList<>();
 			for (final File item : list) {
 				if (item.isDirectory()) result.add(directory + item.getName() + "/index.html");
 				else result.add(directory + item.getName());

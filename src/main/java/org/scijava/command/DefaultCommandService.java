@@ -208,7 +208,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 
 	@Override
 	public void initialize() {
-		commandMap = new HashMap<PluginInfo<?>, CommandInfo>();
+		commandMap = new HashMap<>();
 
 		// inform the module service of available commands
 		final List<PluginInfo<Command>> plugins =
@@ -226,7 +226,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	@EventHandler
 	protected void onEvent(final PluginsAddedEvent event) {
 		final ArrayList<PluginInfo<Command>> commands =
-			new ArrayList<PluginInfo<Command>>();
+			new ArrayList<>();
 		findCommandPlugins(event.getItems(), commands);
 		addCommands(commands);
 	}
@@ -258,7 +258,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	/** Adds new commands to the module service. */
 	private void addCommands(final List<PluginInfo<Command>> plugins) {
 		// extract commands from the list of plugins
-		final List<CommandInfo> commands = new ArrayList<CommandInfo>();
+		final List<CommandInfo> commands = new ArrayList<>();
 		for (final PluginInfo<Command> info : plugins) {
 			final CommandInfo commandInfo = wrapAsCommand(info);
 			commands.add(commandInfo);
@@ -291,7 +291,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	private List<CommandInfo> getCommandsUnknown(
 		final List<PluginInfo<?>> plugins)
 	{
-		final List<CommandInfo> commands = new ArrayList<CommandInfo>();
+		final List<CommandInfo> commands = new ArrayList<>();
 		for (final PluginInfo<?> info : plugins) {
 			final CommandInfo commandInfo = commandMap.get(info);
 			if (commandInfo == null) continue;

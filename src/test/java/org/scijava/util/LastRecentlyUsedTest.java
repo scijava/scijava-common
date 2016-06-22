@@ -48,7 +48,7 @@ public class LastRecentlyUsedTest {
 	@Test
 	public void test() {
 		int count = 3;
-		final LastRecentlyUsed<String> lru = new LastRecentlyUsed<String>(count);
+		final LastRecentlyUsed<String> lru = new LastRecentlyUsed<>(count);
 
 		for (int i = 1; i <= count; i++) {
 			lru.add("" + i);
@@ -72,7 +72,7 @@ public class LastRecentlyUsedTest {
 
 	@Test
 	public void testRemove() {
-		final LastRecentlyUsed<String> lru = new LastRecentlyUsed<String>(3);
+		final LastRecentlyUsed<String> lru = new LastRecentlyUsed<>(3);
 		lru.add("a");
 		lru.add("b");
 		lru.add("c");

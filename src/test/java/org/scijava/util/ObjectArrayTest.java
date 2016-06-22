@@ -53,7 +53,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link ObjectArray#ObjectArray(Class)}. */
 	@Test
 	public void testConstructorNoArgs() {
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(Integer.class);
+		final ObjectArray<Integer> array = new ObjectArray<>(Integer.class);
 		assertEquals(0, array.size());
 		assertEquals(0, array.copyArray().length);
 	}
@@ -63,7 +63,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	public void testConstructorSize() {
 		final int size = 24;
 		final ObjectArray<Integer> array =
-			new ObjectArray<Integer>(Integer.class, size);
+			new ObjectArray<>(Integer.class, size);
 		assertEquals(size, array.size());
 		assertEquals(size, array.copyArray().length);
 	}
@@ -72,7 +72,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testConstructorArray() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw);
+		final ObjectArray<Integer> array = new ObjectArray<>(raw);
 		assertSame(raw, array.getArray());
 		assertEquals(raw.length, array.size());
 		for (int i = 0; i < raw.length; i++) {
@@ -85,7 +85,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testAddValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer e6 = 1, e7 = 2;
 		array.addValue(e6);
 		array.addValue(e7);
@@ -100,7 +100,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link ObjectArray#removeValue(Object)}. */
 	public void testRemoveValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		assertEquals(raw.length, array.size());
 		array.removeValue(raw[0]);
 		assertEquals(raw.length - 1, array.size());
@@ -115,7 +115,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link ObjectArray#getValue(int)}. */
 	public void testGetValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, raw[i], array.getValue(i));
 		}
@@ -125,7 +125,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testSetValue() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer e0 = 7, e2 = 1, e4 = 2;
 		array.setValue(0, e0);
 		array.setValue(2, e2);
@@ -142,7 +142,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testAddValueIndex() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer e0 = 7, e4 = 1, e7 = 2;
 		array.addValue(0, e0);
 		array.addValue(4, e4);
@@ -161,7 +161,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	/** Tests {@link ObjectArray#remove(int)}. */
 	public void testRemoveIndex() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		assertEquals(raw.length, array.size());
 		array.remove(0);
 		assertEquals(raw.length - 1, array.size());
@@ -177,7 +177,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testIndexOf() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, i, array.indexOf(raw[i]));
 		}
@@ -192,7 +192,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testLastIndexOf() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, i, array.lastIndexOf(raw[i]));
 		}
@@ -207,7 +207,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testContains() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertTrue("@" + i, array.contains(raw[i]));
 		}
@@ -224,7 +224,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	 */
 	@Test
 	public void testSetArray() {
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(Integer.class);
+		final ObjectArray<Integer> array = new ObjectArray<>(Integer.class);
 		final Integer[] raw = { 1, 2, 3, 5, 8, 13, 21 };
 		array.setArray(raw);
 		assertSame(raw, array.getArray());
@@ -234,21 +234,21 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testInsert() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		testInsert(new ObjectArray<Integer>(raw));
+		testInsert(new ObjectArray<>(raw));
 	}
 
 	/** Tests {@link ObjectArray#delete(int, int)}. */
 	@Test
 	public void testDelete() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		testDelete(new ObjectArray<Integer>(raw));
+		testDelete(new ObjectArray<>(raw));
 	}
 
 	/** Tests {@link ObjectArray#get(int)}. */
 	@Test
 	public void testGet() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, raw[i].intValue(), array.get(i).intValue());
 		}
@@ -258,7 +258,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testSet() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer e0 = 7, e2 = 1, e4 = 2;
 		array.set(0, e0);
 		array.set(2, e2);
@@ -275,7 +275,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testAdd() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer e6 = 1, e7 = 2;
 		array.add(e6);
 		array.add(e7);
@@ -291,7 +291,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testIndexOfBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, i, array.indexOf(new Integer(raw[i])));
 		}
@@ -308,7 +308,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testLastIndexOfBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertEquals("@" + i, i, array.lastIndexOf(new Integer(raw[i])));
 		}
@@ -325,7 +325,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testContainsBoxed() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		for (int i = 0; i < raw.length; i++) {
 			assertTrue("@" + i, array.contains(new Integer(raw[i])));
 		}
@@ -342,7 +342,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testRemove() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		assertEquals(raw.length, array.size());
 		array.remove(new Integer(raw[0]));
 		assertEquals(raw.length - 1, array.size());
@@ -358,9 +358,9 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testContainsAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 
-		final ArrayList<Integer> list = new ArrayList<Integer>();
+		final ArrayList<Integer> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(13);
 		assertTrue(array.containsAll(list));
@@ -368,11 +368,11 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		assertFalse(array.containsAll(list));
 
 		final ObjectArray<Integer> yes =
-			new ObjectArray<Integer>(new Integer[] { 3, 8, 21 });
+			new ObjectArray<>(new Integer[] { 3, 8, 21 });
 		assertTrue(array.containsAll(yes));
 
 		final ObjectArray<Integer> no =
-			new ObjectArray<Integer>(new Integer[] { 5, 13, 1 });
+			new ObjectArray<>(new Integer[] { 5, 13, 1 });
 		assertFalse(array.containsAll(no));
 	}
 
@@ -380,9 +380,9 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testAddAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final Integer[] add = { 1, 7 };
-		final ObjectArray<Integer> toAdd = new ObjectArray<Integer>(add.clone());
+		final ObjectArray<Integer> toAdd = new ObjectArray<>(add.clone());
 		final int index = 3;
 		array.addAll(index, toAdd);
 		for (int i = 0; i < index; i++) {
@@ -400,9 +400,9 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testRemoveAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
-		final ObjectArray<Integer> array = new ObjectArray<Integer>(raw.clone());
+		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
 		final ObjectArray<Integer> toRemove =
-			new ObjectArray<Integer>(new Integer[] { 3, 8, 21 });
+			new ObjectArray<>(new Integer[] { 3, 8, 21 });
 		assertEquals(raw.length, array.size());
 		array.removeAll(toRemove);
 		assertEquals(raw.length - 3, array.size());

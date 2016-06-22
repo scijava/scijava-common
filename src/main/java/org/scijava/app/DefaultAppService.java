@@ -121,7 +121,7 @@ public class DefaultAppService extends AbstractSingletonService<App> implements 
 	/** Initializes {@link #apps}. */
 	private synchronized void initApps() {
 		if (apps != null) return; // already initialized
-		final HashMap<String, App> map = new HashMap<String, App>();
+		final HashMap<String, App> map = new HashMap<>();
 
 		for (final App app : getInstances()) {
 			final String name = app.getInfo().getName();

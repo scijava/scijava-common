@@ -115,7 +115,7 @@ public class DirectoryIndexerTest {
 		final ClassLoader loader = new URLClassLoader(new URL[] {
 			classPathURL, classPathURL
 		});
-		final Set<String> seen = new HashSet<String>();
+		final Set<String> seen = new HashSet<>();
 		for (final IndexItem<Simple> item :
 				Index.load(Simple.class, loader)) {
 			final String name = item.className();
@@ -172,7 +172,7 @@ public class DirectoryIndexerTest {
 			public final Enumeration<URL> getResources(final String path)
 				throws IOException
 			{
-				final List<URL> urls = new ArrayList<URL>();
+				final List<URL> urls = new ArrayList<>();
 				for (final URL directory : directories) {
 					final URL url = new URL(directory, path);
 					final URLConnection connection = url.openConnection();
@@ -190,7 +190,7 @@ public class DirectoryIndexerTest {
 		final Class<A> annotationClass, final ClassLoader loader)
 	{
 		// read the index
-		final Map<String, IndexItem<A>> map = new TreeMap<String, IndexItem<A>>();
+		final Map<String, IndexItem<A>> map = new TreeMap<>();
 		for (final IndexItem<A> item : Index.load(annotationClass, loader)) {
 			map.put(item.className(), item);
 		}

@@ -287,10 +287,10 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 	private synchronized void initParameters() {
 		if (initialized) return; // already initialized
 
-		inputMap = new HashMap<String, ModuleItem<?>>();
-		outputMap = new HashMap<String, ModuleItem<?>>();
-		inputList = new ArrayList<ModuleItem<?>>();
-		outputList = new ArrayList<ModuleItem<?>>();
+		inputMap = new HashMap<>();
+		outputMap = new HashMap<>();
+		inputList = new ArrayList<>();
+		outputList = new ArrayList<>();
 
 		parseParameters();
 

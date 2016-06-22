@@ -92,7 +92,7 @@ public class URILocation extends AbstractLocation {
 	 * @return A map of the decoded key/value pairs.
 	 */
 	private Map<String, String> decodeQuery(final String query) {
-		final Map<String, String> map = new LinkedHashMap<String, String>();
+		final Map<String, String> map = new LinkedHashMap<>();
 		if (query == null) return map;
 		for (final String param : query.split("&")) {
 			final int equals = param.indexOf("=");

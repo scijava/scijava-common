@@ -268,10 +268,10 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 			return null;
 		}
 
-		final ArrayList<POM> poms = new ArrayList<POM>();
+		final ArrayList<POM> poms = new ArrayList<>();
 
 		// recursively list contents of META-INF/maven/ directories
-		for (final URL resource : new IteratorPlus<URL>(resources)) {
+		for (final URL resource : new IteratorPlus<>(resources)) {
 			for (final URL url : FileUtils.listContents(resource)) {
 				// look for pom.xml files amongst the contents
 				if (url.getPath().endsWith("/pom.xml")) {

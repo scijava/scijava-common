@@ -75,7 +75,7 @@ public class DefaultParseService extends AbstractService implements
 		@Override
 		public Map<String, Object> asMap() {
 			final LinkedHashMap<String, Object> map =
-				new LinkedHashMap<String, Object>();
+				new LinkedHashMap<>();
 			for (final Item item : this) {
 				map.put(item.name(), item.value());
 			}

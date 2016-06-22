@@ -54,7 +54,7 @@ public class DefaultMainService extends AbstractService implements MainService {
 	@Parameter(required = false)
 	private LogService log;
 
-	private final List<Main> mains = new ArrayList<Main>();
+	private final List<Main> mains = new ArrayList<>();
 
 	@Override
 	public int execMains() {

@@ -242,7 +242,7 @@ public class XML {
 
 	/** Gets the element nodes from the given node list. */
 	public static ArrayList<Element> elements(final NodeList nodes) {
-		final ArrayList<Element> elements = new ArrayList<Element>();
+		final ArrayList<Element> elements = new ArrayList<>();
 		if (nodes != null) {
 			for (int i=0; i<nodes.getLength(); i++) {
 				final Node node = nodes.item(i);

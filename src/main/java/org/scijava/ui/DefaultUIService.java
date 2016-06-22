@@ -240,7 +240,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public List<UserInterface> getVisibleUIs() {
-		final ArrayList<UserInterface> uis = new ArrayList<UserInterface>();
+		final ArrayList<UserInterface> uis = new ArrayList<>();
 		for (final UserInterface ui : uiList()) {
 			if (ui.isVisible()) uis.add(ui);
 		}
@@ -366,7 +366,7 @@ public final class DefaultUIService extends AbstractService implements
 	public synchronized void dispose() {
 		// dispose active display viewers
 		// NB - copy list to avoid ConcurrentModificationExceptions
-		final List<DisplayViewer<?>> viewers = new ArrayList<DisplayViewer<?>>();
+		final List<DisplayViewer<?>> viewers = new ArrayList<>();
 		viewers.addAll(displayViewers());
 		for (final DisplayViewer<?> viewer : viewers) {
 			viewer.dispose();
@@ -505,9 +505,9 @@ public final class DefaultUIService extends AbstractService implements
 	private synchronized void discoverUIs() {
 		if (initialized) return;
 
-		displayViewers = new ArrayList<DisplayViewer<?>>();
-		uiList = new ArrayList<UserInterface>();
-		uiMap = new HashMap<String, UserInterface>();
+		displayViewers = new ArrayList<>();
+		uiList = new ArrayList<>();
+		uiMap = new HashMap<>();
 
 		final List<PluginInfo<UserInterface>> infos =
 			pluginService.getPluginsOfType(UserInterface.class);

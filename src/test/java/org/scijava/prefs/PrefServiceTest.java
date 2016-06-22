@@ -45,7 +45,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.prefs.PrefService;
 
 /**
  * Tests {@link PrefService}.
@@ -147,7 +146,7 @@ public class PrefServiceTest {
 	 */
 	@Test
 	public void testMap() {
-		final Map<String, String> map = new HashMap<String, String>();
+		final Map<String, String> map = new HashMap<>();
 		map.put("0", "A");
 		map.put("1", "B");
 		map.put("2", "C");
@@ -166,7 +165,7 @@ public class PrefServiceTest {
 	@Test
 	public void testList() {
 		final String recentFilesKey = "RecentFiles";
-		final List<String> recentFiles = new ArrayList<String>();
+		final List<String> recentFiles = new ArrayList<>();
 		recentFiles.add("some/path1");
 		recentFiles.add("some/path2");
 		recentFiles.add("some/path3");

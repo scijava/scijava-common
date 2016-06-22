@@ -47,7 +47,7 @@ public abstract class AbstractLogService extends AbstractService implements LogS
 	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
 
 	private Map<String, Integer> classAndPackageLevels =
-		new HashMap<String, Integer>();
+		new HashMap<>();
 
 	// -- abstract methods --
 

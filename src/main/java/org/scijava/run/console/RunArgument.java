@@ -36,7 +36,6 @@ import java.util.LinkedList;
 
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
-import org.scijava.console.ConsoleUtils;
 import org.scijava.log.LogService;
 import org.scijava.parse.Items;
 import org.scijava.parse.ParseService;

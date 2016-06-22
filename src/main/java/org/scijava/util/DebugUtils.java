@@ -80,7 +80,7 @@ public final class DebugUtils {
 
 		// sort list of threads by name
 		final ArrayList<Thread> threads =
-			new ArrayList<Thread>(stackTraces.keySet());
+			new ArrayList<>(stackTraces.keySet());
 		Collections.sort(threads, new Comparator<Thread>() {
 
 			@Override

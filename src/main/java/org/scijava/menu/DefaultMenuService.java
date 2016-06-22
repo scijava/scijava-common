@@ -145,12 +145,12 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	{
 		// categorize modules by menu root
 		final HashMap<String, ArrayList<ModuleInfo>> modulesByMenuRoot =
-			new HashMap<String, ArrayList<ModuleInfo>>();
+			new HashMap<>();
 		for (final ModuleInfo info : items) {
 			final String menuRoot = info.getMenuRoot();
 			ArrayList<ModuleInfo> modules = modulesByMenuRoot.get(menuRoot);
 			if (modules == null) {
-				modules = new ArrayList<ModuleInfo>();
+				modules = new ArrayList<>();
 				modulesByMenuRoot.put(menuRoot, modules);
 			}
 			modules.add(info);
@@ -192,7 +192,7 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	/** Initializes {@link #rootMenus}. */
 	private synchronized void initRootMenus() {
 		if (rootMenus != null) return;
-		final HashMap<String, ShadowMenu> map = new HashMap<String, ShadowMenu>();
+		final HashMap<String, ShadowMenu> map = new HashMap<>();
 
 		final List<ModuleInfo> allModules = moduleService.getModules();
 		addModules(allModules, map);

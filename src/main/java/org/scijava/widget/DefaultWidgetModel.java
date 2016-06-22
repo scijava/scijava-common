@@ -87,7 +87,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		this.module = module;
 		this.item = item;
 		this.objectPool = objectPool;
-		convertedObjects = new WeakHashMap<Object, Object>();
+		convertedObjects = new WeakHashMap<>();
 
 		if (item.getValue(module) == null) {
 			// assign the item's default value as the current value

@@ -54,9 +54,9 @@ public abstract class AbstractModule implements Module {
 	private MethodRef initializerRef;
 
 	public AbstractModule() {
-		inputs = new HashMap<String, Object>();
-		outputs = new HashMap<String, Object>();
-		resolvedInputs = new HashSet<String>();
+		inputs = new HashMap<>();
+		outputs = new HashMap<>();
+		resolvedInputs = new HashSet<>();
 	}
 
 	// -- Module methods --
@@ -152,7 +152,7 @@ public abstract class AbstractModule implements Module {
 	private Map<String, Object> createMap(final Iterable<ModuleItem<?>> items,
 		final boolean outputMap)
 	{
-		final Map<String, Object> map = new HashMap<String, Object>();
+		final Map<String, Object> map = new HashMap<>();
 		for (final ModuleItem<?> item : items) {
 			final String name = item.getName();
 			final Object value = outputMap ? getOutput(name) : getInput(name);

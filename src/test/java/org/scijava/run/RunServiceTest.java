@@ -74,7 +74,7 @@ public class RunServiceTest {
 	@Test
 	public void testRunMap() throws InvocationTargetException {
 		final StringBuilder sb = new StringBuilder();
-		final Map<String, Object> inputMap = new LinkedHashMap<String, Object>();
+		final Map<String, Object> inputMap = new LinkedHashMap<>();
 		inputMap.put("foo", "bar");
 		inputMap.put("animal", "quick brown fox");
 		inputMap.put("number", 33);

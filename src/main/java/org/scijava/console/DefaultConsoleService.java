@@ -76,7 +76,7 @@ public class DefaultConsoleService extends
 	@Override
 	public void processArgs(final String... args) {
 		log.debug("Received command line arguments:");
-		final LinkedList<String> argList = new LinkedList<String>();
+		final LinkedList<String> argList = new LinkedList<>();
 		for (final String arg : args) {
 			log.debug("\t" + arg);
 			argList.add(arg);
@@ -159,7 +159,7 @@ public class DefaultConsoleService extends
 		err = new OutputStreamReporter(Source.STDERR);
 		syserr.getParent().addOutputStream(err);
 
-		listeners = new ArrayList<OutputListener>();
+		listeners = new ArrayList<>();
 		cachedListeners = listeners.toArray(new OutputListener[0]);
 	}
 

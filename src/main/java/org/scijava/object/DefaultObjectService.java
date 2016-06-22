@@ -105,7 +105,7 @@ public final class DefaultObjectService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		objectIndex = new ObjectIndex<Object>(Object.class);
+		objectIndex = new ObjectIndex<>(Object.class);
 	}
 
 	// -- Event handlers --

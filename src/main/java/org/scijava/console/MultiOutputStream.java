@@ -58,7 +58,7 @@ public class MultiOutputStream extends OutputStream {
 	 * @param os Output streams which will receive this stream's output.
 	 */
 	public MultiOutputStream(final OutputStream... os) {
-		streams = new ArrayList<OutputStream>(os.length);
+		streams = new ArrayList<>(os.length);
 		for (int i = 0; i < os.length; i++) {
 			streams.add(os[i]);
 		}

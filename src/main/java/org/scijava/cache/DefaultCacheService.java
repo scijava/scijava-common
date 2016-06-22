@@ -73,6 +73,6 @@ public class DefaultCacheService extends AbstractService implements
 
 	@Override
 	public void initialize() {
-		map = new WeakHashMap<Object, Object>();
+		map = new WeakHashMap<>();
 	}
 }

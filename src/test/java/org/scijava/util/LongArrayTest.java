@@ -358,7 +358,7 @@ public class LongArrayTest extends PrimitiveArrayTest {
 		final long[] raw = { 3, 5, 8, 13, 21 };
 		final LongArray array = new LongArray(raw.clone());
 
-		final ArrayList<Long> list = new ArrayList<Long>();
+		final ArrayList<Long> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(13L);
 		assertTrue(array.containsAll(list));

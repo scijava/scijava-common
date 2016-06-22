@@ -98,7 +98,7 @@ import org.scijava.util.FileUtils;
 public class EclipseHelper extends DirectoryIndexer {
 
 	private static final String FORCE_ANNOTATION_INDEX_PROPERTY = "force.annotation.index";
-	static Set<URL> indexed = new HashSet<URL>();
+	static Set<URL> indexed = new HashSet<>();
 	private boolean bannerShown;
 
 	private static boolean debug =

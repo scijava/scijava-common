@@ -69,9 +69,9 @@ public class DefaultInputService extends AbstractService implements
 	private boolean metaDown = false;
 	private boolean shiftDown = false;
 
-	private HashSet<KeyCode> pressedKeys = new HashSet<KeyCode>();
+	private HashSet<KeyCode> pressedKeys = new HashSet<>();
 
-	private HashSet<Integer> buttonsDown = new HashSet<Integer>();
+	private HashSet<Integer> buttonsDown = new HashSet<>();
 
 	private Display<?> display;
 	private int lastX = -1, lastY = -1;

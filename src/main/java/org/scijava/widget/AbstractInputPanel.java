@@ -45,7 +45,7 @@ public abstract class AbstractInputPanel<P, W> implements InputPanel<P, W> {
 
 	/** Table of widgets. */
 	protected Map<String, InputWidget<?, W>> widgets =
-		new HashMap<String, InputWidget<?, W>>();
+		new HashMap<>();
 
 	// -- InputPanel methods --
 

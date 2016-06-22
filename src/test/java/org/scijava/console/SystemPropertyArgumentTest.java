@@ -60,7 +60,7 @@ public class SystemPropertyArgumentTest {
 
 	private void assertPropertySet(final String key, final String value) {
 		final SystemPropertyArgument spa = new SystemPropertyArgument();
-		final LinkedList<String> args = new LinkedList<String>();
+		final LinkedList<String> args = new LinkedList<>();
 		args.add(value == null ? "-D" + key : "-D" + key + "=" + value);
 		assertTrue(spa.supports(args));
 		assertNull(System.getProperty(key));

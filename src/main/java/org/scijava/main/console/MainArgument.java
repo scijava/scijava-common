@@ -72,7 +72,7 @@ public class MainArgument extends AbstractConsoleArgument {
 		args.removeFirst(); // --main / --main-class
 		final String className = args.removeFirst();
 
-		final List<String> argList = new ArrayList<String>();
+		final List<String> argList = new ArrayList<>();
 		while (!args.isEmpty() && !isFlag(args) && !isSeparator(args)) {
 			argList.add(args.removeFirst());
 		}

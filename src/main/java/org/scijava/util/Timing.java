@@ -69,7 +69,7 @@ import java.util.Map.Entry;
  */
 public class Timing {
 	private long total = 0, start = System.nanoTime(), tick = start;
-	private List<Entry<Long, String>> list = new ArrayList<Entry<Long, String>>();
+	private List<Entry<Long, String>> list = new ArrayList<>();
 
 	public void reset() {
 		tick = System.nanoTime();

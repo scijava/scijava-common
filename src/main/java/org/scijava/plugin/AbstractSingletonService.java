@@ -98,7 +98,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 
 			@Override
 			public ArrayList<Object> get() {
-				return new ArrayList<Object>(getInstances());
+				return new ArrayList<>(getInstances());
 			}
 		});
 	}
@@ -125,7 +125,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 				.createInstancesOfType(getPluginType())));
 
 		final HashMap<Class<? extends PT>, PT> map =
-			new HashMap<Class<? extends PT>, PT>();
+			new HashMap<>();
 
 		for (final PT plugin : list) {
 			@SuppressWarnings("unchecked")

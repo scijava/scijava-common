@@ -61,7 +61,7 @@ import javax.lang.model.element.AnnotationValue;
 public abstract class AbstractIndexWriter {
 
 	private final Map<String, Map<String, Object>> map =
-		new ConcurrentSkipListMap<String, Map<String, Object>>();
+		new ConcurrentSkipListMap<>();
 
 	protected synchronized boolean foundAnnotations() {
 		return !map.isEmpty();
@@ -72,10 +72,10 @@ public abstract class AbstractIndexWriter {
 	{
 		Map<String, Object> list = map.get(annotationName);
 		if (list == null) {
-			list = new LinkedHashMap<String, Object>();
+			list = new LinkedHashMap<>();
 			map.put(annotationName, list);
 		}
-		final Map<String, Object> o = new TreeMap<String, Object>();
+		final Map<String, Object> o = new TreeMap<>();
 		o.put("class", className);
 		o.put("values", annotationValues);
 		list.put(className, o);
@@ -128,7 +128,7 @@ public abstract class AbstractIndexWriter {
 		}
 		Map<String, Object> m = map.get(annotationName);
 		if (m == null) {
-			m = new LinkedHashMap<String, Object>();
+			m = new LinkedHashMap<>();
 			map.put(annotationName, m);
 		}
 		/*
@@ -184,7 +184,7 @@ public abstract class AbstractIndexWriter {
 	}
 
 	protected <A extends Annotation> Map<String, Object> adapt(A annotation) {
-		Map<String, Object> result = new TreeMap<String, Object>();
+		Map<String, Object> result = new TreeMap<>();
 		for (Method method : annotation.annotationType().getMethods())
 			try {
 				if (method.getDeclaringClass() == annotation.annotationType()) {
@@ -204,7 +204,7 @@ public abstract class AbstractIndexWriter {
 	}
 
 	private static Map<String, Object> adapt(Enum<?> e) {
-		Map<String, Object> result = new TreeMap<String, Object>();
+		Map<String, Object> result = new TreeMap<>();
 		result.put("enum", e.getClass().getName());
 		result.put("value", e.name());
 		return result;

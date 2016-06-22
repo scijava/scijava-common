@@ -86,7 +86,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		final ClassLoader loader)
 	{
 		EclipseHelper.updateAnnotationIndex(loader);
-		return new Index<A>(annotation, loader);
+		return new Index<>(annotation, loader);
 	}
 
 	static final String INDEX_PREFIX = "META-INF/json/";
@@ -110,9 +110,9 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		private Map<String, URL> legacyURLs;
 
 		public IndexItemIterator(final Class<A> annotation) {
-			seen = new HashSet<URL>();
+			seen = new HashSet<>();
 			try {
-				legacyURLs = new LinkedHashMap<String, URL>();
+				legacyURLs = new LinkedHashMap<>();
 				final Enumeration<URL> legacy =
 					loader.getResources(LEGACY_INDEX_PREFIX + annotation.getName());
 				final int legacySuffixLength =
@@ -160,7 +160,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 					@SuppressWarnings("unchecked")
 					final Map<Object, Object> values =
 						(Map<Object, Object>) map.get("values");
-					next = new IndexItem<A>(annotation, loader, className, values);
+					next = new IndexItem<>(annotation, loader, className, values);
 					return;
 				}
 				indexReader.close();

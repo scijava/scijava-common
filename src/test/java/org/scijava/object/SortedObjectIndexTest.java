@@ -48,7 +48,7 @@ public class SortedObjectIndexTest {
 	@Test
 	public void testGetAllSorted() {
 		final SortedObjectIndex<String> objectIndex =
-			new SortedObjectIndex<String>(String.class);
+			new SortedObjectIndex<>(String.class);
 		final String o1 = "quick";
 		final String o2 = "brown";
 		final String o3 = "fox";
@@ -65,7 +65,7 @@ public class SortedObjectIndexTest {
 	@Test
 	public void testDuplicates() {
 		final SortedObjectIndex<String> objectIndex =
-			new SortedObjectIndex<String>(String.class);
+			new SortedObjectIndex<>(String.class);
 		final String o1 = "quick";
 		final String o2 = "brown";
 		final String o3 = "fox";

@@ -114,11 +114,11 @@ public final class ArrayUtils {
 			return new DoubleArray((double[]) value);
 		}
 		if (value instanceof Object[]) {
-			return new ObjectArray<Object>((Object[]) value);
+			return new ObjectArray<>((Object[]) value);
 		}
 		// This object is neither an array nor a collection.
 		// So we wrap it in a list and return.
-		final List<Object> list = new ObjectArray<Object>(Object.class);
+		final List<Object> list = new ObjectArray<>(Object.class);
 		list.add(value);
 		return list;
 	}

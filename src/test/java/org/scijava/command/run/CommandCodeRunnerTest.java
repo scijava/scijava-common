@@ -89,7 +89,7 @@ public class CommandCodeRunnerTest {
 	public void testRunMap() throws InvocationTargetException {
 		final StringBuilder buffer = new StringBuilder();
 
-		final Map<String, Object> inputMap = new HashMap<String, Object>();
+		final Map<String, Object> inputMap = new HashMap<>();
 		inputMap.put("buffer", buffer);
 
 		runner.run(OpenSesame.class, inputMap);

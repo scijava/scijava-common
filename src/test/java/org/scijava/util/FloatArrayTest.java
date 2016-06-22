@@ -364,7 +364,7 @@ public class FloatArrayTest extends PrimitiveArrayTest {
 		final float[] raw = { 3, 5, 8, 13, 21 };
 		final FloatArray array = new FloatArray(raw.clone());
 
-		final ArrayList<Float> list = new ArrayList<Float>();
+		final ArrayList<Float> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(13f);
 		assertTrue(array.containsAll(list));

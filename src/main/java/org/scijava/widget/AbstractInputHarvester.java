@@ -92,7 +92,7 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	{
 		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
 
-		final ArrayList<WidgetModel> models = new ArrayList<WidgetModel>();
+		final ArrayList<WidgetModel> models = new ArrayList<>();
 
 		for (final ModuleItem<?> item : inputs) {
 			final WidgetModel model = addInput(inputPanel, module, item);

@@ -87,13 +87,13 @@ public class DefaultEventService extends AbstractService implements
 	 * A cache for mapping {@link Method}s to the {@link SciJavaEvent} class taken
 	 * as parameters. Only methods with event parameters will cached here.
 	 */
-	private final Map<Method, Class<?>> eventClasses = new HashMap<Method, Class<?>>();
+	private final Map<Method, Class<?>> eventClasses = new HashMap<>();
 
 	/**
 	 * Set of claimed {@link EventHandler#key()}s. Additional event handlers
 	 * specifying the same key will be ignored rather than subscribed.
 	 */
-	private final HashSet<String> keys = new HashSet<String>();
+	private final HashSet<String> keys = new HashSet<>();
 
 	// -- EventService methods --
 
@@ -118,7 +118,7 @@ public class DefaultEventService extends AbstractService implements
 			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
 
 		if (!eventHandlers.isEmpty()) {
-			subscribers = new ArrayList<EventSubscriber<?>>();
+			subscribers = new ArrayList<>();
 			for (final Method m : eventHandlers) {
 				// verify that the event handler method is valid
 				final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
@@ -203,7 +203,7 @@ public class DefaultEventService extends AbstractService implements
 	private <E extends SciJavaEvent> EventSubscriber<E> subscribe(
 		final Class<E> c, final Object o, final Method m)
 	{
-		final ProxySubscriber<E> subscriber = new ProxySubscriber<E>(c, o, m);
+		final ProxySubscriber<E> subscriber = new ProxySubscriber<>(c, o, m);
 		subscribe(c, subscriber);
 		return subscriber;
 	}
@@ -233,7 +233,7 @@ public class DefaultEventService extends AbstractService implements
 	// -- Event handlers garbage collection preventer --
 
 	private WeakHashMap<Object, List<ProxySubscriber<?>>> keepEm =
-			new WeakHashMap<Object, List<ProxySubscriber<?>>>();
+			new WeakHashMap<>();
 
 	/**
 	 * Prevents {@link ProxySubscriber} instances from being garbage collected
@@ -255,7 +255,7 @@ public class DefaultEventService extends AbstractService implements
 	private synchronized void keepIt(final Object o, final ProxySubscriber<?> subscriber) {
 		List<ProxySubscriber<?>> list = keepEm.get(o);
 		if (list == null) {
-			list = new ArrayList<ProxySubscriber<?>>();
+			list = new ArrayList<>();
 			keepEm.put(o, list);
 		}
 		list.add(subscriber);

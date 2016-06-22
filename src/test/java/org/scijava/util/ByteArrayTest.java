@@ -358,7 +358,7 @@ public class ByteArrayTest extends PrimitiveArrayTest {
 		final byte[] raw = { 3, 5, 8, 13, 21 };
 		final ByteArray array = new ByteArray(raw.clone());
 
-		final ArrayList<Byte> list = new ArrayList<Byte>();
+		final ArrayList<Byte> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add((byte) 13);
 		assertTrue(array.containsAll(list));

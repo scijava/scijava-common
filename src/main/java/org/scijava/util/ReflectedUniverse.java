@@ -86,7 +86,7 @@ public class ReflectedUniverse {
 
 	/** Constructs a new reflected universe that uses the given class loader. */
 	public ReflectedUniverse(final ClassLoader loader) {
-		variables = new HashMap<String, Object>();
+		variables = new HashMap<>();
 		this.loader = loader == null ? getClass().getClassLoader() : loader;
 	}
 

@@ -111,7 +111,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 	private class Writer extends AbstractIndexWriter implements StreamFactory {
 
 		private final Map<String, List<Element>> originatingElements =
-			new HashMap<String, List<Element>>();
+			new HashMap<>();
 		private final Filer filer = processingEnv.getFiler();
 		private final Elements utils = processingEnv.getElementUtils();
 		private final Types typeUtils = processingEnv.getTypeUtils();
@@ -124,7 +124,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 				// remember originating elements
 				List<Element> originating = originatingElements.get(annotationName);
 				if (originating == null) {
-					originating = new ArrayList<Element>();
+					originating = new ArrayList<>();
 					originatingElements.put(annotationName, originating);
 				}
 
@@ -159,7 +159,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			final List<? extends AnnotationMirror> mirrors,
 			final TypeMirror annotationType)
 		{
-			final Map<String, Object> result = new TreeMap<String, Object>();
+			final Map<String, Object> result = new TreeMap<>();
 			for (final AnnotationMirror mirror : mirrors) {
 				if (typeUtils.isSameType(mirror.getAnnotationType(), annotationType)) {
 					return (Map<String, Object>) adapt(mirror);
@@ -172,7 +172,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 		protected Object adapt(final Object o) {
 			if (o instanceof AnnotationMirror) {
 				final AnnotationMirror mirror = (AnnotationMirror) o;
-				final Map<String, Object> result = new TreeMap<String, Object>();
+				final Map<String, Object> result = new TreeMap<>();
 				for (final Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : mirror
 					.getElementValues().entrySet())
 				{
@@ -184,7 +184,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			}
 			else if (o instanceof List) {
 				final List<?> list = (List<?>) o;
-				final List<Object> result = new ArrayList<Object>(list.size());
+				final List<Object> result = new ArrayList<>(list.size());
 				for (final Object item : list) {
 					result.add(adapt(item));
 				}
@@ -197,7 +197,7 @@ public class AnnotationProcessor extends AbstractProcessor {
 			}
 			else if (o instanceof VariableElement) {
 				final VariableElement element = (VariableElement) o;
-				final Map<String, Object> result = new TreeMap<String, Object>();
+				final Map<String, Object> result = new TreeMap<>();
 				final String enumName =
 					utils.getBinaryName((TypeElement) element.getEnclosingElement())
 						.toString();

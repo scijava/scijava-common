@@ -103,7 +103,7 @@ public abstract class AbstractConvertService extends AbstractHandlerService<Conv
 
 	@Override
 	public Collection<Object> getCompatibleInputs(final Class<?> dest) {
-		final Set<Object> objects = new LinkedHashSet<Object>();
+		final Set<Object> objects = new LinkedHashSet<>();
 
 		for (final Converter<?, ?> c : getInstances()) {
 			if (dest.isAssignableFrom(c.getOutputType())) {
@@ -135,7 +135,7 @@ public abstract class AbstractConvertService extends AbstractHandlerService<Conv
 
 	@Override
 	public Collection<Class<?>> getCompatibleInputClasses(final Class<?> dest) {
-		final Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+		final Set<Class<?>> compatibleClasses = new HashSet<>();
 
 		for (final Converter<?, ?> converter : getInstances()) {
 			addIfMatches(dest, converter.getOutputType(), converter.getInputType(), compatibleClasses);
@@ -146,7 +146,7 @@ public abstract class AbstractConvertService extends AbstractHandlerService<Conv
 
 	@Override
 	public Collection<Class<?>> getCompatibleOutputClasses(final Class<?> source) {
-		final Set<Class<?>> compatibleClasses = new HashSet<Class<?>>();
+		final Set<Class<?>> compatibleClasses = new HashSet<>();
 
 		for (final Converter<?, ?> converter : getInstances()) {
 			addIfMatches(source, converter.getInputType(), converter.getOutputType(), compatibleClasses);

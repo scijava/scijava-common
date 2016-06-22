@@ -101,7 +101,7 @@ public class ConversionUtilsTest {
 		assertSame(string, stringToObject);
 
 		// check casting to interface
-		final ArrayList<?> arrayList = new ArrayList<Object>();
+		final ArrayList<?> arrayList = new ArrayList<>();
 		final Collection<?> arrayListToCollection =
 			ConversionUtils.cast(arrayList, Collection.class);
 		assertSame(arrayList, arrayListToCollection);
@@ -395,7 +395,7 @@ public class ConversionUtilsTest {
 		final Struct struct = new Struct();
 
 		// Verify behavior setting a nesting of multi-elements (Set of Array)
-		final Set<char[]> nestedSetValues = new HashSet<char[]>();
+		final Set<char[]> nestedSetValues = new HashSet<>();
 		final char[] chars = { 'a', 'b', 'c' };
 		nestedSetValues.add(chars);
 
@@ -535,7 +535,7 @@ public class ConversionUtilsTest {
 	 * Convenience method to convert an array of values to a collection.
 	 */
 	private <T> List<T> getValueList(final T... values) {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		for (final T value : values)
 			list.add(value);
 		return list;

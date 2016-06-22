@@ -204,8 +204,8 @@ public class ScriptREPL {
 	public void vars() {
 		if (interpreter == null) return; // no active script language
 
-		final List<String> keys = new ArrayList<String>();
-		final List<Object> types = new ArrayList<Object>();
+		final List<String> keys = new ArrayList<>();
+		final List<Object> types = new ArrayList<>();
 		final Bindings bindings = interpreter.getBindings();
 		for (final String key : bindings.keySet()) {
 			final Object value = bindings.get(key);
@@ -241,9 +241,9 @@ public class ScriptREPL {
 	}
 
 	public void langs() {
-		final List<String> names = new ArrayList<String>();
-		final List<String> versions = new ArrayList<String>();
-		final List<Object> aliases = new ArrayList<Object>();
+		final List<String> names = new ArrayList<>();
+		final List<String> versions = new ArrayList<>();
+		final List<Object> aliases = new ArrayList<>();
 		for (final ScriptLanguage lang : scriptService.getLanguages()) {
 			names.add(lang.getLanguageName());
 			versions.add(lang.getLanguageVersion());
@@ -297,7 +297,7 @@ public class ScriptREPL {
 	}
 
 	private List<Gateway> gateways() {
-		final ArrayList<Gateway> gateways = new ArrayList<Gateway>();
+		final ArrayList<Gateway> gateways = new ArrayList<>();
 		if (pluginService == null) return gateways;
 		// HACK: Instantiating a Gateway with the noargs constructor spins
 		// up a second Context, which is not what we want. Perhaps SJC should

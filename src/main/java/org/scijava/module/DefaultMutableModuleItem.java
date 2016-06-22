@@ -66,7 +66,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private T softMaximum;
 	private Number stepSize;
 	private int columnCount;
-	private final List<T> choices = new ArrayList<T>();
+	private final List<T> choices = new ArrayList<>();
 	private String name;
 	private String label;
 	private String description;

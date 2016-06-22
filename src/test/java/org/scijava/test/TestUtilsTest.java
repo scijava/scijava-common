@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.scijava.test.TestUtils;
 
 /**
  * Tests the {@link TestUtils}.

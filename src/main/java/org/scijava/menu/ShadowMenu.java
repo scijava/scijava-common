@@ -135,7 +135,7 @@ public class ShadowMenu extends AbstractContextual implements
 		}
 		this.menuDepth = menuDepth;
 		this.parent = parent;
-		children = new HashMap<String, ShadowMenu>();
+		children = new HashMap<>();
 	}
 
 	// -- ShadowMenu methods --
@@ -187,7 +187,7 @@ public class ShadowMenu extends AbstractContextual implements
 	public List<ShadowMenu> getChildren() {
 		// copy the children table into an ordered list
 		final List<ShadowMenu> childList =
-			new ArrayList<ShadowMenu>(children.values());
+			new ArrayList<>(children.values());
 		// sort the list by weight then alphabetically
 		Collections.sort(childList);
 		return childList;
@@ -270,7 +270,7 @@ public class ShadowMenu extends AbstractContextual implements
 	 * @return true if at least one module was successfully updated
 	 */
 	public boolean updateAll(final Collection<? extends ModuleInfo> c) {
-		final HashSet<ShadowMenu> nodes = new HashSet<ShadowMenu>();
+		final HashSet<ShadowMenu> nodes = new HashSet<>();
 		for (final ModuleInfo info : c) {
 			final ShadowMenu removed = removeInternal(info);
 			if (removed == null) continue; // was not in menu structure
@@ -361,7 +361,7 @@ public class ShadowMenu extends AbstractContextual implements
 	 */
 	@Override
 	public boolean addAll(final Collection<? extends ModuleInfo> c) {
-		final HashSet<ShadowMenu> nodes = new HashSet<ShadowMenu>();
+		final HashSet<ShadowMenu> nodes = new HashSet<>();
 		for (final ModuleInfo info : c) {
 			if (!info.isVisible()) continue;
 			final ShadowMenu node = addInternal(info);
@@ -416,7 +416,7 @@ public class ShadowMenu extends AbstractContextual implements
 
 	@Override
 	public boolean removeAll(final Collection<?> c) {
-		final HashSet<ShadowMenu> nodes = new HashSet<ShadowMenu>();
+		final HashSet<ShadowMenu> nodes = new HashSet<>();
 		for (final Object o : c) {
 			if (!(o instanceof ModuleInfo)) continue;
 			final ModuleInfo info = (ModuleInfo) o;
@@ -430,7 +430,7 @@ public class ShadowMenu extends AbstractContextual implements
 
 	@Override
 	public boolean retainAll(final Collection<?> c) {
-		final ArrayList<Object> toRemove = new ArrayList<Object>();
+		final ArrayList<Object> toRemove = new ArrayList<>();
 		for (final ModuleInfo info : this) {
 			if (!c.contains(info)) toRemove.add(info);
 		}

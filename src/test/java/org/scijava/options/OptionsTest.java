@@ -39,8 +39,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.scijava.Context;
-import org.scijava.options.OptionsPlugin;
-import org.scijava.options.OptionsService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
@@ -59,7 +57,7 @@ public class OptionsTest {
 		// add FooOptions to the list of available plugins
 		final PluginService pluginService = context.getService(PluginService.class);
 		final PluginInfo<OptionsPlugin> info =
-			new PluginInfo<OptionsPlugin>(FooOptions.class, OptionsPlugin.class);
+			new PluginInfo<>(FooOptions.class, OptionsPlugin.class);
 		pluginService.addPlugin(info);
 
 		return context.getService(OptionsService.class);

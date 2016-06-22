@@ -70,7 +70,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 		entries = new Object[2 * size];
 		next = new int[2 * size];
 		previous = new int[2 * size];
-		map = new HashMap<T, Integer>();
+		map = new HashMap<>();
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 			return;
 		}
 		assert(bottom != 0);
-		final Set<Integer> indices = new HashSet<Integer>(map.values());
+		final Set<Integer> indices = new HashSet<>(map.values());
 		assert(indices.size() == map.size());
 		for (int i = 0; i < entries.length; i++) {
 			if (indices.contains(i)) {

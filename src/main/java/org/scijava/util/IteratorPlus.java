@@ -73,7 +73,7 @@ public class IteratorPlus<E> implements Enumeration<E>, Iterator<E>,
 	}
 
 	public IteratorPlus(final Enumeration<E> enumeration) {
-		this(new EnumerationIterator<E>(enumeration));
+		this(new EnumerationIterator<>(enumeration));
 	}
 
 	public IteratorPlus(final Iterator<E> iterator) {

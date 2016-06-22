@@ -48,7 +48,7 @@ class History {
 
 	private final PrefService prefs;
 	private final String name;
-	private final LastRecentlyUsed<String> entries = new LastRecentlyUsed<String>(MAX_ENTRIES);
+	private final LastRecentlyUsed<String> entries = new LastRecentlyUsed<>(MAX_ENTRIES);
 	private String currentCommand = "";
 	private int position = -1;
 

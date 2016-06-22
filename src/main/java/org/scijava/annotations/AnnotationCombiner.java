@@ -87,7 +87,7 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 
 	/** Scans for annotations files in every resource on the classpath. */
 	public Set<String> getAnnotationFiles() throws IOException {
-		final HashSet<String> files = new HashSet<String>();
+		final HashSet<String> files = new HashSet<>();
 
 		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
 			final Enumeration<URL> directories =

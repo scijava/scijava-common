@@ -53,10 +53,10 @@ public class DefaultEventHistory extends AbstractService implements
 	private EventService eventService;
 
 	/** Event details that have been recorded. */
-	private ArrayList<EventDetails> history = new ArrayList<EventDetails>();
+	private ArrayList<EventDetails> history = new ArrayList<>();
 
 	private ArrayList<EventHistoryListener> listeners =
-		new ArrayList<EventHistoryListener>();
+		new ArrayList<>();
 
 	private boolean active;
 
