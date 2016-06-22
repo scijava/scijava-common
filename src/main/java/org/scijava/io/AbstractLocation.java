@@ -31,20 +31,11 @@
 
 package org.scijava.io;
 
-import java.net.URI;
-
 /**
  * Abstract base class for {@link Location} implementations.
  * 
  * @author Curtis Rueden
  */
 public abstract class AbstractLocation implements Location {
-
-	// -- Location methods --
-
-	@Override
-	public URI getURI() {
-		return null;
-	}
-
+	// NB: No implementation needed.
 }
