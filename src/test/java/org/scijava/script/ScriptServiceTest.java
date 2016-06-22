@@ -32,9 +32,12 @@
 package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.File;
 import java.util.List;
+
+import javax.script.ScriptException;
 
 import org.junit.Test;
 import org.scijava.Context;
@@ -70,6 +73,35 @@ public class ScriptServiceTest {
 		assertEquals(dir0, scriptDirs.get(0).getAbsolutePath());
 		assertEquals(dir1, scriptDirs.get(1).getAbsolutePath());
 		assertEquals(dir2, scriptDirs.get(2).getAbsolutePath());
+	}
+
+	@Test
+	public void testArrayAliases() throws ScriptException {
+		final Context ctx = new Context(ScriptService.class);
+		final ScriptService ss = ctx.service(ScriptService.class);
+
+		final Class<?> pInt2D = ss.lookupClass("int[][]");
+		assertSame(int[][].class, pInt2D);
+		final Class<?> pInt1D = ss.lookupClass("int[]");
+		assertSame(int[].class, pInt1D);
+		final Class<?> pInt = ss.lookupClass("int");
+		assertSame(int.class, pInt);
+
+		final Class<?> oInt2D = ss.lookupClass("Integer[][]");
+		assertSame(Integer[][].class, oInt2D);
+		final Class<?> oInt1D = ss.lookupClass("Integer[]");
+		assertSame(Integer[].class, oInt1D);
+		final Class<?> oInt = ss.lookupClass("Integer");
+		assertSame(Integer.class, oInt);
+
+		final Class<?> str2D = ss.lookupClass("String[][]");
+		assertSame(String[][].class, str2D);
+		final Class<?> str1D = ss.lookupClass("String[]");
+		assertSame(String[].class, str1D);
+		final Class<?> str = ss.lookupClass("String");
+		assertSame(String.class, str);
+
+		ctx.dispose();
 	}
 
 }
