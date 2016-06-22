@@ -254,8 +254,12 @@ public class DefaultScriptService extends
 	public synchronized Class<?> lookupClass(final String alias)
 		throws ScriptException
 	{
-		final Class<?> type = aliasMap().get(alias);
-		if (type != null) return type;
+		final String componentAlias = stripArrayNotation(alias);
+		final Class<?> type = aliasMap().get(componentAlias);
+		if (type != null) {
+			final int arrayDim = (alias.length() - componentAlias.length()) / 2;
+			return makeArrayType(type, arrayDim);
+		}
 
 		try {
 			final Class<?> c = ClassUtils.loadClass(alias, false);
@@ -471,6 +475,18 @@ public class DefaultScriptService extends
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Future<ScriptModule> cast(final Future<Module> future) {
 		return (Future) future;
+	}
+
+	// -- Helper methods - aliases --
+
+	private String stripArrayNotation(final String alias) {
+		if (!alias.endsWith("[]")) return alias;
+		return stripArrayNotation(alias.substring(0, alias.length() - 2));
+	}
+
+	private Class<?> makeArrayType(final Class<?> type, final int arrayDim) {
+		if (arrayDim <= 0) return type;
+		return makeArrayType(ClassUtils.getArrayClass(type), arrayDim - 1);
 	}
 
 }
