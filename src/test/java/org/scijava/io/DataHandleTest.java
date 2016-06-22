@@ -64,12 +64,14 @@ public abstract class DataHandleTest {
 			context.service(DataHandleService.class);
 
 		final Location loc = createLocation();
-		final DataHandle<? extends Location> handle = dataHandleService.create(loc);
-		assertEquals(getExpectedHandleType(), handle.getClass());
+		try (final DataHandle<? extends Location> handle = //
+			dataHandleService.create(loc))
+		{
+			assertEquals(getExpectedHandleType(), handle.getClass());
 
-		checkReads(handle);
-		checkWrites(handle);
-		handle.close();
+			checkReads(handle);
+			checkWrites(handle);
+		}
 	}
 
 	// -- DataHandleTest methods --
