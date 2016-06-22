@@ -96,7 +96,7 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 		}
 
 		final boolean addToExisting = addToExisting(output);
-		final ArrayList<Display<?>> displays = new ArrayList<Display<?>>();
+		final ArrayList<Display<?>> displays = new ArrayList<>();
 
 		// get list of existing displays currently visualizing this output
 		final List<Display<?>> existingDisplays =

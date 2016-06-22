@@ -410,7 +410,7 @@ public class DefaultModuleService extends AbstractService implements
 	private Map<String, Object> createMap(final Object[] values) {
 		if (values == null || values.length == 0) return null;
 
-		final HashMap<String, Object> inputMap = new HashMap<String, Object>();
+		final HashMap<String, Object> inputMap = new HashMap<>();
 
 		if (values.length % 2 != 0) {
 			log.error("Ignoring extraneous argument: " + values[values.length - 1]);
@@ -466,7 +466,7 @@ public class DefaultModuleService extends AbstractService implements
 	private <T> ModuleItem<T> getTypedSingleItem(final Module module,
 		final Class<T> type, final Iterable<ModuleItem<?>> items)
 	{
-		Set<Class<?>> types = new HashSet<Class<?>>();
+		Set<Class<?>> types = new HashSet<>();
 		types.add(type);
 		@SuppressWarnings("unchecked")
 		ModuleItem<T> result = (ModuleItem<T>) getSingleItem(module, types, items);

@@ -183,7 +183,7 @@ public class DefaultPluginService extends AbstractService implements
 	public <PT extends SciJavaPlugin, P extends PT> List<PluginInfo<PT>>
 		getPluginsOfClass(final Class<P> pluginClass, final Class<PT> type)
 	{
-		final ArrayList<PluginInfo<PT>> result = new ArrayList<PluginInfo<PT>>();
+		final ArrayList<PluginInfo<PT>> result = new ArrayList<>();
 		findPluginsOfClass(pluginClass, getPluginsOfType(type), result);
 		filterNonmatchingClasses(pluginClass, result);
 		return result;
@@ -203,7 +203,7 @@ public class DefaultPluginService extends AbstractService implements
 		getPluginsOfClass(final String className, final Class<PT> type)
 	{
 		final ArrayList<PluginInfo<SciJavaPlugin>> result =
-			new ArrayList<PluginInfo<SciJavaPlugin>>();
+			new ArrayList<>();
 		findPluginsOfClass(className, getPluginsOfType(type), result);
 		return result;
 	}
@@ -220,7 +220,7 @@ public class DefaultPluginService extends AbstractService implements
 	public <PT extends SciJavaPlugin> List<PT> createInstances(
 		final List<PluginInfo<PT>> infos)
 	{
-		final ArrayList<PT> list = new ArrayList<PT>();
+		final ArrayList<PT> list = new ArrayList<>();
 		for (final PluginInfo<? extends PT> info : infos) {
 			final PT p = createInstance(info);
 			if (p != null) list.add(p);

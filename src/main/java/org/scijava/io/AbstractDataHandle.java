@@ -200,7 +200,7 @@ public abstract class AbstractDataHandle<L extends Location> extends
 
 		@SuppressWarnings("resource")
 		final InputStreamReader in =
-			new InputStreamReader(new DataHandleInputStream<L>(this), getEncoding());
+			new InputStreamReader(new DataHandleInputStream<>(this), getEncoding());
 		final char[] buf = new char[blockSize];
 		long loc = 0;
 		while (loc < maxLen && offset() < length() - 1) {

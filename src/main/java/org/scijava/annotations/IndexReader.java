@@ -84,7 +84,7 @@ class IndexReader {
 			return null;
 		}
 		if (c == '{') {
-			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			Map<String, Object> map = new LinkedHashMap<>();
 			for (;;) {
 				if (expect('"', '}') == 1) {
 					return map;
@@ -99,7 +99,7 @@ class IndexReader {
 			}
 		}
 		if (c == '[') {
-			List<Object> list = new ArrayList<Object>();
+			List<Object> list = new ArrayList<>();
 			c = in.read();
 			if (c == ']') {
 				return list;

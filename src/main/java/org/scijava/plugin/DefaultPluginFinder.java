@@ -74,7 +74,7 @@ public class DefaultPluginFinder implements PluginFinder {
 		final List<PluginInfo<?>> plugins)
 	{
 		final HashMap<String, Throwable> exceptions =
-			new HashMap<String, Throwable>();
+			new HashMap<>();
 
 		// load the annotation indexes
 		final ClassLoader classLoader = getClassLoader();
@@ -108,7 +108,7 @@ public class DefaultPluginFinder implements PluginFinder {
 		final Class<SciJavaPlugin> pluginType =
 			(Class<SciJavaPlugin>) plugin.type();
 
-		return new PluginInfo<SciJavaPlugin>(className, pluginType, plugin, classLoader);
+		return new PluginInfo<>(className, pluginType, plugin, classLoader);
 	}
 
 	private ClassLoader getClassLoader() {
@@ -137,7 +137,7 @@ public class DefaultPluginFinder implements PluginFinder {
 			final String sysProp = System.getProperty("scijava.plugin.blacklist");
 			final String[] regexes = //
 				sysProp == null ? new String[0] : sysProp.split(":");
-			patterns = new ArrayList<Pattern>(regexes.length);
+			patterns = new ArrayList<>(regexes.length);
 			for (final String regex : regexes) {
 				try {
 					patterns.add(Pattern.compile(regex));

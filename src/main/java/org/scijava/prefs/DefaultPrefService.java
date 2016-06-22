@@ -431,7 +431,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 
 		public Map<String, String> getMap() {
-			final Map<String, String> map = new HashMap<String, String>();
+			final Map<String, String> map = new HashMap<>();
 			final String[] keys = keys();
 			for (int index = 0; index < keys.length; index++) {
 				map.put(keys[index], get(keys[index]));
@@ -447,7 +447,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		}
 
 		public List<String> getList() {
-			final List<String> list = new ArrayList<String>();
+			final List<String> list = new ArrayList<>();
 			for (int index = 0; index < 1000; index++) {
 				final String value = get("" + index);
 				if (value == null) {

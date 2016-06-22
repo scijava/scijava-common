@@ -364,7 +364,7 @@ public class DoubleArrayTest extends PrimitiveArrayTest {
 		final double[] raw = { 3, 5, 8, 13, 21 };
 		final DoubleArray array = new DoubleArray(raw.clone());
 
-		final ArrayList<Double> list = new ArrayList<Double>();
+		final ArrayList<Double> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(13d);
 		assertTrue(array.containsAll(list));

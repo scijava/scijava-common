@@ -80,13 +80,13 @@ public class ObjectIndex<E> implements Collection<E> {
 	 * &mdash;Russell Hoban, <em>Riddley Walker</em>
 	 */
 	protected final Map<Class<?>, List<E>> hoard =
-		new ConcurrentHashMap<Class<?>, List<E>>();
+		new ConcurrentHashMap<>();
 
 	private final Class<E> baseClass;
 
 	/** List of objects to add later as needed (i.e., lazily). */
 	private final List<LazyObjects<? extends E>> pending =
-		new LinkedList<LazyObjects<? extends E>>();
+		new LinkedList<>();
 
 	public ObjectIndex(final Class<E> baseClass) {
 		this.baseClass = baseClass;
@@ -133,7 +133,7 @@ public class ObjectIndex<E> implements Collection<E> {
 
 		List<E> list = retrieveList(type);
 		// NB: Return a copy of the data, to facilitate thread safety.
-		list = new ArrayList<E>(list);
+		list = new ArrayList<>(list);
 		return list;
 	}
 
@@ -237,7 +237,7 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	@Override
 	public String toString() {
-		final List<Class<?>> classes = new ArrayList<Class<?>>(hoard.keySet());
+		final List<Class<?>> classes = new ArrayList<>(hoard.keySet());
 		Collections.sort(classes, new Comparator<Class<?>>() {
 
 			@Override
@@ -285,13 +285,13 @@ public class ObjectIndex<E> implements Collection<E> {
 	}
 
 	private Map<Class<?>, List<E>[]> type2Lists =
-		new HashMap<Class<?>, List<E>[]>();
+		new HashMap<>();
 
 	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
 		final List<E>[] lists = type2Lists.get(type);
 		if (lists != null) return lists;
 
-		final ArrayList<List<E>> listOfLists = new ArrayList<List<E>>();
+		final ArrayList<List<E>> listOfLists = new ArrayList<>();
 		for (final Class<?> c : getTypes(type)) {
 			listOfLists.add(retrieveList(c));
 		}
@@ -342,13 +342,13 @@ public class ObjectIndex<E> implements Collection<E> {
 	// -- Helper methods --
 
 	private static Map<Class<?>, Class<?>[]> typeMap =
-		new HashMap<Class<?>, Class<?>[]>();
+		new HashMap<>();
 
 	/** Gets a new set containing the type and all its supertypes. */
 	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
 		Class<?>[] types = typeMap.get(type);
 		if (types != null) return types;
-		final Set<Class<?>>set = new LinkedHashSet<Class<?>>();
+		final Set<Class<?>>set = new LinkedHashSet<>();
 		set.add(All.class); // NB: Always include the "All" class.
 		getTypes(type, set);
 		types = set.toArray(new Class[set.size()]);
@@ -374,7 +374,7 @@ public class ObjectIndex<E> implements Collection<E> {
 	protected List<E> retrieveList(final Class<?> type) {
 		List<E> list = hoard.get(type);
 		if (list == null) {
-			list = new ArrayList<E>();
+			list = new ArrayList<>();
 			hoard.put(type, list);
 		}
 		return list;

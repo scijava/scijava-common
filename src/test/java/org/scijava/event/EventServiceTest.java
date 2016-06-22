@@ -53,7 +53,7 @@ public class EventServiceTest {
 	public void testWeakEventHandlers() {
 		// verify that the garbage collector collects weak references
 		final WeakReference<MyEventHandler> reference =
-				new WeakReference<MyEventHandler>(new MyEventHandler());
+				new WeakReference<>(new MyEventHandler());
 		gc();
 		assertNull(reference.get());
 

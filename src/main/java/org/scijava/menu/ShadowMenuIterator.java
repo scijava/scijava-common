@@ -52,7 +52,7 @@ public class ShadowMenuIterator implements Iterator<ModuleInfo> {
 	public ShadowMenuIterator(final ShadowMenu node) {
 		this.node = node;
 		final List<ShadowMenu> children = node.getChildren();
-		childIterators = new ArrayList<ShadowMenuIterator>();
+		childIterators = new ArrayList<>();
 		for (final ShadowMenu child : children) {
 			childIterators.add(new ShadowMenuIterator(child));
 		}

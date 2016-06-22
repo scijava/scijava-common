@@ -53,10 +53,10 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	private static final long serialVersionUID = 1L;
 
 	private final Map<String, ScriptLanguage> byExtension =
-		new HashMap<String, ScriptLanguage>();
+		new HashMap<>();
 
 	private final Map<String, ScriptLanguage> byName =
-		new HashMap<String, ScriptLanguage>();
+		new HashMap<>();
 
 	private final LogService log;
 

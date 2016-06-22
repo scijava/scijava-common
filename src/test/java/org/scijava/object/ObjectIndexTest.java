@@ -53,7 +53,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testGetAll() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
@@ -70,7 +70,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testGet() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
@@ -91,7 +91,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testIsEmpty() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		assertTrue(objectIndex.isEmpty());
 		final Object o1 = new Integer(5);
 		objectIndex.add(o1);
@@ -103,7 +103,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testContains() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		assertFalse(objectIndex.contains(o1));
 		objectIndex.add(o1);
@@ -115,7 +115,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testIterator() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object[] objects =
 			{ new Integer(5), new Float(2.5f), new Integer(3) };
 		for (final Object o : objects)
@@ -132,7 +132,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testToArray() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object[] objects =
 			{ new Integer(5), new Float(2.5f), new Integer(3) };
 		for (final Object o : objects)
@@ -144,12 +144,12 @@ public class ObjectIndexTest {
 	@Test
 	public void testContainsAll() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
-		assertTrue(objectIndex.containsAll(new ArrayList<Object>()));
+			new ObjectIndex<>(Object.class);
+		assertTrue(objectIndex.containsAll(new ArrayList<>()));
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
-		final ArrayList<Object> objects = new ArrayList<Object>();
+		final ArrayList<Object> objects = new ArrayList<>();
 		objects.add(o1);
 		objects.add(o2);
 		objects.add(o3);
@@ -163,8 +163,8 @@ public class ObjectIndexTest {
 	@Test
 	public void testAddAll() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
-		final ArrayList<Object> objects = new ArrayList<Object>();
+			new ObjectIndex<>(Object.class);
+		final ArrayList<Object> objects = new ArrayList<>();
 		objects.add(new Integer(5));
 		objects.add(new Float(2.5f));
 		objects.add(new Integer(3));
@@ -176,11 +176,11 @@ public class ObjectIndexTest {
 	@Test
 	public void testRemoveAll() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
-		final ArrayList<Object> objects = new ArrayList<Object>();
+		final ArrayList<Object> objects = new ArrayList<>();
 		objects.add(o1);
 		objects.add(o2);
 		objects.add(o3);
@@ -195,7 +195,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testClear() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		objectIndex.clear();
 		assertTrue(objectIndex.isEmpty());
 		objectIndex.add(new Integer(5));
@@ -207,7 +207,7 @@ public class ObjectIndexTest {
 	@Test
 	public void testToString() {
 		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<Object>(Object.class);
+			new ObjectIndex<>(Object.class);
 		objectIndex.add(new Integer(5));
 		objectIndex.add(new Float(2.5f));
 		objectIndex.add(new Integer(3));

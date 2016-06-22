@@ -100,7 +100,7 @@ public class ConsoleServiceTest {
 		final String stdoutAfter = "ave";
 		final String stderrAfter = "rs-";
 
-		final ArrayList<OutputEvent> events = new ArrayList<OutputEvent>();
+		final ArrayList<OutputEvent> events = new ArrayList<>();
 		final OutputListener outputListener = new OutputTracker(events);
 
 		final Runnable r = new Printer(stdoutLocal, stderrLocal);
@@ -145,9 +145,9 @@ public class ConsoleServiceTest {
 		final ThreadService ts1 = c1.service(ThreadService.class);
 		final ThreadService ts2 = c2.service(ThreadService.class);
 
-		final ArrayList<OutputEvent> events1 = new ArrayList<OutputEvent>();
+		final ArrayList<OutputEvent> events1 = new ArrayList<>();
 		cs1.addOutputListener(new OutputTracker(events1));
-		final ArrayList<OutputEvent> events2 = new ArrayList<OutputEvent>();
+		final ArrayList<OutputEvent> events2 = new ArrayList<>();
 		cs2.addOutputListener(new OutputTracker(events2));
 
 		final String globalOut = "and";

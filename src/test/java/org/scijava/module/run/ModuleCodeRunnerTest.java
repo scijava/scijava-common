@@ -83,7 +83,7 @@ public class ModuleCodeRunnerTest {
 	@Test
 	public void testRunMap() throws InvocationTargetException {
 		final StringBuilder sb = new StringBuilder();
-		final Map<String, Object> inputMap = new HashMap<String, Object>();
+		final Map<String, Object> inputMap = new HashMap<>();
 		inputMap.put("buffer", sb);
 		inputMap.put("length", 4);
 		runner.run("module:" + AlphabetModule.class.getName(), inputMap);
@@ -124,11 +124,11 @@ public class ModuleCodeRunnerTest {
 			// So much fun to construct modules by hand! Who needs commands?
 			setModuleClass(AlphabetModule.class);
 			final DefaultMutableModuleItem<StringBuilder> bufferItem =
-				new DefaultMutableModuleItem<StringBuilder>(this, "buffer",
+				new DefaultMutableModuleItem<>(this, "buffer",
 					StringBuilder.class);
 			bufferItem.setIOType(ItemIO.BOTH);
 			addInput(bufferItem);
-			addInput(new DefaultMutableModuleItem<Integer>(this, "length",
+			addInput(new DefaultMutableModuleItem<>(this, "length",
 				int.class));
 		}
 

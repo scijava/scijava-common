@@ -59,7 +59,7 @@ public class DefaultMutableModule extends AbstractModule implements
 		final Class<T> type)
 	{
 		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<T>(this, name, type);
+			new DefaultMutableModuleItem<>(this, name, type);
 		addInput(item);
 		return item;
 	}
@@ -74,7 +74,7 @@ public class DefaultMutableModule extends AbstractModule implements
 		final Class<T> type)
 	{
 		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<T>(this, name, type);
+			new DefaultMutableModuleItem<>(this, name, type);
 		addOutput(item);
 		return item;
 	}

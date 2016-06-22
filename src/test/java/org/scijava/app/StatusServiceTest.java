@@ -81,7 +81,7 @@ public class StatusServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		context = new Context();
-		queue = new ArrayBlockingQueue<StatusEvent>(10);
+		queue = new ArrayBlockingQueue<>(10);
 		statusListener = new StatusListener();
 		statusListener.setContext(context);
 		ss = statusListener.statusService;

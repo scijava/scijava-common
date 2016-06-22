@@ -81,7 +81,7 @@ public class ScriptFinder extends AbstractContextual {
 
 		int scriptCount = 0;
 
-		final HashSet<File> scriptFiles = new HashSet<File>();
+		final HashSet<File> scriptFiles = new HashSet<>();
 		for (final File directory : directories) {
 			if (!directory.exists()) {
 				log.debug("Ignoring non-existent scripts directory: " +

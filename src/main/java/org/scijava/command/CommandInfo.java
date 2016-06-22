@@ -94,21 +94,21 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/** List of problems detected when parsing command parameters. */
 	private final List<ValidityProblem> problems =
-		new ArrayList<ValidityProblem>();
+		new ArrayList<>();
 
 	/** Table of inputs, keyed on name. */
 	private final Map<String, ModuleItem<?>> inputMap =
-		new HashMap<String, ModuleItem<?>>();
+		new HashMap<>();
 
 	/** Table of outputs, keyed on name. */
 	private final Map<String, ModuleItem<?>> outputMap =
-		new HashMap<String, ModuleItem<?>>();
+		new HashMap<>();
 
 	/** Ordered list of input items. */
-	private final List<ModuleItem<?>> inputList = new ArrayList<ModuleItem<?>>();
+	private final List<ModuleItem<?>> inputList = new ArrayList<>();
 
 	/** Ordered list of output items. */
-	private final List<ModuleItem<?>> outputList = new ArrayList<ModuleItem<?>>();
+	private final List<ModuleItem<?>> outputList = new ArrayList<>();
 
 	// -- Constructors --
 
@@ -179,7 +179,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 	/** Sets the table of items with fixed, preset values. */
 	public void setPresets(final Map<String, Object> presets) {
 		if (presets == null) {
-			this.presets = new HashMap<String, Object>();
+			this.presets = new HashMap<>();
 		}
 		else {
 			this.presets = presets;
@@ -495,7 +495,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 			// add item to the relevant list (inputs or outputs)
 			final CommandModuleItem<Object> item =
-				new CommandModuleItem<Object>(this, f);
+				new CommandModuleItem<>(this, f);
 			if (item.isInput()) {
 				inputMap.put(name, item);
 				if (!isPreset) inputList.add(item);

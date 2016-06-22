@@ -343,7 +343,7 @@ public class ContextCreationTest {
 		// create a 2-service context
 		final PluginIndex index = pluginIndex(BaseImpl.class, ExtensionImpl.class);
 		// Add another service, that is not indexed under Service.class
-		index.add(new PluginInfo<SciJavaPlugin>(ThreadService.class.getName(),
+		index.add(new PluginInfo<>(ThreadService.class.getName(),
 			SciJavaPlugin.class));
 		final Context c =
 			new Context(pluginIndex(BaseImpl.class, ExtensionImpl.class));
@@ -440,7 +440,7 @@ public class ContextCreationTest {
 	private PluginIndex pluginIndex(final Class<?>... plugins) {
 		final PluginIndex index = new PluginIndex(null);
 		for (final Class<?> c : plugins) {
-			index.add(new PluginInfo<Service>(c.getName(), Service.class));
+			index.add(new PluginInfo<>(c.getName(), Service.class));
 		}
 		return index;
 	}

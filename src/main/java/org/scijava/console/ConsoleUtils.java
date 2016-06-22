@@ -66,7 +66,7 @@ public final class ConsoleUtils {
 	/** @deprecated Use {@link ParseService} instead. */
 	@Deprecated
 	public static Map<String, Object> parseParameterString(final String parameterString, final ModuleInfo info, final LogService log) {
-		final Map<String, Object> inputMap = new HashMap<String, Object>();
+		final Map<String, Object> inputMap = new HashMap<>();
 
 		if (!parameterString.isEmpty()) {
 			Iterator<ModuleItem<?>> inputs = null;

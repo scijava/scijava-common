@@ -53,7 +53,7 @@ public abstract class AbstractBasicDetails implements BasicDetails {
 	private String description;
 
 	/** Table of extra key/value pairs. */
-	private final Map<String, String> values = new HashMap<String, String>();
+	private final Map<String, String> values = new HashMap<>();
 
 	// -- Object methods --
 

@@ -574,7 +574,7 @@ public final class FileUtils {
 				final JarURLConnection connection =
 					(JarURLConnection) new URL(baseURL).openConnection();
 				final JarFile jar = connection.getJarFile();
-				for (final JarEntry entry : new IteratorPlus<JarEntry>(jar.entries())) {
+				for (final JarEntry entry : new IteratorPlus<>(jar.entries())) {
 					final String urlEncoded =
 						new URI(null, null, entry.getName(), null).toString();
 					if (urlEncoded.length() > prefix.length() && // omit directory itself

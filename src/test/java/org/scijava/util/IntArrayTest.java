@@ -358,7 +358,7 @@ public class IntArrayTest extends PrimitiveArrayTest {
 		final int[] raw = { 3, 5, 8, 13, 21 };
 		final IntArray array = new IntArray(raw.clone());
 
-		final ArrayList<Integer> list = new ArrayList<Integer>();
+		final ArrayList<Integer> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(13);
 		assertTrue(array.containsAll(list));

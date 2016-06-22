@@ -58,7 +58,7 @@ public abstract class AbstractConsoleArgument extends
 	
 	public AbstractConsoleArgument(final int requiredArgs, final String... flags) {
 		numArgs = requiredArgs;
-		this.flags = new HashSet<String>();
+		this.flags = new HashSet<>();
 		for (final String s : flags) this.flags.add(s);
 	}
 

@@ -45,7 +45,7 @@ import org.scijava.event.SciJavaEvent;
  */
 public abstract class ListEvent<T> extends SciJavaEvent {
 
-	private final List<T> items = new ArrayList<T>();
+	private final List<T> items = new ArrayList<>();
 
 	public ListEvent(final T o) {
 		items.add(o);

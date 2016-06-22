@@ -115,13 +115,13 @@ public class ServiceHelper extends AbstractContextual {
 		setContext(context);
 		log = context.getService(LogService.class);
 		if (log == null) log = new StderrLogService();
-		classPoolMap = new HashMap<Class<? extends Service>, Double>();
-		classPoolList = new ArrayList<Class<? extends Service>>();
+		classPoolMap = new HashMap<>();
+		classPoolList = new ArrayList<>();
 		findServiceClasses(classPoolMap, classPoolList);
 		if (classPoolList.isEmpty()) {
 			log.warn("Class pool is empty: forgot to call Thread#setClassLoader?");
 		}
-		this.serviceClasses = new ArrayList<Class<? extends Service>>();
+		this.serviceClasses = new ArrayList<>();
 		if (serviceClasses == null) {
 			// load all discovered services
 			this.serviceClasses.addAll(classPoolList);

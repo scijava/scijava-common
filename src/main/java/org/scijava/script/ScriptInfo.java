@@ -393,7 +393,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Adds an output for the value returned by the script itself. */
 	private void addReturnValue() throws ScriptException {
-		final HashMap<String, Object> attrs = new HashMap<String, Object>();
+		final HashMap<String, Object> attrs = new HashMap<>();
 		attrs.put("type", "OUTPUT");
 		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
 	}
@@ -402,7 +402,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		final Map<String, Object> attrs)
 	{
 		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<T>(this, name, type);
+			new DefaultMutableModuleItem<>(this, name, type);
 		for (final String key : attrs.keySet()) {
 			final Object value = attrs.get(key);
 			assignAttribute(item, key, value);
@@ -449,7 +449,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private <T> List<T> asList(final Object v, final Class<T> type) {
-		final ArrayList<T> result = new ArrayList<T>();
+		final ArrayList<T> result = new ArrayList<>();
 		final List<?> list = as(v, List.class);
 		for (final Object item : list) {
 			result.add(as(item, type));

@@ -215,7 +215,7 @@ public class TestUtils {
 					loader + ")!");
 			}
 			final String suffix = element.getMethodName() + "-L" + element.getLineNumber();
-			return new AbstractMap.SimpleEntry<Class<?>, String>(clazz, suffix);
+			return new AbstractMap.SimpleEntry<>(clazz, suffix);
 		}
 		throw new UnsupportedOperationException("No calling class outside " + thisClassName + " found!");
 	}

@@ -90,8 +90,8 @@ public class MIMEType {
 		base = st.nextToken().trim();
 
 		// parse parameters
-		final ArrayList<String> names = new ArrayList<String>();
-		final HashMap<String, String> map = new HashMap<String, String>();
+		final ArrayList<String> names = new ArrayList<>();
+		final HashMap<String, String> map = new HashMap<>();
 		while (st.hasMoreTokens()) {
 			final String param = st.nextToken();
 			final int equals = param.indexOf("=");

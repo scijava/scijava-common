@@ -58,7 +58,7 @@ public class ServiceCombiner implements Combiner {
 	public void combine(final File outputDirectory) throws IOException {
 
 		final Map<String, StringBuilder> files =
-			new HashMap<String, StringBuilder>();
+			new HashMap<>();
 		final Enumeration<URL> directories =
 			Thread.currentThread().getContextClassLoader().getResources(
 				SERVICES_PREFIX);

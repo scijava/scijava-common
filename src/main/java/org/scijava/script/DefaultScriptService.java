@@ -121,7 +121,7 @@ public class DefaultScriptService extends
 
 	@Override
 	public List<ScriptLanguage> getLanguages() {
-		return new ArrayList<ScriptLanguage>(getIndex());
+		return new ArrayList<>(getIndex());
 	}
 
 	@Override
@@ -359,7 +359,7 @@ public class DefaultScriptService extends
 	private synchronized void initScriptDirs() {
 		if (scriptDirs != null) return;
 
-		final ArrayList<File> dirs = new ArrayList<File>();
+		final ArrayList<File> dirs = new ArrayList<>();
 
 		// append default script directories
 		final File baseDir = AppUtils.getBaseDirectory(getClass()); //FIXME
@@ -379,16 +379,16 @@ public class DefaultScriptService extends
 	/** Initializes {@link #menuPrefixes}. */
 	private synchronized void initMenuPrefixes() {
 		if (menuPrefixes != null) return;
-		menuPrefixes = new HashMap<File, MenuPath>();
+		menuPrefixes = new HashMap<>();
 	}
 
 	/** Initializes {@link #scripts}. */
 	private synchronized void initScripts() {
 		if (scripts != null) return; // already initialized
 
-		final HashMap<File, ScriptInfo> map = new HashMap<File, ScriptInfo>();
+		final HashMap<File, ScriptInfo> map = new HashMap<>();
 
-		final ArrayList<ScriptInfo> scriptList = new ArrayList<ScriptInfo>();
+		final ArrayList<ScriptInfo> scriptList = new ArrayList<>();
 		new ScriptFinder(this).findScripts(scriptList);
 
 		for (final ScriptInfo info : scriptList) {
@@ -402,7 +402,7 @@ public class DefaultScriptService extends
 	private synchronized void initAliasMap() {
 		if (aliasMap != null) return; // already initialized
 
-		final HashMap<String, Class<?>> map = new HashMap<String, Class<?>>();
+		final HashMap<String, Class<?>> map = new HashMap<>();
 
 		// primitives
 		addAliases(map, boolean.class, byte.class, char.class, double.class,

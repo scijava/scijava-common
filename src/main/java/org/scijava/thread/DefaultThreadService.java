@@ -58,7 +58,7 @@ public final class DefaultThreadService extends AbstractService implements
 	private static final String SCIJAVA_THREAD_PREFIX = "SciJava-";
 
 	private static WeakHashMap<Thread, Thread> parents =
-		new WeakHashMap<Thread, Thread>();
+		new WeakHashMap<>();
 
 	@Parameter
 	private LogService log;

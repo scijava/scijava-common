@@ -326,7 +326,7 @@ public class BoolArrayTest extends PrimitiveArrayTest {
 		final boolean[] raw = { true, true };
 		final BoolArray array = new BoolArray(raw.clone());
 
-		final ArrayList<Boolean> list = new ArrayList<Boolean>();
+		final ArrayList<Boolean> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add(true);
 		assertTrue(array.containsAll(list));

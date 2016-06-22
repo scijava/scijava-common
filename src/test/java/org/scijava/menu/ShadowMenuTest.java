@@ -136,7 +136,7 @@ public class ShadowMenuTest {
 	private ShadowMenu createShadowMenu() {
 		final Context context = new Context(true);
 
-		final ArrayList<ModuleInfo> modules = new ArrayList<ModuleInfo>();
+		final ArrayList<ModuleInfo> modules = new ArrayList<>();
 		modules.add(createModuleInfo("Edit>Copy"));
 		modules.add(createModuleInfo("Edit>Cut"));
 		modules.add(createModuleInfo("Edit>Paste"));

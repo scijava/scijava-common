@@ -197,7 +197,7 @@ public final class Colors {
 	public static final ColorRGB YELLOWGREEN = new ColorRGB(154, 205, 50);
 
 	private static final Map<String, ColorRGB> COLORS =
-		new HashMap<String, ColorRGB>();
+		new HashMap<>();
 
 	static {
 		for (final Field f : Colors.class.getDeclaredFields()) {

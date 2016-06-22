@@ -310,7 +310,7 @@ public class DynamicCommandInfo extends DefaultMutableModuleInfo {
 
 	/** Creates a mutable copy of the given module item. */
 	private <T> DefaultMutableModuleItem<T> copy(final ModuleItem<T> item) {
-		return new DefaultMutableModuleItem<T>(this, item);
+		return new DefaultMutableModuleItem<>(this, item);
 	}
 
 }

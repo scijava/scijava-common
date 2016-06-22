@@ -83,7 +83,7 @@ public class LegacyReader {
 		if (version != STREAM_VERSION) {
 			throw new IOException("Unsupported version: " + version);
 		}
-		references = new ArrayList<Object>();
+		references = new ArrayList<>();
 	}
 
 	public void close() throws IOException {
@@ -260,7 +260,7 @@ public class LegacyReader {
 			if ((fields.length % 2) != 0) {
 				throw new RuntimeException("That's odd: " + fields.length);
 			}
-			this.fields = new LinkedHashMap<String, ClassDesc>();
+			this.fields = new LinkedHashMap<>();
 			for (int i = 0; i < fields.length; i += 2) {
 				String name = (String) fields[i];
 				ClassDesc classDesc;
@@ -300,7 +300,7 @@ public class LegacyReader {
 
 		@Override
 		protected final Object readWithoutClassDesc() throws IOException {
-			final Map<String, Object> map = new LinkedHashMap<String, Object>();
+			final Map<String, Object> map = new LinkedHashMap<>();
 			int index = references.size();
 			references.add(map);
 			for (final String fieldName : order) {
@@ -357,7 +357,7 @@ public class LegacyReader {
 	}
 
 	private final Map<String, ClassDesc> classDescs =
-		new HashMap<String, ClassDesc>();
+		new HashMap<>();
 
 	{
 		new ClassDesc("B") {
@@ -477,7 +477,7 @@ public class LegacyReader {
 				expectToken(TC_BLOCKDATA);
 				expectToken(4);
 				int capacity = read32();
-				final List<Object> list = new ArrayList<Object>(capacity);
+				final List<Object> list = new ArrayList<>(capacity);
 				for (int i = 0; i < size; i++) {
 					list.add(readObject());
 				}

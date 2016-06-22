@@ -75,7 +75,7 @@ public abstract class AbstractDisplay<T> extends AbstractRichPlugin implements
 
 	public AbstractDisplay(final Class<T> type) {
 		this.type = type;
-		objects = new ArrayList<T>();
+		objects = new ArrayList<>();
 	}
 
 	// -- AbstractDisplay methods --

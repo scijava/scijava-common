@@ -344,7 +344,7 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	private synchronized void initAlwaysActiveTools() {
 		if (alwaysActiveTools != null) return; // already initialized
 
-		final HashMap<String, Tool> map = new HashMap<String, Tool>();
+		final HashMap<String, Tool> map = new HashMap<>();
 		for (final Tool tool : alwaysActiveToolList()) {
 			map.put(tool.getInfo().getName(), tool);
 		}
@@ -356,7 +356,7 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	private synchronized void initAlwaysActiveToolList() {
 		if (alwaysActiveToolList != null) return; // already initialized
 
-		final ArrayList<Tool> list = new ArrayList<Tool>();
+		final ArrayList<Tool> list = new ArrayList<>();
 		for (final Tool tool : getInstances()) {
 			if (!tool.isAlwaysActive()) continue;
 			list.add(tool);
@@ -369,7 +369,7 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	private synchronized void initTools() {
 		if (tools != null) return; // already initialized
 
-		final HashMap<String, Tool> map = new HashMap<String, Tool>();
+		final HashMap<String, Tool> map = new HashMap<>();
 		for (final Tool tool : toolList()) {
 			map.put(tool.getInfo().getName(), tool);
 		}
@@ -381,7 +381,7 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	private synchronized void initToolList() {
 		if (toolList != null) return; // already initialized
 
-		final ArrayList<Tool> list = new ArrayList<Tool>();
+		final ArrayList<Tool> list = new ArrayList<>();
 		for (final Tool tool : getInstances()) {
 			if (tool.isAlwaysActive()) continue;
 			list.add(tool);

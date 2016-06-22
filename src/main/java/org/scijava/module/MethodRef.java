@@ -51,7 +51,7 @@ public class MethodRef implements Validated {
 
 	/** List of problems when initializing the method reference. */
 	private final List<ValidityProblem> problems =
-		new ArrayList<ValidityProblem>();
+		new ArrayList<>();
 
 	public MethodRef(final Class<?> clazz, final String methodName,
 		final Class<?>... params)

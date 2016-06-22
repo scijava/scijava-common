@@ -43,7 +43,7 @@ public class InvocationObject {
 
 	public String moduleCalled;
 	public ArrayList<ParameterObject> parameterObjects =
-		new ArrayList<ParameterObject>();
+		new ArrayList<>();
 
 	public InvocationObject(final String moduleCalled) {
 		this.moduleCalled = moduleCalled;

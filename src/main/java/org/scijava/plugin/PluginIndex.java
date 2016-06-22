@@ -103,7 +103,7 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	 */
 	public void discover() {
 		if (pluginFinder == null) return;
-		final ArrayList<PluginInfo<?>> plugins = new ArrayList<PluginInfo<?>>();
+		final ArrayList<PluginInfo<?>> plugins = new ArrayList<>();
 		exceptions = pluginFinder.findPlugins(plugins);
 		addAll(plugins);
 	}

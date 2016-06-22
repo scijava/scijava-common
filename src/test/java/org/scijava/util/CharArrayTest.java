@@ -354,7 +354,7 @@ public class CharArrayTest extends PrimitiveArrayTest {
 		final char[] raw = { 3, 5, 8, 13, 21 };
 		final CharArray array = new CharArray(raw.clone());
 
-		final ArrayList<Character> list = new ArrayList<Character>();
+		final ArrayList<Character> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add((char) 13);
 		assertTrue(array.containsAll(list));

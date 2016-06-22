@@ -601,10 +601,10 @@ public enum KeyCode {
 	UNDEFINED(0x0);
 
 	private static final Map<Integer, KeyCode> CODES =
-		new HashMap<Integer, KeyCode>();
+		new HashMap<>();
 
 	private static final Map<String, KeyCode> NAMES =
-		new HashMap<String, KeyCode>();
+		new HashMap<>();
 
 	static {
 		for (final KeyCode keyCode : values()) {

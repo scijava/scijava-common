@@ -358,7 +358,7 @@ public class ShortArrayTest extends PrimitiveArrayTest {
 		final short[] raw = { 3, 5, 8, 13, 21 };
 		final ShortArray array = new ShortArray(raw.clone());
 
-		final ArrayList<Short> list = new ArrayList<Short>();
+		final ArrayList<Short> list = new ArrayList<>();
 		assertTrue(array.containsAll(list));
 		list.add((short) 13);
 		assertTrue(array.containsAll(list));
