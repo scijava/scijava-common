@@ -31,12 +31,12 @@
 
 package org.scijava.util;
 
-import com.googlecode.gentyref.GenericTypeReflector;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
+
+import com.googlecode.gentyref.GenericTypeReflector;
 
 /**
  * Useful methods for working with {@link Type} objects, particularly generic
