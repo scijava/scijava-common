@@ -63,7 +63,24 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 
 	@Override
 	public String getVersion() {
-		return getPOM() == null ? "Unknown" : getPOM().getVersion();
+		// NB: We do not use VersionUtils.getVersion(c, groupId, artifactId)
+		// because that method does not cache the parsed Manifest and/or POM.
+		// We might have them already parsed here, and if not, we want to
+		// parse then cache locally, rather than discarding them afterwards.
+
+		// try the manifest first, since it might know its build number
+		final Manifest m = getManifest();
+		if (m != null) {
+			final String v = m.getVersion();
+			if (v != null) return v;
+		}
+		// try the POM
+		final POM p = getPOM();
+		if (p != null) {
+			final String v = p.getVersion();
+			if (v != null) return v;
+		}
+		return "Unknown";
 	}
 
 	@Override
