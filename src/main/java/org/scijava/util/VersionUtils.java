@@ -80,13 +80,7 @@ public class VersionUtils {
 	 */
 	public static String getVersionFromManifest(final Class<?> c) {
 		final Manifest m = Manifest.getManifest(c);
-		if (m == null) return null;
-		final String version = getVersionFromManifest(m);
-		if (version == null || !version.endsWith("-SNAPSHOT")) return version;
-
-		// append commit hash to differentiate between development versions
-		final String buildNumber = getBuildNumber(m);
-		return buildNumber == null ? version : version + "-" + buildNumber;
+		return m == null ? null : m.getVersion();
 	}
 
 	/**
@@ -115,18 +109,7 @@ public class VersionUtils {
 	 * @return Build number of specified {@link Class} or null if not found.
 	 */
 	public static String getBuildNumber(final Class<?> c) {
-		return getBuildNumber(Manifest.getManifest(c));
-	}
-
-	// -- Helper methods --
-
-	private static String getVersionFromManifest(final Manifest m) {
-		final String manifestVersion = m.getImplementationVersion();
-		if (manifestVersion != null) return manifestVersion;
-		return m.getSpecificationVersion();
-	}
-
-	private static String getBuildNumber(final Manifest m) {
+		final Manifest m = Manifest.getManifest(c);
 		return m == null ? null : m.getImplementationBuild();
 	}
 

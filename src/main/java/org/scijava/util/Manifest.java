@@ -40,12 +40,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.jar.Attributes;
 
+import org.scijava.Versioned;
+
 /**
  * Helper class for working with JAR manifests.
  * 
  * @author Curtis Rueden
  */
-public class Manifest {
+public class Manifest implements Versioned {
 
 	/** The JAR manifest backing this object. */
 	private final java.util.jar.Manifest manifest;
@@ -163,6 +165,26 @@ public class Manifest {
 	private static Manifest getManifest(final URL jarURL) throws IOException {
 		final JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
 		return new Manifest(conn.getManifest());
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		final String v = getBaseVersion();
+		if (v == null || !v.endsWith("-SNAPSHOT")) return v;
+
+		// append commit hash to differentiate between development versions
+		final String buildNumber = getImplementationBuild();
+		return buildNumber == null ? v : v + "-" + buildNumber;
+	}
+
+	// -- Helper methods --
+
+	private String getBaseVersion() {
+		final String manifestVersion = getImplementationVersion();
+		if (manifestVersion != null) return manifestVersion;
+		return getSpecificationVersion();
 	}
 
 }
