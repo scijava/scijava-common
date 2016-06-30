@@ -49,11 +49,11 @@ import org.scijava.plugin.SingletonService;
 import org.scijava.service.SciJavaService;
 
 /**
- * Interface for service that works with scripting languages. This service
- * discovers available scripting languages, and provides convenience methods to
- * interact with them.
+ * Interface for service that works with scripts. This service discovers
+ * available scripts, and provides convenience methods to interact with them.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public interface ScriptService extends SingletonService<ScriptLanguage>,
 	SciJavaService
@@ -65,6 +65,12 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @see #getScriptDirectories()
 	 */
 	String SCRIPTS_PATH_PROPERTY = "scijava.scripts.path";
+
+	/**
+	 * Base directory for discovering scripts, including within classpath
+	 * resources as well as beneath the application base directory.
+	 */
+	String SCRIPTS_RESOURCE_DIR = "scripts";
 
 	// -- Scripting languages --
 

@@ -107,6 +107,7 @@ public class ScriptFinderTest {
 			"Math > divide", //
 			"Scripts > fox", //
 			"Math > multiply", //
+			"Math > pow", //
 			"Scripts > quick", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
@@ -140,6 +141,7 @@ public class ScriptFinderTest {
 			"Foo > Bar > Scripts > fox", //
 			"Foo > Bar > ignored", //
 			"Foo > Bar > Math > multiply", //
+			"Math > pow", //
 			"Foo > Bar > Scripts > quick", //
 			"Foo > Bar > Math > Trig > sin", //
 			"Foo > Bar > Math > subtract", //
@@ -172,6 +174,7 @@ public class ScriptFinderTest {
 			"Math > divide", //
 			"Plugins > fox", //
 			"Math > multiply", //
+			"Math > pow", //
 			"Plugins > quick", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
@@ -192,7 +195,7 @@ public class ScriptFinderTest {
 	}
 
 	private ArrayList<ScriptInfo> findScripts(final ScriptService scriptService) {
-		final ScriptFinder scriptFinder = new ScriptFinder(scriptService);
+		final ScriptFinder scriptFinder = new ScriptFinder(scriptService.context());
 		final ArrayList<ScriptInfo> scripts = new ArrayList<>();
 		scriptFinder.findScripts(scripts);
 		Collections.sort(scripts);

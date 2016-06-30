@@ -32,7 +32,6 @@
 package org.scijava.script;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -52,6 +51,7 @@ import org.scijava.Gateway;
 import org.scijava.InstantiableException;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
+import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
 import org.scijava.event.EventHandler;
 import org.scijava.log.LogService;
@@ -66,13 +66,12 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.service.Service;
 import org.scijava.service.event.ServicesLoadedEvent;
-import org.scijava.util.AppUtils;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ColorRGB;
 import org.scijava.util.ColorRGBA;
 
 /**
- * Default service for working with scripting languages.
+ * Default service for working with scripts.
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
@@ -92,6 +91,9 @@ public class DefaultScriptService extends
 	private CommandService commandService;
 
 	@Parameter
+	private AppService appService;
+
+	@Parameter
 	private ParseService parser;
 
 	@Parameter
@@ -106,8 +108,8 @@ public class DefaultScriptService extends
 	/** Menu prefix to use for each script directory, if any. */
 	private HashMap<File, MenuPath> menuPrefixes;
 
-	/** Index of available scripts, by script <em>file</em>. */
-	private HashMap<File, ScriptInfo> scripts;
+	/** Index of available scripts, by script path. */
+	private HashMap<String, ScriptInfo> scripts;
 
 	/** Table of short type names to associated {@link Class}. */
 	private HashMap<String, Class<?>> aliasMap;
@@ -330,7 +332,7 @@ public class DefaultScriptService extends
 	}
 
 	/** Gets {@link #scripts}, initializing if needed. */
-	private HashMap<File, ScriptInfo> scripts() {
+	private HashMap<String, ScriptInfo> scripts() {
 		if (scripts == null) initScripts();
 		return scripts;
 	}
@@ -362,8 +364,8 @@ public class DefaultScriptService extends
 		final ArrayList<File> dirs = new ArrayList<>();
 
 		// append default script directories
-		final File baseDir = AppUtils.getBaseDirectory(getClass()); //FIXME
-		dirs.add(new File(baseDir, "scripts"));
+		final File baseDir = appService.getApp().getBaseDirectory();
+		dirs.add(new File(baseDir, SCRIPTS_RESOURCE_DIR));
 
 		// append additional script directories from system property
 		final String scriptsPath = System.getProperty(SCRIPTS_PATH_PROPERTY);
@@ -386,13 +388,13 @@ public class DefaultScriptService extends
 	private synchronized void initScripts() {
 		if (scripts != null) return; // already initialized
 
-		final HashMap<File, ScriptInfo> map = new HashMap<>();
+		final HashMap<String, ScriptInfo> map = new HashMap<>();
 
 		final ArrayList<ScriptInfo> scriptList = new ArrayList<>();
-		new ScriptFinder(this).findScripts(scriptList);
+		new ScriptFinder(context()).findScripts(scriptList);
 
 		for (final ScriptInfo info : scriptList) {
-			map.put(asFile(info.getPath()), info);
+			map.put(info.getPath(), info);
 		}
 
 		scripts = map;
@@ -459,17 +461,6 @@ public class DefaultScriptService extends
 		final ScriptInfo info = scripts().get(file);
 		if (info != null) return info;
 		return new ScriptInfo(getContext(), file);
-	}
-
-	private File asFile(final String path) {
-		final File file = new File(path);
-		try {
-			return file.getCanonicalFile();
-		}
-		catch (final IOException exc) {
-			log.warn(exc);
-			return file.getAbsoluteFile();
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
