@@ -32,17 +32,22 @@
 package org.scijava.script;
 
 import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
-import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
+import org.scijava.util.FileUtils;
 
 /**
  * Discovers scripts.
@@ -66,13 +71,27 @@ public class ScriptFinder extends AbstractContextual {
 	@Parameter
 	private LogService log;
 
+	private final String pathPrefix;
+
 	/**
 	 * Creates a new script finder.
 	 * 
 	 * @param context The SciJava application context housing needed services.
 	 */
 	public ScriptFinder(final Context context) {
+		this(context, ScriptService.SCRIPTS_RESOURCE_DIR);
+	}
+
+	/**
+	 * Creates a new script finder.
+	 * 
+	 * @param context The SciJava application context housing needed services.
+	 * @param pathPrefix the path prefix beneath which to scan classpath
+	 *          resources, or null to skip classpath scanning.
+	 */
+	public ScriptFinder(final Context context, final String pathPrefix) {
 		setContext(context);
+		this.pathPrefix = pathPrefix;
 	}
 
 	// -- ScriptFinder methods --
@@ -85,19 +104,16 @@ public class ScriptFinder extends AbstractContextual {
 	public void findScripts(final List<ScriptInfo> scripts) {
 		final List<File> directories = scriptService.getScriptDirectories();
 
+		final Set<URL> urls = new HashSet<>();
 		int scriptCount = 0;
 
-		final HashSet<File> scriptFiles = new HashSet<>();
-		for (final File directory : directories) {
-			if (!directory.exists()) {
-				log.debug("Ignoring non-existent scripts directory: " +
-					directory.getAbsolutePath());
-				continue;
-			}
-			final MenuPath prefix = scriptService.getMenuPrefix(directory);
-			final MenuPath menuPath = prefix == null ? new MenuPath() : prefix;
-			scriptCount +=
-				discoverScripts(scripts, scriptFiles, directory, menuPath);
+		scriptCount += scanResources(scripts, urls);
+
+		// NB: We use a separate call to findResources for each directory so that
+		// we can distinguish which URLs came from each directory, because each
+		// directory may have a different menu prefix.
+		for (final File dir : directories) {
+			scriptCount += scanDirectory(scripts, urls, dir);
 		}
 
 		log.debug("Found " + scriptCount + " scripts");
@@ -105,66 +121,92 @@ public class ScriptFinder extends AbstractContextual {
 
 	// -- Helper methods --
 
-	/**
-	 * Looks through a directory, discovering and adding scripts.
-	 * 
-	 * @param scripts The collection to which the discovered scripts are added.
-	 * @param directory The directory in which to look for scripts recursively.
-	 * @param menuPath The menu path, which must not be {@code null}.
-	 */
-	private int discoverScripts(final List<ScriptInfo> scripts,
-		final Set<File> scriptFiles, final File directory, final MenuPath menuPath)
+	/** Scans classpath resources for scripts (e.g., inside JAR files). */
+	private int scanResources(final List<ScriptInfo> scripts, final Set<URL> urls) {
+		if (pathPrefix == null) return 0;
+
+		// NB: We leave the baseDirectory argument null, because scripts on disk
+		// will be picked up in the subsequent logic, which handles multiple
+		// script directories rather than being limited to a single one.
+		final Map<String, URL> scriptMap = //
+			FileUtils.findResources(null, pathPrefix, null);
+
+		return createInfos(scripts, urls, scriptMap, null);
+	}
+
+	/** Scans a directory for scripts. */
+	private int scanDirectory(final List<ScriptInfo> scripts, final Set<URL> urls,
+		final File dir)
 	{
-		final File[] fileList = directory.listFiles();
-		if (fileList == null) return 0; // directory does not exist
-		Arrays.sort(fileList);
+		if (!dir.exists()) {
+			final String path = dir.getAbsolutePath();
+			log.debug("Ignoring non-existent scripts directory: " + path);
+			return 0;
+		}
+		final MenuPath menuPrefix = scriptService.getMenuPrefix(dir);
 
+		try {
+			final Set<URL> dirURL = Collections.singleton(dir.toURI().toURL());
+			final Map<String, URL> scriptMap = //
+				FileUtils.findResources(null, dirURL);
+
+			return createInfos(scripts, urls, scriptMap, menuPrefix);
+		}
+		catch (final MalformedURLException exc) {
+			log.error("Invalid script directory: " + dir, exc);
+			return 0;
+		}
+	}
+
+	private int createInfos(final List<ScriptInfo> scripts, final Set<URL> urls,
+		final Map<String, URL> scriptMap, final MenuPath menuPrefix)
+	{
 		int scriptCount = 0;
-		final boolean isTopLevel = menuPath.size() == 0;
-
-		for (final File file : fileList) {
-			if (scriptFiles.contains(file)) continue; // script already added
-
-			final String name = file.getName().replace('_', ' ');
-			if (file.isDirectory()) {
-				// recurse into subdirectory
-				discoverScripts(scripts, scriptFiles, file, subMenuPath(menuPath, name));
-			}
-			else if (isTopLevel) {
-				// ignore scripts in toplevel script directories
+		for (final String path : scriptMap.keySet()) {
+			if (!scriptService.canHandleFile(path)) {
+				log.warn("Ignoring unsupported script: " + path);
 				continue;
 			}
-			else if (scriptService.canHandleFile(file)) {
-				// found a script!
-				final int dot = name.lastIndexOf('.');
-				final String noExt = dot <= 0 ? name : name.substring(0, dot);
-				scripts.add(createEntry(file, subMenuPath(menuPath, noExt)));
-				scriptFiles.add(file);
+
+			final int dot = path.lastIndexOf('.');
+			final String basePath = dot <= 0 ? path : path.substring(0, dot);
+			final String friendlyPath = basePath.replace('_', ' ');
+
+			final MenuPath menuPath = new MenuPath(menuPrefix);
+			menuPath.addAll(new MenuPath(friendlyPath, "/"));
+
+			// E.g.:
+			// path = "File/Import/Movie_File....groovy"
+			// basePath = "File/Import/Movie_File..."
+			// friendlyPath = "File/Import/Movie File..."
+			// menuPath = File > Import > Movie File...
+
+			// NB: Ignore base-level scripts (not nested in any menu).
+			if (menuPath.size() == 1) continue;
+
+			final URL url = scriptMap.get(path);
+
+			// NB: Skip scripts whose URLs have already been added.
+			if (urls.contains(url)) continue;
+			urls.add(url);
+
+			try {
+				final ScriptInfo info = new ScriptInfo(getContext(), //
+					path, new InputStreamReader(url.openStream()));
+
+				info.setMenuPath(menuPath);
+
+				// flag script with special icon
+				menuPath.getLeaf().setIconPath(SCRIPT_ICON);
+
+				scripts.add(info);
 				scriptCount++;
 			}
+			catch (final IOException exc) {
+				log.error("Invalid script URL: " + url, exc);
+			}
 		}
-
 		return scriptCount;
-	}
-
-	private MenuPath
-		subMenuPath(final MenuPath menuPath, final String subMenuName)
-	{
-		final MenuPath result = new MenuPath(menuPath);
-		result.add(new MenuEntry(subMenuName));
-		return result;
-	}
-
-	private ScriptInfo
-		createEntry(final File scriptFile, final MenuPath menuPath)
-	{
-		final ScriptInfo info = new ScriptInfo(getContext(), scriptFile);
-		info.setMenuPath(menuPath);
-
-		// flag script with special icon
-		menuPath.getLeaf().setIconPath(SCRIPT_ICON);
-
-		return info;
 	}
 
 	// -- Deprecated methods --
