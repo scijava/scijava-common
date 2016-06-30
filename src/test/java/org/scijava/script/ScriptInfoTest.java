@@ -122,9 +122,8 @@ public class ScriptInfoTest {
 		// verify that the version is correct
 		final ScriptInfo info = new ScriptInfo(context, scriptFile);
 		final String version = info.getVersion();
-		final String timestampPattern = "\\d{4}-\\d{2}-\\d{2}-\\d{2}:\\d{2}:\\d{2}";
 		final String sha1 = "28f4a2880d604774ac5d604d35f431047a087c9e";
-		assertTrue(version.matches("^" + timestampPattern + "-" + sha1 + "$"));
+		assertTrue(version.matches("^" + sha1 + "$"));
 
 		// clean up the temporary directory
 		FileUtils.deleteRecursively(tmpDir);
