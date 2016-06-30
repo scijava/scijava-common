@@ -66,6 +66,11 @@ public class ScriptFinder extends AbstractContextual {
 	@Parameter
 	private LogService log;
 
+	/**
+	 * Creates a new script finder.
+	 * 
+	 * @param context The SciJava application context housing needed services.
+	 */
 	public ScriptFinder(final Context context) {
 		setContext(context);
 	}
