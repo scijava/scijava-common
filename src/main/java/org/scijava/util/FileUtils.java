@@ -664,7 +664,7 @@ public final class FileUtils {
 	}
 
 	/**
-	 * Finds {@link URL}s of resources known to ImageJ.
+	 * Finds {@link URL}s of resources known to the system.
 	 * <p>
 	 * Each of the given {@link URL}s is recursively scanned using
 	 * {@link #listContents(URL)}, and anything matching the given {@code regex}
