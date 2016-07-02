@@ -331,7 +331,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @return the next byte of data, or -1 if the end of the stream is reached.
 	 * @throws IOException - if an I/O error occurs.
 	 */
-	int read() throws IOException;
+	default int read() throws IOException {
+		return offset() < length() ? readByte() & 0xff : -1;
+	}
 
 	/**
 	 * Reads up to b.length bytes of data from the stream into an array of bytes.
@@ -367,6 +369,104 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		final long num = n < remain ? n : remain;
 		seek(offset() + num);
 		return num;
+	}
+
+	// -- DataInput methods --
+
+	@Override
+	default boolean readBoolean() throws IOException {
+		return readByte() != 0;
+	}
+
+	@Override
+	default void readFully(final byte[] b) throws IOException {
+		readFully(b, 0, b.length);
+	}
+
+	@Override
+	default int readUnsignedByte() throws IOException {
+		return readByte() & 0xff;
+	}
+
+	@Override
+	default int readUnsignedShort() throws IOException {
+		return readShort() & 0xffff;
+	}
+
+	@Override
+	default String readLine() throws IOException {
+		// NB: Code adapted from java.io.RandomAccessFile.readLine().
+
+		final StringBuffer input = new StringBuffer();
+		int c = -1;
+		boolean eol = false;
+
+		while (!eol) {
+			switch (c = read()) {
+				case -1:
+				case '\n':
+					eol = true;
+					break;
+				case '\r':
+					eol = true;
+					long cur = offset();
+					if (read() != '\n') seek(cur);
+					break;
+				default:
+					input.append((char)c);
+					break;
+			}
+		}
+
+		if (c == -1 && input.length() == 0) {
+			return null;
+		}
+		return input.toString();
+	}
+
+	@Override
+	default String readUTF() throws IOException {
+		final int length = readUnsignedShort();
+		final byte[] b = new byte[length];
+		read(b);
+		return new String(b, "UTF-8");
+	}
+
+	@Override
+	default int skipBytes(final int n) throws IOException {
+		final int skipped = (int) Math.min(n, length() - offset());
+		if (skipped < 0) return 0;
+		seek(offset() + skipped);
+		return skipped;
+	}
+
+	// -- DataOutput methods --
+
+	@Override
+	default void write(final byte[] b) throws IOException {
+		write(b, 0, b.length);
+	}
+
+	@Override
+	default void writeBoolean(final boolean v) throws IOException {
+		write(v ? 1 : 0);
+	}
+
+	@Override
+	default void writeByte(final int v) throws IOException {
+		write(v);
+	}
+
+	@Override
+	default void writeBytes(final String s) throws IOException {
+		write(s.getBytes("UTF-8"));
+	}
+
+	@Override
+	default void writeUTF(final String str) throws IOException {
+		final byte[] b = str.getBytes("UTF-8");
+		writeShort(b.length);
+		write(b);
 	}
 
 }
