@@ -31,12 +31,10 @@
 
 package org.scijava.module;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import java.security.GeneralSecurityException;
-
-import org.junit.Assert;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.prefs.PrefService;
@@ -100,14 +98,14 @@ public class ModuleServiceTest {
 
 		// verify that the item is not persisted
 		String persistKey = doubleItem.getPersistKey();
-		Assert.assertNull(prefService.get(persistKey));
+		assertNull(prefService.get(persistKey));
 
 		// save ModuleItem for which getInitializer() returns null
 		moduleService.save(integerItem, 5);
 
 		// verify that the item is persisted
 		persistKey = integerItem.getPersistKey();
-		Assert.assertEquals(5, prefService.getInt(persistKey, 0));
+		assertEquals(5, prefService.getInt(persistKey, 0));
 	}
 
 	/** A sample module for testing the module service. */
