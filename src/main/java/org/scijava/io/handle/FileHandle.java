@@ -285,6 +285,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	private synchronized void initRAF() throws IOException {
+		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
 	}
 
