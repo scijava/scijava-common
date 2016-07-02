@@ -98,6 +98,7 @@ public class ContextCreationTest {
 				org.scijava.io.DefaultDataHandleService.class,
 				org.scijava.io.DefaultIOService.class,
 				org.scijava.io.DefaultRecentFileService.class,
+				org.scijava.io.nio.DefaultNIOService.class,
 				org.scijava.main.DefaultMainService.class,
 				org.scijava.menu.DefaultMenuService.class,
 				org.scijava.module.DefaultModuleService.class,
