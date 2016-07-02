@@ -75,6 +75,25 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	void setLength(long length) throws IOException;
 
 	/**
+	 * Ensures that the handle has the correct length to be written to and extends
+	 * it as required.
+	 * 
+	 * @param count Number of bytes to write.
+	 * @return {@code true} if the handle's length was sufficient, or
+	 *         {@code false} if the handle's length required an extension.
+	 * @throws IOException If something goes wrong with the check, or there is an
+	 *           error changing the handle's length.
+	 */
+	default boolean ensureWritable(final long count) throws IOException {
+		final long minLength = offset() + count;
+		if (length() < minLength) {
+			setLength(minLength);
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Returns the current order of the stream.
 	 * 
 	 * @return See above.
