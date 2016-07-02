@@ -84,6 +84,11 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
+	public void setLength(final long length) throws IOException {
+		raf().setLength(length);
+	}
+
+	@Override
 	public int read() throws IOException {
 		return raf().read();
 	}

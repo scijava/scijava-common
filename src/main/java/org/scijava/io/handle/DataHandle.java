@@ -67,6 +67,14 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	long length() throws IOException;
 
 	/**
+	 * Sets the new length of the handle.
+	 * 
+	 * @param length New length.
+	 * @throws IOException If there is an error changing the handle's length.
+	 */
+	void setLength(long length) throws IOException;
+
+	/**
 	 * Returns the current order of the stream.
 	 * 
 	 * @return See above.
