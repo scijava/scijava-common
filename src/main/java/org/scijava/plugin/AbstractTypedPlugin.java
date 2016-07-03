@@ -43,5 +43,15 @@ import org.scijava.Typed;
 public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
 	implements TypedPlugin<D>
 {
-	// NB: No implementation needed.
+	// -- Typed methods --
+
+	@Override
+	public boolean supports(final D data) {
+		// NB: Even though the compiler will often guarantee that only data
+		// of type T is provided here, we still need the runtime check
+		// for cases where the exact type is not known to compiler --
+		// e.g., if the object was manufactured by reflection.
+		return getType().isInstance(data);
+	}
+
 }
