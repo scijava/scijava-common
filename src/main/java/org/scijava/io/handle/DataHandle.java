@@ -126,8 +126,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	}
 
 	/**
-	 * Sets the stream pointer offset, measured from the beginning of the stream,
-	 * at which the next read or write occurs.
+	 * Sets the stream offset, measured from the beginning of the stream, at which
+	 * the next read or write occurs.
 	 */
 	void seek(long pos) throws IOException;
 
@@ -203,9 +203,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * Reads or skips a string ending with one of the given terminating
 	 * substrings.
 	 * 
-	 * @param saveString Whether to collect the string from the current file
-	 *          pointer to the terminating bytes, and return it. If false, returns
-	 *          null.
+	 * @param saveString Whether to collect the string from the current offset to
+	 *          the terminating bytes, and return it. If false, returns null.
 	 * @param terminators The strings for which to search.
 	 * @throws IOException If saveString flag is set and the maximum search length
 	 *           (512 MB) is exceeded.
@@ -239,9 +238,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * Reads or skips a string ending with one of the given terminating
 	 * substrings, using the specified block size for buffering.
 	 * 
-	 * @param saveString Whether to collect the string from the current file
-	 *          pointer to the terminating bytes, and return it. If false, returns
-	 *          null.
+	 * @param saveString Whether to collect the string from the current offset
+	 *          to the terminating bytes, and return it. If false, returns null.
 	 * @param blockSize The block size to use when reading bytes in chunks.
 	 * @param terminators The strings for which to search.
 	 * @throws IOException If saveString flag is set and the maximum search length
