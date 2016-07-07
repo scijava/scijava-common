@@ -75,6 +75,7 @@ public class ScriptREPL {
 
 	private final PrintStream out;
 
+	/** The currently active interpreter. */
 	private ScriptInterpreter interpreter;
 
 	public ScriptREPL(final Context context) {
