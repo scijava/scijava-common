@@ -75,6 +75,9 @@ public class ScriptREPL {
 
 	private final PrintStream out;
 
+	/** List of interpreter-friendly script languages. */
+	private List<ScriptLanguage> languages;
+
 	/** The currently active interpreter. */
 	private ScriptInterpreter interpreter;
 
@@ -86,6 +89,19 @@ public class ScriptREPL {
 		context.inject(this);
 		this.out = out instanceof PrintStream ?
 			(PrintStream) out : new PrintStream(out);
+	}
+
+	/**
+	 * Gets the list of languages compatible with the REPL.
+	 * <p>
+	 * This list will match those given by {@link ScriptService#getLanguages()},
+	 * but filtered to exclude any who report {@code true} for
+	 * {@link ScriptLanguage#isCompiledLanguage()}.
+	 * </p>
+	 */
+	public List<ScriptLanguage> getInterpretedLanguages() {
+		if (languages == null) initLanguages();
+		return languages;
 	}
 
 	/** Gets the script interpreter for the currently active language. */
@@ -123,7 +139,7 @@ public class ScriptREPL {
 		out.println("Welcome to the SciJava REPL!");
 		out.println();
 		help();
-		final List<ScriptLanguage> langs = scriptService.getLanguages();
+		final List<ScriptLanguage> langs = getInterpretedLanguages();
 		if (langs.isEmpty()) {
 			out.println("--------------------------------------------------------------");
 			out.println("Uh oh! There are no SciJava script languages available!");
@@ -245,7 +261,7 @@ public class ScriptREPL {
 		final List<String> names = new ArrayList<>();
 		final List<String> versions = new ArrayList<>();
 		final List<Object> aliases = new ArrayList<>();
-		for (final ScriptLanguage lang : scriptService.getLanguages()) {
+		for (final ScriptLanguage lang : getInterpretedLanguages()) {
 			names.add(lang.getLanguageName());
 			versions.add(lang.getLanguageVersion());
 			aliases.add(lang.getNames());
@@ -271,6 +287,16 @@ public class ScriptREPL {
 	}
 
 	// -- Helper methods --
+
+	/** Initializes {@link #languages}. */
+	private synchronized void initLanguages() {
+		if (languages != null) return;
+		final List<ScriptLanguage> langs = new ArrayList<>();
+		for (final ScriptLanguage lang : scriptService.getLanguages()) {
+			if (!lang.isCompiledLanguage()) langs.add(lang);
+		}
+		languages = langs;
+	}
 
 	/** Populates the bindings with the context + services + gateways. */
 	private void populateBindings(final Bindings bindings) {
