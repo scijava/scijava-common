@@ -43,6 +43,7 @@ import org.scijava.Context;
 import org.scijava.module.Module;
 import org.scijava.module.process.AbstractPreprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /** Regression tests for {@link CommandModule}. */
@@ -74,6 +75,25 @@ public class CommandModuleTest {
 		assertFalse(fire.getDelegateObject() instanceof Cancelable);
 		assertTrue(fire.isCanceled());
 		assertEquals("NO SINGING!", fire.getCancelReason());
+	}
+
+	@Test
+	public void testDefaultValues() {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		final CommandInfo info = //
+			commandService.getCommand(CommandWithDefaultValues.class);
+
+		assertEquals(5, info.getInput("weekdays").getDefaultValue());
+
+		final long defaultTime = (Long) info.getInput("time").getDefaultValue();
+		final long timeDiff = System.currentTimeMillis() - defaultTime;
+		assertTrue(timeDiff >= 0 && timeDiff < 50); // 50 ms should be enough ;-)
+
+		final String defaultName = (String) info.getInput("name").getDefaultValue();
+		assertEquals("John Jacob Jingleheimer Schmidt", defaultName);
+
+		assertEquals(null, info.getInput("thing").getDefaultValue());
 	}
 
 	// -- Helper classes --
@@ -123,6 +143,29 @@ public class CommandModuleTest {
 				// That's right -- we did that.
 				cancel("NO SINGING!");
 			}
+		}
+	}
+
+	/** A command which assigns default values to its parameters. */
+	@Plugin(type = Command.class)
+	public static class CommandWithDefaultValues extends ContextCommand {
+
+		@Parameter
+		private int weekdays = 5;
+
+		@Parameter
+		private long time = System.currentTimeMillis();
+
+		@Parameter
+		private String name = "John Jacob Jingleheimer Schmidt";
+
+		@Parameter
+		private Object thing;
+
+		@Override
+		public void run() {
+			weekdays = 0;
+			time = 0;
 		}
 	}
 }

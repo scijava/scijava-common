@@ -144,6 +144,38 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	}
 
 	@Override
+	public T getDefaultValue() {
+		// NB: The default value for a command is the initial field value.
+		// E.g.:
+		//
+		//   @Parameter
+		//   private int weekdays = 5;
+		//
+		// To obtain this information, we need to instantiate the module, then
+		// extract the value of the associated field.
+		//
+		// Of course, the command might do evil things like:
+		//
+		//   @Parameter
+		//   private long time = System.currentTimeMillis();
+		//
+		// In which case the default value will vary by instance. But there is
+		// nothing we can really do about that. This is only a best effort.
+
+		try {
+			final Object dummy = getInfo().loadDelegateClass().newInstance();
+			@SuppressWarnings("unchecked")
+			final T value = (T) getField().get(dummy);
+			return value;
+		}
+		catch (final InstantiationException | IllegalAccessException
+				| ClassNotFoundException exc)
+		{
+			throw new IllegalStateException(exc);
+		}
+	}
+
+	@Override
 	public Number getStepSize() {
 		// FIXME: stepSize should be typed on T, not Number!
 		final String value = getParameter().stepSize();
