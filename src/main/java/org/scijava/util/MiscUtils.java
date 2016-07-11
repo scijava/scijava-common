@@ -31,6 +31,8 @@
 
 package org.scijava.util;
 
+import java.util.Objects;
+
 /**
  * Miscellaneous utility methods. Every project needs a class like this, right?
  * 
@@ -83,13 +85,9 @@ public final class MiscUtils {
 	}
 
 	/**
-	 * Compares two objects for equality, even if one or both of them are null.
-	 * 
-	 * @param o1 The first object to compare.
-	 * @param o2 The second object to compare.
-	 * @return True if the two objects are both null, or both are non-null and
-	 *         {@code o1.equals(o2)} holds.
+	 * @deprecated Use {@link Objects#equals(Object, Object)} instead.
 	 */
+	@Deprecated
 	public static boolean equal(final Object o1, final Object o2) {
 		return o1 == null ? o2 == null : o1.equals(o2);
 	}
