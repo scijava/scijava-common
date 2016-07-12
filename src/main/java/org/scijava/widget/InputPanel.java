@@ -70,5 +70,8 @@ public interface InputPanel<P, W> extends UIComponent<P> {
 
 	/** Gets the type of the UI component housing the panel's widgets. */
 	Class<W> getWidgetComponentType();
+	
+	/** Gets the widget with the provided name. */
+	InputWidget<?, W> getWidget(String name);
 
 }

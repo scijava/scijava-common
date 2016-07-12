@@ -61,6 +61,11 @@ public abstract class AbstractInputPanel<P, W> implements InputPanel<P, W> {
 	public void addWidget(final InputWidget<?, W> widget) {
 		widgets.put(widget.get().getItem().getName(), widget);
 	}
+	
+	@Override
+	public InputWidget<?, W> getWidget(final String name) {
+		return widgets.get(name);
+	}
 
 	@Override
 	public Object getValue(final String name) {
