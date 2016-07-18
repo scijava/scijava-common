@@ -72,7 +72,7 @@ public abstract class AbstractConverter<I, O> extends
 
 	// -- Parameters --
 
-	@Parameter
+	@Parameter(required = false)
 	private ObjectService objectService;
 
 	// -- ConversionHandler methods --
@@ -131,6 +131,7 @@ public abstract class AbstractConverter<I, O> extends
 
 	@Override
 	public void populateInputCandidates(final Collection<Object> objects) {
+		if (objectService == null) return;
 		for (final Object candidate : objectService.getObjects(getInputType())) {
 			if (canConvert(candidate, getOutputType())) objects.add(candidate);
 		}
