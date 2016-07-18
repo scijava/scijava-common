@@ -113,32 +113,30 @@ public class DefaultEventService extends AbstractService implements
 
 	@Override
 	public List<EventSubscriber<?>> subscribe(final Object o) {
-		List<EventSubscriber<?>> subscribers = Collections.emptyList();
 		final List<Method> eventHandlers =
 			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
+		if (eventHandlers.isEmpty()) return Collections.emptyList();
 
-		if (!eventHandlers.isEmpty()) {
-			subscribers = new ArrayList<>();
-			for (final Method m : eventHandlers) {
-				// verify that the event handler method is valid
-				final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
-				if (eventClass == null) {
-					log.warn("Invalid EventHandler method: " + m);
-					continue;
-				}
-
-				// verify that the event handler key isn't already claimed
-				final String key = m.getAnnotation(EventHandler.class).key();
-				if (!key.isEmpty()) {
-					synchronized (keys) {
-						if (keys.contains(key)) continue;
-						keys.add(key);
-					}
-				}
-
-				// subscribe the event handler
-				subscribers.add(subscribe(eventClass, o, m));
+		final ArrayList<EventSubscriber<?>> subscribers = new ArrayList<>();
+		for (final Method m : eventHandlers) {
+			// verify that the event handler method is valid
+			final Class<? extends SciJavaEvent> eventClass = getEventClass(m);
+			if (eventClass == null) {
+				log.warn("Invalid EventHandler method: " + m);
+				continue;
 			}
+
+			// verify that the event handler key isn't already claimed
+			final String key = m.getAnnotation(EventHandler.class).key();
+			if (!key.isEmpty()) {
+				synchronized (keys) {
+					if (keys.contains(key)) continue;
+					keys.add(key);
+				}
+			}
+
+			// subscribe the event handler
+			subscribers.add(subscribe(eventClass, o, m));
 		}
 		return subscribers;
 	}
