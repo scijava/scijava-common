@@ -1917,18 +1917,22 @@ public final class Types {
 		 * @since 3.2
 		 */
 		public static String toString(final Type type) {
+			return toString(type, new HashSet<>());
+		}
+
+		private static String toString(final Type type, final Set<Type> done) {
 			validateNotNull(type);
 			if (type instanceof Class<?>) {
-				return classToString((Class<?>) type);
+				return classToString((Class<?>) type, done);
 			}
 			if (type instanceof ParameterizedType) {
-				return parameterizedTypeToString((ParameterizedType) type);
+				return parameterizedTypeToString((ParameterizedType) type, done);
 			}
 			if (type instanceof WildcardType) {
-				return wildcardTypeToString((WildcardType) type);
+				return wildcardTypeToString((WildcardType) type, done);
 			}
 			if (type instanceof TypeVariable<?>) {
-				return typeVariableToString((TypeVariable<?>) type);
+				return typeVariableToString((TypeVariable<?>) type, done);
 			}
 			if (type instanceof GenericArrayType) {
 				return genericArrayTypeToString((GenericArrayType) type);
@@ -1967,7 +1971,8 @@ public final class Types {
 			else {
 				buf.append(d);
 			}
-			return buf.append(':').append(typeVariableToString(var)).toString();
+			return buf.append(':').append(typeVariableToString(var, new HashSet<>()))
+				.toString();
 		}
 
 //		/**
@@ -2004,22 +2009,25 @@ public final class Types {
 		 * Format a {@link Class} as a {@link String}.
 		 *
 		 * @param c {@code Class} to format
+		 * @param done list of already-encountered types
 		 * @return String
 		 * @since 3.2
 		 */
-		private static String classToString(final Class<?> c) {
+		private static String classToString(final Class<?> c,
+			final Set<Type> done)
+		{
 			final StringBuilder buf = new StringBuilder();
 
 			if (c.getEnclosingClass() != null) {
-				buf.append(classToString(c.getEnclosingClass())).append('.').append(c
-					.getSimpleName());
+				buf.append(classToString(c.getEnclosingClass(), done)).append('.')
+					.append(c.getSimpleName());
 			}
 			else {
 				buf.append(c.getName());
 			}
 			if (c.getTypeParameters().length > 0) {
 				buf.append('<');
-				appendAllTo(buf, ", ", c.getTypeParameters());
+				appendAllTo(buf, ", ", done, c.getTypeParameters());
 				buf.append('>');
 			}
 			return buf.toString();
@@ -2029,17 +2037,22 @@ public final class Types {
 		 * Format a {@link TypeVariable} as a {@link String}.
 		 *
 		 * @param v {@code TypeVariable} to format
+		 * @param done list of already-encountered types
 		 * @return String
 		 * @since 3.2
 		 */
-		private static String typeVariableToString(final TypeVariable<?> v) {
+		private static String typeVariableToString(final TypeVariable<?> v,
+			final Set<Type> done)
+		{
 			final StringBuilder buf = new StringBuilder(v.getName());
+			if (done.contains(v)) return buf.toString();
+			done.add(v);
 			final Type[] bounds = v.getBounds();
 			if (bounds.length > 0 && !(bounds.length == 1 && Object.class.equals(
 				bounds[0])))
 			{
 				buf.append(" extends ");
-				appendAllTo(buf, " & ", v.getBounds());
+				appendAllTo(buf, " & ", done, v.getBounds());
 			}
 			return buf.toString();
 		}
@@ -2048,10 +2061,13 @@ public final class Types {
 		 * Format a {@link ParameterizedType} as a {@link String}.
 		 *
 		 * @param p {@code ParameterizedType} to format
+		 * @param done list of already-encountered types
 		 * @return String
 		 * @since 3.2
 		 */
-		private static String parameterizedTypeToString(final ParameterizedType p) {
+		private static String parameterizedTypeToString(final ParameterizedType p,
+			final Set<Type> done)
+		{
 			final StringBuilder buf = new StringBuilder();
 
 			final Type useOwner = p.getOwnerType();
@@ -2070,7 +2086,7 @@ public final class Types {
 				buf.append('.').append(raw.getSimpleName());
 			}
 
-			appendAllTo(buf.append('<'), ", ", typeArguments).append('>');
+			appendAllTo(buf.append('<'), ", ", done, typeArguments).append('>');
 			return buf.toString();
 		}
 
@@ -2078,22 +2094,27 @@ public final class Types {
 		 * Format a {@link WildcardType} as a {@link String}.
 		 *
 		 * @param w {@code WildcardType} to format
+		 * @param done list of already-encountered types
 		 * @return String
 		 * @since 3.2
 		 */
-		private static String wildcardTypeToString(final WildcardType w) {
+		private static String wildcardTypeToString(final WildcardType w,
+			final Set<Type> done)
+		{
 			final StringBuilder buf = new StringBuilder().append('?');
+			if (done.contains(w)) return buf.toString();
+			done.add(w);
 			final Type[] lowerBounds = w.getLowerBounds();
 			final Type[] upperBounds = w.getUpperBounds();
 			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
 				lowerBounds[0] != null)
 			{
-				appendAllTo(buf.append(" super "), " & ", lowerBounds);
+				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
 			}
 			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
 				!Object.class.equals(upperBounds[0]))
 			{
-				appendAllTo(buf.append(" extends "), " & ", upperBounds);
+				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
 			}
 			return buf.toString();
 		}
@@ -2114,18 +2135,19 @@ public final class Types {
 		 *
 		 * @param buf destination
 		 * @param sep separator
+		 * @param done list of already-encountered types
 		 * @param types to append
 		 * @return {@code buf}
 		 * @since 3.2
 		 */
 		private static StringBuilder appendAllTo(final StringBuilder buf,
-			final String sep, final Type... types)
+			final String sep, final Set<Type> done, final Type... types)
 		{
 			validateNotEmpty(validateNoNullElements(types));
 			if (types.length > 0) {
-				buf.append(toString(types[0]));
+				buf.append(toString(types[0], done));
 				for (int i = 1; i < types.length; i++) {
-					buf.append(sep).append(toString(types[i]));
+					buf.append(sep).append(toString(types[i], done));
 				}
 			}
 			return buf;
