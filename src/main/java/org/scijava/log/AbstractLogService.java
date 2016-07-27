@@ -31,6 +31,7 @@
 
 package org.scijava.log;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -50,22 +51,6 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels =
 		new HashMap<>();
-
-	// -- abstract methods --
-
-	/**
-	 * Displays a message.
-	 *
-	 * @param msg the message to display.
-	 */
-	protected abstract void log(final String msg);
-
-	/**
-	 * Displays an exception.
-	 *
-	 * @param t the exception to display.
-	 */
-	protected abstract void log(final Throwable t);
 
 	// -- constructor --
 
@@ -96,114 +81,109 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	}
 
-	// -- helper methods --
+	// -- Internal methods --
 
-	protected void log(final int level, final Object msg, final Throwable t) {
-		if (level > getLevel()) return;
+	/**
+	 * Displays a message and/or exception at the given logging level.
+	 *
+	 * @param level The logging level of the information.
+	 * @param msg The message to display.
+	 * @param t The exception to display.
+	 */
+	protected abstract void log(final int level, final Object msg,
+		final Throwable t);
 
-		if (msg != null || t == null) {
-			log(level, msg);
-		}
-		if (t != null) log(t);
-	}
-
-	protected void log(final int level, final Object msg) {
-		final String prefix = getPrefix(level);
-		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	protected String getPrefix(final int level) {
-		switch (level) {
-			case ERROR:
-				return "[ERROR]";
-			case WARN:
-				return "[WARNING]";
-			case INFO:
-				return "[INFO]";
-			case DEBUG:
-				return "[DEBUG]";
-			case TRACE:
-				return "[TRACE]";
-			default:
-				return null;
-		}
+	/**
+	 * Displays a message and/or exception at the given logging level, using the
+	 * specific output stream.
+	 *
+	 * @param stream The output stream to which the information should be sent.
+	 * @param level The logging level of the information.
+	 * @param msg The message to display.
+	 * @param t The exception to display.
+	 */
+	protected void log(final PrintStream stream, final int level,
+		final Object msg, final Throwable t)
+	{
+		if (msg != null || t == null) stream.println(getPrefix(level) + msg);
+		if (t != null) t.printStackTrace(stream);
 	}
 
 	// -- LogService methods --
 
 	@Override
 	public void debug(final Object msg) {
-		log(DEBUG, msg, null);
+		if (isDebug()) log(DEBUG, msg, null);
 	}
 
 	@Override
 	public void debug(final Throwable t) {
-		log(DEBUG, null, t);
+		if (isDebug()) log(DEBUG, null, t);
 	}
 
 	@Override
 	public void debug(final Object msg, final Throwable t) {
-		log(DEBUG, msg, t);
+		if (isDebug()) log(DEBUG, msg, t);
 	}
 
 	@Override
 	public void error(final Object msg) {
-		log(ERROR, msg, null);
+		if (isError()) log(ERROR, msg, null);
 	}
 
 	@Override
 	public void error(final Throwable t) {
-		log(ERROR, null, t);
+		if (isError()) log(ERROR, null, t);
 	}
 
 	@Override
 	public void error(final Object msg, final Throwable t) {
-		log(ERROR, msg, t);
+		if (isError()) log(ERROR, msg, t);
 	}
 
 	@Override
 	public void info(final Object msg) {
-		log(INFO, msg, null);
+		if (isInfo()) log(INFO, msg, null);
 	}
 
 	@Override
 	public void info(final Throwable t) {
-		log(INFO, null, t);
+		if (isInfo()) log(INFO, null, t);
 	}
 
 	@Override
 	public void info(final Object msg, final Throwable t) {
-		log(INFO, msg, t);
+		if (isInfo()) log(INFO, msg, t);
 	}
 
 	@Override
 	public void trace(final Object msg) {
-		log(TRACE, msg, null);
+		if (isTrace()) log(TRACE, msg, null);
 	}
 
 	@Override
 	public void trace(final Throwable t) {
-		log(TRACE, null, t);
+		if (isTrace()) log(TRACE, null, t);
 	}
 
 	@Override
 	public void trace(final Object msg, final Throwable t) {
-		log(TRACE, msg, t);
+		if (isTrace()) log(TRACE, msg, t);
 	}
 
 	@Override
 	public void warn(final Object msg) {
-		log(WARN, msg, null);
+		if (isWarn()) log(WARN, msg, null);
 	}
 
 	@Override
 	public void warn(final Throwable t) {
-		log(WARN, null, t);
+		if (isWarn()) log(WARN, null, t);
 	}
 
 	@Override
 	public void warn(final Object msg, final Throwable t) {
-		log(WARN, msg, t);
+		if (isWarn()) log(WARN, msg, t);
 	}
 
 	@Override
@@ -257,6 +237,23 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
+
+	private String getPrefix(final int level) {
+		switch (level) {
+			case ERROR:
+				return "[ERROR] ";
+			case WARN:
+				return "[WARNING] ";
+			case INFO:
+				return "[INFO] ";
+			case DEBUG:
+				return "[DEBUG] ";
+			case TRACE:
+				return "[TRACE] ";
+			default:
+				return "";
+		}
+	}
 
 	/** Extracts the log level value from a string. */
 	private int level(final String logProp) {

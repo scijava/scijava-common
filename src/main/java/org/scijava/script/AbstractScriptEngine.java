@@ -39,8 +39,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
+import org.scijava.log.DefaultLogService;
 import org.scijava.log.LogService;
-import org.scijava.log.StderrLogService;
 
 /**
  * This class implements dummy versions for ScriptEngine's methods that are not
@@ -70,7 +70,7 @@ public abstract class AbstractScriptEngine implements ScriptEngine {
 
 	public synchronized LogService log() {
 		if (log == null) {
-			log = new StderrLogService();
+			log = new DefaultLogService();
 		}
 		return log;
 	}
