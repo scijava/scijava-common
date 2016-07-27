@@ -31,6 +31,8 @@
 
 package org.scijava;
 
+import org.scijava.util.ClassUtils;
+
 /**
  * An object that can be sorted according to priority.
  * 
@@ -51,5 +53,19 @@ public interface Prioritized extends Comparable<Prioritized> {
 	 * @see Priority
 	 */
 	void setPriority(double priority);
+
+	// -- Comparable methods --
+
+	@Override
+	default int compareTo(final Prioritized that) {
+		if (that == null) return 1;
+
+		// compare priorities
+		final int priorityCompare = Priority.compare(this, that);
+		if (priorityCompare != 0) return priorityCompare;
+
+		// compare classes
+		return ClassUtils.compare(getClass(), that.getClass());
+	}
 
 }

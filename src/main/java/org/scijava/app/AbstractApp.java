@@ -56,31 +56,11 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	/** JAR manifest with metadata about the application. */
 	private Manifest manifest;
 
+	// -- App methods --
+
 	@Override
 	public String getTitle() {
 		return getInfo().getName();
-	}
-
-	@Override
-	public String getVersion() {
-		// NB: We do not use VersionUtils.getVersion(c, groupId, artifactId)
-		// because that method does not cache the parsed Manifest and/or POM.
-		// We might have them already parsed here, and if not, we want to
-		// parse then cache locally, rather than discarding them afterwards.
-
-		// try the manifest first, since it might know its build number
-		final Manifest m = getManifest();
-		if (m != null) {
-			final String v = m.getVersion();
-			if (v != null) return v;
-		}
-		// try the POM
-		final POM p = getPOM();
-		if (p != null) {
-			final String v = p.getVersion();
-			if (v != null) return v;
-		}
-		return "Unknown";
 	}
 
 	@Override
@@ -143,6 +123,30 @@ public abstract class AbstractApp extends AbstractRichPlugin implements App {
 	@Override
 	public void quit() {
 		getContext().dispose();
+	}
+
+	// -- Versioned methods --
+
+	@Override
+	public String getVersion() {
+		// NB: We do not use VersionUtils.getVersion(c, groupId, artifactId)
+		// because that method does not cache the parsed Manifest and/or POM.
+		// We might have them already parsed here, and if not, we want to
+		// parse then cache locally, rather than discarding them afterwards.
+
+		// try the manifest first, since it might know its build number
+		final Manifest m = getManifest();
+		if (m != null) {
+			final String v = m.getVersion();
+			if (v != null) return v;
+		}
+		// try the POM
+		final POM p = getPOM();
+		if (p != null) {
+			final String v = p.getVersion();
+			if (v != null) return v;
+		}
+		return "Unknown";
 	}
 
 }

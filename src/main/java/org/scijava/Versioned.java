@@ -31,6 +31,8 @@
 
 package org.scijava;
 
+import org.scijava.util.VersionUtils;
+
 /**
  * An object that knows its version.
  * 
@@ -39,6 +41,9 @@ package org.scijava;
 public interface Versioned {
 
 	/** Gets the version of the object. */
-	String getVersion();
+	default String getVersion() {
+		return VersionUtils.getVersion(getClass());
+	}
+
 
 }

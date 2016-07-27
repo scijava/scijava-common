@@ -32,9 +32,7 @@
 package org.scijava.plugin;
 
 import org.scijava.AbstractContextual;
-import org.scijava.Prioritized;
 import org.scijava.Priority;
-import org.scijava.util.ClassUtils;
 
 /**
  * Abstract base class for {@link RichPlugin} implementations.
@@ -81,20 +79,6 @@ public abstract class AbstractRichPlugin extends AbstractContextual implements
 	@Override
 	public void setInfo(final PluginInfo<?> info) {
 		this.info = info;
-	}
-
-	// -- Comparable methods --
-
-	@Override
-	public int compareTo(final Prioritized that) {
-		if (that == null) return 1;
-
-		// compare priorities
-		final int priorityCompare = Priority.compare(this, that);
-		if (priorityCompare != 0) return priorityCompare;
-
-		// compare classes
-		return ClassUtils.compare(getClass(), that.getClass());
 	}
 
 }
