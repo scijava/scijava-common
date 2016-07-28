@@ -422,7 +422,7 @@ public final class Types {
 		private static boolean isAssignable(final Type type, final Type toType,
 			final Map<TypeVariable<?>, Type> typeVarAssigns)
 		{
-			if (toType == null || toType instanceof Class<?>) {
+			if (toType == null || toType instanceof Class) {
 				return isAssignable(type, (Class<?>) toType);
 			}
 
@@ -438,7 +438,7 @@ public final class Types {
 				return isAssignable(type, (WildcardType) toType, typeVarAssigns);
 			}
 
-			if (toType instanceof TypeVariable<?>) {
+			if (toType instanceof TypeVariable) {
 				return isAssignable(type, (TypeVariable<?>) toType, typeVarAssigns);
 			}
 
@@ -474,7 +474,7 @@ public final class Types {
 				return true;
 			}
 
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				// just comparing two classes
 				return toClass.isAssignableFrom((Class<?>) type);
 			}
@@ -485,7 +485,7 @@ public final class Types {
 			}
 
 			// *
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				// if any of the bounds are assignable to the class, then the
 				// type is assignable to the class.
 				for (final Type bound : ((TypeVariable<?>) type).getBounds()) {
@@ -601,7 +601,7 @@ public final class Types {
 			Type result;
 			do {
 				result = typeVarAssigns.get(var);
-				if (result instanceof TypeVariable<?> && !result.equals(var)) {
+				if (result instanceof TypeVariable && !result.equals(var)) {
 					var = (TypeVariable<?>) result;
 					continue;
 				}
@@ -644,7 +644,7 @@ public final class Types {
 
 			final Type toComponentType = toGenericArrayType.getGenericComponentType();
 
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				final Class<?> cls = (Class<?>) type;
 
 				// compare the component types
@@ -669,7 +669,7 @@ public final class Types {
 				return false;
 			}
 
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				// probably should remove the following logic and just return false.
 				// type variables cannot specify arrays as bounds.
 				for (final Type bound : getImplicitBounds((TypeVariable<?>) type)) {
@@ -815,7 +815,7 @@ public final class Types {
 				return true;
 			}
 
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				// a type variable is assignable to another type variable, if
 				// and only if the former is the latter, extends the latter, or
 				// is otherwise a descendant of the latter.
@@ -828,7 +828,7 @@ public final class Types {
 				}
 			}
 
-			if (type instanceof Class<?> || type instanceof ParameterizedType ||
+			if (type instanceof Class || type instanceof ParameterizedType ||
 				type instanceof GenericArrayType || type instanceof WildcardType)
 			{
 				return false;
@@ -850,7 +850,7 @@ public final class Types {
 		private static Type substituteTypeVariables(final Type type,
 			final Map<TypeVariable<?>, Type> typeVarAssigns)
 		{
-			if (type instanceof TypeVariable<?> && typeVarAssigns != null) {
+			if (type instanceof TypeVariable && typeVarAssigns != null) {
 				final Type replacementType = typeVarAssigns.get(type);
 
 				if (replacementType == null) {
@@ -939,7 +939,7 @@ public final class Types {
 			final Class<?> toClass,
 			final Map<TypeVariable<?>, Type> subtypeVarAssigns)
 		{
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);
 			}
 
@@ -967,7 +967,7 @@ public final class Types {
 				return null;
 			}
 
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				for (final Type bound : getImplicitBounds((TypeVariable<?>) type)) {
 					// find the first bound that is assignable to the target class
 					if (isAssignable(bound, toClass)) {
@@ -1141,7 +1141,7 @@ public final class Types {
 			final Type midType = getClosestParentType(cls, superClass);
 
 			// can only be a class or a parameterized type
-			if (midType instanceof Class<?>) {
+			if (midType instanceof Class) {
 				return determineTypeArguments((Class<?>) midType, superType);
 			}
 
@@ -1240,7 +1240,7 @@ public final class Types {
 					if (midType instanceof ParameterizedType) {
 						midClass = getRawType((ParameterizedType) midType);
 					}
-					else if (midType instanceof Class<?>) {
+					else if (midType instanceof Class) {
 						midClass = (Class<?>) midType;
 					}
 					else {
@@ -1283,7 +1283,7 @@ public final class Types {
 				return false;
 			}
 
-			return value == null ? !(type instanceof Class<?>) || !((Class<?>) type)
+			return value == null ? !(type instanceof Class) || !((Class<?>) type)
 				.isPrimitive() : isAssignable(value.getClass(), type, null);
 		}
 
@@ -1460,7 +1460,7 @@ public final class Types {
 			// Class, there's enough reason to believe that future versions of Java
 			// may return other Type implementations. And type-safety checking is
 			// rarely a bad idea.
-			if (!(rawType instanceof Class<?>)) {
+			if (!(rawType instanceof Class)) {
 				throw new IllegalStateException("Wait... What!? Type of rawType: " +
 					rawType);
 			}
@@ -1485,7 +1485,7 @@ public final class Types {
 		public static Class<?> getRawType(final Type type,
 			final Type assigningType)
 		{
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				// it is raw, no problem
 				return (Class<?>) type;
 			}
@@ -1495,7 +1495,7 @@ public final class Types {
 				return getRawType((ParameterizedType) type);
 			}
 
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				if (assigningType == null) {
 					return null;
 				}
@@ -1506,7 +1506,7 @@ public final class Types {
 
 				// can't get the raw type of a method- or constructor-declared type
 				// variable
-				if (!(genericDeclaration instanceof Class<?>)) {
+				if (!(genericDeclaration instanceof Class)) {
 					return null;
 				}
 
@@ -1557,7 +1557,7 @@ public final class Types {
 		 *         {@link GenericArrayType}.
 		 */
 		public static boolean isArrayType(final Type type) {
-			return type instanceof GenericArrayType || type instanceof Class<?> &&
+			return type instanceof GenericArrayType || type instanceof Class &&
 				((Class<?>) type).isArray();
 		}
 
@@ -1568,7 +1568,7 @@ public final class Types {
 		 * @return component type or null if type is not an array type
 		 */
 		public static Type getArrayComponentType(final Type type) {
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				final Class<?> clazz = (Class<?>) type;
 				return clazz.isArray() ? clazz.getComponentType() : null;
 			}
@@ -1595,7 +1595,7 @@ public final class Types {
 				typeArguments = Collections.<TypeVariable<?>, Type> emptyMap();
 			}
 			if (containsTypeVariables(type)) {
-				if (type instanceof TypeVariable<?>) {
+				if (type instanceof TypeVariable) {
 					return unrollVariables(typeArguments, typeArguments.get(type));
 				}
 				if (type instanceof ParameterizedType) {
@@ -1657,10 +1657,10 @@ public final class Types {
 		 * @since 3.2
 		 */
 		public static boolean containsTypeVariables(final Type type) {
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				return true;
 			}
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				return ((Class<?>) type).getTypeParameters().length > 0;
 			}
 			if (type instanceof ParameterizedType) {
@@ -1922,7 +1922,7 @@ public final class Types {
 
 		private static String toString(final Type type, final Set<Type> done) {
 			validateNotNull(type);
-			if (type instanceof Class<?>) {
+			if (type instanceof Class) {
 				return classToString((Class<?>) type, done);
 			}
 			if (type instanceof ParameterizedType) {
@@ -1931,7 +1931,7 @@ public final class Types {
 			if (type instanceof WildcardType) {
 				return wildcardTypeToString((WildcardType) type, done);
 			}
-			if (type instanceof TypeVariable<?>) {
+			if (type instanceof TypeVariable) {
 				return typeVariableToString((TypeVariable<?>) type, done);
 			}
 			if (type instanceof GenericArrayType) {
@@ -1954,7 +1954,7 @@ public final class Types {
 			final StringBuilder buf = new StringBuilder();
 			final GenericDeclaration d = ((TypeVariable<?>) var)
 				.getGenericDeclaration();
-			if (d instanceof Class<?>) {
+			if (d instanceof Class) {
 				Class<?> c = (Class<?>) d;
 				while (true) {
 					if (c.getEnclosingClass() == null) {
@@ -2077,7 +2077,7 @@ public final class Types {
 				buf.append(raw.getName());
 			}
 			else {
-				if (useOwner instanceof Class<?>) {
+				if (useOwner instanceof Class) {
 					buf.append(((Class<?>) useOwner).getName());
 				}
 				else {
