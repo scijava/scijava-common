@@ -134,6 +134,168 @@ public final class Types {
 		return field(c.getSuperclass(), name);
 	}
 
+	/**
+	 * Discerns whether it would be legal to assign a reference of type
+	 * {@code source} to a reference of type {@code target}.
+	 *
+	 * @see Class#isAssignableFrom(Class)
+	 */
+	public static boolean isAssignable(final Type source, final Type target) {
+		return TypeUtils.isAssignable(source, target);
+	}
+
+	/**
+	 * Creates a new {@link ParameterizedType} of the given class together with
+	 * the specified type arguments.
+	 *
+	 * @param rawType The class of the {@link ParameterizedType}.
+	 * @param typeArgs The type arguments to use in parameterizing it.
+	 * @return The newly created {@link ParameterizedType}.
+	 */
+	public static ParameterizedType newParameterizedType(final Class<?> rawType,
+		final Type... typeArgs)
+	{
+		return newParameterizedType(rawType, rawType.getDeclaringClass(), typeArgs);
+	}
+
+	/**
+	 * Creates a new {@link ParameterizedType} of the given class together with
+	 * the specified type arguments.
+	 *
+	 * @param rawType The class of the {@link ParameterizedType}.
+	 * @param ownerType The owner type of the parameterized class.
+	 * @param typeArgs The type arguments to use in parameterizing it.
+	 * @return The newly created {@link ParameterizedType}.
+	 */
+	public static ParameterizedType newParameterizedType(final Class<?> rawType,
+		final Type ownerType, final Type... typeArgs)
+	{
+		return new TypeUtils.ParameterizedTypeImpl(rawType, ownerType, typeArgs);
+	}
+
+	/**
+	 * Creates a new {@link WildcardType} with no upper or lower bounds (i.e.,
+	 * {@code ?}).
+	 *
+	 * @return The newly created {@link WildcardType}.
+	 */
+	public static WildcardType newWildcardType() {
+		return newWildcardType(null, null);
+	}
+
+	/**
+	 * Creates a new {@link WildcardType} with the given upper and/or lower bound.
+	 *
+	 * @param upperBound Upper bound of the wildcard, or null for none.
+	 * @param lowerBound Lower bound of the wildcard, or null for none.
+	 * @return The newly created {@link WildcardType}.
+	 */
+	public static WildcardType newWildcardType(final Type upperBound,
+		final Type lowerBound)
+	{
+		return new TypeUtils.WildcardTypeImpl(upperBound, lowerBound);
+	}
+
+	/**
+	 * Learn, recursively, whether any of the type parameters associated with
+	 * {@code type} are bound to variables.
+	 *
+	 * @param type the type to check for type variables
+	 * @return boolean
+	 */
+	public static boolean containsTypeVars(final Type type) {
+		return TypeUtils.containsTypeVariables(type);
+	}
+
+	/**
+	 * Gets the type arguments of a class/interface based on a subtype. For
+	 * instance, this method will determine that both of the parameters for the
+	 * interface {@link Map} are {@link Object} for the subtype
+	 * {@link java.util.Properties Properties} even though the subtype does not
+	 * directly implement the {@code Map} interface.
+	 * <p>
+	 * This method returns {@code null} if {@code type} is not assignable to
+	 * {@code toClass}. It returns an empty map if none of the classes or
+	 * interfaces in its inheritance hierarchy specify any type arguments.
+	 * </p>
+	 * <p>
+	 * A side effect of this method is that it also retrieves the type arguments
+	 * for the classes and interfaces that are part of the hierarchy between
+	 * {@code type} and {@code toClass}. So with the above example, this method
+	 * will also determine that the type arguments for {@link java.util.Hashtable
+	 * Hashtable} are also both {@code Object}. In cases where the interface
+	 * specified by {@code toClass} is (indirectly) implemented more than once
+	 * (e.g. where {@code toClass} specifies the interface
+	 * {@link java.lang.Iterable Iterable} and {@code type} specifies a
+	 * parameterized type that implements both {@link java.util.Set Set} and
+	 * {@link java.util.Collection Collection}), this method will look at the
+	 * inheritance hierarchy of only one of the implementations/subclasses; the
+	 * first interface encountered that isn't a subinterface to one of the others
+	 * in the {@code type} to {@code toClass} hierarchy.
+	 * </p>
+	 *
+	 * @param type the type from which to determine the type parameters of
+	 *          {@code toClass}
+	 * @param toClass the class whose type parameters are to be determined based
+	 *          on the subtype {@code type}
+	 * @return a {@code Map} of the type assignments for the type variables in
+	 *         each type in the inheritance hierarchy from {@code type} to
+	 *         {@code toClass} inclusive.
+	 */
+	public static Map<TypeVariable<?>, Type> args(final Type type,
+		final Class<?> toClass)
+	{
+		return TypeUtils.getTypeArguments(type, toClass);
+	}
+
+	/**
+	 * Tries to determine the type arguments of a class/interface based on a super
+	 * parameterized type's type arguments. This method is the inverse of
+	 * {@link #args(Type, Class)} which gets a class/interface's type arguments
+	 * based on a subtype. It is far more limited in determining the type
+	 * arguments for the subject class's type variables in that it can only
+	 * determine those parameters that map from the subject {@link Class} object
+	 * to the supertype.
+	 * <p>
+	 * Example: {@link java.util.TreeSet TreeSet} sets its parameter as the
+	 * parameter for {@link java.util.NavigableSet NavigableSet}, which in turn
+	 * sets the parameter of {@link java.util.SortedSet}, which in turn sets the
+	 * parameter of {@link Set}, which in turn sets the parameter of
+	 * {@link java.util.Collection}, which in turn sets the parameter of
+	 * {@link java.lang.Iterable}. Since {@code TreeSet}'s parameter maps
+	 * (indirectly) to {@code Iterable}'s parameter, it will be able to determine
+	 * that based on the super type {@code Iterable<? extends
+	 * Map<Integer, ? extends Collection<?>>>}, the parameter of {@code TreeSet}
+	 * is {@code ? extends Map<Integer, ? extends Collection<?>>}.
+	 * </p>
+	 *
+	 * @param c the class whose type parameters are to be determined, not
+	 *          {@code null}
+	 * @param superType the super type from which {@code c}'s type arguments are
+	 *          to be determined, not {@code null}
+	 * @return a {@code Map} of the type assignments that could be determined for
+	 *         the type variables in each type in the inheritance hierarchy from
+	 *         {@code type} to {@code c} inclusive.
+	 */
+	public static Map<TypeVariable<?>, Type> args(final Class<?> c,
+		final ParameterizedType superType)
+	{
+		return TypeUtils.determineTypeArguments(c, superType);
+	}
+
+		/**
+	 * Create a parameterized type instance.
+	 *
+	 * @param raw the raw class to create a parameterized type instance for
+	 * @param typeArgMappings the mapping used for parameterization
+	 * @return {@link ParameterizedType}
+	 */
+	public static final ParameterizedType parameterize(final Class<?> raw,
+		final Map<TypeVariable<?>, Type> typeArgMappings)
+	{
+		return TypeUtils.parameterize(raw, typeArgMappings);
+	}
+
 	// -- BEGIN FORK OF APACHE COMMONS LANG 3.4 CODE --
 
 	/*
