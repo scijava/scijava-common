@@ -45,16 +45,16 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * Tests {@link GenericUtils}.
+ * Tests {@link Types}.
  * 
- * @author Mark Hiner
  * @author Curtis Rueden
+ * @author Mark Hiner
  */
-public class GenericUtilsTest {
+public class TypesTest {
 
-	/** Tests {@link GenericUtils#getClass(Type)}. */
+	/** Tests {@link Types#raw(Type)}. */
 	@Test
-	public void testGetClass() {
+	public void testRaw() {
 		@SuppressWarnings("unused")
 		class Struct {
 
@@ -65,17 +65,17 @@ public class GenericUtilsTest {
 			private List<String> list;
 			private HashMap<Integer, Float> map;
 		}
-		assertSame(int[].class, getClass(Struct.class, "intArray"));
-		assertSame(double.class, getClass(Struct.class, "d"));
-		assertSame(String[][].class, getClass(Struct.class, "strings"));
-		assertSame(Void.class, getClass(Struct.class, "v"));
-		assertSame(List.class, getClass(Struct.class, "list"));
-		assertSame(HashMap.class, getClass(Struct.class, "map"));
+		assertSame(int[].class, raw(Struct.class, "intArray"));
+		assertSame(double.class, raw(Struct.class, "d"));
+		assertSame(String[][].class, raw(Struct.class, "strings"));
+		assertSame(Void.class, raw(Struct.class, "v"));
+		assertSame(List.class, raw(Struct.class, "list"));
+		assertSame(HashMap.class, raw(Struct.class, "map"));
 	}
 
-	/** Tests {@link GenericUtils#getComponentClass(Type)}. */
+	/** Tests {@link Types#component(Type)}. */
 	@Test
-	public void testGetComponentClass() {
+	public void testComponent() {
 		@SuppressWarnings("unused")
 		class Struct {
 
@@ -86,54 +86,65 @@ public class GenericUtilsTest {
 			private List<String>[] list;
 			private HashMap<Integer, Float> map;
 		}
-		assertSame(int.class, getComponentClass(Struct.class, "intArray"));
-		assertNull(getComponentClass(Struct.class, "d"));
-		assertSame(String[].class, getComponentClass(Struct.class, "strings"));
-		assertSame(null, getComponentClass(Struct.class, "v"));
-		assertSame(List.class, getComponentClass(Struct.class, "list"));
-		assertSame(null, getComponentClass(Struct.class, "map"));
+		assertSame(int.class, componentType(Struct.class, "intArray"));
+		assertNull(componentType(Struct.class, "d"));
+		assertSame(String[].class, componentType(Struct.class, "strings"));
+		assertSame(null, componentType(Struct.class, "v"));
+		assertSame(List.class, componentType(Struct.class, "list"));
+		assertSame(null, componentType(Struct.class, "map"));
 	}
 
-	/**
-	 * Tests {@link GenericUtils#getFieldClasses(java.lang.reflect.Field, Class)}.
-	 */
+	/** Tests {@link Types#type(Field, Class)}. */
 	@Test
-	public void testGetFieldClasses() {
-		final Field field = ClassUtils.getField(Thing.class, "thing");
+	public void testTypeField() {
+		final Field field = Types.field(Thing.class, "thing");
 
 		// T
-		final Type tType = GenericUtils.getFieldType(field, Thing.class);
+		final Type tType = Types.type(field, Thing.class);
 		assertEquals("capture of ?", tType.toString());
 
 		// N extends Number
-		final Type nType = GenericUtils.getFieldType(field, NumberThing.class);
+		final Type nType = Types.type(field, NumberThing.class);
 		assertEquals("capture of ?", nType.toString());
 
 		// Integer
-		final Type iType = GenericUtils.getFieldType(field, IntegerThing.class);
+		final Type iType = Types.type(field, IntegerThing.class);
 		assertSame(Integer.class, iType);
 	}
 
-	/** Tests {@link GenericUtils#getFieldClasses(Field, Class)}. */
+	/** Tests {@link Types#raws}. */
 	@Test
-	public void testGetGenericType() {
-		final Field field = ClassUtils.getField(Thing.class, "thing");
+	public void testRaws() {
+		final Field field = Types.field(Thing.class, "thing");
 
 		// Object
-		assertAllTheSame(GenericUtils.getFieldClasses(field, Thing.class),
-			Object.class);
+		assertAllTheSame(Types.raws(Types.type(field, Thing.class)), Object.class);
 
 		// N extends Number
-		assertAllTheSame(GenericUtils.getFieldClasses(field, NumberThing.class),
+		assertAllTheSame(Types.raws(Types.type(field, NumberThing.class)),
 			Number.class);
 
 		// Integer
-		assertAllTheSame(GenericUtils.getFieldClasses(field, IntegerThing.class),
+		assertAllTheSame(Types.raws(Types.type(field, IntegerThing.class)),
 			Integer.class);
 
 		// Serializable & Cloneable
-		assertAllTheSame(GenericUtils.getFieldClasses(field, ComplexThing.class),
+		assertAllTheSame(Types.raws(Types.type(field, ComplexThing.class)),
 			Serializable.class, Cloneable.class);
+	}
+
+	/** Tests {@link Types#param}. */
+	@Test
+	public void testParam() {
+		class Struct {
+
+			@SuppressWarnings("unused")
+			private List<int[]> list;
+		}
+		final Type listType = type(Struct.class, "list");
+		final Type paramType = Types.param(listType, List.class, 0);
+		final Class<?> paramClass = Types.raw(paramType);
+		assertSame(int[].class, paramClass);
 	}
 
 	// -- Helper classes --
@@ -161,22 +172,17 @@ public class GenericUtilsTest {
 
 	/** Convenience method to get the {@link Type} of a field. */
 	private Type type(final Class<?> c, final String fieldName) {
-		return ClassUtils.getField(c, fieldName).getGenericType();
+		return Types.field(c, fieldName).getGenericType();
 	}
 
-	/**
-	 * Convenience method to call {@link GenericUtils#getClass(Type)} on a field.
-	 */
-	private Class<?> getClass(final Class<?> c, final String fieldName) {
-		return GenericUtils.getClass(type(c, fieldName));
+	/** Convenience method to call {@link Types#raw} on a field. */
+	private Class<?> raw(final Class<?> c, final String fieldName) {
+		return Types.raw(type(c, fieldName));
 	}
 
-	/**
-	 * Convenience method to call {@link GenericUtils#getComponentClass(Type)} on
-	 * a field.
-	 */
-	private Class<?> getComponentClass(final Class<?> c, final String fieldName) {
-		return GenericUtils.getComponentClass(type(c, fieldName));
+	/** Convenience method to call {@link Types#component} on a field. */
+	private Class<?> componentType(final Class<?> c, final String fieldName) {
+		return Types.raw(Types.component(type(c, fieldName)));
 	}
 
 	private <T> void assertAllTheSame(final List<T> list, final T... values) {

@@ -38,10 +38,13 @@ package org.scijava.util;
 // under the Apache 2 license.
 // See lines below starting with "BEGIN FORK".
 
+import com.googlecode.gentyref.GenericTypeReflector;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -57,7 +60,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.GenericUtils;
 
 /**
  * Utility class for working with generic types, fields and methods.
@@ -79,8 +81,6 @@ public final class Types {
 	private Types() {
 		// NB: Prevent instantiation of utility class.
 	}
-
-	// TODO: Migrate all GenericUtils methods here.
 
 	/**
 	 * Gets a string representation of the given type.
@@ -115,8 +115,11 @@ public final class Types {
 	 * @return The type's first raw class.
 	 */
 	public static Class<?> raw(final Type type) {
-		// TODO: Consolidate with GenericUtils.
-		return GenericUtils.getClass(type);
+		if (type == null) return null;
+		if (type instanceof Class) return (Class<?>) type;
+		final List<Class<?>> c = raws(type);
+		if (c == null || c.size() == 0) return null;
+		return c.get(0);
 	}
 
 	/**
@@ -131,8 +134,8 @@ public final class Types {
 	 * @see #raw
 	 */
 	public static List<Class<?>> raws(final Type type) {
-		// TODO: Consolidate with GenericUtils.
-		return GenericUtils.getClasses(type);
+		if (type == null) return null;
+		return GenericTypeReflector.getUpperBoundClassAndInterfaces(type);
 	}
 
 	public static Field field(final Class<?> c, final String name) {
@@ -142,6 +145,73 @@ public final class Types {
 		}
 		catch (final NoSuchFieldException e) {}
 		return field(c.getSuperclass(), name);
+	}
+
+	/**
+	 * Gets the component type of the given array type, or null if not an array.
+	 */
+	public static Type component(final Type type) {
+		return GenericTypeReflector.getArrayComponentType(type);
+	}
+
+	/**
+	 * Returns the "safe" generic type of the given field, as viewed from the
+	 * given type. This may be narrower than what {@link Field#getGenericType()}
+	 * returns, if the field is declared in a superclass, or {@code type} has a
+	 * type parameter that is used in the type of the field.
+	 * <p>
+	 * For example, suppose we have the following three classes:
+	 * </p>
+	 *
+	 * <pre>
+	 * public class Thing&lt;T&gt; {
+	 *
+	 * 	public T thing;
+	 * }
+	 *
+	 * public class NumberThing&lt;N extends Number&gt; extends Thing&lt;N&gt; {}
+	 *
+	 * public class IntegerThing extends NumberThing&lt;Integer&gt; {}
+	 * </pre>
+	 *
+	 * Then this method operates as follows:
+	 *
+	 * <pre>
+	 * field = Types.field(Thing.class, "thing");
+	 *
+	 * field.getType(); // Object
+	 * field.getGenericType(); // T
+	 *
+	 * Types.type(field, Thing.class); // T
+	 * Types.type(field, NumberThing.class); // N extends Number
+	 * Types.type(field, IntegerThing.class); // Integer
+	 * </pre>
+	 */
+	public static Type type(final Field field, final Class<?> type) {
+		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
+		return GenericTypeReflector.getExactFieldType(field, wildType);
+	}
+
+	/**
+	 * As {@link #type(Field, Class)}, but with respect to the return type of the
+	 * given {@link Method} rather than a {@link Field}.
+	 */
+	public static Type returnType(final Method method, final Class<?> type) {
+		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
+		return GenericTypeReflector.getExactReturnType(method, wildType);
+	}
+
+	/**
+	 * Gets the given type's {@code n}th type parameter of the specified class.
+	 * <p>
+	 * For example, with class {@code StringList implements List<String>},
+	 * {@code Types.param(StringList.class, Collection.class, 0)} returns
+	 * {@code String}.
+	 * </p>
+	 */
+	public static Type param(final Type type, final Class<?> c, final int no) {
+		return GenericTypeReflector.getTypeParameter(type, c
+			.getTypeParameters()[no]);
 	}
 
 	/**
