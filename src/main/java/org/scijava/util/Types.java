@@ -82,6 +82,12 @@ public final class Types {
 
 	// TODO: Migrate all GenericUtils methods here.
 
+	/**
+	 * Gets a string representation of the given type.
+	 * 
+	 * @param t Type whose name is desired.
+	 * @return The name of the given type.
+	 */
 	public static String name(final Type t) {
 		// NB: It is annoying that Class.toString() prepends "class " or
 		// "interface "; this method exists to work around that behavior.
@@ -105,6 +111,8 @@ public final class Types {
 	 * <p>
 	 * If you want <em>all</em> raw classes of the given type, use {@link #raws}.
 	 * </p>
+	 * @param type The type from which to discern the (first) raw class.
+	 * @return The type's first raw class.
 	 */
 	public static Class<?> raw(final Type type) {
 		// TODO: Consolidate with GenericUtils.
@@ -118,6 +126,8 @@ public final class Types {
 	 * return both {@link Number} and {@link Iterable} as its raw classes.
 	 * </p>
 	 *
+	 * @param type The type from which to discern the raw classes.
+	 * @return List of the type's raw classes.
 	 * @see #raw
 	 */
 	public static List<Class<?>> raws(final Type type) {
@@ -138,6 +148,10 @@ public final class Types {
 	 * Discerns whether it would be legal to assign a reference of type
 	 * {@code source} to a reference of type {@code target}.
 	 *
+	 * @param source The type from which assignment is desired.
+	 * @param target The type to which assignment is desired.
+	 * @return True if the source is assignable to the target.
+	 * @throws NullPointerException if {@code target} is null.
 	 * @see Class#isAssignableFrom(Class)
 	 */
 	public static boolean isAssignable(final Type source, final Type target) {
