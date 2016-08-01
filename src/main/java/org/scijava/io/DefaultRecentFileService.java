@@ -147,7 +147,7 @@ public final class DefaultRecentFileService extends AbstractService implements
 	@Override
 	public void clear() {
 		recentFiles.clear();
-		prefService.clear(RECENT_FILES_KEY);
+		prefService.clear(RecentFileService.class, RECENT_FILES_KEY);
 
 		// unregister the modules with the module service
 		moduleService.removeModules(recentModules.values());
@@ -185,12 +185,13 @@ public final class DefaultRecentFileService extends AbstractService implements
 
 	/** Loads the list of recent files from persistent storage. */
 	private void loadList() {
-		recentFiles = prefService.getList(RECENT_FILES_KEY);
+		recentFiles = prefService.getList(RecentFileService.class,
+			RECENT_FILES_KEY);
 	}
 
 	/** Saves the list of recent files to persistent storage. */
 	private void saveList() {
-		prefService.putList(recentFiles, RECENT_FILES_KEY);
+		prefService.putList(RecentFileService.class, recentFiles, RECENT_FILES_KEY);
 	}
 
 	/** Creates a {@link ModuleInfo} to reopen data at the given path. */
