@@ -92,6 +92,49 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 		return changed;
 	}
 
+	// -- Internal methods --
+
+	@Override
+	protected boolean addToList(final E obj, final List<E> list,
+		final boolean batch)
+	{
+		if (batch) {
+			// adding multiple values; append to end of list, and sort afterward
+			return super.addToList(obj, list, batch);
+		}
+
+		// search for the correct location to insert the object
+		final int result = Collections.binarySearch(list, obj);
+		// NB: The objects' natural ordering may not be consistent with equals.
+		// Hence, the index reported may indicate a match with an unequal object
+		// (i.e., obj.compareTo(match) == 0 but !obj.equals(match)).
+		// But since we allow duplicate items in the index, this situation is fine;
+		// either way, we want to insert the object at the given point.
+		final int index = result < 0 ? -result - 1 : result;
+
+		// insert object at the appropriate location
+		list.add(index, obj);
+		return true;
+	}
+
+	// -- Helper methods --
+
+	private void sort() {
+		for (final List<E> list : hoard.values()) {
+			Collections.sort(list);
+		}
+	}
+
+	private int findInList(final Object o, final List<E> list) {
+		if (!getBaseClass().isAssignableFrom(o.getClass())) {
+			// wrong type
+			return list.size();
+		}
+		@SuppressWarnings("unchecked")
+		final E typedObj = (E) o;
+		return Collections.binarySearch(list, typedObj);
+	}
+
 	private void mergeAfterSorting(final Collection<? extends E> c) {
 		final List<E> listToMerge = new ArrayList<>(c);
 		Collections.sort(listToMerge);
@@ -143,49 +186,6 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 		while (index2 >= 0) {
 			into.set(writeIndex--, sorted.get(index2--));
 		}
-	}
-
-	// -- Internal methods --
-
-	@Override
-	protected boolean addToList(final E obj, final List<E> list,
-		final boolean batch)
-	{
-		if (batch) {
-			// adding multiple values; append to end of list, and sort afterward
-			return super.addToList(obj, list, batch);
-		}
-
-		// search for the correct location to insert the object
-		final int result = Collections.binarySearch(list, obj);
-		// NB: The objects' natural ordering may not be consistent with equals.
-		// Hence, the index reported may indicate a match with an unequal object
-		// (i.e., obj.compareTo(match) == 0 but !obj.equals(match)).
-		// But since we allow duplicate items in the index, this situation is fine;
-		// either way, we want to insert the object at the given point.
-		final int index = result < 0 ? -result - 1 : result;
-
-		// insert object at the appropriate location
-		list.add(index, obj);
-		return true;
-	}
-
-	// -- Helper methods --
-
-	private void sort() {
-		for (final List<E> list : hoard.values()) {
-			Collections.sort(list);
-		}
-	}
-
-	private int findInList(final Object o, final List<E> list) {
-		if (!getBaseClass().isAssignableFrom(o.getClass())) {
-			// wrong type
-			return list.size();
-		}
-		@SuppressWarnings("unchecked")
-		final E typedObj = (E) o;
-		return Collections.binarySearch(list, typedObj);
 	}
 
 }
