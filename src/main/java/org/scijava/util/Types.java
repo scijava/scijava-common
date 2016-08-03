@@ -166,6 +166,23 @@ public final class Types {
 	}
 
 	/**
+	 * Gets the array class corresponding to the given element type and
+	 * dimensionality.
+	 * <p>
+	 * For example, {@code arrayType(double.class, 2)} returns
+	 * {@code double[][].class} .
+	 * </p>
+	 * 
+	 * @param componentType The type of elements which the array possesses
+	 * @param dim The dimensionality of the array
+	 */
+	public static Class<?> array(final Class<?> componentType, final int dim) {
+		if (dim < 0) throw new IllegalArgumentException("Negative dimension");
+		if (dim == 0) return componentType;
+		return array(array(componentType), dim - 1);
+	}
+
+	/**
 	 * Gets the array type&mdash;which might be a {@link Class} or a
 	 * {@link GenericArrayType} depending on the argument&mdash;corresponding to
 	 * the given element type.

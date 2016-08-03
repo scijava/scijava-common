@@ -137,6 +137,7 @@ public class TypesTest {
 	/** Tests {@link Types#array}. */
 	@Test
 	public void testArray() {
+		// 1-dimensional cases
 		assertSame(boolean[].class, Types.array(boolean.class));
 		assertSame(String[].class, Types.array(String.class));
 		assertSame(Number[].class, Types.array(Number.class));
@@ -146,6 +147,16 @@ public class TypesTest {
 		try {
 			Types.array(void.class);
 			fail("Unexpected success creating void[]");
+		}
+		catch (final IllegalArgumentException exc) { }
+
+		// multidimensional cases
+		assertSame(Number[][].class, Types.array(Number.class, 2));
+		assertSame(boolean[][][].class, Types.array(boolean.class, 3));
+		assertSame(String.class, Types.array(String.class, 0));
+		try {
+			Types.array(char.class, -1);
+			fail("Unexpected success creating negative dimensional array");
 		}
 		catch (final IllegalArgumentException exc) { }
 	}
