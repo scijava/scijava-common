@@ -35,7 +35,7 @@ package org.scijava.convert;
 import java.lang.reflect.Type;
 
 import org.scijava.plugin.HandlerService;
-import org.scijava.util.GenericUtils;
+import org.scijava.util.Types;
 
 /**
  * Currency for use in {@link Converter} and {@link ConvertService} methods.
@@ -100,7 +100,7 @@ public class ConversionRequest {
 	 * @return Source class for conversion or lookup.
 	 */
 	public Class<?> sourceClass() {
-		return GenericUtils.getClass(srcType);
+		return Types.raw(srcType);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class ConversionRequest {
 	 * @return Destination class for conversion.
 	 */
 	public Class<?> destClass() {
-		return GenericUtils.getClass(destType);
+		return Types.raw(destType);
 	}
 
 	// -- Setters --

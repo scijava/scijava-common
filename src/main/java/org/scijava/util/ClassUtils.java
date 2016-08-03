@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.scijava.util.Types;
+
 /**
  * Useful methods for working with {@link Class} objects and primitive types.
  *
@@ -623,8 +625,7 @@ public final class ClassUtils {
 			}
 			else {
 				// the given value needs to be converted to a compatible type
-				final Type fieldType =
-					GenericUtils.getFieldType(field, instance.getClass());
+				final Type fieldType = Types.type(field, instance.getClass());
 				@SuppressWarnings("deprecation")
 				final Object convertedValue = ConversionUtils.convert(value, fieldType);
 				compatibleValue = convertedValue;
@@ -804,17 +805,20 @@ public final class ClassUtils {
 		return ConversionUtils.getNullValue(type);
 	}
 
-	/** @deprecated use {@link GenericUtils#getFieldClasses(Field, Class)} */
+	/**
+	 * @deprecated Use {@link Types#type(Field, Class)} and {@link Types#raws}
+	 *             instead.
+	 */
 	@Deprecated
 	public static List<Class<?>> getTypes(final Field field, final Class<?> type)
 	{
-		return GenericUtils.getFieldClasses(field, type);
+		return Types.raws(Types.type(field, type));
 	}
 
-	/** @deprecated use {@link GenericUtils#getFieldType(Field, Class)} */
+	/** @deprecated Use {@link Types#type(Field, Class)} instead. */
 	@Deprecated
 	public static Type getGenericType(final Field field, final Class<?> type) {
-		return GenericUtils.getFieldType(field, type);
+		return Types.type(field, type);
 	}
 
 	// -- Helper classes --

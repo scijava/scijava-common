@@ -38,6 +38,7 @@ import org.scijava.convert.ConversionRequest;
 import org.scijava.convert.ConvertService;
 import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
+import org.scijava.util.Types;
 
 /**
  * Useful methods for converting and casting between classes and types.
@@ -316,16 +317,16 @@ public class ConversionUtils {
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
-	/** @deprecated use {@link GenericUtils#getClass(Type)} */
+	/** @deprecated use {@link Types#raw} */
 	@Deprecated
 	public static Class<?> getClass(final Type type) {
-		return GenericUtils.getClass(type);
+		return Types.raw(type);
 	}
 
-	/** @deprecated use {@link GenericUtils#getComponentClass(Type)} */
+	/** @deprecated use {@link Types#raws} and {@link Types#component} */
 	@Deprecated
 	public static Class<?> getComponentClass(final Type type) {
-		return GenericUtils.getComponentClass(type);
+		return Types.raw(Types.component(type));
 	}
 
 //-- Helper methods --

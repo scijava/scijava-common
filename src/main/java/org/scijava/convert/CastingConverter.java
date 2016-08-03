@@ -35,7 +35,7 @@ import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.GenericUtils;
+import org.scijava.util.Types;
 
 /**
  * Minimal {@link Converter} implementation to do direct casting.
@@ -72,7 +72,7 @@ public class CastingConverter extends AbstractConverter<Object, Object> {
 		// rather than only Classes. However, the logic could become complex
 		// very quickly in various subclassing cases, generic parameters
 		// resolved vs. propagated, etc.
-		final Class<?> c = GenericUtils.getClass(dest);
+		final Class<?> c = Types.raw(dest);
 		return (T) ConversionUtils.cast(src, c);
 	}
 
