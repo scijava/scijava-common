@@ -52,6 +52,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.junit.Test;
+import org.scijava.util.Types;
 
 /**
  * Tests {@link ConversionUtils}.
@@ -528,7 +529,7 @@ public class ConversionUtilsTest {
 	private void setFieldValue(final Object o, final String fieldName,
 		final Object value)
 	{
-		ClassUtils.setValue(ClassUtils.getField(o.getClass(), fieldName), o, value);
+		ClassUtils.setValue(Types.field(o.getClass(), fieldName), o, value);
 	}
 
 	/**
