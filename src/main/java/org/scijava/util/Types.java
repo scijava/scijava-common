@@ -148,6 +148,43 @@ public final class Types {
 	}
 
 	/**
+	 * Gets the array class corresponding to the given element type.
+	 * <p>
+	 * For example, {@code arrayType(double.class)} returns {@code double[].class}
+	 * .
+	 * </p>
+	 * 
+	 * @param componentType The type of elements which the array possesses
+	 * @throws IllegalArgumentException if the type cannot be the component type
+	 *           of an array (this is the case e.g. for {@code void.class}).
+	 */
+	public static Class<?> array(final Class<?> componentType) {
+		if (componentType == null) return null;
+		// NB: It appears the reflection API has no built-in way to do this.
+		// So unfortunately, we must allocate a new object and then inspect it.
+		return Array.newInstance(componentType, 0).getClass();
+	}
+
+	/**
+	 * Gets the array type&mdash;which might be a {@link Class} or a
+	 * {@link GenericArrayType} depending on the argument&mdash;corresponding to
+	 * the given element type.
+	 * <p>
+	 * For example, {@code arrayType(double.class)} returns {@code double[].class}
+	 * .
+	 * </p>
+	 * 
+	 * @param componentType The type of elements which the array possesses
+	 */
+	public static Type array(final Type componentType) {
+		if (componentType == null) return null;
+		if (componentType instanceof Class) {
+			return array((Class<?>) componentType);
+		}
+		return new TypeUtils.GenericArrayTypeImpl(componentType);
+	}
+
+	/**
 	 * Gets the component type of the given array type, or null if not an array.
 	 */
 	public static Type component(final Type type) {

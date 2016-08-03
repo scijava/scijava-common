@@ -128,17 +128,6 @@ public class ClassUtilsTest {
 	}
 
 	@Test
-	public void testGetArrayClass() {
-		assertSame(boolean[].class, ClassUtils.getArrayClass(boolean.class));
-		assertSame(String[].class, ClassUtils.getArrayClass(String.class));
-		assertSame(Number[].class, ClassUtils.getArrayClass(Number.class));
-		assertSame(boolean[][].class, ClassUtils.getArrayClass(boolean[].class));
-		assertSame(String[][].class, ClassUtils.getArrayClass(String[].class));
-		assertSame(Number[][].class, ClassUtils.getArrayClass(Number[].class));
-		assertNull(ClassUtils.getArrayClass(void.class));
-	}
-
-	@Test
 	public void testUnpackedClass() throws IOException {
 		final File tmpDir = createTemporaryDirectory("class-utils-test-");
 		final String path = getClass().getName().replace('.', '/') + ".class";

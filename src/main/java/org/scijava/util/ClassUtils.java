@@ -35,7 +35,6 @@ package org.scijava.util;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -218,25 +217,6 @@ public final class ClassUtils {
 			// Not UnsupportedClassVersionError!
 			if (quietly) return null;
 			throw new IllegalArgumentException("Cannot load class: " + className, t);
-		}
-	}
-
-	/**
-	 * Gets the array class corresponding to the given element type.
-	 * <p>
-	 * For example, {@code getArrayClass(double.class)} returns
-	 * {@code double[].class}.
-	 * </p>
-	 */
-	public static Class<?> getArrayClass(final Class<?> elementClass) {
-		if (elementClass == null) return null;
-		// NB: It appears the reflection API has no built-in way to do this.
-		// So unfortunately, we must allocate a new object and then inspect it.
-		try {
-			return Array.newInstance(elementClass, 0).getClass();
-		}
-		catch (final IllegalArgumentException exc) {
-			return null;
 		}
 	}
 
@@ -689,6 +669,15 @@ public final class ClassUtils {
 
 	// -- Helper methods --
 
+	private static Class<?> arrayOrNull(final Class<?> componentType) {
+		try {
+			return Types.array(componentType);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
+	}
+
 	/**
 	 * Populates the cache of annotated elements for a particular class by looking
 	 * for all inherited and declared instances annotated with the specified
@@ -811,6 +800,12 @@ public final class ClassUtils {
 	@Deprecated
 	public static Field getField(final Class<?> c, final String fieldName) {
 		return Types.field(c, fieldName);
+	}
+
+	/** @deprecated Use {@link Types#array(Class)} instead. */
+	@Deprecated
+	public static Class<?> getArrayClass(final Class<?> elementClass) {
+		return Types.raw(arrayOrNull(elementClass));
 	}
 
 	// -- Helper classes --

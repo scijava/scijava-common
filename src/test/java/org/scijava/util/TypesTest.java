@@ -35,6 +35,7 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -131,6 +132,22 @@ public class TypesTest {
 		// Serializable & Cloneable
 		assertAllTheSame(Types.raws(Types.type(field, ComplexThing.class)),
 			Serializable.class, Cloneable.class);
+	}
+
+	/** Tests {@link Types#array}. */
+	@Test
+	public void testArray() {
+		assertSame(boolean[].class, Types.array(boolean.class));
+		assertSame(String[].class, Types.array(String.class));
+		assertSame(Number[].class, Types.array(Number.class));
+		assertSame(boolean[][].class, Types.array(boolean[].class));
+		assertSame(String[][].class, Types.array(String[].class));
+		assertSame(Number[][].class, Types.array(Number[].class));
+		try {
+			Types.array(void.class);
+			fail("Unexpected success creating void[]");
+		}
+		catch (final IllegalArgumentException exc) { }
 	}
 
 	/** Tests {@link Types#param}. */
