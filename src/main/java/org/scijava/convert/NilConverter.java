@@ -34,8 +34,6 @@ package org.scijava.convert;
 import java.lang.reflect.Type;
 
 import org.scijava.Priority;
-import org.scijava.convert.AbstractConverter;
-import org.scijava.convert.Converter;
 import org.scijava.plugin.Plugin;
 import org.scijava.types.Nil;
 import org.scijava.util.Types;
