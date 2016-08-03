@@ -574,26 +574,6 @@ public final class ClassUtils {
 	}
 
 	/**
-	 * Gets the specified field of the given class, or null if it does not exist.
-	 */
-	public static Field getField(final String className, final String fieldName) {
-		return getField(loadClass(className), fieldName);
-	}
-
-	/**
-	 * Gets the specified field of the given class, or null if it does not exist.
-	 */
-	public static Field getField(final Class<?> c, final String fieldName) {
-		if (c == null) return null;
-		try {
-			return c.getDeclaredField(fieldName);
-		}
-		catch (final NoSuchFieldException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Gets the given field's value of the specified object instance, or null if
 	 * the value cannot be obtained.
 	 */
@@ -819,6 +799,18 @@ public final class ClassUtils {
 	@Deprecated
 	public static Type getGenericType(final Field field, final Class<?> type) {
 		return Types.type(field, type);
+	}
+
+	/** @deprecated Use {@link Types#field} instead. */
+	@Deprecated
+	public static Field getField(final String className, final String fieldName) {
+		return Types.field(loadClass(className), fieldName);
+	}
+
+	/** @deprecated Use {@link Types#field} instead. */
+	@Deprecated
+	public static Field getField(final Class<?> c, final String fieldName) {
+		return Types.field(c, fieldName);
 	}
 
 	// -- Helper classes --
