@@ -53,6 +53,79 @@ import org.junit.Test;
  */
 public class TypesTest {
 
+	/** Tests {@link Types#load}. */
+	@Test
+	public void testLoad() {
+		assertLoaded(boolean.class, "boolean");
+		assertLoaded(byte.class, "byte");
+		assertLoaded(char.class, "char");
+		assertLoaded(double.class, "double");
+		assertLoaded(float.class, "float");
+		assertLoaded(int.class, "int");
+		assertLoaded(long.class, "long");
+		assertLoaded(short.class, "short");
+		assertLoaded(void.class, "void");
+		assertLoaded(String.class, "string");
+		assertLoaded(Number.class, "java.lang.Number");
+		assertLoaded(boolean[].class, "boolean[]");
+		assertLoaded(byte[].class, "byte[]");
+		assertLoaded(char[].class, "char[]");
+		assertLoaded(double[].class, "double[]");
+		assertLoaded(float[].class, "float[]");
+		assertLoaded(int[].class, "int[]");
+		assertLoaded(long[].class, "long[]");
+		assertLoaded(short[].class, "short[]");
+		assertLoaded(null, "void[]");
+		assertLoaded(String[].class, "string[]");
+		assertLoaded(Number[].class, "java.lang.Number[]");
+		assertLoaded(boolean[][].class, "boolean[][]");
+		assertLoaded(byte[][].class, "byte[][]");
+		assertLoaded(char[][].class, "char[][]");
+		assertLoaded(double[][].class, "double[][]");
+		assertLoaded(float[][].class, "float[][]");
+		assertLoaded(int[][].class, "int[][]");
+		assertLoaded(long[][].class, "long[][]");
+		assertLoaded(short[][].class, "short[][]");
+		assertLoaded(null, "void[][]");
+		assertLoaded(String[][].class, "string[][]");
+		assertLoaded(Number[][].class, "java.lang.Number[][]");
+		assertLoaded(boolean[].class, "[Z");
+		assertLoaded(byte[].class, "[B");
+		assertLoaded(char[].class, "[C");
+		assertLoaded(double[].class, "[D");
+		assertLoaded(float[].class, "[F");
+		assertLoaded(int[].class, "[I");
+		assertLoaded(long[].class, "[J");
+		assertLoaded(short[].class, "[S");
+		assertLoaded(null, "[V");
+		assertLoaded(String[].class, "[Lstring;");
+		assertLoaded(Number[].class, "[Ljava.lang.Number;");
+		assertLoaded(boolean[][].class, "[[Z");
+		assertLoaded(byte[][].class, "[[B");
+		assertLoaded(char[][].class, "[[C");
+		assertLoaded(double[][].class, "[[D");
+		assertLoaded(float[][].class, "[[F");
+		assertLoaded(int[][].class, "[[I");
+		assertLoaded(long[][].class, "[[J");
+		assertLoaded(short[][].class, "[[S");
+		assertLoaded(null, "[[V");
+		assertLoaded(String[][].class, "[[Lstring;");
+		assertLoaded(Number[][].class, "[[Ljava.lang.Number;");
+	}
+
+	/** Tests {@link Types#load}. */
+	@Test
+	public void testLoadFailureQuiet() {
+		// test quiet failure
+		assertNull(Types.load("a.non.existent.class"));
+	}
+
+	/** Tests {@link Types#load}. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testLoadFailureLoud() {
+		Types.load("a.non.existent.class", false);
+	}
+
 	/** Tests {@link Types#raw(Type)}. */
 	@Test
 	public void testRaw() {
@@ -211,6 +284,10 @@ public class TypesTest {
 	/** Convenience method to call {@link Types#component} on a field. */
 	private Class<?> componentType(final Class<?> c, final String fieldName) {
 		return Types.raw(Types.component(type(c, fieldName)));
+	}
+
+	private void assertLoaded(final Class<?> c, final String name) {
+		assertSame(c, Types.load(name));
 	}
 
 	private void assertAllTheSame(final List<?> list, final Object... values) {

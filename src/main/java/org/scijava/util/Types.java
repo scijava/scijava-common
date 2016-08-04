@@ -83,6 +83,132 @@ public final class Types {
 	}
 
 	/**
+	 * Loads the class with the given name, using the current thread's context
+	 * class loader, or null if it cannot be loaded.
+	 *
+	 * @param name The name of the class to load.
+	 * @return The loaded class, or null if the class could not be loaded.
+	 * @see #load(String, ClassLoader, boolean)
+	 */
+	public static Class<?> load(final String name) {
+		return load(name, null, true);
+	}
+
+	/**
+	 * Loads the class with the given name, using the specified
+	 * {@link ClassLoader}, or null if it cannot be loaded.
+	 *
+	 * @param name The name of the class to load.
+	 * @param classLoader The class loader with which to load the class; if null,
+	 *          the current thread's context class loader will be used.
+	 * @return The loaded class, or null if the class could not be loaded.
+	 * @see #load(String, ClassLoader, boolean)
+	 */
+	public static Class<?> load(final String name,
+		final ClassLoader classLoader)
+	{
+		return load(name, classLoader, true);
+	}
+
+	/**
+	 * Loads the class with the given name, using the current thread's context
+	 * class loader.
+	 *
+	 * @param className the name of the class to load.
+	 * @param quietly Whether to return {@code null} (rather than throwing
+	 *          {@link IllegalArgumentException}) if something goes wrong loading
+	 *          the class.
+	 * @return The loaded class, or {@code null} if the class could not be loaded
+	 *         and the {@code quietly} flag is set.
+	 * @see #load(String, ClassLoader, boolean)
+	 * @throws IllegalArgumentException If the class cannot be loaded and the
+	 *           {@code quietly} flag is not set.
+	 */
+	public static Class<?> load(final String className, final boolean quietly) {
+		return load(className, null, quietly);
+	}
+
+	/**
+	 * Loads the class with the given name, using the specified
+	 * {@link ClassLoader}, or null if it cannot be loaded.
+	 * <p>
+	 * This method is capable of parsing several different class name syntaxes. In
+	 * particular, array classes (including primitives) represented using either
+	 * square brackets or internal Java array name syntax are supported. Examples:
+	 * </p>
+	 * <ul>
+	 * <li>{@code boolean} is loaded as {@code boolean.class}</li>
+	 * <li>{@code Z} is loaded as {@code boolean.class}</li>
+	 * <li>{@code double[]} is loaded as {@code double[].class}</li>
+	 * <li>{@code string[]} is loaded as {@code java.lang.String.class}</li>
+	 * <li>{@code [F} is loaded as {@code float[].class}</li>
+	 * </ul>
+	 *
+	 * @param name The name of the class to load.
+	 * @param classLoader The class loader with which to load the class; if null,
+	 *          the current thread's context class loader will be used.
+	 * @param quietly Whether to return {@code null} (rather than throwing
+	 *          {@link IllegalArgumentException}) if something goes wrong loading
+	 *          the class
+	 * @return The loaded class, or {@code null} if the class could not be loaded
+	 *         and the {@code quietly} flag is set.
+	 * @throws IllegalArgumentException If the class cannot be loaded and the
+	 *           {@code quietly} flag is not set.
+	 */
+	public static Class<?> load(final String name, final ClassLoader classLoader,
+		final boolean quietly)
+	{
+		// handle primitive types
+		if (name.equals("Z") || name.equals("boolean")) return boolean.class;
+		if (name.equals("B") || name.equals("byte")) return byte.class;
+		if (name.equals("C") || name.equals("char")) return char.class;
+		if (name.equals("D") || name.equals("double")) return double.class;
+		if (name.equals("F") || name.equals("float")) return float.class;
+		if (name.equals("I") || name.equals("int")) return int.class;
+		if (name.equals("J") || name.equals("long")) return long.class;
+		if (name.equals("S") || name.equals("short")) return short.class;
+		if (name.equals("V") || name.equals("void")) return void.class;
+
+		// handle built-in class shortcuts
+		final String className;
+		if (name.equals("string")) className = "java.lang.String";
+		else className = name;
+
+		// handle source style arrays (e.g.: "java.lang.String[]")
+		if (name.endsWith("[]")) {
+			final String elementClassName = name.substring(0, name.length() - 2);
+			return arrayOrNull(load(elementClassName, classLoader));
+		}
+
+		// handle non-primitive internal arrays (e.g.: "[Ljava.lang.String;")
+		if (name.startsWith("[L") && name.endsWith(";")) {
+			final String elementClassName = name.substring(2, name.length() - 1);
+			return arrayOrNull(load(elementClassName, classLoader));
+		}
+
+		// handle other internal arrays (e.g.: "[I", "[[I", "[[Ljava.lang.String;")
+		if (name.startsWith("[")) {
+			final String elementClassName = name.substring(1);
+			return arrayOrNull(load(elementClassName, classLoader));
+		}
+
+		// load the class!
+		try {
+			final ClassLoader cl = classLoader == null ? Thread.currentThread()
+				.getContextClassLoader() : classLoader;
+			return cl.loadClass(className);
+		}
+		catch (final Throwable t) {
+			// NB: Do not allow any failure to load the class to crash us.
+			// Not ClassNotFoundException.
+			// Not NoClassDefFoundError.
+			// Not UnsupportedClassVersionError!
+			if (quietly) return null;
+			throw new IllegalArgumentException("Cannot load class: " + className, t);
+		}
+	}
+
+	/**
 	 * Gets a string representation of the given type.
 	 *
 	 * @param t Type whose name is desired.
@@ -433,6 +559,17 @@ public final class Types {
 		final Map<TypeVariable<?>, Type> typeArgMappings)
 	{
 		return TypeUtils.parameterize(raw, typeArgMappings);
+	}
+
+	// -- Helper methods --
+
+	private static Class<?> arrayOrNull(final Class<?> componentType) {
+		try {
+			return Types.array(componentType);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
 	}
 
 	// -- BEGIN FORK OF APACHE COMMONS LANG 3.4 CODE --
