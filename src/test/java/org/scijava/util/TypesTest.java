@@ -126,6 +126,18 @@ public class TypesTest {
 		Types.load("a.non.existent.class", false);
 	}
 
+	/** Tests {@link Types#name}. */
+	public void testName() {
+		@SuppressWarnings("unused")
+		class Struct {
+
+			private List<String> list;
+		}
+		assertEquals("boolean", Types.name(boolean.class));
+		assertEquals("java.lang.String", Types.name(String.class));
+		assertEquals("List<String>[]", Types.name(type(Struct.class, "list")));
+	}
+
 	/** Tests {@link Types#raw(Type)}. */
 	@Test
 	public void testRaw() {
