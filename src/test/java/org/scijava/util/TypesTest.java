@@ -159,45 +159,6 @@ public class TypesTest {
 		assertSame(HashMap.class, raw(Struct.class, "map"));
 	}
 
-	/** Tests {@link Types#component(Type)}. */
-	@Test
-	public void testComponent() {
-		@SuppressWarnings("unused")
-		class Struct {
-
-			private int[] intArray;
-			private double d;
-			private String[][] strings;
-			private Void v;
-			private List<String>[] list;
-			private HashMap<Integer, Float> map;
-		}
-		assertSame(int.class, componentType(Struct.class, "intArray"));
-		assertNull(componentType(Struct.class, "d"));
-		assertSame(String[].class, componentType(Struct.class, "strings"));
-		assertSame(null, componentType(Struct.class, "v"));
-		assertSame(List.class, componentType(Struct.class, "list"));
-		assertSame(null, componentType(Struct.class, "map"));
-	}
-
-	/** Tests {@link Types#type(Field, Class)}. */
-	@Test
-	public void testTypeField() {
-		final Field field = Types.field(Thing.class, "thing");
-
-		// T
-		final Type tType = Types.type(field, Thing.class);
-		assertEquals("capture of ?", tType.toString());
-
-		// N extends Number
-		final Type nType = Types.type(field, NumberThing.class);
-		assertEquals("capture of ?", nType.toString());
-
-		// Integer
-		final Type iType = Types.type(field, IntegerThing.class);
-		assertSame(Integer.class, iType);
-	}
-
 	/** Tests {@link Types#raws}. */
 	@Test
 	public void testRaws() {
@@ -244,6 +205,45 @@ public class TypesTest {
 			fail("Unexpected success creating negative dimensional array");
 		}
 		catch (final IllegalArgumentException exc) { }
+	}
+
+	/** Tests {@link Types#component(Type)}. */
+	@Test
+	public void testComponent() {
+		@SuppressWarnings("unused")
+		class Struct {
+
+			private int[] intArray;
+			private double d;
+			private String[][] strings;
+			private Void v;
+			private List<String>[] list;
+			private HashMap<Integer, Float> map;
+		}
+		assertSame(int.class, componentType(Struct.class, "intArray"));
+		assertNull(componentType(Struct.class, "d"));
+		assertSame(String[].class, componentType(Struct.class, "strings"));
+		assertSame(null, componentType(Struct.class, "v"));
+		assertSame(List.class, componentType(Struct.class, "list"));
+		assertSame(null, componentType(Struct.class, "map"));
+	}
+
+	/** Tests {@link Types#type(Field, Class)}. */
+	@Test
+	public void testTypeField() {
+		final Field field = Types.field(Thing.class, "thing");
+
+		// T
+		final Type tType = Types.type(field, Thing.class);
+		assertEquals("capture of ?", tType.toString());
+
+		// N extends Number
+		final Type nType = Types.type(field, NumberThing.class);
+		assertEquals("capture of ?", nType.toString());
+
+		// Integer
+		final Type iType = Types.type(field, IntegerThing.class);
+		assertSame(Integer.class, iType);
 	}
 
 	/** Tests {@link Types#param}. */
