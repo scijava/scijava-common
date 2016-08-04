@@ -89,18 +89,6 @@ public final class ClassUtils {
 
 	// -- Class loading, querying and reflection --
 
-	/** Checks whether a class with the given name exists. */
-	public static boolean hasClass(final String className) {
-		return hasClass(className, null);
-	}
-
-	/** Checks whether a class with the given name exists. */
-	public static boolean hasClass(final String className,
-		final ClassLoader classLoader)
-	{
-		return Types.load(className, classLoader) != null;
-	}
-
 	/**
 	 * Gets the base location of the given class.
 	 * <p>
@@ -625,6 +613,20 @@ public final class ClassUtils {
 		final ClassLoader classLoader, final boolean quietly)
 	{
 		return Types.load(name, classLoader, quietly);
+	}
+
+	/** @deprecated Use {@link Types#load(String)} instead. */
+	@Deprecated
+	public static boolean hasClass(final String className) {
+		return Types.load(className) != null;
+	}
+
+	/** @deprecated Use {@link Types#load(String, ClassLoader)} instead. */
+	@Deprecated
+	public static boolean hasClass(final String className,
+		final ClassLoader classLoader)
+	{
+		return Types.load(className, classLoader) != null;
 	}
 
 	/** @deprecated use {@link ConversionUtils#convert(Object, Class)} */
