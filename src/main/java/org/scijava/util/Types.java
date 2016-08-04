@@ -84,7 +84,7 @@ public final class Types {
 
 	/**
 	 * Gets a string representation of the given type.
-	 * 
+	 *
 	 * @param t Type whose name is desired.
 	 * @return The name of the given type.
 	 */
@@ -111,6 +111,7 @@ public final class Types {
 	 * <p>
 	 * If you want <em>all</em> raw classes of the given type, use {@link #raws}.
 	 * </p>
+	 *
 	 * @param type The type from which to discern the (first) raw class.
 	 * @return The type's first raw class.
 	 */
@@ -153,7 +154,7 @@ public final class Types {
 	 * For example, {@code arrayType(double.class)} returns {@code double[].class}
 	 * .
 	 * </p>
-	 * 
+	 *
 	 * @param componentType The type of elements which the array possesses
 	 * @throws IllegalArgumentException if the type cannot be the component type
 	 *           of an array (this is the case e.g. for {@code void.class}).
@@ -172,7 +173,7 @@ public final class Types {
 	 * For example, {@code arrayType(double.class, 2)} returns
 	 * {@code double[][].class} .
 	 * </p>
-	 * 
+	 *
 	 * @param componentType The type of elements which the array possesses
 	 * @param dim The dimensionality of the array
 	 */
@@ -190,7 +191,7 @@ public final class Types {
 	 * For example, {@code arrayType(double.class)} returns {@code double[].class}
 	 * .
 	 * </p>
-	 * 
+	 *
 	 * @param componentType The type of elements which the array possesses
 	 */
 	public static Type array(final Type componentType) {
@@ -421,7 +422,7 @@ public final class Types {
 		return TypeUtils.determineTypeArguments(c, superType);
 	}
 
-		/**
+	/**
 	 * Create a parameterized type instance.
 	 *
 	 * @param raw the raw class to create a parameterized type instance for
