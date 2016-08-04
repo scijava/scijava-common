@@ -185,7 +185,7 @@ public class TypesTest {
 		return Types.raw(Types.component(type(c, fieldName)));
 	}
 
-	private <T> void assertAllTheSame(final List<T> list, final T... values) {
+	private void assertAllTheSame(final List<?> list, final Object... values) {
 		assertEquals(list.size(), values.length);
 		for (int i = 0; i < values.length; i++) {
 			assertSame(list.get(i), values[i]);
