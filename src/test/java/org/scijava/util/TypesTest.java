@@ -35,11 +35,13 @@ package org.scijava.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -178,6 +180,16 @@ public class TypesTest {
 		// Serializable & Cloneable
 		assertAllTheSame(Types.raws(Types.type(field, ComplexThing.class)),
 			Serializable.class, Cloneable.class);
+	}
+
+	/** Tests {@link Types#field}. */
+	@Test
+	public void testField() {
+		final Field field = Types.field(Thing.class, "thing");
+		assertEquals("thing", field.getName());
+		assertSame(Object.class, field.getType());
+		assertTrue(field.getGenericType() instanceof TypeVariable);
+		assertEquals("T", ((TypeVariable<?>) field.getGenericType()).getName());
 	}
 
 	/** Tests {@link Types#array}. */
