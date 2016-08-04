@@ -57,6 +57,7 @@ import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.MiscUtils;
+import org.scijava.util.Types;
 
 /**
  * A tree representing a menu structure independent of any particular user
@@ -234,7 +235,7 @@ public class ShadowMenu extends AbstractContextual implements
 		}
 		final String className = moduleInfo.getDelegateClassName();
 		try {
-			final Class<?> c = ClassUtils.loadClass(className, false);
+			final Class<?> c = Types.load(className, false);
 			final URL iconURL = c.getResource(iconPath);
 			if (iconURL == null) {
 				if (log != null) log.error("Could not load icon: " + iconPath);

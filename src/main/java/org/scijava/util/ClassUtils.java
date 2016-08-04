@@ -98,7 +98,7 @@ public final class ClassUtils {
 	public static boolean hasClass(final String className,
 		final ClassLoader classLoader)
 	{
-		return loadClass(className, classLoader) != null;
+		return Types.load(className, classLoader) != null;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public final class ClassUtils {
 	public static URL getLocation(final String className,
 		final ClassLoader classLoader)
 	{
-		final Class<?> c = loadClass(className, classLoader);
+		final Class<?> c = Types.load(className, classLoader);
 		return getLocation(c);
 	}
 
@@ -694,7 +694,7 @@ public final class ClassUtils {
 	/** @deprecated Use {@link Types#field} instead. */
 	@Deprecated
 	public static Field getField(final String className, final String fieldName) {
-		return Types.field(loadClass(className), fieldName);
+		return Types.field(Types.load(className), fieldName);
 	}
 
 	/** @deprecated Use {@link Types#field} instead. */
