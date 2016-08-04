@@ -79,7 +79,6 @@ public class ClassUtilsTest {
 		assertLoaded(int[].class, "int[]");
 		assertLoaded(long[].class, "long[]");
 		assertLoaded(short[].class, "short[]");
-		assertLoaded(null, "void[]");
 		assertLoaded(String[].class, "string[]");
 		assertLoaded(Number[].class, "java.lang.Number[]");
 		assertLoaded(boolean[][].class, "boolean[][]");
@@ -90,7 +89,6 @@ public class ClassUtilsTest {
 		assertLoaded(int[][].class, "int[][]");
 		assertLoaded(long[][].class, "long[][]");
 		assertLoaded(short[][].class, "short[][]");
-		assertLoaded(null, "void[][]");
 		assertLoaded(String[][].class, "string[][]");
 		assertLoaded(Number[][].class, "java.lang.Number[][]");
 		assertLoaded(boolean[].class, "[Z");
@@ -101,7 +99,6 @@ public class ClassUtilsTest {
 		assertLoaded(int[].class, "[I");
 		assertLoaded(long[].class, "[J");
 		assertLoaded(short[].class, "[S");
-		assertLoaded(null, "[V");
 		assertLoaded(String[].class, "[Lstring;");
 		assertLoaded(Number[].class, "[Ljava.lang.Number;");
 		assertLoaded(boolean[][].class, "[[Z");
@@ -112,9 +109,28 @@ public class ClassUtilsTest {
 		assertLoaded(int[][].class, "[[I");
 		assertLoaded(long[][].class, "[[J");
 		assertLoaded(short[][].class, "[[S");
-		assertLoaded(null, "[[V");
 		assertLoaded(String[][].class, "[[Lstring;");
 		assertLoaded(Number[][].class, "[[Ljava.lang.Number;");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLoadClassVoidArray1D() {
+		ClassUtils.loadClass("void[]");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLoadClassVoidArray1DShort() {
+		ClassUtils.loadClass("[V");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLoadClassVoidArray2D() {
+		ClassUtils.loadClass("void[][]");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testLoadClassVoidArray2DShort() {
+		ClassUtils.loadClass("[[V");
 	}
 
 	@Test
