@@ -265,6 +265,48 @@ public final class Types {
 		return GenericTypeReflector.getUpperBoundClassAndInterfaces(type);
 	}
 
+	public static boolean isBoolean(final Class<?> type) {
+		return type == boolean.class || Boolean.class.isAssignableFrom(type);
+	}
+
+	public static boolean isByte(final Class<?> type) {
+		return type == byte.class || Byte.class.isAssignableFrom(type);
+	}
+
+	public static boolean isCharacter(final Class<?> type) {
+		return type == char.class || Character.class.isAssignableFrom(type);
+	}
+
+	public static boolean isDouble(final Class<?> type) {
+		return type == double.class || Double.class.isAssignableFrom(type);
+	}
+
+	public static boolean isFloat(final Class<?> type) {
+		return type == float.class || Float.class.isAssignableFrom(type);
+	}
+
+	public static boolean isInteger(final Class<?> type) {
+		return type == int.class || Integer.class.isAssignableFrom(type);
+	}
+
+	public static boolean isLong(final Class<?> type) {
+		return type == long.class || Long.class.isAssignableFrom(type);
+	}
+
+	public static boolean isShort(final Class<?> type) {
+		return type == short.class || Short.class.isAssignableFrom(type);
+	}
+
+	public static boolean isNumber(final Class<?> type) {
+		return Number.class.isAssignableFrom(type) || type == byte.class ||
+			type == double.class || type == float.class || type == int.class ||
+			type == long.class || type == short.class;
+	}
+
+	public static boolean isText(final Class<?> type) {
+		return String.class.isAssignableFrom(type) || isCharacter(type);
+	}
+
 	public static Field field(final Class<?> c, final String name) {
 		if (c == null) throw new IllegalArgumentException("No such field: " + name);
 		try {

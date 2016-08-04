@@ -457,48 +457,6 @@ public final class ClassUtils {
 
 	// -- Type querying --
 
-	public static boolean isBoolean(final Class<?> type) {
-		return type == boolean.class || Boolean.class.isAssignableFrom(type);
-	}
-
-	public static boolean isByte(final Class<?> type) {
-		return type == byte.class || Byte.class.isAssignableFrom(type);
-	}
-
-	public static boolean isCharacter(final Class<?> type) {
-		return type == char.class || Character.class.isAssignableFrom(type);
-	}
-
-	public static boolean isDouble(final Class<?> type) {
-		return type == double.class || Double.class.isAssignableFrom(type);
-	}
-
-	public static boolean isFloat(final Class<?> type) {
-		return type == float.class || Float.class.isAssignableFrom(type);
-	}
-
-	public static boolean isInteger(final Class<?> type) {
-		return type == int.class || Integer.class.isAssignableFrom(type);
-	}
-
-	public static boolean isLong(final Class<?> type) {
-		return type == long.class || Long.class.isAssignableFrom(type);
-	}
-
-	public static boolean isShort(final Class<?> type) {
-		return type == short.class || Short.class.isAssignableFrom(type);
-	}
-
-	public static boolean isNumber(final Class<?> type) {
-		return Number.class.isAssignableFrom(type) || type == byte.class ||
-			type == double.class || type == float.class || type == int.class ||
-			type == long.class || type == short.class;
-	}
-
-	public static boolean isText(final Class<?> type) {
-		return String.class.isAssignableFrom(type) || isCharacter(type);
-	}
-
 	// -- Comparison --
 
 	/**
@@ -627,6 +585,66 @@ public final class ClassUtils {
 		final ClassLoader classLoader)
 	{
 		return Types.load(className, classLoader) != null;
+	}
+
+	/** @deprecated Use {@link Types#isBoolean} instead. */
+	@Deprecated
+	public static boolean isBoolean(final Class<?> type) {
+		return Types.isBoolean(type);
+	}
+
+	/** @deprecated Use {@link Types#isByte} instead. */
+	@Deprecated
+	public static boolean isByte(final Class<?> type) {
+		return Types.isByte(type);
+	}
+
+	/** @deprecated Use {@link Types#isCharacter} instead. */
+	@Deprecated
+	public static boolean isCharacter(final Class<?> type) {
+		return Types.isCharacter(type);
+	}
+
+	/** @deprecated Use {@link Types#isDouble} instead. */
+	@Deprecated
+	public static boolean isDouble(final Class<?> type) {
+		return Types.isDouble(type);
+	}
+
+	/** @deprecated Use {@link Types#isFloat} instead. */
+	@Deprecated
+	public static boolean isFloat(final Class<?> type) {
+		return Types.isFloat(type);
+	}
+
+	/** @deprecated Use {@link Types#isInteger} instead. */
+	@Deprecated
+	public static boolean isInteger(final Class<?> type) {
+		return Types.isInteger(type);
+	}
+
+	/** @deprecated Use {@link Types#isLong} instead. */
+	@Deprecated
+	public static boolean isLong(final Class<?> type) {
+		return Types.isLong(type);
+	}
+
+	/** @deprecated Use {@link Types#isShort} instead. */
+	@Deprecated
+	public static boolean isShort(final Class<?> type) {
+		return Types.isShort(type);
+	}
+
+	/** @deprecated Use {@link Types#isNumber} instead. */
+	@Deprecated
+	public static boolean isNumber(final Class<?> type) {
+		return Types.isNumber(type);
+	}
+
+	/** @deprecated Use {@link Types#isText} instead. */
+	@Deprecated
+	public static boolean isText(final Class<?> type) {
+		return Types.isText(type);
 	}
 
 	/** @deprecated use {@link ConversionUtils#convert(Object, Class)} */
