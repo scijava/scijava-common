@@ -65,7 +65,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Utility class for creating and manipulating {@link PrimitiveArray} instances.
+ * Utility class for working with arrays, particularly arrays of primitives.
  * 
  * @author Mark Hiner
  * @author Curtis Rueden
