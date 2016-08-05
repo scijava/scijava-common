@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>10.5.0</version>
+		<version>11.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -102,7 +102,6 @@
 	</ciManagement>
 
 	<properties>
-		<scijava.jvm.version>1.8</scijava.jvm.version>
 		<scijava-expression-parser.version>3.0.0</scijava-expression-parser.version>
 	</properties>
 
