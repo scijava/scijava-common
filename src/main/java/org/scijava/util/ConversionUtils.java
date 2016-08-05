@@ -218,27 +218,6 @@ public class ConversionUtils {
 		return result;
 	}
 
-	/**
-	 * Gets the "null" value for the given type. For non-primitives, this will
-	 * actually be null. For primitives, it will be zero for numeric types, false
-	 * for boolean, and the null character for char.
-	 */
-	public static <T> T getNullValue(final Class<T> type) {
-		final Object defaultValue;
-		if (type == boolean.class) defaultValue = false;
-		else if (type == byte.class) defaultValue = (byte) 0;
-		else if (type == char.class) defaultValue = '\0';
-		else if (type == double.class) defaultValue = 0d;
-		else if (type == float.class) defaultValue = 0f;
-		else if (type == int.class) defaultValue = 0;
-		else if (type == long.class) defaultValue = 0L;
-		else if (type == short.class) defaultValue = (short) 0;
-		else defaultValue = null;
-		@SuppressWarnings("unchecked")
-		final T result = (T) defaultValue;
-		return result;
-	}
-
 	// -- ConvertService setter --
 
 	/**
@@ -327,6 +306,12 @@ public class ConversionUtils {
 	@Deprecated
 	public static Class<?> getComponentClass(final Type type) {
 		return Types.raw(Types.component(type));
+	}
+
+	/** @deprecated Use {@link Types#nullValue} instead. */
+	@Deprecated
+	public static <T> T getNullValue(final Class<T> type) {
+		return Types.nullValue(type);
 	}
 
 	//-- Helper methods --

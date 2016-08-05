@@ -198,60 +198,6 @@ public class ConversionUtilsTest {
 		}
 	}
 
-	/** Tests {@link ConversionUtils#getNullValue(Class)}. */
-	@Test
-	public void testGetNullValue() {
-		final boolean booleanNull = ConversionUtils.getNullValue(boolean.class);
-		assertFalse(booleanNull);
-
-		final byte byteNull = ConversionUtils.getNullValue(byte.class);
-		assertEquals(0, byteNull);
-
-		final char charNull = ConversionUtils.getNullValue(char.class);
-		assertEquals('\0', charNull);
-
-		final double doubleNull = ConversionUtils.getNullValue(double.class);
-		assertEquals(0.0, doubleNull, 0.0);
-
-		final float floatNull = ConversionUtils.getNullValue(float.class);
-		assertEquals(0f, floatNull, 0f);
-
-		final int intNull = ConversionUtils.getNullValue(int.class);
-		assertEquals(0, intNull);
-
-		final long longNull = ConversionUtils.getNullValue(long.class);
-		assertEquals(0, longNull);
-
-		final short shortNull = ConversionUtils.getNullValue(short.class);
-		assertEquals(0, shortNull);
-
-		final Void voidNull = ConversionUtils.getNullValue(void.class);
-		assertNull(voidNull);
-
-		final Class<?>[] types = { //
-			Boolean.class, Byte.class, Character.class, Double.class, //
-				Float.class, Integer.class, Long.class, Short.class, //
-				Void.class, //
-				String.class, //
-				Number.class, BigInteger.class, BigDecimal.class, //
-				boolean[].class, byte[].class, char[].class, double[].class, //
-				float[].class, int[].class, long[].class, short[].class, //
-				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
-				Float[].class, Integer[].class, Long[].class, Short[].class, //
-				Void[].class, //
-				Object.class, Object[].class, String[].class, //
-				Object[][].class, String[][].class, //
-				Collection.class, //
-				List.class, ArrayList.class, LinkedList.class, //
-				Set.class, HashSet.class, //
-				Map.class, HashMap.class, //
-				Collection[].class, List[].class, Set[].class, Map[].class };
-		for (final Class<?> c : types) {
-			final Object nullValue = ConversionUtils.getNullValue(c);
-			assertNull("Expected null for " + c.getName(), nullValue);
-		}
-	}
-
 	/**
 	 * Tests populating a primitive array.
 	 */

@@ -307,6 +307,27 @@ public final class Types {
 		return String.class.isAssignableFrom(type) || isCharacter(type);
 	}
 
+	/**
+	 * Gets the "null" value for the given type. For non-primitives, this will
+	 * actually be null. For primitives, it will be zero for numeric types, false
+	 * for boolean, and the null character for char.
+	 */
+	public static <T> T nullValue(final Class<T> type) {
+		final Object defaultValue;
+		if (type == boolean.class) defaultValue = false;
+		else if (type == byte.class) defaultValue = (byte) 0;
+		else if (type == char.class) defaultValue = '\0';
+		else if (type == double.class) defaultValue = 0d;
+		else if (type == float.class) defaultValue = 0f;
+		else if (type == int.class) defaultValue = 0;
+		else if (type == long.class) defaultValue = 0L;
+		else if (type == short.class) defaultValue = (short) 0;
+		else defaultValue = null;
+		@SuppressWarnings("unchecked")
+		final T result = (T) defaultValue;
+		return result;
+	}
+
 	public static Field field(final Class<?> c, final String name) {
 		if (c == null) throw new IllegalArgumentException("No such field: " + name);
 		try {

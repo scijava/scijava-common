@@ -33,6 +33,7 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -42,8 +43,16 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -180,6 +189,60 @@ public class TypesTest {
 		// Serializable & Cloneable
 		assertAllTheSame(Types.raws(Types.type(field, ComplexThing.class)),
 			Serializable.class, Cloneable.class);
+	}
+
+	/** Tests {@link Types#nullValue(Class)}. */
+	@Test
+	public void testNullValue() {
+		final boolean booleanNull = Types.nullValue(boolean.class);
+		assertFalse(booleanNull);
+
+		final byte byteNull = Types.nullValue(byte.class);
+		assertEquals(0, byteNull);
+
+		final char charNull = Types.nullValue(char.class);
+		assertEquals('\0', charNull);
+
+		final double doubleNull = Types.nullValue(double.class);
+		assertEquals(0.0, doubleNull, 0.0);
+
+		final float floatNull = Types.nullValue(float.class);
+		assertEquals(0f, floatNull, 0f);
+
+		final int intNull = Types.nullValue(int.class);
+		assertEquals(0, intNull);
+
+		final long longNull = Types.nullValue(long.class);
+		assertEquals(0, longNull);
+
+		final short shortNull = Types.nullValue(short.class);
+		assertEquals(0, shortNull);
+
+		final Void voidNull = Types.nullValue(void.class);
+		assertNull(voidNull);
+
+		final Class<?>[] types = { //
+			Boolean.class, Byte.class, Character.class, Double.class, //
+			Float.class, Integer.class, Long.class, Short.class, //
+			Void.class, //
+			String.class, //
+			Number.class, BigInteger.class, BigDecimal.class, //
+			boolean[].class, byte[].class, char[].class, double[].class, //
+			float[].class, int[].class, long[].class, short[].class, //
+			Boolean[].class, Byte[].class, Character[].class, Double[].class, //
+			Float[].class, Integer[].class, Long[].class, Short[].class, //
+			Void[].class, //
+			Object.class, Object[].class, String[].class, //
+			Object[][].class, String[][].class, //
+			Collection.class, //
+			List.class, ArrayList.class, LinkedList.class, //
+			Set.class, HashSet.class, //
+			Map.class, HashMap.class, //
+			Collection[].class, List[].class, Set[].class, Map[].class };
+		for (final Class<?> c : types) {
+			final Object nullValue = Types.nullValue(c);
+			assertNull("Expected null for " + c.getName(), nullValue);
+		}
 	}
 
 	/** Tests {@link Types#field}. */
