@@ -35,6 +35,8 @@ package org.scijava.util;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.scijava.util.Types;
+
 /**
  * An extensible, generic array of {@code Object} elements. Note that this class
  * is a {@link PrimitiveArray} but of course Objects are not primitives.
@@ -184,7 +186,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 	@Override
 	public boolean remove(final Object o) {
 		if (!compatibleClass(o)) return false;
-		final E value = ConversionUtils.cast(o, objectClass);
+		final E value = Types.cast(o, objectClass);
 		return removeValue(value);
 	}
 
@@ -216,7 +218,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 		boolean changed = false;
 		for (final Object o : c) {
 			if (!compatibleClass(o)) continue;
-			final E value = ConversionUtils.cast(o, objectClass);
+			final E value = Types.cast(o, objectClass);
 			final boolean result = removeValue(value);
 			if (result) changed = true;
 		}

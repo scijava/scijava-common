@@ -56,7 +56,7 @@ public final class NumberUtils {
 	 */
 	public static Number toNumber(final Object value, final Class<?> type) {
 		final Object num = ConversionUtils.convert(value, type);
-		return num == null ? null : ConversionUtils.cast(num, Number.class);
+		return num == null ? null : Types.cast(num, Number.class);
 	}
 
 	public static BigDecimal asBigDecimal(final Number n) {

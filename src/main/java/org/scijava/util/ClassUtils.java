@@ -665,22 +665,22 @@ public final class ClassUtils {
 		return ConversionUtils.canConvert(value, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#cast(Object, Class)} */
+	/** @deprecated use {@link Types#cast(Object, Class)} */
 	@Deprecated
 	public static <T> T cast(final Object obj, final Class<T> type) {
-		return ConversionUtils.cast(obj, type);
+		return Types.cast(obj, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#canCast(Class, Class)} */
+	/** @deprecated use {@link Types#isAssignable(Type, Type)} */
 	@Deprecated
 	public static boolean canCast(final Class<?> c, final Class<?> type) {
-		return ConversionUtils.canCast(c, type);
+		return Types.isAssignable(c, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#canCast(Object, Class)} */
+	/** @deprecated use {@link Types#isInstance(Object, Class)} */
 	@Deprecated
 	public static boolean canCast(final Object obj, final Class<?> type) {
-		return ConversionUtils.canCast(obj, type);
+		return Types.isInstance(obj, type);
 	}
 
 	/** @deprecated use {@link Types#box(Class)} */
