@@ -460,8 +460,8 @@ public final class Types {
 	 * </p>
 	 */
 	public static Type param(final Type type, final Class<?> c, final int no) {
-		return GenericTypeReflector.getTypeParameter(type, c
-			.getTypeParameters()[no]);
+		return GenericTypeReflector.getTypeParameter(type, //
+			c.getTypeParameters()[no]);
 	}
 
 	/**
