@@ -191,6 +191,60 @@ public class TypesTest {
 			Serializable.class, Cloneable.class);
 	}
 
+	/** Tests {@link Types#box(Class)}. */
+	@Test
+	public void testBox() {
+		final Class<Boolean> booleanType = Types.box(boolean.class);
+		assertSame(Boolean.class, booleanType);
+
+		final Class<Byte> byteType = Types.box(byte.class);
+		assertSame(Byte.class, byteType);
+
+		final Class<Character> charType = Types.box(char.class);
+		assertSame(Character.class, charType);
+
+		final Class<Double> doubleType = Types.box(double.class);
+		assertSame(Double.class, doubleType);
+
+		final Class<Float> floatType = Types.box(float.class);
+		assertSame(Float.class, floatType);
+
+		final Class<Integer> intType = Types.box(int.class);
+		assertSame(Integer.class, intType);
+
+		final Class<Long> longType = Types.box(long.class);
+		assertSame(Long.class, longType);
+
+		final Class<Short> shortType = Types.box(short.class);
+		assertSame(Short.class, shortType);
+
+		final Class<Void> voidType = Types.box(void.class);
+		assertSame(Void.class, voidType);
+
+		final Class<?>[] types = { //
+			Boolean.class, Byte.class, Character.class, Double.class, //
+				Float.class, Integer.class, Long.class, Short.class, //
+				Void.class, //
+				String.class, //
+				Number.class, BigInteger.class, BigDecimal.class, //
+				boolean[].class, byte[].class, char[].class, double[].class, //
+				float[].class, int[].class, long[].class, short[].class, //
+				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
+				Float[].class, Integer[].class, Long[].class, Short[].class, //
+				Void[].class, //
+				Object.class, Object[].class, String[].class, //
+				Object[][].class, String[][].class, //
+				Collection.class, //
+				List.class, ArrayList.class, LinkedList.class, //
+				Set.class, HashSet.class, //
+				Map.class, HashMap.class, //
+				Collection[].class, List[].class, Set[].class, Map[].class };
+		for (final Class<?> c : types) {
+			final Class<?> type = Types.box(c);
+			assertSame(c, type);
+		}
+	}
+
 	/** Tests {@link Types#nullValue(Class)}. */
 	@Test
 	public void testNullValue() {

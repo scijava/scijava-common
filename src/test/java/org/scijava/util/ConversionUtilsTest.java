@@ -135,69 +135,6 @@ public class ConversionUtilsTest {
 		assertNull(notAnEnum);
 	}
 
-	/** Tests {@link ConversionUtils#getNonprimitiveType(Class)}. */
-	@Test
-	public void testGetNonprimitiveType() {
-		final Class<Boolean> booleanType =
-			ConversionUtils.getNonprimitiveType(boolean.class);
-		assertSame(Boolean.class, booleanType);
-
-		final Class<Byte> byteType =
-			ConversionUtils.getNonprimitiveType(byte.class);
-		assertSame(Byte.class, byteType);
-
-		final Class<Character> charType =
-			ConversionUtils.getNonprimitiveType(char.class);
-		assertSame(Character.class, charType);
-
-		final Class<Double> doubleType =
-			ConversionUtils.getNonprimitiveType(double.class);
-		assertSame(Double.class, doubleType);
-
-		final Class<Float> floatType =
-			ConversionUtils.getNonprimitiveType(float.class);
-		assertSame(Float.class, floatType);
-
-		final Class<Integer> intType =
-			ConversionUtils.getNonprimitiveType(int.class);
-		assertSame(Integer.class, intType);
-
-		final Class<Long> longType =
-			ConversionUtils.getNonprimitiveType(long.class);
-		assertSame(Long.class, longType);
-
-		final Class<Short> shortType =
-			ConversionUtils.getNonprimitiveType(short.class);
-		assertSame(Short.class, shortType);
-
-		final Class<Void> voidType =
-			ConversionUtils.getNonprimitiveType(void.class);
-		assertSame(Void.class, voidType);
-
-		final Class<?>[] types = { //
-			Boolean.class, Byte.class, Character.class, Double.class, //
-				Float.class, Integer.class, Long.class, Short.class, //
-				Void.class, //
-				String.class, //
-				Number.class, BigInteger.class, BigDecimal.class, //
-				boolean[].class, byte[].class, char[].class, double[].class, //
-				float[].class, int[].class, long[].class, short[].class, //
-				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
-				Float[].class, Integer[].class, Long[].class, Short[].class, //
-				Void[].class, //
-				Object.class, Object[].class, String[].class, //
-				Object[][].class, String[][].class, //
-				Collection.class, //
-				List.class, ArrayList.class, LinkedList.class, //
-				Set.class, HashSet.class, //
-				Map.class, HashMap.class, //
-				Collection[].class, List[].class, Set[].class, Map[].class };
-		for (final Class<?> c : types) {
-			final Class<?> type = ConversionUtils.getNonprimitiveType(c);
-			assertSame(c, type);
-		}
-	}
-
 	/**
 	 * Tests populating a primitive array.
 	 */

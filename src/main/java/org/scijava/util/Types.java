@@ -308,6 +308,76 @@ public final class Types {
 	}
 
 	/**
+	 * Returns the non-primitive {@link Class} closest to the given type.
+	 * <p>
+	 * Specifically, the following type conversions are done:
+	 * <ul>
+	 * <li>boolean.class becomes Boolean.class</li>
+	 * <li>byte.class becomes Byte.class</li>
+	 * <li>char.class becomes Character.class</li>
+	 * <li>double.class becomes Double.class</li>
+	 * <li>float.class becomes Float.class</li>
+	 * <li>int.class becomes Integer.class</li>
+	 * <li>long.class becomes Long.class</li>
+	 * <li>short.class becomes Short.class</li>
+	 * <li>void.class becomes Void.class</li>
+	 * </ul>
+	 * All other types are unchanged.
+	 * </p>
+	 */
+	public static <T> Class<T> box(final Class<T> type) {
+		final Class<?> destType;
+		if (type == boolean.class) destType = Boolean.class;
+		else if (type == byte.class) destType = Byte.class;
+		else if (type == char.class) destType = Character.class;
+		else if (type == double.class) destType = Double.class;
+		else if (type == float.class) destType = Float.class;
+		else if (type == int.class) destType = Integer.class;
+		else if (type == long.class) destType = Long.class;
+		else if (type == short.class) destType = Short.class;
+		else if (type == void.class) destType = Void.class;
+		else destType = type;
+		@SuppressWarnings("unchecked")
+		final Class<T> result = (Class<T>) destType;
+		return result;
+	}
+
+	/**
+	 * Returns the primitive {@link Class} closest to the given type.
+	 * <p>
+	 * Specifically, the following type conversions are done:
+	 * <ul>
+	 * <li>Boolean.class becomes boolean.class</li>
+	 * <li>Byte.class becomes byte.class</li>
+	 * <li>Character.class becomes char.class</li>
+	 * <li>Double.class becomes double.class</li>
+	 * <li>Float.class becomes float.class</li>
+	 * <li>Integer.class becomes int.class</li>
+	 * <li>Long.class becomes long.class</li>
+	 * <li>Short.class becomes short.class</li>
+	 * <li>Void.class becomes void.class</li>
+	 * </ul>
+	 * All other types are unchanged.
+	 * </p>
+	 */
+	public static <T> Class<T> unbox(final Class<T> type) {
+		final Class<?> destType;
+		if (type == Boolean.class) destType = boolean.class;
+		else if (type == Byte.class) destType = byte.class;
+		else if (type == Character.class) destType = char.class;
+		else if (type == Double.class) destType = double.class;
+		else if (type == Float.class) destType = float.class;
+		else if (type == Integer.class) destType = int.class;
+		else if (type == Long.class) destType = long.class;
+		else if (type == Short.class) destType = short.class;
+		else if (type == Void.class) destType = void.class;
+		else destType = type;
+		@SuppressWarnings("unchecked")
+		final Class<T> result = (Class<T>) destType;
+		return result;
+	}
+
+	/**
 	 * Gets the "null" value for the given type. For non-primitives, this will
 	 * actually be null. For primitives, it will be zero for numeric types, false
 	 * for boolean, and the null character for char.
