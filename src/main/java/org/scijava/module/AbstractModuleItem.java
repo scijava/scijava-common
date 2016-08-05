@@ -39,11 +39,11 @@ import java.util.List;
 import org.scijava.AbstractBasicDetails;
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
 import org.scijava.util.NumberUtils;
 import org.scijava.util.Prefs;
 import org.scijava.util.StringMaker;
+import org.scijava.util.Types;
 
 /**
  * Abstract superclass of {@link ModuleItem} implementations.
@@ -264,7 +264,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 
 	@Override
 	public Number getStepSize() {
-		if (!ClassUtils.isNumber(getType())) return null;
+		if (!Types.isNumber(getType())) return null;
 		return NumberUtils.toNumber("1", getType());
 	}
 

@@ -35,6 +35,8 @@ package org.scijava.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.scijava.util.Types;
+
 
 /**
  * Useful methods for working with {@link Number} objects.
@@ -73,22 +75,22 @@ public final class NumberUtils {
 	}
 
 	public static Number getMinimumNumber(final Class<?> type) {
-		if (ClassUtils.isByte(type)) return Byte.MIN_VALUE;
-		if (ClassUtils.isShort(type)) return Short.MIN_VALUE;
-		if (ClassUtils.isInteger(type)) return Integer.MIN_VALUE;
-		if (ClassUtils.isLong(type)) return Long.MIN_VALUE;
-		if (ClassUtils.isFloat(type)) return -Float.MAX_VALUE;
-		if (ClassUtils.isDouble(type)) return -Double.MAX_VALUE;
+		if (Types.isByte(type)) return Byte.MIN_VALUE;
+		if (Types.isShort(type)) return Short.MIN_VALUE;
+		if (Types.isInteger(type)) return Integer.MIN_VALUE;
+		if (Types.isLong(type)) return Long.MIN_VALUE;
+		if (Types.isFloat(type)) return -Float.MAX_VALUE;
+		if (Types.isDouble(type)) return -Double.MAX_VALUE;
 		return null;
 	}
 
 	public static Number getMaximumNumber(final Class<?> type) {
-		if (ClassUtils.isByte(type)) return Byte.MAX_VALUE;
-		if (ClassUtils.isShort(type)) return Short.MAX_VALUE;
-		if (ClassUtils.isInteger(type)) return Integer.MAX_VALUE;
-		if (ClassUtils.isLong(type)) return Long.MAX_VALUE;
-		if (ClassUtils.isFloat(type)) return Float.MAX_VALUE;
-		if (ClassUtils.isDouble(type)) return Double.MAX_VALUE;
+		if (Types.isByte(type)) return Byte.MAX_VALUE;
+		if (Types.isShort(type)) return Short.MAX_VALUE;
+		if (Types.isInteger(type)) return Integer.MAX_VALUE;
+		if (Types.isLong(type)) return Long.MAX_VALUE;
+		if (Types.isFloat(type)) return Float.MAX_VALUE;
+		if (Types.isDouble(type)) return Double.MAX_VALUE;
 		return null;
 	}
 
