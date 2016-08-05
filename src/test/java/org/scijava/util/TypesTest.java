@@ -389,6 +389,79 @@ public class TypesTest {
 		assertSame(int[].class, paramClass);
 	}
 
+	/** Tests {@link Types#isAssignable(Type, Type)}. */
+	@Test
+	public void testIsAssignable() {
+		// check casting to superclass
+		assertTrue(Types.isAssignable(String.class, Object.class));
+
+		// check casting to interface
+		assertTrue(Types.isAssignable(ArrayList.class, Collection.class));
+
+		// casting numeric primitives is not supported
+		assertFalse(Types.isAssignable(double.class, float.class));
+		assertFalse(Types.isAssignable(float.class, double.class));
+
+		// boxing is not reported to work
+		// TODO: Consider changing this behavior.
+		assertFalse(Types.isAssignable(int.class, Number.class));
+
+		// casting from null always works
+		assertTrue(Types.isAssignable(null, Object.class));
+		assertTrue(Types.isAssignable(null, int[].class));
+	}
+
+	/** Tests {@link Types#isAssignable(Type, Type)} from null to null. */
+	@Test(expected = NullPointerException.class)
+	public void testIsAssignableNullToNull() {
+		Types.isAssignable(null, null);
+	}
+
+	/** Tests {@link Types#isAssignable(Type, Type)} from Class to null. */
+	@Test(expected = NullPointerException.class)
+	public void testIsAssignableClassToNull() {
+		Types.isAssignable(Object.class, null);
+	}
+
+	/** Tests {@link Types#isInstance(Object, Class)}. */
+	@Test
+	public void testIsInstance() {
+		// casting from null always works
+		final Object nullObject = null;
+		assertTrue(Types.isInstance(nullObject, Object.class));
+		assertTrue(Types.isInstance(nullObject, int[].class));
+
+		// casting to null is not allowed
+		assertFalse(Types.isInstance(nullObject, null));
+		assertFalse(Types.isInstance(new Object(), null));
+	}
+
+	/** Tests {@link Types#cast(Object, Class)}. */
+	@Test
+	public void testCast() {
+		// check casting to superclass
+		final String string = "Hello";
+		final Object stringToObject = Types.cast(string, Object.class);
+		assertSame(string, stringToObject);
+
+		// check casting to interface
+		final ArrayList<?> arrayList = new ArrayList<>();
+		final Collection<?> arrayListToCollection = //
+			Types.cast(arrayList, Collection.class);
+		assertSame(arrayList, arrayListToCollection);
+
+		// casting numeric primitives is not supported
+		final Float doubleToFloat = Types.cast(5.1, float.class);
+		assertNull(doubleToFloat);
+		final Double floatToDouble = Types.cast(5.1f, double.class);
+		assertNull(floatToDouble);
+
+		// boxing works though
+		final Number intToNumber = Types.cast(5, Number.class);
+		assertSame(Integer.class, intToNumber.getClass());
+		assertEquals(5, intToNumber.intValue());
+	}
+
 	// -- Helper classes --
 
 	private static class Thing<T> {

@@ -57,63 +57,6 @@ import org.scijava.util.Types;
  */
 public class ConversionUtilsTest {
 
-	/** Tests {@link ConversionUtils#canCast(Class, Class)}. */
-	@Test
-	public void testCanCast() {
-		// check casting to superclass
-		assertTrue(ConversionUtils.canCast(String.class, Object.class));
-
-		// check casting to interface
-		assertTrue(ConversionUtils.canCast(ArrayList.class, Collection.class));
-
-		// casting numeric primitives is not supported
-		assertFalse(ConversionUtils.canCast(double.class, float.class));
-		assertFalse(ConversionUtils.canCast(float.class, double.class));
-
-		// check casting with boxing
-		assertTrue(ConversionUtils.canCast(int.class, Number.class));
-
-		// casting from null always works
-		final Class<?> nullClass = null;
-		assertTrue(ConversionUtils.canCast(nullClass, Object.class));
-		assertTrue(ConversionUtils.canCast(nullClass, int[].class));
-		final Object nullObject = null;
-		assertTrue(ConversionUtils.canCast(nullObject, Object.class));
-		assertTrue(ConversionUtils.canCast(nullObject, int[].class));
-
-		// casting to null is not allowed
-		assertFalse(ConversionUtils.canCast(nullClass, null));
-		assertFalse(ConversionUtils.canCast(Object.class, null));
-		assertFalse(ConversionUtils.canCast(nullObject, null));
-		assertFalse(ConversionUtils.canCast(new Object(), null));
-	}
-
-	/** Tests {@link ConversionUtils#cast(Object, Class)}. */
-	@Test
-	public void testCast() {
-		// check casting to superclass
-		final String string = "Hello";
-		final Object stringToObject = ConversionUtils.cast(string, Object.class);
-		assertSame(string, stringToObject);
-
-		// check casting to interface
-		final ArrayList<?> arrayList = new ArrayList<>();
-		final Collection<?> arrayListToCollection =
-			ConversionUtils.cast(arrayList, Collection.class);
-		assertSame(arrayList, arrayListToCollection);
-
-		// casting numeric primitives is not supported
-		final Float doubleToFloat = ConversionUtils.cast(5.1, float.class);
-		assertNull(doubleToFloat);
-		final Double floatToDouble = ConversionUtils.cast(5.1f, double.class);
-		assertNull(floatToDouble);
-
-		// boxing works though
-		final Number intToNumber = ConversionUtils.cast(5, Number.class);
-		assertSame(Integer.class, intToNumber.getClass());
-		assertEquals(5, intToNumber.intValue());
-	}
-
 	/** Tests {@link ConversionUtils#convertToEnum(String, Class)}. */
 	@Test
 	public void testConvertToEnum() {
