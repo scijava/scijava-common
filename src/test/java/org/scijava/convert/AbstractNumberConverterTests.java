@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.scijava.util.ConversionUtils;
+import org.scijava.util.Types;
 
 /**
  * Tests converter plugins that convert from primitive numeric types to other
@@ -80,8 +80,7 @@ public abstract class AbstractNumberConverterTests {
 	public void testPrimitive() {
 		final Number src = getSrc();
 		final Number expect = getExpectedValue();
-		assertEquals(expect, converter.convert(src, ConversionUtils
-			.getPrimitiveType(destType)));
+		assertEquals(expect, converter.convert(src, Types.unbox(destType)));
 	}
 
 	/**

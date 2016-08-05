@@ -32,7 +32,7 @@
 
 package org.scijava.convert;
 
-import org.scijava.util.ConversionUtils;
+import org.scijava.util.Types;
 
 /**
  * Converts numbers to numbers, and throws IllegalArgumentException for null or
@@ -53,7 +53,7 @@ public abstract class NumberToNumberConverter<I extends Number, O extends Number
 				getInputType().getSimpleName() + ", but got " +
 				src.getClass().getSimpleName());
 		}
-		if (ConversionUtils.getNonprimitiveType(dest) != getOutputType()) {
+		if (Types.box(dest) != getOutputType()) {
 			throw new IllegalArgumentException(
 				"Expected output class of " + getOutputType().getSimpleName() +
 				", but got " + dest.getSimpleName());

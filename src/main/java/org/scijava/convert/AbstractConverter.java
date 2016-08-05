@@ -109,8 +109,8 @@ public abstract class AbstractConverter<I, O> extends
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
 		if (src == null) return false;
-		final Class<?> saneSrc = ConversionUtils.getNonprimitiveType(src);
-		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		final Class<?> saneSrc = Types.box(src);
+		final Class<?> saneDest = Types.box(dest);
 		return ConversionUtils.canCast(saneSrc, getInputType()) &&
 			ConversionUtils.canCast(getOutputType(), saneDest);
 	}

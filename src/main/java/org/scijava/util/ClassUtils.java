@@ -683,16 +683,16 @@ public final class ClassUtils {
 		return ConversionUtils.canCast(obj, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#getNonprimitiveType(Class)} */
+	/** @deprecated use {@link Types#box(Class)} */
 	@Deprecated
 	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
-		return ConversionUtils.getNonprimitiveType(type);
+		return Types.box(type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#getNullValue(Class)} */
+	/** @deprecated use {@link Types#nullValue(Class)} */
 	@Deprecated
 	public static <T> T getNullValue(final Class<T> type) {
-		return ConversionUtils.getNullValue(type);
+		return Types.nullValue(type);
 	}
 
 	/**

@@ -36,7 +36,7 @@ import java.lang.reflect.Type;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
-import org.scijava.util.ConversionUtils;
+import org.scijava.util.Types;
 
 /**
  * {@link Converter} implementation for handling {@code null} values. Performs
@@ -83,7 +83,7 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
 		if (dest == null) return null;
-		if (src == null) return ConversionUtils.getNullValue(dest);
+		if (src == null) return Types.nullValue(dest);
 
 		throw new IllegalArgumentException("Attempting non-null conversion: " +
 			src + " > " + dest + " using NullConverter.");

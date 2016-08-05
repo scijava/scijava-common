@@ -253,7 +253,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 
 	private <D> D tValue(final String value, final Class<D> type) {
 		if (value == null || value.isEmpty()) return null;
-		final Class<D> saneType = ConversionUtils.getNonprimitiveType(type);
+		final Class<D> saneType = Types.box(type);
 		return ConversionUtils.convert(value, saneType);
 	}
 

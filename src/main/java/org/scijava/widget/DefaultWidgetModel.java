@@ -50,8 +50,8 @@ import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
-import org.scijava.util.ConversionUtils;
 import org.scijava.util.NumberUtils;
+import org.scijava.util.Types;
 
 /**
  * The backing data model for a particular {@link InputWidget}.
@@ -335,7 +335,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	/** Converts the given object to a number matching the input type. */
 	private Number toNumber(final Object value) {
 		final Class<?> type = item.getType();
-		final Class<?> saneType = ConversionUtils.getNonprimitiveType(type);
+		final Class<?> saneType = Types.box(type);
 		return NumberUtils.toNumber(value, saneType);
 	}
 

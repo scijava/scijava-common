@@ -59,8 +59,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.scijava.util.ConversionUtils;
-
 /**
  * Utility class for working with generic types, fields and methods.
  * <p>
@@ -1647,7 +1645,7 @@ public final class Types {
 				}
 
 				// work with wrapper the wrapper class instead of the primitive
-				cls = ConversionUtils.getNonprimitiveType(cls);
+				cls = Types.box(cls);
 			}
 
 			// create a copy of the incoming map, or an empty one if it's null

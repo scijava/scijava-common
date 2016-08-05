@@ -97,7 +97,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<T> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		final Class<T> saneDest = Types.box(dest);
 
 		// Handle array types
 		if (isArray(dest)) {
@@ -153,7 +153,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			final String s = (String) src;
 			if (s.isEmpty()) {
 				// return null for empty strings
-				return ConversionUtils.getNullValue(dest);
+				return Types.nullValue(dest);
 			}
 
 			// use first character when converting to Character
@@ -310,11 +310,10 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		final Class<?> saneDest = Types.box(dest);
 
 		// OK for numerical conversions
-		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
-			Number.class) &&
+		if (ConversionUtils.canCast(Types.box(src), Number.class) &&
 			(ClassUtils.isByte(dest) || ClassUtils.isDouble(dest) ||
 					ClassUtils.isFloat(dest) || ClassUtils.isInteger(dest) ||
 					ClassUtils.isLong(dest) || ClassUtils.isShort(dest)))
