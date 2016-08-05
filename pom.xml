@@ -101,10 +101,6 @@
 		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
 	</ciManagement>
 
-	<properties>
-		<scijava-expression-parser.version>3.0.0</scijava-expression-parser.version>
-	</properties>
-
 	<dependencies>
 		<!-- SciJava dependencies -->
 		<dependency>
