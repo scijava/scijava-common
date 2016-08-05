@@ -374,7 +374,13 @@ public final class Types {
 	 * Gets the component type of the given array type, or null if not an array.
 	 */
 	public static Type component(final Type type) {
-		return GenericTypeReflector.getArrayComponentType(type);
+		if (type instanceof Class) {
+			return ((Class<?>) type).getComponentType();
+		}
+		if (type instanceof GenericArrayType) {
+			return ((GenericArrayType) type).getGenericComponentType();
+		}
+		return null;
 	}
 
 	/**
