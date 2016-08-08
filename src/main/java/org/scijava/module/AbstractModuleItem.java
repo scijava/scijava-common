@@ -37,6 +37,7 @@ import java.util.List;
 
 import org.scijava.AbstractBasicDetails;
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
@@ -71,7 +72,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 		sm.append("description", getDescription());
 		sm.append("visibility", getVisibility(), ItemVisibility.NORMAL);
 		sm.append("required", isRequired());
-		sm.append("persisted", isPersisted());
+		sm.append("persisted", getPersistence());
 		sm.append("persistKey", getPersistKey());
 		sm.append("callback", getCallback());
 		sm.append("widgetStyle", getWidgetStyle());
@@ -131,8 +132,8 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	}
 
 	@Override
-	public boolean isPersisted() {
-		return true;
+	public ItemPersistence getPersistence() {
+		return ItemPersistence.DEFAULT;
 	}
 
 	@Override
@@ -149,7 +150,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	@Deprecated
 	public T loadValue() {
 		// if there is nothing to load from persistence return nothing
-		if (!isPersisted()) return null;
+		if (getPersistence() == ItemPersistence.NO) return null;
 
 		final String sValue;
 		final String persistKey = getPersistKey();
@@ -169,7 +170,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	@Override
 	@Deprecated
 	public void saveValue(final T value) {
-		if (!isPersisted()) return;
+		if (getPersistence() == ItemPersistence.NO) return;
 
 		final String sValue = value == null ? "" : value.toString();
 

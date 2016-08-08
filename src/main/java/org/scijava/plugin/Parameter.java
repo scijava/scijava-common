@@ -37,6 +37,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 
 /**
@@ -111,7 +112,7 @@ public @interface Parameter {
 	boolean required() default true;
 
 	/** Defines whether to remember the most recent value of the parameter. */
-	boolean persist() default true;
+	ItemPersistence persist() default ItemPersistence.DEFAULT;
 
 	/** Defines a key to use for saving the value persistently. */
 	String persistKey() default "";
@@ -119,7 +120,8 @@ public @interface Parameter {
 	/**
 	 * Defines a function that is called to initialize the parameter. If an
 	 * initializer is defined, it takes precedence over {@link #persist()}, i.e.
-	 * the parameter is not persisted even if {@code persist=true} is set.
+	 * the parameter is not persisted even if {@link #persist()} returns
+	 * {@link ItemPersistence#YES}.
 	 */
 	String initializer() default "";
 

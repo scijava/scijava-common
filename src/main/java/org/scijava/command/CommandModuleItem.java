@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 import org.scijava.Optional;
 import org.scijava.module.AbstractModuleItem;
@@ -109,7 +110,7 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	}
 
 	@Override
-	public boolean isPersisted() {
+	public ItemPersistence getPersistence() {
 		return getParameter().persist();
 	}
 

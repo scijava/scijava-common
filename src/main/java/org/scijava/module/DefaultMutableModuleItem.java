@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 
 /**
@@ -54,7 +55,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private ItemIO ioType;
 	private ItemVisibility visibility;
 	private boolean required;
-	private boolean persisted;
+	private ItemPersistence persistence;
 	private String persistKey;
 	private String initializer;
 	private String callback;
@@ -87,7 +88,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		ioType = super.getIOType();
 		visibility = super.getVisibility();
 		required = super.isRequired();
-		persisted = super.isPersisted();
+		persistence = super.getPersistence();
 		persistKey = super.getPersistKey();
 		initializer = super.getInitializer();
 		callback = super.getCallback();
@@ -113,7 +114,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		ioType = item.getIOType();
 		visibility = item.getVisibility();
 		required = item.isRequired();
-		persisted = item.isPersisted();
+		persistence = item.getPersistence();
 		persistKey = item.getPersistKey();
 		initializer = item.getInitializer();
 		callback = item.getCallback();
@@ -148,8 +149,8 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	}
 
 	@Override
-	public void setPersisted(final boolean persisted) {
-		this.persisted = persisted;
+	public void setPersistence(final ItemPersistence persistence) {
+		this.persistence = persistence;
 	}
 
 	@Override
@@ -241,8 +242,8 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	}
 
 	@Override
-	public boolean isPersisted() {
-		return persisted;
+	public ItemPersistence getPersistence() {
+		return persistence;
 	}
 
 	@Override

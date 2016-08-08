@@ -49,6 +49,7 @@ import javax.script.ScriptException;
 import org.scijava.Context;
 import org.scijava.Contextual;
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 import org.scijava.NullContextException;
 import org.scijava.command.Command;
@@ -427,7 +428,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));
 		else if (is(k, "min")) item.setMinimumValue(as(v, item.getType()));
 		else if (is(k, "name")) item.setName(as(v, String.class));
-		else if (is(k, "persist")) item.setPersisted(as(v, boolean.class));
+		else if (is(k, "persist")) item.setPersistence(as(v, ItemPersistence.class));
 		else if (is(k, "persistKey")) item.setPersistKey(as(v, String.class));
 		else if (is(k, "required")) item.setRequired(as(v, boolean.class));
 		else if (is(k, "softMax")) item.setSoftMaximum(as(v, item.getType()));

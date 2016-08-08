@@ -37,6 +37,7 @@ import java.util.List;
 
 import org.scijava.BasicDetails;
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.ItemVisibility;
 
 /**
@@ -84,7 +85,7 @@ public interface ModuleItem<T> extends BasicDetails {
 	boolean isRequired();
 
 	/** Gets whether to remember the most recent value of the parameter. */
-	boolean isPersisted();
+	ItemPersistence getPersistence();
 
 	/** Gets the key to use for saving the value persistently. */
 	String getPersistKey();
