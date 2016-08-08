@@ -29,52 +29,32 @@
  * #L%
  */
 
-package org.scijava.module;
+package org.scijava;
 
-import java.util.List;
-
-import org.scijava.ItemIO;
-import org.scijava.ItemPersistence;
-import org.scijava.ItemVisibility;
+import org.scijava.plugin.Parameter;
 
 /**
- * {@link ModuleItem} extension allowing manipulation of its metadata.
+ * Defines the persistence setting of a parameter.
  * 
- * @author Curtis Rueden
- * @see org.scijava.command.DynamicCommand
+ * @author Stefan Helfrich
  */
-public interface MutableModuleItem<T> extends ModuleItem<T> {
+public enum ItemPersistence {
 
-	void setIOType(ItemIO ioType);
+	/**
+	 * Item is persisted in any case.
+	 */
+	YES,
 
-	void setVisibility(ItemVisibility visibility);
+	/**
+	 * Item is never persisted.
+	 */
+	NO,
 
-	void setRequired(boolean required);
-
-	void setPersistence(ItemPersistence persistence);
-
-	void setPersistKey(String persistKey);
-
-	void setInitializer(String initializer);
-
-	void setCallback(String callback);
-
-	void setWidgetStyle(String widgetStyle);
-
-	void setDefaultValue(T defaultValue);
-
-	void setMinimumValue(T minimumValue);
-
-	void setMaximumValue(T maximumValue);
-
-	void setSoftMinimum(T softMinimum);
-
-	void setSoftMaximum(T softMaximum);
-
-	void setStepSize(Number stepSize);
-
-	void setColumnCount(int columnCount);
-
-	void setChoices(List<? extends T> choices);
+	/**
+	 * Item is persisted unless an additional {@link Parameter#initializer()
+	 * initializer()} method is defined or the value to persist is the defined
+	 * default value.
+	 */
+	DEFAULT
 
 }

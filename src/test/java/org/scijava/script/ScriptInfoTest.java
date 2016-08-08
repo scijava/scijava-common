@@ -56,6 +56,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.ItemIO;
+import org.scijava.ItemPersistence;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
@@ -151,27 +152,32 @@ public class ScriptInfoTest {
 		final List<?> noChoices = Collections.emptyList();
 
 		final ModuleItem<?> log = info.getInput("log");
-		assertItem("log", LogService.class, null, ItemIO.INPUT, false, true, null,
-			null, null, null, null, null, null, null, noChoices, log);
+		assertItem("log", LogService.class, null, ItemIO.INPUT, false,
+			ItemPersistence.DEFAULT, null, null, null, null, null, null, null, null,
+			noChoices, log);
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, "slider", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
+			ItemPersistence.DEFAULT, null, "slider", 11, null, null, 5, 15, 3.0,
+			noChoices, sliderValue);
 
 		final ModuleItem<?> animal = info.getInput("animal");
 		final List<String> animalChoices = //
 			Arrays.asList("quick brown fox", "lazy dog");
-		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
-			null, null, null, null, null, null, null, null, animalChoices, animal);
+		assertItem("animal", String.class, null, ItemIO.INPUT, true,
+			ItemPersistence.DEFAULT, null, null, null, null, null, null, null, null,
+			animalChoices, animal);
 		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
 		final ModuleItem<?> buffer = info.getOutput("buffer");
-		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
-			null, null, null, null, null, null, null, null, noChoices, buffer);
+		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true,
+			ItemPersistence.DEFAULT, null, null, null, null, null, null, null, null,
+			noChoices, buffer);
 
 		final ModuleItem<?> result = info.getOutput("result");
-		assertItem("result", Object.class, null, ItemIO.OUTPUT, true, true, null,
-			null, null, null, null, null, null, null, noChoices, result);
+		assertItem("result", Object.class, null, ItemIO.OUTPUT, true,
+			ItemPersistence.DEFAULT, null, null, null, null, null, null, null, null,
+			noChoices, result);
 
 		int inputCount = 0;
 		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
@@ -188,7 +194,7 @@ public class ScriptInfoTest {
 
 	private void assertItem(final String name, final Class<?> type,
 		final String label, final ItemIO ioType, final boolean required,
-		final boolean persist, final String persistKey, final String style,
+		final ItemPersistence persist, final String persistKey, final String style,
 		final Object value, final Object min, final Object max,
 		final Object softMin, final Object softMax, final Number stepSize,
 		final List<?> choices, final ModuleItem<?> item)
@@ -198,7 +204,7 @@ public class ScriptInfoTest {
 		assertEquals(label, item.getLabel());
 		assertSame(ioType, item.getIOType());
 		assertEquals(required, item.isRequired());
-		assertEquals(persist, item.isPersisted());
+		assertEquals(persist, item.getPersistence());
 		assertEquals(persistKey, item.getPersistKey());
 		assertEquals(style, item.getWidgetStyle());
 		assertEquals(value, item.getDefaultValue());

@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.scijava.Identifiable;
+import org.scijava.ItemPersistence;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.convert.ConvertService;
@@ -289,9 +290,16 @@ public class DefaultModuleService extends AbstractService implements
 
 	@Override
 	public <T> void save(final ModuleItem<T> item, final T value) {
-		if (!item.isPersisted()) return;
+		ItemPersistence persistence = item.getPersistence();
 
-		if (MiscUtils.equal(item.getDefaultValue(), value)) {
+		if (persistence == ItemPersistence.NO) return;
+
+		// NB: Do not persist values which are computed via an initializer.
+		if (item.getInitializer() != null && !item.getInitializer().isEmpty() &&
+			persistence == ItemPersistence.DEFAULT) return;
+
+		if (MiscUtils.equal(item.getDefaultValue(), value) &&
+			persistence == ItemPersistence.DEFAULT) {
 			// NB: Do not persist the value if it is the default.
 			// This is nice if the default value might change later,
 			// such as when iteratively developing a script.
@@ -315,7 +323,7 @@ public class DefaultModuleService extends AbstractService implements
 	@Override
 	public <T> T load(final ModuleItem<T> item) {
 		// if there is nothing to load from persistence return nothing
-		if (!item.isPersisted()) return null;
+		if (item.getPersistence() == ItemPersistence.NO) return null;
 
 		final String sValue;
 		final String persistKey = item.getPersistKey();
