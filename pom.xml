@@ -119,6 +119,10 @@
 			<artifactId>eventbus</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
 
 		<!-- Test scope dependencies -->
 		<dependency>
