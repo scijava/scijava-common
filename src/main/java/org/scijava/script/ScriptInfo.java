@@ -94,8 +94,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Parameter
 	private ConvertService convertService;
 
-	/** True iff the return value is explicitly declared as an output. */
-	private boolean returnValueDeclared;
+	/** True iff the return value should be appended as an output. */
+	private boolean appendReturnValue;
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
@@ -229,7 +229,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Override
 	public void parseParameters() {
 		clearParameters();
-		returnValueDeclared = false;
+		appendReturnValue = true;
 
 		try {
 			final BufferedReader in;
@@ -254,7 +254,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			}
 			in.close();
 
-			if (!returnValueDeclared) addReturnValue();
+			if (appendReturnValue) addReturnValue();
 		}
 		catch (final IOException exc) {
 			log.error("Error reading script: " + path, exc);
@@ -264,9 +264,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		}
 	}
 
-	/** Gets whether the return value is explicitly declared as an output. */
-	public boolean isReturnValueDeclared() {
-		return returnValueDeclared;
+	/** Gets whether the return value is appended as an additional output. */
+	public boolean isReturnValueAppended() {
+		return appendReturnValue;
 	}
 
 	// -- ModuleInfo methods --
@@ -374,7 +374,12 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		}
 		final Class<?> type = scriptService.lookupClass(typeName);
 		addItem(varName, type, attrs);
-		if (ScriptModule.RETURN_VALUE.equals(varName)) returnValueDeclared = true;
+
+		if (ScriptModule.RETURN_VALUE.equals(varName)) {
+			// NB: The return value variable is declared as an explicit OUTPUT.
+			// So we should not append the return value as an extra output.
+			appendReturnValue = false;
+		}
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
@@ -393,7 +398,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/** Adds an output for the value returned by the script itself. */
-	private void addReturnValue() throws ScriptException {
+	private void addReturnValue() {
 		final HashMap<String, Object> attrs = new HashMap<>();
 		attrs.put("type", "OUTPUT");
 		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
@@ -409,7 +414,12 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			assignAttribute(item, key, value);
 		}
 		if (item.isInput()) registerInput(item);
-		if (item.isOutput()) registerOutput(item);
+		if (item.isOutput()) {
+			registerOutput(item);
+			// NB: Only append the return value as an extra
+			// output when no explicit outputs are declared.
+			appendReturnValue = false;
+		}
 	}
 
 	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
@@ -479,6 +489,14 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		}
 
 		return builder.toString();
+	}
+
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link #isReturnValueAppended()} instead. */
+	@Deprecated
+	public boolean isReturnValueDeclared() {
+		return !isReturnValueAppended();
 	}
 
 }

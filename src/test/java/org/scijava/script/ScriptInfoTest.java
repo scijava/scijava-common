@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -45,6 +46,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -85,6 +87,42 @@ public class ScriptInfoTest {
 	// -- Tests --
 
 	/**
+	 * Tests that the return value <em>is</em> appended as an extra output when no
+	 * explicit outputs were declared.
+	 */
+	@Test
+	public void testReturnValueAppended() throws Exception {
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @int value\n";
+		final ScriptModule scriptModule =
+			scriptService.run("include-return-value.bsizes", script, true).get();
+
+		final Map<String, Object> outputs = scriptModule.getOutputs();
+		assertEquals(1, outputs.size());
+		assertTrue(outputs.containsKey(ScriptModule.RETURN_VALUE));
+	}
+
+	/**
+	 * Tests that the return value is <em>not</em> appended as an extra output
+	 * when explicit outputs were declared.
+	 */
+	@Test
+	public void testReturnValueExcluded() throws Exception {
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT int value\n";
+		final ScriptModule scriptModule =
+			scriptService.run("exclude-return-value.bsizes", script, true).get();
+
+		final Map<String, Object> outputs = scriptModule.getOutputs();
+		assertEquals(1, outputs.size());
+		assertTrue(outputs.containsKey("value"));
+		assertFalse(outputs.containsKey(ScriptModule.RETURN_VALUE));
+	}
+
+
+	/**
 	 * Ensures parameters are parsed correctly from scripts, even in the presence
 	 * of noise like e-mail addresses.
 	 */
@@ -97,7 +135,7 @@ public class ScriptInfoTest {
 		final ScriptModule scriptModule =
 			scriptService.run("hello.bsizes", script, true).get();
 
-		final Object output = scriptModule.getOutput("result");
+		final Object output = scriptModule.getReturnValue();
 
 		if (output == null) fail("null result");
 		else if (!(output instanceof Integer)) {
@@ -169,10 +207,6 @@ public class ScriptInfoTest {
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
 			null, null, null, null, null, null, null, null, noChoices, buffer);
 
-		final ModuleItem<?> result = info.getOutput("result");
-		assertItem("result", Object.class, null, ItemIO.OUTPUT, true, true, null,
-			null, null, null, null, null, null, null, noChoices, result);
-
 		int inputCount = 0;
 		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
@@ -180,7 +214,7 @@ public class ScriptInfoTest {
 		}
 
 		int outputCount = 0;
-		final ModuleItem<?>[] outputs = { buffer, result };
+		final ModuleItem<?>[] outputs = { buffer };
 		for (final ModuleItem<?> outItem : info.outputs()) {
 			assertSame(outputs[outputCount++], outItem);
 		}
