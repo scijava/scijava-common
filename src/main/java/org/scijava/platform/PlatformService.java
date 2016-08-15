@@ -52,9 +52,9 @@ public interface PlatformService extends SingletonService<Platform>,
 	SciJavaService
 {
 
-	EventService getEventService();
+	EventService eventService();
 
-	CommandService getCommandService();
+	CommandService commandService();
 
 	/** Gets the platform handlers applicable to this platform. */
 	List<Platform> getTargetPlatforms();
@@ -90,4 +90,16 @@ public interface PlatformService extends SingletonService<Platform>,
 	/** @deprecated Use {@link AppService} and {@link App} instead. */
 	@Deprecated
 	AppEventService getAppEventService();
+
+	/** @deprecated Use {@link #eventService()} instead. */
+	@Deprecated
+	default EventService getEventService() {
+		return eventService();
+	}
+
+	/** @deprecated Use {@link #commandService()} instead. */
+	@Deprecated
+	default CommandService getCommandService() {
+		return commandService();
+	}
 }

@@ -77,7 +77,7 @@ public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 
 	private <D extends DT> PT findWrapper(final D data) {
 		for (final PluginInfo<PT> plugin : getPlugins()) {
-			final PT instance = getPluginService().createInstance(plugin);
+			final PT instance = pluginService().createInstance(plugin);
 			if (instance != null && instance.supports(data)) return instance;
 		}
 		return null;

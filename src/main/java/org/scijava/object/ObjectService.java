@@ -43,7 +43,7 @@ import org.scijava.service.SciJavaService;
  */
 public interface ObjectService extends SciJavaService {
 
-	EventService getEventService();
+	EventService eventService();
 
 	/** Gets the index of available objects. */
 	ObjectIndex<Object> getIndex();
@@ -57,4 +57,11 @@ public interface ObjectService extends SciJavaService {
 	/** Deregisters an object with the object service. */
 	void removeObject(Object obj);
 
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link #eventService()} instead. */
+	@Deprecated
+	default EventService getEventService() {
+		return eventService();
+	}
 }

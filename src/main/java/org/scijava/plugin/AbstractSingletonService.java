@@ -120,9 +120,8 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	private synchronized void initInstances() {
 		if (instances != null) return;
 
-		final List<PT> list =
-			Collections.unmodifiableList(filterInstances(getPluginService()
-				.createInstancesOfType(getPluginType())));
+		final List<PT> list = Collections.unmodifiableList(filterInstances(
+			pluginService().createInstancesOfType(getPluginType())));
 
 		final HashMap<Class<? extends PT>, PT> map =
 			new HashMap<>();

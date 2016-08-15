@@ -75,12 +75,12 @@ public final class DefaultPlatformService extends
 	// -- PlatformService methods --
 
 	@Override
-	public EventService getEventService() {
+	public EventService eventService() {
 		return eventService;
 	}
 
 	@Override
-	public CommandService getCommandService() {
+	public CommandService commandService() {
 		return commandService;
 	}
 

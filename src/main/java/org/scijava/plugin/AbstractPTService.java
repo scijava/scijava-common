@@ -51,7 +51,7 @@ public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
 	// -- PTService methods --
 
 	@Override
-	public PluginService getPluginService() {
+	public PluginService pluginService() {
 		return pluginService;
 	}
 

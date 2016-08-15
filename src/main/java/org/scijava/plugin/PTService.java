@@ -87,7 +87,7 @@ public interface PTService<PT extends SciJavaPlugin> extends Service {
 	 * Gets the service responsible for discovering and managing this service's
 	 * plugins.
 	 */
-	PluginService getPluginService();
+	PluginService pluginService();
 
 	/** Gets the plugins managed by this service. */
 	List<PluginInfo<PT>> getPlugins();
@@ -98,4 +98,11 @@ public interface PTService<PT extends SciJavaPlugin> extends Service {
 	/** Creates an instance of the given plugin class. */
 	<P extends PT> P create(final Class<P> pluginClass);
 
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link #pluginService()} instead. */
+	@Deprecated
+	default PluginService getPluginService() {
+		return pluginService();
+	}
 }
