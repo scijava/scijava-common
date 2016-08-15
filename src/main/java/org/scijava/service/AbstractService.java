@@ -32,7 +32,6 @@
 package org.scijava.service;
 
 import org.scijava.Context;
-import org.scijava.event.EventService;
 import org.scijava.plugin.AbstractRichPlugin;
 
 /**
@@ -58,22 +57,6 @@ public abstract class AbstractService extends AbstractRichPlugin implements
 	 * </ol>
 	 */
 	private Context context;
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		// NB: Do nothing by default.
-	}
-
-	@Override
-	public void registerEventHandlers() {
-		// TODO: Consider removing this method in scijava-common 3.0.0.
-		// Instead, the ServiceHelper could just invoke the lines below directly,
-		// and there would be one less boilerplate Service method to implement.
-		final EventService eventService = context().getService(EventService.class);
-		if (eventService != null) eventService.subscribe(this);
-	}
 
 	// -- Contextual methods --
 
