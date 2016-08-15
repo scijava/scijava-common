@@ -31,8 +31,6 @@
 
 package org.scijava.plugin;
 
-import java.util.List;
-
 import org.scijava.service.AbstractService;
 
 /**
@@ -54,19 +52,4 @@ public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
 	public PluginService pluginService() {
 		return pluginService;
 	}
-
-	@Override
-	public List<PluginInfo<PT>> getPlugins() {
-		return pluginService().getPluginsOfType(getPluginType());
-	}
-
-	@Override
-	public <P extends PT> P create(final Class<P> pluginClass) {
-		final PluginInfo<PT> info =
-			pluginService().getPlugin(pluginClass, getPluginType());
-		@SuppressWarnings("unchecked")
-		final P plugin = (P) pluginService().createInstance(info);
-		return plugin;
-	}
-
 }
