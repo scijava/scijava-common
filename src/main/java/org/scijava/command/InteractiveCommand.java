@@ -37,6 +37,7 @@ import org.scijava.display.event.DisplayActivatedEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
+import org.scijava.log.Logged;
 import org.scijava.module.MethodCallException;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
@@ -60,7 +61,7 @@ import org.scijava.thread.ThreadService;
  * @author Curtis Rueden
  */
 public abstract class InteractiveCommand extends DynamicCommand implements
-	Interactive, Previewable
+	Interactive, Previewable, Logged
 {
 
 	@Parameter
@@ -102,6 +103,13 @@ public abstract class InteractiveCommand extends DynamicCommand implements
 		// That is, closing the non-modal dialog does nothing.
 	}
 
+	// -- Logged methods --
+
+	@Override
+	public LogService log() {
+		return log;
+	}
+
 	// -- Internal methods --
 
 	protected void updateInput(final ModuleItem<?> item) {
@@ -135,10 +143,6 @@ public abstract class InteractiveCommand extends DynamicCommand implements
 				log.error(exc);
 			}
 		}
-	}
-
-	protected LogService log() {
-		return log;
 	}
 
 	// -- Event handlers --
