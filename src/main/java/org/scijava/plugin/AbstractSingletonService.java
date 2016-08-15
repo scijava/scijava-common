@@ -31,14 +31,12 @@
 
 package org.scijava.plugin;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.scijava.log.LogService;
-import org.scijava.object.LazyObjects;
 import org.scijava.object.ObjectService;
 
 /**
@@ -83,41 +81,6 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	public <P extends PT> P getInstance(final Class<P> pluginClass) {
 		if (instanceMap == null) initInstances();
 		return (P) instanceMap.get(pluginClass);
-	}
-
-	// -- PTService methods --
-
-	@Override
-	public <P extends PT> P create(final Class<P> pluginClass) {
-		throw new UnsupportedOperationException(
-			"Cannot create singleton plugin instance. "
-				+ "Use getInstance(Class) instead.");
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		// add singleton instances to the object index... IN THE FUTURE!
-		objectService.getIndex().addLater(new LazyObjects<Object>() {
-
-			@Override
-			public ArrayList<Object> get() {
-				return new ArrayList<>(getInstances());
-			}
-		});
-	}
-
-	// -- Internal methods --
-
-	/**
-	 * Allows subclasses to exclude instances.
-	 * 
-	 * @param list the initial list of instances
-	 * @return the filtered list of instances
-	 */
-	protected List<? extends PT> filterInstances(final List<PT> list) {
-		return list;
 	}
 
 	// -- Helper methods --

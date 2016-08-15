@@ -31,8 +31,10 @@
 
 package org.scijava.plugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.scijava.object.LazyObjects;
 import org.scijava.object.ObjectService;
 
 /**
@@ -65,5 +67,38 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 
 	/** Gets the singleton plugin instance of the given class. */
 	<P extends PT> P getInstance(Class<P> pluginClass);
+
+	/**
+	 * Filters the given list of instances by this service's inclusion criteria.
+	 * 
+	 * @param list the initial list of instances
+	 * @return the filtered list of instances
+	 */
+	default List<? extends PT> filterInstances(final List<PT> list) {
+		return list;
+	}
+
+	// -- PTService methods --
+
+	@Override
+	default <P extends PT> P create(final Class<P> pluginClass) {
+		throw new UnsupportedOperationException(
+			"Cannot create singleton plugin instance. "
+				+ "Use getInstance(Class) instead.");
+	}
+
+	// -- Service methods --
+
+	@Override
+	default void initialize() {
+		// add singleton instances to the object index... IN THE FUTURE!
+		objectService().getIndex().addLater(new LazyObjects<Object>() {
+
+			@Override
+			public ArrayList<Object> get() {
+				return new ArrayList<>(getInstances());
+			}
+		});
+	}
 
 }
