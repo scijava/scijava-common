@@ -33,6 +33,8 @@ package org.scijava.plugin;
 
 import java.util.List;
 
+import org.scijava.object.ObjectService;
+
 /**
  * A service for managing {@link SingletonPlugin}s of a particular type. The
  * {@code SingletonService} creates and maintain a list of singleton instances.
@@ -51,6 +53,9 @@ import java.util.List;
 public interface SingletonService<PT extends SingletonPlugin> extends
 	PTService<PT>
 {
+
+	/** Gets the {@link ObjectService} upon which this service depends. */
+	ObjectService objectService();
 
 	/**
 	 * Gets the list of plugin instances. There will be one singleton instance for

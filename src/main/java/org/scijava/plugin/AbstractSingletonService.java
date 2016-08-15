@@ -68,6 +68,11 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	// -- SingletonService methods --
 
 	@Override
+	public ObjectService objectService() {
+		return objectService;
+	}
+
+	@Override
 	public List<PT> getInstances() {
 		if (instances == null) initInstances();
 		return instances;
