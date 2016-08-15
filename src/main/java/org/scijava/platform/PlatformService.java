@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.scijava.app.App;
+import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
 import org.scijava.event.EventService;
 import org.scijava.plugin.SingletonService;
@@ -53,8 +55,6 @@ public interface PlatformService extends SingletonService<Platform>,
 	EventService getEventService();
 
 	CommandService getCommandService();
-
-	AppEventService getAppEventService();
 
 	/** Gets the platform handlers applicable to this platform. */
 	List<Platform> getTargetPlatforms();
@@ -85,4 +85,9 @@ public interface PlatformService extends SingletonService<Platform>,
 	 */
 	boolean registerAppMenus(Object menus);
 
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link AppService} and {@link App} instead. */
+	@Deprecated
+	AppEventService getAppEventService();
 }
