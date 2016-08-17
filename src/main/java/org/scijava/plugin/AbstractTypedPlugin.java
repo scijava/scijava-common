@@ -43,12 +43,5 @@ import org.scijava.Typed;
 public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
 	implements TypedPlugin<D>
 {
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final D data) {
-		return true;
-	}
-
+	// NB: No implementation needed.
 }
