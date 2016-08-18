@@ -244,6 +244,7 @@ public interface Gateway extends RichPlugin {
 	 *
 	 * @return The {@link LogService} of this application context.
 	 */
+	@Override
 	LogService log();
 
 	/**

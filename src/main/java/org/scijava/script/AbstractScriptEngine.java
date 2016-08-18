@@ -40,6 +40,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
 import org.scijava.log.LogService;
+import org.scijava.log.Logged;
 import org.scijava.log.StderrLogService;
 
 /**
@@ -48,7 +49,7 @@ import org.scijava.log.StderrLogService;
  * 
  * @author Johannes Schindelin
  */
-public abstract class AbstractScriptEngine implements ScriptEngine {
+public abstract class AbstractScriptEngine implements ScriptEngine, Logged {
 
 	// Abstract methods
 
@@ -68,6 +69,7 @@ public abstract class AbstractScriptEngine implements ScriptEngine {
 
 	// log service
 
+	@Override
 	public synchronized LogService log() {
 		if (log == null) {
 			log = new StderrLogService();

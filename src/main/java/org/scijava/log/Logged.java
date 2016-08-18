@@ -29,27 +29,15 @@
  * #L%
  */
 
-package org.scijava.plugin;
-
-import org.scijava.service.AbstractService;
+package org.scijava.log;
 
 /**
- * Abstract base class for {@link PTService}s.
+ * Interface for the objects which want to log their activities.
  * 
  * @author Curtis Rueden
- * @param <PT> Plugin type of the {@link SciJavaPlugin}s being managed.
  */
-public abstract class AbstractPTService<PT extends SciJavaPlugin> extends
-	AbstractService implements PTService<PT>
-{
+public interface Logged {
 
-	@Parameter
-	private PluginService pluginService;
-
-	// -- PTService methods --
-
-	@Override
-	public PluginService pluginService() {
-		return pluginService;
-	}
+	/** Gets the {@link LogService} to use when logging activities. */
+	LogService log();
 }

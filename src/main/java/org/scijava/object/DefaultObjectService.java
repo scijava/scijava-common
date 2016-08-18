@@ -72,7 +72,7 @@ public final class DefaultObjectService extends AbstractService implements
 	// -- ObjectService methods --
 
 	@Override
-	public EventService getEventService() {
+	public EventService eventService() {
 		return eventService;
 	}
 

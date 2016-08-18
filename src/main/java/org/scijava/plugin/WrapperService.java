@@ -62,6 +62,26 @@ public interface WrapperService<DT, PT extends WrapperPlugin<DT>> extends
 	 * @return An appropriate plugin instance, or null if the data is not
 	 *         compatible with any available plugin.
 	 */
-	<D extends DT> PT create(D data);
+	default <D extends DT> PT create(final D data) {
+		final PT instance = find(data);
+		if (instance != null) instance.set(data);
+		return instance;
+	}
 
+	// -- Service methods --
+
+	@Override
+	default void initialize() {
+		if (log() != null) {
+			log().debug("Found " + getPlugins().size() + " " +
+				getPluginType().getSimpleName() + " plugins.");
+		}
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default boolean supports(final DT data) {
+		return find(data) != null;
+	}
 }

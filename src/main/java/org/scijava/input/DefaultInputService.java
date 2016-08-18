@@ -79,7 +79,7 @@ public class DefaultInputService extends AbstractService implements
 	// -- InputService methods --
 
 	@Override
-	public EventService getEventService() {
+	public EventService eventService() {
 		return eventService;
 	}
 

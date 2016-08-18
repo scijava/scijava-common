@@ -31,14 +31,12 @@
 
 package org.scijava.plugin;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.scijava.log.LogService;
-import org.scijava.object.LazyObjects;
 import org.scijava.object.ObjectService;
 
 /**
@@ -68,6 +66,11 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	// -- SingletonService methods --
 
 	@Override
+	public ObjectService objectService() {
+		return objectService;
+	}
+
+	@Override
 	public List<PT> getInstances() {
 		if (instances == null) initInstances();
 		return instances;
@@ -80,49 +83,13 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		return (P) instanceMap.get(pluginClass);
 	}
 
-	// -- PTService methods --
-
-	@Override
-	public <P extends PT> P create(final Class<P> pluginClass) {
-		throw new UnsupportedOperationException(
-			"Cannot create singleton plugin instance. "
-				+ "Use getInstance(Class) instead.");
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		// add singleton instances to the object index... IN THE FUTURE!
-		objectService.getIndex().addLater(new LazyObjects<Object>() {
-
-			@Override
-			public ArrayList<Object> get() {
-				return new ArrayList<>(getInstances());
-			}
-		});
-	}
-
-	// -- Internal methods --
-
-	/**
-	 * Allows subclasses to exclude instances.
-	 * 
-	 * @param list the initial list of instances
-	 * @return the filtered list of instances
-	 */
-	protected List<? extends PT> filterInstances(final List<PT> list) {
-		return list;
-	}
-
 	// -- Helper methods --
 
 	private synchronized void initInstances() {
 		if (instances != null) return;
 
-		final List<PT> list =
-			Collections.unmodifiableList(filterInstances(getPluginService()
-				.createInstancesOfType(getPluginType())));
+		final List<PT> list = Collections.unmodifiableList(filterInstances(
+			pluginService().createInstancesOfType(getPluginType())));
 
 		final HashMap<Class<? extends PT>, PT> map =
 			new HashMap<>();

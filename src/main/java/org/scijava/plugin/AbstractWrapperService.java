@@ -31,8 +31,6 @@
 
 package org.scijava.plugin;
 
-import org.scijava.log.LogService;
-
 /**
  * Abstract base class for {@link WrapperService}s.
  * 
@@ -43,44 +41,5 @@ import org.scijava.log.LogService;
 public abstract class AbstractWrapperService<DT, PT extends WrapperPlugin<DT>>
 	extends AbstractTypedService<DT, PT> implements WrapperService<DT, PT>
 {
-
-	@Parameter(required = false)
-	private LogService log;
-
-	// -- WrapperService methods --
-
-	@Override
-	public <D extends DT> PT create(final D data) {
-		final PT instance = findWrapper(data);
-		if (instance != null) instance.set(data);
-		return instance;
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		if (log != null) {
-			log.debug("Found " + getPlugins().size() + " " +
-				getPluginType().getSimpleName() + " plugins.");
-		}
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final DT data) {
-		return findWrapper(data) != null;
-	}
-
-	// -- Helper methods --
-
-	private <D extends DT> PT findWrapper(final D data) {
-		for (final PluginInfo<PT> plugin : getPlugins()) {
-			final PT instance = getPluginService().createInstance(plugin);
-			if (instance != null && instance.supports(data)) return instance;
-		}
-		return null;
-	}
-
+	// NB: No implementation needed.
 }

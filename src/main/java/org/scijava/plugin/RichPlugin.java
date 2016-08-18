@@ -36,6 +36,8 @@ import org.scijava.Identifiable;
 import org.scijava.Locatable;
 import org.scijava.Prioritized;
 import org.scijava.Versioned;
+import org.scijava.log.LogService;
+import org.scijava.log.Logged;
 
 /**
  * Base interface for {@link Contextual}, {@link Prioritized} plugins that
@@ -46,7 +48,7 @@ import org.scijava.Versioned;
  * @author Curtis Rueden
  */
 public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
-	HasPluginInfo, Identifiable, Locatable, Versioned
+	HasPluginInfo, Logged, Identifiable, Locatable, Versioned
 {
 
 	// -- Identifiable methods --
@@ -56,4 +58,10 @@ public interface RichPlugin extends SciJavaPlugin, Contextual, Prioritized,
 		return "plugin:" + getClass().getName();
 	}
 
+	// -- Logged methods --
+
+	@Override
+	default LogService log() {
+		return context().getService(LogService.class);
+	}
 }

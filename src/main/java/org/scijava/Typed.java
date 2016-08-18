@@ -47,7 +47,9 @@ public interface Typed<T> {
 	 * requirements beyond class assignability.
 	 * </p>
 	 */
-	boolean supports(T data);
+	default boolean supports(@SuppressWarnings("unused") T data) {
+		return true;
+	}
 
 	/** Gets the type associated with the object. */
 	Class<T> getType();

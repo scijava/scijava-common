@@ -32,6 +32,7 @@
 package org.scijava.service;
 
 import org.scijava.Disposable;
+import org.scijava.event.EventService;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 
@@ -58,7 +59,9 @@ public interface Service extends RichPlugin, Disposable {
 	 * when initializing the service. It should not be called a second time.
 	 * </p>
 	 */
-	void initialize();
+	default void initialize() {
+		// NB: Do nothing by default.
+	}
 
 	/**
 	 * Registers the service's event handler methods.
@@ -68,6 +71,12 @@ public interface Service extends RichPlugin, Disposable {
 	 * when initializing the service. It should not be called a second time.
 	 * </p>
 	 */
-	void registerEventHandlers();
+	default void registerEventHandlers() {
+		// TODO: Consider removing this method in scijava-common 3.0.0.
+		// Instead, the ServiceHelper could just invoke the lines below directly,
+		// and there would be one less boilerplate Service method to implement.
+		final EventService eventService = context().getService(EventService.class);
+		if (eventService != null) eventService.subscribe(this);
+	}
 
 }

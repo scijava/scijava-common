@@ -85,17 +85,17 @@ public final class DefaultDisplayService extends AbstractService implements
 	// -- DisplayService methods --
 
 	@Override
-	public EventService getEventService() {
+	public EventService eventService() {
 		return eventService;
 	}
 
 	@Override
-	public ObjectService getObjectService() {
+	public ObjectService objectService() {
 		return objectService;
 	}
 
 	@Override
-	public PluginService getPluginService() {
+	public PluginService pluginService() {
 		return pluginService;
 	}
 

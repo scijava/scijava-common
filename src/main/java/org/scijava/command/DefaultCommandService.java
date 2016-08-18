@@ -83,17 +83,17 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	// -- CommandService methods --
 
 	@Override
-	public EventService getEventService() {
+	public EventService eventService() {
 		return eventService;
 	}
 
 	@Override
-	public PluginService getPluginService() {
+	public PluginService pluginService() {
 		return pluginService;
 	}
 
 	@Override
-	public ModuleService getModuleService() {
+	public ModuleService moduleService() {
 		return moduleService;
 	}
 
