@@ -136,16 +136,16 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		setContext(context);
 		this.path = path;
 
-		String script = null;
+		String contents = null;
 		if (reader != null) {
 			try {
-				script = getReaderContentsAsString(reader);
+				contents = getReaderContentsAsString(reader);
 			}
 			catch (final IOException exc) {
 				log.error("Error reading script: " + path, exc);
 			}
 		}
-		this.script = script;
+		script = contents;
 	}
 
 	// -- ScriptInfo methods --
