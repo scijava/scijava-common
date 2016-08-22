@@ -378,7 +378,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
 	private Map<String, Object> parseAttrs(final String attrs) {
-		return parser.parse(attrs).asMap();
+		return parser.parse(attrs, false).asMap();
 	}
 
 	private boolean isIOType(final String token) {
