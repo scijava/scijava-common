@@ -58,6 +58,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.ItemIO;
+import org.scijava.ItemVisibility;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
@@ -181,6 +182,7 @@ public class ScriptInfoTest {
 			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
 			"% @String(persist = false, family='Carnivora', " + //
 			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
+			"% @String(visibility=MESSAGE) msg\n" + //
 			"% @BOTH java.lang.StringBuilder buffer";
 
 		final ScriptInfo info =
@@ -203,12 +205,15 @@ public class ScriptInfoTest {
 			null, null, null, null, null, null, null, null, animalChoices, animal);
 		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
+		final ModuleItem<?> msg = info.getInput("msg");
+		assertSame(ItemVisibility.MESSAGE, msg.getVisibility());
+
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
 			null, null, null, null, null, null, null, null, noChoices, buffer);
 
 		int inputCount = 0;
-		final ModuleItem<?>[] inputs = { log, sliderValue, animal, buffer };
+		final ModuleItem<?>[] inputs = { log, sliderValue, animal, msg, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
 			assertSame(inputs[inputCount++], inItem);
 		}

@@ -136,16 +136,16 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		setContext(context);
 		this.path = path;
 
-		String script = null;
+		String contents = null;
 		if (reader != null) {
 			try {
-				script = getReaderContentsAsString(reader);
+				contents = getReaderContentsAsString(reader);
 			}
 			catch (final IOException exc) {
 				log.error("Error reading script: " + path, exc);
 			}
 		}
-		this.script = script;
+		script = contents;
 	}
 
 	// -- ScriptInfo methods --
@@ -231,14 +231,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		clearParameters();
 		appendReturnValue = true;
 
-		try {
-			final BufferedReader in;
-			if (script == null) {
-				in = new BufferedReader(new FileReader(getPath()));
-			}
-			else {
-				in = getReader();
-			}
+		try (final BufferedReader in = script == null ? //
+			new BufferedReader(new FileReader(getPath())) : getReader()) //
+		{
 			while (true) {
 				final String line = in.readLine();
 				if (line == null) break;
@@ -252,7 +247,6 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 				}
 				else if (line.matches(".*\\w.*")) break;
 			}
-			in.close();
 
 			if (appendReturnValue) addReturnValue();
 		}
@@ -384,7 +378,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
 	private Map<String, Object> parseAttrs(final String attrs) {
-		return parser.parse(attrs).asMap();
+		return parser.parse(attrs, false).asMap();
 	}
 
 	private boolean isIOType(final String token) {
@@ -456,7 +450,13 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Super terse conversion helper method. */
 	private <T> T as(final Object v, final Class<T> type) {
-		return convertService.convert(v, type);
+		final T converted = convertService.convert(v, type);
+		if (converted != null) return converted;
+		// NB: Attempt to convert via string.
+		// This is useful in cases where a weird type of object came back
+		// (e.g., org.scijava.sjep.eval.Unresolved), but which happens to have a
+		// nice string representation which ultimately is expressible as the type.
+		return convertService.convert(v.toString(), type);
 	}
 
 	private <T> List<T> asList(final Object v, final Class<T> type) {
