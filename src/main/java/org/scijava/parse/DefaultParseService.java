@@ -55,7 +55,12 @@ public class DefaultParseService extends AbstractService implements
 
 	@Override
 	public Items parse(final String arg) {
-		return new ItemsList(arg);
+		return parse(arg, true);
+	}
+
+	@Override
+	public Items parse(final String arg, final boolean strict) {
+		return new ItemsList(arg, strict);
 	}
 
 	// -- Helper classes --
@@ -67,9 +72,9 @@ public class DefaultParseService extends AbstractService implements
 	 */
 	private static class ItemsList extends ObjectArray<Item> implements Items {
 
-		public ItemsList(final String arg) {
+		public ItemsList(final String arg, final boolean strict) {
 			super(Item.class);
-			parseItems(arg);
+			parseItems(arg, strict);
 		}
 
 		@Override
@@ -98,8 +103,9 @@ public class DefaultParseService extends AbstractService implements
 			return true;
 		}
 
-		private void parseItems(final String arg) {
+		private void parseItems(final String arg, final boolean strict) {
 			final DefaultEvaluator e = new DefaultEvaluator();
+			e.setStrict(strict);
 			final Object result = e.evaluate("(" + arg + ")");
 			if (result == null) {
 				throw new IllegalStateException("Error parsing string: '" + arg + "'");

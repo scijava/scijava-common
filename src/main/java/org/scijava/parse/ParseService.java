@@ -54,4 +54,19 @@ public interface ParseService extends SciJavaService {
 	 */
 	Items parse(String arg);
 
+	/**
+	 * Parses a comma-delimited list of data elements.
+	 * <p>
+	 * Some data elements might be {@code key=value} pairs, while others might be
+	 * raw values (i.e., no equals sign).
+	 * </p>
+	 * 
+	 * @param arg The string to parse.
+	 * @param strict Whether to fail fast when encountering an unassigned variable
+	 *          token.
+	 * @return A parsed list of {@link Item}s.
+	 * @throws IllegalArgumentException If the string does not conform to expected
+	 *           syntax.
+	 */
+	Items parse(String arg, boolean strict);
 }
