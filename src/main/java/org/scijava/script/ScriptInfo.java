@@ -231,14 +231,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		clearParameters();
 		appendReturnValue = true;
 
-		try {
-			final BufferedReader in;
-			if (script == null) {
-				in = new BufferedReader(new FileReader(getPath()));
-			}
-			else {
-				in = getReader();
-			}
+		try (final BufferedReader in = script == null ? //
+			new BufferedReader(new FileReader(getPath())) : getReader()) //
+		{
 			while (true) {
 				final String line = in.readLine();
 				if (line == null) break;
@@ -252,7 +247,6 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 				}
 				else if (line.matches(".*\\w.*")) break;
 			}
-			in.close();
 
 			if (appendReturnValue) addReturnValue();
 		}
