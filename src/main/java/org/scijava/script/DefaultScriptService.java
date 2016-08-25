@@ -39,6 +39,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -416,7 +417,7 @@ public class DefaultScriptService extends
 
 		// built-in types
 		addAliases(map, Context.class, BigDecimal.class, BigInteger.class,
-			ColorRGB.class, ColorRGBA.class, File.class, String.class);
+			ColorRGB.class, ColorRGBA.class, Date.class, File.class, String.class);
 
 		// gateway types
 		final List<PluginInfo<Gateway>> gatewayPlugins =
