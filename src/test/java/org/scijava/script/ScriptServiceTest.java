@@ -35,6 +35,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import javax.script.ScriptException;
@@ -42,6 +45,8 @@ import javax.script.ScriptException;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.util.AppUtils;
+import org.scijava.util.ColorRGB;
+import org.scijava.util.ColorRGBA;
 
 /**
  * Tests the {@link DefaultScriptService}.
@@ -73,6 +78,26 @@ public class ScriptServiceTest {
 		assertEquals(dir0, scriptDirs.get(0).getAbsolutePath());
 		assertEquals(dir1, scriptDirs.get(1).getAbsolutePath());
 		assertEquals(dir2, scriptDirs.get(2).getAbsolutePath());
+	}
+
+	@Test
+	public void testBuiltInAliases() throws ScriptException {
+		final Context ctx = new Context(ScriptService.class);
+		final ScriptService ss = ctx.service(ScriptService.class);
+
+		final Class<?>[] builtIns = { boolean.class, byte.class, char.class,
+			double.class, float.class, int.class, long.class, short.class,
+			Boolean.class, Byte.class, Character.class, Double.class, Float.class,
+			Integer.class, Long.class, Short.class, Context.class, BigDecimal.class,
+			BigInteger.class, ColorRGB.class, ColorRGBA.class, Date.class, File.class,
+			String.class };
+
+		for (final Class<?> builtIn : builtIns) {
+			final Class<?> c = ss.lookupClass(builtIn.getSimpleName());
+			assertSame(builtIn, c);
+		}
+
+		ctx.dispose();
 	}
 
 	@Test
