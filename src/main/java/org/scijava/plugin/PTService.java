@@ -87,7 +87,9 @@ public interface PTService<PT extends SciJavaPlugin> extends Service {
 	 * Gets the service responsible for discovering and managing this service's
 	 * plugins.
 	 */
-	PluginService pluginService();
+	default PluginService pluginService() {
+		return context().getService(PluginService.class);
+	}
 
 	/** Gets the type of plugins managed by this service. */
 	Class<PT> getPluginType();

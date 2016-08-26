@@ -57,7 +57,9 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 {
 
 	/** Gets the {@link ObjectService} upon which this service depends. */
-	ObjectService objectService();
+	default ObjectService objectService() {
+		return context().getService(ObjectService.class);
+	}
 
 	/**
 	 * Gets the list of plugin instances. There will be one singleton instance for

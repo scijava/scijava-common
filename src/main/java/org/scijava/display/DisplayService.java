@@ -50,11 +50,17 @@ import org.scijava.service.SciJavaService;
  */
 public interface DisplayService extends SciJavaService {
 
-	EventService eventService();
+	default EventService eventService() {
+		return context().getService(EventService.class);
+	}
 
-	ObjectService objectService();
+	default ObjectService objectService() {
+		return context().getService(ObjectService.class);
+	}
 
-	PluginService pluginService();
+	default PluginService pluginService() {
+		return context().getService(PluginService.class);
+	}
 
 	/** Gets the currently active display (of any Display type). */
 	Display<?> getActiveDisplay();

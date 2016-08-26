@@ -64,9 +64,13 @@ import org.scijava.service.SciJavaService;
  */
 public interface CommandService extends PTService<Command>, SciJavaService {
 
-	EventService eventService();
+	default EventService eventService() {
+		return context().getService(EventService.class);
+	}
 
-	ModuleService moduleService();
+	default ModuleService moduleService() {
+		return context().getService(ModuleService.class);
+	}
 
 	/** Gets the list of all available {@link Command}s). */
 	List<CommandInfo> getCommands();

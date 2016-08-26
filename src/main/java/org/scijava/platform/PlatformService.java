@@ -52,9 +52,13 @@ public interface PlatformService extends SingletonService<Platform>,
 	SciJavaService
 {
 
-	EventService eventService();
+	default EventService eventService() {
+		return context().getService(EventService.class);
+	}
 
-	CommandService commandService();
+	default CommandService commandService() {
+		return context().getService(CommandService.class);
+	}
 
 	/** Gets the platform handlers applicable to this platform. */
 	List<Platform> getTargetPlatforms();

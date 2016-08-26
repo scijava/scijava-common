@@ -45,7 +45,9 @@ import org.scijava.service.SciJavaService;
  */
 public interface InputService extends SciJavaService {
 
-	EventService eventService();
+	default EventService eventService() {
+		return context().getService(EventService.class);
+	}
 
 	InputModifiers getModifiers();
 

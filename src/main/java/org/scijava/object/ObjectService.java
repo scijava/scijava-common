@@ -43,7 +43,9 @@ import org.scijava.service.SciJavaService;
  */
 public interface ObjectService extends SciJavaService {
 
-	EventService eventService();
+	default EventService eventService() {
+		return context().getService(EventService.class);
+	}
 
 	/** Gets the index of available objects. */
 	ObjectIndex<Object> getIndex();
