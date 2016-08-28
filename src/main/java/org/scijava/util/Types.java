@@ -2863,7 +2863,7 @@ public final class Types {
 			else if (type instanceof TypeVariable) {
 				final TypeVariable<?> tv = (TypeVariable<?>) type;
 				if (tv.getBounds().length == 0) return Object.class;
-				else return erase(tv.getBounds()[0]);
+				return erase(tv.getBounds()[0]);
 			}
 			else if (type instanceof GenericArrayType) {
 				final GenericArrayType aType = (GenericArrayType) type;
@@ -2889,21 +2889,19 @@ public final class Types {
 			if (isMissingTypeParameters(typeAndParams)) {
 				return erase(toMapType);
 			}
-			else {
-				final VarMap varMap = new VarMap();
-				Type handlingTypeAndParams = typeAndParams;
-				while (handlingTypeAndParams instanceof ParameterizedType) {
-					final ParameterizedType pType =
-						(ParameterizedType) handlingTypeAndParams;
-					final Class<?> clazz = (Class<?>) pType.getRawType(); // getRawType
-																																// should always
-																																// be Class
-					varMap.addAll(clazz.getTypeParameters(), pType
-						.getActualTypeArguments());
-					handlingTypeAndParams = pType.getOwnerType();
-				}
-				return varMap.map(toMapType);
+			final VarMap varMap = new VarMap();
+			Type handlingTypeAndParams = typeAndParams;
+			while (handlingTypeAndParams instanceof ParameterizedType) {
+				final ParameterizedType pType =
+					(ParameterizedType) handlingTypeAndParams;
+				final Class<?> clazz = (Class<?>) pType.getRawType(); // getRawType
+																															// should always
+																															// be Class
+				varMap.addAll(clazz.getTypeParameters(), pType
+					.getActualTypeArguments());
+				handlingTypeAndParams = pType.getOwnerType();
 			}
+			return varMap.map(toMapType);
 		}
 
 		/**
@@ -3030,9 +3028,7 @@ public final class Types {
 					variable);
 				return ((ParameterizedType) superType).getActualTypeArguments()[index];
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		/**
@@ -3115,9 +3111,7 @@ public final class Types {
 			if (subTypeComponent == null) { // subType is not an array type
 				return false;
 			}
-			else {
-				return isSuperType(superTypeComponent, subTypeComponent);
-			}
+			return isSuperType(superTypeComponent, subTypeComponent);
 		}
 
 		/**
@@ -3155,9 +3149,7 @@ public final class Types {
 				}
 				return true;
 			}
-			else {
-				return containingType.equals(containedType);
-			}
+			return containingType.equals(containedType);
 		}
 
 		/**
@@ -3341,9 +3333,7 @@ public final class Types {
 					pType.getOwnerType());
 				return newParameterizedType(clazz, ownerType, capturedArguments);
 			}
-			else {
-				return type;
-			}
+			return type;
 		}
 
 		/**
@@ -3355,9 +3345,7 @@ public final class Types {
 				return clazz.isArray() ? (getTypeName(clazz.getComponentType()) + "[]")
 					: clazz.getName();
 			}
-			else {
-				return type.toString();
-			}
+			return type.toString();
 		}
 
 		/**
