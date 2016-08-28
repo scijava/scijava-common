@@ -526,6 +526,15 @@ public final class Types {
 	}
 
 	/**
+	 * As {@link #type(Field, Class)}, but with respect to the parameter types of
+	 * the given {@link Method} rather than a {@link Field}.
+	 */
+	public static Type[] paramTypes(final Method method, final Class<?> type) {
+		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
+		return GenericTypeReflector.getExactParameterTypes(method, wildType);
+	}
+
+	/**
 	 * Gets the given type's {@code n}th type parameter of the specified class.
 	 * <p>
 	 * For example, with class {@code StringList implements List<String>},
