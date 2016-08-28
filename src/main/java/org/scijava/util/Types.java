@@ -2146,8 +2146,8 @@ public final class Types {
 				final Class<?> rawComponentType = getRawType(((GenericArrayType) type)
 					.getGenericComponentType(), assigningType);
 
-				// create array type from raw component type and return its class
-				return Array.newInstance(rawComponentType, 0).getClass();
+				// return the corresponding array type
+				return array(rawComponentType);
 			}
 
 			// (hand-waving) this is not the method you're looking for
