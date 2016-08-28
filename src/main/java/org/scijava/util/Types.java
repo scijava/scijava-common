@@ -219,9 +219,11 @@ public final class Types {
 	 * @return The name of the given type.
 	 */
 	public static String name(final Type t) {
-		// NB: It is annoying that Class.toString() prepends "class " or
-		// "interface "; this method exists to work around that behavior.
-		return t instanceof Class ? ((Class<?>) t).getName() : t.toString();
+		if (t instanceof Class) {
+			final Class<?> c = (Class<?>) t;
+			return c.isArray() ? (name(component(c)) + "[]") : c.getName();
+		}
+		return t.toString();
 	}
 
 	/**
@@ -3343,18 +3345,6 @@ public final class Types {
 				return newParameterizedType(clazz, ownerType, capturedArguments);
 			}
 			return type;
-		}
-
-		/**
-		 * Returns the display name of a Type.
-		 */
-		public static String getTypeName(final Type type) {
-			if (type instanceof Class) {
-				final Class<?> clazz = (Class<?>) type;
-				return clazz.isArray() ? (getTypeName(clazz.getComponentType()) + "[]")
-					: clazz.getName();
-			}
-			return type.toString();
 		}
 
 		/**
