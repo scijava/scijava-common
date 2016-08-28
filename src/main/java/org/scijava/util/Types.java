@@ -3516,10 +3516,6 @@ public final class Types {
 			}
 		}
 
-		VarMap(final TypeVariable<?>[] variables, final Type[] values) {
-			addAll(variables, values);
-		}
-
 		Type map(final Type type) {
 			if (type instanceof Class) {
 				return type;
