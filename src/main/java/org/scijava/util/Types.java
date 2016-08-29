@@ -494,6 +494,13 @@ public final class Types {
 
 	/**
 	 * Gets the component type of the given array type, or null if not an array.
+	 * <p>
+	 * If you have a {@link Class}, you can call {@link Class#getComponentType()}
+	 * for a narrower return type.
+	 * </p>
+	 * <p>
+	 * This is the opposite of {@link #array(Type)}.
+	 * </p>
 	 */
 	public static Type component(final Type type) {
 		if (type instanceof Class) {
