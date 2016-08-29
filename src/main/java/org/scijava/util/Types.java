@@ -404,6 +404,30 @@ public final class Types {
 		return result;
 	}
 
+	/**
+	 * Gets the field with the specified name, of the given class, or superclass
+	 * thereof.
+	 * <p>
+	 * Unlike {@link Class#getField(String)}, this method will return fields of
+	 * any visibility, not just {@code public}. And unlike
+	 * {@link Class#getDeclaredField(String)}, it will do so recursively,
+	 * returning the first field of the given name from the class's superclass
+	 * hierarchy.
+	 * </p>
+	 * <p>
+	 * Note that this method does not guarantee that the returned field is
+	 * accessible; if the field is not {@code public}, calling code will need to
+	 * use {@link Field#setAccessible(boolean)} in order to manipulate the field's
+	 * contents.
+	 * </p>
+	 * 
+	 * @param c The class (or subclass thereof) containing the desired field.
+	 * @param name
+	 * @return The first field with the given name in the class's superclass
+	 *         hierarchy.
+	 * @throws IllegalArgumentException if the specified class does not contain a
+	 *           method with the given name
+	 */
 	public static Field field(final Class<?> c, final String name) {
 		if (c == null) throw new IllegalArgumentException("No such field: " + name);
 		try {
