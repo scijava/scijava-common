@@ -540,30 +540,34 @@ public final class Types {
 	 * field.getType(); // Object
 	 * field.getGenericType(); // T
 	 *
-	 * Types.type(field, Thing.class); // T
-	 * Types.type(field, NumberThing.class); // N extends Number
-	 * Types.type(field, IntegerThing.class); // Integer
+	 * Types.fieldType(field, Thing.class); // T
+	 * Types.fieldType(field, NumberThing.class); // N extends Number
+	 * Types.fieldType(field, IntegerThing.class); // Integer
 	 * </pre>
 	 */
-	public static Type type(final Field field, final Class<?> type) {
+	public static Type fieldType(final Field field, final Class<?> type) {
 		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
 		return GenericTypeReflector.getExactFieldType(field, wildType);
 	}
 
 	/**
-	 * As {@link #type(Field, Class)}, but with respect to the return type of the
-	 * given {@link Method} rather than a {@link Field}.
+	 * As {@link #fieldType(Field, Class)}, but with respect to the return type of
+	 * the given {@link Method} rather than a {@link Field}.
 	 */
-	public static Type returnType(final Method method, final Class<?> type) {
+	public static Type methodReturnType(final Method method,
+		final Class<?> type)
+	{
 		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
 		return GenericTypeReflector.getExactReturnType(method, wildType);
 	}
 
 	/**
-	 * As {@link #type(Field, Class)}, but with respect to the parameter types of
-	 * the given {@link Method} rather than a {@link Field}.
+	 * As {@link #fieldType(Field, Class)}, but with respect to the parameter
+	 * types of the given {@link Method} rather than a {@link Field}.
 	 */
-	public static Type[] paramTypes(final Method method, final Class<?> type) {
+	public static Type[] methodParamTypes(final Method method,
+		final Class<?> type)
+	{
 		final Type wildType = GenericTypeReflector.addWildcardParameters(type);
 		return GenericTypeReflector.getExactParameterTypes(method, wildType);
 	}

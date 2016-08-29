@@ -74,21 +74,21 @@ public final class GenericUtils {
 		return Types.raw(Types.component(type));
 	}
 
-	/** @deprecated Use {@link Types#type(Field, Class)} instead. */
+	/** @deprecated Use {@link Types#fieldType(Field, Class)} instead. */
 	@Deprecated
 	public static Type getFieldType(final Field field, final Class<?> type) {
-		return Types.type(field, type);
+		return Types.fieldType(field, type);
 	}
 
 	/**
-	 * @deprecated Use {@link Types#type(Field, Class)} and {@link Types#raws}
+	 * @deprecated Use {@link Types#fieldType(Field, Class)} and {@link Types#raws}
 	 *             instead.
 	 */
 	@Deprecated
 	public static List<Class<?>> getFieldClasses(final Field field,
 		final Class<?> type)
 	{
-		return Types.raws(Types.type(field, type));
+		return Types.raws(Types.fieldType(field, type));
 	}
 
 	/** @deprecated Use {@link Types#returnType} instead. */
@@ -96,7 +96,7 @@ public final class GenericUtils {
 	public static Type getMethodReturnType(final Method method,
 		final Class<?> type)
 	{
-		return Types.returnType(method, type);
+		return Types.methodReturnType(method, type);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public final class GenericUtils {
 	public static List<Class<?>> getMethodReturnClasses(final Method method,
 		final Class<?> type)
 	{
-		return Types.raws(Types.returnType(method, type));
+		return Types.raws(Types.methodReturnType(method, type));
 	}
 
 	/** @deprecated Use {@link Types#param} instead. */

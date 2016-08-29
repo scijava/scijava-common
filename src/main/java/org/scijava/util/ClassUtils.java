@@ -442,7 +442,7 @@ public final class ClassUtils {
 			}
 			else {
 				// the given value needs to be converted to a compatible type
-				final Type fieldType = Types.type(field, instance.getClass());
+				final Type fieldType = Types.fieldType(field, instance.getClass());
 				@SuppressWarnings("deprecation")
 				final Object convertedValue = ConversionUtils.convert(value, fieldType);
 				compatibleValue = convertedValue;
@@ -696,19 +696,19 @@ public final class ClassUtils {
 	}
 
 	/**
-	 * @deprecated Use {@link Types#type(Field, Class)} and {@link Types#raws}
+	 * @deprecated Use {@link Types#fieldType(Field, Class)} and {@link Types#raws}
 	 *             instead.
 	 */
 	@Deprecated
 	public static List<Class<?>> getTypes(final Field field, final Class<?> type)
 	{
-		return Types.raws(Types.type(field, type));
+		return Types.raws(Types.fieldType(field, type));
 	}
 
-	/** @deprecated Use {@link Types#type(Field, Class)} instead. */
+	/** @deprecated Use {@link Types#fieldType(Field, Class)} instead. */
 	@Deprecated
 	public static Type getGenericType(final Field field, final Class<?> type) {
-		return Types.type(field, type);
+		return Types.fieldType(field, type);
 	}
 
 	/** @deprecated Use {@link Types#field} instead. */

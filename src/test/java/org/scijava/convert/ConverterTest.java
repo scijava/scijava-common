@@ -96,7 +96,7 @@ public class ConverterTest {
 		final CastingConverter cc = new CastingConverter();
 
 		final Field destField = Types.field(getClass(), "collection");
-		final Type destType = Types.type(destField, getClass());
+		final Type destType = Types.fieldType(destField, getClass());
 		assertTrue(cc.canConvert(ArrayList.class, destType));
 	}
 
