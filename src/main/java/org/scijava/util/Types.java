@@ -3467,17 +3467,11 @@ public final class Types {
 			upperBoundsList.toArray(upperBounds);
 		}
 
-		/*
-		 * @see com.googlecode.gentyref.CaptureType#getLowerBounds()
-		 */
 		@Override
 		public Type[] getLowerBounds() {
 			return lowerBounds.clone();
 		}
 
-		/*
-		 * @see com.googlecode.gentyref.CaptureType#getUpperBounds()
-		 */
 		@Override
 		public Type[] getUpperBounds() {
 			assert upperBounds != null;
