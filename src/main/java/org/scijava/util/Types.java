@@ -482,6 +482,7 @@ public final class Types {
 	 * </p>
 	 *
 	 * @param componentType The type of elements which the array possesses
+	 * @see #component
 	 */
 	public static Type array(final Type componentType) {
 		if (componentType == null) return null;
