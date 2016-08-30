@@ -676,6 +676,20 @@ public final class Types {
 	}
 
 	/**
+	 * Creates a new {@link WildcardType} with the given upper and/or lower
+	 * bounds.
+	 *
+	 * @param upperBounds Upper bounds of the wildcard, or null for none.
+	 * @param lowerBounds Lower bounds of the wildcard, or null for none.
+	 * @return The newly created {@link WildcardType}.
+	 */
+	public static WildcardType wildcard(final Type[] upperBounds,
+		final Type[] lowerBounds)
+	{
+		return new TypeUtils.WildcardTypeImpl(upperBounds, lowerBounds);
+	}
+
+	/**
 	 * Learn, recursively, whether any of the type parameters associated with
 	 * {@code type} are bound to variables.
 	 *
