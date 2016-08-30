@@ -631,10 +631,10 @@ public final class Types {
 	 * @param typeArgs The type arguments to use in parameterizing it.
 	 * @return The newly created {@link ParameterizedType}.
 	 */
-	public static ParameterizedType newParameterizedType(final Class<?> rawType,
+	public static ParameterizedType parameterize(final Class<?> rawType,
 		final Type... typeArgs)
 	{
-		return newParameterizedType(rawType, rawType.getDeclaringClass(), typeArgs);
+		return parameterize(rawType, rawType.getDeclaringClass(), typeArgs);
 	}
 
 	/**
@@ -646,7 +646,7 @@ public final class Types {
 	 * @param typeArgs The type arguments to use in parameterizing it.
 	 * @return The newly created {@link ParameterizedType}.
 	 */
-	public static ParameterizedType newParameterizedType(final Class<?> rawType,
+	public static ParameterizedType parameterize(final Class<?> rawType,
 		final Type ownerType, final Type... typeArgs)
 	{
 		return new TypeUtils.ParameterizedTypeImpl(rawType, ownerType, typeArgs);
@@ -658,8 +658,8 @@ public final class Types {
 	 *
 	 * @return The newly created {@link WildcardType}.
 	 */
-	public static WildcardType newWildcardType() {
-		return newWildcardType(null, null);
+	public static WildcardType wildcard() {
+		return wildcard((Type) null, (Type) null);
 	}
 
 	/**
@@ -669,7 +669,7 @@ public final class Types {
 	 * @param lowerBound Lower bound of the wildcard, or null for none.
 	 * @return The newly created {@link WildcardType}.
 	 */
-	public static WildcardType newWildcardType(final Type upperBound,
+	public static WildcardType wildcard(final Type upperBound,
 		final Type lowerBound)
 	{
 		return new TypeUtils.WildcardTypeImpl(upperBound, lowerBound);
@@ -2998,7 +2998,7 @@ public final class Types {
 				Arrays.fill(arguments, UNBOUND_WILDCARD);
 				final Type owner = clazz.getDeclaringClass() == null ? null
 					: addWildcardParameters(clazz.getDeclaringClass());
-				return newParameterizedType(clazz, owner, arguments);
+				return parameterize(clazz, owner, arguments);
 			}
 			else {
 				return clazz;
@@ -3378,7 +3378,7 @@ public final class Types {
 				}
 				final Type ownerType = (pType.getOwnerType() == null) ? null : capture(
 					pType.getOwnerType());
-				return newParameterizedType(clazz, ownerType, capturedArguments);
+				return parameterize(clazz, ownerType, capturedArguments);
 			}
 			return type;
 		}
@@ -3556,7 +3556,7 @@ public final class Types {
 			}
 			else if (type instanceof ParameterizedType) {
 				final ParameterizedType pType = (ParameterizedType) type;
-				return newParameterizedType((Class<?>) pType.getRawType(), pType
+				return parameterize((Class<?>) pType.getRawType(), pType
 					.getOwnerType() == null ? pType.getOwnerType() : map(pType
 						.getOwnerType()), map(pType.getActualTypeArguments()));
 			}
