@@ -68,6 +68,7 @@ import org.scijava.ui.DialogPrompt.MessageType;
 import org.scijava.ui.DialogPrompt.OptionType;
 import org.scijava.ui.DialogPrompt.Result;
 import org.scijava.ui.event.UIShownEvent;
+import org.scijava.ui.headlessUI.HeadlessUI;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
@@ -212,6 +213,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public UserInterface getDefaultUI() {
+		if (isHeadless()) return HeadlessUI.getInstance();
 		if (defaultUI != null) return defaultUI;
 		if (uiList().isEmpty()) return null;
 		return uiList().get(0);
