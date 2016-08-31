@@ -50,7 +50,7 @@ import org.scijava.widget.FileWidget;
  * implementing this interface, it is encouraged to instead extend
  * {@link AbstractUserInterface}, for convenience.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see Plugin
  * @see UIService
@@ -74,7 +74,7 @@ public interface UserInterface extends RichPlugin, Disposable {
 
 	/**
 	 * Shows the object onscreen using an appropriate UI widget.
-	 * 
+	 *
 	 * @param name The name to use when displaying the object.
 	 * @param o The object to be displayed.
 	 */
@@ -83,7 +83,10 @@ public interface UserInterface extends RichPlugin, Disposable {
 	/** Shows the display onscreen using an appropriate UI widget. */
 	void show(Display<?> display);
 
-	/** Gets the desktop, for use with multi-document interfaces (MDI). */
+	/**
+	 * Gets the desktop, for use with multi-document interfaces (MDI), or null if
+	 * not applicable.
+	 */
 	Desktop getDesktop();
 
 	/** Gets the main SciJava application frame, or null if not applicable. */
@@ -98,15 +101,21 @@ public interface UserInterface extends RichPlugin, Disposable {
 	/** Gets the main SciJava console pane, or null if not applicable. */
 	ConsolePane<?> getConsolePane();
 
-	/** Gets the system clipboard associated with this UI. */
+	/**
+	 * Gets the system clipboard associated with this UI, or null if not
+	 * applicable.
+	 */
 	SystemClipboard getSystemClipboard();
 
-	/** Creates a new display window housing the given display. */
+	/**
+	 * Creates a new display window housing the given display, or null if not
+	 * applicable.
+	 */
 	DisplayWindow createDisplayWindow(Display<?> display);
 
 	/**
 	 * Creates a dialog prompter.
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param title The title of the dialog.
 	 * @param messageType The type of message. This typically is rendered as an
@@ -115,14 +124,14 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *          as an exclamation point.
 	 * @param optionType The choices available when dismissing the dialog. These
 	 *          choices are typically rendered as buttons for the user to click.
-	 * @return The newly created DialogPrompt object.
+	 * @return The newly created DialogPrompt object, or null if not applicable.
 	 */
 	DialogPrompt dialogPrompt(String message, String title,
 		DialogPrompt.MessageType messageType, DialogPrompt.OptionType optionType);
 
 	/**
 	 * Prompts the user to choose a file.
-	 * 
+	 *
 	 * @param file The initial value displayed in the file chooser prompt.
 	 * @param style The style of chooser to use:
 	 *          <ul>
@@ -130,12 +139,14 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *          <li>{@link FileWidget#SAVE_STYLE}</li>
 	 *          <li>{@link FileWidget#DIRECTORY_STYLE}</li>
 	 *          </ul>
+	 * @return The {@link File} chosen by the user, or null if prompt is not
+	 *         available
 	 */
 	File chooseFile(File file, String style);
 
 	/**
 	 * Prompts the user to choose a file.
-	 * 
+	 *
 	 * @param title Title to use in the file chooser dialog.
 	 * @param file The initial value displayed in the file chooser prompt.
 	 * @param style The style of chooser to use:
@@ -144,6 +155,8 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *          <li>{@link FileWidget#SAVE_STYLE}</li>
 	 *          <li>{@link FileWidget#DIRECTORY_STYLE}</li>
 	 *          </ul>
+	 * @return The {@link File} chosen by the user, or null if prompt is not
+	 *         available
 	 */
 	File chooseFile(String title, File file, String style);
 
