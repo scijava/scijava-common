@@ -164,7 +164,7 @@ public class ScriptFinder extends AbstractContextual {
 		int scriptCount = 0;
 		for (final String path : scriptMap.keySet()) {
 			if (!scriptService.canHandleFile(path)) {
-				log.warn("Ignoring unsupported script: " + path);
+				log.debug("Ignoring unsupported script: " + path);
 				continue;
 			}
 
