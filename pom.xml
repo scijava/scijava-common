@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>11.0.0</version>
+		<version>11.2.1</version>
 		<relativePath />
 	</parent>
 
@@ -101,12 +101,21 @@
 		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
 	</ciManagement>
 
+	<properties>
+		<package-name>org.scijava</package-name>
+
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+Institute of Molecular Cell Biology and Genetics.</license.copyrightOwners>
+	</properties>
+
 	<dependencies>
 		<!-- SciJava dependencies -->
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-expression-parser</artifactId>
-			<version>3.1.0</version>
 		</dependency>
 
 		<!-- Third-party dependencies -->
@@ -131,27 +140,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<packageName>org.scijava</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<organizationName>Board of Regents of the University of
-Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
-Institute of Molecular Cell Biology and Genetics.</organizationName>
-					<projectName>SciJava Common shared library for SciJava software.</projectName>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
