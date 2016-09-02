@@ -191,8 +191,7 @@ public final class DefaultUIService extends AbstractService implements
 	public UserInterface getDefaultUI() {
 		if (isHeadless()) return HeadlessUI.getInstance();
 		if (defaultUI != null) return defaultUI;
-		if (uiList().isEmpty()) return null;
-		return uiList().get(0);
+		return uiList().isEmpty() ? null : uiList().get(0);
 	}
 
 	@Override
