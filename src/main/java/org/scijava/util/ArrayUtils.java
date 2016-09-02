@@ -79,6 +79,12 @@ public final class ArrayUtils {
 
 	// -- ArrayUtils methods --
 
+	/** Creates an array of the given type, containing the specified values. */
+	@SafeVarargs
+	public static <T> T[] array(final T... values) {
+		return values;
+	}
+
 	/**
 	 * Converts the provided Object to a {@link Collection} implementation. If the
 	 * object is an array type, a {@link PrimitiveArray} wrapper will be created.

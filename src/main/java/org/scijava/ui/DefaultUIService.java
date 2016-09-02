@@ -41,7 +41,6 @@ import java.util.Map;
 import org.scijava.app.AppService;
 import org.scijava.app.StatusService;
 import org.scijava.app.event.StatusEvent;
-import org.scijava.command.CommandService;
 import org.scijava.display.Display;
 import org.scijava.display.DisplayService;
 import org.scijava.display.event.DisplayActivatedEvent;
@@ -51,10 +50,6 @@ import org.scijava.display.event.DisplayUpdatedEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
-import org.scijava.menu.MenuService;
-import org.scijava.options.OptionsService;
-import org.scijava.platform.AppEventService;
-import org.scijava.platform.PlatformService;
 import org.scijava.platform.event.AppQuitEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -63,11 +58,11 @@ import org.scijava.plugin.PluginService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
-import org.scijava.tool.ToolService;
 import org.scijava.ui.DialogPrompt.MessageType;
 import org.scijava.ui.DialogPrompt.OptionType;
 import org.scijava.ui.DialogPrompt.Result;
 import org.scijava.ui.event.UIShownEvent;
+import org.scijava.ui.headlessUI.HeadlessUI;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
@@ -96,28 +91,10 @@ public final class DefaultUIService extends AbstractService implements
 	private AppService appService;
 
 	@Parameter
-	private PlatformService platformService;
-
-	@Parameter
 	private PluginService pluginService;
 
 	@Parameter
-	private CommandService commandService;
-
-	@Parameter
 	private DisplayService displayService;
-
-	@Parameter
-	private MenuService menuService;
-
-	@Parameter
-	private ToolService toolService;
-
-	@Parameter
-	private OptionsService optionsService;
-
-	@Parameter
-	private AppEventService appEventService;
 
 	/**
 	 * A list of extant display viewers. It's needed in order to find the viewer
@@ -212,10 +189,9 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public UserInterface getDefaultUI() {
+		if (isHeadless()) return uiMap().get(HeadlessUI.NAME);
 		if (defaultUI != null) return defaultUI;
-		if (uiList().isEmpty()) return null;
-		if (defaultUI != null) return defaultUI;
-		return uiList().get(0);
+		return uiList().isEmpty() ? null : uiList().get(0);
 	}
 
 	@Override
@@ -326,14 +302,13 @@ public final class DefaultUIService extends AbstractService implements
 		if (ui == null) return null;
 		final DialogPrompt dialogPrompt =
 			ui.dialogPrompt(message, title, messageType, optionType);
-		return dialogPrompt.prompt();
+		return dialogPrompt == null ? null : dialogPrompt.prompt();
 	}
 
 	@Override
 	public File chooseFile(final File file, final String style) {
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return null;
-		return ui.chooseFile(file, style);
+		return ui == null ? null : ui.chooseFile(file, style);
 	}
 
 	@Override
@@ -341,8 +316,7 @@ public final class DefaultUIService extends AbstractService implements
 		chooseFile(final String title, final File file, final String style)
 	{
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return null;
-		return ui.chooseFile(title, file, style);
+		return ui == null ? null : ui.chooseFile(title, file, style);
 	}
 
 	@Override
@@ -350,8 +324,7 @@ public final class DefaultUIService extends AbstractService implements
 		final int x, final int y)
 	{
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return;
-		ui.showContextMenu(menuRoot, display, x, y);
+		if (ui != null) ui.showContextMenu(menuRoot, display, x, y);
 	}
 
 	@Override
