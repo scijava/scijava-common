@@ -41,7 +41,6 @@ import java.util.Map;
 import org.scijava.app.AppService;
 import org.scijava.app.StatusService;
 import org.scijava.app.event.StatusEvent;
-import org.scijava.command.CommandService;
 import org.scijava.display.Display;
 import org.scijava.display.DisplayService;
 import org.scijava.display.event.DisplayActivatedEvent;
@@ -51,10 +50,6 @@ import org.scijava.display.event.DisplayUpdatedEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
-import org.scijava.menu.MenuService;
-import org.scijava.options.OptionsService;
-import org.scijava.platform.AppEventService;
-import org.scijava.platform.PlatformService;
 import org.scijava.platform.event.AppQuitEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -63,7 +58,6 @@ import org.scijava.plugin.PluginService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
-import org.scijava.tool.ToolService;
 import org.scijava.ui.DialogPrompt.MessageType;
 import org.scijava.ui.DialogPrompt.OptionType;
 import org.scijava.ui.DialogPrompt.Result;
@@ -97,28 +91,10 @@ public final class DefaultUIService extends AbstractService implements
 	private AppService appService;
 
 	@Parameter
-	private PlatformService platformService;
-
-	@Parameter
 	private PluginService pluginService;
 
 	@Parameter
-	private CommandService commandService;
-
-	@Parameter
 	private DisplayService displayService;
-
-	@Parameter
-	private MenuService menuService;
-
-	@Parameter
-	private ToolService toolService;
-
-	@Parameter
-	private OptionsService optionsService;
-
-	@Parameter
-	private AppEventService appEventService;
 
 	/**
 	 * A list of extant display viewers. It's needed in order to find the viewer
