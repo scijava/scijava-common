@@ -190,7 +190,6 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		final ScriptLanguage language = getLanguage();
 		for (final ModuleItem<?> item : getInfo().outputs()) {
 			final String name = item.getName();
-			if (isResolved(name)) continue;
 			final Object value;
 			if (RETURN_VALUE.equals(name) && getInfo().isReturnValueAppended()) {
 				// NB: This is the special implicit return value output!
@@ -200,7 +199,6 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			final Object decoded = language.decode(value);
 			final Object typed = conversionService.convert(decoded, item.getType());
 			setOutput(name, typed);
-			setResolved(name, true);
 		}
 
 		// flush output and error streams
