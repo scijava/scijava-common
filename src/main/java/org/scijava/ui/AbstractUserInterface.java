@@ -60,9 +60,6 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	private static final String LAST_Y = "lastYLocation";
 
 	@Parameter
-	private CommandService commandService;
-
-	@Parameter
 	private DisplayService displayService;
 
 	@Parameter
@@ -70,9 +67,6 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 
 	@Parameter
 	private PluginService pluginService;
-
-	@Parameter
-	private StatusService statusService;
 
 	@Parameter
 	private ThreadService threadService;
