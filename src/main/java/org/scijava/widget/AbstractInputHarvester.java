@@ -115,7 +115,7 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 		for (final ModuleItem<?> item : inputs) {
 			final String name = item.getName();
-			module.setResolved(name, true);
+			module.resolveInput(name);
 		}
 	}
 
@@ -125,7 +125,7 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		final Module module, final ModuleItem<T> item) throws ModuleException
 	{
 		final String name = item.getName();
-		final boolean resolved = module.isResolved(name);
+		final boolean resolved = module.isInputResolved(name);
 		if (resolved) return null; // skip resolved inputs
 
 		final Class<T> type = item.getType();

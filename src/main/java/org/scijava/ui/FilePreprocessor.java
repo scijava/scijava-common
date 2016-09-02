@@ -74,7 +74,7 @@ public class FilePreprocessor extends AbstractPreprocessorPlugin {
 		}
 
 		fileInput.setValue(module, result);
-		module.setResolved(fileInput.getName(), true);
+		module.resolveInput(fileInput.getName());
 	}
 
 	// -- Helper methods --
@@ -87,7 +87,7 @@ public class FilePreprocessor extends AbstractPreprocessorPlugin {
 	private ModuleItem<File> getFileInput(final Module module) {
 		ModuleItem<File> result = null;
 		for (final ModuleItem<?> input : module.getInfo().inputs()) {
-			if (module.isResolved(input.getName())) continue;
+			if (module.isInputResolved(input.getName())) continue;
 			final Class<?> type = input.getType();
 			if (!File.class.isAssignableFrom(type)) {
 				// not a File parameter; abort

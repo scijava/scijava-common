@@ -83,7 +83,7 @@ public class ServicePreprocessor extends AbstractPreprocessorPlugin {
 				// input is a compatible context
 				final String name = input.getName();
 				module.setInput(name, getContext());
-				module.setResolved(name, true);
+				module.resolveInput(name);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public class ServicePreprocessor extends AbstractPreprocessorPlugin {
 	{
 		final S service = context.getService(input.getType());
 		input.setValue(module, service);
-		module.setResolved(input.getName(), true);
+		module.resolveInput(input.getName());
 	}
 
 }

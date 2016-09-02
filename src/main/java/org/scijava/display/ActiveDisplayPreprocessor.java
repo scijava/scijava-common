@@ -82,7 +82,7 @@ public class ActiveDisplayPreprocessor extends AbstractPreprocessorPlugin {
 
 		final String name = displayInput.getName();
 		module.setInput(name, activeDisplay);
-		module.setResolved(name, true);
+		module.resolveInput(name);
 	}
 
 }

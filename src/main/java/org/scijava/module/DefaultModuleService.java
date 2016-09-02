@@ -459,7 +459,7 @@ public class DefaultModuleService extends AbstractService implements
 				}
 			}
 			module.setInput(name, converted);
-			module.setResolved(name, true);
+			module.resolveInput(name);
 		}
 	}
 
@@ -480,7 +480,7 @@ public class DefaultModuleService extends AbstractService implements
 
 		for (final ModuleItem<?> item : items) {
 			final String name = item.getName();
-			final boolean resolved = module.isResolved(name);
+			final boolean resolved = module.isInputResolved(name);
 			if (resolved) continue; // skip resolved inputs
 			if (!item.isAutoFill()) continue; // skip unfillable inputs
 			final Class<?> itemType = item.getType();
