@@ -82,17 +82,14 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 	 * @param defaultName The default name for the display, if not already set.
 	 * @param output The object to display.
 	 */
-	private void handleOutput(final String defaultName, final Object output) {
-		if (output == null) {
-			// ignore null outputs
-			return;
-		}
+	private boolean handleOutput(final String defaultName, final Object output) {
+		if (output == null) return false; // ignore null outputs
 
 		if (output instanceof Display) {
 			// output is itself a display; just update it
 			final Display<?> display = (Display<?>) output;
 			display.update();
-			return;
+			return true;
 		}
 
 		final boolean addToExisting = addToExisting(output);
@@ -133,7 +130,7 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 			for (final Display<?> display : displays) {
 				display.update();
 			}
-			return;
+			return true;
 		}
 
 		if (output instanceof Map) {
@@ -144,7 +141,7 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 				final Object itemValue = map.get(key);
 				handleOutput(itemName, itemValue);
 			}
-			return;
+			return true;
 		}
 
 		if (output instanceof Collection) {
@@ -153,7 +150,7 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 			for (final Object item : collection) {
 				handleOutput(defaultName, item);
 			}
-			return;
+			return true;
 		}
 
 		// no available displays for this type of output
@@ -162,6 +159,7 @@ public class DisplayPostprocessor extends AbstractPostprocessorPlugin {
 			log.warn("Ignoring unsupported output: " + defaultName + " [" +
 				valueClass + "]");
 		}
+		return false;
 	}
 
 	private boolean addToExisting(final Object output) {
