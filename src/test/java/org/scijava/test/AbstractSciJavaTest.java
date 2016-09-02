@@ -31,16 +31,11 @@
 
 package org.scijava.test;
 
-import java.awt.Cursor;
-import java.util.Random;
-
 import org.junit.After;
 import org.junit.Before;
 import org.scijava.Context;
 import org.scijava.plugin.Parameter;
 import org.scijava.service.Service;
-import org.scijava.util.ByteArray;
-import org.scijava.util.FloatArray;
 
 /**
  * Base class for unit testing of SciJava components.

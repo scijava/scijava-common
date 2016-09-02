@@ -33,8 +33,6 @@ package org.scijava.ui;
 
 import java.util.List;
 
-import org.scijava.app.StatusService;
-import org.scijava.command.CommandService;
 import org.scijava.display.Display;
 import org.scijava.display.DisplayService;
 import org.scijava.log.LogService;
