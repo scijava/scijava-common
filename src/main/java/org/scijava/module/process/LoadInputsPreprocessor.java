@@ -76,7 +76,7 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 	/** Loads the value of the given module item from persistent storage. */
 	private <T> void loadValue(final Module module, final ModuleItem<T> item) {
 		// skip input that has already been resolved
-		if (module.isResolved(item.getName())) return;
+		if (module.isInputResolved(item.getName())) return;
 
 		final T prefValue = moduleService.load(item);
 		final Class<T> type = item.getType();

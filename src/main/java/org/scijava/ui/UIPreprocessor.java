@@ -67,7 +67,7 @@ public class UIPreprocessor extends AbstractPreprocessorPlugin {
 				// input is a compatible UI
 				final String name = input.getName();
 				module.setInput(name, ui);
-				module.setResolved(name, true);
+				module.resolveInput(name);
 			}
 		}
 	}

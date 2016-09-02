@@ -72,7 +72,7 @@ public class DefaultValuePreprocessor extends AbstractPreprocessorPlugin {
 	private <T> void assignDefaultValue(final Module module,
 		final ModuleItem<T> item)
 	{
-		if (module.isResolved(item.getName())) return;
+		if (module.isInputResolved(item.getName())) return;
 		final T nullValue = ConversionUtils.getNullValue(item.getType());
 		if (Objects.equals(item.getValue(module), nullValue)) return;
 		final T defaultValue = moduleService.getDefaultValue(item);

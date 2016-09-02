@@ -110,7 +110,7 @@ public class GatewayPreprocessor extends AbstractPreprocessorPlugin {
 			return;
 		}
 		input.setValue(module, gateway);
-		module.setResolved(input.getName(), true);
+		module.resolveInput(input.getName());
 	}
 
 }

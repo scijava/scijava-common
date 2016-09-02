@@ -116,7 +116,7 @@ public abstract class OptionsPlugin extends DynamicCommand implements
 		// NB: Clear "resolved" status of all inputs.
 		// Otherwise, no inputs are harvested on next run.
 		for (final ModuleItem<?> input : getInfo().inputs()) {
-			setResolved(input.getName(), false);
+			unresolveInput(input.getName());
 		}
 
 		eventService.publish(new OptionsEvent(this));

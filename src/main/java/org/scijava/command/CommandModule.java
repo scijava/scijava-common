@@ -266,7 +266,7 @@ public class CommandModule extends AbstractModule implements Cancelable,
 		for (final String name : presets.keySet()) {
 			final Object value = presets.get(name);
 			setInput(name, value);
-			setResolved(name, true);
+			resolveInput(name);
 		}
 	}
 

@@ -33,6 +33,11 @@ package org.scijava.module;
 
 import java.util.Map;
 
+import org.scijava.display.DisplayPostprocessor;
+import org.scijava.module.process.ModulePostprocessor;
+import org.scijava.module.process.ModulePreprocessor;
+import org.scijava.widget.InputHarvester;
+
 /**
  * A module is an encapsulated piece of functionality with inputs and outputs.
  * <p>
@@ -126,15 +131,71 @@ public interface Module extends Runnable {
 	void setOutputs(Map<String, Object> outputs);
 
 	/**
-	 * Gets the resolution status of the input with the given name. A "resolved"
-	 * input is known to have a final, valid value for use with the module.
+	 * Gets the resolution status of the input with the given name.
+	 * 
+	 * @see #resolveInput(String)
 	 */
-	boolean isResolved(String name);
+	boolean isInputResolved(String name);
 
 	/**
-	 * Sets the resolution status of the input with the given name. A "resolved"
-	 * input is known to have a final, valid value for use with the module.
+	 * Gets the resolution status of the output with the given name.
+	 * 
+	 * @see #resolveOutput(String)
 	 */
-	void setResolved(String name, boolean resolved);
+	boolean isOutputResolved(String name);
+
+	/**
+	 * Marks the input with the given name as resolved. A "resolved" input is
+	 * known to have a final, valid value for use with the module.
+	 * <p>
+	 * {@link ModulePreprocessor}s in the module execution chain that populate
+	 * input values (e.g. {@link InputHarvester} plugins) will typically skip over
+	 * inputs which have already been resolved.
+	 * </p>
+	 */
+	void resolveInput(String name);
+
+	/**
+	 * Marks the output with the given name as resolved. A "resolved" output has
+	 * been handled by the framework somehow, typically displayed to the user.
+	 * <p>
+	 * {@link ModulePostprocessor}s in the module execution chain that handle
+	 * output values (e.g. the {@link DisplayPostprocessor}) will typically skip
+	 * over outputs which have already been resolved.
+	 * </p>
+	 */
+	void resolveOutput(String name);
+
+	/**
+	 * Marks the input with the given name as unresolved.
+	 * 
+	 * @see #resolveInput(String)
+	 */
+	void unresolveInput(String name);
+
+	/**
+	 * Marks the output with the given name as unresolved.
+	 * 
+	 * @see #resolveOutput(String)
+	 */
+	void unresolveOutput(String name);
+
+	// -- Deprecated --
+
+	/** @deprecated Use {@link #isInputResolved(String)} instead. */
+	@Deprecated
+	default boolean isResolved(final String name) {
+		return isInputResolved(name);
+	}
+
+	/**
+	 * @deprecated Use {@link #resolveInput(String)} and
+	 *             {@link #unresolveInput(String)} instead.
+	 */
+	@Deprecated
+	default void setResolved(final String name, final boolean resolved) {
+		if (resolved) resolveInput(name);
+		else unresolveInput(name);
+	}
 
 }
