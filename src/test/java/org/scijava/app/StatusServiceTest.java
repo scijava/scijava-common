@@ -88,96 +88,60 @@ public class StatusServiceTest {
 	}
 
 	@Test
-	public void testShowProgress() {
+	public void testShowProgress() throws InterruptedException {
 		ss.showProgress(15, 45);
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getProgressValue(), 15);
-			assertEquals(event.getProgressMaximum(), 45);
-			assertFalse(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getProgressValue(), 15);
+		assertEquals(event.getProgressMaximum(), 45);
+		assertFalse(event.isWarning());
 	}
 
 	@Test
-	public void testShowStatusString() {
+	public void testShowStatusString() throws InterruptedException {
 		final String text = "Hello, world";
 		ss.showStatus(text);
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getStatusMessage(), text);
-			assertFalse(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getStatusMessage(), text);
+		assertFalse(event.isWarning());
 	}
 
 	@Test
-	public void testShowStatusIntIntString() {
+	public void testShowStatusIntIntString() throws InterruptedException {
 		final String text = "Working...";
 		ss.showStatus(25, 55, text);
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getProgressValue(), 25);
-			assertEquals(event.getProgressMaximum(), 55);
-			assertEquals(event.getStatusMessage(), text);
-			assertFalse(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getProgressValue(), 25);
+		assertEquals(event.getProgressMaximum(), 55);
+		assertEquals(event.getStatusMessage(), text);
+		assertFalse(event.isWarning());
 	}
 
 	@Test
-	public void testWarn() {
+	public void testWarn() throws InterruptedException {
 		final String text = "Totally hosed";
 		ss.warn(text);
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getStatusMessage(), text);
-			assertTrue(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getStatusMessage(), text);
+		assertTrue(event.isWarning());
 	}
 
 	@Test
-	public void testShowStatusIntIntStringBoolean() {
+	public void testShowStatusIntIntStringBoolean() throws InterruptedException {
 		final String text = "Working and hosed...";
 		ss.showStatus(33, 44, text, true);
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getStatusMessage(), text);
-			assertEquals(event.getProgressValue(), 33);
-			assertEquals(event.getProgressMaximum(), 44);
-			assertTrue(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getStatusMessage(), text);
+		assertEquals(event.getProgressValue(), 33);
+		assertEquals(event.getProgressMaximum(), 44);
+		assertTrue(event.isWarning());
 	}
 
 	@Test
-	public void testClearStatus() {
+	public void testClearStatus() throws InterruptedException {
 		ss.clearStatus();
-		try {
-			final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
-			assertEquals(event.getStatusMessage(), "");
-			assertFalse(event.isWarning());
-		}
-		catch (final InterruptedException e) {
-			e.printStackTrace();
-			fail();
-		}
+		final StatusEvent event = queue.poll(10, TimeUnit.SECONDS);
+		assertEquals(event.getStatusMessage(), "");
+		assertFalse(event.isWarning());
 	}
 
 }
