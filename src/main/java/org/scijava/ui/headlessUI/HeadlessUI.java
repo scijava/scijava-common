@@ -31,21 +31,14 @@
 
 package org.scijava.ui.headlessUI;
 
-import static org.scijava.Priority.LAST_PRIORITY;
-
 import java.io.File;
 
-import org.scijava.Context;
+import org.scijava.Priority;
 import org.scijava.display.Display;
-import org.scijava.plugin.PluginInfo;
-import org.scijava.ui.ApplicationFrame;
-import org.scijava.ui.Desktop;
+import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.plugin.Plugin;
 import org.scijava.ui.DialogPrompt;
-import org.scijava.ui.StatusBar;
-import org.scijava.ui.SystemClipboard;
-import org.scijava.ui.ToolBar;
 import org.scijava.ui.UserInterface;
-import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.viewer.DisplayWindow;
 
 /**
@@ -53,20 +46,13 @@ import org.scijava.ui.viewer.DisplayWindow;
  * running headless
  *
  * @author Richard Domander (Royal Veterinary College, London)
+ * @author Curtis Rueden
  */
-public class HeadlessUI implements UserInterface {
+@Plugin(type = UserInterface.class, name = HeadlessUI.NAME,
+	priority = Priority.VERY_LOW_PRIORITY)
+public class HeadlessUI extends AbstractRichPlugin implements UserInterface {
 
-	private static HeadlessUI instance;
-
-	private HeadlessUI() {}
-
-	public static HeadlessUI getInstance() {
-		if (instance == null) {
-			instance = new HeadlessUI();
-		}
-
-		return instance;
-	}
+	public static final String NAME = "headless";
 
 	@Override
 	public void show() {}
@@ -77,43 +63,10 @@ public class HeadlessUI implements UserInterface {
 	}
 
 	@Override
-	public void show(final Object o) {}
-
-	@Override
 	public void show(final String name, final Object o) {}
 
 	@Override
 	public void show(final Display<?> display) {}
-
-	@Override
-	public Desktop getDesktop() {
-		return null;
-	}
-
-	@Override
-	public ApplicationFrame getApplicationFrame() {
-		return null;
-	}
-
-	@Override
-	public ToolBar getToolBar() {
-		return null;
-	}
-
-	@Override
-	public StatusBar getStatusBar() {
-		return null;
-	}
-
-	@Override
-	public ConsolePane<?> getConsolePane() {
-		return null;
-	}
-
-	@Override
-	public SystemClipboard getSystemClipboard() {
-		return null;
-	}
 
 	@Override
 	public DisplayWindow createDisplayWindow(final Display<?> display) {
@@ -125,11 +78,6 @@ public class HeadlessUI implements UserInterface {
 		final DialogPrompt.MessageType messageType,
 		final DialogPrompt.OptionType optionType)
 	{
-		return null;
-	}
-
-	@Override
-	public File chooseFile(final File file, final String style) {
 		return null;
 	}
 
@@ -156,37 +104,6 @@ public class HeadlessUI implements UserInterface {
 		return false;
 	}
 
-	/** Returns null since this is a contextless null object */
-	@Override
-	public Context context() {
-		return null;
-	}
-
-	/** Returns null since this is a contextless null object */
-	@Override
-	public Context getContext() {
-		return null;
-	}
-
-	@Override
-	public void setContext(final Context context) {}
-
-	@Override
-	public PluginInfo<?> getInfo() {
-		return null;
-	}
-
-	@Override
-	public void setInfo(final PluginInfo<?> info) {}
-
 	@Override
 	public void dispose() {}
-
-	@Override
-	public double getPriority() {
-		return LAST_PRIORITY;
-	}
-
-	@Override
-	public void setPriority(final double priority) {}
 }

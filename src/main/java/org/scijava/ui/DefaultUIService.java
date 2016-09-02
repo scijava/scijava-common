@@ -189,7 +189,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public UserInterface getDefaultUI() {
-		if (isHeadless()) return HeadlessUI.getInstance();
+		if (isHeadless()) return uiMap().get(HeadlessUI.NAME);
 		if (defaultUI != null) return defaultUI;
 		return uiList().isEmpty() ? null : uiList().get(0);
 	}
@@ -302,14 +302,13 @@ public final class DefaultUIService extends AbstractService implements
 		if (ui == null) return null;
 		final DialogPrompt dialogPrompt =
 			ui.dialogPrompt(message, title, messageType, optionType);
-		return dialogPrompt.prompt();
+		return dialogPrompt == null ? null : dialogPrompt.prompt();
 	}
 
 	@Override
 	public File chooseFile(final File file, final String style) {
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return null;
-		return ui.chooseFile(file, style);
+		return ui == null ? null : ui.chooseFile(file, style);
 	}
 
 	@Override
@@ -317,8 +316,7 @@ public final class DefaultUIService extends AbstractService implements
 		chooseFile(final String title, final File file, final String style)
 	{
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return null;
-		return ui.chooseFile(title, file, style);
+		return ui == null ? null : ui.chooseFile(title, file, style);
 	}
 
 	@Override
@@ -326,8 +324,7 @@ public final class DefaultUIService extends AbstractService implements
 		final int x, final int y)
 	{
 		final UserInterface ui = getDefaultUI();
-		if (ui == null) return;
-		ui.showContextMenu(menuRoot, display, x, y);
+		if (ui != null) ui.showContextMenu(menuRoot, display, x, y);
 	}
 
 	@Override
