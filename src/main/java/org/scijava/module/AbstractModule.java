@@ -48,8 +48,8 @@ public abstract class AbstractModule implements Module {
 	private final HashMap<String, Object> inputs;
 	private final HashMap<String, Object> outputs;
 
-	/** Table indicating resolved inputs. */
 	private final HashSet<String> resolvedInputs;
+	private final HashSet<String> resolvedOutputs;
 
 	private MethodRef initializerRef;
 
@@ -57,6 +57,7 @@ public abstract class AbstractModule implements Module {
 		inputs = new HashMap<>();
 		outputs = new HashMap<>();
 		resolvedInputs = new HashSet<>();
+		resolvedOutputs = new HashSet<>();
 	}
 
 	// -- Module methods --
@@ -137,14 +138,33 @@ public abstract class AbstractModule implements Module {
 	}
 
 	@Override
-	public boolean isResolved(final String name) {
+	public boolean isInputResolved(final String name) {
 		return resolvedInputs.contains(name);
 	}
 
 	@Override
-	public void setResolved(final String name, final boolean resolved) {
-		if (resolved) resolvedInputs.add(name);
-		else resolvedInputs.remove(name);
+	public boolean isOutputResolved(final String name) {
+		return resolvedOutputs.contains(name);
+	}
+
+	@Override
+	public void resolveInput(final String name) {
+		resolvedInputs.add(name);
+	}
+
+	@Override
+	public void resolveOutput(final String name) {
+		resolvedOutputs.add(name);
+	}
+
+	@Override
+	public void unresolveInput(final String name) {
+		resolvedInputs.remove(name);
+	}
+
+	@Override
+	public void unresolveOutput(final String name) {
+		resolvedOutputs.remove(name);
 	}
 
 	// -- Helper methods --
