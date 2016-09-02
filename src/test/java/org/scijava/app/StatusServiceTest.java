@@ -40,6 +40,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.AbstractContextual;
@@ -79,12 +80,17 @@ public class StatusServiceTest {
 	}
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		context = new Context();
 		queue = new ArrayBlockingQueue<>(10);
 		statusListener = new StatusListener();
 		statusListener.setContext(context);
 		ss = statusListener.statusService;
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
 	}
 
 	@Test
