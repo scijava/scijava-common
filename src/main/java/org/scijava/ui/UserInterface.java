@@ -70,7 +70,9 @@ public interface UserInterface extends RichPlugin, Disposable {
 	boolean isVisible();
 
 	/** Shows the object onscreen using an appropriate UI widget. */
-	void show(Object o);
+	default void show(final Object o) {
+		show(null, o);
+	}
 
 	/**
 	 * Shows the object onscreen using an appropriate UI widget.
@@ -87,25 +89,37 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 * Gets the desktop, for use with multi-document interfaces (MDI), or null if
 	 * not applicable.
 	 */
-	Desktop getDesktop();
+	default Desktop getDesktop() {
+		return null;
+	}
 
 	/** Gets the main SciJava application frame, or null if not applicable. */
-	ApplicationFrame getApplicationFrame();
+	default ApplicationFrame getApplicationFrame() {
+		return null;
+	}
 
 	/** Gets the main SciJava toolbar, or null if not applicable. */
-	ToolBar getToolBar();
+	default ToolBar getToolBar() {
+		return null;
+	}
 
 	/** Gets the main SciJava status bar, or null if not applicable. */
-	StatusBar getStatusBar();
+	default StatusBar getStatusBar() {
+		return null;
+	}
 
 	/** Gets the main SciJava console pane, or null if not applicable. */
-	ConsolePane<?> getConsolePane();
+	default ConsolePane<?> getConsolePane() {
+		return null;
+	}
 
 	/**
 	 * Gets the system clipboard associated with this UI, or null if not
 	 * applicable.
 	 */
-	SystemClipboard getSystemClipboard();
+	default SystemClipboard getSystemClipboard() {
+		return null;
+	}
 
 	/**
 	 * Creates a new display window housing the given display, or null if not
@@ -142,7 +156,15 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 * @return The {@link File} chosen by the user, or null if prompt is not
 	 *         available
 	 */
-	File chooseFile(File file, String style);
+	default File chooseFile(final File file, final String style) {
+		final String title;
+		if (style.equals(FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
+		else if (style.equals(FileWidget.OPEN_STYLE)) title = "Open";
+		else if (style.equals(FileWidget.SAVE_STYLE)) title = "Save";
+		else title = "Choose a file";
+
+		return chooseFile(title, file, style);
+	}
 
 	/**
 	 * Prompts the user to choose a file.
@@ -158,7 +180,9 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 * @return The {@link File} chosen by the user, or null if prompt is not
 	 *         available
 	 */
-	File chooseFile(String title, File file, String style);
+	default File chooseFile(String title, File file, String style) {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Displays a popup context menu for the given display at the specified

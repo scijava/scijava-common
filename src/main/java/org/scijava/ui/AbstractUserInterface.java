@@ -31,7 +31,6 @@
 
 package org.scijava.ui;
 
-import java.io.File;
 import java.util.List;
 
 import org.scijava.app.StatusService;
@@ -45,10 +44,8 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.thread.ThreadService;
-import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.viewer.DisplayViewer;
 import org.scijava.ui.viewer.DisplayWindow;
-import org.scijava.widget.FileWidget;
 
 /**
  * Abstract superclass for {@link UserInterface} implementations.
@@ -100,11 +97,6 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	@Override
 	public boolean isVisible() {
 		return visible;
-	}
-
-	@Override
-	public void show(final Object o) {
-		show(null, o);
 	}
 
 	@Override
@@ -164,44 +156,6 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	}
 
 	@Override
-	public Desktop getDesktop() {
-		return null;
-	}
-
-	@Override
-	public ApplicationFrame getApplicationFrame() {
-		return null;
-	}
-
-	@Override
-	public ToolBar getToolBar() {
-		return null;
-	}
-
-	@Override
-	public StatusBar getStatusBar() {
-		return null;
-	}
-
-	@Override
-	public ConsolePane<?> getConsolePane() {
-		return null;
-	}
-
-	@Override
-	public File chooseFile(final File file, final String style) {
-		return chooseFile(fileChooserTitle(style), file, style);
-	}
-
-	@Deprecated
-	@Override
-	public File chooseFile(final String title, final File file,
-		final String style)
-	{
-		throw new UnsupportedOperationException("No default implementation.");
-	}
-
-	@Override
 	public void saveLocation() {
 		final ApplicationFrame appFrame = getApplicationFrame();
 		if (appFrame != null) {
@@ -230,13 +184,4 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	protected void createUI() {
 		restoreLocation();
 	}
-
-	/** Gets a default file chooser title to use when none is given. */
-	protected String fileChooserTitle(final String style) {
-		if (style.equals(FileWidget.DIRECTORY_STYLE)) return "Choose a directory";
-		if (style.equals(FileWidget.OPEN_STYLE)) return "Open";
-		if (style.equals(FileWidget.SAVE_STYLE)) return "Save";
-		return "Choose a file";
-	}
-
 }
