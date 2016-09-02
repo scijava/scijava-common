@@ -33,7 +33,6 @@ package org.scijava.app;
 
 import java.io.File;
 
-import org.scijava.Versioned;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
@@ -54,7 +53,7 @@ import org.scijava.util.POM;
  * @see Plugin
  * @see AppService
  */
-public interface App extends RichPlugin, SingletonPlugin, Versioned {
+public interface App extends RichPlugin, SingletonPlugin {
 
 	/** Gets the title of the application. */
 	String getTitle();
