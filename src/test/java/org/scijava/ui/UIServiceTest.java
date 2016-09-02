@@ -72,11 +72,6 @@ public class UIServiceTest {
 	private static final class MockUserInterface extends AbstractUserInterface {
 
 		@Override
-		public SystemClipboard getSystemClipboard() {
-			return null;
-		}
-
-		@Override
 		public DisplayWindow createDisplayWindow(final Display<?> display) {
 			return null;
 		}
