@@ -34,6 +34,8 @@ package org.scijava.ui;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.display.Display;
@@ -44,14 +46,26 @@ import org.scijava.ui.viewer.DisplayWindow;
  * Tests for {@link DefaultUIService}.
  *
  * @author Richard Domander (Royal Veterinary College, London)
+ * @author Curtis Rueden
  */
 public class UIServiceTest {
 
+	private Context context;
+	private UIService uiService;
+
+	@Before
+	public void setUp() {
+		context = new Context(UIService.class);
+		uiService = context.service(UIService.class);
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
+	}
+
 	@Test
 	public void testHeadlessUI() {
-		final Context context = new Context(UIService.class);
-		final UIService uiService = context.service(UIService.class);
-
 		final MockUserInterface mockUI = new MockUserInterface();
 		uiService.setDefaultUI(mockUI);
 
@@ -65,8 +79,6 @@ public class UIServiceTest {
 		assertTrue(uiService.isHeadless());
 		assertTrue("UIService should return HeadlessUI when running \"headless\"",
 			uiService.getDefaultUI() instanceof HeadlessUI);
-
-		context.dispose();
 	}
 
 	private static final class MockUserInterface extends AbstractUserInterface {
