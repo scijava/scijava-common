@@ -34,6 +34,7 @@ package org.scijava.widget;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import org.scijava.AbstractContextual;
@@ -49,7 +50,6 @@ import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.MiscUtils;
 import org.scijava.util.NumberUtils;
 
 /**
@@ -148,12 +148,12 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	@Override
 	public void setValue(final Object value) {
 		final String name = item.getName();
-		if (MiscUtils.equal(item.getValue(module), value)) return; // no change
+		if (Objects.equals(item.getValue(module), value)) return; // no change
 
 		// Check if a converted value is present
 		Object convertedInput = convertedObjects.get(value);
 		if (convertedInput != null &&
-			MiscUtils.equal(item.getValue(module), convertedInput))
+			Objects.equals(item.getValue(module), convertedInput))
 		{
 			return; // no change
 		}

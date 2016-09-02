@@ -31,6 +31,8 @@
 
 package org.scijava.module.process;
 
+import java.util.Objects;
+
 import org.scijava.Priority;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
@@ -38,7 +40,6 @@ import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.MiscUtils;
 
 /**
  * A preprocessor plugin that populates default parameter values.
@@ -73,7 +74,7 @@ public class DefaultValuePreprocessor extends AbstractPreprocessorPlugin {
 	{
 		if (module.isResolved(item.getName())) return;
 		final T nullValue = ConversionUtils.getNullValue(item.getType());
-		if (MiscUtils.equal(item.getValue(module), nullValue)) return;
+		if (Objects.equals(item.getValue(module), nullValue)) return;
 		final T defaultValue = moduleService.getDefaultValue(item);
 		if (defaultValue == null) return;
 		item.setValue(module, defaultValue);

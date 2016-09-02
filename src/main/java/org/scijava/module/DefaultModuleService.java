@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -63,7 +64,6 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.ClassUtils;
-import org.scijava.util.MiscUtils;
 
 /**
  * Default service for keeping track of and executing available modules.
@@ -291,7 +291,7 @@ public class DefaultModuleService extends AbstractService implements
 	public <T> void save(final ModuleItem<T> item, final T value) {
 		if (!item.isPersisted()) return;
 
-		if (MiscUtils.equal(item.getDefaultValue(), value)) {
+		if (Objects.equals(item.getDefaultValue(), value)) {
 			// NB: Do not persist the value if it is the default.
 			// This is nice if the default value might change later,
 			// such as when iteratively developing a script.
