@@ -31,8 +31,11 @@
 
 package org.scijava.ui;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,6 +65,18 @@ public class UIServiceTest {
 	@After
 	public void tearDown() {
 		context.dispose();
+	}
+
+	@Test
+	public void testDefaultUI() {
+		assertTrue(uiService.getDefaultUI() instanceof HeadlessUI);
+	}
+
+	@Test
+	public void testAvailableUIs() {
+		final List<UserInterface> uiList = uiService.getAvailableUIs();
+		assertEquals(1, uiList.size());
+		assertTrue(uiList.get(0) instanceof HeadlessUI);
 	}
 
 	@Test
