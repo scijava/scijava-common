@@ -158,7 +158,8 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		if (error != null) {
 			scriptContext.setErrorWriter(error);
 			errorPrinter = new PrintWriter(error);
-		} else {
+		}
+		else {
 			errorPrinter = null;
 		}
 
@@ -179,11 +180,8 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			while (e instanceof ScriptException && e.getCause() != null) {
 				e = e.getCause();
 			}
-			if (error == null) {
-				log.error(e);
-			} else {
-				e.printStackTrace(errorPrinter);
-			}
+			if (error == null) log.error(e);
+			else e.printStackTrace(errorPrinter);
 		}
 
 		// populate output values
