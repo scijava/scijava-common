@@ -58,6 +58,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -220,6 +221,18 @@ public final class Types {
 
 	/**
 	 * Gets the base location of the given class.
+	 *
+	 * @param c The class whose location is desired.
+	 * @return URL pointing to the class, or null if the location could not be
+	 *         determined.
+	 * @see #location(Class, boolean)
+	 */
+	public static URL location(final Class<?> c) {
+		return location(c, true);
+	}
+
+	/**
+	 * Gets the base location of the given class.
 	 * <p>
 	 * If the class is directly on the file system (e.g.,
 	 * "/path/to/my/package/MyClass.class") then it will return the base directory
@@ -232,22 +245,33 @@ public final class Types {
 	 * </p>
 	 *
 	 * @param c The class whose location is desired.
+	 * @param quietly Whether to return {@code null} (rather than throwing
+	 *          {@link IllegalArgumentException}) if something goes wrong
+	 *          determining the location.
 	 * @return URL pointing to the class, or null if the location could not be
-	 *         determined.
+	 *         determined and the {@code quietly} flag is set.
+	 * @throws IllegalArgumentException If the location cannot be determined and
+	 *           the {@code quietly} flag is not set.
 	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
 	 */
-	public static URL location(final Class<?> c) {
+	public static URL location(final Class<?> c, final boolean quietly) {
+		Exception cause = null;
+		String why = null;
+
 		// try the easy way first
 		try {
-			final URL codeSourceLocation =
-				c.getProtectionDomain().getCodeSource().getLocation();
-			if (codeSourceLocation != null) return codeSourceLocation;
+			final CodeSource codeSource = c.getProtectionDomain().getCodeSource();
+			if (codeSource != null) {
+				final URL location = codeSource.getLocation();
+				if (location != null) return location;
+				why = "null code source location";
+			}
+			else why = "null code source";
 		}
 		catch (final SecurityException exc) {
 			// NB: Cannot access protection domain.
-		}
-		catch (final NullPointerException exc) {
-			// NB: Protection domain or code source is null.
+			cause = exc;
+			why = "cannot access protection domain";
 		}
 
 		// NB: The easy way failed, so we try the hard way. We ask for the class
@@ -256,11 +280,19 @@ public final class Types {
 
 		// get the class's raw resource path
 		final URL classResource = c.getResource(c.getSimpleName() + ".class");
-		if (classResource == null) return null; // cannot find class resource
+		if (classResource == null) {
+			// cannot find class resource
+			if (quietly) return null;
+			throw iae(cause, "No class resource for class: " + name(c), why);
+		}
 
 		final String url = classResource.toString();
 		final String suffix = c.getCanonicalName().replace('.', '/') + ".class";
-		if (!url.endsWith(suffix)) return null; // weird URL
+		if (!url.endsWith(suffix)) {
+			// weird URL
+			if (quietly) return null;
+			throw iae(cause, "Unsupported URL format: " + url, why);
+		}
 
 		// strip the class's path from the URL string
 		final String base = url.substring(0, url.length() - suffix.length());
@@ -274,7 +306,8 @@ public final class Types {
 			return new URL(path);
 		}
 		catch (final MalformedURLException e) {
-			return null;
+			if (quietly) return null;
+			throw iae(e, "Malformed URL", why);
 		}
 	}
 

@@ -185,6 +185,22 @@ public class TypesTest {
 		jar.deleteOnExit();
 	}
 
+	/** Tests quiet behavior of {@link Types#location(Class, boolean)}. */
+	@Test
+	public void testLocationFailureQuiet() {
+		final Class<?> weirdClass = loadCustomClass();
+		assertEquals("Hello", weirdClass.getName());
+		assertNull(Types.location(weirdClass));
+	}
+
+	/** Tests exceptions from {@link Types#location(Class, boolean)}. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testLocationFailureLoud() {
+		final Class<?> weirdClass = loadCustomClass();
+		assertEquals("Hello", weirdClass.getName());
+		Types.location(weirdClass, false);
+	}
+
 	/** Tests {@link Types#name}. */
 	public void testName() {
 		@SuppressWarnings("unused")
@@ -580,6 +596,30 @@ public class TypesTest {
 		}
 		in.close();
 		if (closeOut) out.close();
+	}
+
+	private Class<?> loadCustomClass() {
+		// NB: The bytecode below was compiled from the following source:
+		//
+		//     public class Hello {}
+		//
+		final byte[] bytecode = { -54, -2, -70, -66, 0, 0, 0, 52, 0, 13, 10, 0, 3,
+			0, 10, 7, 0, 11, 7, 0, 12, 1, 0, 6, 60, 105, 110, 105, 116, 62, 1, 0, 3,
+			40, 41, 86, 1, 0, 4, 67, 111, 100, 101, 1, 0, 15, 76, 105, 110, 101, 78,
+			117, 109, 98, 101, 114, 84, 97, 98, 108, 101, 1, 0, 10, 83, 111, 117, 114,
+			99, 101, 70, 105, 108, 101, 1, 0, 10, 72, 101, 108, 108, 111, 46, 106, 97,
+			118, 97, 12, 0, 4, 0, 5, 1, 0, 5, 72, 101, 108, 108, 111, 1, 0, 16, 106,
+			97, 118, 97, 47, 108, 97, 110, 103, 47, 79, 98, 106, 101, 99, 116, 0, 33,
+			0, 2, 0, 3, 0, 0, 0, 0, 0, 1, 0, 1, 0, 4, 0, 5, 0, 1, 0, 6, 0, 0, 0, 29,
+			0, 1, 0, 1, 0, 0, 0, 5, 42, -73, 0, 1, -79, 0, 0, 0, 1, 0, 7, 0, 0, 0, 6,
+			0, 1, 0, 0, 0, 1, 0, 1, 0, 8, 0, 0, 0, 2, 0, 9 };
+
+		class BytesClassLoader extends ClassLoader {
+			public Class<?> load(final String name, final byte[] b) {
+				return defineClass(name, b, 0, b.length);
+			}
+		}
+		return new BytesClassLoader().load("Hello", bytecode);
 	}
 
 	/** Convenience method to get the {@link Type} of a field. */
