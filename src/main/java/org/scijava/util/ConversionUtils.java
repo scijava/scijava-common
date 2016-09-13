@@ -61,32 +61,6 @@ public class ConversionUtils {
 		// prevent instantiation of utility class
 	}
 
-	// -- Type casting --
-
-	/**
-	 * Converts the given string value to an enumeration constant of the specified
-	 * type.
-	 *
-	 * @param src The value to convert.
-	 * @param dest The type of the enumeration constant.
-	 * @return The converted enumeration constant, or null if the type is not an
-	 *         enumeration type or has no such constant.
-	 */
-	public static <T> T convertToEnum(final String src, final Class<T> dest) {
-		if (src == null || !dest.isEnum()) return null;
-		try {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			final Enum result = Enum.valueOf((Class) dest, src);
-			@SuppressWarnings("unchecked")
-			final T typedResult = (T) result;
-			return typedResult;
-		}
-		catch (final IllegalArgumentException exc) {
-			// no such enum constant
-			return null;
-		}
-	}
-
 	// -- ConvertService setter --
 
 	/**
@@ -163,6 +137,17 @@ public class ConversionUtils {
 	public static boolean canConvert(final Object src, final Class<?> dest) {
 		final Converter<?, ?> handler = handler(new ConversionRequest(src, dest));
 		return (handler == null ? false : handler.canConvert(src, dest));
+	}
+
+	/** @deprecated use {@link Types#enumValue} */
+	@Deprecated
+	public static <T> T convertToEnum(final String src, final Class<T> dest) {
+		try {
+			return Types.enumValue(src,  dest);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
 	}
 
 	/** @deprecated use {@link Types#raw} */

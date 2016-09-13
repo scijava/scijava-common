@@ -462,6 +462,29 @@ public class TypesTest {
 		assertEquals(5, intToNumber.intValue());
 	}
 
+	/** Tests {@link Types#enumValue(String, Class)}. */
+	@Test
+	public void testEnumValue() {
+		final Words foo = Types.enumValue("FOO", Words.class);
+		assertSame(Words.FOO, foo);
+		final Words bar = Types.enumValue("BAR", Words.class);
+		assertSame(Words.BAR, bar);
+		final Words fubar = Types.enumValue("FUBAR", Words.class);
+		assertSame(Words.FUBAR, fubar);
+	}
+
+	/** Tests {@link Types#enumValue(String, Class)} for invalid value. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testEnumValueNoConstant() {
+		Types.enumValue("NONE", Words.class);
+	}
+
+	/** Tests {@link Types#enumValue(String, Class)} for non-enum class. */
+	@Test(expected = IllegalArgumentException.class)
+	public void testEnumValueNonEnum() {
+		Types.enumValue("HOOYAH", String.class);
+	}
+
 	// -- Helper classes --
 
 	private static class Thing<T> {
@@ -481,6 +504,11 @@ public class TypesTest {
 		Thing<T>
 	{
 		// NB: No implementation needed.
+	}
+
+	/** Enumeration for testing conversion to enum types. */
+	public static enum Words {
+		FOO, BAR, FUBAR
 	}
 
 	// -- Helper methods --

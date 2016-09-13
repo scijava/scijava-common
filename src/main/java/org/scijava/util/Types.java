@@ -624,6 +624,27 @@ public final class Types {
 	}
 
 	/**
+	 * Converts the given string value to an enumeration constant of the specified
+	 * type.
+	 *
+	 * @param name The value to convert.
+	 * @param dest The type of the enumeration constant.
+	 * @return The converted enumeration constant.
+	 * @throws IllegalArgumentException if the type is not an enumeration type, or
+	 *           has no such constant.
+	 */
+	public static <T> T enumValue(final String name, final Class<T> dest) {
+		if (!dest.isEnum()) {
+			throw new IllegalArgumentException("Not an enum type: " + name(dest));
+		}
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		final Enum result = Enum.valueOf((Class) dest, name);
+		@SuppressWarnings("unchecked")
+		final T typedResult = (T) result;
+		return typedResult;
+	}
+
+	/**
 	 * Creates a new {@link ParameterizedType} of the given class together with
 	 * the specified type arguments.
 	 *

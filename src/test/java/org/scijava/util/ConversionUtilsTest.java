@@ -33,10 +33,8 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -56,22 +54,6 @@ import org.scijava.util.Types;
  * @author Curtis Rueden
  */
 public class ConversionUtilsTest {
-
-	/** Tests {@link ConversionUtils#convertToEnum(String, Class)}. */
-	@Test
-	public void testConvertToEnum() {
-		final Words foo = ConversionUtils.convertToEnum("FOO", Words.class);
-		assertSame(Words.FOO, foo);
-		final Words bar = ConversionUtils.convertToEnum("BAR", Words.class);
-		assertSame(Words.BAR, bar);
-		final Words fubar = ConversionUtils.convertToEnum("FUBAR", Words.class);
-		assertSame(Words.FUBAR, fubar);
-		final Words noConstant = ConversionUtils.convertToEnum("NONE", Words.class);
-		assertNull(noConstant);
-		final String notAnEnum =
-			ConversionUtils.convertToEnum("HOOYAH", String.class);
-		assertNull(notAnEnum);
-	}
 
 	/**
 	 * Tests populating a primitive array.
@@ -455,11 +437,6 @@ public class ConversionUtilsTest {
 	/** Extension of {@link ArrayList} which resolves the generic parameter. */
 	public static class StringListExtension extends ArrayList<String> {
 		// NB: No implementation needed.
-	}
-
-	/** Enumeration for testing conversion to enum types. */
-	public static enum Words {
-		FOO, BAR, FUBAR
 	}
 
 }
