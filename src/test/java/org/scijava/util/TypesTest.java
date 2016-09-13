@@ -38,13 +38,21 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.scijava.test.TestUtils.createTemporaryDirectory;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,14 +61,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 import org.junit.Test;
-
+import org.scijava.util.FileUtils;
 /**
  * Tests {@link Types}.
  * 
  * @author Curtis Rueden
  * @author Mark Hiner
+ * @author Johannes Schindelin
  */
 public class TypesTest {
 
@@ -135,6 +146,43 @@ public class TypesTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testLoadFailureLoud() {
 		Types.load("a.non.existent.class", false);
+	}
+
+	/** Tests {@link Types#location} with a class on the file system. */
+	@Test
+	public void testLocationUnpackedClass() throws IOException {
+		final File tmpDir = createTemporaryDirectory("class-utils-test-");
+		final String path = getClass().getName().replace('.', '/') + ".class";
+		final File classFile = new File(tmpDir, path);
+		assertTrue(classFile.getParentFile().exists() ||
+			classFile.getParentFile().mkdirs());
+		copy(getClass().getResource("/" + path).openStream(),
+			new FileOutputStream(classFile), true);
+
+		final ClassLoader classLoader =
+			new URLClassLoader(new URL[] { tmpDir.toURI().toURL() }, null);
+		final Class<?> c = Types.load(getClass().getName(), classLoader);
+		final URL location = Types.location(c);
+		assertEquals(tmpDir, FileUtils.urlToFile(location));
+		FileUtils.deleteRecursively(tmpDir);
+	}
+
+	/** Tests {@link Types#location} with a class in a JAR file. */
+	@Test
+	public void testLocationClassInJar() throws IOException {
+		final File tmpDir = createTemporaryDirectory("class-utils-test-");
+		final File jar = new File(tmpDir, "test.jar");
+		final JarOutputStream out = new JarOutputStream(new FileOutputStream(jar));
+		final String path = getClass().getName().replace('.', '/') + ".class";
+		out.putNextEntry(new ZipEntry(path));
+		copy(getClass().getResource("/" + path).openStream(), out, true);
+
+		final ClassLoader classLoader =
+			new URLClassLoader(new URL[] { jar.toURI().toURL() }, null);
+		final Class<?> c = Types.load(getClass().getName(), classLoader);
+		final URL location = Types.location(c);
+		assertEquals(jar, FileUtils.urlToFile(location));
+		jar.deleteOnExit();
 	}
 
 	/** Tests {@link Types#name}. */
@@ -512,6 +560,27 @@ public class TypesTest {
 	}
 
 	// -- Helper methods --
+
+	/**
+	 * Copies bytes from an {@link InputStream} to an {@link OutputStream}.
+	 * 
+	 * @param in the source
+	 * @param out the sink
+	 * @param closeOut whether to close the sink after we're done
+	 * @throws IOException
+	 */
+	private void copy(final InputStream in, final OutputStream out,
+		final boolean closeOut) throws IOException
+	{
+		final byte[] buffer = new byte[16384];
+		for (;;) {
+			final int count = in.read(buffer);
+			if (count < 0) break;
+			out.write(buffer, 0, count);
+		}
+		in.close();
+		if (closeOut) out.close();
+	}
 
 	/** Convenience method to get the {@link Type} of a field. */
 	private Type type(final Class<?> c, final String fieldName) {

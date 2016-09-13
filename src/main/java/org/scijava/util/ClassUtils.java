@@ -32,13 +32,11 @@
 
 package org.scijava.util;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,111 +86,6 @@ public final class ClassUtils {
 	private static final MethodCache methodCache = new MethodCache();
 
 	// -- Class loading, querying and reflection --
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param className The name of the class whose location is desired.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final String className) {
-		return getLocation(className, null);
-	}
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param className The name of the class whose location is desired.
-	 * @param classLoader The class loader to use when loading the class.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final String className,
-		final ClassLoader classLoader)
-	{
-		final Class<?> c = Types.load(className, classLoader);
-		return getLocation(c);
-	}
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "file:/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "file:/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param c The class whose location is desired.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final Class<?> c) {
-		if (c == null) return null; // could not load the class
-
-		// try the easy way first
-		try {
-			final URL codeSourceLocation =
-				c.getProtectionDomain().getCodeSource().getLocation();
-			if (codeSourceLocation != null) return codeSourceLocation;
-		}
-		catch (final SecurityException e) {
-			// NB: Cannot access protection domain.
-		}
-		catch (final NullPointerException e) {
-			// NB: Protection domain or code source is null.
-		}
-
-		// NB: The easy way failed, so we try the hard way. We ask for the class
-		// itself as a resource, then strip the class's path from the URL string,
-		// leaving the base path.
-
-		// get the class's raw resource path
-		final URL classResource = c.getResource(c.getSimpleName() + ".class");
-		if (classResource == null) return null; // cannot find class resource
-
-		final String url = classResource.toString();
-		final String suffix = c.getCanonicalName().replace('.', '/') + ".class";
-		if (!url.endsWith(suffix)) return null; // weird URL
-
-		// strip the class's path from the URL string
-		final String base = url.substring(0, url.length() - suffix.length());
-
-		String path = base;
-
-		// remove the "jar:" prefix and "!/" suffix, if present
-		if (path.startsWith("jar:")) path = path.substring(4, path.length() - 2);
-
-		try {
-			return new URL(path);
-		}
-		catch (final MalformedURLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	/**
 	 * Gets the given class's {@link Method}s marked with the annotation of the
@@ -585,6 +478,26 @@ public final class ClassUtils {
 		final ClassLoader classLoader)
 	{
 		return Types.load(className, classLoader) != null;
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final String className) {
+		return Types.location(Types.load(className));
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final String className,
+		final ClassLoader classLoader)
+	{
+		return Types.location(Types.load(className, classLoader));
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final Class<?> c) {
+		return Types.location(c);
 	}
 
 	/** @deprecated Use {@link Types#isBoolean} instead. */

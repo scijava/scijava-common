@@ -31,6 +31,8 @@
 
 package org.scijava.util;
 
+import java.io.File;
+
 // Portions of this class were adapted from the
 // org.apache.commons.lang3.reflect.TypeUtils and
 // org.apache.commons.lang3.Validate classes of
@@ -54,6 +56,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,6 +68,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import org.scijava.util.FileUtils;
 
 /**
  * Utility class for working with generic types, fields and methods.
@@ -209,6 +215,66 @@ public final class Types {
 			// Not UnsupportedClassVersionError!
 			if (quietly) return null;
 			throw new IllegalArgumentException("Cannot load class: " + className, t);
+		}
+	}
+
+	/**
+	 * Gets the base location of the given class.
+	 * <p>
+	 * If the class is directly on the file system (e.g.,
+	 * "/path/to/my/package/MyClass.class") then it will return the base directory
+	 * (e.g., "file:/path/to").
+	 * </p>
+	 * <p>
+	 * If the class is within a JAR file (e.g.,
+	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
+	 * path to the JAR (e.g., "file:/path/to/my-jar.jar").
+	 * </p>
+	 *
+	 * @param c The class whose location is desired.
+	 * @return URL pointing to the class, or null if the location could not be
+	 *         determined.
+	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
+	 */
+	public static URL location(final Class<?> c) {
+		// try the easy way first
+		try {
+			final URL codeSourceLocation =
+				c.getProtectionDomain().getCodeSource().getLocation();
+			if (codeSourceLocation != null) return codeSourceLocation;
+		}
+		catch (final SecurityException exc) {
+			// NB: Cannot access protection domain.
+		}
+		catch (final NullPointerException exc) {
+			// NB: Protection domain or code source is null.
+		}
+
+		// NB: The easy way failed, so we try the hard way. We ask for the class
+		// itself as a resource, then strip the class's path from the URL string,
+		// leaving the base path.
+
+		// get the class's raw resource path
+		final URL classResource = c.getResource(c.getSimpleName() + ".class");
+		if (classResource == null) return null; // cannot find class resource
+
+		final String url = classResource.toString();
+		final String suffix = c.getCanonicalName().replace('.', '/') + ".class";
+		if (!url.endsWith(suffix)) return null; // weird URL
+
+		// strip the class's path from the URL string
+		final String base = url.substring(0, url.length() - suffix.length());
+
+		String path = base;
+
+		// remove the "jar:" prefix and "!/" suffix, if present
+		if (path.startsWith("jar:")) path = path.substring(4, path.length() - 2);
+
+		try {
+			return new URL(path);
+		}
+		catch (final MalformedURLException e) {
+			return null;
 		}
 	}
 
