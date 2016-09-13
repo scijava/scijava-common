@@ -40,15 +40,8 @@ import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
 import org.scijava.util.Types;
 
-/**
- * Useful methods for converting and casting between classes and types.
- * <p>
- * For extensible type conversion, use {@link ConvertService}.
- * </p>
- *
- * @author Curtis Rueden
- * @author Mark Hiner
- */
+/** @deprecated use {@link ConvertService} and {@link Types} */
+@Deprecated
 public class ConversionUtils {
 
 	private static ConvertService convertService;
