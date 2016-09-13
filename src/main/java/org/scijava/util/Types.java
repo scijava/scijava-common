@@ -214,7 +214,7 @@ public final class Types {
 			// Not NoClassDefFoundError.
 			// Not UnsupportedClassVersionError!
 			if (quietly) return null;
-			throw new IllegalArgumentException("Cannot load class: " + className, t);
+			throw iae(t, "Cannot load class: " + className);
 		}
 	}
 
@@ -495,7 +495,7 @@ public final class Types {
 	 *           method with the given name
 	 */
 	public static Field field(final Class<?> c, final String name) {
-		if (c == null) throw new IllegalArgumentException("No such field: " + name);
+		if (c == null) throw iae("No such field: " + name);
 		try {
 			return c.getDeclaredField(name);
 		}
@@ -533,7 +533,7 @@ public final class Types {
 	 * @param dim The dimensionality of the array
 	 */
 	public static Class<?> array(final Class<?> componentType, final int dim) {
-		if (dim < 0) throw new IllegalArgumentException("Negative dimension");
+		if (dim < 0) throw iae("Negative dimension");
 		if (dim == 0) return componentType;
 		return array(array(componentType), dim - 1);
 	}
@@ -700,9 +700,7 @@ public final class Types {
 	 *           has no such constant.
 	 */
 	public static <T> T enumValue(final String name, final Class<T> dest) {
-		if (!dest.isEnum()) {
-			throw new IllegalArgumentException("Not an enum type: " + name(dest));
-		}
+		if (!dest.isEnum()) throw iae("Not an enum type: " + name(dest));
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		final Enum result = Enum.valueOf((Class) dest, name);
 		@SuppressWarnings("unchecked")
@@ -877,6 +875,19 @@ public final class Types {
 	}
 
 	// -- Helper methods --
+
+	private static IllegalArgumentException iae(final String... s) {
+		return iae(null, s);
+	}
+
+	private static IllegalArgumentException iae(final Throwable cause,
+		final String... notes)
+	{
+		final String s = String.join(", ", notes);
+		final IllegalArgumentException exc = new IllegalArgumentException(s);
+		if (cause != null) exc.initCause(cause);
+		throw exc;
+	}
 
 	private static Class<?> arrayOrNull(final Class<?> componentType) {
 		try {
