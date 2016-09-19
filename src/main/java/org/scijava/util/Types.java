@@ -3121,9 +3121,8 @@ public final class Types {
 			while (handlingTypeAndParams instanceof ParameterizedType) {
 				final ParameterizedType pType =
 					(ParameterizedType) handlingTypeAndParams;
-				final Class<?> clazz = (Class<?>) pType.getRawType(); // getRawType
-																															// should always
-																															// be Class
+				// getRawType should always be Class
+				final Class<?> clazz = (Class<?>) pType.getRawType();
 				varMap.addAll(clazz.getTypeParameters(), pType
 					.getActualTypeArguments());
 				handlingTypeAndParams = pType.getOwnerType();
@@ -3516,8 +3515,8 @@ public final class Types {
 			final Type[] parameterTypes = m.getGenericParameterTypes();
 			final Type exactDeclaringType = getExactSuperType(capture(type), m
 				.getDeclaringClass());
-			if (exactDeclaringType == null) { // capture(type) is not a subtype of
-																				// m.getDeclaringClass()
+			if (exactDeclaringType == null) {
+				// capture(type) is not a subtype of m.getDeclaringClass()
 				throw new IllegalArgumentException("The method " + m +
 					" is not a member of type " + type);
 			}
