@@ -537,6 +537,41 @@ public final class Types {
 	}
 
 	/**
+	 * Gets the method with the specified name and argument types, of the given
+	 * class, or superclass thereof.
+	 * <p>
+	 * Unlike {@link Class#getMethod(String, Class[])}, this method will return
+	 * methods of any visibility, not just {@code public}. And unlike
+	 * {@link Class#getDeclaredMethod(String, Class[])}, it will do so
+	 * recursively, returning the first method of the given name and argument
+	 * types from the class's superclass hierarchy.
+	 * </p>
+	 * <p>
+	 * Note that this method does not guarantee that the returned method is
+	 * accessible; if the method is not {@code public}, calling code will need to
+	 * use {@link Method#setAccessible(boolean)} in order to invoke the method.
+	 * </p>
+	 * 
+	 * @param c The class (or subclass thereof) containing the desired method.
+	 * @param name Name of the method.
+	 * @param parameterTypes Types of the method parameters.
+	 * @return The first method with the given name and argument types in the
+	 *         class's superclass hierarchy.
+	 * @throws IllegalArgumentException If the specified class does not contain a
+	 *           method with the given name and argument types.
+	 */
+	public static Method method(final Class<?> c, final String name,
+		final Class<?>... parameterTypes)
+	{
+		if (c == null) throw iae("No such field: " + name);
+		try {
+			return c.getDeclaredMethod(name, parameterTypes);
+		}
+		catch (final NoSuchMethodException exc) {}
+		return method(c.getSuperclass(), name, parameterTypes);
+	}
+
+	/**
 	 * Gets the array class corresponding to the given element type.
 	 * <p>
 	 * For example, {@code arrayType(double.class)} returns {@code double[].class}

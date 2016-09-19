@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
@@ -371,6 +372,28 @@ public class TypesTest {
 		assertSame(Object.class, field.getType());
 		assertTrue(field.getGenericType() instanceof TypeVariable);
 		assertEquals("T", ((TypeVariable<?>) field.getGenericType()).getName());
+	}
+
+	/** Tests {@link Types#method}. */
+	@Test
+	public void testMethod() {
+		final Method objectMethod = Types.method(Thing.class, "toString");
+		assertSame(Object.class, objectMethod.getDeclaringClass());
+		assertEquals("toString", objectMethod.getName());
+		assertSame(String.class, objectMethod.getReturnType());
+		assertEquals(0, objectMethod.getParameterTypes().length);
+
+		final Method wordsMethod = //
+			Types.method(Words.class, "valueOf", String.class);
+		// NB: What is going on under the hood to make the Enum
+		// subtype Words be the declaring class for the 'valueOf'
+		// method? The compiler must internally override the valueOf
+		// method for each enum type, to narrow the return type...
+		assertSame(Words.class, wordsMethod.getDeclaringClass());
+		assertEquals("valueOf", wordsMethod.getName());
+		assertSame(Words.class, wordsMethod.getReturnType());
+		assertEquals(1, wordsMethod.getParameterTypes().length);
+		assertSame(String.class, wordsMethod.getParameterTypes()[0]);
 	}
 
 	/** Tests {@link Types#array}. */
