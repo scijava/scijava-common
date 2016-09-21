@@ -60,6 +60,7 @@ public class DefaultParseService extends AbstractService implements
 
 	@Override
 	public Items parse(final String arg, final boolean strict) {
+		if (arg == null) throw new NullPointerException("arg must not be null");
 		return new ItemsList(arg, strict);
 	}
 
