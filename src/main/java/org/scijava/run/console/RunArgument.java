@@ -75,6 +75,7 @@ public class RunArgument extends AbstractConsoleArgument {
 		args.removeFirst(); // --run
 		final String code = args.removeFirst();
 		final String arg = getParam(args);
+		if (arg != null) args.removeFirst(); // argument list was given
 
 		try {
 			if (arg == null) runService.run(code);
