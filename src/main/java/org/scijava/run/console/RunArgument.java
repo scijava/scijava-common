@@ -76,15 +76,17 @@ public class RunArgument extends AbstractConsoleArgument {
 		final String code = args.removeFirst();
 		final String arg = getParam(args);
 
-		final Items items = parser.parse(arg);
 		try {
 			if (arg == null) runService.run(code);
-			else if (items.isMap()) runService.run(code, items.asMap());
-			else if (items.isList()) runService.run(code, items.toArray());
 			else {
-				throw new IllegalArgumentException("Arguments are inconsistent. " +
-					"Please pass either a list of key/value pairs, " +
-					"or a list of values.");
+				final Items items = parser.parse(arg);
+				if (items.isMap()) runService.run(code, items.asMap());
+				else if (items.isList()) runService.run(code, items.toArray());
+				else {
+					throw new IllegalArgumentException("Arguments are inconsistent. " +
+						"Please pass either a list of key/value pairs, " +
+						"or a list of values.");
+				}
 			}
 		}
 		catch (final InvocationTargetException exc) {
