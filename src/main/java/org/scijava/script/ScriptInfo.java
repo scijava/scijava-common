@@ -35,8 +35,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +79,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	private static final int PARAM_CHAR_MAX = 640 * 1024; // should be enough ;-)
 
+	private final URL url;
 	private final String path;
 	private final String script;
 
@@ -105,7 +109,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * @param file The script file.
 	 */
 	public ScriptInfo(final Context context, final File file) {
-		this(context, file.getPath());
+		this(context, null, file.getPath(), null);
 	}
 
 	/**
@@ -116,7 +120,23 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * @param path Path to the script file.
 	 */
 	public ScriptInfo(final Context context, final String path) {
-		this(context, path, null);
+		this(context, null, path, null);
+	}
+
+	/**
+	 * Creates a script metadata object which describes a script at the given URL.
+	 * 
+	 * @param context The SciJava application context to use when populating
+	 *          service inputs.
+	 * @param url URL which references the script.
+	 * @param path Pseudo-path to the script file. This file does not actually
+	 *          need to exist, but rather provides a name for the script with file
+	 *          extension.
+	 */
+	public ScriptInfo(final Context context, final URL url, final String path)
+		throws IOException
+	{
+		this(context, url, path, new InputStreamReader(url.openStream()));
 	}
 
 	/**
@@ -133,8 +153,15 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	public ScriptInfo(final Context context, final String path,
 		final Reader reader)
 	{
+		this(context, null, path, reader);
+	}
+
+	private ScriptInfo(final Context context, final URL url, final String path,
+		final Reader reader)
+	{
 		setContext(context);
-		this.path = path;
+		this.url = url(url, path);
+		this.path = path(url, path);
 
 		String contents = null;
 		if (reader != null) {
@@ -149,6 +176,26 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	// -- ScriptInfo methods --
+
+	/**
+	 * Gets the URL of the script.
+	 * <p>
+	 * If the actual source of the script is a URL (provided via
+	 * {@link #ScriptInfo(Context, URL, String)}), then this will return it.
+	 * </p>
+	 * <p>
+	 * Alternately, if the path (from {@link #getPath()}) is a real file on disk
+	 * (provided via {@link #ScriptInfo(Context, File)} or
+	 * {@link #ScriptInfo(Context, String)}), then the URL returned here will be a
+	 * {@code file://} one reference to it.
+	 * </p>
+	 * <p>
+	 * Otherwise, this method will return null.
+	 * </p>
+	 */
+	public URL getURL() {
+		return url;
+	}
 
 	/**
 	 * Gets the path to the script on disk.
@@ -331,6 +378,21 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	// -- Helper methods --
+
+	private URL url(final URL u, final String p) {
+		if (u != null) return u;
+		try {
+			return new File(p).toURI().toURL();
+		}
+		catch (final MalformedURLException exc) {
+			log.debug("Cannot glean URL from path: " + p, exc);
+			return null;
+		}
+	}
+
+	private String path(final URL u, final String p) {
+		return p == null ? u.getPath() : p;
+	}
 
 	private void parseParam(final String param) throws ScriptException {
 		final int lParen = param.indexOf("(");
