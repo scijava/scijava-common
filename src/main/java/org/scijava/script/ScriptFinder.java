@@ -33,7 +33,6 @@ package org.scijava.script;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -191,8 +190,7 @@ public class ScriptFinder extends AbstractContextual {
 			urls.add(url);
 
 			try {
-				final ScriptInfo info = new ScriptInfo(getContext(), //
-					path, new InputStreamReader(url.openStream()));
+				final ScriptInfo info = new ScriptInfo(getContext(), url, path);
 
 				info.setMenuPath(menuPath);
 
