@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.scijava.Initializable;
+
 /**
  * Abstract superclass of {@link Module} implementations.
  * <p>
@@ -76,11 +78,16 @@ public abstract class AbstractModule implements Module {
 	public void initialize() throws MethodCallException {
 		// execute global module initializer
 		final Object delegateObject = getDelegateObject();
-		if (initializerRef == null) {
-			final String initializer = getInfo().getInitializer();
-			initializerRef = new MethodRef(delegateObject.getClass(), initializer);
+		if (delegateObject instanceof Initializable) {
+			((Initializable) delegateObject).initialize();
 		}
-		initializerRef.execute(delegateObject);
+		else {
+			if (initializerRef == null) {
+				final String initializer = getInfo().getInitializer();
+				initializerRef = new MethodRef(delegateObject.getClass(), initializer);
+			}
+			initializerRef.execute(delegateObject);
+		}
 
 		// execute individual module item initializers
 		for (final ModuleItem<?> item : getInfo().inputs()) {
