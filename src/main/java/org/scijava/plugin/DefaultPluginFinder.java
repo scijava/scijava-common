@@ -113,7 +113,24 @@ public class DefaultPluginFinder implements PluginFinder {
 
 	private ClassLoader getClassLoader() {
 		if (customClassLoader != null) return customClassLoader;
-		return Thread.currentThread().getContextClassLoader();
+
+		/*
+		 * If not even the current class can be found by the current
+		 * Thread's context class loader, chances are that the plugins
+		 * the caller tries to discover using this plugin finder cannot
+		 * be found, either. Therefore let's use the current class'
+		 * class loader in that case. This is not completely
+		 * fool-proof, but better than nothing.
+		 */
+		final ClassLoader thisLoader = getClass().getClassLoader();
+		final ClassLoader contextLoader =
+			Thread.currentThread().getContextClassLoader();
+		for (ClassLoader loader = contextLoader;
+				loader != null;
+				loader = loader.getParent()) {
+			if (thisLoader == loader) return contextLoader;
+		}
+		return thisLoader;
 	}
 
 	// -- Helper classes --
