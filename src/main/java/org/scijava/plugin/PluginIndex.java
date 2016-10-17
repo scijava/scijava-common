@@ -106,6 +106,12 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 		final ArrayList<PluginInfo<?>> plugins = new ArrayList<>();
 		exceptions = pluginFinder.findPlugins(plugins);
 		addAll(plugins);
+
+		for (PluginInfo<?> info : plugins) {
+			for (Class<? extends SciJavaPlugin> index : info.getIndices()) {
+				add(info, index, false);
+			}
+		}
 	}
 
 	/**
