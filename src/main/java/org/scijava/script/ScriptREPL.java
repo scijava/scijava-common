@@ -46,7 +46,6 @@ import javax.script.ScriptException;
 
 import org.scijava.Context;
 import org.scijava.Gateway;
-import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
@@ -70,9 +69,6 @@ public class ScriptREPL {
 	@Parameter(required = false)
 	private PluginService pluginService;
 
-	@Parameter(required = false)
-	private LogService log;
-
 	private final PrintStream out;
 
 	/** List of interpreter-friendly script languages. */
@@ -80,6 +76,9 @@ public class ScriptREPL {
 
 	/** The currently active interpreter. */
 	private ScriptInterpreter interpreter;
+
+	/** Flag for debug mode. */
+	private boolean debug;
 
 	public ScriptREPL(final Context context) {
 		this(context, System.out);
@@ -172,6 +171,7 @@ public class ScriptREPL {
 			if (tLine.equals(":help")) help();
 			else if (tLine.equals(":vars")) vars();
 			else if (tLine.equals(":langs")) langs();
+			else if (tLine.equals(":debug")) debug();
 			else if (tLine.startsWith(":lang ")) lang(line.substring(6).trim());
 			else if (tLine.equals(":quit")) return false;
 			else {
@@ -188,7 +188,7 @@ public class ScriptREPL {
 		catch (final ScriptException exc) {
 			// NB: Something went wrong interpreting the line of code.
 			// Let's just display the error message, unless we are in debug mode.
-			if (log.isDebug()) exc.printStackTrace(out);
+			if (debug) exc.printStackTrace(out);
 			else {
 				final String msg = exc.getMessage();
 				out.println(msg == null ? exc.getClass().getName() : msg);
@@ -211,6 +211,7 @@ public class ScriptREPL {
 		out.println("  :vars           | dump a list of variables");
 		out.println("  :lang <name>    | switch the active language");
 		out.println("  :langs          | list available languages");
+		out.println("  :debug          | toggle full stack traces");
 		out.println("  :quit           | exit the REPL");
 		out.println();
 		out.println("Or type a statement to evaluate it with the active language.");
@@ -267,6 +268,11 @@ public class ScriptREPL {
 			aliases.add(lang.getNames());
 		}
 		printColumns(names, versions, aliases);
+	}
+
+	public void debug() {
+		debug = !debug;
+		out.println("debug mode -> " + debug);
 	}
 
 	// -- Main method --
