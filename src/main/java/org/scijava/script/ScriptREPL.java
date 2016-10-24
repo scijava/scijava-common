@@ -341,7 +341,7 @@ public class ScriptREPL {
 				gateways.add(gateway);
 			}
 			catch (final Throwable t) {
-				if (log != null) log.error(t);
+				t.printStackTrace(out);
 			}
 		}
 		return gateways;
