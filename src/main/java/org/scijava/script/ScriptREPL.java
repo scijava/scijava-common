@@ -167,36 +167,36 @@ public class ScriptREPL {
 	 * @return False iff the REPL should exit.
 	 */
 	public boolean evaluate(final String line) {
-		final String tLine = line.trim();
-		if (tLine.equals(":help")) help();
-		else if (tLine.equals(":vars")) vars();
-		else if (tLine.equals(":langs")) langs();
-		else if (tLine.startsWith(":lang ")) lang(line.substring(6).trim());
-		else if (tLine.equals(":quit")) return false;
-		else {
-			// ensure that a script language is active
-			if (interpreter == null) return true;
+		try {
+			final String tLine = line.trim();
+			if (tLine.equals(":help")) help();
+			else if (tLine.equals(":vars")) vars();
+			else if (tLine.equals(":langs")) langs();
+			else if (tLine.startsWith(":lang ")) lang(line.substring(6).trim());
+			else if (tLine.equals(":quit")) return false;
+			else {
+				// ensure that a script language is active
+				if (interpreter == null) return true;
 
-			// pass the input to the current interpreter for evaluation
-			try {
+				// pass the input to the current interpreter for evaluation
 				final Object result = interpreter.interpret(line);
 				if (result != ScriptInterpreter.MORE_INPUT_PENDING) {
 					out.println(s(result));
 				}
 			}
-			catch (final ScriptException exc) {
-				// NB: Something went wrong interpreting the line of code.
-				// Let's just display the error message, unless we are in debug mode.
-				if (log.isDebug()) exc.printStackTrace(out);
-				else {
-					final String msg = exc.getMessage();
-					out.println(msg == null ? exc.getClass().getName() : msg);
-				}
+		}
+		catch (final ScriptException exc) {
+			// NB: Something went wrong interpreting the line of code.
+			// Let's just display the error message, unless we are in debug mode.
+			if (log.isDebug()) exc.printStackTrace(out);
+			else {
+				final String msg = exc.getMessage();
+				out.println(msg == null ? exc.getClass().getName() : msg);
 			}
-			catch (final Throwable exc) {
-				// NB: Something unusual went wrong. Dump the whole exception always.
-				exc.printStackTrace(out);
-			}
+		}
+		catch (final Throwable exc) {
+			// NB: Something unusual went wrong. Dump the whole exception always.
+			exc.printStackTrace(out);
 		}
 		return true;
 	}
