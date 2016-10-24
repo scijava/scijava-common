@@ -252,7 +252,12 @@ public class ScriptREPL {
 			new DefaultScriptInterpreter(language);
 
 		// preserve state of the previous interpreter
-		copyBindings(interpreter, newInterpreter);
+		try {
+			copyBindings(interpreter, newInterpreter);
+		}
+		catch (final Throwable t) {
+			t.printStackTrace(out);
+		}
 		out.println("language -> " +
 			newInterpreter.getLanguage().getLanguageName());
 		interpreter = newInterpreter;
