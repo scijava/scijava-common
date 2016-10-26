@@ -172,7 +172,7 @@ public class ScriptFinder extends AbstractContextual {
 			final String friendlyPath = basePath.replace('_', ' ');
 
 			final MenuPath menuPath = new MenuPath(menuPrefix);
-			menuPath.addAll(new MenuPath(friendlyPath, "/"));
+			menuPath.addAll(new MenuPath(friendlyPath, "/", false));
 
 			// E.g.:
 			// path = "File/Import/Movie_File....groovy"
