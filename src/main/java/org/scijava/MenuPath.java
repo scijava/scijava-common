@@ -74,10 +74,20 @@ public class MenuPath extends ArrayList<MenuEntry> {
 	 * the specified separator.
 	 */
 	public MenuPath(final String path, final String separator) {
+		this(path, separator, true);
+	}
+
+	/**
+	 * Creates a menu path with entries parsed from the given string, splitting on
+	 * the specified separator, and trimming whitespace if indicated.
+	 */
+	public MenuPath(final String path, final String separator,
+		final boolean trim)
+	{
 		if (path != null && !path.isEmpty()) {
 			final String[] tokens = path.split(separator);
 			for (final String token : tokens) {
-				add(new MenuEntry(token.trim()));
+				add(new MenuEntry(trim ? token.trim() : token));
 			}
 		}
 	}
