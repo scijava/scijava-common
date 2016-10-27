@@ -549,13 +549,13 @@ public class ShadowMenu extends AbstractContextual implements
 				if (childInfo != null && info.getPriority() == childInfo.getPriority())
 				{
 					log.warn("ShadowMenu: menu item already exists:\n" + //
-						"\texisting: " + childInfo + "\n" + //
-						"\t ignored: " + info);
+						"\texisting: " + details(childInfo) + "\n" + //
+						"\t ignored: " + details(info));
 				}
 				else {
 					log.debug("ShadowMenu: higher-priority menu item already exists:\n" +
-						"\texisting: " + childInfo + "\n" + //
-						"\t ignored: " + info);
+						"\texisting: " + details(childInfo) + "\n" + //
+						"\t ignored: " + details(info));
 				}
 			}
 		}
@@ -564,6 +564,21 @@ public class ShadowMenu extends AbstractContextual implements
 
 	private boolean isLeaf(final int depth, final MenuPath path) {
 		return depth == path.size() - 1;
+	}
+
+	private String details(final ModuleInfo info) {
+		if (info == null) return "<null>";
+		String className, classLocation;
+		try {
+			final Class<?> c = info.loadDelegateClass();
+			className = c.getName();
+			classLocation = ClassUtils.getLocation(c).toString();
+		}
+		catch (final ClassNotFoundException exc) {
+			className = info.getDelegateClassName();
+			classLocation = "<invalid>";
+		}
+		return info.getMenuPath() + " : " + className + " [" + classLocation + "]";
 	}
 
 	private ShadowMenu getMenu(final MenuPath menuPath, final int index) {
