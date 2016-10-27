@@ -173,9 +173,10 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 		final String key, final ScriptLanguage proposed,
 		final ScriptLanguage existing)
 	{
-		return (overwrite ? "Overwriting " : "Not overwriting ") + type + //
-			" '" + key + "':\n\tproposed = " + proposed.getClass().getName() +
-			"\n\texisting = " + existing.getClass().getName();
+		return (overwrite ? "Overwriting " : "Not overwriting ") + //
+			type + " '" + key + "':\n" + //
+			"\tproposed = " + proposed.getClass().getName() + "\n" +
+			"\texisting = " + existing.getClass().getName();
 	}
 
 }
