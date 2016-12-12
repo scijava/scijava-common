@@ -56,6 +56,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	private final ModuleInfo info;
 
 	private MethodRef initializerRef;
+	private MethodRef validaterRef;
 	private MethodRef callbackRef;
 
 	public AbstractModuleItem(final ModuleInfo info) {
@@ -198,6 +199,20 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 				new MethodRef(delegateObject.getClass(), getInitializer());
 		}
 		initializerRef.execute(module.getDelegateObject());
+	}
+
+	@Override
+	public String getValidater() {
+		return null;
+	}
+
+	@Override
+	public void validate(final Module module) throws MethodCallException {
+		final Object delegateObject = module.getDelegateObject();
+		if (validaterRef == null) {
+			validaterRef = new MethodRef(delegateObject.getClass(), getValidater());
+		}
+		validaterRef.execute(module.getDelegateObject());
 	}
 
 	@Override

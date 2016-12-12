@@ -488,6 +488,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		else if (is(k, "columns")) item.setColumnCount(as(v, int.class));
 		else if (is(k, "description")) item.setDescription(as(v, String.class));
 		else if (is(k, "initializer")) item.setInitializer(as(v, String.class));
+		else if (is(k, "validater")) item.setValidater(as(v, String.class));
 		else if (is(k, "type")) item.setIOType(as(v, ItemIO.class));
 		else if (is(k, "label")) item.setLabel(as(v, String.class));
 		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));

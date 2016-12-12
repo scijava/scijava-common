@@ -124,6 +124,11 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	}
 
 	@Override
+	public String getValidater() {
+		return getParameter().validater();
+	}
+
+	@Override
 	public String getCallback() {
 		return getParameter().callback();
 	}

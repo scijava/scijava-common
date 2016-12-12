@@ -123,6 +123,16 @@ public interface ModuleItem<T> extends BasicDetails {
 	 */
 	void initialize(Module module) throws MethodCallException;
 
+	/** Gets the function that is called to validate the item's value. */
+	String getValidater();
+
+	/**
+	 * Invokes this item's validation function, if any, on the given module.
+	 * 
+	 * @see #getValidater()
+	 */
+	void validate(Module module) throws MethodCallException;
+
 	/**
 	 * Gets the function that is called whenever this item changes.
 	 * <p>

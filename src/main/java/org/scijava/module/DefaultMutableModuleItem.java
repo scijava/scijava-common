@@ -57,6 +57,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private boolean persisted;
 	private String persistKey;
 	private String initializer;
+	private String validater;
 	private String callback;
 	private String widgetStyle;
 	private T defaultValue;
@@ -163,6 +164,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	}
 
 	@Override
+	public void setValidater(final String validater) {
+		this.validater = validater;
+	}
+
+	@Override
 	public void setCallback(final String callback) {
 		this.callback = callback;
 	}
@@ -253,6 +259,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public String getInitializer() {
 		return initializer;
+	}
+
+	@Override
+	public String getValidater() {
+		return validater;
 	}
 
 	@Override

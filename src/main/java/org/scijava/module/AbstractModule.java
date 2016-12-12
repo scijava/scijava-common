@@ -149,6 +149,16 @@ public abstract class AbstractModule implements Module {
 
 	@Override
 	public void resolveInput(final String name) {
+		final ModuleItem<?> item = getInputItem(name);
+		if (item != null) {
+			try {
+				item.validate(this);
+			}
+			catch (final MethodCallException exc) {
+				// NB: Hacky, but avoids changing the API signature.
+				throw new RuntimeException(exc);
+			}
+		}
 		resolvedInputs.add(name);
 	}
 
@@ -181,4 +191,10 @@ public abstract class AbstractModule implements Module {
 		return map;
 	}
 
+	private ModuleItem<?> getInputItem(final String name) {
+		for (final ModuleItem<?> item : getInfo().inputs()) {
+			if (item.getName().equals(name)) return item;
+		}
+		return null;
+	}
 }

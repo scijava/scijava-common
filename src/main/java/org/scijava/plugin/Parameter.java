@@ -38,6 +38,7 @@ import java.lang.annotation.Target;
 
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
+import org.scijava.module.Module;
 
 /**
  * An annotation for indicating a field is an input or output parameter. This
@@ -118,6 +119,14 @@ public @interface Parameter {
 
 	/** Defines a function that is called to initialize the parameter. */
 	String initializer() default "";
+
+	/**
+	 * Defines a function that is called to validate the parameter value after it
+	 * is marked as resolved.
+	 * 
+	 * @see Module#resolveInput(String)
+	 */
+	String validater() default "";
 
 	/**
 	 * Defines a function that is called whenever this parameter changes.

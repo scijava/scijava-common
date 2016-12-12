@@ -56,6 +56,8 @@ public interface MutableModuleItem<T> extends ModuleItem<T> {
 
 	void setInitializer(String initializer);
 
+	void setValidater(String validater);
+
 	void setCallback(String callback);
 
 	void setWidgetStyle(String widgetStyle);
