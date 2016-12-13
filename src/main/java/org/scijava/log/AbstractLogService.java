@@ -107,25 +107,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	protected void log(final int level, final Object msg) {
-		final String prefix = getPrefix(level);
+		final String prefix = LogLevel.prefix(level);
 		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	protected String getPrefix(final int level) {
-		switch (level) {
-			case ERROR:
-				return "[ERROR]";
-			case WARN:
-				return "[WARNING]";
-			case INFO:
-				return "[INFO]";
-			case DEBUG:
-				return "[DEBUG]";
-			case TRACE:
-				return "[TRACE]";
-			default:
-				return null;
-		}
 	}
 
 	// -- LogService methods --
@@ -253,6 +236,14 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public void setLevel(final String classOrPackageName, final int level) {
 		classAndPackageLevels.put(classOrPackageName, level);
+	}
+
+	// -- Deprecated --
+
+	/** @deprecated Use {@link LogLevel#prefix(int)} instead. */
+	@Deprecated
+	protected String getPrefix(final int level) {
+		return "[" + LogLevel.prefix(level) + "]";
 	}
 
 	// -- Helper methods --
