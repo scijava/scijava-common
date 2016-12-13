@@ -44,7 +44,7 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_HIGH_PRIORITY + 1)
+	priority = 3 * Priority.VERY_HIGH_PRIORITY)
 public class ValidityPreprocessor extends AbstractPreprocessorPlugin {
 
 	// -- ModuleProcessor methods --
