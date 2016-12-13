@@ -17,8 +17,8 @@ public class LogServiceTest {
 	@Test
 	public void testGetPrefix() {
 		TestableLogService logService = new TestableLogService();
-		assertEquals("[ERROR]", logService.getPrefix(LogService.ERROR));
-		assertEquals("[TRACE]", logService.getPrefix(LogService.TRACE));
+		assertEquals("[ERROR]", logService.getPrefix(LogLevel.ERROR));
+		assertEquals("[TRACE]", logService.getPrefix(LogLevel.TRACE));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class LogServiceTest {
 	private void testLogMethod(String prefix, LogMethodCall logMethodCall, boolean testMessage, boolean testException) {
 		// setup
 		TestableLogService logService = new TestableLogService();
-		logService.setLevel(LogService.TRACE);
+		logService.setLevel(LogLevel.TRACE);
 		String text = "Message";
 		NullPointerException exception = new NullPointerException();
 		// process
@@ -81,38 +81,38 @@ public class LogServiceTest {
 	@Test
 	public void testSetLevel() {
 		TestableLogService logService = new TestableLogService();
-		logService.setLevel(LogService.TRACE);
-		assertEquals(LogService.TRACE, logService.getLevel());
-		logService.setLevel(LogService.ERROR);
-		assertEquals(LogService.ERROR, logService.getLevel());
+		logService.setLevel(LogLevel.TRACE);
+		assertEquals(LogLevel.TRACE, logService.getLevel());
+		logService.setLevel(LogLevel.ERROR);
+		assertEquals(LogLevel.ERROR, logService.getLevel());
 	}
 
 	@Test
 	public void testSetClassSpecificLevel() {
 		TestableLogService logService = new TestableLogService();
 		MyTestClass testClass = new MyTestClass(logService);
-		logService.setLevel(LogService.ERROR);
-		logService.setLevel(MyTestClass.class.getName(), LogService.TRACE);
-		assertEquals(LogService.ERROR, logService.getLevel());
-		assertEquals(LogService.TRACE, testClass.getLevel());
+		logService.setLevel(LogLevel.ERROR);
+		logService.setLevel(MyTestClass.class.getName(), LogLevel.TRACE);
+		assertEquals(LogLevel.ERROR, logService.getLevel());
+		assertEquals(LogLevel.TRACE, testClass.getLevel());
 	}
 
 	@Test
 	public void testIsWarn() {
-		testIsLevel(LogService.ERROR, LogService::isError);
-		testIsLevel(LogService.WARN, LogService::isWarn);
-		testIsLevel(LogService.INFO, LogService::isInfo);
-		testIsLevel(LogService.DEBUG, LogService::isDebug);
-		testIsLevel(LogService.TRACE, LogService::isTrace);
+		testIsLevel(LogLevel.ERROR, LogService::isError);
+		testIsLevel(LogLevel.WARN, LogService::isWarn);
+		testIsLevel(LogLevel.INFO, LogService::isInfo);
+		testIsLevel(LogLevel.DEBUG, LogService::isDebug);
+		testIsLevel(LogLevel.TRACE, LogService::isTrace);
 	}
 
 	private void testIsLevel(int level, Function<LogService, Boolean> isLevel) {
 		TestableLogService logService = new TestableLogService();
-		logService.setLevel(LogService.NONE);
+		logService.setLevel(LogLevel.NONE);
 		assertFalse(isLevel.apply(logService));
 		logService.setLevel(level);
 		assertTrue(isLevel.apply(logService));
-		logService.setLevel(LogService.TRACE);
+		logService.setLevel(LogLevel.TRACE);
 		assertTrue(isLevel.apply(logService));
 	}
 
