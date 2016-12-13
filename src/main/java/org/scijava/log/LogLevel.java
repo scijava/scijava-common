@@ -65,4 +65,32 @@ public final class LogLevel {
 				return "LEVEL" + level;
 		}
 	}
+
+	/**
+	 * Extracts the log level value from a string.
+	 * 
+	 * @return The log level, or -1 if the level cannot be parsed.
+	 */
+	public static int value(final String s) {
+		if (s == null) return -1;
+
+		// check whether it's a string label (e.g., "debug")
+		final String log = s.trim().toLowerCase();
+		if (log.startsWith("n")) return LogLevel.NONE;
+		if (log.startsWith("e")) return LogLevel.ERROR;
+		if (log.startsWith("w")) return LogLevel.WARN;
+		if (log.startsWith("i")) return LogLevel.INFO;
+		if (log.startsWith("d")) return LogLevel.DEBUG;
+		if (log.startsWith("t")) return LogLevel.TRACE;
+
+		// check whether it's a numerical value (e.g., 5)
+		try {
+			return Integer.parseInt(log);
+		}
+		catch (final NumberFormatException exc) {
+			// nope!
+		}
+		return -1;
+	}
+
 }
