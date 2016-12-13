@@ -114,102 +114,102 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	@Override
 	public void debug(final Object msg) {
-		log(DEBUG, msg, null);
+		log(LogLevel.DEBUG, msg, null);
 	}
 
 	@Override
 	public void debug(final Throwable t) {
-		log(DEBUG, null, t);
+		log(LogLevel.DEBUG, null, t);
 	}
 
 	@Override
 	public void debug(final Object msg, final Throwable t) {
-		log(DEBUG, msg, t);
+		log(LogLevel.DEBUG, msg, t);
 	}
 
 	@Override
 	public void error(final Object msg) {
-		log(ERROR, msg, null);
+		log(LogLevel.ERROR, msg, null);
 	}
 
 	@Override
 	public void error(final Throwable t) {
-		log(ERROR, null, t);
+		log(LogLevel.ERROR, null, t);
 	}
 
 	@Override
 	public void error(final Object msg, final Throwable t) {
-		log(ERROR, msg, t);
+		log(LogLevel.ERROR, msg, t);
 	}
 
 	@Override
 	public void info(final Object msg) {
-		log(INFO, msg, null);
+		log(LogLevel.INFO, msg, null);
 	}
 
 	@Override
 	public void info(final Throwable t) {
-		log(INFO, null, t);
+		log(LogLevel.INFO, null, t);
 	}
 
 	@Override
 	public void info(final Object msg, final Throwable t) {
-		log(INFO, msg, t);
+		log(LogLevel.INFO, msg, t);
 	}
 
 	@Override
 	public void trace(final Object msg) {
-		log(TRACE, msg, null);
+		log(LogLevel.TRACE, msg, null);
 	}
 
 	@Override
 	public void trace(final Throwable t) {
-		log(TRACE, null, t);
+		log(LogLevel.TRACE, null, t);
 	}
 
 	@Override
 	public void trace(final Object msg, final Throwable t) {
-		log(TRACE, msg, t);
+		log(LogLevel.TRACE, msg, t);
 	}
 
 	@Override
 	public void warn(final Object msg) {
-		log(WARN, msg, null);
+		log(LogLevel.WARN, msg, null);
 	}
 
 	@Override
 	public void warn(final Throwable t) {
-		log(WARN, null, t);
+		log(LogLevel.WARN, null, t);
 	}
 
 	@Override
 	public void warn(final Object msg, final Throwable t) {
-		log(WARN, msg, t);
+		log(LogLevel.WARN, msg, t);
 	}
 
 	@Override
 	public boolean isDebug() {
-		return getLevel() >= DEBUG;
+		return getLevel() >= LogLevel.DEBUG;
 	}
 
 	@Override
 	public boolean isError() {
-		return getLevel() >= ERROR;
+		return getLevel() >= LogLevel.ERROR;
 	}
 
 	@Override
 	public boolean isInfo() {
-		return getLevel() >= INFO;
+		return getLevel() >= LogLevel.INFO;
 	}
 
 	@Override
 	public boolean isTrace() {
-		return getLevel() >= TRACE;
+		return getLevel() >= LogLevel.TRACE;
 	}
 
 	@Override
 	public boolean isWarn() {
-		return getLevel() >= WARN;
+		return getLevel() >= LogLevel.WARN;
 	}
 
 	@Override
@@ -257,7 +257,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private int levelFromEnvironment() {
 		// use the default, which is INFO unless the DEBUG env. variable is set
-		return System.getenv("DEBUG") == null ? INFO : DEBUG;
+		return System.getenv("DEBUG") == null ? LogLevel.INFO : LogLevel.DEBUG;
 	}
 
 }

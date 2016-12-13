@@ -54,7 +54,7 @@ public class StderrLogService extends AbstractLogService {
 		final String prefix = LogLevel.prefix(level);
 		final String message = (prefix == null ? "" : prefix + " ") + msg;
 		// NB: Emit severe messages to stderr, and less severe ones to stdout.
-		if (level <= WARN) System.err.println(message);
+		if (level <= LogLevel.WARN) System.err.println(message);
 		else System.out.println(message);
 	}
 
