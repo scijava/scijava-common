@@ -39,7 +39,6 @@ import org.scijava.Contextual;
 import org.scijava.InstantiableException;
 import org.scijava.NullContextException;
 import org.scijava.module.AbstractModule;
-import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleException;
 import org.scijava.module.ModuleInfo;
@@ -142,13 +141,6 @@ public class CommandModule extends AbstractModule implements Cancelable,
 		if (!(command instanceof Previewable)) return; // nothing to cancel
 		final Previewable previewPlugin = (Previewable) command;
 		previewPlugin.cancel();
-	}
-
-	@Override
-	public void initialize() throws MethodCallException {
-		// NB: Inject the context into the command before initializing.
-		getContext().inject(command);
-		super.initialize();
 	}
 
 	@Override
