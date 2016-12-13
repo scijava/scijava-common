@@ -74,7 +74,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 		// global log level property
 		final String logProp = System.getProperty(LOG_LEVEL_PROPERTY);
-		final int level = level(logProp);
+		final int level = LogLevel.value(logProp);
 		if (level >= 0) setLevel(level);
 
 		if (getLevel() == 0)
@@ -89,7 +89,7 @@ public abstract class AbstractLogService extends AbstractService implements
 			if (!propName.startsWith(logLevelPrefix)) continue;
 			final String classOrPackageName =
 				propName.substring(logLevelPrefix.length());
-			setLevel(classOrPackageName, level(props.getProperty(propName)));
+			setLevel(classOrPackageName, LogLevel.value(props.getProperty(propName)));
 		}
 
 	}
@@ -238,29 +238,6 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
-
-	/** Extracts the log level value from a string. */
-	private int level(final String logProp) {
-		if (logProp == null) return -1;
-
-		// check whether it's a string label (e.g., "debug")
-		final String log = logProp.trim().toLowerCase();
-		if (log.startsWith("n")) return NONE;
-		if (log.startsWith("e")) return ERROR;
-		if (log.startsWith("w")) return WARN;
-		if (log.startsWith("i")) return INFO;
-		if (log.startsWith("d")) return DEBUG;
-		if (log.startsWith("t")) return TRACE;
-
-		// check whether it's a numerical value (e.g., 5)
-		try {
-			return Integer.parseInt(log);
-		}
-		catch (final NumberFormatException exc) {
-			// nope!
-		}
-		return -1;
-	}
 
 	private String callingClass() {
 		final String thisClass = AbstractLogService.class.getName();
