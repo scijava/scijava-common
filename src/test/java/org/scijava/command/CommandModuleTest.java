@@ -33,6 +33,7 @@ package org.scijava.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -40,11 +41,16 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.scijava.Cancelable;
 import org.scijava.Context;
+import org.scijava.ItemIO;
+import org.scijava.Priority;
+import org.scijava.log.LogService;
 import org.scijava.module.Module;
+import org.scijava.module.ModuleItem;
 import org.scijava.module.process.AbstractPreprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.service.Service;
 
 /** Regression tests for {@link CommandModule}. */
 public class CommandModuleTest {
@@ -63,7 +69,6 @@ public class CommandModuleTest {
 		final CommandModule crow = commandService.run(CrowCommand.class, true).get();
 		assertFalse(crow.isCanceled());
 	}
-
 
 	@Test
 	public void testNotCancelable() throws InterruptedException,
@@ -94,6 +99,17 @@ public class CommandModuleTest {
 		assertEquals("John Jacob Jingleheimer Schmidt", defaultName);
 
 		assertEquals(null, info.getInput("thing").getDefaultValue());
+	}
+
+	@Test
+	public void testValidation() throws InterruptedException, ExecutionException {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+
+		final CommandModule module = //
+			commandService.run(CommandWithValidation.class, true).get();
+		assertNotNull(module.getInput("stuff"));
+		assertEquals("success", module.getOutput("result"));
 	}
 
 	// -- Helper classes --
@@ -168,4 +184,55 @@ public class CommandModuleTest {
 			time = 0;
 		}
 	}
+
+	/** A command which validates an input. */
+	@Plugin(type = Command.class)
+	public static class CommandWithValidation extends ContextCommand {
+
+		@Parameter
+		private LogService log;
+
+		@Parameter(validater = "validateStuff")
+		private Stuff stuff;
+
+		@Parameter(type = ItemIO.OUTPUT)
+		private String result = "default";
+
+		@SuppressWarnings("unused")
+		private void validateStuff() {
+			final StringBuilder sb = new StringBuilder();
+			if (log == null) sb.append("[null-log] ");
+			if (stuff == null) sb.append("[null-stuff] ");
+			result = sb.length() == 0 ? "success" : sb.toString();
+		}
+
+		@Override
+		public void run() {
+			if (!result.equals("success")) result += " failure";
+		}
+	}
+
+	/**
+	 * Preprocessor to inject {@link Stuff} instances very early. But (in theory)
+	 * not as early as {@link Service} and {@link Context} parameters get
+	 * populated.
+	 */
+	@Plugin(type = PreprocessorPlugin.class,
+		priority = Priority.VERY_HIGH_PRIORITY)
+	public static class StuffPreprocessor extends AbstractPreprocessorPlugin {
+
+		@Override
+		public void process(final Module module) {
+			for (final ModuleItem<?> input : module.getInfo().inputs()) {
+				if (Stuff.class.isAssignableFrom(input.getType())) {
+					module.setInput(input.getName(), new Stuff());
+					module.resolveInput(input.getName());
+				}
+			}
+		}
+
+	}
+
+	/** Placeholder class, for type safety. */
+	public static class Stuff {}
 }
