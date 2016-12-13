@@ -40,6 +40,7 @@ import java.util.Map;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.log.LogService;
+import org.scijava.util.ClassUtils;
 import org.scijava.util.FileUtils;
 
 /**
@@ -173,9 +174,15 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 		final String key, final ScriptLanguage proposed,
 		final ScriptLanguage existing)
 	{
-		return (overwrite ? "Overwriting " : "Not overwriting ") + type + //
-			" '" + key + "':\n\tproposed = " + proposed.getClass().getName() +
-			"\n\texisting = " + existing.getClass().getName();
+		return (overwrite ? "Overwriting " : "Not overwriting ") + //
+			type + " '" + key + "':\n" + //
+			"\tproposed = " + details(proposed) + "\n" +
+			"\texisting = " + details(existing);
 	}
 
+	/** Helper method of {@link #overwriteMessage}. */
+	private String details(final ScriptLanguage language) {
+		final Class<?> c = language.getClass();
+		return c.getName() + " [" + ClassUtils.getLocation(c);
+	}
 }
