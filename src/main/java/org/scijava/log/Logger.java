@@ -31,47 +31,58 @@
 
 package org.scijava.log;
 
-import org.scijava.service.SciJavaService;
-
 /**
- * Interface for the logging service.
+ * Interface for objects which can produce log messages.
  * <p>
- * The service supports five common logging levels: {@link #ERROR},
- * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It provides
- * methods for logging messages, exception stack traces and combinations of the
- * two.
+ * It provides methods for logging messages, exception stack traces and
+ * combinations of the two.
  * </p>
  * 
  * @author Curtis Rueden
+ * @see LogLevel
+ * @see LogService
  */
-public interface LogService extends SciJavaService, Logger {
+public interface Logger {
 
-	/** System property to set for overriding the default logging level. */
-	String LOG_LEVEL_PROPERTY = "scijava.log.level";
+	void debug(Object msg);
 
-	// -- Deprecated --
+	void debug(Throwable t);
 
-	/** @deprecated Use {@link LogLevel#NONE}. */
-	@Deprecated
-	int NONE = LogLevel.NONE;
-	/** @deprecated Use {@link LogLevel#ERROR}. */
-	@Deprecated
-	int ERROR = LogLevel.ERROR;
-	/** @deprecated Use {@link LogLevel#WARN}. */
-	@Deprecated
-	int WARN = LogLevel.WARN;
-	/** @deprecated Use {@link LogLevel#INFO}. */
-	@Deprecated
-	int INFO = LogLevel.INFO;
-	/** @deprecated Use {@link LogLevel#DEBUG}. */
-	@Deprecated
-	int DEBUG = LogLevel.DEBUG;
-	/** @deprecated Use {@link LogLevel#TRACE}. */
-	@Deprecated
-	int TRACE = LogLevel.TRACE;
+	void debug(Object msg, Throwable t);
 
-	void setLevel(int level);
+	void error(Object msg);
 
-	void setLevel(String classOrPackageName, int level);
+	void error(Throwable t);
 
+	void error(Object msg, Throwable t);
+
+	void info(Object msg);
+
+	void info(Throwable t);
+
+	void info(Object msg, Throwable t);
+
+	void trace(Object msg);
+
+	void trace(Throwable t);
+
+	void trace(Object msg, Throwable t);
+
+	void warn(Object msg);
+
+	void warn(Throwable t);
+
+	void warn(Object msg, Throwable t);
+
+	boolean isDebug();
+
+	boolean isError();
+
+	boolean isInfo();
+
+	boolean isTrace();
+
+	boolean isWarn();
+
+	int getLevel();
 }
