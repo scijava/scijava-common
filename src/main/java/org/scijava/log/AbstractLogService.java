@@ -46,7 +46,7 @@ public abstract class AbstractLogService extends AbstractService implements
 	LogService
 {
 
-	private int currentLevel = System.getenv("DEBUG") == null ? INFO : DEBUG;
+	private int currentLevel = levelFromEnvironment();
 
 	private final Map<String, Integer> classAndPackageLevels =
 		new HashMap<>();
@@ -77,10 +77,8 @@ public abstract class AbstractLogService extends AbstractService implements
 		final int level = level(logProp);
 		if (level >= 0) setLevel(level);
 
-		if (getLevel() == 0) {
-			// use the default, which is INFO unless the DEBUG env. variable is set
-			setLevel(System.getenv("DEBUG") == null ? INFO : DEBUG);
-		}
+		if (getLevel() == 0)
+			setLevel(levelFromEnvironment());
 
 		// populate custom class- and package-specific log level properties
 		final String logLevelPrefix = LOG_LEVEL_PROPERTY + ":";
@@ -295,6 +293,11 @@ public abstract class AbstractLogService extends AbstractService implements
 		final int dot = classOrPackageName.lastIndexOf(".");
 		if (dot < 0) return null;
 		return classOrPackageName.substring(0, dot);
+	}
+
+	private int levelFromEnvironment() {
+		// use the default, which is INFO unless the DEBUG env. variable is set
+		return System.getenv("DEBUG") == null ? INFO : DEBUG;
 	}
 
 }
