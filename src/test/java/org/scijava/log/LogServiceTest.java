@@ -32,7 +32,7 @@
 package org.scijava.log;
 
 import static org.junit.Assert.assertTrue;
-import static org.scijava.log.LogService.WARN;
+import static org.scijava.log.LogLevel.WARN;
 
 import org.junit.Test;
 
@@ -46,6 +46,7 @@ public class LogServiceTest {
 	public void testDefaultLevel() {
 		final LogService log = new StderrLogService();
 		int level = log.getLevel();
-		assertTrue("default level (" + level + ") is at least INFO(" + WARN + ")", level >= WARN);
+		assertTrue("default level (" + level + //
+			") is at least INFO(" + WARN + ")", level >= WARN);
 	}
 }
