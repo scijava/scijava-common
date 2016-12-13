@@ -49,12 +49,26 @@ public interface LogService extends SciJavaService {
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
 
-	int NONE = 0;
-	int ERROR = 1;
-	int WARN = 2;
-	int INFO = 3;
-	int DEBUG = 4;
-	int TRACE = 5;
+	// -- Deprecated --
+
+	/** @deprecated Use {@link LogLevel#NONE}. */
+	@Deprecated
+	int NONE = LogLevel.NONE;
+	/** @deprecated Use {@link LogLevel#ERROR}. */
+	@Deprecated
+	int ERROR = LogLevel.ERROR;
+	/** @deprecated Use {@link LogLevel#WARN}. */
+	@Deprecated
+	int WARN = LogLevel.WARN;
+	/** @deprecated Use {@link LogLevel#INFO}. */
+	@Deprecated
+	int INFO = LogLevel.INFO;
+	/** @deprecated Use {@link LogLevel#DEBUG}. */
+	@Deprecated
+	int DEBUG = LogLevel.DEBUG;
+	/** @deprecated Use {@link LogLevel#TRACE}. */
+	@Deprecated
+	int TRACE = LogLevel.TRACE;
 
 	void debug(Object msg);
 

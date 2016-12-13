@@ -31,51 +31,38 @@
 
 package org.scijava.log;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
-
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
+ * Constants for specifying a logger's level of verbosity.
  * 
- * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public final class LogLevel {
 
-	@Override
-	protected void log(final int level, final Object msg) {
-		final String prefix = LogLevel.prefix(level);
-		final String message = (prefix == null ? "" : prefix + " ") + msg;
-		// NB: Emit severe messages to stderr, and less severe ones to stdout.
-		if (level <= WARN) System.err.println(message);
-		else System.out.println(message);
+	private LogLevel() {
+		// prevent instantiation of utility class
 	}
 
-	/**
-	 * Prints a message to stderr.
-	 * 
-	 * @param message the message
-	 */
-	@Override
-	protected void log(final String message) {
-		System.err.println(message);
-	}
+	public static final int NONE = 0;
+	public static final int ERROR = 1;
+	public static final int WARN = 2;
+	public static final int INFO = 3;
+	public static final int DEBUG = 4;
+	public static final int TRACE = 5;
 
-	/**
-	 * Prints an exception to stderr.
-	 * 
-	 * @param t the exception
-	 */
-	@Override
-	protected void log(final Throwable t) {
-		t.printStackTrace();
+	public static String prefix(final int level) {
+		switch (level) {
+			case ERROR:
+				return "ERROR";
+			case WARN:
+				return "WARNING";
+			case INFO:
+				return "INFO";
+			case DEBUG:
+				return "DEBUG";
+			case TRACE:
+				return "TRACE";
+			default:
+				return "LEVEL" + level;
+		}
 	}
-
 }

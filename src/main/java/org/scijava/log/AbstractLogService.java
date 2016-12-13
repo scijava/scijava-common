@@ -106,25 +106,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	protected void log(final int level, final Object msg) {
-		final String prefix = getPrefix(level);
+		final String prefix = LogLevel.prefix(level);
 		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	protected String getPrefix(final int level) {
-		switch (level) {
-			case ERROR:
-				return "[ERROR]";
-			case WARN:
-				return "[WARNING]";
-			case INFO:
-				return "[INFO]";
-			case DEBUG:
-				return "[DEBUG]";
-			case TRACE:
-				return "[TRACE]";
-			default:
-				return null;
-		}
 	}
 
 	// -- LogService methods --
