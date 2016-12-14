@@ -70,4 +70,16 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public abstract void alwaysLog(final int level, final Object msg,
 		final Throwable t);
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return logger.getName();
+	}
+
+	@Override
+	public void setName(final String name) {
+		logger.setName(name);
+	}
 }

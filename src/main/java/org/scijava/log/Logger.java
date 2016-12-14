@@ -37,6 +37,8 @@ import static org.scijava.log.LogLevel.INFO;
 import static org.scijava.log.LogLevel.TRACE;
 import static org.scijava.log.LogLevel.WARN;
 
+import org.scijava.Named;
+
 /**
  * Interface for objects which can produce log messages.
  * <p>
@@ -48,7 +50,7 @@ import static org.scijava.log.LogLevel.WARN;
  * @see LogLevel
  * @see LogService
  */
-public interface Logger {
+public interface Logger extends Named {
 
 	default void debug(final Object msg) {
 		log(DEBUG, msg);

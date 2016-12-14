@@ -46,6 +46,8 @@ public class DefaultLogger implements Logger {
 
 	private int currentLevel = levelFromEnvironment();
 
+	private String name;
+
 	// -- Constructor --
 
 	public DefaultLogger() {
@@ -104,6 +106,18 @@ public class DefaultLogger implements Logger {
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
 		// NB: Do nothing by default.
+	}
+
+	// -- Named methods --
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 	// -- Helper methods --
