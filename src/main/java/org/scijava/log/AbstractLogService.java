@@ -38,7 +38,7 @@ import java.util.Properties;
 import org.scijava.service.AbstractService;
 
 /**
- * Base class for {@link LogService} implementationst.
+ * Base class for {@link LogService} implementations.
  *
  * @author Johannes Schindelin
  */
