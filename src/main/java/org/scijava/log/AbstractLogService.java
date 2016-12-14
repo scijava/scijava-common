@@ -78,7 +78,7 @@ public abstract class AbstractLogService extends AbstractService implements
 		if (level >= 0) setLevel(level);
 
 		if (getLevel() == 0) {
-			// use the default, which is WARN unless the DEBUG env. variable is set
+			// use the default, which is INFO unless the DEBUG env. variable is set
 			setLevel(System.getenv("DEBUG") == null ? INFO : DEBUG);
 		}
 
