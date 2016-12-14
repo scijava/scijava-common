@@ -31,6 +31,9 @@
 
 package org.scijava.log;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.scijava.service.AbstractService;
 
 /**
@@ -42,29 +45,43 @@ public abstract class AbstractLogService extends AbstractService implements
 	LogService
 {
 
-	private final Logger logger;
+	private final Map<String, Logger> channels = new HashMap<>();
+	private final Logger defaultChannel;
 
 	// -- constructor --
 
 	public AbstractLogService() {
-		logger = new DefaultLogger();
+		defaultChannel = channel(DEFAULT_CHANNEL);
+	}
+
+	// -- LogService methods --
+
+	@Override
+	public Logger channel(final String name) {
+		// TODO: Consider whether to make this thread-safe.
+		final Logger channel = channels.get(name);
+		if (channel != null) return channel;
+		final Logger newChannel = new DefaultLogger();
+		newChannel.setName(name);
+		channels.put(name, newChannel);
+		return newChannel;
 	}
 
 	// -- Logger methods --
 
 	@Override
 	public int getLevel() {
-		return logger.getLevel();
+		return defaultChannel.getLevel();
 	}
 
 	@Override
 	public void setLevel(final int level) {
-		logger.setLevel(level);
+		defaultChannel.setLevel(level);
 	}
 
 	@Override
 	public void setLevel(final String classOrPackageName, final int level) {
-		logger.setLevel(classOrPackageName, level);
+		defaultChannel.setLevel(classOrPackageName, level);
 	}
 
 	@Override
@@ -75,11 +92,11 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	@Override
 	public String getName() {
-		return logger.getName();
+		return defaultChannel.getName();
 	}
 
 	@Override
 	public void setName(final String name) {
-		logger.setName(name);
+		defaultChannel.setName(name);
 	}
 }

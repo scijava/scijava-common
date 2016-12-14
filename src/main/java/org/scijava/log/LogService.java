@@ -46,8 +46,17 @@ import org.scijava.service.SciJavaService;
  */
 public interface LogService extends SciJavaService, Logger {
 
+	/**
+	 * Name of the channel to which information is logged by default. Calls to the
+	 * {@link Logger} API directly on the {@link LogService} (e.g.,
+	 * {@code logService.warn("Warning")}) go to a channel with this name.
+	 */
+	String DEFAULT_CHANNEL = "default";
+
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
+
+	Logger channel(String name);
 
 	// -- Deprecated --
 
