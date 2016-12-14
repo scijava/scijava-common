@@ -191,4 +191,13 @@ public interface Logger extends Named {
 	 * @param t The exception to log.
 	 */
 	void alwaysLog(int level, Object msg, Throwable t);
+
+	/** Adds a listener for logging events. */
+	void addLogListener(LogListener l);
+
+	/** Removes a listener for logging events. */
+	void removeLogListener(LogListener l);
+
+	/** Notifies listeners of a logging event. */
+	void notifyListeners(int level, Object msg, Throwable t);
 }

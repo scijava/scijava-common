@@ -31,6 +31,7 @@
 
 package org.scijava.log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -47,6 +48,11 @@ public class DefaultLogger implements Logger {
 	private int currentLevel = levelFromEnvironment();
 
 	private String name;
+
+	/** List of listeners for logging events. */
+	private ArrayList<LogListener> listeners;
+
+	private LogListener[] cachedListeners;
 
 	// -- Constructor --
 
@@ -105,7 +111,35 @@ public class DefaultLogger implements Logger {
 
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		// NB: Do nothing by default.
+		notifyListeners(level, msg, t);
+	}
+
+	@Override
+	public void addLogListener(final LogListener l) {
+		if (listeners == null) initListeners();
+		synchronized (listeners) {
+			listeners.add(l);
+			cacheListeners();
+		}
+	}
+
+	@Override
+	public void removeLogListener(final LogListener l) {
+		if (listeners == null) initListeners();
+		synchronized (listeners) {
+			listeners.remove(l);
+			cacheListeners();
+		}
+	}
+
+	@Override
+	public void notifyListeners(final int level, final Object msg,
+		final Throwable t)
+	{
+		if (listeners == null) initListeners();
+		final LogListener[] toNotify = cachedListeners;
+		for (final LogListener l : toNotify)
+			l.messageLogged(level, msg, t);
 	}
 
 	// -- Named methods --
@@ -120,7 +154,21 @@ public class DefaultLogger implements Logger {
 		this.name = name;
 	}
 
+	// -- Helper methods - lazy initialization --
+
+	/** Initializes {@link #listeners} and related data structures. */
+	private synchronized void initListeners() {
+		if (listeners != null) return; // already initialized
+
+		listeners = new ArrayList<>();
+		cachedListeners = listeners.toArray(new LogListener[0]);
+	}
+
 	// -- Helper methods --
+
+	private void cacheListeners() {
+		cachedListeners = listeners.toArray(new LogListener[listeners.size()]);
+	}
 
 	private String callingClass() {
 		final String thisClass = DefaultLogger.class.getName();

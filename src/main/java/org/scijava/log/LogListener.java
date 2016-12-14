@@ -31,36 +31,15 @@
 
 package org.scijava.log;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
-
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
+ * Listener for logging activity.
+ *
  * @author Curtis Rueden
+ * @see LogService
+ * @see Logger
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public interface LogListener {
 
-	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		final String prefix = LogLevel.prefix(level);
-		final String message = (prefix == null ? "" : prefix + " ") + msg;
-		// NB: Emit severe messages to stderr, and less severe ones to stdout.
-		if (level <= LogLevel.WARN) System.err.println(message);
-		else System.out.println(message);
-		if (t != null) t.printStackTrace();
-
-		// NB: Also do the normal things the default channel would do.
-		// Typically, this is notifying log listeners, but if the default
-		// channel has been overridden somehow, this could really do anything.
-		super.alwaysLog(level, msg, t);
-	}
+	/** Method called when a message is logged. */
+	void messageLogged(int level, Object msg, Throwable t);
 }

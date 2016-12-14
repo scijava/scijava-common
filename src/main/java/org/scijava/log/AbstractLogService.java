@@ -92,8 +92,28 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	@Override
-	public abstract void alwaysLog(final int level, final Object msg,
-		final Throwable t);
+	public void alwaysLog(final int level, final Object msg,
+		final Throwable t)
+	{
+		defaultChannel.alwaysLog(level, msg, t);
+	}
+
+	@Override
+	public void addLogListener(final LogListener l) {
+		defaultChannel.addLogListener(l);
+	}
+
+	@Override
+	public void removeLogListener(final LogListener l) {
+		defaultChannel.removeLogListener(l);
+	}
+
+	@Override
+	public void notifyListeners(final int level, final Object msg,
+		final Throwable t)
+	{
+		defaultChannel.notifyListeners(level, msg, t);
+	}
 
 	// -- Named methods --
 
