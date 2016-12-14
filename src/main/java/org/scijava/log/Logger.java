@@ -31,6 +31,12 @@
 
 package org.scijava.log;
 
+import static org.scijava.log.LogLevel.DEBUG;
+import static org.scijava.log.LogLevel.ERROR;
+import static org.scijava.log.LogLevel.INFO;
+import static org.scijava.log.LogLevel.TRACE;
+import static org.scijava.log.LogLevel.WARN;
+
 /**
  * Interface for objects which can produce log messages.
  * <p>
@@ -44,45 +50,137 @@ package org.scijava.log;
  */
 public interface Logger {
 
-	void debug(Object msg);
+	default void debug(final Object msg) {
+		log(DEBUG, msg);
+	}
 
-	void debug(Throwable t);
+	default void debug(final Throwable t) {
+		log(DEBUG, t);
+	}
 
-	void debug(Object msg, Throwable t);
+	default void debug(final Object msg, final Throwable t) {
+		log(DEBUG, msg, t);
+	}
 
-	void error(Object msg);
+	default void error(final Object msg) {
+		log(ERROR, msg);
+	}
 
-	void error(Throwable t);
+	default void error(final Throwable t) {
+		log(ERROR, t);
+	}
 
-	void error(Object msg, Throwable t);
+	default void error(final Object msg, final Throwable t) {
+		log(ERROR, msg, t);
+	}
 
-	void info(Object msg);
+	default void info(final Object msg) {
+		log(INFO, msg);
+	}
 
-	void info(Throwable t);
+	default void info(final Throwable t) {
+		log(INFO, t);
+	}
 
-	void info(Object msg, Throwable t);
+	default void info(final Object msg, final Throwable t) {
+		log(INFO, msg, t);
+	}
 
-	void trace(Object msg);
+	default void trace(final Object msg) {
+		log(TRACE, msg);
+	}
 
-	void trace(Throwable t);
+	default void trace(final Throwable t) {
+		log(TRACE, t);
+	}
 
-	void trace(Object msg, Throwable t);
+	default void trace(final Object msg, final Throwable t) {
+		log(TRACE, msg, t);
+	}
 
-	void warn(Object msg);
+	default void warn(final Object msg) {
+		log(WARN, msg);
+	}
 
-	void warn(Throwable t);
+	default void warn(final Throwable t) {
+		log(WARN, t);
+	}
 
-	void warn(Object msg, Throwable t);
+	default void warn(final Object msg, final Throwable t) {
+		log(WARN, msg, t);
+	}
 
-	boolean isDebug();
+	default boolean isDebug() {
+		return isLevel(DEBUG);
+	}
 
-	boolean isError();
+	default boolean isError() {
+		return isLevel(ERROR);
+	}
 
-	boolean isInfo();
+	default boolean isInfo() {
+		return isLevel(INFO);
+	}
 
-	boolean isTrace();
+	default boolean isTrace() {
+		return isLevel(TRACE);
+	}
 
-	boolean isWarn();
+	default boolean isWarn() {
+		return isLevel(WARN);
+	}
 
+	default boolean isLevel(final int level) {
+		return getLevel() >= level;
+	}
+
+	/**
+	 * Logs a message.
+	 * 
+	 * @param level The level at which the message will be logged. If the current
+	 *          level (given by {@link #getLevel()} is below this one, no logging
+	 *          is performed.
+	 * @param msg The message to log.
+	 */
+	default void log(final int level, final Object msg) {
+		log(level, msg, null);
+	}
+
+	/**
+	 * Logs an exception.
+	 * 
+	 * @param level The level at which the exception will be logged. If the
+	 *          current level (given by {@link #getLevel()} is below this one, no
+	 *          logging is performed.
+	 * @param t The exception to log.
+	 */
+	default void log(final int level, final Throwable t) {
+		log(level, null, t);
+	}
+
+	/**
+	 * Logs a message with an exception.
+	 * 
+	 * @param level The level at which the information will be logged. If the
+	 *          current level (given by {@link #getLevel()} is below this one, no
+	 *          logging is performed.
+	 * @param msg The message to log.
+	 * @param t The exception to log.
+	 */
+	default void log(final int level, final Object msg, final Throwable t) {
+		if (isLevel(level)) alwaysLog(level, msg, t);
+	}
+
+	/**
+	 * Logs a message with an exception. This message will always be logged even
+	 * if it's level is above the current level (given by {@link #getLevel()}).
+	 *
+	 * @param level The level at which the information will be logged.
+	 * @param msg The message to log.
+	 * @param t The exception to log.
+	 */
+	void alwaysLog(int level, Object msg, Throwable t);
+
+	/** Returns the log level of this logger. see {@link LogLevel} */
 	int getLevel();
 }

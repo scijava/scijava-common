@@ -41,6 +41,7 @@ import org.scijava.service.AbstractService;
  * Base class for {@link LogService} implementations.
  *
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public abstract class AbstractLogService extends AbstractService implements
 	LogService
@@ -50,22 +51,6 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels =
 		new HashMap<>();
-
-	// -- abstract methods --
-
-	/**
-	 * Displays a message.
-	 *
-	 * @param msg the message to display.
-	 */
-	protected abstract void log(final String msg);
-
-	/**
-	 * Displays an exception.
-	 *
-	 * @param t the exception to display.
-	 */
-	protected abstract void log(final Throwable t);
 
 	// -- constructor --
 
@@ -91,126 +76,9 @@ public abstract class AbstractLogService extends AbstractService implements
 				propName.substring(logLevelPrefix.length());
 			setLevel(classOrPackageName, LogLevel.value(props.getProperty(propName)));
 		}
-
 	}
 
-	// -- helper methods --
-
-	protected void log(final int level, final Object msg, final Throwable t) {
-		if (level > getLevel()) return;
-
-		if (msg != null || t == null) {
-			log(level, msg);
-		}
-		if (t != null) log(t);
-	}
-
-	protected void log(final int level, final Object msg) {
-		final String prefix = LogLevel.prefix(level);
-		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	// -- LogService methods --
-
-	@Override
-	public void debug(final Object msg) {
-		log(LogLevel.DEBUG, msg, null);
-	}
-
-	@Override
-	public void debug(final Throwable t) {
-		log(LogLevel.DEBUG, null, t);
-	}
-
-	@Override
-	public void debug(final Object msg, final Throwable t) {
-		log(LogLevel.DEBUG, msg, t);
-	}
-
-	@Override
-	public void error(final Object msg) {
-		log(LogLevel.ERROR, msg, null);
-	}
-
-	@Override
-	public void error(final Throwable t) {
-		log(LogLevel.ERROR, null, t);
-	}
-
-	@Override
-	public void error(final Object msg, final Throwable t) {
-		log(LogLevel.ERROR, msg, t);
-	}
-
-	@Override
-	public void info(final Object msg) {
-		log(LogLevel.INFO, msg, null);
-	}
-
-	@Override
-	public void info(final Throwable t) {
-		log(LogLevel.INFO, null, t);
-	}
-
-	@Override
-	public void info(final Object msg, final Throwable t) {
-		log(LogLevel.INFO, msg, t);
-	}
-
-	@Override
-	public void trace(final Object msg) {
-		log(LogLevel.TRACE, msg, null);
-	}
-
-	@Override
-	public void trace(final Throwable t) {
-		log(LogLevel.TRACE, null, t);
-	}
-
-	@Override
-	public void trace(final Object msg, final Throwable t) {
-		log(LogLevel.TRACE, msg, t);
-	}
-
-	@Override
-	public void warn(final Object msg) {
-		log(LogLevel.WARN, msg, null);
-	}
-
-	@Override
-	public void warn(final Throwable t) {
-		log(LogLevel.WARN, null, t);
-	}
-
-	@Override
-	public void warn(final Object msg, final Throwable t) {
-		log(LogLevel.WARN, msg, t);
-	}
-
-	@Override
-	public boolean isDebug() {
-		return getLevel() >= LogLevel.DEBUG;
-	}
-
-	@Override
-	public boolean isError() {
-		return getLevel() >= LogLevel.ERROR;
-	}
-
-	@Override
-	public boolean isInfo() {
-		return getLevel() >= LogLevel.INFO;
-	}
-
-	@Override
-	public boolean isTrace() {
-		return getLevel() >= LogLevel.TRACE;
-	}
-
-	@Override
-	public boolean isWarn() {
-		return getLevel() >= LogLevel.WARN;
-	}
+	// -- Logger methods --
 
 	@Override
 	public int getLevel() {
