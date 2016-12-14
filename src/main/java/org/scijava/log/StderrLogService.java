@@ -50,32 +50,12 @@ import org.scijava.service.Service;
 public class StderrLogService extends AbstractLogService {
 
 	@Override
-	protected void log(final int level, final Object msg) {
+	public void alwaysLog(final int level, final Object msg, final Throwable t) {
 		final String prefix = LogLevel.prefix(level);
 		final String message = (prefix == null ? "" : prefix + " ") + msg;
 		// NB: Emit severe messages to stderr, and less severe ones to stdout.
 		if (level <= LogLevel.WARN) System.err.println(message);
 		else System.out.println(message);
+		if (t != null) t.printStackTrace();
 	}
-
-	/**
-	 * Prints a message to stderr.
-	 * 
-	 * @param message the message
-	 */
-	@Override
-	protected void log(final String message) {
-		System.err.println(message);
-	}
-
-	/**
-	 * Prints an exception to stderr.
-	 * 
-	 * @param t the exception
-	 */
-	@Override
-	protected void log(final Throwable t) {
-		t.printStackTrace();
-	}
-
 }
