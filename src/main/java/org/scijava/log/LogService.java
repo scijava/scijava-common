@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import java.util.Collection;
+
 import org.scijava.service.SciJavaService;
 
 /**
@@ -57,6 +59,8 @@ public interface LogService extends SciJavaService, Logger {
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
 
 	Logger channel(String name);
+
+	Collection<Logger> allChannels();
 
 	// -- Deprecated --
 

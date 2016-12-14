@@ -31,6 +31,7 @@
 
 package org.scijava.log;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,12 @@ public abstract class AbstractLogService extends AbstractService implements
 		newChannel.setName(name);
 		channels.put(name, newChannel);
 		return newChannel;
+	}
+
+	@Override
+	public Collection<Logger> allChannels() {
+		// TODO: Consider whether to make this thread-safe.
+		return channels.values();
 	}
 
 	// -- Logger methods --
