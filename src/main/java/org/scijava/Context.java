@@ -533,7 +533,6 @@ public class Context implements Disposable {
 		return empty ? new PluginIndex(null) : null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static List<Class<? extends Service>> services(final boolean empty) {
 		if (empty) return Collections.<Class<? extends Service>> emptyList();
 		return Arrays.<Class<? extends Service>> asList(Service.class);
