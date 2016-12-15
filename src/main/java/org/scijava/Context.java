@@ -471,6 +471,11 @@ public class Context implements Disposable {
 				// populate Context parameter
 				ClassUtils.setValue(f, o, this);
 			}
+			else if (!type.isPrimitive()) {
+				// the parameter is some other object; if it is non-null, we recurse
+				final Object value = ClassUtils.getValue(f, o);
+				if (value != null) inject(value);
+			}
 		}
 		catch (final Throwable t) {
 			handleSafely(t);
