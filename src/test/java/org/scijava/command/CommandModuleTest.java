@@ -34,6 +34,7 @@ package org.scijava.command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -110,6 +111,20 @@ public class CommandModuleTest {
 			commandService.run(CommandWithValidation.class, true).get();
 		assertNotNull(module.getInput("stuff"));
 		assertEquals("success", module.getOutput("result"));
+	}
+
+	@Test
+	public void testCommandInjection() throws InterruptedException,
+		ExecutionException
+	{
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		final LogService logService = context.service(LogService.class);
+
+		final CommandModule module = //
+			commandService.run(CommandWithService.class, false).get();
+		assertSame(logService, module.getInput("log"));
+		assertTrue((boolean) module.getOutput("success"));
 	}
 
 	// -- Helper classes --
@@ -235,4 +250,21 @@ public class CommandModuleTest {
 
 	/** Placeholder class, for type safety. */
 	public static class Stuff {}
+
+	/** A command which has a {@link Service} parameter. */
+	@Plugin(type = Command.class)
+	public static class CommandWithService implements Command {
+
+		@Parameter
+		private LogService log;
+
+		@Parameter(type = ItemIO.OUTPUT)
+		private boolean success;
+
+		@Override
+		public void run() {
+			success = log != null;
+		}
+	}
+
 }
