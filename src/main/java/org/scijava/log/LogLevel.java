@@ -52,17 +52,17 @@ public final class LogLevel {
 	public static String prefix(final int level) {
 		switch (level) {
 			case ERROR:
-				return "[ERROR]";
+				return "[ERROR] ";
 			case WARN:
-				return "[WARNING]";
+				return "[WARNING] ";
 			case INFO:
-				return "[INFO]";
+				return "[INFO] ";
 			case DEBUG:
-				return "[DEBUG]";
+				return "[DEBUG] ";
 			case TRACE:
-				return "[TRACE]";
+				return "[TRACE] ";
 			default:
-				return "[" + level + "]";
+				return "[LEVEL:" + level + "] ";
 		}
 	}
 

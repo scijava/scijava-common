@@ -51,8 +51,7 @@ public class StderrLogService extends AbstractLogService {
 
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		final String prefix = LogLevel.prefix(level);
-		final String message = (prefix == null ? "" : prefix + " ") + msg;
+		final String message = LogLevel.prefix(level) + msg;
 		// NB: Emit severe messages to stderr, and less severe ones to stdout.
 		if (level <= LogLevel.WARN) System.err.println(message);
 		else System.out.println(message);
