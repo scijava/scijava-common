@@ -364,7 +364,9 @@ public final class ClassUtils {
 	 *
 	 * @param c The class to scan for annotated methods.
 	 * @param annotationClass The type of annotation for which to scan.
-	 * @return A new list containing all methods with the requested annotation.
+	 * @return A list containing all methods with the requested annotation. Note
+	 *         that for performance reasons, lists may be cached and reused, so it
+	 *         is best to make a copy of the result if you need to modify it.
 	 */
 	public static <A extends Annotation> List<Method> getAnnotatedMethods(
 		final Class<?> c, final Class<A> annotationClass)
@@ -417,7 +419,9 @@ public final class ClassUtils {
 	 *
 	 * @param c The class to scan for annotated fields.
 	 * @param annotationClass The type of annotation for which to scan.
-	 * @return A new list containing all fields with the requested annotation.
+	 * @return A list containing all fields with the requested annotation. Note
+	 *         that for performance reasons, lists may be cached and reused, so it
+	 *         is best to make a copy of the result if you need to modify it.
 	 */
 	public static <A extends Annotation> List<Field> getAnnotatedFields(
 		final Class<?> c, final Class<A> annotationClass)
