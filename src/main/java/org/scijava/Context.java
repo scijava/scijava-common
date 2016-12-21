@@ -388,6 +388,25 @@ public class Context implements Disposable {
 		subscribeToEvents(o);
 	}
 
+	/**
+	 * Reports whether a parameter of the given type would be assigned a value as
+	 * a consequence of calling {@link #inject(Object)}.
+	 * <p>
+	 * This method is notably useful for downstream code to discern between
+	 * {@link Parameter} fields whose values would be injected, versus those whose
+	 * values would not, without needing to hardcode type comparison checks
+	 * against the {@link Service} and {@link Context} types.
+	 * </p>
+	 * 
+	 * @param type The type of the @{@link Parameter}-annotated field.
+	 * @return True iff a member field of the given type would have its value
+	 *         assigned.
+	 */
+	public boolean isInjectable(final Class<?> type) {
+		if (Service.class.isAssignableFrom(type)) return true;
+		return Context.class.isAssignableFrom(type) && type.isInstance(this);
+	}
+
 	// -- Disposable methods --
 
 	@Override
