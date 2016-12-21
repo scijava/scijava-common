@@ -38,6 +38,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.After;
 import org.junit.Test;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
@@ -55,6 +56,13 @@ import org.scijava.service.Service;
  */
 public class ContextInjectionTest {
 
+	private Context context;
+
+	@After
+	public void tearDown() {
+		context.dispose();
+	}
+
 	/**
 	 * Tests that the {@link Context} and {@link Service} parameters are properly
 	 * injected when calling {@link Contextual#setContext} on an
@@ -62,7 +70,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testAbstractContextualSetContext() {
-		final Context context = new Context(FooService.class);
+		context = new Context(FooService.class);
 
 		final NeedsFooContextual needsFoo = new NeedsFooContextual();
 		assertNull(needsFoo.fooService);
@@ -78,7 +86,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testAbstractContextualContextInject() {
-		final Context context = new Context(FooService.class);
+		context = new Context(FooService.class);
 
 		final NeedsFooContextual needsFoo = new NeedsFooContextual();
 		assertNull(needsFoo.fooService);
@@ -94,7 +102,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testNonContextualServiceParameters() {
-		final Context context = new Context(FooService.class);
+		context = new Context(FooService.class);
 
 		final NeedsFooPlain needsFoo = new NeedsFooPlain();
 		assertNull(needsFoo.fooService);
@@ -113,7 +121,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testNonContextualContextParameters() {
-		final Context context = new Context(true);
+		context = new Context(true);
 
 		final NeedsContext needsContext = new NeedsContext();
 		assertNull(needsContext.context);
@@ -139,13 +147,13 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testContextSubclassInjection() {
-		final Context c = new Context(true);
+		context = new Context(true);
 		final FooContext foo = new FooContext();
 		final BarContext bar = new BarContext();
 
 		final ContextSubclassParameters cspPlain = new ContextSubclassParameters();
-		c.inject(cspPlain);
-		assertSame(c, cspPlain.c);
+		context.inject(cspPlain);
+		assertSame(context, cspPlain.c);
 		assertNull(cspPlain.foo);
 		assertNull(cspPlain.bar);
 
@@ -170,7 +178,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testAbstractContextualEventSubscription() {
-		final Context context = new Context(EventService.class);
+		context = new Context(EventService.class);
 		final EventService eventService = context.getService(EventService.class);
 
 		final HasEventsContextual hasEvents = new HasEventsContextual();
@@ -191,7 +199,7 @@ public class ContextInjectionTest {
 	 */
 	@Test
 	public void testNonContextualEventSubscription() {
-		final Context context = new Context(EventService.class);
+		context = new Context(EventService.class);
 		final EventService eventService = context.getService(EventService.class);
 
 		final HasEventsPlain hasEvents = new HasEventsPlain();
