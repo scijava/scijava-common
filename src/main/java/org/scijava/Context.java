@@ -55,7 +55,7 @@ import org.scijava.util.Query;
 /**
  * Top-level SciJava application context, which initializes and maintains a list
  * of services.
- * 
+ *
  * @author Curtis Rueden
  * @see Service
  */
@@ -100,7 +100,7 @@ public class Context implements Disposable {
 
 	/**
 	 * Creates a new SciJava application context with all available services.
-	 * 
+	 *
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context() {
@@ -109,7 +109,7 @@ public class Context implements Disposable {
 
 	/**
 	 * Creates a new SciJava application context.
-	 * 
+	 *
 	 * @param empty If true, the context will be empty of services; otherwise, it
 	 *          will be initialized with all available services.
 	 * @see #Context(boolean, boolean)
@@ -120,7 +120,7 @@ public class Context implements Disposable {
 
 	/**
 	 * Creates a new SciJava application context.
-	 * 
+	 *
 	 * @param noServices If true, the context will contain no services; otherwise,
 	 *          it will be initialized with all available services.
 	 * @param noPlugins If true, the context will contain no plugins; otherwise,
@@ -147,11 +147,11 @@ public class Context implements Disposable {
 	 * To avoid this, we have opted to use raw types and suppress the relevant
 	 * warnings here instead.
 	 * </p>
-	 * 
+	 *
 	 * @param serviceClasses A list of types that implement the {@link Service}
 	 *          interface (e.g., {@code DisplayService.class}). Compatible
-	 *          services will be loaded in the order given,
-	 *          <em>regardless of their relative priorities</em>.
+	 *          services will be loaded in the order given, <em>regardless of
+	 *          their relative priorities</em>.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 * @throws ClassCastException If any of the given arguments do not implement
 	 *           the {@link Service} interface.
@@ -163,7 +163,7 @@ public class Context implements Disposable {
 	/**
 	 * Creates a new SciJava application context with the specified services (and
 	 * any required service dependencies).
-	 * 
+	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
@@ -177,13 +177,13 @@ public class Context implements Disposable {
 	/**
 	 * Creates a new SciJava application context with the specified services (and
 	 * any required service dependencies).
-	 * 
+	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
 	 *          collection, <em>regardless of their relative priorities</em>.
-	 * @param strict Whether context creation will fail fast when there is
-	 *          an error instantiating a required service.
+	 * @param strict Whether context creation will fail fast when there is an
+	 *          error instantiating a required service.
 	 * @see #Context(Collection, PluginIndex, boolean)
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
@@ -197,7 +197,7 @@ public class Context implements Disposable {
 	 * the specified PluginIndex. This allows a base set of available plugins to
 	 * be defined, and is useful when plugins that would not be returned by the
 	 * {@link PluginIndex}'s {@link org.scijava.plugin.PluginFinder} are desired.
-	 * 
+	 *
 	 * @param pluginIndex The plugin index to use when discovering and indexing
 	 *          plugins. If you wish to completely control how services are
 	 *          discovered (i.e., use your own
@@ -215,7 +215,7 @@ public class Context implements Disposable {
 	 * any required service dependencies). Service dependency candidates are
 	 * selected from those discovered by the given {@link PluginIndex}'s
 	 * associated {@link org.scijava.plugin.PluginFinder}.
-	 * 
+	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
@@ -248,7 +248,7 @@ public class Context implements Disposable {
 	 * those of lower priority). See {@link ServiceHelper#loadServices()} for more
 	 * information.
 	 * </p>
-	 * 
+	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
 	 *          Compatible services will be loaded according to the order of the
@@ -259,8 +259,8 @@ public class Context implements Disposable {
 	 *          {@link org.scijava.plugin.PluginFinder} implementation), then you
 	 *          can pass a custom {@link PluginIndex} here. Passing null will
 	 *          result in a default plugin index being constructed and used.
-	 * @param strict Whether context creation will fail fast when there is
-	 *          an error instantiating a required service.
+	 * @param strict Whether context creation will fail fast when there is an
+	 *          error instantiating a required service.
 	 */
 	public Context(final Collection<Class<? extends Service>> serviceClasses,
 		final PluginIndex pluginIndex, final boolean strict)
@@ -272,9 +272,9 @@ public class Context implements Disposable {
 
 		setStrict(strict);
 
-		if (!serviceClasses.isEmpty()){
-			final ServiceHelper serviceHelper =
-					new ServiceHelper(this, serviceClasses, strict);
+		if (!serviceClasses.isEmpty()) {
+			final ServiceHelper serviceHelper = //
+				new ServiceHelper(this, serviceClasses, strict);
 			serviceHelper.loadServices();
 		}
 	}
@@ -299,21 +299,22 @@ public class Context implements Disposable {
 
 	/**
 	 * Gets the service of the given class.
-	 * 
+	 *
 	 * @throws NoSuchServiceException if the context does not have the requested
 	 *           service.
 	 */
 	public <S extends Service> S service(final Class<S> c) {
 		final S service = getService(c);
 		if (service == null) {
-			throw new NoSuchServiceException("Service " + c.getName() + " not found.");
+			throw new NoSuchServiceException("Service " + c.getName() +
+				" not found.");
 		}
 		return service;
 	}
 
 	/**
 	 * Gets the service of the given class name (useful for scripts).
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the class does not exist, or is not a
 	 *           service class.
 	 * @throws NoSuchServiceException if the context does not have the requested
@@ -352,15 +353,16 @@ public class Context implements Disposable {
 	 * distinct things:
 	 * <ul>
 	 * <li>If the given object has any non-final {@link Context} fields annotated
-	 * with @{@link Parameter}, sets the value of those fields to this context.</li>
+	 * with @{@link Parameter}, sets the value of those fields to this context.
+	 * </li>
 	 * <li>If the given object has any non-final {@link Service} fields annotated
 	 * with @{@link Parameter}, sets the value of those fields to the
 	 * corresponding service available from this context.</li>
 	 * <li>Calls {@link EventService#subscribe(Object)} with the object to
-	 * register any @{@link EventHandler} annotated methods as event subscribers.</li>
-	 * .</li>
+	 * register any @{@link EventHandler} annotated methods as event subscribers.
+	 * </li> .</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param o The object to which the context should be assigned.
 	 * @throws IllegalStateException If the object already has a context.
 	 * @throws IllegalArgumentException If the object has a required
@@ -370,7 +372,7 @@ public class Context implements Disposable {
 	public void inject(final Object o) {
 		// Ensure parameter fields and event handler methods are cached for this
 		// object.
-		Query query = new Query();
+		final Query query = new Query();
 		query.put(Parameter.class, Field.class);
 		query.put(EventHandler.class, Method.class);
 		ClassUtils.cacheAnnotatedObjects(o.getClass(), query);
@@ -412,13 +414,13 @@ public class Context implements Disposable {
 	public static List<Class<? extends Service>> serviceClassList(
 		final Class... serviceClasses)
 	{
-		return serviceClasses != null ? (List) Arrays.asList(serviceClasses)
-			: Arrays.asList(Service.class);
+		return serviceClasses != null ? //
+			Arrays.asList(serviceClasses) : Arrays.asList(Service.class);
 	}
 
 	// -- Helper methods --
 
-	private List<Field> getParameterFields(Object o) {
+	private List<Field> getParameterFields(final Object o) {
 		try {
 			return ClassUtils.getAnnotatedFields(o.getClass(), Parameter.class);
 		}
@@ -436,36 +438,36 @@ public class Context implements Disposable {
 			if (Service.class.isAssignableFrom(type)) {
 				final Service existingService = (Service) ClassUtils.getValue(f, o);
 				if (strict && existingService != null) {
-					throw new IllegalStateException("Context already injected: " +
-							f.getDeclaringClass().getName() + "#" + f.getName());
+					throw new IllegalStateException("Context already injected: " + //
+						f.getDeclaringClass().getName() + "#" + f.getName());
 				}
 
 				// populate Service parameter
 				@SuppressWarnings("unchecked")
 				final Class<? extends Service> serviceType =
-				(Class<? extends Service>) type;
+					(Class<? extends Service>) type;
 				final Service service = getService(serviceType);
 				if (service == null && f.getAnnotation(Parameter.class).required()) {
-					throw new IllegalArgumentException(
+					throw new IllegalArgumentException(//
 						createMissingServiceMessage(serviceType));
 				}
 				if (existingService != null && existingService != service) {
 					// NB: Can only happen in non-strict mode.
-					throw new IllegalStateException("Mismatched context: " +
-							f.getDeclaringClass().getName() + "#" + f.getName());
+					throw new IllegalStateException("Mismatched context: " + //
+						f.getDeclaringClass().getName() + "#" + f.getName());
 				}
 				ClassUtils.setValue(f, o, service);
 			}
 			else if (Context.class.isAssignableFrom(type) && type.isInstance(this)) {
 				final Context existingContext = (Context) ClassUtils.getValue(f, o);
 				if (strict && existingContext != null) {
-					throw new IllegalStateException("Context already injected: " +
-							f.getDeclaringClass().getName() + "#" + f.getName());
+					throw new IllegalStateException("Context already injected: " + //
+						f.getDeclaringClass().getName() + "#" + f.getName());
 				}
 				if (existingContext != null && existingContext != this) {
 					// NB: Can only happen in non-strict mode.
-					throw new IllegalStateException("Mismatched context: " +
-							f.getDeclaringClass().getName() + "#" + f.getName());
+					throw new IllegalStateException("Mismatched context: " + //
+						f.getDeclaringClass().getName() + "#" + f.getName());
 				}
 
 				// populate Context parameter
@@ -506,11 +508,10 @@ public class Context implements Disposable {
 		final Class<? extends Service> serviceType)
 	{
 		final String nl = System.getProperty("line.separator");
-		final ClassLoader classLoader =
+		final ClassLoader classLoader = //
 			Thread.currentThread().getContextClassLoader();
-		final StringBuilder msg =
-			new StringBuilder("Required service is missing: " +
-				serviceType.getName() + nl);
+		final StringBuilder msg = new StringBuilder(
+			"Required service is missing: " + serviceType.getName() + nl);
 		msg.append("Context: " + this + nl);
 		msg.append("ClassLoader: " + classLoader + nl);
 
@@ -528,8 +529,8 @@ public class Context implements Disposable {
 			}
 		}
 		else {
-			msg
-				.append("ClassLoader was not a URLClassLoader. Could not print classpath.");
+			msg.append(
+				"ClassLoader was not a URLClassLoader. Could not print classpath.");
 		}
 		return msg.toString();
 	}
@@ -539,8 +540,8 @@ public class Context implements Disposable {
 	}
 
 	private static List<Class<? extends Service>> services(final boolean empty) {
-		if (empty) return Collections.<Class<? extends Service>> emptyList();
-		return Arrays.<Class<? extends Service>> asList(Service.class);
+		if (empty) return Collections.<Class<? extends Service>>emptyList();
+		return Arrays.<Class<? extends Service>>asList(Service.class);
 	}
 
 	private static boolean strict() {
