@@ -52,18 +52,6 @@ import org.scijava.plugin.RichPlugin;
 public interface Service extends RichPlugin, Disposable {
 
 	/**
-	 * Performs any needed initialization when the service is first loaded.
-	 * <p>
-	 * NB: This method is not intended to be called directly. It is called by
-	 * the service framework itself (specifically by the {@link ServiceHelper})
-	 * when initializing the service. It should not be called a second time.
-	 * </p>
-	 */
-	default void initialize() {
-		// NB: Do nothing by default.
-	}
-
-	/**
 	 * Registers the service's event handler methods.
 	 * <p>
 	 * NB: This method is not intended to be called directly. It is called by
@@ -79,4 +67,15 @@ public interface Service extends RichPlugin, Disposable {
 		if (eventService != null) eventService.subscribe(this);
 	}
 
+	/**
+	 * Performs any needed initialization when the service is first loaded.
+	 * <p>
+	 * NB: This method is not intended to be called directly. It is called by
+	 * the service framework itself (specifically by the {@link ServiceHelper})
+	 * when initializing the service. It should not be called a second time.
+	 * </p>
+	 */
+	default void initialize() {
+		// NB: Do nothing by default.
+	}
 }
