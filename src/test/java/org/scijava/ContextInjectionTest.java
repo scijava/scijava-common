@@ -63,6 +63,19 @@ public class ContextInjectionTest {
 		context.dispose();
 	}
 
+	/** Tests {@link Context#isInjectable(Class)}. */
+	public void testInjectable() {
+		context = new Context(true);
+		assertTrue(context.isInjectable(Context.class));
+		assertTrue(context.isInjectable(FooContext.class));
+		assertTrue(context.isInjectable(Service.class));
+		assertTrue(context.isInjectable(FooService.class));
+		assertFalse(context.isInjectable(String.class));
+		assertFalse(context.isInjectable(Integer.class));
+		assertFalse(context.isInjectable(int.class));
+		assertFalse(context.isInjectable(void.class));
+	}
+
 	/**
 	 * Tests that the {@link Context} and {@link Service} parameters are properly
 	 * injected when calling {@link Contextual#setContext} on an
