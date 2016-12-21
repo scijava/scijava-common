@@ -138,6 +138,23 @@ public class DefaultConsoleService extends
 			l.outputOccurred(event);
 	}
 
+	// -- Initializable methods --
+
+	@Override
+	public void initialize() {
+		// intercept messages on sysout
+		sysout = multiPrintStream(System.out);
+		if (System.out != sysout) System.setOut(sysout);
+		out = new OutputStreamReporter(Source.STDOUT);
+		sysout.getParent().addOutputStream(out);
+
+		// intercept messages on syserr
+		syserr = multiPrintStream(System.err);
+		if (System.err != syserr) System.setErr(syserr);
+		err = new OutputStreamReporter(Source.STDERR);
+		syserr.getParent().addOutputStream(err);
+	}
+
 	// -- Disposable methods --
 
 	@Override
@@ -151,16 +168,6 @@ public class DefaultConsoleService extends
 	/** Initializes {@link #listeners} and related data structures. */
 	private synchronized void initListeners() {
 		if (listeners != null) return; // already initialized
-
-		sysout = multiPrintStream(System.out);
-		if (System.out != sysout) System.setOut(sysout);
-		out = new OutputStreamReporter(Source.STDOUT);
-		sysout.getParent().addOutputStream(out);
-
-		syserr = multiPrintStream(System.err);
-		if (System.err != syserr) System.setErr(syserr);
-		err = new OutputStreamReporter(Source.STDERR);
-		syserr.getParent().addOutputStream(err);
 
 		listeners = new ArrayList<>();
 		cachedListeners = listeners.toArray(new OutputListener[0]);
