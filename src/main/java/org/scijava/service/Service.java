@@ -32,6 +32,7 @@
 package org.scijava.service;
 
 import org.scijava.Disposable;
+import org.scijava.Initializable;
 import org.scijava.event.EventService;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
@@ -49,7 +50,7 @@ import org.scijava.plugin.RichPlugin;
  * @author Curtis Rueden
  * @see Plugin
  */
-public interface Service extends RichPlugin, Disposable {
+public interface Service extends RichPlugin, Initializable, Disposable {
 
 	/**
 	 * Registers the service's event handler methods.
@@ -67,6 +68,8 @@ public interface Service extends RichPlugin, Disposable {
 		if (eventService != null) eventService.subscribe(this);
 	}
 
+	// -- Initializable methods --
+
 	/**
 	 * Performs any needed initialization when the service is first loaded.
 	 * <p>
@@ -75,6 +78,7 @@ public interface Service extends RichPlugin, Disposable {
 	 * when initializing the service. It should not be called a second time.
 	 * </p>
 	 */
+	@Override
 	default void initialize() {
 		// NB: Do nothing by default.
 	}
