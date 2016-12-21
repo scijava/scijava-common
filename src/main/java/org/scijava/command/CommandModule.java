@@ -80,6 +80,7 @@ public class CommandModule extends AbstractModule implements Cancelable,
 	private final CommandInfo info;
 
 	/** The command instance handled by this module. */
+	@Parameter
 	private final Command command;
 
 	@Parameter

@@ -471,6 +471,11 @@ public class Context implements Disposable {
 				// populate Context parameter
 				ClassUtils.setValue(f, o, this);
 			}
+			else if (!type.isPrimitive()) {
+				// the parameter is some other object; if it is non-null, we recurse
+				final Object value = ClassUtils.getValue(f, o);
+				if (value != null) inject(value);
+			}
 		}
 		catch (final Throwable t) {
 			handleSafely(t);
@@ -533,7 +538,6 @@ public class Context implements Disposable {
 		return empty ? new PluginIndex(null) : null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static List<Class<? extends Service>> services(final boolean empty) {
 		if (empty) return Collections.<Class<? extends Service>> emptyList();
 		return Arrays.<Class<? extends Service>> asList(Service.class);
