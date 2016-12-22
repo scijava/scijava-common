@@ -36,6 +36,7 @@ import java.io.File;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
+import org.scijava.util.AppUtils;
 import org.scijava.util.Manifest;
 import org.scijava.util.POM;
 
@@ -56,7 +57,10 @@ import org.scijava.util.POM;
 public interface App extends RichPlugin, SingletonPlugin {
 
 	/** Gets the title of the application. */
-	String getTitle();
+	default String getTitle() {
+		return getInfo().getName();
+	}
+
 
 	/** The Maven {@code groupId} of the application. */
 	String getGroupId();
@@ -80,20 +84,40 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * 
 	 * @param mem If true, memory usage information is included.
 	 */
-	String getInfo(boolean mem);
+	default String getInfo(final boolean mem) {
+		final String appTitle = getTitle();
+		final String appVersion = getVersion();
+		final String javaVersion = System.getProperty("java.version");
+		final String osArch = System.getProperty("os.arch");
+		final long maxMem = Runtime.getRuntime().maxMemory();
+		final long totalMem = Runtime.getRuntime().totalMemory();
+		final long freeMem = Runtime.getRuntime().freeMemory();
+		final long usedMem = totalMem - freeMem;
+		final long usedMB = usedMem / 1048576;
+		final long maxMB = maxMem / 1048576;
+		final StringBuilder sb = new StringBuilder();
+		sb.append(appTitle + " " + appVersion);
+		sb.append("; Java " + javaVersion + " [" + osArch + "]");
+		if (mem) sb.append("; " + usedMB + "MB of " + maxMB + "MB");
+		return sb.toString();
+	}
 
 	/**
 	 * A system property which, if set, overrides the base directory of the
 	 * application.
 	 */
-	String getSystemProperty();
+	default String getSystemProperty() {
+		return getInfo().getName().toLowerCase() + ".dir";
+	}
 
 	/**
 	 * Gets the application's root directory. If the application's system property
 	 * is set, it is used. Otherwise, we scan up the tree from this class for a
 	 * suitable directory.
 	 */
-	File getBaseDirectory();
+	default File getBaseDirectory() {
+		return AppUtils.getBaseDirectory(getSystemProperty(), getClass(), null);
+	}
 
 	/**
 	 * Displays information about the application. Typically this action
@@ -105,13 +129,17 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * Displays application preferences. The behavior is application-specific, but
 	 * typically a preferences dialog will be shown onscreen.
 	 */
-	void prefs();
+	default void prefs() {
+		// NB: Do nothing.
+	}
 
 	/**
 	 * Quits the application. Typically this action will prompt the user about any
 	 * unsaved work first.
 	 */
-	void quit();
+	default void quit() {
+		getContext().dispose();
+	}
 
 	// -- Versioned methods --
 
@@ -125,6 +153,24 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * @return The application version, in {@code major.minor.micro} format.
 	 */
 	@Override
-	String getVersion();
+	default String getVersion() {
+		// NB: We do not use VersionUtils.getVersion(c, groupId, artifactId)
+		// because that method does not cache the parsed Manifest and/or POM.
+		// We might have them already parsed here, and if not, we want to
+		// parse then cache locally, rather than discarding them afterwards.
 
+		// try the manifest first, since it might know its build number
+		final Manifest m = getManifest();
+		if (m != null) {
+			final String v = m.getVersion();
+			if (v != null) return v;
+		}
+		// try the POM
+		final POM p = getPOM();
+		if (p != null) {
+			final String v = p.getVersion();
+			if (v != null) return v;
+		}
+		return "Unknown";
+	}
 }
