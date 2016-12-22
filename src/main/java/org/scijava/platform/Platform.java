@@ -56,22 +56,59 @@ import org.scijava.plugin.SingletonPlugin;
 public interface Platform extends SingletonPlugin, Disposable {
 
 	/** Java Runtime Environment vendor to match. */
-	String javaVendor();
+	default String javaVendor() {
+		return null;
+	}
 
 	/** Minimum required Java Runtime Environment version. */
-	String javaVersion();
+	default String javaVersion() {
+		return null;
+	}
 
 	/** Operating system architecture to match. */
-	String osArch();
+	default String osArch() {
+		return null;
+	}
 
 	/** Operating system name to match. */
-	String osName();
+	default String osName() {
+		return null;
+	}
 
 	/** Minimum required operating system version. */
-	String osVersion();
+	default String osVersion() {
+		return null;
+	}
 
 	/** Determines whether the given platform is applicable to this runtime. */
-	boolean isTarget();
+	default boolean isTarget() {
+		if (javaVendor() != null) {
+			final String javaVendor = System.getProperty("java.vendor");
+			if (!javaVendor.matches(".*" + javaVendor() + ".*")) return false;
+		}
+
+		if (javaVersion() != null) {
+			final String javaVersion = System.getProperty("java.version");
+			if (javaVersion.compareTo(javaVersion()) < 0) return false;
+		}
+
+		if (osName() != null) {
+			final String osName = System.getProperty("os.name");
+			if (!osName.matches(".*" + osName() + ".*")) return false;
+		}
+
+		if (osArch() != null) {
+			final String osArch = System.getProperty("os.arch");
+			if (!osArch.matches(".*" + osArch() + ".*")) return false;
+		}
+
+		if (osVersion() != null) {
+			final String osVersion = System.getProperty("os.version");
+			if (osVersion.compareTo(osVersion()) < 0) return false;
+		}
+
+		return true;
+	}
 
 	/** Activates and configures the platform. */
 	void configure(PlatformService service);
@@ -86,6 +123,7 @@ public interface Platform extends SingletonPlugin, Disposable {
 	 * @return true iff the menus should not be added to the UI as normal because
 	 *         the platform did something platform-specific with them instead.
 	 */
-	boolean registerAppMenus(Object menus);
-
+	default boolean registerAppMenus(final Object menus) {
+		return false;
+	}
 }
