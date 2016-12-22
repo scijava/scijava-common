@@ -42,6 +42,7 @@ package org.scijava.plugin;
  * The core types of plugins are as follows:
  * </p>
  * <ul>
+ * <li>{@link org.scijava.app.App} - metadata about a SciJava application.</li>
  * <li>{@link org.scijava.command.Command} - plugins that are executable. These
  * plugins typically perform a discrete operation, and are accessible via the
  * application menus.</li>
