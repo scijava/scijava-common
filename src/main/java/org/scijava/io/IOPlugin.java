@@ -56,21 +56,46 @@ public interface IOPlugin<D> extends HandlerPlugin<String> {
 	Class<D> getDataType();
 
 	/** Checks whether the I/O plugin can open data from the given source. */
-	boolean supportsOpen(String source);
+	@SuppressWarnings("unused")
+	default boolean supportsOpen(final String source) {
+		return false;
+	}
 
 	/** Checks whether the I/O plugin can save data to the given destination. */
-	boolean supportsSave(String destination);
+	@SuppressWarnings("unused")
+	default boolean supportsSave(final String destination) {
+		return false;
+	}
 
 	/**
 	 * Checks whether the I/O plugin can save the given data to the specified
 	 * destination.
 	 */
-	boolean supportsSave(Object data, String destination);
+	default boolean supportsSave(final Object data, final String destination) {
+		return supportsSave(destination) && getDataType().isInstance(data);
+	}
 
 	/** Opens data from the given source. */
-	D open(String source) throws IOException;
+	@SuppressWarnings("unused")
+	default D open(final String source) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 
 	/** Saves the given data to the specified destination. */
-	void save(D data, String destination) throws IOException;
+	@SuppressWarnings("unused")
+	default void save(final D data, final String destination) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 
+	// -- Typed methods --
+
+	@Override
+	default boolean supports(final String descriptor) {
+		return supportsOpen(descriptor) || supportsSave(descriptor);
+	}
+
+	@Override
+	default Class<String> getType() {
+		return String.class;
+	}
 }
