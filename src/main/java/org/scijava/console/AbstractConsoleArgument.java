@@ -70,11 +70,7 @@ public abstract class AbstractConsoleArgument extends
 		return isFlag(args);
 	}
 
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<LinkedList<String>> getType() {
-		return (Class) String.class;
-	}
+	// -- Internal methods --
 
 	/**
 	 * Check if the given list of arguments starts with a flag that matches this

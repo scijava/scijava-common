@@ -54,4 +54,11 @@ public interface ConsoleArgument extends HandlerPlugin<LinkedList<String>> {
 	/** Handles the <em>front</em> of the given list of arguments. */
 	void handle(final LinkedList<String> args);
 
+	// -- Typed methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<LinkedList<String>> getType() {
+		return (Class) String.class;
+	}
 }
