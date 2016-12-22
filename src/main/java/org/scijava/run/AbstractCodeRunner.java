@@ -46,13 +46,6 @@ public abstract class AbstractCodeRunner extends
 	AbstractHandlerPlugin<Object> implements CodeRunner
 {
 
-	// -- Typed methods --
-
-	@Override
-	public Class<Object> getType() {
-		return Object.class;
-	}
-
 	// -- Internal methods --
 
 	protected <T> T waitFor(final Future<T> future)

@@ -68,4 +68,10 @@ public interface CodeRunner extends HandlerPlugin<Object> {
 	void run(Object code, Map<String, Object> inputMap)
 		throws InvocationTargetException;
 
+	// -- Typed methods --
+
+	@Override
+	default Class<Object> getType() {
+		return Object.class;
+	}
 }
