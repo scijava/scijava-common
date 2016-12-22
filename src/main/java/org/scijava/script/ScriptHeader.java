@@ -45,4 +45,11 @@ public interface ScriptHeader extends HandlerPlugin<ScriptLanguage> {
 	 * @return The header text for scripts of the supported language.
 	 */
 	String getHeader();
+
+	// -- Typed methods --
+
+	@Override
+	default Class<ScriptLanguage> getType() {
+		return ScriptLanguage.class;
+	}
 }

@@ -49,11 +49,6 @@ public abstract class AbstractScriptHeader extends
 		return language != null && language.getClass() == handledType();
 	}
 
-	@Override
-	public Class<ScriptLanguage> getType() {
-		return ScriptLanguage.class;
-	}
-
 	// -- Internal methods --
 
 	protected abstract Class<? extends ScriptLanguage> handledType();
