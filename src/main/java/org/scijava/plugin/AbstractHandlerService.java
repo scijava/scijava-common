@@ -41,22 +41,5 @@ package org.scijava.plugin;
 public abstract class AbstractHandlerService<DT, PT extends HandlerPlugin<DT>>
 	extends AbstractSingletonService<PT> implements HandlerService<DT, PT>
 {
-
-	// -- HandlerService methods --
-
-	@Override
-	public PT getHandler(final DT data) {
-		for (final PT handler : getInstances()) {
-			if (handler.supports(data)) return handler;
-		}
-		return null;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final DT data) {
-		return getHandler(data) != null;
-	}
-
+	// NB: No implementation needed.
 }

@@ -59,7 +59,9 @@ public interface TextService extends HandlerService<File, TextFormat>,
 
 	/** Gets the text format which best handles the given file. */
 	@Override
-	TextFormat getHandler(File file);
+	default TextFormat getHandler(File file) {
+		return HandlerService.super.getHandler(file);
+	}
 
 	// -- SingletonService methods --
 
@@ -71,6 +73,7 @@ public interface TextService extends HandlerService<File, TextFormat>,
 
 	/** Gets whether the given file contains text data in a supported format. */
 	@Override
-	boolean supports(File file);
-
+	default boolean supports(final File file) {
+		return HandlerService.super.supports(file);
+	}
 }
