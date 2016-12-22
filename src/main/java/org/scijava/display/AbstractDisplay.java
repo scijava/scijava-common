@@ -110,22 +110,11 @@ public abstract class AbstractDisplay<T> extends AbstractRichPlugin implements
 	}
 
 	@Override
-	public boolean canDisplay(final Object o) {
-		if (o == null) return false;
-		return canDisplay(o.getClass());
-	}
-
-	@Override
 	public void display(final Object o) {
 		checkObject(o);
 		@SuppressWarnings("unchecked")
 		final T typedObj = (T) o;
 		add(typedObj);
-	}
-
-	@Override
-	public boolean isDisplaying(final Object o) {
-		return contains(o);
 	}
 
 	@Override

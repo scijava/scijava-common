@@ -66,7 +66,10 @@ public interface Display<T> extends List<T>, RichPlugin, Named {
 	boolean canDisplay(Class<?> c);
 
 	/** Tests whether the display is capable of visualizing the given object. */
-	boolean canDisplay(Object o);
+	default boolean canDisplay(final Object o) {
+		if (o == null) return false;
+		return canDisplay(o.getClass());
+	}
 
 	/**
 	 * Displays the given object in this display.
@@ -92,7 +95,9 @@ public interface Display<T> extends List<T>, RichPlugin, Named {
 	 * {@code DatasetView} that wraps that {@code Dataset}.
 	 * </p>
 	 */
-	boolean isDisplaying(Object o);
+	default boolean isDisplaying(final Object o) {
+		return contains(o);
+	}
 
 	/** Updates and redraws the display onscreen. */
 	void update();
