@@ -32,6 +32,7 @@
 package org.scijava.console;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -72,8 +73,21 @@ public class ConsoleServiceTest {
 	/** Tests {@link ConsoleService#processArgs(String...)}. */
 	@Test
 	public void testProcessArgs() {
+		assertFalse(consoleService.getInstance(FooArgument.class).argsHandled);
 		consoleService.processArgs("--foo", "--bar");
 		assertTrue(consoleService.getInstance(FooArgument.class).argsHandled);
+	}
+
+	/**
+	 * Tests that {@link ConsoleService#processArgs(String...)} does not result in
+	 * an infinite loop when a buggy {@link ConsoleArgument} forgets to remove its
+	 * handled argument from the list.
+	 */
+	@Test
+	public void testInfiniteLoopAvoidance() {
+		assertFalse(consoleService.getInstance(BrokenArgument.class).argsHandled);
+		consoleService.processArgs("--broken");
+		assertTrue(consoleService.getInstance(BrokenArgument.class).argsHandled);
 	}
 
 	/**
@@ -221,6 +235,24 @@ public class ConsoleServiceTest {
 			assertEquals("--foo", args.get(0));
 			assertEquals("--bar", args.get(1));
 			args.clear();
+			argsHandled = true;
+		}
+	}
+
+	@Plugin(type = ConsoleArgument.class)
+	public static class BrokenArgument extends AbstractConsoleArgument {
+
+		private boolean argsHandled;
+
+		public BrokenArgument() {
+			super(1, "--broken");
+		}
+
+		@Override
+		public void handle(final LinkedList<String> args) {
+			// NB: Does not shorten the list. This is an intentional "bug" which
+			// would naively result in an infinite loop. We want to test that
+			// the ConsoleService is at least minorly resilient to this problem.
 			argsHandled = true;
 		}
 	}
