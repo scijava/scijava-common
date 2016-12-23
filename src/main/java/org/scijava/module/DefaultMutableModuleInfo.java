@@ -87,28 +87,4 @@ public class DefaultMutableModuleInfo extends AbstractModuleInfo implements
 		outputMap().remove(output.getName());
 		outputList().remove(output);
 	}
-
-	// -- ModuleInfo methods --
-
-	@Override
-	public String getDelegateClassName() {
-		return getModuleClass().getName();
-	}
-
-	@Override
-	public Class<?> loadDelegateClass() {
-		return getModuleClass();
-	}
-
-	@Override
-	public Module createModule() throws ModuleException {
-		try {
-			return getModuleClass().newInstance();
-		}
-		catch (final Exception e) {
-			// NB: Several types of exceptions; simpler to handle them all the same.
-			throw new ModuleException(e);
-		}
-	}
-
 }
