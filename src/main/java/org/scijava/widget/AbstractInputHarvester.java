@@ -38,7 +38,6 @@ import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.module.Module;
-import org.scijava.module.ModuleCanceledException;
 import org.scijava.module.ModuleException;
 import org.scijava.module.ModuleItem;
 import org.scijava.object.ObjectService;
@@ -74,21 +73,8 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	// -- InputHarvester methods --
 
 	@Override
-	public void harvest(final Module module) throws ModuleException {
-		final InputPanel<P, W> inputPanel = createInputPanel();
-		buildPanel(inputPanel, module);
-		if (!inputPanel.hasWidgets()) return; // no inputs left to harvest
-
-		final boolean ok = harvestInputs(inputPanel, module);
-		if (!ok) throw new ModuleCanceledException();
-
-		processResults(inputPanel, module);
-	}
-
-	@Override
-	public void
-		buildPanel(final InputPanel<P, W> inputPanel, final Module module)
-			throws ModuleException
+	public void buildPanel(final InputPanel<P, W> inputPanel, final Module module)
+		throws ModuleException
 	{
 		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
 
@@ -105,18 +91,6 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 		// compute initial preview
 		module.preview();
-	}
-
-	@Override
-	public void processResults(final InputPanel<P, W> inputPanel,
-		final Module module) throws ModuleException
-	{
-		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
-
-		for (final ModuleItem<?> item : inputs) {
-			final String name = item.getName();
-			module.resolveInput(name);
-		}
 	}
 
 	// -- Helper methods --
