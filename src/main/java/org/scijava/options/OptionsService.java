@@ -31,6 +31,8 @@
 
 package org.scijava.options;
 
+import java.util.List;
+
 import org.scijava.plugin.SingletonService;
 import org.scijava.service.SciJavaService;
 
@@ -53,6 +55,17 @@ public interface OptionsService extends SingletonService<OptionsPlugin>,
 	 * 
 	 * @see OptionsPlugin#reset()
 	 */
-	void reset();
+	default void reset() {
+		final List<OptionsPlugin> optionsPlugins = getInstances();
+		for (final OptionsPlugin plugin : optionsPlugins) {
+			plugin.reset();
+		}
+	}
 
+	// -- PTService methods --
+
+	@Override
+	default Class<OptionsPlugin> getPluginType() {
+		return OptionsPlugin.class;
+	}
 }
