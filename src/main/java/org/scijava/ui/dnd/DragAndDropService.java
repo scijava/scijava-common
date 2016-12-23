@@ -53,7 +53,11 @@ public interface DragAndDropService extends
 	 * 
 	 * @see DragAndDropHandler
 	 */
-	boolean supports(DragAndDropData data, Display<?> display);
+	default boolean supports(final DragAndDropData data,
+		final Display<?> display)
+	{
+		return getHandler(data, display) != null;
+	}
 
 	/**
 	 * Checks whether the given object can be dropped onto the specified display.
@@ -62,7 +66,9 @@ public interface DragAndDropService extends
 	 * 
 	 * @see DragAndDropHandler
 	 */
-	boolean supports(Object object, Display<?> display);
+	default boolean supports(final Object object, final Display<?> display) {
+		return getHandler(object, display) != null;
+	}
 
 	/**
 	 * Performs a drag-and-drop operation in the given display with the specified
@@ -73,7 +79,11 @@ public interface DragAndDropService extends
 	 * @throws IllegalArgumentException if the display and/or data object are
 	 *           unsupported, or are incompatible with one another.
 	 */
-	boolean drop(DragAndDropData data, Display<?> display);
+	default boolean drop(final DragAndDropData data, final Display<?> display) {
+		final DragAndDropHandler<?> handler = getHandler(data, display);
+		if (handler == null) return false;
+		return handler.dropData(data, display);
+	}
 
 	/**
 	 * Performs a drag-and-drop operation in the given display with the specified
@@ -84,7 +94,11 @@ public interface DragAndDropService extends
 	 * @throws IllegalArgumentException if the display and/or data object are
 	 *           unsupported, or are incompatible with one another.
 	 */
-	boolean drop(Object data, Display<?> display);
+	default boolean drop(final Object data, final Display<?> display) {
+		final DragAndDropHandler<?> handler = getHandler(data, display);
+		if (handler == null) return false;
+		return handler.dropObject(data, display);
+	}
 
 	/**
 	 * Gets the drag-and-drop handler which will be used to handle the given
@@ -93,7 +107,14 @@ public interface DragAndDropService extends
 	 * @return The first compatible drag-and-drop handler, or null if none
 	 *         available.
 	 */
-	DragAndDropHandler<?> getHandler(DragAndDropData data, Display<?> display);
+	default DragAndDropHandler<?> getHandler(final DragAndDropData data,
+		final Display<?> display)
+	{
+		for (final DragAndDropHandler<?> handler : getInstances()) {
+			if (handler.supportsData(data, display)) return handler;
+		}
+		return null;
+	}
 
 	/**
 	 * Gets the drag-and-drop handler which will be used to handle the given
@@ -102,7 +123,14 @@ public interface DragAndDropService extends
 	 * @return The first compatible drag-and-drop handler, or null if none
 	 *         available.
 	 */
-	DragAndDropHandler<?> getHandler(Object object, Display<?> display);
+	default DragAndDropHandler<?> getHandler(final Object object,
+		final Display<?> display)
+	{
+		for (final DragAndDropHandler<?> handler : getInstances()) {
+			if (handler.supportsObject(object, display)) return handler;
+		}
+		return null;
+	}
 
 	// NB: Javadoc overrides.
 
@@ -115,4 +143,18 @@ public interface DragAndDropService extends
 	@Override
 	List<DragAndDropHandler<Object>> getInstances();
 
+	// -- PTService methods --
+
+	@Override
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	default Class<DragAndDropHandler<Object>> getPluginType() {
+		return (Class) DragAndDropHandler.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<Object> getType() {
+		return Object.class;
+	}
 }

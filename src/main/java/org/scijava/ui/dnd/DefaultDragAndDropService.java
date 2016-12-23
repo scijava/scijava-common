@@ -32,7 +32,6 @@
 package org.scijava.ui.dnd;
 
 import org.scijava.app.StatusService;
-import org.scijava.display.Display;
 import org.scijava.event.EventHandler;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
@@ -59,69 +58,6 @@ public class DefaultDragAndDropService extends
 
 	@Parameter
 	private StatusService statusService;
-
-	// -- DragAndDropService methods --
-
-	@Override
-	public boolean supports(final DragAndDropData data,
-		final Display<?> display)
-	{
-		return getHandler(data, display) != null;
-	}
-
-	@Override
-	public boolean supports(final Object object, final Display<?> display) {
-		return getHandler(object, display) != null;
-	}
-
-	@Override
-	public boolean drop(final DragAndDropData data, final Display<?> display) {
-		final DragAndDropHandler<?> handler = getHandler(data, display);
-		if (handler == null) return false;
-		return handler.dropData(data, display);
-	}
-
-	@Override
-	public boolean drop(final Object data, final Display<?> display) {
-		final DragAndDropHandler<?> handler = getHandler(data, display);
-		if (handler == null) return false;
-		return handler.dropObject(data, display);
-	}
-
-	@Override
-	public DragAndDropHandler<?> getHandler(final DragAndDropData data,
-		final Display<?> display)
-	{
-		for (final DragAndDropHandler<?> handler : getInstances()) {
-			if (handler.supportsData(data, display)) return handler;
-		}
-		return null;
-	}
-
-	@Override
-	public DragAndDropHandler<?> getHandler(final Object object,
-		final Display<?> display)
-	{
-		for (final DragAndDropHandler<?> handler : getInstances()) {
-			if (handler.supportsObject(object, display)) return handler;
-		}
-		return null;
-	}
-
-	// -- PTService methods --
-
-	@Override
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public Class<DragAndDropHandler<Object>> getPluginType() {
-		return (Class) DragAndDropHandler.class;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public Class<Object> getType() {
-		return Object.class;
-	}
 
 	// -- Event handlers --
 
