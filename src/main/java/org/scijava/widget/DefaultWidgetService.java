@@ -31,13 +31,7 @@
 
 package org.scijava.widget;
 
-import java.util.List;
-
-import org.scijava.log.LogService;
-import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
 import org.scijava.plugin.AbstractWrapperService;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
@@ -51,33 +45,5 @@ public class DefaultWidgetService extends
 	AbstractWrapperService<WidgetModel, InputWidget<?, ?>> implements
 	WidgetService
 {
-
-	@Parameter
-	private LogService log;
-
-	// -- WidgetService methods --
-
-	@Override
-	public WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
-		ModuleItem<?> item, List<?> objectPool)
-	{
-		return new DefaultWidgetModel(getContext(), inputPanel, module, item,
-			objectPool);
-	}
-
-	// -- PTService methods --
-
-	@Override
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public Class<InputWidget<?, ?>> getPluginType() {
-		return (Class) InputWidget.class;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public Class<WidgetModel> getType() {
-		return WidgetModel.class;
-	}
-
+	// NB: No implementation needed.
 }
