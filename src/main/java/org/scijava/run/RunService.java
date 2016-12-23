@@ -50,13 +50,45 @@ public interface RunService extends
 	 * Executes the given code using the most appropriate handler, passing the
 	 * specified arguments as inputs.
 	 */
-	void run(Object code, Object... args) throws InvocationTargetException;
+	default void run(final Object code, final Object... args)
+		throws InvocationTargetException
+	{
+		for (final CodeRunner runner : getInstances()) {
+			if (runner.supports(code)) {
+				runner.run(code, args);
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unknown code type: " + code);
+	}
 
 	/**
 	 * Executes the given code using the most appropriate handler, passing the
 	 * arguments in the specified map as inputs.
 	 */
-	void run(Object code, Map<String, Object> inputMap)
-		throws InvocationTargetException;
+	default void run(final Object code, final Map<String, Object> inputMap)
+		throws InvocationTargetException
+	{
+		for (final CodeRunner runner : getInstances()) {
+			if (runner.supports(code)) {
+				runner.run(code, inputMap);
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unknown code type: " + code);
+	}
 
+	// -- PTService methods --
+
+	@Override
+	default Class<CodeRunner> getPluginType() {
+		return CodeRunner.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<Object> getType() {
+		return Object.class;
+	}
 }
