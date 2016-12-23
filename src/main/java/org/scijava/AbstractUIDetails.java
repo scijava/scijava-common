@@ -31,8 +31,6 @@
 
 package org.scijava;
 
-import org.scijava.util.ClassUtils;
-import org.scijava.util.MiscUtils;
 import org.scijava.util.StringMaker;
 
 /**
@@ -87,31 +85,6 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 	}
 
 	// -- UIDetails methods --
-
-	@Override
-	public String getTitle() {
-		// use object label, if available
-		if (getLabel() != null && !getLabel().isEmpty()) return getLabel();
-
-		// use name of leaf menu item, if available
-		if (menuPath != null && menuPath.size() > 0) {
-			final MenuEntry menuLeaf = menuPath.getLeaf();
-			final String menuName = menuLeaf.getName();
-			if (menuName != null && !menuName.isEmpty()) return menuName;
-		}
-
-		// use object name, if available
-		if (getName() != null && !getName().isEmpty()) return getName();
-
-		// use the unique identifier, if available
-		if (this instanceof Identifiable) {
-			final String id = ((Identifiable) this).getIdentifier();
-			if (id != null) return id;
-		}
-
-		// use class name as a last resort
-		return getClass().getSimpleName();
-	}
 
 	@Override
 	public MenuPath getMenuPath() {
@@ -209,34 +182,4 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 	public void setPriority(final double priority) {
 		this.priority = priority;
 	}
-
-	// -- Comparable methods --
-
-	@Override
-	public int compareTo(final Prioritized that) {
-		if (that == null) return 1;
-
-		// compare priorities
-		final int priorityCompare = Priority.compare(this, that);
-		if (priorityCompare != 0) return priorityCompare;
-
-		// compare classes
-		final int classCompare = ClassUtils.compare(getClass(), that.getClass());
-		if (classCompare != 0) return classCompare;
-
-		if (!(that instanceof UIDetails)) return 1;
-		final UIDetails uiDetails = (UIDetails) that;
-
-		// compare names
-		final String thisName = getName();
-		final String thatName = uiDetails.getName();
-		final int nameCompare = MiscUtils.compare(thisName, thatName);
-		if (nameCompare != 0) return nameCompare;
-
-		// compare titles
-		final String thisTitle = getTitle();
-		final String thatTitle = uiDetails.getTitle();
-		return MiscUtils.compare(thisTitle, thatTitle);
-	}
-
 }

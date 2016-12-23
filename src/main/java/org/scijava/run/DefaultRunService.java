@@ -31,12 +31,7 @@
 
 package org.scijava.run;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
@@ -49,50 +44,5 @@ import org.scijava.service.Service;
 public class DefaultRunService extends
 	AbstractHandlerService<Object, CodeRunner> implements RunService
 {
-
-	@Parameter
-	private LogService log;
-
-	// -- RunService methods --
-
-	@Override
-	public void run(final Object code, final Object... args)
-		throws InvocationTargetException
-	{
-		for (final CodeRunner runner : getInstances()) {
-			if (runner.supports(code)) {
-				runner.run(code, args);
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Unknown code type: " + code);
-	}
-
-	@Override
-	public void run(final Object code, final Map<String, Object> inputMap)
-		throws InvocationTargetException
-	{
-		for (final CodeRunner runner : getInstances()) {
-			if (runner.supports(code)) {
-				runner.run(code, inputMap);
-				return;
-			}
-		}
-		throw new IllegalArgumentException("Unknown code type: " + code);
-	}
-
-	// -- PTService methods --
-
-	@Override
-	public Class<CodeRunner> getPluginType() {
-		return CodeRunner.class;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public Class<Object> getType() {
-		return Object.class;
-	}
-
+	// NB: No implementation needed.
 }

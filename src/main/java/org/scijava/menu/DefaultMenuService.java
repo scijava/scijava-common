@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.scijava.UIDetails;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.module.ModuleInfo;
@@ -72,26 +71,8 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	// -- MenuService methods --
 
 	@Override
-	public ShadowMenu getMenu() {
-		return getMenu(UIDetails.APPLICATION_MENU_ROOT);
-	}
-
-	@Override
 	public ShadowMenu getMenu(final String menuRoot) {
 		return rootMenus().get(menuRoot);
-	}
-
-	@Override
-	public <T> T createMenus(final MenuCreator<T> creator, final T menu) {
-		return createMenus(UIDetails.APPLICATION_MENU_ROOT, creator, menu);
-	}
-
-	@Override
-	public <T> T createMenus(final String menuRoot,
-		final MenuCreator<T> creator, final T menu)
-	{
-		creator.createMenus(getMenu(menuRoot), menu);
-		return menu;
 	}
 
 	// -- Event handlers --

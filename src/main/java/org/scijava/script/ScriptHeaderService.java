@@ -58,5 +58,27 @@ public interface ScriptHeaderService extends
 	 * @param language - Language to look up
 	 * @return The combined header text to insert at the top of a script.
 	 */
-	String getHeader(final ScriptLanguage language);
+	default String getHeader(final ScriptLanguage language) {
+		StringBuilder header = new StringBuilder();
+		for (final ScriptHeader scriptHeader : getInstances()) {
+			if (scriptHeader.supports(language)) {
+				header.append(scriptHeader.getHeader());
+				header.append("\n");
+			}
+		}
+
+		return header.toString();
+	}
+
+	// -- HandlerService methods --
+
+	@Override
+	default Class<ScriptHeader> getPluginType() {
+		return ScriptHeader.class;
+	}
+
+	@Override
+	default Class<ScriptLanguage> getType() {
+		return ScriptLanguage.class;
+	}
 }

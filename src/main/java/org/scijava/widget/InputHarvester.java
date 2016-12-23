@@ -33,7 +33,9 @@ package org.scijava.widget;
 
 import org.scijava.Priority;
 import org.scijava.module.Module;
+import org.scijava.module.ModuleCanceledException;
 import org.scijava.module.ModuleException;
+import org.scijava.module.ModuleItem;
 
 /**
  * An input harvester collects {@link Module} input values, according to the
@@ -62,7 +64,16 @@ public interface InputHarvester<P, W> {
 	 * @param module The module whose inputs should be harvest.
 	 * @throws ModuleException If the process goes wrong, or is canceled.
 	 */
-	void harvest(Module module) throws ModuleException;
+	default void harvest(final Module module) throws ModuleException {
+		final InputPanel<P, W> inputPanel = createInputPanel();
+		buildPanel(inputPanel, module);
+		if (!inputPanel.hasWidgets()) return; // no inputs left to harvest
+
+		final boolean ok = harvestInputs(inputPanel, module);
+		if (!ok) throw new ModuleCanceledException();
+
+		processResults(inputPanel, module);
+	}
 
 	/**
 	 * Constructs an empty {@link InputPanel}. Widgets are added later using the
@@ -89,7 +100,15 @@ public interface InputHarvester<P, W> {
 	boolean harvestInputs(InputPanel<P, W> inputPanel, Module module);
 
 	/** Does any needed processing, after input values have been harvested. */
-	void processResults(InputPanel<P, W> inputPanel, Module module)
-		throws ModuleException;
+	@SuppressWarnings("unused")
+	default void processResults(final InputPanel<P, W> inputPanel,
+		final Module module) throws ModuleException
+	{
+		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
 
+		for (final ModuleItem<?> item : inputs) {
+			final String name = item.getName();
+			module.resolveInput(name);
+		}
+	}
 }

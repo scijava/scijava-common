@@ -64,4 +64,25 @@ public interface MutableModuleInfo extends ModuleInfo {
 	/** Removes an output from the list. */
 	void removeOutput(ModuleItem<?> output);
 
+	// -- ModuleInfo methods --
+
+	@Override
+	default String getDelegateClassName() {
+		return getModuleClass().getName();
+	}
+
+	@Override
+	default Class<?> loadDelegateClass() {
+		return getModuleClass();
+	}
+
+	@Override
+	default Module createModule() throws ModuleException {
+		try {
+			return getModuleClass().newInstance();
+		}
+		catch (final InstantiationException | IllegalAccessException exc) {
+			throw new ModuleException(exc);
+		}
+	}
 }

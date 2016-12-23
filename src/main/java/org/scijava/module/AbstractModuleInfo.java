@@ -38,15 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scijava.AbstractUIDetails;
-import org.scijava.Identifiable;
-import org.scijava.Locatable;
-import org.scijava.ValidityProblem;
-import org.scijava.Versioned;
-import org.scijava.event.EventService;
-import org.scijava.module.event.ModulesUpdatedEvent;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.VersionUtils;
 
 /**
  * Abstract superclass of {@link ModuleInfo} implementation.
@@ -58,7 +50,7 @@ import org.scijava.util.VersionUtils;
  * @author Curtis Rueden
  */
 public abstract class AbstractModuleInfo extends AbstractUIDetails implements
-	ModuleInfo, Identifiable, Locatable, Versioned
+	ModuleInfo
 {
 
 	/** Table of inputs, keyed on name. */
@@ -106,102 +98,6 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 	@Override
 	public Iterable<ModuleItem<?>> outputs() {
 		return Collections.unmodifiableList(outputList());
-	}
-
-	@Override
-	public boolean isInteractive() {
-		return false;
-	}
-
-	@Override
-	public boolean canPreview() {
-		return false;
-	}
-
-	@Override
-	public boolean canCancel() {
-		return true;
-	}
-
-	@Override
-	public boolean canRunHeadless() {
-		return false;
-	}
-
-	@Override
-	public String getInitializer() {
-		return null;
-	}
-
-	@Override
-	public void update(final EventService eventService) {
-		eventService.publish(new ModulesUpdatedEvent(this));
-	}
-
-	// -- UIDetails methods --
-
-	@Override
-	public String getTitle() {
-		final String title = super.getTitle();
-		if (!title.equals(getClass().getSimpleName())) return title;
-
-		// use delegate class name rather than actual class name
-		final String className = getDelegateClassName();
-		final int dot = className.lastIndexOf(".");
-		return dot < 0 ? className : className.substring(dot + 1);
-	}
-
-	// -- Validated methods --
-
-	@Override
-	public boolean isValid() {
-		return true;
-	}
-
-	@Override
-	public List<ValidityProblem> getProblems() {
-		return null;
-	}
-
-	// -- Identifiable methods --
-
-	@Override
-	public String getIdentifier() {
-		// NB: By default, we assume that the delegate class name uniquely
-		// distinguishes the module from others. If the same delegate class is used
-		// for more than one module, though, it may need to override this method to
-		// provide more differentiating details.
-		return "module:" + getDelegateClassName();
-	}
-
-	// -- Locatable methods --
-
-	@Override
-	public String getLocation() {
-		// NB: By default, we use the location of the delegate class.
-		// If the same delegate class is used for more than one module, though,
-		// it may need to override this method to indicate a different location.
-		try {
-			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
-		}
-		catch (final ClassNotFoundException exc) {
-			return null;
-		}
-	}
-
-	// -- Versioned methods --
-
-	@Override
-	public String getVersion() {
-		// NB: By default, we use the version of the delegate class's JAR archive.
-		// If the same delegate class is used for more than one module, though,
-		// it may need to override this method to indicate a different version.
-		try {
-			return VersionUtils.getVersion(loadDelegateClass());
-		}
-		catch (final ClassNotFoundException exc) {
-			return null;
-		}
 	}
 
 	// -- Internal methods --

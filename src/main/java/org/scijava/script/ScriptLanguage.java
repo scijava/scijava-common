@@ -31,6 +31,9 @@
 
 package org.scijava.script;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
@@ -38,6 +41,7 @@ import org.scijava.module.Module;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
+import org.scijava.util.VersionUtils;
 
 /**
  * The base interface for scripting language adapters.
@@ -67,7 +71,9 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 {
 
 	/** True iff this language requires a compilation step. */
-	boolean isCompiledLanguage();
+	default boolean isCompiledLanguage() {
+		return false;
+	}
 
 	/**
 	 * Performs any necessary conversion of an encoded object retrieved from the
@@ -75,6 +81,74 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 	 * 
 	 * @see ScriptEngine#get(String)
 	 */
-	Object decode(Object object);
+	default Object decode(final Object object) {
+		// NB: No decoding by default.
+		return object;
+	}
+
+	// -- ScriptEngineFactory methods --
+
+	@Override
+	default String getMethodCallSyntax(final String obj, final String m,
+		final String... args)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default String getOutputStatement(final String toDisplay) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default String getProgram(final String... statements) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default List<String> getExtensions() {
+		return Collections.<String> emptyList();
+	}
+
+	@Override
+	default List<String> getNames() {
+		return Collections.<String> singletonList(getEngineName());
+	}
+
+	@Override
+	default String getLanguageVersion() {
+		return VersionUtils.getVersion(getClass());
+	}
+
+	@Override
+	default List<String> getMimeTypes() {
+		return Collections.<String> emptyList();
+	}
+
+	@Override
+	default Object getParameter(final String key) {
+		if (key.equals(ScriptEngine.ENGINE)) {
+			return getEngineName();
+		}
+		else if (key.equals(ScriptEngine.ENGINE_VERSION)) {
+			return getEngineVersion();
+		}
+		else if (key.equals(ScriptEngine.NAME)) {
+			final List<String> list = getNames();
+			return list.size() > 0 ? list.get(0) : null;
+		}
+		else if (key.equals(ScriptEngine.LANGUAGE)) {
+			return getLanguageName();
+		}
+		else if (key.equals(ScriptEngine.LANGUAGE_VERSION)) {
+			return getLanguageVersion();
+		}
+		return null;
+	}
+
+	@Override
+	default String getEngineVersion() {
+		return "0.0";
+	}
 
 }

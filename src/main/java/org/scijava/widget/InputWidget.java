@@ -75,7 +75,9 @@ public interface InputWidget<T, W> extends WrapperPlugin<WidgetModel>,
 	 * 
 	 * @see WidgetModel#getWidgetLabel()
 	 */
-	boolean isLabeled();
+	default boolean isLabeled() {
+		return true;
+	}
 
 	/**
 	 * Returns true iff the widget should be considered a read-only "message"
@@ -83,7 +85,9 @@ public interface InputWidget<T, W> extends WrapperPlugin<WidgetModel>,
 	 * {@link InputPanel#isMessageOnly()} method will return true iff this method
 	 * returns true for all of its widgets.
 	 */
-	boolean isMessage();
+	default boolean isMessage() {
+		return false;
+	}
 
 	// NB: Javadoc overrides.
 
@@ -104,6 +108,13 @@ public interface InputWidget<T, W> extends WrapperPlugin<WidgetModel>,
 
 	/** Gets whether this widget would be appropriate for the given model. */
 	@Override
-	boolean supports(WidgetModel model);
+	default boolean supports(final WidgetModel model) {
+		// check compatibility with the intended input panel
+		return model.getPanel().supports(this);
+	}
 
+	@Override
+	default Class<WidgetModel> getType() {
+		return WidgetModel.class;
+	}
 }

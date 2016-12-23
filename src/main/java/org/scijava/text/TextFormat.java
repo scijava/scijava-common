@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
+import org.scijava.util.FileUtils;
 
 /**
  * {@code TextFormat} is a plugin that provides handling for a text markup
@@ -59,5 +60,20 @@ public interface TextFormat extends HandlerPlugin<File> {
 
 	/** Expresses the given text string in HTML format. */
 	String asHTML(String text);
+
+	// -- Typed methods --
+
+	@Override
+	default boolean supports(final File file) {
+		for (final String ext : getExtensions()) {
+			if (FileUtils.getExtension(file).equalsIgnoreCase(ext)) return true;
+		}
+		return false;
+	}
+
+	@Override
+	default Class<File> getType() {
+		return File.class;
+	}
 
 }

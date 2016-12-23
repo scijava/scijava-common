@@ -31,15 +31,10 @@
 
 package org.scijava.script;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.PluginInfo;
-import org.scijava.util.VersionUtils;
 
 /**
  * Abstract superclass for {@link ScriptLanguage} implementations.
@@ -61,44 +56,7 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 		return getLanguageName();
 	}
 
-	// -- ScriptLanguage methods --
-
-	@Override
-	public boolean isCompiledLanguage() {
-		return false;
-	}
-
-	@Override
-	public Object decode(final Object object) {
-		// NB: No decoding by default.
-		return object;
-	}
-
-	// -- (Possibly) unsupported operations --
-
-	@Override
-	public String getMethodCallSyntax(final String obj, final String m,
-		final String... args)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getOutputStatement(final String toDisplay) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String getProgram(final String... statements) {
-		throw new UnsupportedOperationException();
-	}
-
 	// -- Default implementations --
-
-	@Override
-	public List<String> getExtensions() {
-		return Collections.<String> emptyList();
-	}
 
 	@Override
 	public String getEngineName() {
@@ -111,47 +69,6 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 		final PluginInfo<?> info = getInfo();
 		if (info != null) name = info.getName();
 		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
-	}
-
-	@Override
-	public List<String> getNames() {
-		return Collections.<String> singletonList(getEngineName());
-	}
-
-	@Override
-	public String getLanguageVersion() {
-		return VersionUtils.getVersion(getClass());
-	}
-
-	@Override
-	public List<String> getMimeTypes() {
-		return Collections.<String> emptyList();
-	}
-
-	@Override
-	public Object getParameter(final String key) {
-		if (key.equals(ScriptEngine.ENGINE)) {
-			return getEngineName();
-		}
-		else if (key.equals(ScriptEngine.ENGINE_VERSION)) {
-			return getEngineVersion();
-		}
-		else if (key.equals(ScriptEngine.NAME)) {
-			final List<String> list = getNames();
-			return list.size() > 0 ? list.get(0) : null;
-		}
-		else if (key.equals(ScriptEngine.LANGUAGE)) {
-			return getLanguageName();
-		}
-		else if (key.equals(ScriptEngine.LANGUAGE_VERSION)) {
-			return getLanguageVersion();
-		}
-		return null;
-	}
-
-	@Override
-	public String getEngineVersion() {
-		return "0.0";
 	}
 
 	// -- Helper methods --

@@ -51,13 +51,27 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
 	 * source.
 	 */
-	IOPlugin<?> getOpener(String source);
+	default IOPlugin<?> getOpener(final String source) {
+		for (final IOPlugin<?> handler : getInstances()) {
+			if (handler.supportsOpen(source)) return handler;
+		}
+		return null;
+	}
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
 	 * destination.
 	 */
-	<D> IOPlugin<D> getSaver(D data, String destination);
+	default <D> IOPlugin<D> getSaver(final D data, final String destination) {
+		for (final IOPlugin<?> handler : getInstances()) {
+			if (handler.supportsSave(data, destination)) {
+				@SuppressWarnings("unchecked")
+				final IOPlugin<D> typedHandler = (IOPlugin<D>) handler;
+				return typedHandler;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Loads data from the given source. For extensibility, the nature of the
@@ -91,4 +105,16 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	 */
 	void save(Object data, String destination) throws IOException;
 
+	// -- HandlerService methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<IOPlugin<?>> getPluginType() {
+		return (Class) IOPlugin.class;
+	}
+
+	@Override
+	default Class<String> getType() {
+		return String.class;
+	}
 }

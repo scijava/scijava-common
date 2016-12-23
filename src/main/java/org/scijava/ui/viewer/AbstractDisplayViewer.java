@@ -32,11 +32,8 @@
 package org.scijava.ui.viewer;
 
 import org.scijava.display.Display;
-import org.scijava.display.event.DisplayActivatedEvent;
 import org.scijava.display.event.DisplayCreatedEvent;
-import org.scijava.display.event.DisplayDeletedEvent;
 import org.scijava.display.event.DisplayUpdatedEvent;
-import org.scijava.display.event.DisplayUpdatedEvent.DisplayUpdateLevel;
 import org.scijava.event.EventHandler;
 import org.scijava.plugin.AbstractRichPlugin;
 
@@ -85,32 +82,6 @@ public abstract class AbstractDisplayViewer<T> extends AbstractRichPlugin
 	@Override
 	public DisplayPanel getPanel() {
 		return panel;
-	}
-
-	@Override
-	public void onDisplayDeletedEvent(final DisplayDeletedEvent e) {
-		getPanel().getWindow().close();
-	}
-
-	@Override
-	public void onDisplayUpdatedEvent(final DisplayUpdatedEvent e) {
-		if (e.getLevel() == DisplayUpdateLevel.REBUILD) {
-			getPanel().redoLayout();
-		}
-		getPanel().redraw();
-	}
-
-	@Override
-	public void onDisplayActivatedEvent(final DisplayActivatedEvent e) {
-		getPanel().getWindow().requestFocus();
-	}
-
-	// -- Disposable methods --
-
-	@Override
-	public void dispose() {
-		final DisplayWindow w = getWindow();
-		if (w != null) w.close();
 	}
 
 	// -- Internal AbstractDisplayViewer methods --

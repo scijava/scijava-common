@@ -31,7 +31,6 @@
 
 package org.scijava.ui.viewer.text;
 
-import org.scijava.display.Display;
 import org.scijava.display.TextDisplay;
 import org.scijava.ui.viewer.AbstractDisplayViewer;
 
@@ -45,13 +44,7 @@ public abstract class AbstractTextDisplayViewer extends
 {
 
 	@Override
-	public boolean canView(final Display<?> d) {
-		return d instanceof TextDisplay;
-	}
-
-	@Override
 	public TextDisplay getDisplay() {
 		return (TextDisplay) super.getDisplay();
 	}
-
 }

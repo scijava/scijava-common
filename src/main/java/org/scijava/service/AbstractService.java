@@ -74,13 +74,6 @@ public abstract class AbstractService extends AbstractRichPlugin implements
 		this.context = context;
 	}
 
-	// -- Disposable methods --
-
-	@Override
-	public void dispose() {
-		// NB: Do nothing by default.
-	}
-
 	// -- Object methods --
 
 	@Override

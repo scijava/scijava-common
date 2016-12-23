@@ -52,7 +52,9 @@ public interface ParseService extends SciJavaService {
 	 * @throws IllegalArgumentException If the string does not conform to expected
 	 *           syntax.
 	 */
-	Items parse(String arg);
+	default Items parse(final String arg) {
+		return parse(arg, true);
+	}
 
 	/**
 	 * Parses a comma-delimited list of data elements.

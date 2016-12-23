@@ -69,51 +69,88 @@ import org.scijava.plugin.SingletonPlugin;
 public interface Tool extends RichPlugin, SingletonPlugin {
 
 	/** When true, tool has no button but rather is active all the time. */
-	boolean isAlwaysActive();
+	default boolean isAlwaysActive() {
+		return false;
+	}
 
 	/**
 	 * When true, tool receives events when the main application frame is active.
 	 * When false, tool only receives events when a display window is active.
 	 */
-	boolean isActiveInAppFrame();
+	default boolean isActiveInAppFrame() {
+		return false;
+	}
 
 	/** The tool's mouse pointer. */
-	MouseCursor getCursor();
+	default MouseCursor getCursor() {
+		return MouseCursor.DEFAULT;
+	}
 
 	/** Informs the tool that it is now active. */
-	void activate();
+	default void activate() {
+		// do nothing by default
+	}
 
 	/** Informs the tool that it is no longer active. */
-	void deactivate();
+	default void deactivate() {
+		// do nothing by default
+	}
 
 	/** Occurs when a key on the keyboard is pressed while the tool is active. */
-	void onKeyDown(KyPressedEvent event);
+	@SuppressWarnings("unused")
+	default void onKeyDown(final KyPressedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when a key on the keyboard is released while the tool is active. */
-	void onKeyUp(KyReleasedEvent event);
+	@SuppressWarnings("unused")
+	default void onKeyUp(final KyReleasedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when a mouse button is pressed while the tool is active. */
-	void onMouseDown(MsPressedEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseDown(final MsPressedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when a mouse button is released while the tool is active. */
-	void onMouseUp(MsReleasedEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseUp(final MsReleasedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when a mouse button is double clicked while the tool is active. */
-	void onMouseClick(MsClickedEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseClick(final MsClickedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when the mouse is moved while the tool is active. */
-	void onMouseMove(MsMovedEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseMove(final MsMovedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when the mouse is dragged while the tool is active. */
-	void onMouseDrag(MsDraggedEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseDrag(final MsDraggedEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when the mouse wheel is moved while the tool is active. */
-	void onMouseWheel(MsWheelEvent event);
+	@SuppressWarnings("unused")
+	default void onMouseWheel(final MsWheelEvent evt) {
+		// do nothing by default
+	}
 
 	/** Occurs when the user right clicks this tool's icon. */
-	void configure();
+	default void configure() {
+		// do nothing by default
+	}
 
 	/** Returns the text the tool provides when mouse hovers over tool */
-	String getDescription();
-
+	default String getDescription() {
+		return getInfo().getDescription();
+	}
 }

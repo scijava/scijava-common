@@ -59,7 +59,25 @@ public interface WidgetService extends
 	 * @param item
 	 * @param objectPool
 	 */
-	WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
-		ModuleItem<?> item, List<?> objectPool);
+	default WidgetModel createModel(InputPanel<?, ?> inputPanel, Module module,
+		ModuleItem<?> item, List<?> objectPool)
+	{
+		return new DefaultWidgetModel(getContext(), inputPanel, module, item,
+			objectPool);
+	}
 
+	// -- PTService methods --
+
+	@Override
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	default Class<InputWidget<?, ?>> getPluginType() {
+		return (Class) InputWidget.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<WidgetModel> getType() {
+		return WidgetModel.class;
+	}
 }

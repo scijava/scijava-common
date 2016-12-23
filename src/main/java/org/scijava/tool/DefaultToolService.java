@@ -55,7 +55,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 import org.scijava.tool.event.ToolActivatedEvent;
 import org.scijava.tool.event.ToolDeactivatedEvent;
-import org.scijava.util.RealCoords;
 
 /**
  * Default service for keeping track of available tools, including which tool is
@@ -70,8 +69,6 @@ import org.scijava.util.RealCoords;
 public class DefaultToolService extends AbstractSingletonService<Tool>
 	implements ToolService
 {
-
-	private static final double SEPARATOR_DISTANCE = 10;
 
 	@Parameter
 	private EventService eventService;
@@ -94,17 +91,6 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 		final Tool alwaysActiveTool = alwaysActiveTools().get(name);
 		if (alwaysActiveTool != null) return alwaysActiveTool;
 		return tools().get(name);
-	}
-
-	@Override
-	public <T extends Tool> T getTool(final Class<T> toolClass) {
-		for (final Tool tool : alwaysActiveToolList()) {
-			if (toolClass.isInstance(tool)) return toolClass.cast(tool);
-		}
-		for (final Tool tool : toolList()) {
-			if (toolClass.isInstance(tool)) return toolClass.cast(tool);
-		}
-		return null;
 	}
 
 	@Override
@@ -141,14 +127,6 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	}
 
 	@Override
-	public boolean isSeparatorNeeded(final Tool tool1, final Tool tool2) {
-		if (tool1 == null || tool2 == null) return false;
-		final double priority1 = tool1.getInfo().getPriority();
-		final double priority2 = tool2.getInfo().getPriority();
-		return Math.abs(priority1 - priority2) >= SEPARATOR_DISTANCE;
-	}
-
-	@Override
 	public void reportRectangle(final double x, final double y, final double w,
 		final double h)
 	{
@@ -159,15 +137,6 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 		final String fh = f.format(h);
 		statusService.showStatus("x=" + fx + ", y=" + fy + ", w=" + fw + ", h=" +
 			fh);
-	}
-
-	@Override
-	public void reportRectangle(final RealCoords p1, final RealCoords p2) {
-		final double x = Math.min(p1.x, p2.x);
-		final double y = Math.min(p1.y, p2.y);
-		final double w = Math.abs(p2.x - p1.x);
-		final double h = Math.abs(p2.y - p1.y);
-		reportRectangle(x, y, w, h);
 	}
 
 	@Override
@@ -194,28 +163,11 @@ public class DefaultToolService extends AbstractSingletonService<Tool>
 	}
 
 	@Override
-	public void reportLine(final RealCoords p1, final RealCoords p2) {
-		reportLine(p1.x, p1.y, p2.x, p2.y);
-	}
-
-	@Override
 	public void reportPoint(final double x, final double y) {
 		final DecimalFormat f = new DecimalFormat("0.##");
 		final String fx = f.format(x);
 		final String fy = f.format(y);
 		statusService.showStatus("x=" + fx + ", y=" + fy);
-	}
-
-	@Override
-	public void reportPoint(final RealCoords p) {
-		reportPoint(p.x, p.y);
-	}
-
-	// -- PTService methods --
-
-	@Override
-	public Class<Tool> getPluginType() {
-		return Tool.class;
 	}
 
 	// -- Event handlers --

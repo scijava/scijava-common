@@ -31,8 +31,6 @@
 
 package org.scijava.io;
 
-import java.io.IOException;
-
 import org.scijava.plugin.AbstractHandlerPlugin;
 
 /**
@@ -43,44 +41,5 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractIOPlugin<D> extends AbstractHandlerPlugin<String>
 	implements IOPlugin<D>
 {
-
-	// -- IOPlugin methods --
-
-	@Override
-	public boolean supportsOpen(final String source) {
-		return false;
-	}
-
-	@Override
-	public boolean supportsSave(final String destination) {
-		return false;
-	}
-
-	@Override
-	public boolean supportsSave(final Object data, final String destination) {
-		return supportsSave(destination) && getDataType().isInstance(data);
-	}
-
-	@Override
-	public D open(final String source) throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void save(final D data, final String destination) throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final String descriptor) {
-		return supportsOpen(descriptor) || supportsSave(descriptor);
-	}
-
-	@Override
-	public Class<String> getType() {
-		return String.class;
-	}
-
+	// NB: No implementation needed.
 }

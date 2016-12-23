@@ -31,15 +31,6 @@
 
 package org.scijava.tool;
 
-import org.scijava.display.event.input.KyPressedEvent;
-import org.scijava.display.event.input.KyReleasedEvent;
-import org.scijava.display.event.input.MsClickedEvent;
-import org.scijava.display.event.input.MsDraggedEvent;
-import org.scijava.display.event.input.MsMovedEvent;
-import org.scijava.display.event.input.MsPressedEvent;
-import org.scijava.display.event.input.MsReleasedEvent;
-import org.scijava.display.event.input.MsWheelEvent;
-import org.scijava.input.MouseCursor;
 import org.scijava.plugin.AbstractRichPlugin;
 
 /**
@@ -49,80 +40,5 @@ import org.scijava.plugin.AbstractRichPlugin;
  * @author Grant Harris
  */
 public abstract class AbstractTool extends AbstractRichPlugin implements Tool {
-
-	@Override
-	public boolean isAlwaysActive() {
-		return false;
-	}
-
-	@Override
-	public boolean isActiveInAppFrame() {
-		return false;
-	}
-
-	@Override
-	public MouseCursor getCursor() {
-		return MouseCursor.DEFAULT;
-	}
-
-	@Override
-	public void activate() {
-		// do nothing by default
-	}
-
-	@Override
-	public void deactivate() {
-		// do nothing by default
-	}
-
-	@Override
-	public void onKeyDown(final KyPressedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onKeyUp(final KyReleasedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseDown(final MsPressedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseUp(final MsReleasedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseClick(final MsClickedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseMove(final MsMovedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseDrag(final MsDraggedEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void onMouseWheel(final MsWheelEvent evt) {
-		// do nothing by default
-	}
-
-	@Override
-	public void configure() {
-		// do nothing by default
-	}
-
-	@Override
-	public String getDescription() {
-		return getInfo().getDescription();
-	}
-
+	// NB: No implementation needed.
 }

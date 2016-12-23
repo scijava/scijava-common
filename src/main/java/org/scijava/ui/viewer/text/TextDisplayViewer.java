@@ -31,6 +31,7 @@
 
 package org.scijava.ui.viewer.text;
 
+import org.scijava.display.Display;
 import org.scijava.display.TextDisplay;
 import org.scijava.ui.viewer.DisplayViewer;
 
@@ -44,4 +45,10 @@ public interface TextDisplayViewer extends DisplayViewer<String> {
 	@Override
 	TextDisplay getDisplay();
 
+	// -- DisplayViewer methods --
+
+	@Override
+	default boolean canView(final Display<?> d) {
+		return d instanceof TextDisplay;
+	}
 }

@@ -31,6 +31,7 @@
 
 package org.scijava.menu;
 
+import org.scijava.UIDetails;
 import org.scijava.module.ModuleInfo;
 import org.scijava.service.SciJavaService;
 
@@ -42,7 +43,9 @@ import org.scijava.service.SciJavaService;
 public interface MenuService extends SciJavaService {
 
 	/** Gets the root node of the application menu structure. */
-	ShadowMenu getMenu();
+	default ShadowMenu getMenu() {
+		return getMenu(UIDetails.APPLICATION_MENU_ROOT);
+	}
 
 	/**
 	 * Gets the root node of a menu structure.
@@ -58,7 +61,9 @@ public interface MenuService extends SciJavaService {
 	 * @param creator the {@link MenuCreator} to use to populate the menus.
 	 * @param menu the destination menu structure to populate.
 	 */
-	<T> T createMenus(MenuCreator<T> creator, T menu);
+	default <T> T createMenus(final MenuCreator<T> creator, final T menu) {
+		return createMenus(UIDetails.APPLICATION_MENU_ROOT, creator, menu);
+	}
 
 	/**
 	 * Populates a UI-specific menu structure.
@@ -68,6 +73,10 @@ public interface MenuService extends SciJavaService {
 	 * @param creator the {@link MenuCreator} to use to populate the menus.
 	 * @param menu the destination menu structure to populate.
 	 */
-	<T> T createMenus(String menuRoot, MenuCreator<T> creator, T menu);
-
+	default <T> T createMenus(final String menuRoot,
+		final MenuCreator<T> creator, final T menu)
+	{
+		creator.createMenus(getMenu(menuRoot), menu);
+		return menu;
+	}
 }

@@ -47,28 +47,54 @@ package org.scijava.module;
 public interface MutableModule extends Module {
 
 	/** Adds an input to the list. */
-	<T> MutableModuleItem<T> addInput(String name, Class<T> type);
+	default <T> MutableModuleItem<T> addInput(final String name,
+		final Class<T> type)
+	{
+		final DefaultMutableModuleItem<T> item =
+			new DefaultMutableModuleItem<>(this, name, type);
+		addInput(item);
+		return item;
+	}
 
 	/** Adds an input to the list. */
-	void addInput(ModuleItem<?> input);
+	default void addInput(final ModuleItem<?> input) {
+		getInfo().addInput(input);
+	}
 
 	/** Adds an output to the list. */
-	<T> MutableModuleItem<T> addOutput(String name, Class<T> type);
+	default <T> MutableModuleItem<T> addOutput(final String name,
+		final Class<T> type)
+	{
+		final DefaultMutableModuleItem<T> item =
+			new DefaultMutableModuleItem<>(this, name, type);
+		addOutput(item);
+		return item;
+	}
 
 	/** Adds an output to the list. */
-	void addOutput(ModuleItem<?> output);
+	default void addOutput(final ModuleItem<?> output) {
+		getInfo().addOutput(output);
+	}
 
 	/** Removes an input from the list. */
-	void removeInput(ModuleItem<?> input);
+	default void removeInput(final ModuleItem<?> input) {
+		getInfo().removeInput(input);
+	}
 
 	/** Removes an output from the list. */
-	void removeOutput(ModuleItem<?> output);
-
-	// NB: Type narrowing.
+	default void removeOutput(final ModuleItem<?> output) {
+		getInfo().removeOutput(output);
+	}
 
 	// -- ModuleInfo methods --
 
 	@Override
 	MutableModuleInfo getInfo();
 
+	// -- Runnable methods --
+
+	@Override
+	default void run() {
+		// do nothing by default
+	}
 }

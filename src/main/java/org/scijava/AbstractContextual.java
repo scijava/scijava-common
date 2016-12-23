@@ -62,10 +62,4 @@ public abstract class AbstractContextual implements Contextual {
 	public Context getContext() {
 		return context;
 	}
-
-	@Override
-	public void setContext(final Context context) {
-		context.inject(this);
-	}
-
 }

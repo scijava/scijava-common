@@ -54,9 +54,12 @@ public interface HandlerService<DT, PT extends HandlerPlugin<DT>> extends
 	 * Gets the most appropriate handler for the given data object, or null if no
 	 * handler supports it.
 	 */
-	PT getHandler(DT data);
-
-	// NB: Javadoc overrides.
+	default PT getHandler(final DT data) {
+		for (final PT handler : getInstances()) {
+			if (handler.supports(data)) return handler;
+		}
+		return null;
+	}
 
 	// -- SingletonService methods --
 
@@ -71,6 +74,7 @@ public interface HandlerService<DT, PT extends HandlerPlugin<DT>> extends
 
 	/** Gets whether the given data object is supported. */
 	@Override
-	boolean supports(DT data);
-
+	default boolean supports(final DT data) {
+		return getHandler(data) != null;
+	}
 }

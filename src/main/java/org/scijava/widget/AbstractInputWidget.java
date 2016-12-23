@@ -53,16 +53,6 @@ public abstract class AbstractInputWidget<T, W> extends
 		widgetModel.setValue(getValue());
 	}
 
-	@Override
-	public boolean isLabeled() {
-		return true;
-	}
-
-	@Override
-	public boolean isMessage() {
-		return false;
-	}
-
 	// -- WrapperPlugin methods --
 
 	@Override
@@ -77,18 +67,4 @@ public abstract class AbstractInputWidget<T, W> extends
 	public WidgetModel get() {
 		return widgetModel;
 	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final WidgetModel model) {
-		// check compatibility with the intended input panel
-		return model.getPanel().supports(this);
-	}
-
-	@Override
-	public Class<WidgetModel> getType() {
-		return WidgetModel.class;
-	}
-
 }

@@ -42,6 +42,7 @@ public interface Disposable {
 	 * Performs any needed cleanup of the object's services, in preparation for
 	 * the object being retired (e.g., to make garbage collection possible).
 	 */
-	void dispose();
-
+	default void dispose() {
+		// NB: Do nothing by default.
+	}
 }

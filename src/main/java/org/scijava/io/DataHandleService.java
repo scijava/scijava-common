@@ -45,5 +45,19 @@ import org.scijava.service.SciJavaService;
 public interface DataHandleService extends
 	WrapperService<Location, DataHandle<Location>>, SciJavaService
 {
-	// NB: Marker interface.
+
+	// -- PTService methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<DataHandle<Location>> getPluginType() {
+		return (Class) DataHandle.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<Location> getType() {
+		return Location.class;
+	}
 }

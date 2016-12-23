@@ -69,12 +69,14 @@ public interface Contextual {
 	 * </p>
 	 * 
 	 * @see Context#inject(Object)
-	 * @see AbstractContextual for an example of how to implement this interface
 	 * @throws IllegalStateException If the object already has a context.
 	 * @throws IllegalArgumentException If the object has a required
 	 *           {@link Service} parameter (see {@link Parameter#required()})
 	 *           which is not available from the context.
 	 */
-	void setContext(Context context);
+	default void setContext(final Context context) {
+		context.inject(this);
+	}
+
 
 }
