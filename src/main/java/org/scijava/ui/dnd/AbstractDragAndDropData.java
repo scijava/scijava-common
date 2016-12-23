@@ -41,27 +41,5 @@ import org.scijava.AbstractContextual;
 public abstract class AbstractDragAndDropData extends AbstractContextual
 	implements DragAndDropData
 {
-
-	@Override
-	public boolean isSupported(final Class<?> type) {
-		return getMIMEType(type) != null;
-	}
-
-	@Override
-	public <T> T getData(final Class<T> type) {
-		final MIMEType mimeType = getMIMEType(type);
-		if (mimeType == null) return null;
-		@SuppressWarnings("unchecked")
-		final T data = (T) getData(mimeType);
-		return data;
-	}
-
-	@Override
-	public MIMEType getMIMEType(final Class<?> type) {
-		for (final MIMEType mimeType : getMIMETypes()) {
-			if (mimeType.isCompatible(type)) return mimeType;
-		}
-		return null;
-	}
-
+	// NB: No implementation needed.
 }
