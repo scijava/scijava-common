@@ -36,6 +36,7 @@ import org.scijava.display.Display;
 import org.scijava.display.event.DisplayActivatedEvent;
 import org.scijava.display.event.DisplayDeletedEvent;
 import org.scijava.display.event.DisplayUpdatedEvent;
+import org.scijava.display.event.DisplayUpdatedEvent.DisplayUpdateLevel;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.ui.UserInterface;
@@ -90,16 +91,34 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 	DisplayPanel getPanel();
 
 	/** Synchronizes the user interface appearance with the display model. */
-	void onDisplayUpdatedEvent(DisplayUpdatedEvent e);
+	default void onDisplayUpdatedEvent(final DisplayUpdatedEvent e) {
+		if (e.getLevel() == DisplayUpdateLevel.REBUILD) {
+			getPanel().redoLayout();
+		}
+		getPanel().redraw();
+	}
 
 	/** Removes the user interface when the display is deleted. */
-	void onDisplayDeletedEvent(DisplayDeletedEvent e);
+	@SuppressWarnings("unused")
+	default void onDisplayDeletedEvent(final DisplayDeletedEvent e) {
+		getPanel().getWindow().close();
+	}
 
 	/**
 	 * Handles a display activated event directed at this viewer's display. Note
 	 * that the event's display may not be the viewer's display, but the active
 	 * display will always be the viewer's display.
 	 */
-	void onDisplayActivatedEvent(DisplayActivatedEvent e);
-	
+	@SuppressWarnings("unused")
+	default void onDisplayActivatedEvent(final DisplayActivatedEvent e) {
+		getPanel().getWindow().requestFocus();
+	}
+
+	// -- Disposable methods --
+
+	@Override
+	default void dispose() {
+		final DisplayWindow w = getWindow();
+		if (w != null) w.close();
+	}
 }
