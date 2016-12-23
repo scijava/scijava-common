@@ -62,4 +62,18 @@ public interface ConsoleService extends
 	/** Notifies listeners of output sent to {@code stdout} or {@code stderr}. */
 	void notifyListeners(OutputEvent event);
 
+	// -- PTService methods --
+
+	@Override
+	default Class<ConsoleArgument> getPluginType() {
+		return ConsoleArgument.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<LinkedList<String>> getType() {
+		return (Class) LinkedList.class;
+	}
 }

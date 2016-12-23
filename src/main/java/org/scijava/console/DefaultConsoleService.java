@@ -138,21 +138,6 @@ public class DefaultConsoleService extends
 			l.outputOccurred(event);
 	}
 
-	// -- PTService methods --
-
-	@Override
-	public Class<ConsoleArgument> getPluginType() {
-		return ConsoleArgument.class;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<LinkedList<String>> getType() {
-		return (Class) LinkedList.class;
-	}
-
 	// -- Disposable methods --
 
 	@Override
