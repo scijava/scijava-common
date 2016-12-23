@@ -45,6 +45,8 @@ import org.scijava.util.RealCoords;
  */
 public interface ToolService extends SingletonService<Tool>, SciJavaService {
 
+	double SEPARATOR_DISTANCE = 10;
+
 	Tool getTool(String name);
 
 	/**
@@ -54,7 +56,15 @@ public interface ToolService extends SingletonService<Tool>, SciJavaService {
 	 * @param toolClass the class of the tool to fetch
 	 * @return the tool, or null if no such tool
 	 */
-	<T extends Tool> T getTool(Class<T> toolClass);
+	default <T extends Tool> T getTool(final Class<T> toolClass) {
+		for (final Tool tool : getAlwaysActiveTools()) {
+			if (toolClass.isInstance(tool)) return toolClass.cast(tool);
+		}
+		for (final Tool tool : getTools()) {
+			if (toolClass.isInstance(tool)) return toolClass.cast(tool);
+		}
+		return null;
+	}
 
 	List<Tool> getTools();
 
@@ -68,26 +78,47 @@ public interface ToolService extends SingletonService<Tool>, SciJavaService {
 	 * Returns true if the two specified tools should have a separator between
 	 * them on the tool bar.
 	 */
-	boolean isSeparatorNeeded(Tool tool1, Tool tool2);
+	default boolean isSeparatorNeeded(final Tool tool1, final Tool tool2) {
+		if (tool1 == null || tool2 == null) return false;
+		final double priority1 = tool1.getInfo().getPriority();
+		final double priority2 = tool2.getInfo().getPriority();
+		return Math.abs(priority1 - priority2) >= SEPARATOR_DISTANCE;
+	}
 
 	/** Publishes rectangle dimensions in the status bar. */
 	void reportRectangle(final double x, final double y, final double w,
 		final double h);
 
 	/** Publishes rectangle dimensions in the status bar. */
-	void reportRectangle(final RealCoords p1, final RealCoords p2);
+	default void reportRectangle(final RealCoords p1, final RealCoords p2) {
+		final double x = Math.min(p1.x, p2.x);
+		final double y = Math.min(p1.y, p2.y);
+		final double w = Math.abs(p2.x - p1.x);
+		final double h = Math.abs(p2.y - p1.y);
+		reportRectangle(x, y, w, h);
+	}
 
 	/** Publishes line length and angle in the status bar. */
 	void reportLine(final double x1, final double y1, final double x2,
 		final double y2);
 
 	/** Publishes line length and angle in the status bar. */
-	void reportLine(final RealCoords p1, final RealCoords p2);
+	default void reportLine(final RealCoords p1, final RealCoords p2) {
+		reportLine(p1.x, p1.y, p2.x, p2.y);
+	}
 
 	/** Publishes point coordinates to the status bar. */
 	void reportPoint(final double x, final double y);
 
 	/** Publishes point coordinates to the status bar. */
-	void reportPoint(final RealCoords p);
+	default void reportPoint(final RealCoords p) {
+		reportPoint(p.x, p.y);
+	}
 
+	// -- PTService methods --
+
+	@Override
+	default Class<Tool> getPluginType() {
+		return Tool.class;
+	}
 }
