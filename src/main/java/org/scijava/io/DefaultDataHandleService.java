@@ -45,20 +45,5 @@ public class DefaultDataHandleService extends
 	AbstractWrapperService<Location, DataHandle<Location>> implements
 	DataHandleService
 {
-
-	// -- PTService methods --
-
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<DataHandle<Location>> getPluginType() {
-		return (Class) DataHandle.class;
-	}
-
-	// -- Typed methods --
-
-	@Override
-	public Class<Location> getType() {
-		return Location.class;
-	}
-
+	// NB: No implementation needed.
 }
