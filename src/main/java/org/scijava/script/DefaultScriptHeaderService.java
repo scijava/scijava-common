@@ -45,32 +45,5 @@ public class DefaultScriptHeaderService extends
 	AbstractHandlerService<ScriptLanguage, ScriptHeader> implements
 	ScriptHeaderService
 {
-
-	// -- ScriptHeaderService methods --
-
-	@Override
-	public String getHeader(final ScriptLanguage language) {
-		StringBuilder header = new StringBuilder();
-		for (final ScriptHeader scriptHeader : getInstances()) {
-			if (scriptHeader.supports(language)) {
-				header.append(scriptHeader.getHeader());
-				header.append("\n");
-			}
-		}
-
-		return header.toString();
-	}
-
-	// -- HandlerService methods --
-
-	@Override
-	public Class<ScriptHeader> getPluginType() {
-		return ScriptHeader.class;
-	}
-
-	@Override
-	public Class<ScriptLanguage> getType() {
-		return ScriptLanguage.class;
-	}
-
+	// NB: No implementation needed.
 }
