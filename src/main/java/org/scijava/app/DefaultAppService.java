@@ -33,7 +33,6 @@ package org.scijava.app;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.scijava.event.EventHandler;
@@ -67,13 +66,6 @@ public class DefaultAppService extends AbstractSingletonService<App> implements 
 	// -- AppService methods --
 
 	@Override
-	public App getApp() {
-		final List<App> appList = getInstances();
-		if (appList == null || appList.isEmpty()) return null;
-		return appList.get(0);
-	}
-
-	@Override
 	public App getApp(final String name) {
 		return apps().get(name);
 	}
@@ -81,13 +73,6 @@ public class DefaultAppService extends AbstractSingletonService<App> implements 
 	@Override
 	public Map<String, App> getApps() {
 		return apps();
-	}
-
-	// -- SingletonService methods --
-
-	@Override
-	public Class<App> getPluginType() {
-		return App.class;
 	}
 
 	// -- Event handlers --
