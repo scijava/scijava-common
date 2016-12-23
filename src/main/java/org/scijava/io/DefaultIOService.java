@@ -61,26 +61,6 @@ public final class DefaultIOService
 	// -- IOService methods --
 
 	@Override
-	public IOPlugin<?> getOpener(final String source) {
-		for (final IOPlugin<?> handler : getInstances()) {
-			if (handler.supportsOpen(source)) return handler;
-		}
-		return null;
-	}
-
-	@Override
-	public <D> IOPlugin<D> getSaver(final D data, final String destination) {
-		for (final IOPlugin<?> handler : getInstances()) {
-			if (handler.supportsSave(data, destination)) {
-				@SuppressWarnings("unchecked")
-				final IOPlugin<D> typedHandler = (IOPlugin<D>) handler;
-				return typedHandler;
-			}
-		}
-		return null;
-	}
-
-	@Override
 	public Object open(final String source) throws IOException {
 		final IOPlugin<?> opener = getOpener(source);
 		if (opener == null) return null; // no appropriate IOPlugin
@@ -102,18 +82,4 @@ public final class DefaultIOService
 			eventService.publish(new DataSavedEvent(destination, data));
 		}
 	}
-
-	// -- HandlerService methods --
-
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Class<IOPlugin<?>> getPluginType() {
-		return (Class) IOPlugin.class;
-	}
-
-	@Override
-	public Class<String> getType() {
-		return String.class;
-	}
-
 }
