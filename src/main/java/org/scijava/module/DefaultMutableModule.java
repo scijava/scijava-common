@@ -52,60 +52,10 @@ public class DefaultMutableModule extends AbstractModule implements
 		info.setModuleClass(getClass());
 	}
 
-	// -- MutableModule methods --
-
-	@Override
-	public <T> MutableModuleItem<T> addInput(final String name,
-		final Class<T> type)
-	{
-		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<>(this, name, type);
-		addInput(item);
-		return item;
-	}
-
-	@Override
-	public void addInput(final ModuleItem<?> input) {
-		getInfo().addInput(input);
-	}
-
-	@Override
-	public <T> MutableModuleItem<T> addOutput(final String name,
-		final Class<T> type)
-	{
-		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<>(this, name, type);
-		addOutput(item);
-		return item;
-	}
-
-	@Override
-	public void addOutput(final ModuleItem<?> output) {
-		getInfo().addOutput(output);
-	}
-
-	@Override
-	public void removeInput(final ModuleItem<?> input) {
-		getInfo().removeInput(input);
-	}
-
-	@Override
-	public void removeOutput(final ModuleItem<?> output) {
-		getInfo().removeOutput(output);
-	}
-
 	// -- Module methods --
 
 	@Override
 	public MutableModuleInfo getInfo() {
 		return info;
 	}
-
-	// -- Runnable methods --
-
-	@Override
-	public void run() {
-		// do nothing by default
-	}
-
 }
