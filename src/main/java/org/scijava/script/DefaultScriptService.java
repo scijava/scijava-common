@@ -32,8 +32,6 @@
 package org.scijava.script;
 
 import java.io.File;
-import java.io.Reader;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -120,21 +118,6 @@ public class DefaultScriptService extends
 		return scriptLanguageIndex();
 	}
 
-	@Override
-	public List<ScriptLanguage> getLanguages() {
-		return new ArrayList<>(getIndex());
-	}
-
-	@Override
-	public ScriptLanguage getLanguageByExtension(final String extension) {
-		return getIndex().getByExtension(extension);
-	}
-
-	@Override
-	public ScriptLanguage getLanguageByName(final String name) {
-		return getIndex().getByName(name);
-	}
-
 	// -- ScriptService methods - scripts --
 
 	@Override
@@ -190,34 +173,6 @@ public class DefaultScriptService extends
 	}
 
 	@Override
-	public Future<ScriptModule> run(final String path, final String script,
-		final boolean process, final Object... inputs)
-	{
-		return run(path, new StringReader(script), process, inputs);
-	}
-
-	@Override
-	public Future<ScriptModule> run(final String path, final String script,
-		final boolean process, final Map<String, Object> inputMap)
-	{
-		return run(path, new StringReader(script), process, inputMap);
-	}
-
-	@Override
-	public Future<ScriptModule> run(final String path, final Reader reader,
-		final boolean process, final Object... inputs)
-	{
-		return run(new ScriptInfo(getContext(), path, reader), process, inputs);
-	}
-
-	@Override
-	public Future<ScriptModule> run(final String path, final Reader reader,
-		final boolean process, final Map<String, Object> inputMap)
-	{
-		return run(new ScriptInfo(getContext(), path, reader), process, inputMap);
-	}
-
-	@Override
 	public Future<ScriptModule> run(final ScriptInfo info, final boolean process,
 		final Object... inputs)
 	{
@@ -229,21 +184,6 @@ public class DefaultScriptService extends
 		final Map<String, Object> inputMap)
 	{
 		return cast(moduleService.run(info, process, inputMap));
-	}
-
-	@Override
-	public boolean canHandleFile(final File file) {
-		return getIndex().canHandleFile(file);
-	}
-
-	@Override
-	public boolean canHandleFile(final String fileName) {
-		return getIndex().canHandleFile(fileName);
-	}
-
-	@Override
-	public void addAlias(final Class<?> type) {
-		addAlias(type.getSimpleName(), type);
 	}
 
 	@Override
@@ -272,13 +212,6 @@ public class DefaultScriptService extends
 			se.initCause(exc);
 			throw se;
 		}
-	}
-
-	// -- PTService methods --
-
-	@Override
-	public Class<ScriptLanguage> getPluginType() {
-		return ScriptLanguage.class;
 	}
 
 	// -- Service methods --

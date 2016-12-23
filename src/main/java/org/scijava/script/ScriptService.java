@@ -33,8 +33,9 @@ package org.scijava.script;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -83,13 +84,19 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * This method does the same thing as {@link #getInstances()}.
 	 * </p>
 	 */
-	List<ScriptLanguage> getLanguages();
+	default List<ScriptLanguage> getLanguages() {
+		return new ArrayList<>(getIndex());
+	}
 
 	/** Gets the scripting language that handles the given file extension. */
-	ScriptLanguage getLanguageByExtension(String extension);
+	default ScriptLanguage getLanguageByExtension(final String extension) {
+		return getIndex().getByExtension(extension);
+	}
 
 	/** Gets the scripting language with the given name. */
-	ScriptLanguage getLanguageByName(String name);
+	default ScriptLanguage getLanguageByName(final String name) {
+		return getIndex().getByName(name);
+	}
 
 	// -- Scripts --
 
@@ -180,8 +187,11 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<ScriptModule> run(String path, String script, boolean process,
-		Object... inputs) throws IOException, ScriptException;
+	default Future<ScriptModule> run(final String path, final String script,
+		final boolean process, final Object... inputs)
+	{
+		return run(path, new StringReader(script), process, inputs);
+	}
 
 	/**
 	 * Executes the given script.
@@ -201,8 +211,11 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<ScriptModule> run(String path, String script, boolean process,
-		Map<String, Object> inputMap) throws IOException, ScriptException;
+	default Future<ScriptModule> run(final String path, final String script,
+		final boolean process, final Map<String, Object> inputMap)
+	{
+		return run(path, new StringReader(script), process, inputMap);
+	}
 
 	/**
 	 * Executes the given script.
@@ -224,8 +237,11 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<ScriptModule> run(String path, Reader reader, boolean process,
-		Object... inputs) throws IOException, ScriptException;
+	default Future<ScriptModule> run(final String path, final Reader reader,
+		final boolean process, final Object... inputs)
+	{
+		return run(new ScriptInfo(getContext(), path, reader), process, inputs);
+	}
 
 	/**
 	 * Executes the given script.
@@ -245,8 +261,11 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<ScriptModule> run(String path, Reader reader, boolean process,
-		Map<String, Object> inputMap) throws IOException, ScriptException;
+	default Future<ScriptModule> run(final String path, final Reader reader,
+		final boolean process, final Map<String, Object> inputMap)
+	{
+		return run(new ScriptInfo(getContext(), path, reader), process, inputMap);
+	}
 
 	/**
 	 * Executes the given script.
@@ -286,13 +305,19 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 		Map<String, Object> inputMap);
 
 	/** TODO */
-	boolean canHandleFile(File file);
+	default boolean canHandleFile(final File file) {
+		return getIndex().canHandleFile(file);
+	}
 
 	/** TODO */
-	boolean canHandleFile(String fileName);
+	default boolean canHandleFile(final String fileName) {
+		return getIndex().canHandleFile(fileName);
+	}
 
 	/** TODO */
-	void addAlias(Class<?> type);
+	default void addAlias(final Class<?> type) {
+		addAlias(type.getSimpleName(), type);
+	}
 
 	/** TODO */
 	void addAlias(String alias, Class<?> type);
@@ -300,4 +325,10 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	/** TODO */
 	Class<?> lookupClass(String typeName) throws ScriptException;
 
+	// -- PTService methods --
+
+	@Override
+	default Class<ScriptLanguage> getPluginType() {
+		return ScriptLanguage.class;
+	}
 }
