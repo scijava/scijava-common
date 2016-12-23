@@ -178,7 +178,6 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	 * For further details, see <a href="http://stackoverflow.com/a/5598207">SO
 	 * #5584674</a>.
 	 * </p>
-	 * </p>
 	 */
 	@Override
 	public Object interpret(final String line) throws ScriptException {
