@@ -63,5 +63,11 @@ public interface CacheService extends SciJavaService {
 	 *         of the value loader.
 	 * @throws ExecutionException
 	 */
-	<V> V get(Object key, Callable<V> valueLoader) throws ExecutionException;
+	@SuppressWarnings("unchecked")
+	default <V> V get(final Object key, final Callable<V> valueLoader)
+		throws ExecutionException
+	{
+		return (V)get(key);
+	}
+
 }
