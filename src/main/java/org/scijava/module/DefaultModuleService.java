@@ -42,7 +42,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.scijava.Identifiable;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.convert.ConvertService;
@@ -145,8 +144,7 @@ public class DefaultModuleService extends AbstractService implements
 	public ModuleInfo getModuleById(final String id) {
 		// TODO: Cache identifiers in a hash?
 		for (final ModuleInfo info : getModules()) {
-			if (!(info instanceof Identifiable)) continue;
-			final String infoID = ((Identifiable) info).getIdentifier();
+			final String infoID = info.getIdentifier();
 			if (id.equals(infoID)) return info;
 		}
 		return null;
@@ -411,6 +409,26 @@ public class DefaultModuleService extends AbstractService implements
 		if (values == null || values.length == 0) return null;
 
 		final HashMap<String, Object> inputMap = new HashMap<>();
+
+		if (values.length == 1 && values[0] instanceof Map) {
+			// NB: This hack works around an issue where some script languages,
+			// notably Jython but potentially others too, invoke the wrong run
+			// method when called with a map. The Object... varargs method is
+			// chosen instead of the Map method, with the map being passed as
+			// the sole element of the object array. The code below detects
+			// this situation, propagating the map entries into the new map.
+			final Map<?, ?> valueMap = (Map<?, ?>) values[0];
+			for (final Object key : valueMap.keySet()) {
+				if (!(key instanceof String)) {
+					log.error("Invalid input name: " + key);
+					continue;
+				}
+				final String name = (String) key;
+				final Object value = valueMap.get(key);
+				inputMap.put(name, value);
+			}
+			return inputMap;
+		}
 
 		if (values.length % 2 != 0) {
 			log.error("Ignoring extraneous argument: " + values[values.length - 1]);
