@@ -34,6 +34,8 @@ package org.scijava.module;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 
@@ -44,11 +46,21 @@ import org.scijava.Context;
  */
 public class ModuleServiceTest {
 
+	private ModuleService moduleService;
+
+	@Before
+	public void setUp() {
+		final Context context = new Context(ModuleService.class);
+		moduleService = context.service(ModuleService.class);
+	}
+
+	@After
+	public void tearDown() {
+		moduleService.context().dispose();
+	}
+
 	@Test
 	public void testGetSingleInput() throws ModuleException {
-		final Context context = new Context(ModuleService.class);
-		final ModuleService moduleService = context.getService(ModuleService.class);
-
 		final ModuleInfo info = new FooModuleInfo();
 		final Module module = info.createModule();
 
