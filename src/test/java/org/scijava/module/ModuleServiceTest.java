@@ -31,8 +31,14 @@
 
 package org.scijava.module;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,6 +63,50 @@ public class ModuleServiceTest {
 	@After
 	public void tearDown() {
 		moduleService.context().dispose();
+	}
+
+	/** Tests {@link ModuleService#run(ModuleInfo, boolean, Object...)}. */
+	@Test
+	public void testRunModuleInfoArray() throws InterruptedException,
+		ExecutionException
+	{
+		final ModuleInfo info = new FooModuleInfo();
+		final Module m = moduleService.run(info, false, createInputArray()).get();
+		assertEquals(expectedResult(), m.getOutput("result"));
+	}
+
+	/** Tests {@link ModuleService#run(ModuleInfo, boolean, Map)}. */
+	@Test
+	public void testRunModuleInfoMap() throws InterruptedException,
+		ExecutionException
+	{
+		final ModuleInfo info = new FooModuleInfo();
+		final Module m = moduleService.run(info, false, createInputMap()).get();
+		assertEquals(expectedResult(), m.getOutput("result"));
+	}
+
+	/** Tests {@link ModuleService#run(Module, boolean, Object...)}. */
+	@Test
+	public void testRunModuleArray() throws ModuleException, InterruptedException,
+		ExecutionException
+	{
+		final ModuleInfo info = new FooModuleInfo();
+		final Module module = info.createModule();
+		final Module m = moduleService.run(module, false, createInputArray()).get();
+		assertSame(module, m);
+		assertEquals(expectedResult(), m.getOutput("result"));
+	}
+
+	/** Tests {@link ModuleService#run(Module, boolean, Map)}. */
+	@Test
+	public void testRunModuleMap() throws ModuleException, InterruptedException,
+		ExecutionException
+	{
+		final ModuleInfo info = new FooModuleInfo();
+		final Module module = info.createModule();
+		final Module m = moduleService.run(module, false, createInputMap()).get();
+		assertSame(module, m);
+		assertEquals(expectedResult(), m.getOutput("result"));
 	}
 
 	@Test
@@ -86,6 +136,44 @@ public class ModuleServiceTest {
 		assertSame(info.getInput("double2"), singleDouble);
 	}
 
+	// -- Helper methods --
+
+	private Object[] createInputArray() {
+		return new Object[] { //
+			"string", "hello", //
+			"float", 1.234f, //
+			"integer1", -2, //
+			"integer2", 7, //
+			"double1", Math.E, //
+			"double2", Math.PI //
+		};
+	}
+
+	private Map<String, Object> createInputMap() {
+		final Map<String, Object> inputMap = new HashMap<>();
+		inputMap.put("string", "hello");
+		inputMap.put("float", 1.234f);
+		inputMap.put("integer1", -2);
+		inputMap.put("integer2", 7);
+		inputMap.put("double1", Math.E);
+		inputMap.put("double2", Math.PI);
+		return inputMap;
+	}
+
+	private String expectedResult() {
+		return mapToString(createInputMap());
+	}
+
+	private static String mapToString(final Map<String, Object> map) {
+		final StringBuilder sb = new StringBuilder();
+		for (final Entry<String, Object> entry : map.entrySet()) {
+			sb.append(entry.getKey() + " = " + entry.getValue() + "\n");
+		}
+		return sb.toString();
+	}
+
+	// -- Helper classes --
+
 	/** A sample module for testing the module service. */
 	public static class FooModule extends AbstractModule {
 
@@ -102,7 +190,7 @@ public class ModuleServiceTest {
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
+			setOutput("result", mapToString(getInputs()));
 		}
 
 	}
@@ -133,6 +221,7 @@ public class ModuleServiceTest {
 			addInput("integer2", Integer.class, true);
 			addInput("double1", Double.class, false);
 			addInput("double2", Double.class, true);
+			addOutput("result", String.class);
 		}
 
 		private <T> void addInput(final String name, final Class<T> type,
@@ -153,6 +242,22 @@ public class ModuleServiceTest {
 				@Override
 				public boolean isAutoFill() {
 					return autoFill;
+				}
+
+			});
+		}
+
+		private <T> void addOutput(final String name, final Class<T> type) {
+			registerOutput(new AbstractModuleItem<T>(this) {
+
+				@Override
+				public String getName() {
+					return name;
+				}
+
+				@Override
+				public Class<T> getType() {
+					return type;
 				}
 
 			});
