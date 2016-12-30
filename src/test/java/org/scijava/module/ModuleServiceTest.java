@@ -109,6 +109,30 @@ public class ModuleServiceTest {
 		assertEquals(expectedResult(), m.getOutput("result"));
 	}
 
+	/**
+	 * Tests that {@link ModuleService#run(ModuleInfo, boolean, Object...)} and
+	 * {@link ModuleService#run(Module, boolean, Object...)} intelligently handle
+	 * a single-element {@link Object} array consisting of a {@code Map<String,
+	 * Object>}.
+	 * <p>
+	 * This situation can happen e.g. due to Jython choosing the wrong overloaded
+	 * {@code run} method. We correct for the issue on our side, for convenience.
+	 * </p>
+	 */
+	@Test
+	public void testRunMapHack() throws ModuleException, InterruptedException,
+		ExecutionException
+	{
+		final ModuleInfo info = new FooModuleInfo();
+		final Object[] inputs = new Object[] { createInputMap() };
+		final Module m = moduleService.run(info, false, inputs).get();
+		assertEquals(expectedResult(), m.getOutput("result"));
+
+		final Module module = info.createModule();
+		final Module m2 = moduleService.run(module, false, inputs).get();
+		assertEquals(expectedResult(), m2.getOutput("result"));
+	}
+
 	@Test
 	public void testGetSingleInput() throws ModuleException {
 		final ModuleInfo info = new FooModuleInfo();
