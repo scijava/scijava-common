@@ -42,7 +42,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.scijava.Identifiable;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.convert.ConvertService;
@@ -145,8 +144,7 @@ public class DefaultModuleService extends AbstractService implements
 	public ModuleInfo getModuleById(final String id) {
 		// TODO: Cache identifiers in a hash?
 		for (final ModuleInfo info : getModules()) {
-			if (!(info instanceof Identifiable)) continue;
-			final String infoID = ((Identifiable) info).getIdentifier();
+			final String infoID = info.getIdentifier();
 			if (id.equals(infoID)) return info;
 		}
 		return null;
