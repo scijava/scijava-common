@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.ui.headlessUI;
+package org.scijava.ui.headless;
 
 import java.io.File;
 

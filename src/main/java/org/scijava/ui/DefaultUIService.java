@@ -62,7 +62,7 @@ import org.scijava.ui.DialogPrompt.MessageType;
 import org.scijava.ui.DialogPrompt.OptionType;
 import org.scijava.ui.DialogPrompt.Result;
 import org.scijava.ui.event.UIShownEvent;
-import org.scijava.ui.headlessUI.HeadlessUI;
+import org.scijava.ui.headless.HeadlessUI;
 import org.scijava.ui.viewer.DisplayViewer;
 
 /**
