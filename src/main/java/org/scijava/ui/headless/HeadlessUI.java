@@ -38,12 +38,13 @@ import org.scijava.display.Display;
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.DialogPrompt;
+import org.scijava.ui.UIService;
 import org.scijava.ui.UserInterface;
 import org.scijava.ui.viewer.DisplayWindow;
 
 /**
- * A "null object" UI implementation that can be returned when a UIService is
- * running headless
+ * A "null object" {@link UIService} implementation used when the application is
+ * running headless.
  *
  * @author Richard Domander (Royal Veterinary College, London)
  * @author Curtis Rueden
