@@ -41,6 +41,7 @@ import org.scijava.ui.DialogPrompt;
 import org.scijava.ui.UIService;
 import org.scijava.ui.UserInterface;
 import org.scijava.ui.viewer.DisplayWindow;
+import org.scijava.util.ListUtils;
 
 /**
  * A "null object" {@link UIService} implementation used when the application is
@@ -68,10 +69,16 @@ public class HeadlessUI extends AbstractRichPlugin implements UserInterface {
 	}
 
 	@Override
-	public void show(final String name, final Object o) {}
+	public void show(final String name, final Object o) {
+		// NB: Rather than creating a Display, let's just log it.
+		log().info(name + " = " + o);
+	}
 
 	@Override
-	public void show(final Display<?> display) {}
+	public void show(final Display<?> display) {
+		// NB: Rather than looking for a DisplayViewer, let's just log it.
+		log().info(display.getName() + " = " + ListUtils.string(display, false));
+	}
 
 	@Override
 	public DisplayWindow createDisplayWindow(final Display<?> display) {
