@@ -176,7 +176,6 @@ public final class DefaultUIService extends AbstractService implements
 		return ui.isVisible();
 	}
 
-
 	@Override
 	public void setHeadless(final boolean headless) {
 		System.setProperty("java.awt.headless", String.valueOf(headless));
