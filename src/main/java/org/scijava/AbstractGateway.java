@@ -98,7 +98,8 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 		final int mainCount = main().execMains();
 
 		// display the user interface (NB: does not block)
-		if (mainCount == 0 && !ui().isHeadless()) ui().showUI();
+		// NB: When running headless, the HeadlessUI will be used.
+		if (mainCount == 0) ui().showUI();
 
 		if (ui().isHeadless()) {
 			// now that CLI processing/execution is done, we can shut down
