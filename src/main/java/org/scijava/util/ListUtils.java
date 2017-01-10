@@ -53,4 +53,69 @@ public final class ListUtils {
 		return list.get(0);
 	}
 
+	/**
+	 * Converts the given list to a string.
+	 * <p>
+	 * The list elements will be separated by a comma then a space. The list will
+	 * be enclosed in square brackets.
+	 * </p>
+	 * 
+	 * @param list The list to stringify.
+	 * @see #string(List, String, String, String, boolean)
+	 */
+	public static String string(final List<?> list) {
+		return string(list, true);
+	}
+
+	/**
+	 * Converts the given list to a string.
+	 * <p>
+	 * The list elements will be separated by a comma then a space. The list will
+	 * be enclosed in square brackets unless it is a singleton with the
+	 * {@code encloseSingletons} flag set to false.
+	 * </p>
+	 * 
+	 * @param list The list to stringify.
+	 * @param encloseSingletons Whether to enclose singleton lists in brackets.
+	 * @return The stringified list.
+	 * @see #string(List, String, String, String, boolean)
+	 */
+	public static String string(final List<?> list,
+		final boolean encloseSingletons)
+	{
+		return string(list, "[", "]", ", ", encloseSingletons);
+	}
+
+	/**
+	 * Converts the given list to a string.
+	 * <p>
+	 * The list elements will be comma-separated. It will be enclosed in square
+	 * brackets unless the list is a singleton with the {@code encloseSingletons}
+	 * flag set to false.
+	 * </p>
+	 * 
+	 * @param list The list to stringify.
+	 * @param lDelimiter The left-hand symbol(s) in which to enclose the list.
+	 * @param rDelimiter The right-hand symbol(s) in which to enclose the list.
+	 * @param separator The symbol(s) to place in between each element.
+	 * @param encloseSingletons Whether to enclose singleton lists inside the
+	 *          delimiter symbols.
+	 * @return The stringified list.
+	 */
+	public static String string(final List<?> list, //
+		final String lDelimiter, final String rDelimiter, //
+		final String separator, final boolean encloseSingletons)
+	{
+		final boolean delimit = encloseSingletons || list.size() != 1;
+		final StringBuilder sb = new StringBuilder();
+		if (delimit) sb.append(lDelimiter);
+		boolean first = true;
+		for (final Object e : list) {
+			if (first) first = false;
+			else sb.append(separator);
+			sb.append(e);
+		}
+		if (delimit) sb.append(rDelimiter);
+		return sb.toString();
+	}
 }

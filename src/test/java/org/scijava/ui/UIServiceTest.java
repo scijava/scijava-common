@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.display.Display;
-import org.scijava.ui.headlessUI.HeadlessUI;
+import org.scijava.ui.headless.HeadlessUI;
 import org.scijava.ui.viewer.DisplayWindow;
 
 /**

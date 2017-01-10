@@ -1,4 +1,4 @@
-/*-
+/*
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,17 +29,38 @@
  * #L%
  */
 
-package org.scijava.ui.headlessUI;
+package org.scijava.ui.headless;
 
-/** @deprecated Use {@link org.scijava.ui.headless.HeadlessUI} instead. */
-@Deprecated
-public class HeadlessUI extends org.scijava.ui.headless.HeadlessUI {
+import org.scijava.display.Display;
+import org.scijava.plugin.Plugin;
+import org.scijava.ui.UserInterface;
+import org.scijava.ui.viewer.AbstractDisplayViewer;
+import org.scijava.ui.viewer.DisplayViewer;
+import org.scijava.ui.viewer.DisplayWindow;
+import org.scijava.util.ListUtils;
 
-	/**
-	 * @deprecated Use {@link org.scijava.ui.headless.HeadlessUI#NAME} instead.
-	 */
-	@Deprecated
-	@SuppressWarnings("hiding")
-	public static final String NAME = "headless";
+/**
+ * A display viewer used when running headless.
+ * 
+ * @author Curtis Rueden
+ */
+@Plugin(type = DisplayViewer.class)
+public class HeadlessDisplayViewer extends AbstractDisplayViewer<Object> {
+
+	@Override
+	public boolean isCompatible(final UserInterface ui) {
+		return ui instanceof HeadlessUI;
+	}
+
+	@Override
+	public void view(final DisplayWindow w, final Display<?> d) {
+		if (log() == null) return;
+		log().info(d.getName() + " = " + ListUtils.string(d, false));
+	}
+
+	@Override
+	public boolean canView(Display<?> d) {
+		return true;
+	}
 
 }
