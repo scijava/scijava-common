@@ -55,12 +55,16 @@ public class HeadlessUI extends AbstractRichPlugin implements UserInterface {
 
 	public static final String NAME = "headless";
 
+	private boolean visible;
+
 	@Override
-	public void show() {}
+	public void show() {
+		visible = true;
+	}
 
 	@Override
 	public boolean isVisible() {
-		return false;
+		return visible;
 	}
 
 	@Override
