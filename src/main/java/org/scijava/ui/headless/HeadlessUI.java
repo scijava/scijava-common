@@ -35,17 +35,20 @@ import java.io.File;
 
 import org.scijava.Priority;
 import org.scijava.display.Display;
+import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractRichPlugin;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.DialogPrompt;
-import org.scijava.ui.UIService;
 import org.scijava.ui.UserInterface;
 import org.scijava.ui.viewer.DisplayWindow;
 import org.scijava.util.ListUtils;
 
 /**
- * A "null object" {@link UIService} implementation used when the application is
- * running headless.
+ * A no-op user interface used when the application is running headless.
+ * <p>
+ * Most operations do nothing. Attempting to show an object via one of the
+ * {@link #show} methods logs the object via the {@link LogService}.
+ * </p>
  *
  * @author Richard Domander (Royal Veterinary College, London)
  * @author Curtis Rueden
