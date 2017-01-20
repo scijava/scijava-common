@@ -94,7 +94,7 @@ public class CommandInfoTest {
 	// -- Helper classes --
 
 	/** A command with an enum parameter. */
-	@Plugin(type = Command.class)
+	@org.scijava.plugin.Plugin(type = Command.class)
 	public static class CommandWithEnumParam implements Command {
 
 		public enum Choice {
