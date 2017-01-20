@@ -134,13 +134,13 @@ public interface WidgetModel extends Contextual {
 	 */
 	Number getStepSize();
 
-	/**
-	 * Gets the multiple choice list for the module input.
-	 * 
-	 * @return The available choices, or an empty list if not multiple choice.
-	 * @see ChoiceWidget
-	 */
-	String[] getChoices();
+	/** @deprecated Use {@code getItem().getChoices()} instead. */
+	@Deprecated
+	default String[] getChoices() {
+		return getItem().getChoices().stream() //
+			.map(choice -> choice.toString()) //
+			.toArray(String[]::new);
+	}
 
 	/**
 	 * Gets the input's value rendered as a string.

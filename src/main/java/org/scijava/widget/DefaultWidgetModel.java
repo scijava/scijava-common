@@ -220,17 +220,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	}
 
 	@Override
-	public String[] getChoices() {
-		final List<?> choicesList = item.getChoices();
-		if (choicesList == null) return null;
-		final String[] choices = new String[choicesList.size()];
-		for (int i = 0; i < choices.length; i++) {
-			choices[i] = objectService.getName(choicesList.get(i));
-		}
-		return choices;
-	}
-
-	@Override
 	public String getText() {
 		final Object value = getValue();
 		if (value == null) return "";
