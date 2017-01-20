@@ -29,7 +29,6 @@
 
 package org.scijava.widget;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -279,11 +278,10 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	/**
 	 * For multiple choice widgets, ensures the value is a valid choice.
 	 * 
-	 * @see #getChoices()
 	 * @see ChoiceWidget
 	 */
 	private Object ensureValidChoice(final Object value) {
-		return ensureValid(value, Arrays.asList(getChoices()));
+		return ensureValid(value, getItem().getChoices());
 	}
 
 	/**
