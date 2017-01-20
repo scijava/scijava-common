@@ -156,6 +156,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 		// Pass the value through the convertService
 		convertedInput = convertService.convert(value, item.getType());
+		if (convertedInput == null) convertedInput = value;
 
 		// If we get a different (converted) value back, cache it weakly.
 		if (convertedInput != value) {
