@@ -517,7 +517,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		if (converted != null) return converted;
 		// NB: Attempt to convert via string.
 		// This is useful in cases where a weird type of object came back
-		// (e.g., org.scijava.sjep.eval.Unresolved), but which happens to have a
+		// (e.g., org.scijava.parse.eval.Unresolved), but which happens to have a
 		// nice string representation which ultimately is expressible as the type.
 		return convertService.convert(v.toString(), type);
 	}
