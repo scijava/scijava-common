@@ -500,6 +500,22 @@ public class ConvertServiceTest {
 
 	/**
 	 * Test behavior when setting a single element field with a constructor that
+	 * accepts a primitive type (int).
+	 */
+	@Test
+	public void testLegitimateSingletonInt() {
+		class Struct {
+			
+			private IntWrapper intWrapper;
+		}
+		final Struct struct = new Struct();
+		
+		setFieldValue(struct, "intWrapper", Integer.valueOf(12));
+		assertNotNull(struct.intWrapper);
+	}
+
+	/**
+	 * Test behavior when setting a single element field with a constructor that
 	 * accepts a primitive array.
 	 */
 	@Test
@@ -626,6 +642,18 @@ public class ConvertServiceTest {
 	 */
 	private static interface INumberList extends List<Number> {
 		// NB: No implementation needed.
+	}
+
+	/**
+	 * Dummy class with an int constructor to ensure that when converting using
+	 * constructors, auto-unboxing should work as expected.
+	 */
+	public static class IntWrapper {
+		
+		@SuppressWarnings("unused")
+		public IntWrapper(final int gonnaWrapThisInt) {
+			// nothing to do
+		}
 	}
 
 	/**

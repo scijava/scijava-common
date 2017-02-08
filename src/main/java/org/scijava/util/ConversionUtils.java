@@ -106,7 +106,10 @@ public class ConversionUtils {
 	 */
 	public static boolean canCast(final Class<?> src, final Class<?> dest) {
 		if (dest == null) return false;
-		return src == null || dest.isAssignableFrom(src);
+		if (src == null) return true;
+		final Class<?> saneSrc = getNonprimitiveType(src);
+		final Class<?> saneDest = getNonprimitiveType(dest);
+		return saneDest.isAssignableFrom(saneSrc);
 	}
 
 	/**
