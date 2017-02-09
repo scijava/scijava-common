@@ -43,6 +43,9 @@ import org.scijava.ui.UserInterface;
 
 /**
  * Handles the {@code --ui} command line argument.
+ * <p>
+ * This argument overrides the default user interface.
+ * </p>
  * 
  * @author Curtis Rueden
  */
