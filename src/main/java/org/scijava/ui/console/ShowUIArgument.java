@@ -28,40 +28,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-
 package org.scijava.ui.console;
 
 import java.util.LinkedList;
 
+import org.scijava.Gateway;
 import org.scijava.console.AbstractConsoleArgument;
 import org.scijava.console.ConsoleArgument;
-import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
-import org.scijava.ui.UserInterface;
 
 /**
- * Handles the {@code --ui} command line argument.
+ * Handles the {@code --showUI} argument, which signals that the UI should be
+ * opened immediately.
  * <p>
- * This argument overrides the default user interface.
+ * This is useful for specifying later command line arguments to be handled
+ * <em>after</em> the UI is shown, since normally, all arguments are processed
+ * before showing the UI.
  * </p>
- * 
+ *
  * @author Curtis Rueden
+ * @see Gateway#launch(String[])
  */
 @Plugin(type = ConsoleArgument.class)
-public class UIArgument extends AbstractConsoleArgument {
+public class ShowUIArgument extends AbstractConsoleArgument {
 
-	@Parameter
+	@Parameter(required = false)
 	private UIService uiService;
-
-	@Parameter
-	private LogService log;
 
 	// -- Constructor --
 
-	public UIArgument() {
-		super(2, "--ui");
+	public ShowUIArgument() {
+		super(1, "--showUI");
 	}
 
 	// -- ConsoleArgument methods --
@@ -70,16 +69,15 @@ public class UIArgument extends AbstractConsoleArgument {
 	public void handle(final LinkedList<String> args) {
 		if (!supports(args)) return;
 
-		args.removeFirst(); // --ui
-		final String uiName = args.removeFirst();
+		args.removeFirst(); // --showUI
 
-			final UserInterface ui = uiService.getUI(uiName);
-			if (ui == null) {
-				log.error("No such UI: " + uiName);
-			}
-			else {
-				uiService.setDefaultUI(ui);
-			}
+		uiService.showUI();
+	}
+	// -- Typed methods --
+
+	@Override
+	public boolean supports(final LinkedList<String> args) {
+		return uiService != null && super.supports(args);
 	}
 
 }

@@ -28,11 +28,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package org.scijava.console;
+package org.scijava.ui.console;
 
 import java.util.LinkedList;
 
 import org.scijava.Context;
+import org.scijava.console.AbstractConsoleArgument;
+import org.scijava.console.ConsoleArgument;
+import org.scijava.console.ConsoleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
