@@ -116,8 +116,8 @@
 		<url>https://github.com/scijava/scijava-common/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/SciJava-common/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/scijava/scijava-common</url>
 	</ciManagement>
 
 	<properties>
