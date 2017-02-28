@@ -48,6 +48,7 @@ import static org.scijava.log.LogLevel.WARN;
  * @see LogLevel
  * @see LogService
  */
+@IgnoreAsCallingClass
 public interface Logger {
 
 	default void debug(final Object msg) {

@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,36 @@
 
 package org.scijava.log;
 
-import org.scijava.service.AbstractService;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * Base class for {@link LogService} implementations.
- *
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@IgnoreAsCallingClass
-public abstract class AbstractLogService extends AbstractService implements
-	LogService
-{
-
-	private LogLevelStrategy logLevelStrategy = new LogLevelStrategy();
-
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		return logLevelStrategy.getLevel();
+public class CallingClassUtilsTest {
+	@Test
+	public void testGetCallingClass() {
+		Class<?> callingClass = CallingClassUtils.getCallingClass();
+		assertEquals(this.getClass(), callingClass);
 	}
 
-	@Override
-	public void setLevel(final int level) {
-		logLevelStrategy.setLevel(level);
+	@Test
+	public void testIgnoreAsCallingClass() {
+		assertEquals(ClassA.class, ClassA.returnGetCallingClass());
+		assertEquals(this.getClass(), ClassB.returnGetCallingClass());
 	}
 
-	@Override
-	public void setLevel(final String classOrPackageName, final int level) {
-		logLevelStrategy.setLevel(classOrPackageName, level);
+	public static class ClassA {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
 	}
 
-	@Override
-	public abstract void alwaysLog(final int level, final Object msg,
-		final Throwable t);
-
+	@IgnoreAsCallingClass
+	private static class ClassB {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
+	}
 }
