@@ -44,6 +44,7 @@ import org.scijava.service.AbstractService;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
+@IgnoreAsCallingClass
 public abstract class AbstractLogService extends AbstractService implements
 	LogService
 {
@@ -88,7 +89,7 @@ public abstract class AbstractLogService extends AbstractService implements
 	public int getLevel() {
 		if (!classAndPackageLevels.isEmpty()) {
 			// check for a custom log level for calling class or its parent packages
-			String classOrPackageName = callingClass();
+			String classOrPackageName = CallingClassUtils.getCallingClass().getName();
 			while (classOrPackageName != null) {
 				final Integer level = classAndPackageLevels.get(classOrPackageName);
 				if (level != null) return level;
@@ -118,16 +119,6 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
-
-	private String callingClass() {
-		final String thisClass = AbstractLogService.class.getName();
-		for (final StackTraceElement element : new Exception().getStackTrace()) {
-			final String className = element.getClassName();
-			// NB: Skip stack trace elements from other methods of this class.
-			if (!thisClass.equals(className)) return className;
-		}
-		return null;
-	}
 
 	private String parentPackage(final String classOrPackageName) {
 		final int dot = classOrPackageName.lastIndexOf(".");
