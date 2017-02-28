@@ -36,8 +36,12 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * LogLevelStrategy provides a detailed control of logger's levels for the
+ * AbstractLogService.
+ * 
  * @author Matthias Arzt
  */
+@IgnoreAsCallingClass
 class LogLevelStrategy {
 
 	private final Map<String, Integer> classAndPackageLevels = new HashMap<>();
@@ -96,13 +100,7 @@ class LogLevelStrategy {
 	// -- Helper methods --
 
 	private String callingClass() {
-		final String thisClass = LogLevelStrategy.class.getName();
-		for (final StackTraceElement element : new Exception().getStackTrace()) {
-			final String className = element.getClassName();
-			// NB: Skip stack trace elements from other methods of this class.
-			if (!thisClass.equals(className)) return className;
-		}
-		return null;
+		return CallingClassUtils.getCallingClass().getName();
 	}
 
 	private String parentPackage(final String classOrPackageName) {

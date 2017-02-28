@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,35 @@
 
 package org.scijava.log;
 
-import org.scijava.service.AbstractService;
-
 /**
- * Base class for {@link LogService} implementations.
+ * Utility class for getting the calling class of a method.
  *
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
+
 @IgnoreAsCallingClass
-public abstract class AbstractLogService extends AbstractService implements
-	LogService
-{
+public class CallingClassUtils {
 
-	private LogLevelStrategy logLevelStrategy = new LogLevelStrategy();
+	private CallingClassUtils() {} // forbid instances of this class
 
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		return logLevelStrategy.getLevel();
+	/**
+	 * Inspects the stack trace to return the class that calls this method, but
+	 * ignores every class annotated with @IgnoreAsCallingClass.
+	 *
+	 * @throws IllegalStateException if every method on the stack, is in a class
+	 *           annotated with @IgnoreAsCallingClass.
+	 */
+	public static Class<?> getCallingClass() {
+		try {
+			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+			for (int i = 1; i < stackTrace.length; i++) {
+				Class<?> clazz = Class.forName(stackTrace[i].getClassName());
+				if (!clazz.isAnnotationPresent(IgnoreAsCallingClass.class))
+					return clazz;
+			}
+		}
+		catch (ClassNotFoundException ignore) {}
+		throw new IllegalStateException();
 	}
-
-	@Override
-	public void setLevel(final int level) {
-		logLevelStrategy.setLevel(level);
-	}
-
-	@Override
-	public void setLevel(final String classOrPackageName, final int level) {
-		logLevelStrategy.setLevel(classOrPackageName, level);
-	}
-
-	@Override
-	public abstract void alwaysLog(final int level, final Object msg,
-		final Throwable t);
 
 }
