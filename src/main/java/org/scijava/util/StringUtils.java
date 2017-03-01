@@ -69,8 +69,11 @@ import java.text.DecimalFormatSymbols;
  * @author Curtis Rueden
  * @author Chris Allan
  * @author Melissa Linkert
+ * @author Richard Domander (Royal Veterinary College, London)
  */
 public final class StringUtils {
+
+	public static final char DEFAULT_PAD_CHAR = ' ';
 
 	private StringUtils() {
 		// NB: prevent instantiation of utility class.
@@ -130,4 +133,74 @@ public final class StringUtils {
 		return buf.toString();
 	}
 
+	public static boolean isNullOrEmpty(final String s) {
+		return s == null || s.isEmpty();
+	}
+
+	/**
+	 * Calls {@link #padEnd(String, int, char)} with the {@link #DEFAULT_PAD_CHAR}
+	 */
+	public static String padEnd(final String s, final int length) {
+		return padEnd(s, length, DEFAULT_PAD_CHAR);
+	}
+
+	/**
+	 * Adds characters to the end of the {@link String} to make it the given
+	 * length
+	 *
+	 * @param s the original string
+	 * @param length the length of the string with padding
+	 * @param padChar the character added to the end
+	 * @return the end padded {@link String}. Null if s is null, s if no padding
+	 *         is not necessary
+	 */
+	public static String padEnd(final String s, final int length,
+		final char padChar)
+	{
+		if (s == null) {
+			return null;
+		}
+
+		final StringBuilder builder = new StringBuilder(s);
+		final int padding = length - s.length();
+		for (int i = 0; i < padding; i++) {
+			builder.append(padChar);
+		}
+
+		return builder.toString();
+	}
+
+	/**
+	 * Calls {@link #padStart(String, int, char)} with the
+	 * {@link #DEFAULT_PAD_CHAR}
+	 */
+	public static String padStart(final String s, final int length) {
+		return padStart(s, length, DEFAULT_PAD_CHAR);
+	}
+
+	/**
+	 * Adds characters to the start of the {@link String} to make it the given
+	 * length
+	 *
+	 * @param s the original string
+	 * @param length the length of the string with padding
+	 * @param padChar the character added to the start
+	 * @return the start padded {@link String}. Null if s is null, s if no padding
+	 *         is not necessary
+	 */
+	public static String padStart(final String s, final int length,
+		final char padChar)
+	{
+		if (s == null) {
+			return null;
+		}
+
+		final StringBuilder builder = new StringBuilder();
+		final int padding = length - s.length();
+		for (int i = 0; i < padding; i++) {
+			builder.append(padChar);
+		}
+
+		return builder.append(s).toString();
+	}
 }
