@@ -44,7 +44,7 @@ import org.scijava.io.handle.DataHandle;
  * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
  * the data resides, without necessarily specifying <em>how</em> to access that
  * data. The {@link DataHandle} interface defines a plugin that knows how to
- * provide a stream of bytes for a particular kind of location.
+ * read and/or write bytes for a particular kind of location.
  * </p>
  * 
  * @author Curtis Rueden
