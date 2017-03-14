@@ -51,6 +51,10 @@ public class FileLocation extends AbstractLocation {
 		this(new File(path));
 	}
 
+	public FileLocation(final URI path) {
+		this(new File(path));
+	}
+
 	// -- FileLocation methods --
 
 	/** Gets the associated {@link File}. */
