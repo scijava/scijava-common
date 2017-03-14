@@ -97,26 +97,46 @@ public class ConversionUtils {
 	}
 
 	/**
-	 * Checks whether objects of the given class can be cast to the specified
-	 * type.
-	 *
+	 * Checks whether objects of the given class can be assigned to the specified
+	 * type. Unlike {@link Class#isAssignableFrom(Class)}, this method considers
+	 * auto-unboxing.
+	 * 
 	 * @return true If the destination class is assignable from the source one, or
 	 *         if the source class is null and destination class is non-null.
-	 * @see #cast(Object, Class)
 	 */
-	public static boolean canCast(final Class<?> src, final Class<?> dest) {
-		if (dest == null) return false;
-		return src == null || dest.isAssignableFrom(src);
+	public static boolean canAssign(final Class<?> src, final Class<?> dest) {
+		return canCast(src, dest);
 	}
 
 	/**
-	 * Checks whether the given object can be cast to the specified type.
-	 *
+	 * Checks whether the given object can be assigned to the specified type.
+	 * Unlike {@link Class#isAssignableFrom(Class)}, this method considers
+	 * auto-unboxing.
+	 * 
 	 * @return true If the destination class is assignable from the source
 	 *         object's class, or if the source object is null and destionation
 	 *         class is non-null.
-	 * @see #cast(Object, Class)
 	 */
+	public static boolean canAssign(final Object src, final Class<?> dest) {
+		return canCast(src, dest);
+	}
+
+	/**
+	 * @deprecated use {@link #canAssign(Class, Class)} instead
+	 */
+	@Deprecated
+	public static boolean canCast(final Class<?> src, final Class<?> dest) {
+		if (dest == null) return false;
+		if (src == null) return true;
+		final Class<?> saneSrc = getNonprimitiveType(src);
+		final Class<?> saneDest = getNonprimitiveType(dest);
+		return saneDest.isAssignableFrom(saneSrc);
+	}
+
+	/**
+	 * @deprecated use {@link #canAssign(Object, Class)} instead
+	 */
+	@Deprecated
 	public static boolean canCast(final Object src, final Class<?> dest) {
 		if (dest == null) return false;
 		return src == null || canCast(src.getClass(), dest);

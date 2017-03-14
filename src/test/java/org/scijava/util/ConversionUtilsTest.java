@@ -73,9 +73,8 @@ public class ConversionUtilsTest {
 		assertFalse(ConversionUtils.canCast(double.class, float.class));
 		assertFalse(ConversionUtils.canCast(float.class, double.class));
 
-		// boxing is not reported to work
-		// TODO: Consider changing this behavior.
-		assertFalse(ConversionUtils.canCast(int.class, Number.class));
+		// check casting with boxing
+		assertTrue(ConversionUtils.canCast(int.class, Number.class));
 
 		// casting from null always works
 		final Class<?> nullClass = null;
