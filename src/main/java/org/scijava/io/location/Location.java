@@ -48,6 +48,7 @@ import org.scijava.io.handle.DataHandle;
  * </p>
  * 
  * @author Curtis Rueden
+ * @author Gabriel Einsdorf
  */
 public interface Location {
 
@@ -57,6 +58,15 @@ public interface Location {
 	 */
 	default URI getURI() {
 		return null;
+	}
+
+	/**
+	 * Gets the name of the object addressed by this location, or an empty string
+	 * if it has no name.
+	 */
+	default String getName() {
+		final URI uri = getURI();
+		return uri == null ? "" : uri.toString();
 	}
 
 }
