@@ -109,7 +109,8 @@ public class POMTest {
 			"SciJava Common is a shared library for SciJava software."));
 		assertEquals("2009", pom.getProjectInceptionYear());
 		assertEquals("SciJava Common", pom.getProjectName());
-		assertEquals("http://scijava.org/", pom.getProjectURL());
+		assertEquals("https://github.com/scijava/scijava-common", //
+			pom.getProjectURL());
 		final String scmConnection = pom.getSCMConnection();
 		assertEquals("scm:git:git://github.com/scijava/scijava-common",
 			scmConnection);
@@ -126,7 +127,8 @@ public class POMTest {
 	{
 		final POM pom = new POM(new File("pom.xml"));
 		assertEquals("repo", pom.cdata("//project/licenses/license/distribution"));
-		assertEquals("http://scijava.org/", pom.cdata("//project/url"));
+		assertEquals("https://github.com/scijava/scijava-common", //
+			pom.cdata("//project/url"));
 	}
 
 	@Test
