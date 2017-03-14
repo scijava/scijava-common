@@ -115,15 +115,23 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		return remain < count ? remain : count;
 	}
 
+	/** Gets whether reading from this handle is supported. */
+	boolean isReadable();
+
+	/** Gets whether writing to this handle is supported. */
+	boolean isWritable();
+
 	/**
 	 * Ensures that the handle has sufficient bytes available to read.
 	 * 
 	 * @param count Number of bytes to read.
 	 * @see #available(long)
 	 * @throws EOFException If there are insufficient bytes available.
-	 * @throws IOException If something goes wrong with the check.
+	 * @throws IOException If the handle is write-only, or something goes wrong
+	 *           with the check.
 	 */
 	default void ensureReadable(final long count) throws IOException {
+		if (!isReadable()) throw new IOException("This handle is write-only.");
 		if (available(count) < count) throw new EOFException();
 	}
 
@@ -134,10 +142,12 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @param count Number of bytes to write.
 	 * @return {@code true} if the handle's length was sufficient, or
 	 *         {@code false} if the handle's length required an extension.
-	 * @throws IOException If something goes wrong with the check, or there is an
-	 *           error changing the handle's length.
+	 * @throws IOException If the handle is read-only, or something goes wrong
+	 *           with the check, or there is an error changing the handle's
+	 *           length.
 	 */
 	default boolean ensureWritable(final long count) throws IOException {
+		if (!isWritable()) throw new IOException("This handle is read-only.");
 		final long minLength = offset() + count;
 		if (length() < minLength) {
 			setLength(minLength);

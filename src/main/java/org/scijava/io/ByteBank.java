@@ -160,4 +160,10 @@ public interface ByteBank {
 	 */
 	long getMaxBufferSize();
 
+	/**
+	 * @return True iff the buffer is read-only.
+	 */
+	default boolean isReadOnly() {
+		return false;
+	}
 }

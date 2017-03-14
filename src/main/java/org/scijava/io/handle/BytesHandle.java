@@ -85,6 +85,16 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 		offset = pos;
 	}
 
+	@Override
+	public boolean isReadable() {
+		return true;
+	}
+
+	@Override
+	public boolean isWritable() {
+		return !bytes().isReadOnly();
+	}
+
 	// -- DataInput methods --
 
 	@Override

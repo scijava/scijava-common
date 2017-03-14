@@ -89,6 +89,16 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
+	public boolean isReadable() {
+		return getMode().contains("r");
+	}
+
+	@Override
+	public boolean isWritable() {
+		return getMode().contains("w");
+	}
+
+	@Override
 	public int read() throws IOException {
 		return raf().read();
 	}

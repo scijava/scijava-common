@@ -73,6 +73,16 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 		this.length = length;
 	}
 
+	@Override
+	public boolean isReadable() {
+		return true;
+	}
+
+	@Override
+	public boolean isWritable() {
+		return true;
+	}
+
 	// -- DataInput methods --
 
 	@Override

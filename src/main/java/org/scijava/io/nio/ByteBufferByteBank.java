@@ -138,6 +138,17 @@ public class ByteBufferByteBank implements ByteBank {
 		return maxBufferedPos;
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		// NB: Some ByteBuffers are read-only. But there is no API to check it.
+		// Therefore, we make a "best effort" guess based on known read-only types.
+		// Since these read-only types are not public, we compare class names rather
+		// than checking for type equality or using instanceof.
+		final String className = buffer.getClass().getName();
+		return className.equals("java.nio.HeapByteBufferR") ||
+			className.equals("java.nio.DirectByteBufferR");
+	}
+
 	private void ensureCapacity(final int minCapacity) {
 		final int oldCapacity = buffer.capacity();
 		if (minCapacity <= oldCapacity) return; // no need to grow
