@@ -69,4 +69,9 @@ public class FileLocation extends AbstractLocation {
 		return getFile().toURI();
 	}
 
+	@Override
+	public String getName() {
+		return file.getName();
+	}
+
 }
