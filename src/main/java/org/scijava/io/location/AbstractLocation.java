@@ -31,11 +31,30 @@
 
 package org.scijava.io.location;
 
+import java.util.Objects;
+
 /**
  * Abstract base class for {@link Location} implementations.
  * 
  * @author Curtis Rueden
  */
 public abstract class AbstractLocation implements Location {
-	// NB: No implementation needed.
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getURI() == null) ? 0 : getURI().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == this) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final Location other = (Location) obj;
+		return Objects.equals(getURI(), other.getURI());
+	}
+
 }
