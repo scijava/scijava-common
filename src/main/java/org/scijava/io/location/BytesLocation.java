@@ -61,4 +61,15 @@ public class BytesLocation extends AbstractLocation {
 		return bytes;
 	}
 
+	// -- Object methods --
+
+	@Override
+	public int hashCode() {
+		return System.identityHashCode(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return obj == this;
+	}
 }
