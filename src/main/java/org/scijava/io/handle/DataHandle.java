@@ -411,6 +411,17 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		return saveString ? out.toString() : null;
 	}
 
+	/**
+	 * Writes the provided string, followed by a newline character.
+	 *
+	 * @param string The string to write.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	default void writeLine(final String string) throws IOException {
+		writeBytes(string);
+		writeBytes("\n");
+	}
+
 	// -- InputStream look-alikes --
 
 	/**
