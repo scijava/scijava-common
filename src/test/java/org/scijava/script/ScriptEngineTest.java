@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.autocompletion.AutoCompleter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -99,6 +101,11 @@ public class ScriptEngineTest {
 		public List<String> getExtensions() {
 			return Arrays.asList("rot13");
 		}
+
+        @Override
+        public AutoCompleter getAutoCompleter() {
+            return new DefaultAutoCompleter(getScriptEngine());
+        }
 	}
 
 	private static class Rot13Engine extends AbstractScriptEngine {

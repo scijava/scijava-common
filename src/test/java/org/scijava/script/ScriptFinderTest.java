@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.autocompletion.AutoCompleter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -240,6 +242,11 @@ public class ScriptFinderTest {
 			// NB: Should never be called by the unit tests.
 			throw new IllegalStateException();
 		}
+
+        @Override
+        public AutoCompleter getAutoCompleter() {
+            return new DefaultAutoCompleter(getScriptEngine());
+        }
 
 	}
 

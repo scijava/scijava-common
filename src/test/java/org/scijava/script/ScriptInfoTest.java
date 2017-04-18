@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.autocompletion.AutoCompleter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -285,6 +287,11 @@ public class ScriptInfoTest {
 		public List<String> getExtensions() {
 			return Arrays.asList("bsizes");
 		}
+
+        @Override
+        public AutoCompleter getAutoCompleter() {
+            return new DefaultAutoCompleter(getScriptEngine());
+        }
 	}
 
 	// -- Test script langauge --

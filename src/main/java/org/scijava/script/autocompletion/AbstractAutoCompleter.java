@@ -28,67 +28,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.script.autocompletion;
 
-package org.scijava.script;
-
-import javax.script.ScriptEngineFactory;
-
-import org.scijava.plugin.AbstractRichPlugin;
-import org.scijava.plugin.PluginInfo;
-import org.scijava.script.autocompletion.AutoCompleter;
-import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.script.ScriptEngine;
 
 /**
- * Abstract superclass for {@link ScriptLanguage} implementations.
- * <p>
- * This class implements dummy versions of {@link ScriptEngineFactory}'s methods
- * that are not needed by the SciJava scripting framework.
- * </p>
- * 
- * @author Johannes Schindelin
+ *
+ * @author Hadrien Mary
  */
-public abstract class AbstractScriptLanguage extends AbstractRichPlugin
-	implements ScriptLanguage
-{
+public abstract class AbstractAutoCompleter implements AutoCompleter {
 
-	// -- Object methods --
+    protected ScriptEngine engine = null;
 
-	@Override
-	public String toString() {
-		return getLanguageName();
-	}
-
-	// -- Default implementations --
-
-	@Override
-	public String getEngineName() {
-		return inferNameFromClassName();
-	}
-
-	@Override
-	public String getLanguageName() {
-		String name = null;
-		final PluginInfo<?> info = getInfo();
-		if (info != null) name = info.getName();
-		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
-	}
-    
-    @Override
-    public AutoCompleter getAutoCompleter() {
-        return new DefaultAutoCompleter(getScriptEngine());
+    public AbstractAutoCompleter(ScriptEngine engine) {
+        this.engine = engine;
     }
 
-	// -- Helper methods --
+    @Override
+    public Map<String, Object> autocomplete(String code) {
+        return autocomplete(code, 0);
+    }
+    
+    @Override
+    public Map<String, Object> autocomplete(String code, int i) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("matches", new ArrayList<>());
+        result.put("startIndex", 0);
+        return result;
+    }
 
-	private String inferNameFromClassName() {
-		String className = getClass().getSimpleName();
-		if (className.endsWith("ScriptLanguage")) {
-			// strip off "ScriptLanguage" suffix
-			className = className.substring(0, className.length() - 14);
-		}
-		// replace underscores with spaces
-		className = className.replace('_', ' ');
-		return className;
-	}
-
+    @Override
+    public ScriptEngine getScriptEngine() {
+        return this.engine;
+    }
 }
