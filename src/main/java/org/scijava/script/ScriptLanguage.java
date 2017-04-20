@@ -42,6 +42,7 @@ import org.scijava.module.Module;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
 import org.scijava.util.VersionUtils;
 
 /**
@@ -152,6 +153,8 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 		return "0.0";
 	}
     
-	public AutoCompleter getAutoCompleter();
+    default AutoCompleter getAutoCompleter() {
+        return new DefaultAutoCompleter(this);
+    }
 
 }

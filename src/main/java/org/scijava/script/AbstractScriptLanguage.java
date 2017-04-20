@@ -31,6 +31,7 @@
 
 package org.scijava.script;
 
+import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.plugin.AbstractRichPlugin;
@@ -72,11 +73,6 @@ public abstract class AbstractScriptLanguage extends AbstractRichPlugin
 		if (info != null) name = info.getName();
 		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
 	}
-    
-    @Override
-    public AutoCompleter getAutoCompleter() {
-        return new DefaultAutoCompleter(getScriptEngine());
-    }
 
 	// -- Helper methods --
 

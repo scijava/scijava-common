@@ -243,11 +243,6 @@ public class ScriptFinderTest {
 			throw new IllegalStateException();
 		}
 
-        @Override
-        public AutoCompleter getAutoCompleter() {
-            return new DefaultAutoCompleter(getScriptEngine());
-        }
-
 	}
 
 }

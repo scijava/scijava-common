@@ -30,7 +30,6 @@
  */
 package org.scijava.script.autocompletion;
 
-import java.util.Map;
 import javax.script.ScriptEngine;
 
 /**
@@ -39,9 +38,7 @@ import javax.script.ScriptEngine;
  */
 public interface AutoCompleter {
 
-    public Map<String, Object> autocomplete(String code);
+    public AutoCompletionResult autocomplete(String code, ScriptEngine engine);
 
-    public Map<String, Object> autocomplete(String code, int i);
-
-    public ScriptEngine getScriptEngine();
+    public AutoCompletionResult autocomplete(String code, int startIndex, ScriptEngine engine);
 }

@@ -287,11 +287,6 @@ public class ScriptInfoTest {
 		public List<String> getExtensions() {
 			return Arrays.asList("bsizes");
 		}
-
-        @Override
-        public AutoCompleter getAutoCompleter() {
-            return new DefaultAutoCompleter(getScriptEngine());
-        }
 	}
 
 	// -- Test script langauge --

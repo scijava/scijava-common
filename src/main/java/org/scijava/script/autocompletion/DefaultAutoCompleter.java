@@ -30,7 +30,7 @@
  */
 package org.scijava.script.autocompletion;
 
-import javax.script.ScriptEngine;
+import org.scijava.script.ScriptLanguage;
 
 /**
  *
@@ -38,8 +38,8 @@ import javax.script.ScriptEngine;
  */
 public class DefaultAutoCompleter extends AbstractAutoCompleter {
 
-    public DefaultAutoCompleter(ScriptEngine engine) {
-        super(engine);
+    public DefaultAutoCompleter(ScriptLanguage scriptLanguage) {
+        super(scriptLanguage);
     }
 
 }

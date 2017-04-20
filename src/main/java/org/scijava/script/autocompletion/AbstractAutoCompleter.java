@@ -31,9 +31,13 @@
 package org.scijava.script.autocompletion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import org.scijava.script.ScriptLanguage;
 
 /**
  *
@@ -41,27 +45,54 @@ import javax.script.ScriptEngine;
  */
 public abstract class AbstractAutoCompleter implements AutoCompleter {
 
-    protected ScriptEngine engine = null;
+    protected ScriptLanguage scriptLanguage = null;
 
-    public AbstractAutoCompleter(ScriptEngine engine) {
-        this.engine = engine;
+    public AbstractAutoCompleter(ScriptLanguage scriptLanguage) {
+        this.scriptLanguage = scriptLanguage;
     }
 
     @Override
-    public Map<String, Object> autocomplete(String code) {
-        return autocomplete(code, 0);
-    }
-    
-    @Override
-    public Map<String, Object> autocomplete(String code, int i) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("matches", new ArrayList<>());
-        result.put("startIndex", 0);
-        return result;
+    public AutoCompletionResult autocomplete(String code, ScriptEngine engine) {
+        return autocomplete(code, 0, engine);
     }
 
     @Override
-    public ScriptEngine getScriptEngine() {
-        return this.engine;
+    public AutoCompletionResult autocomplete(String code, int index, ScriptEngine engine) {
+
+        List<String> matches = new ArrayList<>();
+        int startIndex = 0;
+
+        // Naive autocompletion with variables in the engine scope
+        matches.addAll(engineVariablesCompleter(code, index, engine));
+
+        // Sort matches alphabetcially
+        Collections.sort(matches, new SortIgnoreCase());
+
+        // Return results. For now we ignore index and startIndex.
+        return new AutoCompletionResult(matches, startIndex);
+    }
+
+    private List<String> engineVariablesCompleter(String code, int index, ScriptEngine engine) {
+        List<String> matches = new ArrayList<>();
+
+        Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+
+        for (String key : bindings.keySet()) {
+            if (key.toLowerCase().startsWith(code.toLowerCase())) {
+                matches.add(key);
+            }
+        }
+
+        return matches;
+    }
+
+    public class SortIgnoreCase implements Comparator<Object> {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            String s1 = (String) o1;
+            String s2 = (String) o2;
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        }
     }
 }
