@@ -30,15 +30,13 @@
  */
 package org.scijava.script.autocompletion;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -82,7 +80,12 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
             matches.addAll(this.engineVariablesCompleter(code, index, engine));
         }
 
-        // Sort matches alphabetcially
+        // Remove duplicates
+        matches.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Sort alphabetcially
         Collections.sort(matches, new SortIgnoreCase());
 
         // Return results. For now we ignore index and startIndex.
