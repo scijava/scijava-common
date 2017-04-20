@@ -30,10 +30,15 @@
  */
 package org.scijava.script.autocompletion;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -62,8 +67,20 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
         List<String> matches = new ArrayList<>();
         int startIndex = 0;
 
-        // Naive autocompletion with variables in the engine scope
-        matches.addAll(engineVariablesCompleter(code, index, engine));
+        if (code.endsWith(".")) {
+            // Autocompletion with all the attributes of the object
+            matches.addAll(this.engineAttributesCompleter(code, index, engine));
+
+        } else if (code.contains(".")) {
+            List codeList = Arrays.asList(code.split("\\."));
+            String objectString = (String) codeList.get(codeList.size() - 2);
+            String fieldBeginWith = (String) codeList.get(codeList.size() - 1);
+            matches.addAll(this.engineAttributesCompleter(objectString + ".", fieldBeginWith, index, engine));
+
+        } else {
+            // Autocompletion with variables in the engine scope
+            matches.addAll(this.engineVariablesCompleter(code, index, engine));
+        }
 
         // Sort matches alphabetcially
         Collections.sort(matches, new SortIgnoreCase());
@@ -80,6 +97,29 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
         for (String key : bindings.keySet()) {
             if (key.toLowerCase().startsWith(code.toLowerCase())) {
                 matches.add(key);
+            };
+        }
+        return matches;
+
+    }
+
+    private List<String> engineAttributesCompleter(String objectString, int index, ScriptEngine engine) {
+        return this.engineAttributesCompleter(objectString, "", index, engine);
+    }
+
+    private List<String> engineAttributesCompleter(String objectString, String fieldBeginWith, int index, ScriptEngine engine) {
+        List<String> matches = new ArrayList<>();
+
+        Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+
+        for (String key : bindings.keySet()) {
+            if (objectString.endsWith(key + ".")) {
+                Object obj = bindings.get(key);
+                for (Field field : obj.getClass().getDeclaredFields()) {
+                    if (field.getName().toLowerCase().startsWith(fieldBeginWith.toLowerCase())) {
+                        matches.add(objectString + field.getName());
+                    }
+                }
             }
         }
 
