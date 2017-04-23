@@ -97,7 +97,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Parameter
 	private ConvertService convertService;
-
+ 
 	/** True iff the return value should be appended as an output. */
 	private boolean appendReturnValue;
 

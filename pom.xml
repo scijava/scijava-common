@@ -148,6 +148,11 @@ Institute of Molecular Cell Biology and Genetics.</license.copyrightOwners>
 			<artifactId>eventbus</artifactId>
 			<version>1.4</version>
 		</dependency>
+                <dependency>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                    <version>2.4.10</version>
+                </dependency>
 
 		<!-- Test scope dependencies -->
 		<dependency>
