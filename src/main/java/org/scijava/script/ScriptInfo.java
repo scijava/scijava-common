@@ -56,6 +56,7 @@ import org.scijava.ItemVisibility;
 import org.scijava.NullContextException;
 import org.scijava.command.Command;
 import org.scijava.convert.ConvertService;
+import org.scijava.grape.GrapeService;
 import org.scijava.log.LogService;
 import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
@@ -97,7 +98,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Parameter
 	private ConvertService convertService;
- 
+    
 	/** True iff the return value should be appended as an output. */
 	private boolean appendReturnValue;
 
@@ -421,7 +422,26 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			attrs.put("type", tokens[0]);
 			typeName = tokens[1];
 			varName = tokens[2];
-		}
+		} else if (tokens.length == 1) {
+            // Check for Grab or GrabResolver
+            GrapeService grape = this.context().getService(GrapeService.class);
+            typeName = tokens[0];
+			varName = null;
+            
+            switch (typeName) {
+                case "Grab":
+                    log.debug("Grab : " + attrs);
+                    grape.grab(attrs);
+                    return;
+                case "GrabResolver":
+                    log.debug("GrabResolver : " + attrs);
+                    grape.resolve(attrs);
+                    return;
+                default:
+                    throw new ScriptException("Invalid parameter: " + param);
+            }
+            // Quit because we don't want to use addItem()
+        }
 		else {
 			// assume syntax: <type> <varName>
 			checkValid(tokens.length >= 2, param);
