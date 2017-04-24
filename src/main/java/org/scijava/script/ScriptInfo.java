@@ -430,11 +430,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
             
             switch (typeName) {
                 case "Grab":
-                    log.debug("Grab : " + attrs);
+                    log.info("Grab : " + attrs);
                     grape.grab(attrs);
                     return;
                 case "GrabResolver":
-                    log.debug("GrabResolver : " + attrs);
+                    log.info("GrabResolver : " + attrs);
                     grape.resolve(attrs);
                     return;
                 default:
