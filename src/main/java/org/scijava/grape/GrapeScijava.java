@@ -16,13 +16,21 @@
 package org.scijava.grape;
 
 import groovy.grape.GrapeIvy;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.groovy.reflection.ReflectionUtils;
-import org.scijava.log.LogService;
-import org.scijava.plugin.Parameter;
 
 /**
  * I had to extend GrapeIvy to use any CLassLoader (not only GroovyClassLoader).
@@ -30,9 +38,6 @@ import org.scijava.plugin.Parameter;
  * @author Hadrien Mary
  */
 public class GrapeScijava extends GrapeIvy {
-
-    @Parameter
-    private LogService log;
 
     Map<String, List<String>> exclusiveGrabArgs = new HashMap<String, List<String>>() {
         {
@@ -93,5 +98,27 @@ public class GrapeScijava extends GrapeIvy {
 
     private boolean isValidTargetClassLoaderClass(Class loaderClass) {
         return isValidTargetClassLoader(loaderClass.getClassLoader());
+    }
+
+    @Override
+    public File getLocalGrapeConfig() {
+
+        InputStream configStream = GrapeScijava.class.getResourceAsStream("/org/scijava/grape/scijavaGrapeConfig.xml");
+
+        // Copy the config file to a temporary file since 
+        //  the Groovy API only accept File object.
+        File configTempFile = new File("");
+        try {
+            configTempFile = File.createTempFile("scijavaGrapeConfig", ".xml");
+            try {
+                Files.copy(configStream, configTempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ex) {
+                Logger.getLogger(GrapeScijava.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(GrapeScijava.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return configTempFile;
     }
 }

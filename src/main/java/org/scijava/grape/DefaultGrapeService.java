@@ -16,10 +16,12 @@
 package org.scijava.grape;
 
 import groovy.grape.GrapeEngine;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.net.URI;
+import java.nio.file.Paths;
 import org.scijava.Context;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -131,9 +133,13 @@ public class DefaultGrapeService extends AbstractService implements GrapeService
     @Override
     public GrapeEngine getGrapeEngine() {
         if (this.grapeEngine == null) {
-            java.lang.System.setProperty("groovy.grape.report.downloads", "true");
+            
+            // Set some settings for Ivy
+            System.setProperty("groovy.grape.report.downloads", "true");
+            System.setProperty("grape.root", Paths.get(System.getProperty("user.home"), ".scijava").toString());
+  
+            // Initialize the GrapeEngine
             this.grapeEngine = new GrapeScijava();
-            context.inject(this.grapeEngine);
         }
         return grapeEngine;
     }
