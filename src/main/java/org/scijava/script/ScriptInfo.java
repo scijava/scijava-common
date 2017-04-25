@@ -423,25 +423,25 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			typeName = tokens[1];
 			varName = tokens[2];
 		} else if (tokens.length == 1) {
-            // Check for Grab or GrabResolver
-            GrapeService grape = this.context().getService(GrapeService.class);
-            typeName = tokens[0];
-			varName = null;
-            
-            switch (typeName) {
-                case "Grab":
-                    log.info("Grab : " + attrs);
-                    grape.grab(attrs);
-                    return;
-                case "GrabResolver":
-                    log.info("GrabResolver : " + attrs);
-                    grape.resolve(attrs);
-                    return;
-                default:
-                    throw new ScriptException("Invalid parameter: " + param);
-            }
-            // Quit because we don't want to use addItem()
-        }
+                    // Check for Grab or GrabResolver
+                    GrapeService grape = this.context().getService(GrapeService.class);
+                    typeName = tokens[0];
+                                varName = null;
+
+                    switch (typeName) {
+                        case "Grab":
+                            log.info("Grab : " + attrs);
+                            grape.grab(attrs);
+                            return;
+                        case "GrabResolver":
+                            log.info("GrabResolver : " + attrs);
+                            grape.resolve(attrs);
+                            return;
+                        default:
+                            throw new ScriptException("Invalid parameter: " + param);
+                    }
+                    // Quit because we don't want to use addItem()
+                }
 		else {
 			// assume syntax: <type> <varName>
 			checkValid(tokens.length >= 2, param);
