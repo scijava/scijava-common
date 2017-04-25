@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.net.URI;
+import org.scijava.Context;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -35,6 +37,9 @@ public class DefaultGrapeService extends AbstractService implements GrapeService
     public static final String DISABLE_CHECKSUMS_SETTING = "disableChecksums";
     public static final String SYSTEM_PROPERTIES_SETTING = "systemProperties";
 
+    @Parameter
+    private Context context;
+    
     private boolean enableGrapes = Boolean.valueOf(System.getProperty("org.scijava.grape.enable", "true"));
     private boolean enableAutoDownload = Boolean.valueOf(System.getProperty("org.scijava.grape.autoDownload", "true"));
     private boolean disableChecksums = Boolean.valueOf(System.getProperty("org.scijava.grape.disableChecksums", "false"));
@@ -126,7 +131,9 @@ public class DefaultGrapeService extends AbstractService implements GrapeService
     @Override
     public GrapeEngine getGrapeEngine() {
         if (this.grapeEngine == null) {
+            java.lang.System.setProperty("groovy.grape.report.downloads", "true");
             this.grapeEngine = new GrapeScijava();
+            context.inject(this.grapeEngine);
         }
         return grapeEngine;
     }

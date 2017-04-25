@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.codehaus.groovy.reflection.ReflectionUtils;
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 
 /**
  * I had to extend GrapeIvy to use any CLassLoader (not only GroovyClassLoader).
@@ -28,6 +30,9 @@ import org.codehaus.groovy.reflection.ReflectionUtils;
  * @author Hadrien Mary
  */
 public class GrapeScijava extends GrapeIvy {
+
+    @Parameter
+    private LogService log;
 
     Map<String, List<String>> exclusiveGrabArgs = new HashMap<String, List<String>>() {
         {
@@ -79,10 +84,14 @@ public class GrapeScijava extends GrapeIvy {
     }
 
     private boolean isValidTargetClassLoader(ClassLoader loader) {
-        return true;
+        if (loader != null) {
+            return loader.getClass() == ClassLoader.class;
+        } else {
+            return false;
+        }
     }
 
     private boolean isValidTargetClassLoaderClass(Class loaderClass) {
-        return true;
+        return isValidTargetClassLoader(loaderClass.getClassLoader());
     }
 }
