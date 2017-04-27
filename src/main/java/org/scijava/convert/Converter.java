@@ -50,9 +50,8 @@ import org.scijava.plugin.Plugin;
 public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 
 	/**
-	 * Checks whether a given {@ConversionRequest} can be
-	 * processed, by converting the desired
-	 * {@link ConversionRequest#sourceClass()} to its
+	 * Checks whether a given {@link ConversionRequest} can be processed, by
+	 * converting the desired {@link ConversionRequest#sourceClass()} to its
 	 * {@link ConversionRequest#destClass()} or
 	 * {@link ConversionRequest#destType()}.
 	 *

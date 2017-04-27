@@ -49,7 +49,7 @@ import java.io.Serializable;
  * <p>
  * In this way, objects themselves do not need to be {@link Serializable}, nor
  * do multiple potentially equivalent objects need to be synthesized and then
- * compared using {@link #equals}.
+ * compared using {@link Object#equals}.
  * </p>
  * 
  * @author Curtis Rueden

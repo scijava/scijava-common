@@ -668,7 +668,8 @@ public final class FileUtils {
 	 * <p>
 	 * Each of the given {@link URL}s is recursively scanned using
 	 * {@link #listContents(URL)}, and anything matching the given {@code regex}
-	 * pattern is added to the output map.</li>
+	 * pattern is added to the output map.
+	 * </p>
 	 *
 	 * @param regex The regex to use when matching resources, or null to match
 	 *          everything.

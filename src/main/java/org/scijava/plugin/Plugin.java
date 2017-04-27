@@ -79,10 +79,10 @@ public @interface Plugin {
 
 	/**
 	 * Abbreviated menu path defining where the plugin is shown in the menu
-	 * structure. Uses greater than signs (>) as a separator; e.g.:
-	 * "Image > Overlay > Properties..." defines a "Properties..." menu item
-	 * within the "Overlay" submenu of the "Image" menu. Use either
-	 * {@link #menuPath} or {@link #menu} but not both.
+	 * structure. Uses greater than signs ({@code >}) as a separator; e.g.: "Image
+	 * &gt; Overlay &gt; Properties..." defines a "Properties..." menu item within
+	 * the "Overlay" submenu of the "Image" menu. Use either {@link #menuPath} or
+	 * {@link #menu} but not both.
 	 */
 	String menuPath() default "";
 

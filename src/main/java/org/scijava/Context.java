@@ -141,8 +141,9 @@ public class Context implements Disposable {
 	 * {@code new Context(DisplayService.class)}) yield the potentially confusing
 	 * warning:
 	 * </p>
-	 * <blockquote>Type safety: A generic array of Class<? extends Service> is
-	 * created for a varargs parameter</blockquote>
+	 * <blockquote>Type safety: A generic array of
+	 * {@code Class<? extends Service>} is created for a varargs
+	 * parameter</blockquote>
 	 * <p>
 	 * To avoid this, we have opted to use raw types and suppress the relevant
 	 * warnings here instead.
@@ -351,7 +352,7 @@ public class Context implements Disposable {
 	/**
 	 * Injects the application context into the given object. This does three
 	 * distinct things:
-	 * <ul>
+	 * <ol>
 	 * <li>If the given object has any non-final {@link Context} fields annotated
 	 * with @{@link Parameter}, sets the value of those fields to this context.
 	 * </li>
@@ -360,8 +361,8 @@ public class Context implements Disposable {
 	 * corresponding service available from this context.</li>
 	 * <li>Calls {@link EventService#subscribe(Object)} with the object to
 	 * register any @{@link EventHandler} annotated methods as event subscribers.
-	 * </li> .</li>
-	 * </ul>
+	 * </li>
+	 * </ol>
 	 *
 	 * @param o The object to which the context should be assigned.
 	 * @throws IllegalStateException If the object already has a context.

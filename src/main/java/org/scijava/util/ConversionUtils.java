@@ -146,6 +146,7 @@ public class ConversionUtils {
 	 * Returns the primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>Boolean.class becomes boolean.class</li>
 	 * <li>Byte.class becomes byte.class</li>
@@ -157,6 +158,7 @@ public class ConversionUtils {
 	 * <li>Short.class becomes short.class</li>
 	 * <li>Void.class becomes void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -181,6 +183,7 @@ public class ConversionUtils {
 	 * Returns the non-primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>boolean.class becomes Boolean.class</li>
 	 * <li>byte.class becomes Byte.class</li>
@@ -192,6 +195,7 @@ public class ConversionUtils {
 	 * <li>short.class becomes Short.class</li>
 	 * <li>void.class becomes Void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */

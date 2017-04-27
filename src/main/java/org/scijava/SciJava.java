@@ -74,8 +74,9 @@ public class SciJava extends AbstractGateway {
 	 * {@code new SciJava(LogService.class)}) yield the potentially confusing
 	 * warning:
 	 * </p>
-	 * <blockquote>Type safety: A generic array of Class<? extends Service> is
-	 * created for a varargs parameter</blockquote>
+	 * <blockquote>Type safety: A generic array of
+	 * {@code Class<? extends Service>} is created for a varargs
+	 * parameter</blockquote>
 	 * <p>
 	 * To avoid this, we have opted to use raw types and suppress the relevant
 	 * warning here instead.

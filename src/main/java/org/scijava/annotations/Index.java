@@ -45,13 +45,14 @@ import java.util.Set;
 /**
  * Makes the annotation indexes accessible.
  * <p>
- * You would call it like this:<br />
- * <code>
- * for (IndexItem<MyAnnotation> item : Index.load(MyAnnotation.class)) {<br />
- *    // do something with item.annotation() and/or item.className()<br />
- * }<br />
- * </code>
+ * You would call it like this:
  * </p>
+ * 
+ * <pre>
+ * for (IndexItem&lt;MyAnnotation&gt; item : Index.load(MyAnnotation.class)) {
+ *   // do something with item.annotation() and/or item.className()
+ * }
+ * </pre>
  * 
  * @author Johannes Schindelin
  */
@@ -74,8 +75,6 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 
 	/**
 	 * Loads the index of all classes annotated with the specified annotation.
-	 * <p>
-	 * </p>
 	 * 
 	 * @param annotation the annotation type
 	 * @param loader the class loader to use when loading {@link Class}-type

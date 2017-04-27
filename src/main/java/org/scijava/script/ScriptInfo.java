@@ -238,11 +238,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * </p>
 	 * <ul>
 	 * <li>{@code // @<type> <varName>}</li>
-	 * <li>{@code // @<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}</li>
-	 * <li>{@code // @<IOType> <type> <varName>}</li>
-	 * <li>
-	 * {@code // @<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type> <varName>}
+	 * <li>{@code // @<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}
 	 * </li>
+	 * <li>{@code // @<IOType> <type> <varName>}</li>
+	 * <li>{@code // @<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type> 
+	 * <varName>}</li>
 	 * </ul>
 	 * <p>
 	 * Where:
@@ -267,10 +267,13 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	 * <li>{@code // @Dataset dataset}</li>
 	 * <li>{@code // @double(type=OUTPUT) result}</li>
 	 * <li>{@code // @BOTH ImageDisplay display}</li>
-	 * <li>{@code // @INPUT(persist=false, visibility=INVISIBLE) boolean verbose}</li>
-	 * parameters will be parsed and filled just like @{@link Parameter}
-	 * -annotated fields in {@link Command}s.
+	 * <li>{@code // @INPUT(persist=false, visibility=INVISIBLE) boolean verbose}
+	 * </li>
 	 * </ul>
+	 * <p>
+	 * Parameters will be parsed and filled just like @{@link Parameter}-annotated
+	 * fields in {@link Command}s.
+	 * </p>
 	 */
 	// NB: Widened visibility from AbstractModuleInfo.
 	@Override

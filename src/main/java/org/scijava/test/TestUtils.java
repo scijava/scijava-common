@@ -74,8 +74,8 @@ public class TestUtils {
 	 * Makes a temporary directory for use with unit tests.
 	 * <p>
 	 * When the unit test runs in a Maven context, the temporary directory will be
-	 * created in the <i>target/</i> directory corresponding to the calling class
-	 * instead of <i>/tmp/</i>.
+	 * created in the {@code target/} directory corresponding to the calling class
+	 * instead of {@code /tmp/}.
 	 * </p>
 	 * 
 	 * @param prefix the prefix for the directory's name
@@ -91,13 +91,13 @@ public class TestUtils {
 	 * Makes a temporary directory for use with unit tests.
 	 * <p>
 	 * When the unit test runs in a Maven context, the temporary directory will be
-	 * created in the corresponding <i>target/</i> directory instead of
-	 * <i>/tmp/</i>.
+	 * created in the corresponding {@code target/} directory instead of
+	 * {@code /tmp/}.
 	 * </p>
 	 * 
 	 * @param prefix the prefix for the directory's name
 	 * @param forClass the class for context (to determine whether there's a
-	 *          <i>target/<i> directory)
+	 *          {@code target/} directory)
 	 * @return the reference to the newly-created temporary directory
 	 * @throws IOException
 	 */
@@ -113,13 +113,13 @@ public class TestUtils {
 	 * Makes a temporary directory for use with unit tests.
 	 * <p>
 	 * When the unit test runs in a Maven context, the temporary directory will be
-	 * created in the corresponding <i>target/</i> directory instead of
-	 * <i>/tmp/</i>.
+	 * created in the corresponding {@code target/} directory instead of
+	 * {@code /tmp/}.
 	 * </p>
 	 * 
 	 * @param prefix the prefix for the directory's name
 	 * @param forClass the class for context (to determine whether there's a
-	 *          <i>target/<i> directory)
+	 *          {@code target/} directory)
 	 * @param suffix the suffix for the directory's name
 	 * @return the reference to the newly-created temporary directory
 	 * @throws IOException
@@ -165,7 +165,7 @@ public class TestUtils {
 	 * Sometimes it is convenient to determine the caller's context, e.g. to
 	 * determine whether running in a maven-surefire-plugin context (in which case
 	 * the location of the caller's class would end in
-	 * <i>target/test-classes/</i>).
+	 * {@code target/test-classes/}).
 	 * </p>
 	 * 
 	 * @param excluding the class to exclude (or null)
@@ -181,7 +181,7 @@ public class TestUtils {
 	 * Sometimes it is convenient to determine the caller's context, e.g. to
 	 * determine whether running in a maven-surefire-plugin context (in which case
 	 * the location of the caller's class would end in
-	 * <i>target/test-classes/</i>).
+	 * {@code target/test-classes/}).
 	 * </p>
 	 * 
 	 * @param excluding the class to exclude (or null)

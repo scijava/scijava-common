@@ -172,7 +172,8 @@ public class ShadowMenu extends AbstractContextual implements
 
 	/**
 	 * Gets how deep into the menu structure this node is. For example, "File"
-	 * would be at depth 1, whereas "Exit" (of "File>Exit") would be at depth 2.
+	 * would be at depth 1, whereas "Exit" (of "File&gt;Exit") would be at depth
+	 * 2.
 	 */
 	public int getMenuDepth() {
 		return menuDepth;

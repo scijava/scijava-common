@@ -50,20 +50,21 @@ import java.util.Map.Entry;
  * <p>
  * Use this class as following:
  * </p>
- * <code>
- * private static Timing timing = new Timing();<br />
- * ...<br />
- * private void oneOperation() {<br />
- * &nbsp;final long t1 = System.nanoTime();<br />
- * &nbsp;...<br />
- * &nbsp;timing.add(System.nanoTime() - t1, "Operation #1");<br />
- * }<br />
- * ...<br />
- * private void atEnd() {<br />
- * &nbsp;...<br />
- * &nbsp;timing.report("Operations");<br />
+ * 
+ * <pre>
+ * private static Timing timing = new Timing();
+ * ...
+ * private void oneOperation() {
+ * &nbsp;final long t1 = System.nanoTime();
+ * &nbsp;...
+ * &nbsp;timing.add(System.nanoTime() - t1, "Operation #1");
  * }
- * </code>
+ * ...
+ * private void atEnd() {
+ * &nbsp;...
+ * &nbsp;timing.report("Operations");
+ * }
+ * </pre>
  * 
  * @author Johannes Schindelin
  */

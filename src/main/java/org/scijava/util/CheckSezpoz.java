@@ -117,15 +117,15 @@ public final class CheckSezpoz {
 	/**
 	 * Checks whether the annotations are possibly out-of-date.
 	 * <p>
-	 * This method looks whether there are any <i>.class</i> files older than
-	 * their corresponding <i>.java</i> files, or whether there are <i>.class</i>
-	 * files that were generated since last time we checked.
+	 * This method looks whether there are any {@code .class} files older than
+	 * their corresponding {@code .java} files, or whether there are
+	 * {@code .class} files that were generated since last time we checked.
 	 * </p>
 	 * 
-	 * @param classes the <i>classes/</i> directory where Maven puts the
-	 *          <i>.class</i> files
-	 * @param source the <i>src/main/java/<i> directory where Maven expects the
-	 *          <i>.java</i> files
+	 * @param classes the {@code classes/} directory where Maven puts the
+	 *          {@code .class} files
+	 * @param source the {@code src/main/java/} directory where Maven expects the
+	 *          {@code .java} files
 	 * @param youngerThan the date/time when we last checked
 	 * @see EclipseHelper
 	 */
@@ -137,13 +137,13 @@ public final class CheckSezpoz {
 	}
 
 	/**
-	 * Checks a <i>.jar</i> file for stale annotations.
+	 * Checks a {@code .jar} file for stale annotations.
 	 * <p>
 	 * This method is broken at the moment since there is no good way to verify
-	 * that SezPoz ran before the <i>.jar</i> file was packaged.
+	 * that SezPoz ran before the {@code .jar} file was packaged.
 	 * </p>
 	 * 
-	 * @param file the <i>.jar</i> file
+	 * @param file the {@code .jar} file
 	 * @see EclipseHelper
 	 */
 	@Deprecated
@@ -170,7 +170,7 @@ public final class CheckSezpoz {
 	}
 
 	/**
-	 * Writes out a DOM as <i>.xml</i> file.
+	 * Writes out a DOM as {@code .xml} file.
 	 * 
 	 * @param xml the DOM
 	 * @param file the file to write

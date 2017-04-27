@@ -66,22 +66,22 @@ public interface ConvertService extends
 	Object convert(ConversionRequest request);
 
 	/**
-	 * @see #getHandler(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 */
 	Converter<?, ?> getHandler(Object src, Class<?> dest);
 
 	/**
-	 * @see #getHandler(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 */
 	Converter<?, ?> getHandler(Object src, Type dest);
 
 	/**
-	 * @see #supports(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 */
 	boolean supports(Object src, Class<?> dest);
 
 	/**
-	 * @see #supports(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 */
 	boolean supports(Object src, Type dest);
 
@@ -106,28 +106,28 @@ public interface ConvertService extends
 	// -- Deprecated API --
 
 	/**
-	 * @see #getHandler(ConversionRequest)
+	 * @see HandlerService#getHandler(Object)
 	 * @deprecated Use {@link #getHandler(Object, Class)}
 	 */
 	@Deprecated
 	Converter<?, ?> getHandler(Class<?> src, Class<?> dest);
 
 	/**
-	 * @see #getHandler(ConversionRequest)
+	 * @see HandlerService#getHandler(Object)
 	 * @deprecated Use {@link #getHandler(Object, Type)}
 	 */
 	@Deprecated
 	Converter<?, ?> getHandler(Class<?> src, Type dest);
 
 	/**
-	 * @see #supports(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 * @deprecated Use {@link #supports(Object, Class)}
 	 */
 	@Deprecated
 	boolean supports(Class<?> src, Class<?> dest);
 
 	/**
-	 * @see #supports(ConversionRequest)
+	 * @see HandlerService#supports(Object)
 	 * @deprecated Use {@link #supports(Object, Type)}
 	 */
 	@Deprecated

@@ -442,7 +442,7 @@ public enum KeyCode {
 	/** TODO. */
 	DEAD_SEMIVOICED_SOUND(0x8f),
 
-	/** Ampersand ('&'). */
+	/** Ampersand ('&amp;'). */
 	AMPERSAND(0x96),
 
 	/** Asterisk ('*'). */
