@@ -46,6 +46,8 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.plugin.Plugin;
@@ -54,13 +56,28 @@ import org.scijava.plugin.Plugin;
  * Basic tests for the {@link ScriptService}.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public class ScriptEngineTest {
 
+	private Context context;
+	private ScriptService scriptService;
+
+	@Before
+	public void setUp() {
+		context = new Context(ScriptService.class);
+		scriptService = context.getService(ScriptService.class);
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
+		context = null;
+		scriptService = null;
+	}
+
 	@Test
 	public void testRot13() throws Exception {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.getService(ScriptService.class);
 		final ScriptLanguage hello = scriptService.getLanguageByName("Hello");
 		assertNotNull(hello);
 		final ScriptLanguage rot13 = scriptService.getLanguageByName("Rot13");
@@ -70,8 +87,6 @@ public class ScriptEngineTest {
 
 	@Test
 	public void testScriptModuleValue() throws Exception {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.getService(ScriptService.class);
 		final ScriptModule module =
 			scriptService.run("test.rot13", ScriptModule.class.getName(), false,
 				(Map<String, Object>) null).get();
