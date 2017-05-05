@@ -134,7 +134,8 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 		for (final String key : bindings.keySet()) {
 			if (objectString.endsWith(key + ".")) {
 				final Object obj = bindings.get(key);
-				for (final Field field : obj.getClass().getDeclaredFields()) {
+				// check for public field completions
+				for (final Field field : obj.getClass().getFields()) {
 					if (field.getName().toLowerCase().startsWith(fieldBeginWith
 						.toLowerCase()))
 					{
