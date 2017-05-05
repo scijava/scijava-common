@@ -47,7 +47,6 @@ import org.scijava.Context;
 import org.scijava.command.CommandInfoTest.CommandWithEnumParam.Choice;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
 
 /**
  * Tests {@link CommandInfo}.
