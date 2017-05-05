@@ -32,6 +32,7 @@
 package org.scijava.script;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -139,6 +140,12 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 				for (final Field field : obj.getClass().getFields()) {
 					if (field.getName().toLowerCase().startsWith(lPrefix)) {
 						matches.add(objectString + field.getName());
+					}
+				}
+				// check for public method completions
+				for (final Method method : obj.getClass().getMethods()) {
+					if (method.getName().toLowerCase().startsWith(lPrefix)) {
+						matches.add(objectString + method.getName() + "(");
 					}
 				}
 			}
