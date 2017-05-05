@@ -73,9 +73,9 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 		else if (code.contains(".")) {
 			final List<String> codeList = Arrays.asList(code.split("\\."));
 			final String objectString = codeList.get(codeList.size() - 2);
-			final String fieldBeginWith = codeList.get(codeList.size() - 1);
+			final String prefix = codeList.get(codeList.size() - 1);
 			matches.addAll(engineAttributesCompleter(objectString + ".",
-				fieldBeginWith, index, engine));
+				prefix, index, engine));
 
 		}
 		else {
@@ -124,10 +124,11 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 	}
 
 	private List<String> engineAttributesCompleter(final String objectString,
-		final String fieldBeginWith, @SuppressWarnings("unused") final int index,
+		final String prefix, @SuppressWarnings("unused") final int index,
 		final ScriptEngine engine)
 	{
 		final List<String> matches = new ArrayList<>();
+		final String lPrefix = prefix.toLowerCase();
 
 		final Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 
@@ -136,9 +137,7 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 				final Object obj = bindings.get(key);
 				// check for public field completions
 				for (final Field field : obj.getClass().getFields()) {
-					if (field.getName().toLowerCase().startsWith(fieldBeginWith
-						.toLowerCase()))
-					{
+					if (field.getName().toLowerCase().startsWith(lPrefix)) {
 						matches.add(objectString + field.getName());
 					}
 				}
