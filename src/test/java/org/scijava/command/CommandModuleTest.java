@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.scijava.Cancelable;
 import org.scijava.Context;
+import org.scijava.Initializable;
 import org.scijava.ItemIO;
 import org.scijava.Priority;
 import org.scijava.log.LogService;
@@ -125,6 +126,22 @@ public class CommandModuleTest {
 			commandService.run(CommandWithService.class, false).get();
 		assertSame(logService, module.getInput("log"));
 		assertTrue((boolean) module.getOutput("success"));
+	}
+
+	@Test
+	public void testInitializable() throws InterruptedException,
+		ExecutionException
+	{
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+
+		final CommandModule preprocessedModule = //
+			commandService.run(InitializableCommand.class, true).get();
+		assertEquals(42, preprocessedModule.getOutput("output"));
+
+		final CommandModule plainModule = //
+			commandService.run(InitializableCommand.class, false).get();
+		assertEquals(7, plainModule.getOutput("output"));
 	}
 
 	// -- Helper classes --
@@ -267,4 +284,20 @@ public class CommandModuleTest {
 		}
 	}
 
+	@Plugin(type = Command.class)
+	public static class InitializableCommand implements Command, Initializable {
+		private int magicNumber = 7;
+
+		@Parameter(type = ItemIO.OUTPUT)
+		private int output;
+
+		@Override
+		public void initialize() {
+			magicNumber = 42;
+		}
+		@Override
+		public void run() {
+			output = magicNumber;
+		}
+	}
 }
