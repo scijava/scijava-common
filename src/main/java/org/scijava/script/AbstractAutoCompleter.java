@@ -85,10 +85,11 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 		}
 
 		// Remove duplicates
-		matches.stream().distinct().collect(Collectors.toList());
+		final List<String> unique = //
+			matches.stream().distinct().collect(Collectors.toList());
 
 		// Sort alphabetically, ignoring case
-		Collections.sort(matches, new Comparator<Object>() {
+		Collections.sort(unique, new Comparator<Object>() {
 
 			@Override
 			public int compare(final Object o1, final Object o2) {
@@ -99,7 +100,7 @@ public abstract class AbstractAutoCompleter implements AutoCompleter {
 		});
 
 		// Return results. For now we ignore index and startIndex.
-		return new AutoCompletionResult(matches, startIndex);
+		return new AutoCompletionResult(unique, startIndex);
 	}
 
 	private List<String> engineVariablesCompleter(final String code,
