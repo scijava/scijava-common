@@ -46,6 +46,8 @@ import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.plugin.Plugin;
@@ -54,13 +56,28 @@ import org.scijava.plugin.Plugin;
  * Basic tests for the {@link ScriptService}.
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
 public class ScriptEngineTest {
 
+	private Context context;
+	private ScriptService scriptService;
+
+	@Before
+	public void setUp() {
+		context = new Context(ScriptService.class);
+		scriptService = context.getService(ScriptService.class);
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
+		context = null;
+		scriptService = null;
+	}
+
 	@Test
 	public void testRot13() throws Exception {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.getService(ScriptService.class);
 		final ScriptLanguage hello = scriptService.getLanguageByName("Hello");
 		assertNotNull(hello);
 		final ScriptLanguage rot13 = scriptService.getLanguageByName("Rot13");
@@ -70,8 +87,6 @@ public class ScriptEngineTest {
 
 	@Test
 	public void testScriptModuleValue() throws Exception {
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.getService(ScriptService.class);
 		final ScriptModule module =
 			scriptService.run("test.rot13", ScriptModule.class.getName(), false,
 				(Map<String, Object>) null).get();
@@ -80,6 +95,35 @@ public class ScriptEngineTest {
 		assertNotNull(scriptModule);
 		final ScriptInfo info = scriptModule.getInfo();
 		assertEquals(context, info.context());
+	}
+
+	@Test
+	public void testAutoCompleter() {
+		final ScriptLanguage hello = scriptService.getLanguageByName("Hello");
+		final ScriptEngine engine = hello.getScriptEngine();
+		final AutoCompleter ac = hello.getAutoCompleter();
+
+		// test all matches
+		engine.put("thing", new Object());
+		final AutoCompletionResult result = ac.autocomplete("thing.", engine);
+		assertEquals(0, result.getStartIndex());
+		final List<String> matches = result.getMatches();
+		final List<String> expected = Arrays.asList("thing.equals(",
+			"thing.getClass(", "thing.hashCode(", "thing.notify(", "thing.notifyAll(",
+			"thing.toString(", "thing.wait(");
+		assertEquals(matches, expected);
+
+		// test prefix
+		engine.put("hello", "world");
+		final AutoCompletionResult cWords = ac.autocomplete("hello.c", engine);
+		assertEquals(0, cWords.getStartIndex());
+		final List<String> cMatches = cWords.getMatches();
+		final List<String> cExpected = Arrays.asList("hello.CASE_INSENSITIVE_ORDER",
+			"hello.charAt(", "hello.chars(", "hello.codePointAt(",
+			"hello.codePointBefore(", "hello.codePointCount(", "hello.codePoints(",
+			"hello.compareTo(", "hello.compareToIgnoreCase(", "hello.concat(",
+			"hello.contains(", "hello.contentEquals(", "hello.copyValueOf(");
+		assertEquals(cMatches, cExpected);
 	}
 
 	@Plugin(type = ScriptLanguage.class)

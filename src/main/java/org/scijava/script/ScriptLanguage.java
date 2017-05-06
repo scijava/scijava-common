@@ -65,6 +65,8 @@ import org.scijava.util.VersionUtils;
  * </p>
  * 
  * @author Johannes Schindelin
+ * @author Curtis Rueden
+ * @author Hadrien Mary
  */
 public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 	SingletonPlugin
@@ -84,6 +86,14 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 	default Object decode(final Object object) {
 		// NB: No decoding by default.
 		return object;
+	}
+
+	/**
+	 * Gets a helper object capable of generating autocomplete suggestions for a
+	 * code fragment.
+	 */
+	default AutoCompleter getAutoCompleter() {
+		return new DefaultAutoCompleter(this);
 	}
 
 	// -- ScriptEngineFactory methods --

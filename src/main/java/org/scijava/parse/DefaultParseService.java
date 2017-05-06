@@ -36,7 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.scijava.parse.Variable;
 import org.scijava.parse.eval.DefaultEvaluator;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
