@@ -97,6 +97,35 @@ public class ScriptEngineTest {
 		assertEquals(context, info.context());
 	}
 
+	@Test
+	public void testAutoCompleter() {
+		final ScriptLanguage hello = scriptService.getLanguageByName("Hello");
+		final ScriptEngine engine = hello.getScriptEngine();
+		final AutoCompleter ac = hello.getAutoCompleter();
+
+		// test all matches
+		engine.put("thing", new Object());
+		final AutoCompletionResult result = ac.autocomplete("thing.", engine);
+		assertEquals(0, result.getStartIndex());
+		final List<String> matches = result.getMatches();
+		final List<String> expected = Arrays.asList("thing.equals(",
+			"thing.getClass(", "thing.hashCode(", "thing.notify(", "thing.notifyAll(",
+			"thing.toString(", "thing.wait(");
+		assertEquals(matches, expected);
+
+		// test prefix
+		engine.put("hello", "world");
+		final AutoCompletionResult cWords = ac.autocomplete("hello.c", engine);
+		assertEquals(0, cWords.getStartIndex());
+		final List<String> cMatches = cWords.getMatches();
+		final List<String> cExpected = Arrays.asList("hello.CASE_INSENSITIVE_ORDER",
+			"hello.charAt(", "hello.chars(", "hello.codePointAt(",
+			"hello.codePointBefore(", "hello.codePointCount(", "hello.codePoints(",
+			"hello.compareTo(", "hello.compareToIgnoreCase(", "hello.concat(",
+			"hello.contains(", "hello.contentEquals(", "hello.copyValueOf(");
+		assertEquals(cMatches, cExpected);
+	}
+
 	@Plugin(type = ScriptLanguage.class)
 	public static class Rot13 extends AbstractScriptLanguage {
 
