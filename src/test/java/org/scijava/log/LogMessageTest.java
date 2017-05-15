@@ -3,19 +3,18 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,29 +31,41 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
+ * Tests {@link LogMessage}.
  * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW)
-public class StderrLogService extends AbstractLogService {
+public class LogMessageTest {
 
-	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		final PrintStream out = (level <= LogLevel.WARN) ? System.err : System.out;
-		out.print(new LogMessage(level, msg, t));
+	/** Tests {@link LogMessage#toString()}. */
+	@Test
+	public void testToString() {
+		String nameOfThisMethod = "testToString";
+		// setup
+		LogMessage message = new LogMessage(LogLevel.DEBUG, 42, new NullPointerException());
+		// process
+		String s = message.toString();
+		//test
+		Assert.assertTrue("Log message contains level", s.contains(LogLevel.prefix(message.level())));
+		Assert.assertTrue("Log message contains msg", s.contains(message.text()));
+		Assert.assertTrue("Log message contains throwable", s.contains(message.throwable().toString()));
+		Assert.assertTrue("Log message contains stack trace", s.contains(nameOfThisMethod));
+	}
+
+	@Test
+	public void testToStringOptionalParameters() {
+		// setup
+		LogMessage message = new LogMessage(LogLevel.WARN, null, null);
+
+		// process
+		// Can it still format the message if optional parameters are null?
+		String s = message.toString();
+
+		// test
+		Assert.assertTrue("Log message contains level", s.contains(LogLevel.prefix(message.level())));
 	}
 }

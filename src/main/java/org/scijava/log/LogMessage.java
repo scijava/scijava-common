@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -109,7 +111,20 @@ public class LogMessage {
 
 	@Override
 	public String toString() {
-		return "LogMessage {" + level + ", " + message + ", " + throwable + "}";
+		return format(this);
 	}
 
+	// -- Utility methods --
+
+	public static String format(final LogMessage message) {
+		final StringWriter sw = new StringWriter();
+		final PrintWriter printer = new PrintWriter(sw);
+		printer.print("[" + message.time() + "] ");
+		printer.print("[" + LogLevel.prefix(message.level()) + "] ");
+		printer.println(message.text());
+		if (message.throwable() != null) {
+			message.throwable().printStackTrace(printer);
+		}
+		return sw.toString();
+	}
 }
