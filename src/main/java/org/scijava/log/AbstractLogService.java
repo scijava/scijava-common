@@ -31,6 +31,9 @@
 
 package org.scijava.log;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.scijava.service.AbstractService;
 
 /**
@@ -44,7 +47,21 @@ public abstract class AbstractLogService extends AbstractService implements
 	LogService
 {
 
-	private LogLevelStrategy logLevelStrategy = new LogLevelStrategy();
+	private final LogLevelStrategy logLevelStrategy = new LogLevelStrategy();
+
+	private final List<LogListener> listeners = new CopyOnWriteArrayList<>();
+
+	// -- ListenableLogger methods --
+
+	@Override
+	public void addListener(final LogListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(final LogListener listener) {
+		listeners.remove(listener);
+	}
 
 	// -- Logger methods --
 
@@ -64,7 +81,14 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	@Override
-	public abstract void alwaysLog(final int level, final Object msg,
-		final Throwable t);
+	public void alwaysLog(final int level, final Object msg, final Throwable t) {
+		messageLogged(new LogMessage(level, msg, t));
+	}
 
+	// -- Helper methods --
+
+	protected void messageLogged(LogMessage message) {
+		for (LogListener listener : listeners)
+			listener.messageLogged(message);
+	}
 }

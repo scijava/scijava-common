@@ -54,8 +54,10 @@ public class StderrLogService extends AbstractLogService {
 	private final LogFormatter formatter = new DefaultLogFormatter();
 
 	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		final PrintStream out = (level <= LogLevel.WARN) ? System.err : System.out;
-		out.print(formatter.format(new LogMessage(level, msg, t)));
+	public void messageLogged(final LogMessage message) {
+		super.messageLogged(message);
+		final PrintStream out = (message.level() <= LogLevel.WARN) ? System.err
+			: System.out;
+		out.print(formatter.format(message));
 	}
 }
