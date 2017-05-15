@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,47 +31,19 @@
 
 package org.scijava.log;
 
-import org.scijava.service.SciJavaService;
-
 /**
- * Interface for the logging service.
- * <p>
- * The service supports five common logging levels: {@link #ERROR},
- * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It provides
- * methods for logging messages, exception stack traces and combinations of the
- * two.
- * </p>
- * 
- * @author Curtis Rueden
+ * Callback function used by {@link ListenableLogger}.
+ *
+ * @author Matthias Arzt
+ * @see ListenableLogger
+ * @see LogMessage
  */
-public interface LogService extends SciJavaService, ListenableLogger {
+public interface LogListener {
 
-	/** System property to set for overriding the default logging level. */
-	String LOG_LEVEL_PROPERTY = "scijava.log.level";
-
-	// -- Deprecated --
-
-	/** @deprecated Use {@link LogLevel#NONE}. */
-	@Deprecated
-	int NONE = LogLevel.NONE;
-	/** @deprecated Use {@link LogLevel#ERROR}. */
-	@Deprecated
-	int ERROR = LogLevel.ERROR;
-	/** @deprecated Use {@link LogLevel#WARN}. */
-	@Deprecated
-	int WARN = LogLevel.WARN;
-	/** @deprecated Use {@link LogLevel#INFO}. */
-	@Deprecated
-	int INFO = LogLevel.INFO;
-	/** @deprecated Use {@link LogLevel#DEBUG}. */
-	@Deprecated
-	int DEBUG = LogLevel.DEBUG;
-	/** @deprecated Use {@link LogLevel#TRACE}. */
-	@Deprecated
-	int TRACE = LogLevel.TRACE;
-
-	void setLevel(int level);
-
-	void setLevel(String classOrPackageName, int level);
+	/**
+	 * This method is normally called from many threads in parallel. It must be
+	 * implemented highly thread safe and must not use any kind of locks.
+	 */
+	void messageLogged(LogMessage message);
 
 }
