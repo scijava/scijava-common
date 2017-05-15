@@ -33,8 +33,10 @@
 package org.scijava.log;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.scijava.service.AbstractService;
 
@@ -53,6 +55,8 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels;
 
+	private final List<LogListener> listeners = new CopyOnWriteArrayList<>();
+
 	// -- constructor --
 
 	public AbstractLogService() {
@@ -66,6 +70,13 @@ public abstract class AbstractLogService extends AbstractService implements
 		if (level >= 0) currentLevel = level;
 		classAndPackageLevels = setupMapFromProperties(properties,
 			LogService.LOG_LEVEL_PROPERTY + ":");
+	}
+
+	// -- AbstractLogService methods --
+
+	protected void notifyListeners(LogMessage message) {
+		for (LogListener listener : listeners)
+			listener.messageLogged(message);
 	}
 
 	// -- Logger methods --
@@ -85,6 +96,21 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public void setLevel(final String classOrPackageName, final int level) {
 		classAndPackageLevels.put(classOrPackageName, level);
+	}
+
+	@Override
+	public void alwaysLog(final int level, final Object msg, final Throwable t) {
+		notifyListeners(new LogMessage(level, msg, t));
+	}
+
+	@Override
+	public void addListener(final LogListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(final LogListener listener) {
+		listeners.remove(listener);
 	}
 
 	// -- Deprecated --

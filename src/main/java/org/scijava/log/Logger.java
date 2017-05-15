@@ -184,4 +184,15 @@ public interface Logger {
 
 	/** Returns the log level of this logger. see {@link LogLevel} */
 	int getLevel();
+
+	/**
+	 * {@link LogListener}s added with this method are notified of every message,
+	 * NB: Messages are only logged, if their level is lower than the logger's
+	 * level.
+	 *
+	 * @param listener
+	 */
+	void addListener(LogListener listener);
+
+	void removeListener(LogListener listener);
 }

@@ -165,6 +165,19 @@ public class LogServiceTest {
 		assertEquals(LogLevel.TRACE, level);
 	}
 
+	@Test
+	public void testListener() {
+		// setup
+		TestableLogService logService = new TestableLogService();
+		TestLogListener listener = new TestLogListener();
+		String msg1 = "Hello World!";
+		// process
+		logService.addListener(listener);
+		logService.error(msg1);
+		// test
+		listener.hasLogged(m -> msg1.equals(m.text()));
+	}
+
 	// -- Helper classes --
 
 	private static class MyTestClass {
