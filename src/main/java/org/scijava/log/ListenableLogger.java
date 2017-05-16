@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import java.util.function.Predicate;
+
 /**
  * Interface for loggers, that provides a callback mechanism for listening to
  * the generated logs.
@@ -41,12 +43,23 @@ public interface ListenableLogger extends Logger {
 
 	/**
 	 * {@link LogListener}s added with this method are notified of every message,
-	 * NB: Messages are only logged, if their level is lower than the logger's
-	 * level.
+	 * that is logged to this logger or it's sub loggers. NB: Messages are only
+	 * logged, if their level is lower than the logger's level.
 	 *
 	 * @param listener
 	 */
 	void addListener(LogListener listener);
 
 	void removeListener(LogListener listener);
+
+	/**
+	 * A sub logger (see {@link Logger#subLogger(String)} forwards the
+	 * {@link LogMessage}s it gets to its parent logger. This method enables
+	 * setting a filter for this mechanism.
+	 *
+	 * @param filter Only the {@link LogMessage}s for which the filter method
+	 *          returns true are forwarded to the parent logger.
+	 */
+	void setParentForwardingFilter(Predicate<LogMessage> filter);
+
 }

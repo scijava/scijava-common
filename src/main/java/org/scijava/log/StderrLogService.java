@@ -32,6 +32,7 @@
 package org.scijava.log;
 
 import java.io.PrintStream;
+import java.util.function.Predicate;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
