@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import java.util.function.Predicate;
+
 import org.scijava.service.AbstractService;
 
 /**
@@ -52,44 +54,16 @@ public abstract class AbstractLogService extends AbstractService implements
 	// -- constructor --
 
 	public AbstractLogService() {
-		logger = new DefaultListenableLogger(LogLevel.NONE) {
+		logger = new DefaultListenableLogger(this::messageLogged, "", LogLevel.NONE) {
 
 			@Override
 			public int getLevel() {
 				return logLevelStrategy.getLevel();
 			}
-
-			@Override
-			protected void messageLogged(LogMessage message) {
-				super.messageLogged(message);
-				AbstractLogService.this.messageLogged(message);
-			}
-
 		};
 	}
 
 	// -- AbstractLogService methods --
-
-	abstract void messageLogged(LogMessage message);
-
-	// -- Logger methods --
-
-	@Override
-	public void addListener(LogListener listener) {
-		logger.addListener(listener);
-	}
-
-	@Override
-	public void removeListener(LogListener listener) {
-		logger.removeListener(listener);
-	}
-
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		return logLevelStrategy.getLevel();
-	}
 
 	@Override
 	public void setLevel(final int level) {
@@ -101,8 +75,45 @@ public abstract class AbstractLogService extends AbstractService implements
 		logLevelStrategy.setLevel(classOrPackageName, level);
 	}
 
+	abstract void messageLogged(LogMessage message);
+
+	// -- ListenableLogger methods --
+
+	@Override
+	public void addListener(LogListener listener) {
+		logger.addListener(listener);
+	}
+
+	@Override
+	public void removeListener(LogListener listener) {
+		logger.removeListener(listener);
+	}
+
+	@Override
+	public void setParentForwardingFilter(Predicate<LogMessage> filter) {
+		throw new UnsupportedOperationException();
+	}
+
+	// -- Logger methods --
+
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
 		logger.alwaysLog(level, msg, t);
 	}
+
+	@Override
+	public String getName() {
+		return logger.getName();
+	}
+
+	@Override
+	public int getLevel() {
+		return logLevelStrategy.getLevel();
+	}
+
+	@Override
+	public Logger subLogger(String nameExtension, int level) {
+		return logger.subLogger(nameExtension, level);
+	}
+
 }

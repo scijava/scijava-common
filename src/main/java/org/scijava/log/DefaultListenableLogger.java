@@ -33,6 +33,7 @@ package org.scijava.log;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 
 /**
  * Default implementation for {@link ListenableLogger}.
@@ -40,22 +41,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Matthias Arzt
  */
 @IgnoreAsCallingClass
-class DefaultListenableLogger implements ListenableLogger {
+class DefaultListenableLogger implements ListenableLogger, LogListener {
+
+	private static final Predicate<LogMessage> DEFAULT_FILTER = m -> true;
+
+	private final LogListener destination;
+
+	private final String name;
 
 	private final int level;
 
 	private final List<LogListener> listeners = new CopyOnWriteArrayList<>();
 
-	public DefaultListenableLogger(final int level)
-	{
-		this.level = level;
+	private Predicate<LogMessage> filter = DEFAULT_FILTER;
+
+	public static ListenableLogger newRoot(int level) {
+		return new DefaultListenableLogger(message -> {}, "", level);
 	}
 
-	// -- DefaultListenableLogger methods --
-
-	protected void messageLogged(final LogMessage message) {
-		for (LogListener listener : listeners)
-			listener.messageLogged(message);
+	public DefaultListenableLogger(final LogListener destination, final String name,
+								   final int level)
+	{
+		this.destination = destination;
+		this.name = name;
+		this.level = level;
 	}
 
 	// -- ListenableLogger methods --
@@ -70,7 +79,22 @@ class DefaultListenableLogger implements ListenableLogger {
 		listeners.remove(listener);
 	}
 
+	@Override
+	public void setParentForwardingFilter(final Predicate<LogMessage> filter) {
+		this.filter = filter;
+	}
+
 	// -- Logger methods --
+
+	@Override
+	public void alwaysLog(final int level, final Object msg, final Throwable t) {
+		messageLogged(new LogMessage(level, msg, t));
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
 
 	@Override
 	public int getLevel() {
@@ -78,7 +102,16 @@ class DefaultListenableLogger implements ListenableLogger {
 	}
 
 	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		messageLogged(new LogMessage(level, msg, t));
+	public Logger subLogger(final String name, final int level) {
+		return new DefaultListenableLogger(this, name, level);
+	}
+
+	// -- LogListener methods --
+
+	@Override
+	public void messageLogged(final LogMessage message) {
+		for (LogListener listener : listeners)
+			listener.messageLogged(message);
+		if (filter.test(message)) destination.messageLogged(message);
 	}
 }

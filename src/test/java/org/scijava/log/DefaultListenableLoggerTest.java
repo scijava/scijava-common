@@ -47,7 +47,7 @@ public class DefaultListenableLoggerTest {
 
 	@Before
 	public void setup() {
-		logger = new DefaultListenableLogger(LogLevel.INFO);
+		logger = DefaultListenableLogger.newRoot(LogLevel.INFO);
 		listener = new TestLogListener();
 		logger.addListener(listener);
 	}
@@ -60,5 +60,15 @@ public class DefaultListenableLoggerTest {
 
 		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
 		assertTrue(listener.hasLogged(m -> m.level() == LogLevel.ERROR));
+	}
+
+	@Test
+	public void testSubLogger() {
+		listener.clear();
+		Logger sub = logger.subLogger("sub");
+
+		sub.error("Hello World!");
+
+		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
 	}
 }
