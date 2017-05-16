@@ -43,6 +43,8 @@ import java.util.LinkedList;
  */
 public class LogMessage {
 
+	private final LogSource source;
+
 	private final int level;
 
 	private final String message;
@@ -53,9 +55,10 @@ public class LogMessage {
 
 	private Collection<Object> attachments;
 
-	public LogMessage(int level, Object message,
+	public LogMessage(LogSource source, int level, Object message,
 		Throwable throwable)
 	{
+		this.source = source;
 		this.attachments = null;
 		this.level = level;
 		this.message = message == null ? null : message.toString();
@@ -63,8 +66,13 @@ public class LogMessage {
 		this.time = new Date();
 	}
 
-	public LogMessage(int level, Object msg) {
-		this(level, msg, null);
+	public LogMessage(LogSource source, int level, Object msg) {
+		this(source, level, msg, null);
+	}
+
+	/** Represents the source of the message. */
+	public LogSource source() {
+		return source;
 	}
 
 	/**

@@ -47,7 +47,7 @@ public class DefaultLogFormatterTest {
 	public void testFormatMessage() {
 		String nameOfThisMethod = "testFormatMessage";
 		// setup
-		LogMessage message = new LogMessage(LogLevel.DEBUG, 42, generateThrowableWithStackTrace());
+		LogMessage message = new LogMessage(LogSource.root(), LogLevel.DEBUG, 42, generateThrowableWithStackTrace());
 		// process
 		String s = logFormatter.format(message);
 		//test
@@ -60,7 +60,7 @@ public class DefaultLogFormatterTest {
 	@Test
 	public void testFormatMessageOptionalParameters() {
 		// setup
-		LogMessage message = new LogMessage(LogLevel.WARN, null, null);
+		LogMessage message = new LogMessage(LogSource.root(), LogLevel.WARN, null, null);
 
 		// process
 		// Can it still format the message if optional parameters are null?

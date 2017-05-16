@@ -47,7 +47,7 @@ class DefaultListenableLogger implements ListenableLogger, LogListener {
 
 	private final LogListener destination;
 
-	private final String name;
+	private LogSource source;
 
 	private final int level;
 
@@ -56,14 +56,14 @@ class DefaultListenableLogger implements ListenableLogger, LogListener {
 	private Predicate<LogMessage> filter = DEFAULT_FILTER;
 
 	public static ListenableLogger newRoot(int level) {
-		return new DefaultListenableLogger(message -> {}, "", level);
+		return new DefaultListenableLogger(message -> {}, LogSource.root(), level);
 	}
 
-	public DefaultListenableLogger(final LogListener destination, final String name,
-								   final int level)
+	public DefaultListenableLogger(final LogListener destination,
+		final LogSource source, final int level)
 	{
 		this.destination = destination;
-		this.name = name;
+		this.source = source;
 		this.level = level;
 	}
 
@@ -88,12 +88,12 @@ class DefaultListenableLogger implements ListenableLogger, LogListener {
 
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		messageLogged(new LogMessage(level, msg, t));
+		messageLogged(new LogMessage(source, level, msg, t));
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public LogSource getSource() {
+		return source;
 	}
 
 	@Override
@@ -103,7 +103,7 @@ class DefaultListenableLogger implements ListenableLogger, LogListener {
 
 	@Override
 	public Logger subLogger(final String name, final int level) {
-		return new DefaultListenableLogger(this, name, level);
+		return new DefaultListenableLogger(this, source.subSource(name), level);
 	}
 
 	// -- LogListener methods --
