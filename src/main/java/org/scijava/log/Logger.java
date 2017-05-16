@@ -183,7 +183,12 @@ public interface Logger {
 	void alwaysLog(int level, Object msg, Throwable t);
 
 	/** Returns the name of this logger. */
-	String getName();
+	default String getName() {
+		return getSource().name();
+	}
+
+	/** Returns the {@link LogSource} associated with this logger. */
+	LogSource getSource();
 
 	/** Returns the log level of this logger. see {@link LogLevel} */
 	int getLevel();
@@ -199,6 +204,7 @@ public interface Logger {
 	/**
 	 * Creates a sub logger, that forwards the message it gets to this logger.
 	 *
+	 * @param name The name of the sub logger.
 	 * @param level The log level of the sub logger.
 	 */
 	Logger subLogger(String name, int level);
