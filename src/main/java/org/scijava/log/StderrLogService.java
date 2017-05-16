@@ -55,7 +55,6 @@ public class StderrLogService extends AbstractLogService {
 
 	@Override
 	public void messageLogged(final LogMessage message) {
-		super.messageLogged(message);
 		final PrintStream out = (message.level() <= LogLevel.WARN) ? System.err
 			: System.out;
 		out.print(formatter.format(message));
