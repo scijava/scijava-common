@@ -118,4 +118,8 @@ public abstract class AbstractLogService extends AbstractService implements
 		return logger.subLogger(name, level);
 	}
 
+	@Override
+	public ListenableLogger listenableLogger(int level) {
+		return logger.listenableLogger(level);
+	}
 }

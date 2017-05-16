@@ -87,4 +87,31 @@ public class DefaultListenableLoggerTest {
 		assertEquals(Arrays.asList("subA"), subA.getSource().path());
 		assertEquals(Arrays.asList("subA", "subB"), subB.getSource().path());
 	}
+
+	@Test
+	public void testListenableLogger() {
+		ListenableLogger log = logger.listenableLogger();
+		TestLogListener listener = new TestLogListener();
+		log.addListener(listener);
+
+		log.error("Hello World!");
+		logger.error("Goodbye!");
+
+		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
+		assertFalse(listener.hasLogged(m -> m.text().equals("Goodbye!")));
+	}
+
+	@Test
+	public void testForwardingFilter() {
+		listener.clear();
+		ListenableLogger sub = logger.subLogger("sub").listenableLogger();
+
+		sub.setParentForwardingFilter(m -> m.text().contains("Hello"));
+		sub.error("Hello World!");
+		sub.error("Goodbye!");
+
+		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
+		assertFalse(listener.hasLogged(m -> m.text().equals("Goodbye!")));
+	}
+
 }
