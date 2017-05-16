@@ -3,19 +3,18 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,30 +31,35 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
+import static org.junit.Assert.assertTrue;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * Tests {@link DefaultLogger}
+ *
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW)
-public class StderrLogService extends AbstractLogService {
+public class DefaultLoggerTest {
 
-	@Override
-	public void notifyListeners(final LogMessage message) {
-		final PrintStream out = (message.level() <= LogLevel.WARN) ? System.err
-			: System.out;
-		out.print(message);
+	private Logger logger;
+	private TestLogListener listener;
+
+	@Before
+	public void setup() {
+		logger = new DefaultLogger(LogLevel.INFO);
+		listener = new TestLogListener();
+		logger.addListener(listener);
+	}
+
+	@Test
+	public void test() {
+		listener.clear();
+
+		logger.error("Hello World!");
+
+		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
+		assertTrue(listener.hasLogged(m -> m.level() == LogLevel.ERROR));
 	}
 }

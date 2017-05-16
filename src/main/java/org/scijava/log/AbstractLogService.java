@@ -33,10 +33,8 @@
 package org.scijava.log;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.scijava.service.AbstractService;
 
@@ -45,6 +43,7 @@ import org.scijava.service.AbstractService;
  *
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ * @author Matthias Arzt
  */
 @IgnoreAsCallingClass
 public abstract class AbstractLogService extends AbstractService implements
@@ -55,7 +54,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels;
 
-	private final List<LogListener> listeners = new CopyOnWriteArrayList<>();
+	private final Logger rootLogger;
 
 	// -- constructor --
 
@@ -64,6 +63,7 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	public AbstractLogService(final Properties properties) {
+		rootLogger = new RootLogger();
 		// provide this constructor to enable unit tests
 		final int level = LogLevel.value(properties.getProperty(
 			LogService.LOG_LEVEL_PROPERTY));
@@ -74,10 +74,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	// -- AbstractLogService methods --
 
-	protected void notifyListeners(LogMessage message) {
-		for (LogListener listener : listeners)
-			listener.messageLogged(message);
-	}
+	abstract void notifyListeners(LogMessage message);
 
 	// -- Logger methods --
 
@@ -100,17 +97,17 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		notifyListeners(new LogMessage(level, msg, t));
+		rootLogger.alwaysLog(level, msg, t);
 	}
 
 	@Override
 	public void addListener(final LogListener listener) {
-		listeners.add(listener);
+		rootLogger.addListener(listener);
 	}
 
 	@Override
 	public void removeListener(final LogListener listener) {
-		listeners.remove(listener);
+		rootLogger.removeListener(listener);
 	}
 
 	// -- Deprecated --
@@ -154,5 +151,25 @@ public abstract class AbstractLogService extends AbstractService implements
 				map.put(key, LogLevel.value(properties.getProperty(propName)));
 			}
 		return map;
+	}
+
+	// -- Helper classes --
+
+	@IgnoreAsCallingClass
+	private class RootLogger extends DefaultLogger {
+
+		public RootLogger() {
+			super(LogLevel.NONE);
+		}
+
+		@Override
+		public int getLevel() {
+			return AbstractLogService.this.getLevel();
+		}
+
+		@Override
+		protected void messageLogged(LogMessage message) {
+			AbstractLogService.this.notifyListeners(message);
+		}
 	}
 }
