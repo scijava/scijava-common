@@ -106,6 +106,11 @@ class DefaultListenableLogger implements ListenableLogger, LogListener {
 		return new DefaultListenableLogger(this, source.subSource(name), level);
 	}
 
+	@Override
+	public ListenableLogger listenableLogger(final int level) {
+		return new DefaultListenableLogger(this, source, level);
+	}
+
 	// -- LogListener methods --
 
 	@Override

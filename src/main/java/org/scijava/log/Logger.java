@@ -209,4 +209,22 @@ public interface Logger {
 	 */
 	Logger subLogger(String name, int level);
 
+	/**
+	 * Creates an {@link ListenableLogger} with the same name and log level as this
+	 * logger. The {@link ListenableLogger} will forward all messages it gets to
+	 * this logger, but provides additional functionality.
+	 */
+	default ListenableLogger listenableLogger() {
+		return listenableLogger(getLevel());
+	}
+
+	/**
+	 * Creates an {@link ListenableLogger} with the same name as this logger. The
+	 * {@link ListenableLogger} will forward all messages it gets to this logger,
+	 * but provides additional functionality.
+	 * 
+	 * @param level Defines the log level of the generated logger.
+	 */
+	ListenableLogger listenableLogger(int level);
+
 }
