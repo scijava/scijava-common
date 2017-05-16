@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,78 +31,33 @@
 
 package org.scijava.log;
 
-import org.scijava.service.AbstractService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
- * Base class for {@link LogService} implementations.
+ * TestLogListener is a {@ling LogListener} usable for testing. It stores all
+ * the LogMessages it receives and allows to test if any LogMessage fulfills a
+ * given predicate.
  *
- * @author Johannes Schindelin
- * @author Curtis Rueden
  * @author Matthias Arzt
  */
-@IgnoreAsCallingClass
-public abstract class AbstractLogService extends AbstractService implements
-	LogService
-{
 
-	private final ListenableLogger logger;
+class TestLogListener implements LogListener {
 
-	private final LogLevelStrategy logLevelStrategy = new LogLevelStrategy();
-
-	// -- constructor --
-
-	public AbstractLogService() {
-		logger = new DefaultListenableLogger(LogLevel.NONE) {
-
-			@Override
-			public int getLevel() {
-				return logLevelStrategy.getLevel();
-			}
-
-			@Override
-			protected void messageLogged(LogMessage message) {
-				super.messageLogged(message);
-				AbstractLogService.this.messageLogged(message);
-			}
-
-		};
-	}
-
-	// -- AbstractLogService methods --
-
-	abstract void messageLogged(LogMessage message);
-
-	// -- Logger methods --
+	List<LogMessage> messages = new ArrayList<>();
 
 	@Override
-	public void addListener(LogListener listener) {
-		logger.addListener(listener);
+	public void messageLogged(LogMessage message) {
+		messages.add(message);
 	}
 
-	@Override
-	public void removeListener(LogListener listener) {
-		logger.removeListener(listener);
+	public boolean hasLogged(Predicate<LogMessage> predicate) {
+		return messages.stream().anyMatch(predicate);
 	}
 
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		return logLevelStrategy.getLevel();
+	public void clear() {
+		messages.clear();
 	}
 
-	@Override
-	public void setLevel(final int level) {
-		logLevelStrategy.setLevel(level);
-	}
-
-	@Override
-	public void setLevel(String classOrPackageName, final int level) {
-		logLevelStrategy.setLevel(classOrPackageName, level);
-	}
-
-	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		logger.alwaysLog(level, msg, t);
-	}
 }
