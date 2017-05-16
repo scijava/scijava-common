@@ -92,8 +92,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	@Override
-	public String getName() {
-		return rootLogger.getName();
+	public LogSource getSource() {
+		return rootLogger.getSource();
 	}
 
 	@Override
@@ -104,8 +104,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	@Override
-	public Logger subLogger(String nameExtension, int level) {
-		return rootLogger.subLogger(nameExtension, level);
+	public Logger subLogger(String name, int level) {
+		return rootLogger.subLogger(name, level);
 	}
 
 	// -- Listenable methods --
@@ -174,7 +174,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	private class RootLogger extends DefaultLogger {
 
 		public RootLogger() {
-			super(AbstractLogService.this::notifyListeners, "", LogLevel.NONE);
+			super(AbstractLogService.this::notifyListeners, LogSource.newRoot(),
+				LogLevel.NONE);
 		}
 
 		@Override

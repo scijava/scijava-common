@@ -31,78 +31,63 @@
 
 package org.scijava.log;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.junit.Test;
+
+import java.util.Collections;
+
+import static org.junit.Assert.*;
 
 /**
- * Default implementation of {@link Logger}.
- *
- * @author Matthias Arzt
- * @author Curtis Rueden
+ * Tests {@link LogSource}
  */
-@IgnoreAsCallingClass
-public class DefaultLogger implements Logger, LogListener {
+public class LogSourceTest {
 
-	private final LogListener destination;
-
-	private final LogSource source;
-
-	private final int level;
-
-	private final List<LogListener> listeners = new CopyOnWriteArrayList<>();
-
-	public DefaultLogger(final LogListener destination,
-		final LogSource source, final int level)
-	{
-		this.destination = destination;
-		this.source = source;
-		this.level = level;
+	@Test
+	public void testRoot() {
+		LogSource root = LogSource.newRoot();
+		assertEquals(Collections.emptyList(), root.path());
+		assertTrue(root.isRoot());
 	}
 
-	// -- Logger methods --
-
-	@Override
-	public LogSource getSource() {
-		return source;
+	@Test
+	public void testIsRoot() {
+		LogSource source = LogSource.newRoot().subSource("sub");
+		assertFalse(source.isRoot());
 	}
 
-	@Override
-	public int getLevel() {
-		return level;
+	@Test
+	public void testChildIsUnique() {
+		String name = "foo";
+		LogSource root = LogSource.newRoot();
+		LogSource a = root.subSource(name);
+		LogSource b = root.subSource(name);
+		assertSame(a, b);
 	}
 
-	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		messageLogged(new LogMessage(source, level, msg, t));
+	@Test
+	public void testToString() {
+		LogSource source = LogSource.newRoot().subSource("Hello").subSource("World");
+		String result = source.toString();
+		assertEquals("Hello:World", result);
 	}
 
-	public Logger subLogger(final String name, final int level) {
-		return new DefaultLogger(this, source.subSource(name), level);
+	@Test
+	public void testRootToString() {
+		LogSource source = LogSource.newRoot();
+		String result = source.toString();
+		assertEquals("", result);
 	}
 
-	// -- Listenable methods --
-
-	@Override
-	public void addListener(final LogListener listener) {
-		listeners.add(listener);
+	@Test
+	public void testName() {
+		LogSource source = LogSource.newRoot().subSource("Hello").subSource("World");
+		assertEquals("World", source.name());
 	}
 
-	@Override
-	public void removeListener(final LogListener listener) {
-		listeners.remove(listener);
-	}
-
-	@Override
-	public void notifyListeners(final LogMessage message) {
-		for (LogListener listener : listeners)
-			listener.messageLogged(message);
-	}
-
-	// -- LogListener methods --
-
-	@Override
-	public void messageLogged(final LogMessage message) {
-		notifyListeners(message);
-		destination.messageLogged(message);
+	@Test
+	public void testParent() {
+		LogSource root = LogSource.newRoot();
+		LogSource source = root.subSource("sub");
+		assertSame(root, source.parent());
 	}
 }

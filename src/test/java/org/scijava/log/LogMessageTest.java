@@ -46,7 +46,7 @@ public class LogMessageTest {
 	public void testToString() {
 		String nameOfThisMethod = "testToString";
 		// setup
-		LogMessage message = new LogMessage(LogLevel.DEBUG, 42, new NullPointerException());
+		LogMessage message = new LogMessage(LogSource.newRoot(), LogLevel.DEBUG, 42, new NullPointerException());
 		// process
 		String s = message.toString();
 		//test
@@ -59,7 +59,7 @@ public class LogMessageTest {
 	@Test
 	public void testToStringOptionalParameters() {
 		// setup
-		LogMessage message = new LogMessage(LogLevel.WARN, null, null);
+		LogMessage message = new LogMessage(LogSource.newRoot(), LogLevel.WARN, null, null);
 
 		// process
 		// Can it still format the message if optional parameters are null?

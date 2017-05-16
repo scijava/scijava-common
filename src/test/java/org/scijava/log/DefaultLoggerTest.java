@@ -31,8 +31,11 @@
 
 package org.scijava.log;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +52,7 @@ public class DefaultLoggerTest {
 
 	@Before
 	public void setup() {
-		logger = new DefaultLogger(message -> {}, "", LogLevel.INFO);
+		logger = new DefaultLogger(message -> {}, LogSource.newRoot(), LogLevel.INFO);
 		listener = new TestLogListener();
 		logger.addListener(listener);
 	}
@@ -71,7 +74,20 @@ public class DefaultLoggerTest {
 
 		sub.error("Hello World!");
 
-		assertTrue(listener.hasLogged(m -> m.text().equals("Hello World!")));
+		assertTrue(listener.hasLogged(m -> m.source().path().contains("sub")));
+	}
+
+	@Test
+	public void testHierarchicLogger() {
+		listener.clear();
+		Logger subA = logger.subLogger("subA");
+		Logger subB = subA.subLogger("subB");
+
+		subB.error("Hello World!");
+
+		assertTrue(listener.hasLogged(m -> m.source().equals(subB.getSource())));
+		assertEquals(Arrays.asList("subA"), subA.getSource().path());
+		assertEquals(Arrays.asList("subA", "subB"), subB.getSource().path());
 	}
 
 	@Test
