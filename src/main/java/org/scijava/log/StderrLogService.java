@@ -33,6 +33,7 @@
 package org.scijava.log;
 
 import java.io.PrintStream;
+import java.util.function.Function;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -52,10 +53,16 @@ import org.scijava.service.Service;
 @Plugin(type = Service.class, priority = Priority.LOW)
 public class StderrLogService extends AbstractLogService {
 
+	private Function<Integer, PrintStream> levelToStream =
+		level -> (level <= LogLevel.WARN) ? System.err : System.out;
+
+	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
+		this.levelToStream = levelToStream;
+	}
+
 	@Override
-	public void notifyListeners(final LogMessage message) {
-		final PrintStream out = (message.level() <= LogLevel.WARN) ? System.err
-			: System.out;
+	public void notifyListeners(LogMessage message) {
+		final PrintStream out = levelToStream.apply(message.level());
 		out.print(message);
 	}
 }

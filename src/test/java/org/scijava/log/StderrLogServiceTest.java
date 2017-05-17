@@ -35,19 +35,44 @@ package org.scijava.log;
 import static org.junit.Assert.assertTrue;
 import static org.scijava.log.LogLevel.WARN;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.junit.Test;
 
 /**
  * Tests {@link StderrLogService}.
  * 
  * @author Johannes Schindelin
+ * @author Matthias Arzt
  */
 public class StderrLogServiceTest {
+
 	@Test
 	public void testDefaultLevel() {
 		final LogService log = new StderrLogService();
 		int level = log.getLevel();
 		assertTrue("default level (" + level + //
 			") is at least INFO(" + WARN + ")", level >= WARN);
+	}
+
+	@Test
+	public void testOutputToStream() {
+		// setup
+		final StderrLogService logService = new StderrLogService();
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final PrintStream p = new PrintStream(outputStream);
+		logService.setPrintStreams(ignore -> p);
+
+		final String text1 = "Hello World!";
+		final String text2 = "foo bar";
+
+		// process
+		logService.warn(text1);
+		logService.subLogger("sub").error(text2);
+
+		// test
+		assertTrue(outputStream.toString().contains(text1));
+		assertTrue(outputStream.toString().contains(text2));
 	}
 }
