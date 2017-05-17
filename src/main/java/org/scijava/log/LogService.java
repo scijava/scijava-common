@@ -49,6 +49,30 @@ public interface LogService extends SciJavaService, ListenableLogger {
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
 
+	String LOG_LEVEL_BY_SOURCE_PROPERTY = "scijava.log.level.source";
+
+	/** Changes the log level of the root logger */
+	void setLevel(int level);
+
+	/**
+	 * For messages that are logged directly to the LogService. The log level can
+	 * be set depending on the class that makes the log.
+	 * 
+	 * @param classOrPackageName If this is the name of a class. Messages logged
+	 *          directly by this class are logged, if the message's level is less
+	 *          or equal to the given level. If this is a package, the same holds
+	 *          for all classes in this package.
+	 * @param level Given level.
+	 */
+	void setLevel(String classOrPackageName, int level);
+
+	/**
+	 * Setting the log level for loggers depending on their {@link LogSource}.
+	 * This will only effect loggers that are created after is method has been
+	 * called.
+	 */
+	void setLevelForLogger(LogSource source, int level);
+
 	// -- Deprecated --
 
 	/** @deprecated Use {@link LogLevel#NONE}. */
@@ -69,9 +93,4 @@ public interface LogService extends SciJavaService, ListenableLogger {
 	/** @deprecated Use {@link LogLevel#TRACE}. */
 	@Deprecated
 	int TRACE = LogLevel.TRACE;
-
-	void setLevel(int level);
-
-	void setLevel(String classOrPackageName, int level);
-
 }

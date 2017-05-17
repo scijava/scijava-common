@@ -54,8 +54,8 @@ public abstract class AbstractLogService extends AbstractService implements
 	// -- constructor --
 
 	public AbstractLogService() {
-		logger = new DefaultListenableLogger(this::messageLogged, LogSource
-			.root(), LogLevel.NONE)
+		logger = new LogServiceLogger(this::messageLogged, LogSource.root(),
+			LogLevel.NONE)
 		{
 
 			@Override
@@ -74,7 +74,12 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	@Override
 	public void setLevel(String classOrPackageName, final int level) {
-		logLevelStrategy.setLevel(classOrPackageName, level);
+		logLevelStrategy.setLevelForClass(classOrPackageName, level);
+	}
+
+	@Override
+	public void setLevelForLogger(LogSource source, final int level) {
+		logLevelStrategy.setLevelForLogger(source, level);
 	}
 
 	abstract void messageLogged(LogMessage message);
@@ -121,5 +126,27 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public ListenableLogger listenableLogger(int level) {
 		return logger.listenableLogger(level);
+	}
+
+	@IgnoreAsCallingClass
+	private class LogServiceLogger extends DefaultListenableLogger {
+
+		public LogServiceLogger(LogListener destination, LogSource source,
+			int level)
+		{
+			super(destination, source, level);
+		}
+
+		@Override
+		public ListenableLogger subLogger(String name, int level) {
+			LogSource source = getSource().subSource(name);
+			int actualLevel = logLevelStrategy.getLevelForLogger(source, level);
+			return new LogServiceLogger(this, source, actualLevel);
+		}
+
+		@Override
+		public ListenableLogger listenableLogger(int level) {
+			return new LogServiceLogger(this, getSource(), level);
+		}
 	}
 }

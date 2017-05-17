@@ -33,6 +33,7 @@ package org.scijava.log;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -74,7 +75,7 @@ public class LogLevelStrategyTest {
 	@Test
 	public void testClassLogLevel() {
 		final LogLevelStrategy log = new LogLevelStrategy();
-		log.setLevel(Dummy.class.getName(), LogLevel.ERROR);
+		log.setLevelForClass(Dummy.class.getName(), LogLevel.ERROR);
 		int level = Dummy.getLevel(log);
 		assertEquals(ERROR, level);
 	}
@@ -92,9 +93,31 @@ public class LogLevelStrategyTest {
 	@Test
 	public void testPackageLogLevel() {
 		final LogLevelStrategy log = new LogLevelStrategy();
-		log.setLevel("org.scijava.log", LogLevel.TRACE);
-		log.setLevel("xyz.foo.bar", LogLevel.ERROR);
+		log.setLevelForClass("org.scijava.log", LogLevel.TRACE);
+		log.setLevelForClass("xyz.foo.bar", LogLevel.ERROR);
 		int level = log.getLevel();
+		assertEquals(TRACE, level);
+	}
+
+	@Test
+	public void testSourceLogLevel() {
+		final LogLevelStrategy log = new LogLevelStrategy();
+		LogSource sourceA = LogSource.of(Arrays.asList("Hello", "World"));
+		LogSource sourceB = LogSource.of(Arrays.asList("foo", "bar"));
+		log.setLevelForLogger(sourceA, LogLevel.TRACE);
+		log.setLevelForLogger(sourceB, LogLevel.ERROR);
+		int level = log.getLevelForLogger(sourceA, LogLevel.NONE);
+		assertEquals(TRACE, level);
+	}
+	@Test
+
+	public void testSourceLogLevelViaProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":Hello:World", "TRACE");
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":foo:bar", "ERROR");
+		final LogLevelStrategy log = new LogLevelStrategy(properties);
+		LogSource source = LogSource.of(Arrays.asList("Hello", "World"));
+		int level = log.getLevelForLogger(source, LogLevel.NONE);
 		assertEquals(TRACE, level);
 	}
 }
