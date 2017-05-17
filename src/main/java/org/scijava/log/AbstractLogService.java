@@ -84,6 +84,11 @@ public abstract class AbstractLogService extends AbstractService implements
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
 
+	@Override
+	public void setLevelForLogger(final String source, final int level) {
+		rootLogger.getSource().subSource(source).setLogLevel(level);
+	}
+
 	// -- Logger methods --
 
 	@Override

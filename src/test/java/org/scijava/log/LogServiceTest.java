@@ -157,6 +157,15 @@ public class LogServiceTest {
 	}
 
 	@Test
+	public void testSubLoggerLogLevel() {
+		final TestableLogService log = new TestableLogService();
+		log.setLevel(LogLevel.ERROR);
+		log.setLevelForLogger("foo:bar", LogLevel.TRACE);
+		Logger sub = log.subLogger("foo").subLogger("bar");
+		assertEquals(LogLevel.TRACE, sub.getLevel());
+	}
+
+	@Test
 	public void testPackageLogLevel() {
 		final LogService log = new TestableLogService();
 		log.setLevel("org.scijava.log", LogLevel.TRACE);

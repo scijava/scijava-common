@@ -77,7 +77,9 @@ public class DefaultLogger implements Logger, LogListener {
 	}
 
 	public Logger subLogger(final String name, final int level) {
-		return new DefaultLogger(this, source.subSource(name), level);
+		LogSource source = getSource().subSource(name);
+		int actualLevel = source.hasLogLevel() ? source.logLevel() : level;
+		return new DefaultLogger(this, source, actualLevel);
 	}
 
 	// -- Listenable methods --

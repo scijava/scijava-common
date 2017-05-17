@@ -45,6 +45,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class LogSource {
 
+	public static final String SEPARATOR = ":";
+
 	private final LogSource parent;
 
 	private final List<String> path;
@@ -53,6 +55,8 @@ public class LogSource {
 		new ConcurrentSkipListMap<>();
 
 	private String formatted = null;
+
+	private Integer logLevel;
 
 	private LogSource(LogSource parent, String name) {
 		this.parent = parent;
@@ -73,6 +77,19 @@ public class LogSource {
 		return new LogSource();
 	}
 
+	/**
+	 * Returns a log source with the given path.
+	 *
+	 * @param subPath Relative path to the source, divided by
+	 *          {@link LogSource#SEPARATOR}.
+	 */
+	public LogSource subSource(final String subPath) {
+		LogSource result = this;
+		for (final String name : subPath.split(SEPARATOR))
+			result = result.child(name);
+		return result;
+	}
+
 	/** Returns the list of strings which is represented by this LogSource. */
 	public List<String> path() {
 		return path;
@@ -84,22 +101,10 @@ public class LogSource {
 		return path.get(path.size() - 1);
 	}
 
-	/**
-	 * Returns the LogSource which represents the path of this LogSource extended
-	 * by name.
-	 */
-	public LogSource subSource(String name) {
-		LogSource child = children.get(name);
-		if (child != null) return child;
-		child = new LogSource(this, name);
-		children.putIfAbsent(name, child);
-		return children.get(name);
-	}
-
 	@Override
 	public String toString() {
 		if (formatted != null) return formatted;
-		StringJoiner joiner = new StringJoiner(":");
+		StringJoiner joiner = new StringJoiner(SEPARATOR);
 		path.forEach(s -> joiner.add(s));
 		formatted = joiner.toString();
 		return formatted;
@@ -112,5 +117,29 @@ public class LogSource {
 	/** Gets the parent of this source, or null if the source is a root. */
 	public LogSource parent() {
 		return parent;
+	}
+
+	public void setLogLevel(int logLevel) {
+		this.logLevel = logLevel;
+	}
+
+	public boolean hasLogLevel() {
+		return logLevel != null;
+	}
+
+	public int logLevel() {
+		if (!hasLogLevel()) throw new IllegalStateException();
+		return logLevel;
+	}
+
+	// -- Helper methods --
+
+	private LogSource child(final String name) {
+		if (name.isEmpty()) return this;
+		LogSource child = children.get(name);
+		if (child != null) return child;
+		child = new LogSource(this, name);
+		children.putIfAbsent(name, child);
+		return children.get(name);
 	}
 }

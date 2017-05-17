@@ -31,11 +31,14 @@
 
 package org.scijava.log;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Tests {@link LogSource}
@@ -65,6 +68,14 @@ public class LogSourceTest {
 	}
 
 	@Test
+	public void testLogSourceParse() {
+		LogSource foo = LogSource.newRoot().subSource("foo");
+		LogSource result = foo.subSource("Hello:World");
+		LogSource expected = foo.subSource("Hello").subSource("World");
+		assertEquals(expected, result);
+	}
+
+	@Test
 	public void testToString() {
 		LogSource source = LogSource.newRoot().subSource("Hello").subSource("World");
 		String result = source.toString();
@@ -89,5 +100,19 @@ public class LogSourceTest {
 		LogSource root = LogSource.newRoot();
 		LogSource source = root.subSource("sub");
 		assertSame(root, source.parent());
+	}
+
+	@Test
+	public void testUnsetLogLevel() {
+		LogSource source = LogSource.newRoot();
+		assertFalse(source.hasLogLevel());
+	}
+
+	@Test
+	public void testSetLogLevel() {
+		LogSource source = LogSource.newRoot();
+		source.setLogLevel(LogLevel.INFO);
+		assertTrue(source.hasLogLevel());
+		assertEquals(LogLevel.INFO, source.logLevel());
 	}
 }
