@@ -34,6 +34,6 @@ package org.scijava.event;
 /**
  * Event to be published just before disposing a context.
  * 
- * @author Johannes Schindein
+ * @author Johannes Schindelin
  */
 public class ContextDisposingEvent extends SciJavaEvent { }

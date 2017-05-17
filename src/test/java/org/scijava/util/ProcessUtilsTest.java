@@ -71,11 +71,7 @@ public class ProcessUtilsTest {
 		assumeTrue(PlatformUtils.isPOSIX());
 	}
 
-	/**
-	 * A class executing a 'sleep' call, to be interrupted.
-	 * 
-	 * @author Johannes Schindelin
-	 */
+	/** A class executing a 'sleep' call, to be interrupted. */
 	private static class SleepThread extends Thread {
 		private int seconds;
 		private Throwable result;
