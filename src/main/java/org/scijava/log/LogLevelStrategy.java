@@ -44,57 +44,48 @@ import java.util.Properties;
 @IgnoreAsCallingClass
 class LogLevelStrategy {
 
-	private final Map<String, Integer> classAndPackageLevels = new HashMap<>();
+	private final Map<String, Integer> classAndPackageLevels;
 
-	private int currentLevel = levelFromEnvironment();
+	private int currentLevel = System.getenv("DEBUG") == null ? LogLevel.INFO
+		: LogLevel.DEBUG;
 
-	LogLevelStrategy() {
-		// check SciJava log level system properties for initial logging levels
+	public LogLevelStrategy() {
+		this(System.getProperties());
+	}
 
-		// global log level property
-		final String logProp = System.getProperty(LogService.LOG_LEVEL_PROPERTY);
-		final int level = LogLevel.value(logProp);
+	// To enable tests, make properties a parameter.
+	LogLevelStrategy(Properties properties) {
+		final int level = LogLevel.value(properties.getProperty(
+			LogService.LOG_LEVEL_PROPERTY));
 		if (level >= 0) setLevel(level);
 
-		if (getLevel() == 0) {
-			// use the default, which is INFO unless the DEBUG env. variable is set
-			setLevel(levelFromEnvironment());
-		}
-
-		// populate custom class- and package-specific log level properties
-		final String logLevelPrefix = LogService.LOG_LEVEL_PROPERTY + ":";
-		final Properties props = System.getProperties();
-		for (final Object propKey : props.keySet()) {
-			if (!(propKey instanceof String)) continue;
-			final String propName = (String) propKey;
-			if (!propName.startsWith(logLevelPrefix)) continue;
-			final String classOrPackageName = propName.substring(logLevelPrefix
-					.length());
-			setLevel(classOrPackageName, LogLevel.value(props.getProperty(propName)));
-		}
-
+		classAndPackageLevels = setupMapFromProperties(properties,
+			LogService.LOG_LEVEL_PROPERTY + ":");
 	}
 
 	public int getLevel() {
-		if (!classAndPackageLevels.isEmpty()) {
-			// check for a custom log level for calling class or its parent packages
-			String classOrPackageName = callingClass();
-			while (classOrPackageName != null) {
-				final Integer level = classAndPackageLevels.get(classOrPackageName);
-				if (level != null) return level;
-				classOrPackageName = parentPackage(classOrPackageName);
-			}
-		}
-		// no custom log level; return the global log level
-		return currentLevel;
+		if (classAndPackageLevels.isEmpty()) return currentLevel;
+		return getLevelForClass(callingClass(), currentLevel);
 	}
 
 	public void setLevel(final int level) {
 		currentLevel = level;
 	}
 
-	public void setLevel(final String classOrPackageName, final int level) {
+	public void setLevel(final String classOrPackageName,
+		 final int level)
+	{
 		classAndPackageLevels.put(classOrPackageName, level);
+	}
+
+	private int getLevelForClass(String classOrPackageName, int defaultLevel) {
+		// check sor a custom log level for calling class or its parent packages
+		while (classOrPackageName != null) {
+			final Integer level = classAndPackageLevels.get(classOrPackageName);
+			if (level != null) return level;
+			classOrPackageName = parentPackage(classOrPackageName);
+		}
+		return defaultLevel;
 	}
 
 	// -- Helper methods --
@@ -109,7 +100,16 @@ class LogLevelStrategy {
 		return classOrPackageName.substring(0, dot);
 	}
 
-	private int levelFromEnvironment() {
-		return System.getenv("DEBUG") == null ? LogLevel.INFO : LogLevel.DEBUG;
+	private HashMap<String, Integer> setupMapFromProperties(Properties properties,
+		String prefix)
+	{
+		final HashMap<String, Integer> map = new HashMap<>();
+		for (final String propName : properties.stringPropertyNames())
+			if (propName.startsWith(prefix)) {
+				final String key = propName.substring(prefix.length());
+				map.put(key, LogLevel.value(properties.getProperty(propName)));
+			}
+		return map;
 	}
+
 }
