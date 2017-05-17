@@ -35,7 +35,9 @@ package org.scijava.script;
  * Holds a parameter, its type and value, for a recorded macro.
  * 
  * @author Grant Harris
+ * @deprecated To be removed in SciJava Common 3.0.0.
  */
+@Deprecated
 public class ParameterObject {
 
 	public ParameterObject(final String param, final Class<?> type,
