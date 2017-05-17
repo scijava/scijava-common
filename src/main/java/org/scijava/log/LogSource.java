@@ -32,6 +32,7 @@
 package org.scijava.log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
@@ -47,6 +48,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * @author Matthias Arzt
  */
 public class LogSource {
+
+	public static final String SEPARATOR = ":";
 
 	private static final LogSource ROOT = new LogSource();
 
@@ -86,6 +89,10 @@ public class LogSource {
 		return result;
 	}
 
+	public static LogSource parse(String text) {
+		return of(Arrays.asList(text.split(SEPARATOR)));
+	}
+
 	/** Returns the list of strings which is represented by this LogSource. */
 	public List<String> path() {
 		return path;
@@ -111,7 +118,7 @@ public class LogSource {
 
 	public String toString() {
 		if (formatted != null) return formatted;
-		StringJoiner joiner = new StringJoiner(":");
+		StringJoiner joiner = new StringJoiner(SEPARATOR);
 		path.forEach(s -> joiner.add(s));
 		formatted = joiner.toString();
 		return formatted;

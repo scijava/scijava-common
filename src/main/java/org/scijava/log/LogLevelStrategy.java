@@ -34,10 +34,13 @@ package org.scijava.log;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
 /**
  * LogLevelStrategy provides a detailed control of logger's levels for the
- * AbstractLogService.
+ * AbstractLogService. It reads two maps from {@link System#getProperties()}.
+ * One maps class/packages names to log levels. The other maps names to log
+ * levels.
  * 
  * @author Matthias Arzt
  */
@@ -45,6 +48,8 @@ import java.util.Properties;
 class LogLevelStrategy {
 
 	private final Map<String, Integer> classAndPackageLevels;
+
+	private final Map<LogSource, Integer> nameLevels;
 
 	private int currentLevel = System.getenv("DEBUG") == null ? LogLevel.INFO
 		: LogLevel.DEBUG;
@@ -60,7 +65,9 @@ class LogLevelStrategy {
 		if (level >= 0) setLevel(level);
 
 		classAndPackageLevels = setupMapFromProperties(properties,
-			LogService.LOG_LEVEL_PROPERTY + ":");
+			LogService.LOG_LEVEL_PROPERTY + ":", Function.identity());
+		nameLevels = setupMapFromProperties(properties,
+			LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":", LogSource::parse);
 	}
 
 	public int getLevel() {
@@ -72,8 +79,8 @@ class LogLevelStrategy {
 		currentLevel = level;
 	}
 
-	public void setLevel(final String classOrPackageName,
-		 final int level)
+	public void setLevelForClass(final String classOrPackageName,
+		final int level)
 	{
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
@@ -88,6 +95,14 @@ class LogLevelStrategy {
 		return defaultLevel;
 	}
 
+	public void setLevelForLogger(LogSource source, final int level) {
+		nameLevels.put(source, level);
+	}
+
+	public int getLevelForLogger(LogSource source, int defaultLevel) {
+		return nameLevels.getOrDefault(source, defaultLevel);
+	}
+
 	// -- Helper methods --
 
 	private String callingClass() {
@@ -100,14 +115,15 @@ class LogLevelStrategy {
 		return classOrPackageName.substring(0, dot);
 	}
 
-	private HashMap<String, Integer> setupMapFromProperties(Properties properties,
-		String prefix)
+	private <K> HashMap<K, Integer> setupMapFromProperties(Properties properties,
+		String prefix, Function<String, K> keyParser)
 	{
-		final HashMap<String, Integer> map = new HashMap<>();
+		final HashMap<K, Integer> map = new HashMap<>();
 		for (final String propName : properties.stringPropertyNames())
 			if (propName.startsWith(prefix)) {
 				final String key = propName.substring(prefix.length());
-				map.put(key, LogLevel.value(properties.getProperty(propName)));
+				map.put(keyParser.apply(key), LogLevel.value(properties.getProperty(
+					propName)));
 			}
 		return map;
 	}
