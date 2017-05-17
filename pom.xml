@@ -56,14 +56,13 @@
 			<properties><id>dscho</id></properties>
 		</contributor>
 		<contributor>
+			<name>Chris Allan</name>
+			<properties><id>callan</id></properties>
+		</contributor>
+		<contributor>
 			<name>Barry DeZonia</name>
 			<url>http://imagej.net/User:Bdezonia</url>
 			<properties><id>bdezonia</id></properties>
-		</contributor>
-		<contributor>
-			<name>Lee Kamentsky</name>
-			<url>http://imagej.net/User:Leek</url>
-			<properties><id>LeeKamentsky</id></properties>
 		</contributor>
 		<contributor>
 			<name>Christian Dietz</name>
@@ -81,13 +80,47 @@
 			<properties><id>gab1one</id></properties>
 		</contributor>
 		<contributor>
+			<name>Aivar Grislis</name>
+			<url>http://imagej.net/User:Grislis</url>
+			<properties><id>grislis</id></properties>
+		</contributor>
+		<contributor>
 			<name>Jonathan Hale</name>
 			<properties><id>Squareys</id></properties>
+		</contributor>
+		<contributor>
+			<name>Grant Harris</name>
+			<url>http://imagej.net/User:Harris</url>
+			<properties><id>tnargsirrah</id></properties>
+		</contributor>
+		<contributor>
+			<name>Lee Kamentsky</name>
+			<url>http://imagej.net/User:Leek</url>
+			<properties><id>LeeKamentsky</id></properties>
+		</contributor>
+		<contributor>
+			<name>Rick Lentz</name>
+			<url>http://imagej.net/User:Lentz</url>
+		</contributor>
+		<contributor>
+			<name>Melissa Linkert</name>
+			<url>http://imagej.net/User:Linkert</url>
+			<properties><id>melissalinkert</id></properties>
 		</contributor>
 		<contributor>
 			<name>Kevin Mader</name>
 			<url>http://imagej.net/User:Ksmader</url>
 			<properties><id>kmader</id></properties>
+		</contributor>
+		<contributor>
+			<name>Hadrien Mary</name>
+			<url>http://imagej.net/User:Hadim</url>
+			<properties><id>hadim</id></properties>
+		</contributor>
+		<contributor>
+			<name>Alison Walter</name>
+			<url>http://imagej.net/User:Awalter2</url>
+			<properties><id>awalter17</id></properties>
 		</contributor>
 		<contributor>
 			<name>Jay Warrick</name>
