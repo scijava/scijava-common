@@ -33,29 +33,62 @@ package org.scijava.console;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.function.Consumer;
 
 /**
- * A {@link PrintStream} that wraps a {@link MultiOutputStream}.
+ * ListenableSystemStream allows listing to System.out and System.err.
  *
- * @author Curtis Rueden
+ * @author Matthais Arzt
  */
-public class MultiPrintStream extends PrintStream {
+class ListenableSystemStreams {
 
-	public MultiPrintStream(final OutputStream os) {
-		super(multi(os));
+	private ListenableSystemStreams() {
+		// prevent from being initialized
 	}
 
-	// -- MultiPrintStream methods --
-
-	public MultiOutputStream getParent() {
-		return (MultiOutputStream) out;
+	public static ListenableStream out() {
+		return LazyHolder.OUT;
 	}
 
-	// -- Helper methods --
-
-	private static OutputStream multi(final OutputStream os) {
-		if (os instanceof MultiOutputStream) return os;
-		return new MultiOutputStream(os);
+	public static ListenableStream err() {
+		return LazyHolder.ERR;
 	}
 
+	private static class LazyHolder { // using idiom for lazy-loaded singleton
+
+		private static final ListenableStream OUT = new ListenableStream(System.out,
+			System::setOut);
+		private static final ListenableStream ERR = new ListenableStream(System.err,
+			System::setErr);
+	}
+
+	public static class ListenableStream {
+
+		private final PrintStream out;
+		private PrintStream in;
+		private final MultiOutputStream multi;
+
+		ListenableStream(PrintStream out, Consumer<PrintStream> streamSetter) {
+			this.out = out;
+			this.multi = new MultiOutputStream(out);
+			this.in = new PrintStream(multi);
+			streamSetter.accept(in);
+		}
+
+		public void addOutputStream(OutputStream os) {
+			multi.addOutputStream(os);
+		}
+
+		public void removeOutputStream(OutputStream os) {
+			multi.removeOutputStream(os);
+		}
+
+		public PrintStream bypass() {
+			return out;
+		}
+
+		public PrintStream stream() {
+			return in;
+		}
+	}
 }
