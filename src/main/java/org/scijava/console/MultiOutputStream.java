@@ -34,6 +34,8 @@ package org.scijava.console;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A {@code MultiOutputStream} is a collection of constituent
@@ -48,9 +50,7 @@ import java.util.ArrayList;
  */
 public class MultiOutputStream extends OutputStream {
 
-	private final ArrayList<OutputStream> streams;
-
-	private OutputStream[] cachedStreams;
+	private final List<OutputStream> streams;
 
 	/**
 	 * Forwards output to a list of output streams.
@@ -58,37 +58,26 @@ public class MultiOutputStream extends OutputStream {
 	 * @param os Output streams which will receive this stream's output.
 	 */
 	public MultiOutputStream(final OutputStream... os) {
-		streams = new ArrayList<>(os.length);
-		for (int i = 0; i < os.length; i++) {
-			streams.add(os[i]);
-		}
-		cacheStreams();
+		streams = new CopyOnWriteArrayList<>(os);
 	}
 
 	// -- MultiOutputStream methods --
 
 	/** Adds an output stream to those receiving this stream's output. */
 	public void addOutputStream(final OutputStream os) {
-		synchronized (streams) {
-			streams.add(os);
-			cacheStreams();
-		}
+		streams.add(os);
 	}
 
 	/** Removes an output stream from those receiving this stream's output. */
 	public void removeOutputStream(final OutputStream os) {
-		synchronized (streams) {
-			streams.remove(os);
-			cacheStreams();
-		}
+		streams.remove(os);
 	}
 
 	// -- OutputStream methods --
 
 	@Override
 	public void write(final int b) throws IOException {
-		final OutputStream[] toWrite = cachedStreams;
-		for (final OutputStream stream : toWrite)
+		for (final OutputStream stream : streams)
 			stream.write(b);
 	}
 
@@ -96,8 +85,7 @@ public class MultiOutputStream extends OutputStream {
 	public void write(final byte[] buf, final int off, final int len)
 		throws IOException
 	{
-		final OutputStream[] toWrite = cachedStreams;
-		for (final OutputStream stream : toWrite)
+		for (final OutputStream stream : streams)
 			stream.write(buf, off, len);
 	}
 
@@ -105,8 +93,7 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void close() throws IOException {
-		final OutputStream[] toClose = cachedStreams;
-		for (final OutputStream stream : toClose)
+		for (final OutputStream stream : streams)
 			stream.close();
 	}
 
@@ -114,15 +101,8 @@ public class MultiOutputStream extends OutputStream {
 
 	@Override
 	public void flush() throws IOException {
-		final OutputStream[] toFlush = cachedStreams;
-		for (final OutputStream stream : toFlush)
+		for (final OutputStream stream : streams)
 			stream.flush();
-	}
-
-	// -- Helper methods --
-
-	private void cacheStreams() {
-		cachedStreams = streams.toArray(new OutputStream[streams.size()]);
 	}
 
 }
