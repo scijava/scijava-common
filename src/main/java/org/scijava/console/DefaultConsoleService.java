@@ -37,6 +37,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.scijava.Context;
 import org.scijava.console.OutputEvent.Source;
@@ -69,9 +70,7 @@ public class DefaultConsoleService extends
 	private OutputStreamReporter out, err;
 
 	/** List of listeners for {@code stdout} and {@code stderr} output. */
-	private ArrayList<OutputListener> listeners;
-
-	private OutputListener[] cachedListeners;
+	private List<OutputListener> listeners;
 
 	// -- ConsoleService methods --
 
@@ -116,26 +115,19 @@ public class DefaultConsoleService extends
 	@Override
 	public void addOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
-		synchronized (listeners) {
-			listeners.add(l);
-			cacheListeners();
-		}
+		listeners.add(l);
 	}
 
 	@Override
 	public void removeOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
-		synchronized (listeners) {
-			listeners.remove(l);
-			cacheListeners();
-		}
+		listeners.remove(l);
 	}
 
 	@Override
 	public void notifyListeners(final OutputEvent event) {
 		if (listeners == null) initListeners();
-		final OutputListener[] toNotify = cachedListeners;
-		for (final OutputListener l : toNotify)
+		for (final OutputListener l : listeners)
 			l.outputOccurred(event);
 	}
 
@@ -163,15 +155,10 @@ public class DefaultConsoleService extends
 		err = new OutputStreamReporter(Source.STDERR);
 		syserr.getParent().addOutputStream(err);
 
-		listeners = new ArrayList<>();
-		cachedListeners = listeners.toArray(new OutputListener[0]);
+		listeners = new CopyOnWriteArrayList<>();
 	}
 
 	// -- Helper methods --
-
-	private void cacheListeners() {
-		cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
-	}
 
 	private MultiPrintStream multiPrintStream(final PrintStream ps) {
 		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;
