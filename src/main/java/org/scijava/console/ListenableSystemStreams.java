@@ -32,48 +32,42 @@
 
 package org.scijava.console;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.function.Consumer;
 
 /**
- * A {@link PrintStream} that wraps a {@link MultiOutputStream}.
+ * ListenableSystemStream allows listing to System.out and System.err.
  *
- * @author Curtis Rueden
+ * @author Matthais Arzt
  */
-public class MultiPrintStream extends PrintStream {
+public final class ListenableSystemStreams {
 
-	private final PrintStream bypass;
-
-	public MultiPrintStream(final OutputStream os) {
-		super(multi(os));
-		// NB: bypass would not work, if os is an instance of MultiOutputStream.
-		// Therefor only provide bypass functionality, if os is an instance of PrintStream.
-		this.bypass = (os instanceof PrintStream) ? (PrintStream) os : null;
+	private ListenableSystemStreams() {
+		// prevent from being initialized
 	}
 
-	// -- MultiPrintStream methods --
-
-	public MultiOutputStream getParent() {
-		return (MultiOutputStream) out;
+	public static MultiPrintStream out() {
+		return LazyHolder.OUT;
 	}
 
-	public void addOutputStream(OutputStream os) {
-		getParent().addOutputStream(os);
+	public static MultiPrintStream err() {
+		return LazyHolder.ERR;
 	}
 
-	public void removeOutputStream(OutputStream os) {
-		getParent().removeOutputStream(os);
+	private static class LazyHolder { // using idiom for lazy-loaded singleton
+
+		private static final MultiPrintStream OUT = initStream(System.out,
+			System::setOut);
+
+		private static final MultiPrintStream ERR = initStream(System.err,
+			System::setErr);
+
+		private static MultiPrintStream initStream(PrintStream out,
+			Consumer<PrintStream> streamSetter)
+		{
+			MultiPrintStream listenableStream = new MultiPrintStream(out);
+			streamSetter.accept(listenableStream);
+			return listenableStream;
+		}
 	}
-
-	public PrintStream bypass() {
-		return bypass;
-	}
-
-	// -- Helper methods --
-
-	private static OutputStream multi(final OutputStream os) {
-		if (os instanceof MultiOutputStream) return os;
-		return new MultiOutputStream(os);
-	}
-
 }
