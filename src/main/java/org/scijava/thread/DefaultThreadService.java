@@ -141,9 +141,12 @@ public final class DefaultThreadService extends AbstractService implements
 	// -- Disposable methods --
 
 	@Override
-	public void dispose() {
+	public synchronized void dispose() {
 		disposed = true;
-		if (executor != null) executor.shutdown();
+		if (executor != null) {
+			executor.shutdown();
+			executor = null;
+		}
 	}
 
 	// -- ThreadFactory methods --
@@ -157,10 +160,13 @@ public final class DefaultThreadService extends AbstractService implements
 	// -- Helper methods --
 
 	private ExecutorService executor() {
-		if (executor == null) {
-			executor = Executors.newCachedThreadPool(this);
-		}
+		if (executor == null) initExecutor();
 		return executor;
+	}
+
+	private synchronized void initExecutor() {
+		if (executor != null) return;
+		executor = Executors.newCachedThreadPool(this);
 	}
 
 	private Runnable wrap(final Runnable r) {
