@@ -112,7 +112,7 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 
 	/**
 	 * Gets whether the current thread is a dispatch thread for use with
-	 * {@link #invoke} and {@link #queue}.
+	 * {@link #invoke(Runnable)} and {@link #queue(Runnable)}.
 	 * <p>
 	 * In the case of AWT-based applications (e.g., Java on the desktop), this is
 	 * typically the AWT Event Dispatch Thread (EDT). However, ultimately the
@@ -141,7 +141,8 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 		InvocationTargetException;
 
 	/**
-	 * Queues the given code for later execution in a special dispatch thread.
+	 * Queues the given code for later execution in a special dispatch thread,
+	 * returning immediately.
 	 * <p>
 	 * In the case of AWT-based applications (e.g., Java on the desktop), this is
 	 * typically the AWT Event Dispatch Thread (EDT). However, ultimately the
