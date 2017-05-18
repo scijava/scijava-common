@@ -33,6 +33,8 @@ package org.scijava.thread;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +66,9 @@ public final class DefaultThreadService extends AbstractService implements
 	private LogService log;
 
 	private ExecutorService executor;
+
+	/** Mapping from ID to single-thread {@link ExecutorService} queue. */
+	private Map<String, ExecutorService> queues;
 
 	private int nextThread = 0;
 
@@ -118,6 +123,16 @@ public final class DefaultThreadService extends AbstractService implements
 	}
 
 	@Override
+	public Future<?> queue(final String id, final Runnable code) {
+		return executor(id).submit(wrap(code));
+	}
+
+	@Override
+	public <V> Future<V> queue(final String id, final Callable<V> code) {
+		return executor(id).submit(wrap(code));
+	}
+
+	@Override
 	public Thread getParent(final Thread thread) {
 		return parents.get(thread != null ? thread : Thread.currentThread());
 	}
@@ -147,6 +162,11 @@ public final class DefaultThreadService extends AbstractService implements
 			executor.shutdown();
 			executor = null;
 		}
+		if (queues != null) {
+			for (final ExecutorService queue : queues.values()) {
+				queue.shutdown();
+			}
+		}
 	}
 
 	// -- ThreadFactory methods --
@@ -162,6 +182,16 @@ public final class DefaultThreadService extends AbstractService implements
 	private ExecutorService executor() {
 		if (executor == null) initExecutor();
 		return executor;
+	}
+
+	private synchronized ExecutorService executor(final String id) {
+		if (disposed) return null;
+		if (queues == null) queues = new HashMap<>();
+		if (!queues.containsKey(id)) {
+			final ExecutorService queue = Executors.newSingleThreadExecutor();
+			queues.put(id, queue);
+		}
+		return queues.get(id);
 	}
 
 	private synchronized void initExecutor() {

@@ -154,6 +154,31 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 	void queue(Runnable code);
 
 	/**
+	 * Queues the given code for later execution in a dispatch thread associated
+	 * with the specified ID, returning immediately.
+	 *
+	 * @param id The ID designating which dispatch thread will execute the code.
+	 * @param code The code to execute.
+	 * @return A {@link Future} whose {@link Future#get()} method blocks until the
+	 *         queued code has completed executing and returns {@code null}.
+	 * @see ExecutorService#submit(Runnable)
+	 */
+	Future<?> queue(String id, Runnable code);
+
+	/**
+	 * Queues the given code for later execution in a dispatch thread associated
+	 * with the specified ID, returning immediately.
+	 *
+	 * @param id The ID designating which dispatch thread will execute the code.
+	 * @param code The code to execute.
+	 * @return A {@link Future} whose {@link Future#get()} method blocks until the
+	 *         queued code has completed executing and returns the result of the
+	 *         execution.
+	 * @see ExecutorService#submit(Callable)
+	 */
+	<V> Future<V> queue(String id, Callable<V> code);
+
+	/**
 	 * Returns the thread that called the specified thread.
 	 * <p>
 	 * This works only on threads which the thread service knows about, of course.
