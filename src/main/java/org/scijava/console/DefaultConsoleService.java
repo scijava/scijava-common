@@ -33,13 +33,16 @@
 package org.scijava.console;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiFunction;
 
 import org.scijava.Context;
 import org.scijava.console.OutputEvent.Source;
+import org.scijava.log.LogLevel;
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
@@ -71,6 +74,13 @@ public class DefaultConsoleService extends
 	private List<OutputListener> listeners;
 
 	// -- ConsoleService methods --
+
+	@Override
+	public void initialize() {
+		PrintStream logErr = logStream(Source.STDERR);
+		PrintStream logOut = logStream(Source.STDOUT);
+		log.setPrintStreams(level -> (level <= LogLevel.WARN) ? logErr : logOut);
+	}
 
 	@Override
 	public void processArgs(final String... args) {
@@ -129,6 +139,27 @@ public class DefaultConsoleService extends
 			l.outputOccurred(event);
 	}
 
+	private PrintStream logStream(Source source) {
+		OutputStream a = getBypassingStream(source);
+		OutputStream b = new OutputStreamReporter((relevance, text) -> {
+			final Context context = getContext();
+			final boolean contextual = true;
+			final boolean containsLog = true;
+			return new OutputEvent(context, source, text, contextual, containsLog);
+		});
+		return new PrintStream(new MultiOutputStream(a, b));
+	}
+
+	private OutputStream getBypassingStream(Source source) {
+		switch (source) {
+			case STDOUT:
+				return ListenableSystemStreams.out().bypass();
+			case STDERR:
+				return ListenableSystemStreams.err().bypass();
+		}
+		throw new AssertionError();
+	}
+
 	// -- Disposable methods --
 
 	@Override
@@ -143,12 +174,21 @@ public class DefaultConsoleService extends
 	private synchronized void initListeners() {
 		if (listeners != null) return; // already initialized
 
-		out = new OutputStreamReporter(Source.STDOUT);
+		out = setupDefaultReporter(Source.STDOUT);
+		err = setupDefaultReporter(Source.STDERR);
 		ListenableSystemStreams.out().addOutputStream(out);
-		err = new OutputStreamReporter(Source.STDERR);
 		ListenableSystemStreams.err().addOutputStream(err);
 
 		listeners = new CopyOnWriteArrayList<>();
+	}
+
+	private OutputStreamReporter setupDefaultReporter(Source source) {
+		return new OutputStreamReporter((relevance, output) -> {
+			final Context context = getContext();
+			final boolean contextual = relevance == ThreadContext.SAME;
+			final boolean containsLog = false;
+			return new OutputEvent(context, source, output, contextual, containsLog);
+		});
 	}
 
 	// -- Helper methods --
@@ -178,11 +218,12 @@ public class DefaultConsoleService extends
 	 */
 	private class OutputStreamReporter extends OutputStream {
 
-		/** Source of the output stream; i.e., {@code stdout} or {@code stderr}. */
-		private final Source source;
+		private final BiFunction<ThreadContext, String, OutputEvent> eventFactory;
 
-		public OutputStreamReporter(final Source source) {
-			this.source = source;
+		public OutputStreamReporter(
+			BiFunction<ThreadContext, String, OutputEvent> eventFactory)
+		{
+			this.eventFactory = eventFactory;
 		}
 
 		// -- OutputStream methods --
@@ -208,12 +249,8 @@ public class DefaultConsoleService extends
 		}
 
 		private void publish(final ThreadContext relevance, final String output) {
-			final Context context = getContext();
-			final boolean contextual = relevance == ThreadContext.SAME;
-			final OutputEvent event =
-				new OutputEvent(context, source, output, contextual);
+			final OutputEvent event = eventFactory.apply(relevance, output);
 			notifyListeners(event);
 		}
 	}
-
 }

@@ -32,6 +32,7 @@
 
 package org.scijava.console;
 
+import java.io.PrintStream;
 import java.util.LinkedList;
 
 import org.scijava.plugin.HandlerService;
