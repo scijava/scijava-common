@@ -40,6 +40,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -188,7 +189,16 @@ public final class DefaultThreadService extends AbstractService implements
 		if (disposed) return null;
 		if (queues == null) queues = new HashMap<>();
 		if (!queues.containsKey(id)) {
-			final ExecutorService queue = Executors.newSingleThreadExecutor();
+			final ThreadFactory factory = new ThreadFactory() {
+
+				@Override
+				public Thread newThread(final Runnable r) {
+					final String threadName = contextThreadPrefix() + id;
+					return new Thread(r, threadName);
+				}
+
+			};
+			final ExecutorService queue = Executors.newSingleThreadExecutor(factory);
 			queues.put(id, queue);
 		}
 		return queues.get(id);
