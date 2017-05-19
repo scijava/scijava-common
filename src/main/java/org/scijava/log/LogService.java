@@ -33,6 +33,9 @@ package org.scijava.log;
 
 import org.scijava.service.SciJavaService;
 
+import java.io.PrintStream;
+import java.util.function.Function;
+
 /**
  * Interface for the logging service.
  * <p>
@@ -73,6 +76,12 @@ public interface LogService extends SciJavaService, ListenableLogger {
 	 */
 	void setLevelForLogger(LogSource source, int level);
 
+	/**
+	 * If the a LogService writes the log messages to streams,
+	 * it should implement this method for setting the output streams.
+	 */
+	default void setPrintStreams(Function<Integer, PrintStream> levelToStream) {}
+
 	// -- Deprecated --
 
 	/** @deprecated Use {@link LogLevel#NONE}. */
@@ -93,4 +102,5 @@ public interface LogService extends SciJavaService, ListenableLogger {
 	/** @deprecated Use {@link LogLevel#TRACE}. */
 	@Deprecated
 	int TRACE = LogLevel.TRACE;
+
 }
