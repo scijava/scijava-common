@@ -35,7 +35,9 @@ package org.scijava.script;
  * {@link CodeGenerator} for Java.
  * 
  * @author Grant Harris
+ * @deprecated To be removed in SciJava Common 3.0.0.
  */
+@Deprecated
 public class CodeGeneratorJava implements CodeGenerator {
 
 	static final String lsep = System.getProperty("line.separator");

@@ -35,7 +35,9 @@ package org.scijava.script;
  * Code Generator Interface
  * 
  * @author Grant Harris
+ * @deprecated To be removed in SciJava Common 3.0.0.
  */
+@Deprecated
 public interface CodeGenerator {
 
 	/** Adds delimiter character between arguments (typically a ','). */

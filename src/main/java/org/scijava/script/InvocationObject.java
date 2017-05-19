@@ -38,7 +38,9 @@ import java.util.ArrayList;
  * the parameters that were passed to it.
  * 
  * @author Grant Harris
+ * @deprecated To be removed in SciJava Common 3.0.0.
  */
+@Deprecated
 public class InvocationObject {
 
 	public String moduleCalled;
