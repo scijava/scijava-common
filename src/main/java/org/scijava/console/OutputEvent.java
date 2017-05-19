@@ -67,20 +67,25 @@ public class OutputEvent extends SciJavaEvent {
 	 */
 	private final boolean contextual;
 
+	/** Whether the output is a printed log message. */
+	private final boolean containsLog;
+
 	/**
 	 * Creates a new output event.
-	 *
+	 * 
 	 * @param source The source of the output.
 	 * @param output The output string.
 	 * @param contextual Whether the output was produced within this specific
 	 *          SciJava {@link Context}.
+	 * @param containsLog Whether the output is contains a log message.
 	 */
 	public OutputEvent(final Context context, final Source source,
-		final String output, final boolean contextual)
+		final String output, final boolean contextual, boolean containsLog)
 	{
 		this.source = source;
 		this.output = output;
 		this.contextual = contextual;
+		this.containsLog = containsLog;
 		setContext(context);
 		setCallingThread(Thread.currentThread());
 	}
@@ -111,6 +116,14 @@ public class OutputEvent extends SciJavaEvent {
 	/** Returns true of the source of the output is {@code stderr}. */
 	public boolean isStderr() {
 		return source == Source.STDERR;
+	}
+
+	/**
+	 * Returns true if the source of the output is a streams returned
+	 * {@link org.scijava.console.ConsoleService#logStream(org.scijava.console.OutputEvent.Source)}
+	 */
+	public boolean containsLog() {
+		return containsLog;
 	}
 
 	// -- Object methods --

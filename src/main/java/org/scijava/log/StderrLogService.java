@@ -57,6 +57,7 @@ public class StderrLogService extends AbstractLogService {
 	private Function<Integer, PrintStream> levelToStream =
 		level -> (level <= LogLevel.WARN) ? System.err : System.out;
 
+	@Override
 	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
 		this.levelToStream = levelToStream;
 	}
