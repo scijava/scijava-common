@@ -432,7 +432,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			varName = tokens[1];
 		}
 		final Class<?> type = scriptService.lookupClass(typeName);
-		addItem(varName, type, attrs);
+		addItem(varName, type, attrs, true);
 
 		if (ScriptModule.RETURN_VALUE.equals(varName)) {
 			// NB: The return value variable is declared as an explicit OUTPUT.
@@ -460,11 +460,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private void addReturnValue() {
 		final HashMap<String, Object> attrs = new HashMap<>();
 		attrs.put("type", "OUTPUT");
-		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs);
+		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs, false);
 	}
 
 	private <T> void addItem(final String name, final Class<T> type,
-		final Map<String, Object> attrs)
+		final Map<String, Object> attrs, final boolean explicit)
 	{
 		final DefaultMutableModuleItem<T> item =
 			new DefaultMutableModuleItem<>(this, name, type);
@@ -477,7 +477,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			registerOutput(item);
 			// NB: Only append the return value as an extra
 			// output when no explicit outputs are declared.
-			appendReturnValue = false;
+			if (explicit) appendReturnValue = false;
 		}
 	}
 
