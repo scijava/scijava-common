@@ -232,8 +232,16 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		if (scriptLanguage == null) {
 			// infer the language from the script path's extension
 			final String scriptPath = getPath();
-			final String extension = FileUtils.getExtension(scriptPath);
-			scriptLanguage = scriptService.getLanguageByExtension(extension);
+			if (scriptPath != null) {
+				// use language associated with the script path extension
+				final String extension = FileUtils.getExtension(scriptPath);
+				scriptLanguage = scriptService.getLanguageByExtension(extension);
+			}
+			else {
+				// use the highest priority language
+				final List<ScriptLanguage> langs = scriptService.getLanguages();
+				if (langs != null && !langs.isEmpty()) scriptLanguage = langs.get(0);
+			}
 		}
 		return scriptLanguage;
 	}
@@ -371,7 +379,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Override
 	public String getIdentifier() {
-		return "script:" + path;
+		return "script:" + (path == null ? "<inline>" : path);
 	}
 
 	// -- Locatable methods --
@@ -403,6 +411,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	private URL url(final URL u, final String p) {
 		if (u != null) return u;
+		if (p == null) return null;
 		try {
 			return new File(p).toURI().toURL();
 		}
@@ -413,7 +422,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private String path(final URL u, final String p) {
-		return p == null ? u.getPath() : p;
+		if (p != null) return p;
+		return u == null ? null : u.getPath();
 	}
 
 	private void parseParam(final String param) throws ScriptException {
