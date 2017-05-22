@@ -92,6 +92,9 @@ public class DefaultScriptService extends
 	private AppService appService;
 
 	@Parameter
+	private ScriptProcessorService scriptProcessorService;
+
+	@Parameter
 	private ParseService parser;
 
 	@Parameter
