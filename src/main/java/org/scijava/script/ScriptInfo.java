@@ -60,6 +60,7 @@ import org.scijava.log.LogService;
 import org.scijava.module.AbstractModuleInfo;
 import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
+import org.scijava.module.ModuleItem;
 import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
 import org.scijava.util.DigestUtils;
@@ -345,6 +346,24 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		catch (final ScriptException exc) {
 			log.error("Invalid parameter syntax for script: " + path, exc);
 		}
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void clearParameters() {
+		super.clearParameters();
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void registerInput(final ModuleItem<?> input) {
+		super.registerInput(input);
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void registerOutput(final ModuleItem<?> output) {
+		super.registerOutput(output);
 	}
 
 	// -- ModuleInfo methods --
