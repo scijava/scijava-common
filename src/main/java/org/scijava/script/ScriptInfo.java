@@ -251,6 +251,13 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		this.scriptLanguage = scriptLanguage;
 	}
 
+	/** Gets whether the return value is appended as an additional output. */
+	public boolean isReturnValueAppended() {
+		return appendReturnValue;
+	}
+
+	// -- AbstractModuleInfo methods --
+
 	/**
 	 * Parses the script's input and output parameters from the script header.
 	 * <p>
@@ -333,11 +340,6 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		catch (final ScriptException exc) {
 			log.error("Invalid parameter syntax for script: " + path, exc);
 		}
-	}
-
-	/** Gets whether the return value is appended as an additional output. */
-	public boolean isReturnValueAppended() {
-		return appendReturnValue;
 	}
 
 	// -- ModuleInfo methods --
