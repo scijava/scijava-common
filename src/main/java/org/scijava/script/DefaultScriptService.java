@@ -62,6 +62,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.plugin.SciJavaPlugin;
+import org.scijava.script.process.ScriptProcessorService;
 import org.scijava.service.Service;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.ColorRGB;
