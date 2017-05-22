@@ -256,6 +256,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		return appendReturnValue;
 	}
 
+	/** Gets whether the return value is appended as an additional output. */
+	public void setReturnValueAppended(final boolean appendReturnValue) {
+		this.appendReturnValue = appendReturnValue;
+	}
+
 	// -- AbstractModuleInfo methods --
 
 	/**
