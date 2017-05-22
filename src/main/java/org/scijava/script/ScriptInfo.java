@@ -101,6 +101,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/** True iff the return value should be appended as an output. */
 	private boolean appendReturnValue;
 
+	/** Script language in which the script should be executed. */
+	private ScriptLanguage scriptLanguage;
+
 	/**
 	 * Creates a script metadata object which describes the given script file.
 	 * 
@@ -222,6 +225,22 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			return null;
 		}
 		return new BufferedReader(new StringReader(script), PARAM_CHAR_MAX);
+	}
+
+	/** Gets the scripting language of the script. */
+	public ScriptLanguage getLanguage() {
+		if (scriptLanguage == null) {
+			// infer the language from the script path's extension
+			final String scriptPath = getPath();
+			final String extension = FileUtils.getExtension(scriptPath);
+			scriptLanguage = scriptService.getLanguageByExtension(extension);
+		}
+		return scriptLanguage;
+	}
+
+	/** Overrides the script language to use when executing the script. */
+	public void setLanguage(final ScriptLanguage scriptLanguage) {
+		this.scriptLanguage = scriptLanguage;
 	}
 
 	/**
