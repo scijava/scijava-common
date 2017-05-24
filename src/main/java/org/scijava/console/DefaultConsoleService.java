@@ -39,7 +39,9 @@ import java.util.List;
 
 import org.scijava.Context;
 import org.scijava.console.OutputEvent.Source;
+import org.scijava.log.LogLevel;
 import org.scijava.log.LogService;
+import org.scijava.log.Logger;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -58,11 +60,17 @@ public class DefaultConsoleService extends
 	ConsoleService
 {
 
+	private static final String STDOUT_LOG_CHANNEL = "stdout";
+	private static final String STDERR_LOG_CHANNEL = "stderr";
+
 	@Parameter
 	private ThreadService threadService;
 
 	@Parameter
 	private LogService log;
+
+	private Logger stdoutLogger;
+	private Logger stderrLogger;
 
 	private MultiPrintStream sysout, syserr;
 	private OutputStreamReporter out, err;
@@ -138,6 +146,80 @@ public class DefaultConsoleService extends
 			l.outputOccurred(event);
 	}
 
+	// -- Initializable methods --
+
+	@Override
+	public void initialize() {
+		// intercept messages on sysout
+		sysout = multiPrintStream(System.out);
+		if (System.out != sysout) System.setOut(sysout);
+		out = new OutputStreamReporter(Source.STDOUT);
+		sysout.getParent().addOutputStream(out);
+
+		// intercept messages on syserr
+		syserr = multiPrintStream(System.err);
+		if (System.err != syserr) System.setErr(syserr);
+		err = new OutputStreamReporter(Source.STDERR);
+		syserr.getParent().addOutputStream(err);
+
+		// publish stdout and stderr messages on dedicated log channels
+		stdoutLogger = log.channel(STDOUT_LOG_CHANNEL);
+		stderrLogger = log.channel(STDERR_LOG_CHANNEL);
+		addOutputListener(new OutputListener() {
+
+			private StringBuilder outBuf = new StringBuilder();
+			private StringBuilder errBuf = new StringBuilder();
+
+			@Override
+			public void outputOccurred(final OutputEvent event) {
+				if (event.isStderr()) {
+					log(stderrLogger, LogLevel.ERROR, event.getOutput(), errBuf);
+				}
+				else if (event.isStdout()) {
+					log(stdoutLogger, LogLevel.INFO, event.getOutput(), outBuf);
+				}
+			}
+
+			/**
+			 * Clever logging method which accumulates output, flushing to the log
+			 * channel whenever a newline is encountered.
+			 * <p>
+			 * Note that if a newline is encountered <em>anywhere</em> in the string,
+			 * the <em>entire</em> accumulated buffer is flushed. Messages ending in
+			 * a newline have one newline stripped. Here are some examples:
+			 * </p>
+			 * 
+			 * <pre>
+			 * ['foo', '\n'] -> 'foo'
+			 * ['foo\n'] -> 'foo'
+			 * ['foo\nbar'] -> 'foo\nbar'
+			 * ['foo', '\nbar'] -> 'foo\nbar'
+			 * ['foo', 'abc\ndef'] -> 'fooabc\ndef'
+			 * ['foo', 'abc\ndef\n'] -> 'fooabc\ndef'
+			 * ['foo\nbar\n\n'] -> 'foo\nbar\n'
+			 * </pre>
+			 */
+			private void log(final Logger logger, final int level,
+				final String output, final StringBuilder buf)
+			{
+				if (output.contains("\n")) {
+					// append the completed message
+					buf.append(output);
+					// strip one trailing newline, if any
+					if (output.endsWith("\n")) buf.setLength(buf.length() - 1);
+					// flush the buffer
+					final String message = buf.toString();
+					if (!message.isEmpty()) logger.log(level, message);
+					buf.setLength(0);
+				}
+				else {
+					// message was a fragment; append but do not flush
+					buf.append(output);
+				}
+			}
+		});
+	}
+
 	// -- Disposable methods --
 
 	@Override
@@ -151,16 +233,6 @@ public class DefaultConsoleService extends
 	/** Initializes {@link #listeners} and related data structures. */
 	private synchronized void initListeners() {
 		if (listeners != null) return; // already initialized
-
-		sysout = multiPrintStream(System.out);
-		if (System.out != sysout) System.setOut(sysout);
-		out = new OutputStreamReporter(Source.STDOUT);
-		sysout.getParent().addOutputStream(out);
-
-		syserr = multiPrintStream(System.err);
-		if (System.err != syserr) System.setErr(syserr);
-		err = new OutputStreamReporter(Source.STDERR);
-		syserr.getParent().addOutputStream(err);
 
 		listeners = new ArrayList<>();
 		cachedListeners = listeners.toArray(new OutputListener[0]);

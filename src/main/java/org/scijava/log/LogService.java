@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import java.util.Collection;
+
 import org.scijava.service.SciJavaService;
 
 /**
@@ -44,62 +46,40 @@ import org.scijava.service.SciJavaService;
  * 
  * @author Curtis Rueden
  */
-public interface LogService extends SciJavaService {
+public interface LogService extends SciJavaService, Logger {
+
+	/**
+	 * Name of the channel to which information is logged by default. Calls to the
+	 * {@link Logger} API directly on the {@link LogService} (e.g.,
+	 * {@code logService.warn("Warning")}) go to a channel with this name.
+	 */
+	String DEFAULT_CHANNEL = "default";
 
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
 
-	int NONE = 0;
-	int ERROR = 1;
-	int WARN = 2;
-	int INFO = 3;
-	int DEBUG = 4;
-	int TRACE = 5;
+	Logger channel(String name);
 
-	void debug(Object msg);
+	Collection<Logger> allChannels();
 
-	void debug(Throwable t);
+	// -- Deprecated --
 
-	void debug(Object msg, Throwable t);
-
-	void error(Object msg);
-
-	void error(Throwable t);
-
-	void error(Object msg, Throwable t);
-
-	void info(Object msg);
-
-	void info(Throwable t);
-
-	void info(Object msg, Throwable t);
-
-	void trace(Object msg);
-
-	void trace(Throwable t);
-
-	void trace(Object msg, Throwable t);
-
-	void warn(Object msg);
-
-	void warn(Throwable t);
-
-	void warn(Object msg, Throwable t);
-
-	boolean isDebug();
-
-	boolean isError();
-
-	boolean isInfo();
-
-	boolean isTrace();
-
-	boolean isWarn();
-
-	int getLevel();
-
-	void setLevel(int level);
-
-	void setLevel(String classOrPackageName, int level);
-
+	/** @deprecated Use {@link LogLevel#NONE}. */
+	@Deprecated
+	int NONE = LogLevel.NONE;
+	/** @deprecated Use {@link LogLevel#ERROR}. */
+	@Deprecated
+	int ERROR = LogLevel.ERROR;
+	/** @deprecated Use {@link LogLevel#WARN}. */
+	@Deprecated
+	int WARN = LogLevel.WARN;
+	/** @deprecated Use {@link LogLevel#INFO}. */
+	@Deprecated
+	int INFO = LogLevel.INFO;
+	/** @deprecated Use {@link LogLevel#DEBUG}. */
+	@Deprecated
+	int DEBUG = LogLevel.DEBUG;
+	/** @deprecated Use {@link LogLevel#TRACE}. */
+	@Deprecated
+	int TRACE = LogLevel.TRACE;
 }

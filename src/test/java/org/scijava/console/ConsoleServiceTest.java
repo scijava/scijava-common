@@ -34,12 +34,14 @@ package org.scijava.console;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
@@ -48,6 +50,10 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.console.OutputEvent.Source;
+import org.scijava.log.LogLevel;
+import org.scijava.log.LogListener;
+import org.scijava.log.LogService;
+import org.scijava.log.Logger;
 import org.scijava.plugin.Plugin;
 import org.scijava.thread.ThreadService;
 
@@ -143,6 +149,69 @@ public class ConsoleServiceTest {
 		assertOutputEvent(Source.STDERR, stderrGlobal, false, events.get(1));
 		assertOutputEvent(Source.STDOUT, stdoutLocal, true, events.get(2));
 		assertOutputEvent(Source.STDERR, stderrLocal, true, events.get(3));
+	}
+
+	/**
+	 * Tests that {@code stdout} and {@code stderr} are published to dedicated
+	 * {@link Logger} channels of the {@link LogService}.
+	 */
+	@Test
+	public void testChannelLogging() {
+		final LogService log = consoleService.context().service(LogService.class);
+
+		// monitor stdout channel for log messages
+		final List<Object> stdoutMsgs = new ArrayList<>();
+		log.channel("stdout").addLogListener(new LogListener() {
+
+			@Override
+			public void messageLogged(int level, Object msg, Throwable t) {
+				assertEquals(LogLevel.INFO, level);
+				assertNull(t);
+				stdoutMsgs.add(msg);
+			}
+		});
+
+		// monitor stderr channel for log messages
+		final List<Object> stderrMsgs = new ArrayList<>();
+		log.channel("stderr").addLogListener(new LogListener() {
+
+			@Override
+			public void messageLogged(int level, Object msg, Throwable t) {
+				assertEquals(LogLevel.ERROR, level);
+				assertNull(t);
+				stderrMsgs.add(msg);
+			}
+		});
+
+		assertTrue(stdoutMsgs.isEmpty());
+		System.out.println("Hello stdout");
+		assertEquals(1, stdoutMsgs.size());
+		assertEquals("Hello stdout", stdoutMsgs.get(0));
+
+		assertTrue(stderrMsgs.isEmpty());
+		System.err.println("Goodbye stderr");
+		assertEquals(1, stderrMsgs.size());
+		assertEquals("Goodbye stderr", stderrMsgs.get(0));
+
+		// check that output fragments (sans newline) are appropriately buffered
+		for (int i = 0; i < 10; i++)
+			System.out.print(".");
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		assertEquals(2, stdoutMsgs.size());
+		assertEquals("..........", stdoutMsgs.get(1));
+
+		// check that multi-line outputs are handled intelligibly
+		final String l1 = "An epicure, dining at Crewe,";
+		final String l2 = "found quite a large mouse in his stew.";
+		final String l3 = "Said the waiter, \"Don't shout,";
+		final String l4 = "or wave it about,";
+		final String l5 = "or the rest will be wanting one too.\"";
+		final String limerick = l1 + "\n" + l2 + "\n" + l3 + "\n" + l4 + "\n" + l5;
+		System.err.println(limerick);
+		assertEquals(2, stderrMsgs.size());
+		assertEquals(limerick, stderrMsgs.get(1));
 	}
 
 	/** Tests multiple simultaneous {@link Context}s listening for output. */
