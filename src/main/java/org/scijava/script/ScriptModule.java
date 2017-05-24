@@ -31,10 +31,8 @@
 
 package org.scijava.script;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.Writer;
 
 import javax.script.ScriptContext;
@@ -50,7 +48,7 @@ import org.scijava.module.AbstractModule;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
-import org.scijava.util.FileUtils;
+import org.scijava.script.process.ScriptCallback;
 
 /**
  * A {@link Module} which executes a script.
@@ -76,9 +74,6 @@ public class ScriptModule extends AbstractModule implements Contextual {
 	@Parameter
 	private LogService log;
 
-	/** Script language in which the script should be executed. */
-	private ScriptLanguage scriptLanguage;
-
 	/** Script engine with which the script should be executed. */
 	private ScriptEngine scriptEngine;
 
@@ -96,22 +91,6 @@ public class ScriptModule extends AbstractModule implements Contextual {
 
 	// -- ScriptModule methods --
 
-	/** Gets the scripting language of the script. */
-	public ScriptLanguage getLanguage() {
-		if (scriptLanguage == null) {
-			// infer the language from the script path's extension
-			final String path = getInfo().getPath();
-			final String extension = FileUtils.getExtension(path);
-			scriptLanguage = scriptService.getLanguageByExtension(extension);
-		}
-		return scriptLanguage;
-	}
-
-	/** Overrides the script language to use when executing the script. */
-	public void setLanguage(final ScriptLanguage scriptLanguage) {
-		this.scriptLanguage = scriptLanguage;
-	}
-
 	/** Sets the writer used to record the standard output stream. */
 	public void setOutputWriter(final Writer output) {
 		this.output = output;
@@ -125,7 +104,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 	/** Gets the script engine used to execute the script. */
 	public ScriptEngine getEngine() {
 		if (scriptEngine == null) {
-			scriptEngine = getLanguage().getScriptEngine();
+			scriptEngine = getInfo().getLanguage().getScriptEngine();
 		}
 		return scriptEngine;
 	}
@@ -169,12 +148,15 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			engine.put(name, getInput(name));
 		}
 
-		// execute script!
 		returnValue = null;
 		try {
-			final Reader reader = getInfo().getReader();
-			if (reader == null) returnValue = engine.eval(new FileReader(path));
-			else returnValue = engine.eval(reader);
+			// invoke the callbacks
+			for (final ScriptCallback c : getInfo().callbacks()) {
+				c.invoke(this);
+			}
+
+			// execute script!
+			returnValue = engine.eval(getInfo().getProcessedScript());
 		}
 		catch (Throwable e) {
 			while (e instanceof ScriptException && e.getCause() != null) {
@@ -185,7 +167,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		}
 
 		// populate output values
-		final ScriptLanguage language = getLanguage();
+		final ScriptLanguage language = getInfo().getLanguage();
 		for (final ModuleItem<?> item : getInfo().outputs()) {
 			final String name = item.getName();
 			final Object value;
@@ -230,4 +212,17 @@ public class ScriptModule extends AbstractModule implements Contextual {
 		context.inject(this);
 	}
 
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link ScriptInfo#getLanguage()} instead. */
+	@Deprecated
+	public ScriptLanguage getLanguage() {
+		return getInfo().getLanguage();
+	}
+
+	/** @deprecated Use {@link ScriptInfo#setLanguage(ScriptLanguage)} instead. */
+	@Deprecated
+	public void setLanguage(final ScriptLanguage scriptLanguage) {
+		getInfo().setLanguage(scriptLanguage);
+	}
 }

@@ -33,7 +33,6 @@ package org.scijava.script;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -43,34 +42,24 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.script.ScriptException;
 
 import org.scijava.Context;
 import org.scijava.Contextual;
-import org.scijava.ItemIO;
-import org.scijava.ItemVisibility;
 import org.scijava.NullContextException;
-import org.scijava.command.Command;
-import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.module.AbstractModuleInfo;
-import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.module.ModuleException;
-import org.scijava.parse.ParseService;
+import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
+import org.scijava.script.process.ParameterScriptProcessor;
+import org.scijava.script.process.ScriptCallback;
+import org.scijava.script.process.ScriptProcessorService;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
 /**
  * Metadata about a script.
- * <p>
- * This class is responsible for parsing the script for parameters. See
- * {@link #parseParameters()} for details.
- * </p>
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
@@ -93,13 +82,19 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private ScriptService scriptService;
 
 	@Parameter
-	private ParseService parser;
+	private ScriptProcessorService scriptProcessorService;
 
-	@Parameter
-	private ConvertService convertService;
+	/** Final version of the script, after script processing. */
+	private String processedScript;
 
 	/** True iff the return value should be appended as an output. */
 	private boolean appendReturnValue;
+
+	/** Script language in which the script should be executed. */
+	private ScriptLanguage scriptLanguage;
+
+	/** Routines to be invoked prior to script execution. */
+	private ArrayList<ScriptCallback> callbacks;
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
@@ -225,92 +220,98 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	/**
-	 * Parses the script's input and output parameters from the script header.
-	 * <p>
-	 * This method is called automatically the first time any parameter accessor
-	 * method is called ({@link #getInput}, {@link #getOutput}, {@link #inputs()},
-	 * {@link #outputs()}, etc.). Subsequent calls will reparse the parameters.
-	 * <p>
-	 * SciJava's scripting framework supports specifying @{@link Parameter}-style
-	 * inputs and outputs in a preamble. The format is a simplified version of the
-	 * Java @{@link Parameter} annotation syntax. The following syntaxes are
-	 * supported:
-	 * </p>
-	 * <ul>
-	 * <li>{@code // @<type> <varName>}</li>
-	 * <li>{@code // @<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}
-	 * </li>
-	 * <li>{@code // @<IOType> <type> <varName>}</li>
-	 * <li>{@code // @<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type> 
-	 * <varName>}</li>
-	 * </ul>
-	 * <p>
-	 * Where:
-	 * </p>
-	 * <ul>
-	 * <li>{@code //} = the comment style of the scripting language, so that the
-	 * parameter line is ignored by the script engine itself.</li>
-	 * <li>{@code <IOType>} = one of {@code INPUT}, {@code OUTPUT}, or
-	 * {@code BOTH}.</li>
-	 * <li>{@code <varName>} = the name of the input or output variable.</li>
-	 * <li>{@code <type>} = the Java {@link Class} of the variable.</li>
-	 * <li>{@code <attr*>} = an attribute key.</li>
-	 * <li>{@code <value*>} = an attribute value.</li>
-	 * </ul>
-	 * <p>
-	 * See the @{@link Parameter} annotation for a list of valid attributes.
-	 * </p>
-	 * <p>
-	 * Here are a few examples:
-	 * </p>
-	 * <ul>
-	 * <li>{@code // @Dataset dataset}</li>
-	 * <li>{@code // @double(type=OUTPUT) result}</li>
-	 * <li>{@code // @BOTH ImageDisplay display}</li>
-	 * <li>{@code // @INPUT(persist=false, visibility=INVISIBLE) boolean verbose}
-	 * </li>
-	 * </ul>
-	 * <p>
-	 * Parameters will be parsed and filled just like @{@link Parameter}-annotated
-	 * fields in {@link Command}s.
-	 * </p>
+	 * Gets the script contents <em>after</em> script processing.
+	 * 
+	 * @return The processed script.
+	 * @see ScriptProcessorService#process
 	 */
-	// NB: Widened visibility from AbstractModuleInfo.
-	@Override
-	public void parseParameters() {
-		clearParameters();
-		appendReturnValue = true;
+	public String getProcessedScript() {
+		return processedScript;
+	}
 
-		try (final BufferedReader in = script == null ? //
-			new BufferedReader(new FileReader(getPath())) : getReader()) //
-		{
-			while (true) {
-				final String line = in.readLine();
-				if (line == null) break;
-
-				// NB: Scan for lines containing an '@' with no prior alphameric
-				// characters. This assumes that only non-alphanumeric characters can
-				// be used as comment line markers.
-				if (line.matches("^[^\\w]*@.*")) {
-					final int at = line.indexOf('@');
-					parseParam(line.substring(at + 1));
-				}
-				else if (line.matches(".*\\w.*")) break;
+	/** Gets the scripting language of the script. */
+	public ScriptLanguage getLanguage() {
+		if (scriptLanguage == null) {
+			// infer the language from the script path's extension
+			final String scriptPath = getPath();
+			if (scriptPath != null) {
+				// use language associated with the script path extension
+				final String extension = FileUtils.getExtension(scriptPath);
+				scriptLanguage = scriptService.getLanguageByExtension(extension);
 			}
+			else {
+				// use the highest priority language
+				final List<ScriptLanguage> langs = scriptService.getLanguages();
+				if (langs != null && !langs.isEmpty()) scriptLanguage = langs.get(0);
+			}
+		}
+		return scriptLanguage;
+	}
 
-			if (appendReturnValue) addReturnValue();
-		}
-		catch (final IOException exc) {
-			log.error("Error reading script: " + path, exc);
-		}
-		catch (final ScriptException exc) {
-			log.error("Invalid parameter syntax for script: " + path, exc);
-		}
+	/** Overrides the script language to use when executing the script. */
+	public void setLanguage(final ScriptLanguage scriptLanguage) {
+		this.scriptLanguage = scriptLanguage;
 	}
 
 	/** Gets whether the return value is appended as an additional output. */
 	public boolean isReturnValueAppended() {
 		return appendReturnValue;
+	}
+
+	/** Gets whether the return value is appended as an additional output. */
+	public void setReturnValueAppended(final boolean appendReturnValue) {
+		this.appendReturnValue = appendReturnValue;
+	}
+
+	/**
+	 * Gets the list of routines which should be invoked each time the script is
+	 * about to execute.
+	 * 
+	 * @return Reference to the mutable list of {@link Runnable} objects which the
+	 *         {@link ScriptModule} will run prior to executing the script itself.
+	 */
+	public List<ScriptCallback> callbacks() {
+		if (callbacks == null) callbacks = new ArrayList<>();
+		return callbacks;
+	}
+
+	// -- AbstractModuleInfo methods --
+
+	/**
+	 * Performs script processing. In particular, parses the script parameters.
+	 * 
+	 * @see ParameterScriptProcessor
+	 * @see ScriptProcessorService#process
+	 */
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void parseParameters() {
+		clearParameters();
+		try {
+			processedScript = scriptProcessorService.process(this);
+		}
+		catch (final IOException exc) {
+			// TODO: Consider a better error handling approach.
+			throw new RuntimeException(exc);
+		}
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void clearParameters() {
+		super.clearParameters();
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void registerInput(final ModuleItem<?> input) {
+		super.registerInput(input);
+	}
+
+	// NB: Widened visibility from AbstractModuleInfo.
+	@Override
+	public void registerOutput(final ModuleItem<?> output) {
+		super.registerOutput(output);
 	}
 
 	// -- ModuleInfo methods --
@@ -352,7 +353,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Override
 	public String getIdentifier() {
-		return "script:" + path;
+		return "script:" + (path == null ? "<inline>" : path);
 	}
 
 	// -- Locatable methods --
@@ -384,6 +385,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	private URL url(final URL u, final String p) {
 		if (u != null) return u;
+		if (p == null) return null;
 		try {
 			return new File(p).toURI().toURL();
 		}
@@ -394,144 +396,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	}
 
 	private String path(final URL u, final String p) {
-		return p == null ? u.getPath() : p;
-	}
-
-	private void parseParam(final String param) throws ScriptException {
-		final int lParen = param.indexOf("(");
-		final int rParen = param.lastIndexOf(")");
-		if (rParen < lParen) {
-			throw new ScriptException("Invalid parameter: " + param);
-		}
-		if (lParen < 0) parseParam(param, parseAttrs("()"));
-		else {
-			final String cutParam =
-				param.substring(0, lParen) + param.substring(rParen + 1);
-			final String attrs = param.substring(lParen + 1, rParen);
-			parseParam(cutParam, parseAttrs(attrs));
-		}
-	}
-
-	private void parseParam(final String param,
-		final Map<String, Object> attrs) throws ScriptException
-	{
-		final String[] tokens = param.trim().split("[ \t\n]+");
-		checkValid(tokens.length >= 1, param);
-		final String typeName, varName;
-		if (isIOType(tokens[0])) {
-			// assume syntax: <IOType> <type> <varName>
-			checkValid(tokens.length >= 3, param);
-			attrs.put("type", tokens[0]);
-			typeName = tokens[1];
-			varName = tokens[2];
-		}
-		else {
-			// assume syntax: <type> <varName>
-			checkValid(tokens.length >= 2, param);
-			typeName = tokens[0];
-			varName = tokens[1];
-		}
-		final Class<?> type = scriptService.lookupClass(typeName);
-		addItem(varName, type, attrs, true);
-
-		if (ScriptModule.RETURN_VALUE.equals(varName)) {
-			// NB: The return value variable is declared as an explicit OUTPUT.
-			// So we should not append the return value as an extra output.
-			appendReturnValue = false;
-		}
-	}
-
-	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
-	private Map<String, Object> parseAttrs(final String attrs) {
-		return parser.parse(attrs, false).asMap();
-	}
-
-	private boolean isIOType(final String token) {
-		return convertService.convert(token, ItemIO.class) != null;
-	}
-
-	private void checkValid(final boolean valid, final String param)
-		throws ScriptException
-	{
-		if (!valid) throw new ScriptException("Invalid parameter: " + param);
-	}
-
-	/** Adds an output for the value returned by the script itself. */
-	private void addReturnValue() {
-		final HashMap<String, Object> attrs = new HashMap<>();
-		attrs.put("type", "OUTPUT");
-		addItem(ScriptModule.RETURN_VALUE, Object.class, attrs, false);
-	}
-
-	private <T> void addItem(final String name, final Class<T> type,
-		final Map<String, Object> attrs, final boolean explicit)
-	{
-		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<>(this, name, type);
-		for (final String key : attrs.keySet()) {
-			final Object value = attrs.get(key);
-			assignAttribute(item, key, value);
-		}
-		if (item.isInput()) registerInput(item);
-		if (item.isOutput()) {
-			registerOutput(item);
-			// NB: Only append the return value as an extra
-			// output when no explicit outputs are declared.
-			if (explicit) appendReturnValue = false;
-		}
-	}
-
-	private <T> void assignAttribute(final DefaultMutableModuleItem<T> item,
-		final String k, final Object v)
-	{
-		// CTR: There must be an easier way to do this.
-		// Just compile the thing using javac? Or parse via javascript, maybe?
-		if (is(k, "callback")) item.setCallback(as(v, String.class));
-		else if (is(k, "choices")) item.setChoices(asList(v, item.getType()));
-		else if (is(k, "columns")) item.setColumnCount(as(v, int.class));
-		else if (is(k, "description")) item.setDescription(as(v, String.class));
-		else if (is(k, "initializer")) item.setInitializer(as(v, String.class));
-		else if (is(k, "validater")) item.setValidater(as(v, String.class));
-		else if (is(k, "type")) item.setIOType(as(v, ItemIO.class));
-		else if (is(k, "label")) item.setLabel(as(v, String.class));
-		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));
-		else if (is(k, "min")) item.setMinimumValue(as(v, item.getType()));
-		else if (is(k, "name")) item.setName(as(v, String.class));
-		else if (is(k, "persist")) item.setPersisted(as(v, boolean.class));
-		else if (is(k, "persistKey")) item.setPersistKey(as(v, String.class));
-		else if (is(k, "required")) item.setRequired(as(v, boolean.class));
-		else if (is(k, "softMax")) item.setSoftMaximum(as(v, item.getType()));
-		else if (is(k, "softMin")) item.setSoftMinimum(as(v, item.getType()));
-		else if (is(k, "stepSize")) item.setStepSize(as(v, double.class));
-		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
-		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
-		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
-		else item.set(k, v.toString());
-	}
-
-	/** Super terse comparison helper method. */
-	private boolean is(final String key, final String desired) {
-		return desired.equalsIgnoreCase(key);
-	}
-
-	/** Super terse conversion helper method. */
-	private <T> T as(final Object v, final Class<T> type) {
-		final T converted = convertService.convert(v, type);
-		if (converted != null) return converted;
-		// NB: Attempt to convert via string.
-		// This is useful in cases where a weird type of object came back
-		// (e.g., org.scijava.parse.eval.Unresolved), but which happens to have a
-		// nice string representation which ultimately is expressible as the type.
-		return convertService.convert(v.toString(), type);
-	}
-
-	private <T> List<T> asList(final Object v, final Class<T> type) {
-		final ArrayList<T> result = new ArrayList<>();
-		final List<?> list = as(v, List.class);
-		for (final Object item : list) {
-			result.add(as(item, type));
-		}
-		return result;
+		if (p != null) return p;
+		return u == null ? null : u.getPath();
 	}
 
 	/**

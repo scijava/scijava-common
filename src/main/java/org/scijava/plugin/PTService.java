@@ -40,7 +40,7 @@ import org.scijava.service.Service;
  * <p>
  * There are many kinds of services, but most of them share one common
  * characteristic: they provide API specific to a particular type of plugin. A
- * few examples from ImageJ:
+ * few examples:
  * </p>
  * <ul>
  * <li>The {@link org.scijava.command.CommandService} works with
