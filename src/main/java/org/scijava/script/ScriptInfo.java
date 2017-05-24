@@ -84,6 +84,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	@Parameter
 	private ScriptProcessorService scriptProcessorService;
 
+	/** Final version of the script, after script processing. */
+	private String processedScript;
+
 	/** True iff the return value should be appended as an output. */
 	private boolean appendReturnValue;
 
@@ -216,6 +219,16 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		return new BufferedReader(new StringReader(script), PARAM_CHAR_MAX);
 	}
 
+	/**
+	 * Gets the script contents <em>after</em> script processing.
+	 * 
+	 * @return The processed script.
+	 * @see ScriptProcessorService#process
+	 */
+	public String getProcessedScript() {
+		return processedScript;
+	}
+
 	/** Gets the scripting language of the script. */
 	public ScriptLanguage getLanguage() {
 		if (scriptLanguage == null) {
@@ -275,7 +288,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	public void parseParameters() {
 		clearParameters();
 		try {
-			scriptProcessorService.process(this);
+			processedScript = scriptProcessorService.process(this);
 		}
 		catch (final IOException exc) {
 			// TODO: Consider a better error handling approach.

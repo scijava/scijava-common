@@ -31,10 +31,8 @@
 
 package org.scijava.script;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.Writer;
 
 import javax.script.ScriptContext;
@@ -158,9 +156,7 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			}
 
 			// execute script!
-			final Reader reader = getInfo().getReader();
-			if (reader == null) returnValue = engine.eval(new FileReader(path));
-			else returnValue = engine.eval(reader);
+			returnValue = engine.eval(getInfo().getProcessedScript());
 		}
 		catch (Throwable e) {
 			while (e instanceof ScriptException && e.getCause() != null) {

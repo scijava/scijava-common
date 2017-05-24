@@ -56,7 +56,7 @@ public interface ScriptProcessorService extends
 	 * Invokes all {@link ScriptProcessor} plugins on the given script, line by
 	 * line in sequence.
 	 */
-	default void process(final ScriptInfo info) throws IOException {
+	default String process(final ScriptInfo info) throws IOException {
 		final List<ScriptProcessor> processors = getPlugins().stream().map(
 			p -> pluginService().createInstance(p)).collect(Collectors.toList());
 
@@ -69,19 +69,25 @@ public interface ScriptProcessorService extends
 			p.begin(info);
 		}
 
+		final StringBuilder sb = new StringBuilder();
+
 		try (final BufferedReader in = reader) {
 			while (true) {
-				final String line = in.readLine();
+				String line = in.readLine();
 				if (line == null) break;
 				for (final ScriptProcessor p : processors) {
-					p.process(line);
+					line = p.process(line);
 				}
+				sb.append(line);
+				sb.append("\n");
 			}
 		}
 
 		for (final ScriptProcessor p : processors) {
 			p.end();
 		}
+
+		return sb.toString();
 	}
 
 	// -- PTService methods --

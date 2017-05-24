@@ -48,7 +48,7 @@ import org.scijava.script.ScriptInfo;
 public interface ScriptProcessor extends SingletonPlugin {
 
 	void begin(ScriptInfo info);
-	void process(String line);
+	String process(String line);
 	default void end() {}
 
 }

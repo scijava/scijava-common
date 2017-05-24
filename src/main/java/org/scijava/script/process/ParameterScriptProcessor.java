@@ -127,12 +127,11 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	}
 
 	@Override
-	public void process(final String line) {
+	public String process(final String line) {
 		// parse new-style parameters starting with @# anywhere in the script.
 		if (line.matches("^#@.*")) {
 			final int at = line.indexOf('@');
-			parseParam(line.substring(at + 1));
-			return;
+			return process(line, line.substring(at + 1));
 		}
 
 		// parse old-style parameters in the initial script header
@@ -142,10 +141,12 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 			// be used as comment line markers.
 			if (line.matches("^[^\\w]*@.*")) {
 				final int at = line.indexOf('@');
-				parseParam(line.substring(at + 1));
+				return process(line, line.substring(at + 1));
 			}
 			else if (line.matches(".*\\w.*")) header = false;
 		}
+
+		return line;
 	}
 
 	@Override
@@ -160,34 +161,40 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 
 	// -- Helper methods --
 
-	private void parseParam(final String param) {
-		final int lParen = param.indexOf("(");
-		final int rParen = param.lastIndexOf(")");
-		if (rParen < lParen) { warnInvalid(param); return; }
-		if (lParen < 0) parseParam(param, parseAttrs("()"));
-		else {
-			final String cutParam =
-				param.substring(0, lParen) + param.substring(rParen + 1);
-			final String attrs = param.substring(lParen + 1, rParen);
-			parseParam(cutParam, parseAttrs(attrs));
-		}
+	private String process(final String line, final String param) {
+		if (parseParam(param)) return "";
+		log.warn("Ignoring invalid parameter: " + param);
+		return line;
 	}
 
-	private void parseParam(final String param, final Map<String, Object> attrs) {
+	private boolean parseParam(final String param) {
+		final int lParen = param.indexOf("(");
+		final int rParen = param.lastIndexOf(")");
+		if (rParen < lParen) return false;
+		if (lParen < 0) return parseParam(param, parseAttrs("()"));
+		final String cutParam =
+			param.substring(0, lParen) + param.substring(rParen + 1);
+		final String attrs = param.substring(lParen + 1, rParen);
+		return parseParam(cutParam, parseAttrs(attrs));
+	}
+
+	private boolean parseParam(final String param,
+		final Map<String, Object> attrs)
+	{
 		final String[] tokens = param.trim().split("[ \t\n]+");
-		if (tokens.length < 1) { warnInvalid(param); return; }
+		if (tokens.length < 1) return false;
 		final String typeName, varName;
 		final String maybeIOType = tokens[0].toUpperCase();
 		if (isIOType(maybeIOType)) {
 			// assume syntax: <IOType> <type> <varName>
-			if (tokens.length < 3) { warnInvalid(param); return; }
+			if (tokens.length < 3) return false;
 			attrs.put("type", maybeIOType);
 			typeName = tokens[1];
 			varName = tokens[2];
 		}
 		else {
 			// assume syntax: <type> <varName>
-			if (tokens.length < 2) { warnInvalid(param); return; }
+			if (tokens.length < 2) return false;
 			typeName = tokens[0];
 			varName = tokens[1];
 		}
@@ -197,7 +204,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		}
 		catch (final ScriptException exc) {
 			log.warn("Invalid class: " + typeName, exc);
-			return;
+			return false;
 		}
 
 		if (ScriptModule.RETURN_VALUE.equals(varName)) {
@@ -205,6 +212,8 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 			// So we should not append the return value as an extra output.
 			info.setReturnValueAppended(false);
 		}
+
+		return true;
 	}
 
 	/** Parses a comma-delimited list of {@code key=value} pairs into a map. */
@@ -214,10 +223,6 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 
 	private boolean isIOType(final String token) {
 		return convertService.convert(token.toUpperCase(), ItemIO.class) != null;
-	}
-
-	private void warnInvalid(final String param) {
-		log.warn("Ignoring invalid parameter: " + param);
 	}
 
 	private <T> void addItem(final String name, final Class<T> type,

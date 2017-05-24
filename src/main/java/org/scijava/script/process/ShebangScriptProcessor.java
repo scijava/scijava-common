@@ -64,15 +64,17 @@ public class ShebangScriptProcessor implements ScriptProcessor {
 	}
 
 	@Override
-	public void process(final String line) {
-		if (!first) return;
+	public String process(final String line) {
+		if (!first) return line;
+		first = false;
 		if (line.startsWith("#!")) {
 			// shebang!
 			final String langName = line.substring(2);
 			final ScriptLanguage lang = scriptService.getLanguageByName(langName);
 			if (lang != null) info.setLanguage(lang);
 			else log.warn("Unknown script language: " + langName);
+			return "";
 		}
-		first = false;
+		return line;
 	}
 }
