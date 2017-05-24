@@ -113,6 +113,10 @@ public class ScriptInfoTest {
 		final ScriptModule scriptModule =
 			scriptService.run("newStyle.bsizes", script, true).get();
 
+		final String expectedProcessed = script.replaceAll("#@.*", "");
+		final String actualProcessed = scriptModule.getInfo().getProcessedScript();
+		assertEquals(expectedProcessed, actualProcessed);
+
 		final Object output = scriptModule.getReturnValue();
 
 		if (output == null) fail("null result");
