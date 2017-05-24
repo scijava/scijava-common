@@ -40,6 +40,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +53,7 @@ import org.scijava.module.ModuleException;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
 import org.scijava.script.process.ParameterScriptProcessor;
+import org.scijava.script.process.ScriptCallback;
 import org.scijava.script.process.ScriptProcessorService;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
@@ -87,6 +89,9 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/** Script language in which the script should be executed. */
 	private ScriptLanguage scriptLanguage;
+
+	/** Routines to be invoked prior to script execution. */
+	private ArrayList<ScriptCallback> callbacks;
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
@@ -243,6 +248,18 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/** Gets whether the return value is appended as an additional output. */
 	public void setReturnValueAppended(final boolean appendReturnValue) {
 		this.appendReturnValue = appendReturnValue;
+	}
+
+	/**
+	 * Gets the list of routines which should be invoked each time the script is
+	 * about to execute.
+	 * 
+	 * @return Reference to the mutable list of {@link Runnable} objects which the
+	 *         {@link ScriptModule} will run prior to executing the script itself.
+	 */
+	public List<ScriptCallback> callbacks() {
+		if (callbacks == null) callbacks = new ArrayList<>();
+		return callbacks;
 	}
 
 	// -- AbstractModuleInfo methods --

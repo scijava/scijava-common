@@ -50,6 +50,7 @@ import org.scijava.module.AbstractModule;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
+import org.scijava.script.process.ScriptCallback;
 
 /**
  * A {@link Module} which executes a script.
@@ -149,9 +150,14 @@ public class ScriptModule extends AbstractModule implements Contextual {
 			engine.put(name, getInput(name));
 		}
 
-		// execute script!
 		returnValue = null;
 		try {
+			// invoke the callbacks
+			for (final ScriptCallback c : getInfo().callbacks()) {
+				c.invoke(this);
+			}
+
+			// execute script!
 			final Reader reader = getInfo().getReader();
 			if (reader == null) returnValue = engine.eval(new FileReader(path));
 			else returnValue = engine.eval(reader);
