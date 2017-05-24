@@ -34,6 +34,8 @@ package org.scijava.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.imglib2.img.Img;
+
 import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
@@ -119,8 +121,15 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		}
 
 		if (item.isRequired()) {
-			throw new ModuleException("A " + type.getSimpleName() +
-				" is required but none exist.");
+			final String message;
+			if (Img.class.isAssignableFrom(type)) {
+				message = "An image is required, but there are none";
+			}
+			else {
+				message = String.join(" ", "An item of type", type.getSimpleName() +
+					"is required but none exist. ");
+			}
+			throw new ModuleException(message);
 		}
 
 		// item is not required; we can skip it
