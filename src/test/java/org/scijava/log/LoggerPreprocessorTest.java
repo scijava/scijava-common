@@ -41,6 +41,7 @@ import org.scijava.plugin.Plugin;
 
 import java.util.concurrent.ExecutionException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -54,16 +55,13 @@ public class LoggerPreprocessorTest {
 	public void testInjection() throws InterruptedException, ExecutionException {
 		final Context context = new Context(CommandService.class);
 		final CommandService commandService = context.service(CommandService.class);
-		final LogService logService = context.service(LogService.class);
 		final TestLogListener listener = new TestLogListener();
-		logService.addListener(listener);
+		context.service(LogService.class).addListener(listener);
 
-		final CommandModule module = //
-				commandService.run(CommandWithLogger.class, true).get();
+		commandService.run(CommandWithLogger.class, true).get();
 		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
 	}
 
-	@Plugin(type = Command.class)
 	public static class CommandWithLogger implements Command {
 
 		@Parameter
@@ -75,4 +73,21 @@ public class LoggerPreprocessorTest {
 		}
 	}
 
+	@Test
+	public void testLoggerNameByAnnotation() throws ExecutionException, InterruptedException {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		commandService.run(CommandWithNamedLogger.class, true).get();
+	}
+
+	public static class CommandWithNamedLogger implements Command {
+
+		@Parameter(label = "MyLoggerName")
+		public Logger log;
+
+		@Override
+		public void run() {
+			assertEquals("MyLoggerName", log.getName());
+		}
+	}
 }
