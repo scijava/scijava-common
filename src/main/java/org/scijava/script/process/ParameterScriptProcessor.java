@@ -61,25 +61,24 @@ import org.scijava.script.ScriptService;
  * supported:
  * </p>
  * <ul>
- * <li>{@code // @<type> <varName>}</li>
- * <li>{@code // @<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}
- * </li>
- * <li>{@code // @<IOType> <type> <varName>}</li>
- * <li>{@code // @<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type>
+ * <li>{@code #@<type> <varName>}</li>
+ * <li>{@code #@<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}</li>
+ * <li>{@code #@<IOType> <type> <varName>}</li>
+ * <li>{@code #@<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type>
  * <varName>}</li>
  * </ul>
  * <p>
  * Where:
  * </p>
  * <ul>
- * <li>{@code //} = the comment style of the scripting language, so that the
+ * <li>{@code #@} - signals a special script processing instruction, so that the
  * parameter line is ignored by the script engine itself.</li>
- * <li>{@code <IOType>} = one of {@code INPUT}, {@code OUTPUT}, or {@code BOTH}.
+ * <li>{@code <IOType>} - one of {@code INPUT}, {@code OUTPUT}, or {@code BOTH}.
  * </li>
- * <li>{@code <varName>} = the name of the input or output variable.</li>
- * <li>{@code <type>} = the Java {@link Class} of the variable.</li>
- * <li>{@code <attr*>} = an attribute key.</li>
- * <li>{@code <value*>} = an attribute value.</li>
+ * <li>{@code <varName>} - the name of the input or output variable.</li>
+ * <li>{@code <type>} - the Java {@link Class} of the variable.</li>
+ * <li>{@code <attr*>} - an attribute key.</li>
+ * <li>{@code <value*>} - an attribute value.</li>
  * </ul>
  * <p>
  * See the @{@link Parameter} annotation for a list of valid attributes.
@@ -88,10 +87,10 @@ import org.scijava.script.ScriptService;
  * Here are a few examples:
  * </p>
  * <ul>
- * <li>{@code // @Dataset dataset}</li>
- * <li>{@code // @double(type=OUTPUT) result}</li>
- * <li>{@code // @BOTH ImageDisplay display}</li>
- * <li>{@code // @INPUT(persist=false, visibility=INVISIBLE) boolean verbose}
+ * <li>{@code #@Dataset dataset}</li>
+ * <li>{@code #@double(type=OUTPUT) result}</li>
+ * <li>{@code #@BOTH ImageDisplay display}</li>
+ * <li>{@code #@INPUT(persist=false, visibility=INVISIBLE) boolean verbose}
  * </li>
  * </ul>
  * <p>
@@ -129,6 +128,14 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 
 	@Override
 	public void process(final String line) {
+		// parse new-style parameters starting with @# anywhere in the script.
+		if (line.matches("^#@.*")) {
+			final int at = line.indexOf('@');
+			parseParam(line.substring(at + 1));
+			return;
+		}
+
+		// parse old-style parameters in the initial script header
 		if (header) {
 			// NB: Check if line contains an '@' with no prior alphameric
 			// characters. This assumes that only non-alphanumeric characters can
@@ -170,10 +177,11 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		final String[] tokens = param.trim().split("[ \t\n]+");
 		if (tokens.length < 1) { warnInvalid(param); return; }
 		final String typeName, varName;
-		if (isIOType(tokens[0])) {
+		final String maybeIOType = tokens[0].toUpperCase();
+		if (isIOType(maybeIOType)) {
 			// assume syntax: <IOType> <type> <varName>
 			if (tokens.length < 3) { warnInvalid(param); return; }
-			attrs.put("type", tokens[0]);
+			attrs.put("type", maybeIOType);
 			typeName = tokens[1];
 			varName = tokens[2];
 		}
@@ -205,7 +213,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	}
 
 	private boolean isIOType(final String token) {
-		return convertService.convert(token, ItemIO.class) != null;
+		return convertService.convert(token.toUpperCase(), ItemIO.class) != null;
 	}
 
 	private void warnInvalid(final String param) {

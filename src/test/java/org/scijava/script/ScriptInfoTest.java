@@ -87,6 +87,41 @@ public class ScriptInfoTest {
 
 	// -- Tests --
 
+	/** Tests whether new-style parameter syntax are parsed correctly. */
+	@Test
+	public void testNewStyle() throws Exception {
+		final String script = "" + //
+			"##########\n" + //
+			"# Inputs #\n" + //
+			"##########\n" + //
+			"#@input int stuff\n" + //
+			"#@input int things\n" + //
+			"\n" + //
+			"###########\n" + //
+			"# Credits #\n" + //
+			"###########\n" + //
+			"Brought to you by:\n" + //
+			"person@example.com\n" + //
+			"\n" + //
+			"###########\n" + //
+			"# Outputs #\n" + //
+			"###########\n" + //
+			"#@output String blackHoles\n" +
+			"#@output String revelations\n" +
+			"\n" + //
+			"THE END!\n";
+		final ScriptModule scriptModule =
+			scriptService.run("newStyle.bsizes", script, true).get();
+
+		final Object output = scriptModule.getReturnValue();
+
+		if (output == null) fail("null result");
+		else if (!(output instanceof Integer)) {
+			fail("result is a " + output.getClass().getName());
+		}
+		else assertEquals(4, ((Integer) output).intValue());
+	}
+
 	/**
 	 * Tests that the return value <em>is</em> appended as an extra output when no
 	 * explicit outputs were declared.
@@ -121,7 +156,6 @@ public class ScriptInfoTest {
 		assertTrue(outputs.containsKey("value"));
 		assertFalse(outputs.containsKey(ScriptModule.RETURN_VALUE));
 	}
-
 
 	/**
 	 * Ensures parameters are parsed correctly from scripts, even in the presence
