@@ -38,13 +38,13 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.command.Command;
-import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.log.LogService;
 import org.scijava.log.Logger;
 import org.scijava.log.TestLogListener;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link LoggerPreprocessor}.
@@ -57,16 +57,13 @@ public class LoggerPreprocessorTest {
 	public void testInjection() throws InterruptedException, ExecutionException {
 		final Context context = new Context(CommandService.class);
 		final CommandService commandService = context.service(CommandService.class);
-		final LogService logService = context.service(LogService.class);
 		final TestLogListener listener = new TestLogListener();
-		logService.addListener(listener);
+		context.service(LogService.class).addListener(listener);
 
-		final CommandModule module = //
-				commandService.run(CommandWithLogger.class, true).get();
+		commandService.run(CommandWithLogger.class, true).get();
 		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
 	}
 
-	@Plugin(type = Command.class)
 	public static class CommandWithLogger implements Command {
 
 		@Parameter
@@ -78,4 +75,21 @@ public class LoggerPreprocessorTest {
 		}
 	}
 
+	@Test
+	public void testLoggerNameByAnnotation() throws ExecutionException, InterruptedException {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		commandService.run(CommandWithNamedLogger.class, true).get();
+	}
+
+	public static class CommandWithNamedLogger implements Command {
+
+		@Parameter(label = "MyLoggerName")
+		public Logger log;
+
+		@Override
+		public void run() {
+			assertEquals("MyLoggerName", log.getName());
+		}
+	}
 }
