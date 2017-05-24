@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.autocompletion.AutoCompleter;
 import java.util.List;
 
 import javax.script.ScriptEngine;

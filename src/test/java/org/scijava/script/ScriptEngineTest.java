@@ -31,6 +31,8 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.autocompletion.AutoCompleter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

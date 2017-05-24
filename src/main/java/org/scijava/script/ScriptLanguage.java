@@ -31,6 +31,7 @@
 
 package org.scijava.script;
 
+import org.scijava.script.autocompletion.AutoCompleter;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +42,7 @@ import org.scijava.module.Module;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.plugin.SingletonPlugin;
+import org.scijava.script.autocompletion.DefaultAutoCompleter;
 import org.scijava.util.VersionUtils;
 
 /**
@@ -160,5 +162,9 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 	default String getEngineVersion() {
 		return "0.0";
 	}
+    
+    default AutoCompleter getAutoCompleter() {
+        return new DefaultAutoCompleter(this);
+    }
 
 }

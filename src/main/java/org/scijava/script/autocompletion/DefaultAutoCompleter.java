@@ -28,63 +28,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.script.autocompletion;
 
-package org.scijava.script;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-
-import org.scijava.plugin.AbstractRichPlugin;
-import org.scijava.plugin.PluginInfo;
-import org.scijava.script.autocompletion.AutoCompleter;
-import org.scijava.script.autocompletion.DefaultAutoCompleter;
+import org.scijava.script.ScriptLanguage;
 
 /**
- * Abstract superclass for {@link ScriptLanguage} implementations.
- * <p>
- * This class implements dummy versions of {@link ScriptEngineFactory}'s methods
- * that are not needed by the SciJava scripting framework.
- * </p>
- * 
- * @author Johannes Schindelin
+ *
+ * @author Hadrien Mary
  */
-public abstract class AbstractScriptLanguage extends AbstractRichPlugin
-	implements ScriptLanguage
-{
+public class DefaultAutoCompleter extends AbstractAutoCompleter {
 
-	// -- Object methods --
-
-	@Override
-	public String toString() {
-		return getLanguageName();
-	}
-
-	// -- Default implementations --
-
-	@Override
-	public String getEngineName() {
-		return inferNameFromClassName();
-	}
-
-	@Override
-	public String getLanguageName() {
-		String name = null;
-		final PluginInfo<?> info = getInfo();
-		if (info != null) name = info.getName();
-		return name != null && !name.isEmpty() ? name : inferNameFromClassName();
-	}
-
-	// -- Helper methods --
-
-	private String inferNameFromClassName() {
-		String className = getClass().getSimpleName();
-		if (className.endsWith("ScriptLanguage")) {
-			// strip off "ScriptLanguage" suffix
-			className = className.substring(0, className.length() - 14);
-		}
-		// replace underscores with spaces
-		className = className.replace('_', ' ');
-		return className;
-	}
+    public DefaultAutoCompleter(ScriptLanguage scriptLanguage) {
+        super(scriptLanguage);
+    }
 
 }
