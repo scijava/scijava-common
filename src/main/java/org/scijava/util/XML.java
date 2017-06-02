@@ -200,6 +200,9 @@ public class XML {
 		catch (final XPathExpressionException e) {
 			return null;
 		}
+		catch (NoSuchMethodError e) {
+			// ignore; Some batik version bundle obsolete xalan...
+		}
 		return (NodeList) result;
 	}
 
