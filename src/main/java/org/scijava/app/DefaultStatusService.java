@@ -31,8 +31,11 @@
 
 package org.scijava.app;
 
+import java.util.concurrent.RejectedExecutionException;
+
 import org.scijava.app.event.StatusEvent;
 import org.scijava.event.EventService;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
@@ -53,6 +56,9 @@ public class DefaultStatusService extends AbstractService implements
 
 	@Parameter
 	private AppService appService;
+	
+	@Parameter
+	private LogService logService;
 
 	// -- StatusService methods --
 
@@ -109,7 +115,14 @@ public class DefaultStatusService extends AbstractService implements
 	 */
 	protected void publish(final StatusEvent statusEvent)
 	{
-		eventService.publishLater(statusEvent);
+		try {
+			eventService.publishLater(statusEvent);
+		} catch (RejectedExecutionException e) {
+			// This exception is thrown after the thread service
+			// shuts down and the queue for later operations
+			// is no longer available.
+			logService.info(statusEvent.getStatusMessage());
+		}
 	}
 
 }
