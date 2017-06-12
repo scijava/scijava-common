@@ -158,12 +158,6 @@ public @interface Parameter {
 	/** Defines the step size to use (numeric parameters only). */
 	String stepSize() default "";
 
-	/**
-	 * Defines the width of the input field in characters (text field parameters
-	 * only).
-	 */
-	int columns() default 6;
-
 	/** Defines the list of possible values (multiple choice text fields only). */
 	String[] choices() default {};
 
@@ -173,4 +167,7 @@ public @interface Parameter {
 	 */
 	Attr[] attrs() default {};
 
+	/** @deprecated Replaced by {@link #style()}. */
+	@Deprecated
+	int columns() default 6;
 }
