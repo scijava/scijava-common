@@ -234,10 +234,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	}
 
 	/** Reads a string of up to length n. */
-	default String readString(int n) throws IOException {
-		final long avail = length() - offset();
-		if (n > avail) n = (int) avail;
-		final byte[] b = new byte[n];
+	default String readString(final int n) throws IOException {
+		final int r = (int) available(n);
+		final byte[] b = new byte[r];
 		readFully(b);
 		return new String(b, getEncoding());
 	}
@@ -433,11 +432,10 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @throws IOException - if an I/O error occurs.
 	 */
 	default long skip(final long n) throws IOException {
-		if (n < 0) return 0;
-		final long remain = length() - offset();
-		final long num = n < remain ? n : remain;
-		seek(offset() + num);
-		return num;
+		final long skip = available(n);
+		if (skip <= 0) return 0;
+		seek(offset() + skip);
+		return skip;
 	}
 
 	// -- DataInput methods --
@@ -560,10 +558,11 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default int skipBytes(final int n) throws IOException {
-		final int skipped = (int) Math.min(n, length() - offset());
-		if (skipped < 0) return 0;
-		seek(offset() + skipped);
-		return skipped;
+		// NB: Cast here is safe since the value of n bounds the result to an int.
+		final int skip = (int) available(n);
+		if (skip < 0) return 0;
+		seek(offset() + skip);
+		return skip;
 	}
 
 	// -- DataOutput methods --
