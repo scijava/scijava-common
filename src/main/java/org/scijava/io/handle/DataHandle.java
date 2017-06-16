@@ -574,10 +574,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default String readUTF() throws IOException {
-		final int length = readUnsignedShort();
-		final byte[] b = new byte[length];
-		read(b);
-		return new String(b, "UTF-8");
+		return DataInputStream.readUTF(this);
 	}
 
 	// -- DataOutput methods --
