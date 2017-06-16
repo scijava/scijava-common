@@ -129,17 +129,17 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/** Returns the byte order of the stream. */
 	ByteOrder getOrder();
 
-	/** Gets the endianness of the stream. */
-	default boolean isLittleEndian() {
-		return getOrder() == ByteOrder.LITTLE_ENDIAN;
-	}
-
 	/**
 	 * Sets the byte order of the stream.
 	 * 
 	 * @param order Order to set.
 	 */
 	void setOrder(ByteOrder order);
+
+	/** Gets the endianness of the stream. */
+	default boolean isLittleEndian() {
+		return getOrder() == ByteOrder.LITTLE_ENDIAN;
+	}
 
 	/** Sets the endianness of the stream. */
 	default void setOrder(final boolean little) {
