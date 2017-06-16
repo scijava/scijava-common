@@ -521,7 +521,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default String readLine() throws IOException {
-		// NB: Code adapted from java.io.RandomAccessFile.readLine().
+		// NB: Adapted from java.io.RandomAccessFile.readLine().
 
 		final StringBuffer input = new StringBuffer();
 		int c = -1;
