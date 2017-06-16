@@ -44,8 +44,8 @@ import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
 
 /**
- * A <em>data handle</em> is a plugin which provides access to bytes in a data
- * stream (e.g., files or arrays), identified by a {@link Location}.
+ * A <em>data handle</em> is a plugin which provides both streaming and random
+ * access to bytes at a {@link Location} (e.g., files or arrays).
  * 
  * @author Curtis Rueden
  * @see DataHandleInputStream
