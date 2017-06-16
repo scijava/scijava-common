@@ -64,6 +64,12 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/** Returns the current offset in the stream. */
 	long offset() throws IOException;
 
+	/**
+	 * Sets the stream offset, measured from the beginning of the stream, at which
+	 * the next read or write occurs.
+	 */
+	void seek(long pos) throws IOException;
+
 	/** Returns the length of the stream. */
 	long length() throws IOException;
 
@@ -174,12 +180,6 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		}
 		return n;
 	}
-
-	/**
-	 * Sets the stream offset, measured from the beginning of the stream, at which
-	 * the next read or write occurs.
-	 */
-	void seek(long pos) throws IOException;
 
 	/**
 	 * Writes up to {@code buf.remaining()} bytes of data from the given
