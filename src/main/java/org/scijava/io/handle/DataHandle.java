@@ -653,9 +653,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default void writeUTF(final String str) throws IOException {
-		final byte[] b = str.getBytes("UTF-8");
-		writeShort(b.length);
-		write(b);
+		DataHandles.writeUTF(str, this);
 	}
 
 }
