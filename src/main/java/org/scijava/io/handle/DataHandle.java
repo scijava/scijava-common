@@ -441,13 +441,22 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	// -- DataInput methods --
 
 	@Override
-	default boolean readBoolean() throws IOException {
-		return readByte() != 0;
+	default void readFully(final byte[] b) throws IOException {
+		readFully(b, 0, b.length);
 	}
 
 	@Override
-	default void readFully(final byte[] b) throws IOException {
-		readFully(b, 0, b.length);
+	default int skipBytes(final int n) throws IOException {
+		// NB: Cast here is safe since the value of n bounds the result to an int.
+		final int skip = (int) available(n);
+		if (skip < 0) return 0;
+		seek(offset() + skip);
+		return skip;
+	}
+
+	@Override
+	default boolean readBoolean() throws IOException {
+		return readByte() != 0;
 	}
 
 	@Override
@@ -554,15 +563,6 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		final byte[] b = new byte[length];
 		read(b);
 		return new String(b, "UTF-8");
-	}
-
-	@Override
-	default int skipBytes(final int n) throws IOException {
-		// NB: Cast here is safe since the value of n bounds the result to an int.
-		final int skip = (int) available(n);
-		if (skip < 0) return 0;
-		seek(offset() + skip);
-		return skip;
 	}
 
 	// -- DataOutput methods --
