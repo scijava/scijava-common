@@ -120,11 +120,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		return true;
 	}
 
-	/**
-	 * Returns the current order of the stream.
-	 * 
-	 * @return See above.
-	 */
+	/** Returns the byte order of the stream. */
 	ByteOrder getOrder();
 
 	/** Gets the endianness of the stream. */
