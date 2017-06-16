@@ -595,6 +595,12 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	}
 
 	@Override
+	default void writeShort(final int v) throws IOException {
+		write((v >>> 8) & 0xFF);
+		write((v >>> 0) & 0xFF);
+	}
+
+	@Override
 	default void writeChar(final int v) throws IOException {
 		write((v >>> 8) & 0xFF);
 		write((v >>> 0) & 0xFF);
@@ -633,6 +639,16 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	@Override
 	default void writeBytes(final String s) throws IOException {
 		write(s.getBytes("UTF-8"));
+	}
+
+	@Override
+	default void writeChars(final String s) throws IOException {
+		final int len = s.length();
+		for (int i = 0 ; i < len ; i++) {
+			final int v = s.charAt(i);
+			write((v >>> 8) & 0xFF);
+			write((v >>> 0) & 0xFF);
+		}
 	}
 
 	@Override
