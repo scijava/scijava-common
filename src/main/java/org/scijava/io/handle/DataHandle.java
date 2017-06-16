@@ -33,6 +33,7 @@ package org.scijava.io.handle;
 
 import java.io.Closeable;
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.EOFException;
 import java.io.IOException;
@@ -443,6 +444,20 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	@Override
 	default void readFully(final byte[] b) throws IOException {
 		readFully(b, 0, b.length);
+	}
+
+	@Override
+	default void readFully(final byte[] b, final int off, final int len)
+		throws IOException
+	{
+		// NB: Adapted from java.io.DataInputStream.readFully(byte[], int, int).
+		if (len < 0) throw new IndexOutOfBoundsException();
+		int n = 0;
+		while (n < len) {
+			int count = read(b, off + n, len - n);
+			if (count < 0) throw new EOFException();
+			n += count;
+		}
 	}
 
 	@Override
