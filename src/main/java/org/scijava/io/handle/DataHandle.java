@@ -443,8 +443,65 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	}
 
 	@Override
+	default short readShort() throws IOException {
+		final int ch1 = read();
+		final int ch2 = read();
+		if ((ch1 | ch2) < 0) throw new EOFException();
+		return (short) ((ch1 << 8) + (ch2 << 0));
+	}
+
+	@Override
 	default int readUnsignedShort() throws IOException {
 		return readShort() & 0xffff;
+	}
+
+	@Override
+	default char readChar() throws IOException {
+		return (char) readShort();
+	}
+
+	@Override
+	default int readInt() throws IOException {
+		int ch1 = read();
+		int ch2 = read();
+		int ch3 = read();
+		int ch4 = read();
+		if ((ch1 | ch2 | ch3 | ch4) < 0) throw new EOFException();
+		return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+	}
+
+	@Override
+	default long readLong() throws IOException {
+		int ch1 = read();
+		int ch2 = read();
+		int ch3 = read();
+		int ch4 = read();
+		int ch5 = read();
+		int ch6 = read();
+		int ch7 = read();
+		int ch8 = read();
+		if ((ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7 | ch8) < 0) {
+			throw new EOFException();
+		}
+		// TODO: Double check this inconsistent code.
+		return ((long) ch1 << 56) + //
+			((long) (ch2 & 255) << 48) + //
+			((long) (ch3 & 255) << 40) + //
+			((long) (ch4 & 255) << 32) + //
+			((long) (ch5 & 255) << 24) + //
+			((ch6 & 255) << 16) + //
+			((ch7 & 255) << 8) + //
+			((ch8 & 255) << 0);
+	}
+
+	@Override
+	default float readFloat() throws IOException {
+		return Float.intBitsToFloat(readInt());
+	}
+
+	@Override
+	default double readDouble() throws IOException {
+		return Double.longBitsToDouble(readLong());
 	}
 
 	@Override
@@ -509,6 +566,42 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	@Override
 	default void writeByte(final int v) throws IOException {
 		write(v);
+	}
+
+	@Override
+	default void writeChar(final int v) throws IOException {
+		write((v >>> 8) & 0xFF);
+		write((v >>> 0) & 0xFF);
+	}
+
+	@Override
+	default void writeInt(final int v) throws IOException {
+		write((v >>> 24) & 0xFF);
+		write((v >>> 16) & 0xFF);
+		write((v >>> 8) & 0xFF);
+		write((v >>> 0) & 0xFF);
+	}
+
+	@Override
+	default void writeLong(final long v) throws IOException {
+		write((byte) (v >>> 56));
+		write((byte) (v >>> 48));
+		write((byte) (v >>> 40));
+		write((byte) (v >>> 32));
+		write((byte) (v >>> 24));
+		write((byte) (v >>> 16));
+		write((byte) (v >>> 8));
+		write((byte) (v >>> 0));
+	}
+
+	@Override
+	default void writeFloat(final float v) throws IOException {
+		writeInt(Float.floatToIntBits(v));
+	}
+
+	@Override
+	default void writeDouble(final double v) throws IOException {
+		writeLong(Double.doubleToLongBits(v));
 	}
 
 	@Override
