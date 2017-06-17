@@ -34,6 +34,7 @@ package org.scijava.io.handle;
 import java.io.Closeable;
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
@@ -73,6 +74,32 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @throws IOException If there is an error changing the handle's length.
 	 */
 	void setLength(long length) throws IOException;
+
+	/**
+	 * Verifies that the handle has sufficient bytes available to read, returning
+	 * the actual number of bytes which will be possible to read, which might
+	 * be less than the requested value.
+	 * 
+	 * @param count Number of bytes to read.
+	 * @return The actual number of bytes available to be read.
+	 * @throws IOException If something goes wrong with the check.
+	 */
+	default long available(final long count) throws IOException {
+		final long remain = length() - offset();
+		return remain < count ? remain : count;
+	}
+
+	/**
+	 * Ensures that the handle has sufficient bytes available to read.
+	 * 
+	 * @param count Number of bytes to read.
+	 * @see #available(long)
+	 * @throws EOFException If there are insufficient bytes available.
+	 * @throws IOException If something goes wrong with the check.
+	 */
+	default void ensureReadable(final long count) throws IOException {
+		if (available(count) < count) throw new EOFException();
+	}
 
 	/**
 	 * Ensures that the handle has the correct length to be written to and extends
