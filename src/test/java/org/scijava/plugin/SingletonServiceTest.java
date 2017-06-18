@@ -33,6 +33,7 @@ package org.scijava.plugin;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -77,12 +78,32 @@ public class SingletonServiceTest {
 	public void testSingletonServicePluginsAddedHandling() {
 		@SuppressWarnings("rawtypes")
 		PluginInfo<Converter> converterInfo = new PluginInfo<>(
-			DummyConverter.class, Converter.class);
+			FoodConverter.class, Converter.class);
 
 		pluginService.addPlugin(converterInfo);
 
-		assertNotNull(pluginService.getPlugin(DummyConverter.class));
-		assertTrue(convertService.supports(new DummyInput() {}, DummyOutput.class));
+		assertNotNull(pluginService.getPlugin(FoodConverter.class));
+		assertTrue(convertService.supports(new Apple() {}, Peach.class));
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsAddedEvent}s originating from the {@link PluginService}.
+	 */
+	@Test
+	public void testSingletonServicePluginsAddedHandlingDuplicates() {
+		@SuppressWarnings("rawtypes")
+		PluginInfo<Converter> converterInfo = new PluginInfo<>(
+			FoodConverter.class, Converter.class);
+
+		pluginService.addPlugin(converterInfo);
+		FoodConverter firstInstance = convertService.getInstance( FoodConverter.class );
+
+		pluginService.addPlugin(converterInfo);
+		FoodConverter secondInstance = convertService.getInstance( FoodConverter.class );
+
+		assertNotSame(firstInstance, secondInstance);
+		assertTrue(convertService.supports(new Apple() {}, Peach.class));
 	}
 
 	/**
@@ -93,15 +114,15 @@ public class SingletonServiceTest {
 	public void testSingletonServiceManuallyAddedPluginsRemovedHandling() {
 		@SuppressWarnings("rawtypes")
 		PluginInfo<Converter> converterInfo = new PluginInfo<>(
-			DummyConverter.class, Converter.class);
+			FoodConverter.class, Converter.class);
 
 		pluginService.addPlugin(converterInfo);
 
 		// De-register DummyStringConverter
 		pluginService.removePlugin(converterInfo);
 
-		assertNull(pluginService.getPlugin(DummyConverter.class));
-		assertFalse(convertService.supports(new DummyInput() {}, DummyOutput.class));
+		assertNull(pluginService.getPlugin(FoodConverter.class));
+		assertFalse(convertService.supports(new Apple() {}, Peach.class));
 	}
 
 	/**
@@ -110,20 +131,20 @@ public class SingletonServiceTest {
 	 */
 	@Test
 	public void testSingletonServiceCompileTimePluginsRemovedHandling() {
-		PluginInfo<SciJavaPlugin> pluginInfo = pluginService.getPlugin(DummyConverter2.class);
+		PluginInfo<SciJavaPlugin> pluginInfo = pluginService.getPlugin(DiscoveredFoodConverter.class);
 
 		// De-register ToBeRemovedConverter
 		pluginService.removePlugin(pluginInfo);
 
-		assertNull(pluginService.getPlugin(DummyConverter2.class));
-		assertFalse(convertService.supports(new DummyInput2() {}, DummyOutput.class));
+		assertNull(pluginService.getPlugin(DiscoveredFoodConverter.class));
+		assertFalse(convertService.supports(new Orange() {}, Peach.class));
 	}
 
 	/**
 	 * Dummy {@link Converter}.
 	 */
-	public static class DummyConverter extends
-		AbstractConverter<DummyInput, DummyOutput>
+	public static class FoodConverter extends
+		AbstractConverter<Apple, Peach>
 	{
 
 		@Override
@@ -132,13 +153,13 @@ public class SingletonServiceTest {
 		}
 
 		@Override
-		public Class<DummyOutput> getOutputType() {
-			return DummyOutput.class;
+		public Class<Peach> getOutputType() {
+			return Peach.class;
 		}
 
 		@Override
-		public Class<DummyInput> getInputType() {
-			return DummyInput.class;
+		public Class<Apple> getInputType() {
+			return Apple.class;
 		}
 	}
 
@@ -146,8 +167,8 @@ public class SingletonServiceTest {
 	 * Dummy {@link Converter} that is added automatically.
 	 */
 	@Plugin( type = Converter.class )
-	public static class DummyConverter2 extends
-		AbstractConverter<DummyInput2, DummyOutput>
+	public static class DiscoveredFoodConverter extends
+		AbstractConverter<Orange, Peach>
 	{
 
 		@Override
@@ -156,20 +177,20 @@ public class SingletonServiceTest {
 		}
 
 		@Override
-		public Class<DummyOutput> getOutputType() {
-			return DummyOutput.class;
+		public Class<Peach> getOutputType() {
+			return Peach.class;
 		}
 
 		@Override
-		public Class<DummyInput2> getInputType() {
-			return DummyInput2.class;
+		public Class<Orange> getInputType() {
+			return Orange.class;
 		}
 	}
 
 	/**
 	 * Type interface for conversion
 	 */
-	public interface DummyInput
+	public interface Apple
 	{
 		// NB
 	}
@@ -177,7 +198,7 @@ public class SingletonServiceTest {
 	/**
 	 * Type interface for conversion
 	 */
-	public interface DummyInput2
+	public interface Orange
 	{
 		// NB
 	}
@@ -185,7 +206,7 @@ public class SingletonServiceTest {
 	/**
 	 * Type interface for conversion
 	 */
-	public interface DummyOutput
+	public interface Peach
 	{
 		// NB
 	}
