@@ -88,7 +88,7 @@ public class SingletonServiceTest {
 
 	/**
 	 * Tests that the {@link AbstractSingletonService} properly handles
-	 * {@link PluginsAddedEvent}s originating from the {@link PluginService}.
+	 * {@link PluginsAddedEvent}s that replace an instance.
 	 */
 	@Test
 	public void testSingletonServicePluginsAddedHandlingDuplicates() {
@@ -133,7 +133,7 @@ public class SingletonServiceTest {
 	public void testSingletonServiceCompileTimePluginsRemovedHandling() {
 		PluginInfo<SciJavaPlugin> pluginInfo = pluginService.getPlugin(DiscoveredFoodConverter.class);
 
-		// De-register ToBeRemovedConverter
+		// De-register DiscoveredFoodConverter
 		pluginService.removePlugin(pluginInfo);
 
 		assertNull(pluginService.getPlugin(DiscoveredFoodConverter.class));
