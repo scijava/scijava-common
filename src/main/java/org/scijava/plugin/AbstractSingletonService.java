@@ -137,10 +137,15 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 			@SuppressWarnings("unchecked")
 			final Class<? extends PT> ptClass = (Class<? extends PT>) instance
 				.getClass();
-			instanceMap.putIfAbsent(ptClass, instance);
-			if (!instances.contains(instance)) {
-				instances.add(instance);
+
+			// Remove previous instances
+			PT oldInstance = instanceMap.get(ptClass);
+			if (oldInstance != null) {
+				instances.remove(oldInstance);
 			}
+
+			instanceMap.put(ptClass, instance); // Replaces previous instance
+			instances.add(instance); // Add new instance
 		});
 	}
 

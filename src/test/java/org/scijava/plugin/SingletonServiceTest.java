@@ -77,13 +77,12 @@ public class SingletonServiceTest {
 	public void testSingletonServicePluginsAddedHandling() {
 		@SuppressWarnings("rawtypes")
 		PluginInfo<Converter> converterInfo = new PluginInfo<>(
-			DummyStringConverter.class, Converter.class);
-		converterInfo.setPluginClass(DummyStringConverter.class);
+			DummyConverter.class, Converter.class);
 
 		pluginService.addPlugin(converterInfo);
 
-		assertNotNull(pluginService.getPlugin(DummyStringConverter.class));
-		assertTrue(convertService.supports("StringInput", Number.class));
+		assertNotNull(pluginService.getPlugin(DummyConverter.class));
+		assertTrue(convertService.supports(new DummyInput() {}, DummyOutput.class));
 	}
 
 	/**
@@ -91,26 +90,40 @@ public class SingletonServiceTest {
 	 * {@link PluginsRemovedEvent}s originating from the {@link PluginService}.
 	 */
 	@Test
-	public void testSingletonServicePluginsRemovedHandling() {
+	public void testSingletonServiceManuallyAddedPluginsRemovedHandling() {
 		@SuppressWarnings("rawtypes")
 		PluginInfo<Converter> converterInfo = new PluginInfo<>(
-			DummyStringConverter.class, Converter.class);
-		converterInfo.setPluginClass(DummyStringConverter.class);
+			DummyConverter.class, Converter.class);
 
 		pluginService.addPlugin(converterInfo);
 
 		// De-register DummyStringConverter
 		pluginService.removePlugin(converterInfo);
 
-		assertNull(pluginService.getPlugin(DummyStringConverter.class));
-		assertFalse(convertService.supports("StringInput", Number.class));
+		assertNull(pluginService.getPlugin(DummyConverter.class));
+		assertFalse(convertService.supports(new DummyInput() {}, DummyOutput.class));
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsRemovedEvent}s originating from the {@link PluginService}.
+	 */
+	@Test
+	public void testSingletonServiceCompileTimePluginsRemovedHandling() {
+		PluginInfo<SciJavaPlugin> pluginInfo = pluginService.getPlugin(DummyConverter2.class);
+
+		// De-register ToBeRemovedConverter
+		pluginService.removePlugin(pluginInfo);
+
+		assertNull(pluginService.getPlugin(DummyConverter2.class));
+		assertFalse(convertService.supports(new DummyInput2() {}, DummyOutput.class));
 	}
 
 	/**
 	 * Dummy {@link Converter}.
 	 */
-	public static class DummyStringConverter extends
-		AbstractConverter<String, Number>
+	public static class DummyConverter extends
+		AbstractConverter<DummyInput, DummyOutput>
 	{
 
 		@Override
@@ -119,13 +132,61 @@ public class SingletonServiceTest {
 		}
 
 		@Override
-		public Class<Number> getOutputType() {
-			return Number.class;
+		public Class<DummyOutput> getOutputType() {
+			return DummyOutput.class;
 		}
 
 		@Override
-		public Class<String> getInputType() {
-			return String.class;
+		public Class<DummyInput> getInputType() {
+			return DummyInput.class;
 		}
+	}
+
+	/**
+	 * Dummy {@link Converter} that is added automatically.
+	 */
+	@Plugin( type = Converter.class )
+	public static class DummyConverter2 extends
+		AbstractConverter<DummyInput2, DummyOutput>
+	{
+
+		@Override
+		public <T> T convert(Object src, Class<T> dest) {
+			return null;
+		}
+
+		@Override
+		public Class<DummyOutput> getOutputType() {
+			return DummyOutput.class;
+		}
+
+		@Override
+		public Class<DummyInput2> getInputType() {
+			return DummyInput2.class;
+		}
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface DummyInput
+	{
+		// NB
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface DummyInput2
+	{
+		// NB
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface DummyOutput
+	{
+		// NB
 	}
 }
