@@ -653,6 +653,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		 * </ul>
 		 */
 		private String makeSafe(final String s, final int max) {
+			if (s == null) return ""; // Java Preferences API hates nulls.
 			final int len = s.length();
 			if (len < max) return s;
 			return "..." + s.substring(len - max + 3, len);
