@@ -31,40 +31,46 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
+import static org.junit.Assert.assertTrue;
+import static org.scijava.log.LogLevel.WARN;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import org.junit.Test;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
+ * Tests {@link StderrLogService}.
  * 
  * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public class StderrLogServiceTest {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
+	private final static String TEXT_1 = "Hello World!";
+	private static final String TEXT_2 = "foo bar";
 
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
-
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+	@Test
+	public void testDefaultLevel() {
+		final LogService log = new StderrLogService();
+		int level = log.getLevel();
+		assertTrue("default level (" + level + //
+			") is at least INFO(" + WARN + ")", level >= WARN);
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	@Test
+	public void testOutputToStream() {
+		// setup
+		final StderrLogService logService = new StderrLogService();
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final PrintStream p = new PrintStream(outputStream);
+		logService.setPrintStreams(ignore -> p);
+
+		// process
+		logService.warn(TEXT_1);
+		logService.subLogger("sub").error(TEXT_2);
+
+		// test
+		assertTrue(outputStream.toString().contains(TEXT_1));
 	}
 }

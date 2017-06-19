@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,63 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
-
-import org.scijava.Priority;
+import org.junit.Test;
+import org.scijava.Context;
+import org.scijava.command.Command;
+import org.scijava.command.CommandModule;
+import org.scijava.command.CommandService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+
+import java.util.concurrent.ExecutionException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * Tests {@link LoggerPreprocessor}.
+ *
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public class LoggerPreprocessorTest {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
+	@Test
+	public void testInjection() throws InterruptedException, ExecutionException {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		final TestLogListener listener = new TestLogListener();
+		context.service(LogService.class).addListener(listener);
 
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
-
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+		commandService.run(CommandWithLogger.class, true).get();
+		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	public static class CommandWithLogger implements Command {
+
+		@Parameter
+		public Logger log;
+
+		@Override
+		public void run() {
+			log.info("log from the command.");
+		}
+	}
+
+	@Test
+	public void testLoggerNameByAnnotation() throws ExecutionException, InterruptedException {
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		commandService.run(CommandWithNamedLogger.class, true).get();
+	}
+
+	public static class CommandWithNamedLogger implements Command {
+
+		@Parameter(label = "MyLoggerName")
+		public Logger log;
+
+		@Override
+		public void run() {
+			assertEquals("MyLoggerName", log.getName());
+		}
 	}
 }

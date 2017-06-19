@@ -33,6 +33,9 @@ package org.scijava.log;
 
 import org.scijava.service.SciJavaService;
 
+import java.io.PrintStream;
+import java.util.function.Function;
+
 /**
  * Interface for the logging service.
  * <p>
@@ -44,62 +47,60 @@ import org.scijava.service.SciJavaService;
  * 
  * @author Curtis Rueden
  */
-public interface LogService extends SciJavaService {
+public interface LogService extends SciJavaService, ListenableLogger {
 
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
 
-	int NONE = 0;
-	int ERROR = 1;
-	int WARN = 2;
-	int INFO = 3;
-	int DEBUG = 4;
-	int TRACE = 5;
+	String LOG_LEVEL_BY_SOURCE_PROPERTY = "scijava.log.level.source";
 
-	void debug(Object msg);
-
-	void debug(Throwable t);
-
-	void debug(Object msg, Throwable t);
-
-	void error(Object msg);
-
-	void error(Throwable t);
-
-	void error(Object msg, Throwable t);
-
-	void info(Object msg);
-
-	void info(Throwable t);
-
-	void info(Object msg, Throwable t);
-
-	void trace(Object msg);
-
-	void trace(Throwable t);
-
-	void trace(Object msg, Throwable t);
-
-	void warn(Object msg);
-
-	void warn(Throwable t);
-
-	void warn(Object msg, Throwable t);
-
-	boolean isDebug();
-
-	boolean isError();
-
-	boolean isInfo();
-
-	boolean isTrace();
-
-	boolean isWarn();
-
-	int getLevel();
-
+	/** Changes the log level of the root logger */
 	void setLevel(int level);
 
+	/**
+	 * For messages that are logged directly to the LogService. The log level can
+	 * be set depending on the class that makes the log.
+	 * 
+	 * @param classOrPackageName If this is the name of a class. Messages logged
+	 *          directly by this class are logged, if the message's level is less
+	 *          or equal to the given level. If this is a package, the same holds
+	 *          for all classes in this package.
+	 * @param level Given level.
+	 */
 	void setLevel(String classOrPackageName, int level);
+
+	/**
+	 * Setting the log level for loggers depending on their {@link LogSource}.
+	 * This will only effect loggers that are created after is method has been
+	 * called.
+	 */
+	void setLevelForLogger(LogSource source, int level);
+
+	/**
+	 * If the a LogService writes the log messages to streams,
+	 * it should implement this method for setting the output streams.
+	 */
+	default void setPrintStreams(Function<Integer, PrintStream> levelToStream) {}
+
+	// -- Deprecated --
+
+	/** @deprecated Use {@link LogLevel#NONE}. */
+	@Deprecated
+	int NONE = LogLevel.NONE;
+	/** @deprecated Use {@link LogLevel#ERROR}. */
+	@Deprecated
+	int ERROR = LogLevel.ERROR;
+	/** @deprecated Use {@link LogLevel#WARN}. */
+	@Deprecated
+	int WARN = LogLevel.WARN;
+	/** @deprecated Use {@link LogLevel#INFO}. */
+	@Deprecated
+	int INFO = LogLevel.INFO;
+	/** @deprecated Use {@link LogLevel#DEBUG}. */
+	@Deprecated
+	int DEBUG = LogLevel.DEBUG;
+	/** @deprecated Use {@link LogLevel#TRACE}. */
+	@Deprecated
+	int TRACE = LogLevel.TRACE;
 
 }

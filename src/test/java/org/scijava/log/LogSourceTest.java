@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,59 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
+import org.junit.Test;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * Tests {@link LogSource}
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public class LogSourceTest {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
-
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
-
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+	@Test
+	public void testRoot() {
+		LogSource root = LogSource.root();
+		assertEquals(Collections.emptyList(), root.path());
+		assertEquals("", root.name());
+		assertTrue(root.isRoot());
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	@Test
+	public void testRootIsUnique() {
+		LogSource a = LogSource.root();
+		LogSource b = LogSource.root();
+		assertSame(a, b);
 	}
+
+	@Test
+	public void testChildIsUnique() {
+		String name = "foo";
+		LogSource root = LogSource.root();
+		LogSource a = root.subSource(name);
+		LogSource b = root.subSource(name);
+		assertSame(a, b);
+	}
+
+	@Test
+	public void testOfIsUnique() {
+		List<String> path = Arrays.asList("foo", "bar");
+		LogSource a = LogSource.of(path);
+		LogSource b = LogSource.of(path);
+		assertSame(a, b);
+	}
+
+	@Test
+	public void testOf() {
+		List<String> path = Arrays.asList("foo", "bar");
+		LogSource source = LogSource.of(path);
+		assertEquals(path, source.path());
+		assertEquals("bar", source.name());
+		assertFalse(source.isRoot());
+		assertEquals("foo:bar", source.toString());
+	}
+
 }

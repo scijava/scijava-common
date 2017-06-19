@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,35 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.util.function.Predicate;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * Interface for loggers, that provides a callback mechanism for listening to
+ * the generated logs.
+ *
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public interface ListenableLogger extends Logger {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
+	/**
+	 * {@link LogListener}s added with this method are notified of every message,
+	 * that is logged to this logger or it's sub loggers. NB: Messages are only
+	 * logged, if their level is lower than the logger's level.
+	 *
+	 * @param listener
+	 */
+	void addListener(LogListener listener);
 
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
+	void removeListener(LogListener listener);
 
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
-	}
+	/**
+	 * A sub logger (see {@link Logger#subLogger(String)} forwards the
+	 * {@link LogMessage}s it gets to its parent logger. This method enables
+	 * setting a filter for this mechanism.
+	 *
+	 * @param filter Only the {@link LogMessage}s for which the filter method
+	 *          returns true are forwarded to the parent logger.
+	 */
+	void setParentForwardingFilter(Predicate<LogMessage> filter);
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
-	}
 }

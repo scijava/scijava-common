@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.Priority;
 import org.scijava.console.OutputEvent.Source;
+import org.scijava.convert.ConvertService;
+import org.scijava.log.LogService;
 import org.scijava.plugin.Plugin;
 import org.scijava.thread.ThreadService;
 
@@ -205,6 +208,25 @@ public class ConsoleServiceTest {
 		assertOutputEvent(Source.STDERR, c2RunErr, true, events2.get(3));
 		assertOutputEvent(Source.STDOUT, c2InvokeOut, true, events2.get(4));
 		assertOutputEvent(Source.STDERR, c2InvokeErr, true, events2.get(5));
+	}
+
+	@Test
+	public void testLogToStream() {
+		final Context context = new Context(LogService.class, ConsoleService.class);
+		final ConsoleService consoleService = context.getService(ConsoleService.class);
+		final LogService logService = context.getService(LogService.class);
+		final ArrayList<OutputEvent> events = new ArrayList<>();
+		final OutputListener outputListener = new OutputTracker(events);
+
+		consoleService.addOutputListener(outputListener);
+		logService.warn("Hello");
+		System.out.print("World");
+		consoleService.removeOutputListener(outputListener);
+
+		assertEquals(2, events.size());
+		assertTrue(events.get(0).containsLog());
+		assertTrue(events.get(0).isContextual());
+		assertFalse(events.get(1).containsLog());
 	}
 
 	// -- Helper methods --

@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,56 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+public class DefaultLogFormatterTest {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
+	private final DefaultLogFormatter logFormatter = new DefaultLogFormatter();
 
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
+	class DummyClass {}
 
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+	@Test
+	public void testFormatMessage() {
+		String nameOfThisMethod = "testFormatMessage";
+		// setup
+		LogMessage message = new LogMessage(LogSource.root(), LogLevel.DEBUG, 42, generateThrowableWithStackTrace());
+		// process
+		String s = logFormatter.format(message);
+		//test
+		Assert.assertTrue("Log message contains level", s.contains(LogLevel.prefix(message.level())));
+		Assert.assertTrue("Log message contains msg", s.contains(message.text()));
+		Assert.assertTrue("Log message contains throwable", s.contains(message.throwable().toString()));
+		Assert.assertTrue("Log message contains stack trace", s.contains(nameOfThisMethod));
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	@Test
+	public void testFormatMessageOptionalParameters() {
+		// setup
+		LogMessage message = new LogMessage(LogSource.root(), LogLevel.WARN, null, null);
+
+		// process
+		// Can it still format the message if optional parameters are null?
+		String s = logFormatter.format(message);
+
+		// test
+		Assert.assertTrue("Log message contains level", s.contains(LogLevel.prefix(message.level())));
 	}
+
+	// -- Helper methods --
+
+	private Throwable generateThrowableWithStackTrace() {
+		Throwable t;
+		try {
+			throw new NullPointerException();
+		}
+		catch (Throwable e) {
+			t = e;
+		}
+		return t;
+	}
+
 }

@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,40 +31,36 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
+import org.junit.Test;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
-
-	private final LogFormatter formatter = new DefaultLogFormatter();
-
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
-
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+public class CallingClassUtilsTest {
+	@Test
+	public void testGetCallingClass() {
+		Class<?> callingClass = CallingClassUtils.getCallingClass();
+		assertEquals(this.getClass(), callingClass);
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	@Test
+	public void testIgnoreAsCallingClass() {
+		assertEquals(ClassA.class, ClassA.returnGetCallingClass());
+		assertEquals(this.getClass(), ClassB.returnGetCallingClass());
+	}
+
+	public static class ClassA {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
+	}
+
+	@IgnoreAsCallingClass
+	private static class ClassB {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
 	}
 }

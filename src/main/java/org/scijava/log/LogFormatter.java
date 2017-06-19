@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,21 +31,13 @@
 
 package org.scijava.log;
 
-import static org.junit.Assert.assertTrue;
-import static org.scijava.log.LogService.WARN;
-
-import org.junit.Test;
-
 /**
- * Tests {@link LogService}.
- * 
- * @author Johannes Schindelin
+ * A LogFormatter is used to convert a {@link LogMessage} into a nicely
+ * formatted String.
+ *
+ * @author Matthias Arzt
  */
-public class LogServiceTest {
-	@Test
-	public void testDefaultLevel() {
-		final LogService log = new StderrLogService();
-		int level = log.getLevel();
-		assertTrue("default level (" + level + ") is at least INFO(" + WARN + ")", level >= WARN);
-	}
+public interface LogFormatter {
+
+	String format(LogMessage message);
 }

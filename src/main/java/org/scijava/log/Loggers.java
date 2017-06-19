@@ -31,40 +31,73 @@
 
 package org.scijava.log;
 
-import java.io.PrintStream;
-import java.util.function.Function;
-
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.util.function.Predicate;
 
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
- * 
- * @author Johannes Schindelin
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
-public class StderrLogService extends AbstractLogService {
+@IgnoreAsCallingClass
+public class Loggers {
 
-	private final LogFormatter formatter = new DefaultLogFormatter();
+	private static final ListenableLogger DUMMY_LOGGER = new ListenableLogger() {
 
-	private Function<Integer, PrintStream> levelToStream =
-		level -> (level <= LogLevel.WARN) ? System.err : System.out;
+		@Override
+		public void addListener(LogListener listener) {
+			// ignore
+		}
 
-	@Override
-	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
-		this.levelToStream = levelToStream;
+		@Override
+		public void removeListener(LogListener listener) {
+			// ignore
+		}
+
+		@Override
+		public void setParentForwardingFilter(Predicate<LogMessage> filter) {
+			// ignore
+		}
+
+		@Override
+		public void alwaysLog(int level, Object msg, Throwable t) {
+			// ignore
+		}
+
+		@Override
+		public String getName() {
+			return "";
+		}
+
+		@Override
+		public LogSource getSource() {
+			return LogSource.root();
+		}
+
+		@Override
+		public int getLevel() {
+			return LogLevel.NONE;
+		}
+
+		@Override
+		public Logger subLogger(String name, int level) {
+			return this;
+		}
+
+		@Override
+		public ListenableLogger listenableLogger(int level) {
+			return this;
+		}
+	};
+
+	private Loggers() {
+		// prevent instantiation of utility class
 	}
 
-	@Override
-	public void messageLogged(LogMessage message) {
-		final PrintStream out = levelToStream.apply(message.level());
-		out.print(formatter.format(message));
+	/** A {@link Logger} that discards all log messages */
+	public static ListenableLogger silent() {
+		return DUMMY_LOGGER;
+	}
+
+	/** Returns a new {@link ListenableLogger}. */
+	public static ListenableLogger newRoot(int logLevel) {
+		return DefaultListenableLogger.newRoot(logLevel);
 	}
 }

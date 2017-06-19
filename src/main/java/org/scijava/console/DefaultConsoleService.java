@@ -36,9 +36,12 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiFunction;
 
 import org.scijava.Context;
 import org.scijava.console.OutputEvent.Source;
+import org.scijava.log.LogLevel;
 import org.scijava.log.LogService;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Parameter;
@@ -64,15 +67,19 @@ public class DefaultConsoleService extends
 	@Parameter
 	private LogService log;
 
-	private MultiPrintStream sysout, syserr;
 	private OutputStreamReporter out, err;
 
 	/** List of listeners for {@code stdout} and {@code stderr} output. */
-	private ArrayList<OutputListener> listeners;
-
-	private OutputListener[] cachedListeners;
+	private List<OutputListener> listeners;
 
 	// -- ConsoleService methods --
+
+	@Override
+	public void initialize() {
+		PrintStream logErr = logStream(Source.STDERR);
+		PrintStream logOut = logStream(Source.STDOUT);
+		log.setPrintStreams(level -> (level <= LogLevel.WARN) ? logErr : logOut);
+	}
 
 	@Override
 	public void processArgs(final String... args) {
@@ -115,35 +122,49 @@ public class DefaultConsoleService extends
 	@Override
 	public void addOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
-		synchronized (listeners) {
-			listeners.add(l);
-			cacheListeners();
-		}
+		listeners.add(l);
 	}
 
 	@Override
 	public void removeOutputListener(final OutputListener l) {
 		if (listeners == null) initListeners();
-		synchronized (listeners) {
-			listeners.remove(l);
-			cacheListeners();
-		}
+		listeners.remove(l);
 	}
 
 	@Override
 	public void notifyListeners(final OutputEvent event) {
 		if (listeners == null) initListeners();
-		final OutputListener[] toNotify = cachedListeners;
-		for (final OutputListener l : toNotify)
+		for (final OutputListener l : listeners)
 			l.outputOccurred(event);
+	}
+
+	PrintStream logStream(Source source) {
+		OutputStream a = getBypassingStream(source);
+		OutputStream b = new OutputStreamReporter((relevance, text) -> {
+			final Context context = getContext();
+			final boolean contextual = true;
+			final boolean containsLog = true;
+			return new OutputEvent(context, source, text, contextual, containsLog);
+		});
+		return new PrintStream(new MultiOutputStream(a, b));
+	}
+
+	private OutputStream getBypassingStream(Source source) {
+		switch (source) {
+			case STDOUT:
+				return ListenableSystemStreams.out().bypass();
+			case STDERR:
+				return ListenableSystemStreams.err().bypass();
+		}
+		throw new AssertionError();
 	}
 
 	// -- Disposable methods --
 
 	@Override
 	public void dispose() {
-		if (out != null) sysout.getParent().removeOutputStream(out);
-		if (err != null) syserr.getParent().removeOutputStream(err);
+		if(out != null) ListenableSystemStreams.out().removeOutputStream(out);
+		if(err != null) ListenableSystemStreams.err().removeOutputStream(err);
 	}
 
 	// -- Helper methods - lazy initialization --
@@ -152,30 +173,24 @@ public class DefaultConsoleService extends
 	private synchronized void initListeners() {
 		if (listeners != null) return; // already initialized
 
-		sysout = multiPrintStream(System.out);
-		if (System.out != sysout) System.setOut(sysout);
-		out = new OutputStreamReporter(Source.STDOUT);
-		sysout.getParent().addOutputStream(out);
+		out = setupDefaultReporter(Source.STDOUT);
+		err = setupDefaultReporter(Source.STDERR);
+		ListenableSystemStreams.out().addOutputStream(out);
+		ListenableSystemStreams.err().addOutputStream(err);
 
-		syserr = multiPrintStream(System.err);
-		if (System.err != syserr) System.setErr(syserr);
-		err = new OutputStreamReporter(Source.STDERR);
-		syserr.getParent().addOutputStream(err);
+		listeners = new CopyOnWriteArrayList<>();
+	}
 
-		listeners = new ArrayList<>();
-		cachedListeners = listeners.toArray(new OutputListener[0]);
+	private OutputStreamReporter setupDefaultReporter(Source source) {
+		return new OutputStreamReporter((relevance, output) -> {
+			final Context context = getContext();
+			final boolean contextual = relevance == ThreadContext.SAME;
+			final boolean containsLog = false;
+			return new OutputEvent(context, source, output, contextual, containsLog);
+		});
 	}
 
 	// -- Helper methods --
-
-	private void cacheListeners() {
-		cachedListeners = listeners.toArray(new OutputListener[listeners.size()]);
-	}
-
-	private MultiPrintStream multiPrintStream(final PrintStream ps) {
-		if (ps instanceof MultiPrintStream) return (MultiPrintStream) ps;
-		return new MultiPrintStream(ps);
-	}
 
 	/**
 	 * Gets whether two lists have exactly the same elements in them.
@@ -202,11 +217,12 @@ public class DefaultConsoleService extends
 	 */
 	private class OutputStreamReporter extends OutputStream {
 
-		/** Source of the output stream; i.e., {@code stdout} or {@code stderr}. */
-		private final Source source;
+		private final BiFunction<ThreadContext, String, OutputEvent> eventFactory;
 
-		public OutputStreamReporter(final Source source) {
-			this.source = source;
+		public OutputStreamReporter(
+			BiFunction<ThreadContext, String, OutputEvent> eventFactory)
+		{
+			this.eventFactory = eventFactory;
 		}
 
 		// -- OutputStream methods --
@@ -232,12 +248,8 @@ public class DefaultConsoleService extends
 		}
 
 		private void publish(final ThreadContext relevance, final String output) {
-			final Context context = getContext();
-			final boolean contextual = relevance == ThreadContext.SAME;
-			final OutputEvent event =
-				new OutputEvent(context, source, output, contextual);
+			final OutputEvent event = eventFactory.apply(relevance, output);
 			notifyListeners(event);
 		}
 	}
-
 }
