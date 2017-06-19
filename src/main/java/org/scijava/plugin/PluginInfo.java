@@ -333,7 +333,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	@Override
 	public String getLocation() {
 		try {
-			return ClassUtils.getLocation(loadClass()).toExternalForm();
+			return Types.location(loadClass()).toExternalForm();
 		}
 		catch (InstantiableException exc) {
 			return null;

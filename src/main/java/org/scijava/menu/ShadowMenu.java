@@ -569,7 +569,7 @@ public class ShadowMenu extends AbstractContextual implements
 		try {
 			final Class<?> c = info.loadDelegateClass();
 			className = c.getName();
-			classLocation = ClassUtils.getLocation(c).toString();
+			classLocation = Types.location(c).toString();
 		}
 		catch (final ClassNotFoundException exc) {
 			className = info.getDelegateClassName();

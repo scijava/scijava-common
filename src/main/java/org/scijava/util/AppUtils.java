@@ -135,7 +135,7 @@ public final class AppUtils {
 		// see: http://stackoverflow.com/a/12733172/1207769
 
 		// step 1: convert Class to URL
-		final URL location = ClassUtils.getLocation(c);
+		final URL location = Types.location(c);
 
 		// step 2: convert URL to File
 		File baseFile;

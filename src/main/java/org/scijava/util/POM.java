@@ -227,7 +227,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 		final String artifactId)
 	{
 		try {
-			final URL location = ClassUtils.getLocation(c);
+			final URL location = Types.location(c);
 			if (!location.getProtocol().equals("file") ||
 				location.toString().endsWith(".jar"))
 			{

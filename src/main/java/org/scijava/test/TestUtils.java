@@ -38,8 +38,8 @@ import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import org.scijava.util.ClassUtils;
 import org.scijava.util.FileUtils;
+import org.scijava.util.Types;
 
 /**
  * A bunch of helpful functions for unit tests.
@@ -128,7 +128,7 @@ public class TestUtils {
 	public static File createTemporaryDirectory(final String prefix,
 		final Class<?> forClass, final String suffix) throws IOException
 	{
-		final URL directory = ClassUtils.getLocation(forClass);
+		final URL directory = Types.location(forClass);
 		if (directory == null) {
 			throw new IllegalArgumentException("No location for class " + forClass);
 		}
