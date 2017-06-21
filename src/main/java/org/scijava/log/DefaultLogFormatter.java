@@ -33,6 +33,7 @@ package org.scijava.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.EnumSet;
 
 /**
  * Default implementation of {@link LogFormatter}
@@ -41,16 +42,49 @@ import java.io.StringWriter;
  */
 public class DefaultLogFormatter implements LogFormatter {
 
+	public enum Field {
+		TIME, LEVEL, SOURCE, MESSAGE, THROWABLE, ATTACHMENT
+	}
+
+	private EnumSet<Field> visibleFields = EnumSet.of(Field.TIME,
+		Field.LEVEL, Field.SOURCE, Field.MESSAGE, Field.THROWABLE);
+
+	public boolean isVisible(Field field) {
+		return visibleFields.contains(field);
+	}
+
+	public void setVisible(Field field, boolean visible) {
+		// copy on write to enable isVisible to be used concurrently
+		EnumSet<Field> copy = EnumSet.copyOf(visibleFields);
+		if (visible) copy.add(field);
+		else copy.remove(field);
+		visibleFields = copy;
+	}
+
 	@Override
 	public String format(LogMessage message) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter printer = new PrintWriter(sw);
-		printWithBrackets(printer, message.time().toString());
-		printWithBrackets(printer, LogLevel.prefix(message.level()));
-		printWithBrackets(printer, message.source().toString());
-		printer.println(message.text());
-		if (message.throwable() != null) message.throwable().printStackTrace(
-			printer);
+
+		if (isVisible(Field.TIME))
+			printWithBrackets(printer, message.time().toString());
+
+		if (isVisible(Field.LEVEL))
+			printWithBrackets(printer, LogLevel.prefix(message.level()));
+
+		if (isVisible(Field.SOURCE))
+			printWithBrackets(printer, message.source().toString());
+
+		if (isVisible(Field.ATTACHMENT)) {
+			printer.print(message.attachments());
+			printer.print(" ");
+		}
+
+		if (isVisible(Field.MESSAGE)) printer.println(message.text());
+
+		if (isVisible(Field.THROWABLE) && message.throwable() != null)
+			message.throwable().printStackTrace(printer);
+
 		return sw.toString();
 	}
 
