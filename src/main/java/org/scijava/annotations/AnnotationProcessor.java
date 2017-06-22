@@ -70,11 +70,11 @@ import javax.tools.StandardLocation;
 import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
 
 /**
- * The annotation processor for use with Java 6 and above.
+ * The annotation processor for use with Java 8 and earlier.
  * 
  * @author Johannes Schindelin
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("*")
 public class AnnotationProcessor extends AbstractProcessor {
 
