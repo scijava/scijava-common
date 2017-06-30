@@ -33,6 +33,7 @@
 package org.scijava.ui;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -317,6 +318,18 @@ public final class DefaultUIService extends AbstractService implements
 	{
 		final UserInterface ui = getDefaultUI();
 		return ui == null ? null : ui.chooseFile(title, file, style);
+	}
+
+	@Override
+	public File[] chooseFiles(File[] files, FileFilter filter) {
+		final UserInterface ui = getDefaultUI();
+		return ui == null ? null : ui.chooseFiles(files, filter);
+	}
+	
+	@Override
+	public List<File> chooseFiles(List<File> fileList, FileFilter filter) {
+		final UserInterface ui = getDefaultUI();
+		return ui == null ? null : ui.chooseFiles(fileList, filter);
 	}
 
 	@Override
