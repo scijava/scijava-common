@@ -38,8 +38,6 @@ import java.io.DataOutput;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
@@ -55,6 +53,10 @@ import org.scijava.plugin.WrapperPlugin;
 public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	DataInput, DataOutput, Closeable
 {
+
+	public enum ByteOrder {
+		LITTLE_ENDIAN, BIG_ENDIAN
+	}
 
 	/** Default block size to use when searching through the stream. */
 	int DEFAULT_BLOCK_SIZE = 256 * 1024; // 256 KB
@@ -92,8 +94,6 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * by this method:
 	 * </p>
 	 * <ul>
-	 * <li>{@link #read(ByteBuffer)}</li>
-	 * <li>{@link #read(ByteBuffer, int)}</li>
 	 * <li>{@link #read(byte[])}</li>
 	 * <li>{@link #read(byte[], int, int)}</li>
 	 * <li>{@link #skip(long)}</li>
@@ -190,62 +190,6 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/** Sets the native encoding of the stream. */
 	void setEncoding(String encoding);
-
-	/**
-	 * Reads up to {@code buf.remaining()} bytes of data from the stream into a
-	 * {@link ByteBuffer}.
-	 */
-	default int read(final ByteBuffer buf) throws IOException {
-		return read(buf, buf.remaining());
-	}
-
-	/**
-	 * Reads up to {@code len} bytes of data from the stream into a
-	 * {@link ByteBuffer}.
-	 * 
-	 * @return the total number of bytes read into the buffer.
-	 */
-	default int read(final ByteBuffer buf, final int len) throws IOException {
-		final int n;
-		if (buf.hasArray()) {
-			// read directly into the array
-			n = read(buf.array(), buf.arrayOffset(), len);
-		}
-		else {
-			// read into a temporary array, then copy
-			final byte[] b = new byte[len];
-			n = read(b);
-			buf.put(b, 0, n);
-		}
-		return n;
-	}
-
-	/**
-	 * Writes {@code buf.remaining()} bytes of data from the given
-	 * {@link ByteBuffer} to the stream.
-	 */
-	default void write(final ByteBuffer buf) throws IOException {
-		write(buf, buf.remaining());
-	}
-
-	/**
-	 * Writes {@code len} bytes of data from the given {@link ByteBuffer} to the
-	 * stream.
-	 */
-	default void write(final ByteBuffer buf, final int len)
-		throws IOException
-	{
-		if (buf.hasArray()) {
-			// write directly from the buffer's array
-			write(buf.array(), buf.arrayOffset(), len);
-		}
-		else {
-			// copy into a temporary array, then write
-			final byte[] b = new byte[len];
-			buf.get(b);
-			write(b);
-		}
-	}
 
 	/** Reads a string of arbitrary length, terminated by a null char. */
 	default String readCString() throws IOException {

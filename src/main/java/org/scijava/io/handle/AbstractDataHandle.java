@@ -31,8 +31,6 @@
 
 package org.scijava.io.handle;
 
-import java.nio.ByteOrder;
-
 import org.scijava.io.location.Location;
 import org.scijava.plugin.AbstractWrapperPlugin;
 

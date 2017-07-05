@@ -35,13 +35,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.io.handle.DataHandle;
+import org.scijava.io.handle.DataHandle.ByteOrder;
 import org.scijava.io.handle.DataHandleService;
 import org.scijava.io.location.Location;
 import org.scijava.util.Bytes;
@@ -112,12 +111,6 @@ public abstract class DataHandleTest {
 		final byte[] buf = new byte[10];
 		handle.seek(1);
 		assertBytesMatch(1, handle.read(buf), buf);
-
-		// test read(ByteBuffer)
-		Arrays.fill(buf, (byte) 0);
-		final ByteBuffer byteBuffer = ByteBuffer.wrap(buf);
-		handle.seek(2);
-		assertBytesMatch(2, handle.read(byteBuffer), byteBuffer.array());
 
 		// test readByte()
 		handle.seek(0);
