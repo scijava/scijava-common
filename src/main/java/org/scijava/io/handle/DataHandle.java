@@ -456,10 +456,18 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default short readShort() throws IOException {
-		final int ch1 = read();
-		final int ch2 = read();
-		if ((ch1 | ch2) < 0) throw new EOFException();
-		return (short) ((ch1 << 8) + (ch2 << 0));
+		final int ch0;
+		final int ch1;
+		if (isBigEndian()) {
+			ch0 = read();
+			ch1 = read();
+		}
+		else {
+			ch1 = read();
+			ch0 = read();
+		}
+		if ((ch0 | ch1) < 0) throw new EOFException();
+		return (short) ((ch0 << 8) + (ch1 << 0));
 	}
 
 	@Override
@@ -474,36 +482,68 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default int readInt() throws IOException {
-		int ch1 = read();
-		int ch2 = read();
-		int ch3 = read();
-		int ch4 = read();
-		if ((ch1 | ch2 | ch3 | ch4) < 0) throw new EOFException();
-		return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+		final int ch0;
+		final int ch1;
+		final int ch2;
+		final int ch3;
+		if (isBigEndian()) {
+			ch0 = read();
+			ch1 = read();
+			ch2 = read();
+			ch3 = read();
+		}
+		else {
+			ch3 = read();
+			ch2 = read();
+			ch1 = read();
+			ch0 = read();
+		}
+		if ((ch0 | ch1 | ch2 | ch3) < 0) throw new EOFException();
+		return ((ch0 << 24) + (ch1 << 16) + (ch2 << 8) + (ch3 << 0));
 	}
 
 	@Override
 	default long readLong() throws IOException {
-		int ch1 = read();
-		int ch2 = read();
-		int ch3 = read();
-		int ch4 = read();
-		int ch5 = read();
-		int ch6 = read();
-		int ch7 = read();
-		int ch8 = read();
-		if ((ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7 | ch8) < 0) {
+		final int ch0;
+		final int ch1;
+		final int ch2;
+		final int ch3;
+		final int ch4;
+		final int ch5;
+		final int ch6;
+		final int ch7;
+		if (isBigEndian()) {
+			ch0 = read();
+			ch1 = read();
+			ch2 = read();
+			ch3 = read();
+			ch4 = read();
+			ch5 = read();
+			ch6 = read();
+			ch7 = read();
+		}
+		else {
+			ch7 = read();
+			ch6 = read();
+			ch5 = read();
+			ch4 = read();
+			ch3 = read();
+			ch2 = read();
+			ch1 = read();
+			ch0 = read();
+		}
+		if ((ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7) < 0) {
 			throw new EOFException();
 		}
 		// TODO: Double check this inconsistent code.
-		return ((long) ch1 << 56) + //
-			((long) (ch2 & 255) << 48) + //
-			((long) (ch3 & 255) << 40) + //
-			((long) (ch4 & 255) << 32) + //
-			((long) (ch5 & 255) << 24) + //
-			((ch6 & 255) << 16) + //
-			((ch7 & 255) << 8) + //
-			((ch8 & 255) << 0);
+		return ((long) ch0 << 56) + //
+			((long) (ch1 & 255) << 48) + //
+			((long) (ch2 & 255) << 40) + //
+			((long) (ch3 & 255) << 32) + //
+			((long) (ch4 & 255) << 24) + //
+			((ch5 & 255) << 16) + //
+			((ch6 & 255) << 8) + //
+			((ch7 & 255) << 0);
 	}
 
 	@Override
@@ -571,34 +611,66 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default void writeShort(final int v) throws IOException {
-		write((v >>> 8) & 0xFF);
-		write((v >>> 0) & 0xFF);
+		if (isBigEndian()) {
+			write((v >>> 8) & 0xFF);
+			write((v >>> 0) & 0xFF);
+		}
+		else {
+			write((v >>> 0) & 0xFF);
+			write((v >>> 8) & 0xFF);
+		}
 	}
 
 	@Override
 	default void writeChar(final int v) throws IOException {
-		write((v >>> 8) & 0xFF);
-		write((v >>> 0) & 0xFF);
+		if (isBigEndian()) {
+			write((v >>> 8) & 0xFF);
+			write((v >>> 0) & 0xFF);
+		}
+		else {
+			write((v >>> 0) & 0xFF);
+			write((v >>> 8) & 0xFF);
+		}
 	}
 
 	@Override
 	default void writeInt(final int v) throws IOException {
-		write((v >>> 24) & 0xFF);
-		write((v >>> 16) & 0xFF);
-		write((v >>> 8) & 0xFF);
-		write((v >>> 0) & 0xFF);
+		if (isBigEndian()) {
+			write((v >>> 24) & 0xFF);
+			write((v >>> 16) & 0xFF);
+			write((v >>> 8) & 0xFF);
+			write((v >>> 0) & 0xFF);
+		}
+		else {
+			write((v >>> 0) & 0xFF);
+			write((v >>> 8) & 0xFF);
+			write((v >>> 16) & 0xFF);
+			write((v >>> 24) & 0xFF);
+		}
 	}
 
 	@Override
 	default void writeLong(final long v) throws IOException {
-		write((byte) (v >>> 56));
-		write((byte) (v >>> 48));
-		write((byte) (v >>> 40));
-		write((byte) (v >>> 32));
-		write((byte) (v >>> 24));
-		write((byte) (v >>> 16));
-		write((byte) (v >>> 8));
-		write((byte) (v >>> 0));
+		if (isBigEndian()) {
+			write((byte) (v >>> 56));
+			write((byte) (v >>> 48));
+			write((byte) (v >>> 40));
+			write((byte) (v >>> 32));
+			write((byte) (v >>> 24));
+			write((byte) (v >>> 16));
+			write((byte) (v >>> 8));
+			write((byte) (v >>> 0));
+		}
+		else {
+			write((byte) (v >>> 0));
+			write((byte) (v >>> 8));
+			write((byte) (v >>> 16));
+			write((byte) (v >>> 24));
+			write((byte) (v >>> 32));
+			write((byte) (v >>> 40));
+			write((byte) (v >>> 48));
+			write((byte) (v >>> 56));
+		}
 	}
 
 	@Override
