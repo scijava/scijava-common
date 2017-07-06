@@ -94,6 +94,7 @@ public class ContextCreationTest {
 				org.scijava.console.DefaultConsoleService.class,
 				org.scijava.convert.DefaultConvertService.class,
 				org.scijava.display.DefaultDisplayService.class,
+				org.scijava.download.DefaultDownloadService.class,
 				org.scijava.event.DefaultEventHistory.class,
 				org.scijava.input.DefaultInputService.class,
 				org.scijava.io.DefaultIOService.class,
