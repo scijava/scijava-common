@@ -112,6 +112,7 @@ public class ContextCreationTest {
 				org.scijava.run.DefaultRunService.class,
 				org.scijava.script.DefaultScriptHeaderService.class,
 				org.scijava.script.process.DefaultScriptProcessorService.class,
+				org.scijava.task.DefaultTaskService.class,
 				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.tool.DefaultToolService.class,
