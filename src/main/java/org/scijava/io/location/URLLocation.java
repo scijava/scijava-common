@@ -29,32 +29,47 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
- * A <em>location</em> is a data descriptor, such as a file on disk, a remote
- * URL, or a database connection.
- * <p>
- * Analogous to a <a
- * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
- * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
- * the data resides, without necessarily specifying <em>how</em> to access that
- * data. The {@link DataHandle} interface defines a plugin that knows how to
- * provide a stream of bytes for a particular kind of location.
- * </p>
- * 
+ * {@link Location} backed by a {@link URL}.
+ *
  * @author Curtis Rueden
  */
-public interface Location {
+public class URLLocation extends AbstractLocation {
+
+	/** The URL backing this location. */
+	private final URL url;
+
+	public URLLocation(final URL url) {
+		this.url = url;
+	}
+
+	// -- URLLocation methods --
+
+	/** Gets the associated {@link URL}. */
+	public URL getURL() {
+		return url;
+	}
+
+	// -- Location methods --
 
 	/**
-	 * Gets the location expressed as a {@link URI}, or null if the location
-	 * cannot be expressed as such.
+	 * Gets the associated {@link URI}, or null if this URL is not formatted
+	 * strictly according to to RFC2396 and cannot be converted to a URI.
 	 */
-	default URI getURI() {
-		return null;
+	@Override
+	public URI getURI() {
+		try {
+			return getURL().toURI();
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 }

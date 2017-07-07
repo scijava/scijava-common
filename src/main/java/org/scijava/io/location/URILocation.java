@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

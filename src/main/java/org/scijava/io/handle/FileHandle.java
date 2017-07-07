@@ -29,11 +29,12 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
 
 /**

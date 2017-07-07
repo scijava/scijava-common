@@ -29,61 +29,37 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.scijava.io.IOService;
+import org.scijava.io.location.Location;
+import org.scijava.plugin.WrapperService;
+import org.scijava.service.SciJavaService;
 
 /**
- * {@link OutputStream} backed by a {@link DataHandle}.
+ * Interface for low-level data I/O: reading and writing bytes using
+ * {@link DataHandle}s.
  * 
  * @author Curtis Rueden
- * @author Melissa Linkert
+ * @see IOService
+ * @see Location
  */
-public class DataHandleOutputStream<L extends Location> extends OutputStream {
+public interface DataHandleService extends
+	WrapperService<Location, DataHandle<Location>>, SciJavaService
+{
 
-	// -- Fields --
-
-	private final DataHandle<L> handle;
-
-	// -- Constructor --
-
-	/** Creates an output stream around the given {@link DataHandle}. */
-	public DataHandleOutputStream(final DataHandle<L> handle) {
-		this.handle = handle;
-	}
-
-	// -- OutputStream methods --
+	// -- PTService methods --
 
 	@Override
-	public void write(final int i) throws IOException {
-		handle.write(i);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<DataHandle<Location>> getPluginType() {
+		return (Class) DataHandle.class;
 	}
+
+	// -- Typed methods --
 
 	@Override
-	public void write(final byte[] b) throws IOException {
-		handle.write(b);
+	default Class<Location> getType() {
+		return Location.class;
 	}
-
-	@Override
-	public void write(final byte[] b, final int off, final int len)
-		throws IOException
-	{
-		handle.write(b, off, len);
-	}
-
-	// -- Closeable methods --
-
-	@Override
-	public void close() throws IOException {
-		handle.close();
-	}
-
-	// -- Flushable methods --
-
-	@Override
-	public void flush() throws IOException {
-		// NB: No action needed.
-	}
-
 }

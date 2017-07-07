@@ -29,13 +29,36 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
+
+import java.nio.ByteBuffer;
 
 /**
- * Abstract base class for {@link Location} implementations.
- * 
+ * {@link Location} backed by a {@link ByteBuffer}.
+ *
  * @author Curtis Rueden
  */
-public abstract class AbstractLocation implements Location {
-	// NB: No implementation needed.
+public class BytesLocation extends AbstractLocation {
+
+	private final ByteBuffer bytes;
+
+	public BytesLocation(final ByteBuffer bytes) {
+		this.bytes = bytes;
+	}
+
+	public BytesLocation(final byte[] bytes) {
+		this(ByteBuffer.wrap(bytes));
+	}
+
+	public BytesLocation(final byte[] bytes, final int offset, final int length) {
+		this(ByteBuffer.wrap(bytes, offset, length));
+	}
+
+	// -- ByteArrayLocation methods --
+
+	/** Gets the associated {@link ByteBuffer}. */
+	public ByteBuffer getByteBuffer() {
+		return bytes;
+	}
+
 }

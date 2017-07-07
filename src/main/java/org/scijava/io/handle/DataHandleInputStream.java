@@ -29,10 +29,12 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.scijava.io.location.Location;
 
 /**
  * {@link InputStream} backed by a {@link DataHandle}.

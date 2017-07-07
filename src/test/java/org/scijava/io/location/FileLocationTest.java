@@ -29,47 +29,35 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
+import org.junit.Test;
+import org.scijava.io.location.FileLocation;
 
 /**
- * {@link Location} backed by a {@link URL}.
- *
+ * Tests {@link FileLocation}.
+ * 
  * @author Curtis Rueden
  */
-public class URLLocation extends AbstractLocation {
+public class FileLocationTest {
 
-	/** The URL backing this location. */
-	private final URL url;
-
-	public URLLocation(final URL url) {
-		this.url = url;
-	}
-
-	// -- URLLocation methods --
-
-	/** Gets the associated {@link URL}. */
-	public URL getURL() {
-		return url;
-	}
-
-	// -- Location methods --
-
-	/**
-	 * Gets the associated {@link URI}, or null if this URL is not formatted
-	 * strictly according to to RFC2396 and cannot be converted to a URI.
-	 */
-	@Override
-	public URI getURI() {
-		try {
-			return getURL().toURI();
-		}
-		catch (final URISyntaxException exc) {
-			return null;
-		}
+	/** Tests {@link FileLocation#FileLocation(String)}. */
+	@Test
+	public void testFile() {
+		final String path = "/not/actually/a/real-file";
+		final FileLocation loc = new FileLocation(path);
+		final File realFile = loc.getFile();
+		assertEquals("real-file", realFile.getName());
+		final File a = realFile.getParentFile();
+		assertEquals("a", a.getName());
+		final File actually = a.getParentFile();
+		assertEquals("actually", actually.getName());
+		final File not = actually.getParentFile();
+		assertEquals("not", not.getName());
 	}
 
 }

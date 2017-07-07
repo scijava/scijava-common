@@ -29,21 +29,34 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import org.scijava.plugin.AbstractWrapperService;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import java.net.URI;
+
+import org.scijava.io.handle.DataHandle;
 
 /**
- * Default implementation of {@link DataHandleService}.
+ * A <em>location</em> is a data descriptor, such as a file on disk, a remote
+ * URL, or a database connection.
+ * <p>
+ * Analogous to a <a
+ * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
+ * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
+ * the data resides, without necessarily specifying <em>how</em> to access that
+ * data. The {@link DataHandle} interface defines a plugin that knows how to
+ * provide a stream of bytes for a particular kind of location.
+ * </p>
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class)
-public class DefaultDataHandleService extends
-	AbstractWrapperService<Location, DataHandle<Location>> implements
-	DataHandleService
-{
-	// NB: No implementation needed.
+public interface Location {
+
+	/**
+	 * Gets the location expressed as a {@link URI}, or null if the location
+	 * cannot be expressed as such.
+	 */
+	default URI getURI() {
+		return null;
+	}
+
 }

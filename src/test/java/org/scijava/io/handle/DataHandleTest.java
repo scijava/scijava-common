@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import static org.junit.Assert.assertEquals;
 
@@ -41,6 +41,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.io.handle.DataHandle;
+import org.scijava.io.handle.DataHandleService;
+import org.scijava.io.location.Location;
 import org.scijava.util.Bytes;
 
 /**

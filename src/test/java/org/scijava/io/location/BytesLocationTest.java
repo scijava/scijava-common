@@ -29,36 +29,40 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import java.nio.ByteBuffer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
+import org.scijava.io.location.BytesLocation;
 
 /**
- * {@link Location} backed by a {@link ByteBuffer}.
- *
+ * Tests {@link BytesLocation}.
+ * 
  * @author Curtis Rueden
  */
-public class BytesLocation extends AbstractLocation {
+public class BytesLocationTest {
 
-	private final ByteBuffer bytes;
-
-	public BytesLocation(final ByteBuffer bytes) {
-		this.bytes = bytes;
+	/** Tests {@link BytesLocation#BytesLocation(byte[])}. */
+	@Test
+	public void testBytes() {
+		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final BytesLocation loc = new BytesLocation(digits);
+		assertSame(digits, loc.getByteBuffer().array());
+		assertEquals(0, loc.getByteBuffer().position());
+		assertEquals(digits.length, loc.getByteBuffer().remaining());
 	}
 
-	public BytesLocation(final byte[] bytes) {
-		this(ByteBuffer.wrap(bytes));
-	}
-
-	public BytesLocation(final byte[] bytes, final int offset, final int length) {
-		this(ByteBuffer.wrap(bytes, offset, length));
-	}
-
-	// -- ByteArrayLocation methods --
-
-	/** Gets the associated {@link ByteBuffer}. */
-	public ByteBuffer getByteBuffer() {
-		return bytes;
+	/** Tests {@link BytesLocation#BytesLocation(byte[], int, int)}. */
+	@Test
+	public void testBytesOffsetLength() {
+		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final int offset = 3, length = 5;
+		final BytesLocation loc = new BytesLocation(digits, offset, length);
+		assertSame(digits, loc.getByteBuffer().array());
+		assertEquals(offset, loc.getByteBuffer().position());
+		assertEquals(length, loc.getByteBuffer().remaining());
 	}
 
 }

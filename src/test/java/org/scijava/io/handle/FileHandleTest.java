@@ -29,11 +29,16 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.scijava.io.handle.DataHandle;
+import org.scijava.io.handle.FileHandle;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 
 /**
  * Tests {@link FileHandle}.

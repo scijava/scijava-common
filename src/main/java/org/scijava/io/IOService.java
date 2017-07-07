@@ -40,8 +40,6 @@ import org.scijava.service.SciJavaService;
  * Interface for high-level data I/O: opening and saving data.
  * 
  * @author Curtis Rueden
- * @see DataHandleService
- * @see Location
  */
 public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	SciJavaService

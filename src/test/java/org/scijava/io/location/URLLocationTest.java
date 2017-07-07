@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
 import static org.junit.Assert.assertSame;
 
@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Test;
+import org.scijava.io.location.URLLocation;
 
 /**
  * Tests {@link URLLocation}.

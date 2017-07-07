@@ -29,34 +29,40 @@
  * #L%
  */
 
-package org.scijava.io;
-
-import static org.junit.Assert.assertEquals;
+package org.scijava.io.location;
 
 import java.io.File;
-
-import org.junit.Test;
+import java.net.URI;
 
 /**
- * Tests {@link FileLocation}.
- * 
+ * {@link Location} backed by a {@link File} on disk.
+ *
  * @author Curtis Rueden
  */
-public class FileLocationTest {
+public class FileLocation extends AbstractLocation {
 
-	/** Tests {@link FileLocation#FileLocation(String)}. */
-	@Test
-	public void testFile() {
-		final String path = "/not/actually/a/real-file";
-		final FileLocation loc = new FileLocation(path);
-		final File realFile = loc.getFile();
-		assertEquals("real-file", realFile.getName());
-		final File a = realFile.getParentFile();
-		assertEquals("a", a.getName());
-		final File actually = a.getParentFile();
-		assertEquals("actually", actually.getName());
-		final File not = actually.getParentFile();
-		assertEquals("not", not.getName());
+	private final File file;
+
+	public FileLocation(final File file) {
+		this.file = file;
+	}
+
+	public FileLocation(final String path) {
+		this(new File(path));
+	}
+
+	// -- FileLocation methods --
+
+	/** Gets the associated {@link File}. */
+	public File getFile() {
+		return file;
+	}
+
+	// -- Location methods --
+
+	@Override
+	public URI getURI() {
+		return getFile().toURI();
 	}
 
 }

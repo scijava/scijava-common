@@ -29,36 +29,63 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-
-import org.junit.Test;
+import org.scijava.io.location.Location;
 
 /**
- * Tests {@link URILocation}.
+ * {@link OutputStream} backed by a {@link DataHandle}.
  * 
  * @author Curtis Rueden
+ * @author Melissa Linkert
  */
-public class URILocationTest {
+public class DataHandleOutputStream<L extends Location> extends OutputStream {
 
-	/** Tests {@link URILocation#URILocation(URI)}. */
-	@Test
-	public void testURI() throws URISyntaxException {
-		final String uriString = "scheme://bob@big.server.somewhere:12345" +
-			"/foo/bar?pineapple=exquisite&strawberries=very%20delicious#anchor";
-		final URI uri = new URI(uriString);
-		final URILocation loc = new URILocation(uri);
-		assertSame(uri, loc.getURI());
-		final Map<String, String> queryMap = loc.getQueryMap();
-		assertEquals(2, queryMap.size());
-		assertEquals("exquisite", queryMap.get("pineapple"));
-		assertEquals("very delicious", queryMap.get("strawberries"));
+	// -- Fields --
+
+	private final DataHandle<L> handle;
+
+	// -- Constructor --
+
+	/** Creates an output stream around the given {@link DataHandle}. */
+	public DataHandleOutputStream(final DataHandle<L> handle) {
+		this.handle = handle;
+	}
+
+	// -- OutputStream methods --
+
+	@Override
+	public void write(final int i) throws IOException {
+		handle.write(i);
+	}
+
+	@Override
+	public void write(final byte[] b) throws IOException {
+		handle.write(b);
+	}
+
+	@Override
+	public void write(final byte[] b, final int off, final int len)
+		throws IOException
+	{
+		handle.write(b, off, len);
+	}
+
+	// -- Closeable methods --
+
+	@Override
+	public void close() throws IOException {
+		handle.close();
+	}
+
+	// -- Flushable methods --
+
+	@Override
+	public void flush() throws IOException {
+		// NB: No action needed.
 	}
 
 }

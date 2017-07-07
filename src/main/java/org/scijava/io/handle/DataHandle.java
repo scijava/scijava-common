@@ -29,7 +29,7 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.Closeable;
 import java.io.DataInput;
@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
 
 /**
