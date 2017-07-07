@@ -54,7 +54,7 @@ public class BytesLocation extends AbstractLocation {
 		this(ByteBuffer.wrap(bytes, offset, length));
 	}
 
-	// -- ByteArrayLocation methods --
+	// -- BytesLocation methods --
 
 	/** Gets the associated {@link ByteBuffer}. */
 	public ByteBuffer getByteBuffer() {
