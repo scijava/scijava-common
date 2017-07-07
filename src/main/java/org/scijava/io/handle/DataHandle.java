@@ -83,7 +83,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	void setLength(long length) throws IOException;
 
 	/**
-	 * Gets the number of bytes which can be safely read from, or written to, the
+	 * Gets the number of bytes which can be read from, or written to, the
 	 * data handle, bounded by the specified number of bytes.
 	 * <p>
 	 * In the case of reading, attempting to read the returned number of bytes is
@@ -104,9 +104,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * guaranteed not to expand the length of the handle; i.e., the write will
 	 * only overwrite bytes already within the handle's bounds.
 	 * </p>
-	 * 
+	 *
 	 * @param count Desired number of bytes to read/write.
-	 * @return The actual number of bytes which could be safely read/written,
+	 * @return The actual number of bytes which could be read/written,
 	 *         which might be less than the requested value.
 	 * @throws IOException If something goes wrong with the check.
 	 */
@@ -151,14 +151,14 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Sets the byte order of the stream.
-	 * 
+	 *
 	 * @param order Order to set.
 	 */
 	void setOrder(ByteOrder order);
 
 	/**
 	 * Returns true iff the stream's order is {@link ByteOrder#BIG_ENDIAN}.
-	 * 
+	 *
 	 * @see #getOrder()
 	 */
 	default boolean isBigEndian() {
@@ -167,7 +167,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Returns true iff the stream's order is {@link ByteOrder#LITTLE_ENDIAN}.
-	 * 
+	 *
 	 * @see #getOrder()
 	 */
 	default boolean isLittleEndian() {
@@ -176,7 +176,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Sets the endianness of the stream.
-	 * 
+	 *
 	 * @param little If true, sets the order to {@link ByteOrder#LITTLE_ENDIAN};
 	 *          otherwise, sets the order to {@link ByteOrder#BIG_ENDIAN}.
 	 * @see #setOrder(ByteOrder)
@@ -290,7 +290,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/**
 	 * Reads or skips a string ending with one of the given terminating
 	 * substrings.
-	 * 
+	 *
 	 * @param saveString Whether to collect the string from the current offset to
 	 *          the terminating bytes, and return it. If false, returns null.
 	 * @param terminators The strings for which to search.
@@ -309,7 +309,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/**
 	 * Reads a string ending with one of the given terminating substrings, using
 	 * the specified block size for buffering.
-	 * 
+	 *
 	 * @param blockSize The block size to use when reading bytes in chunks.
 	 * @param terminators The strings for which to search.
 	 * @return The string from the initial position through the end of the
@@ -325,9 +325,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/**
 	 * Reads or skips a string ending with one of the given terminating
 	 * substrings, using the specified block size for buffering.
-	 * 
-	 * @param saveString Whether to collect the string from the current offset
-	 *          to the terminating bytes, and return it. If false, returns null.
+	 *
+	 * @param saveString Whether to collect the string from the current offset to
+	 *          the terminating bytes, and return it. If false, returns null.
 	 * @param blockSize The block size to use when reading bytes in chunks.
 	 * @param terminators The strings for which to search.
 	 * @throws IOException If saveString flag is set and the maximum search length
@@ -354,8 +354,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		}
 
 		@SuppressWarnings("resource")
-		final InputStreamReader in =
-			new InputStreamReader(new DataHandleInputStream<>(this), getEncoding());
+		final InputStreamReader in = new InputStreamReader(
+			new DataHandleInputStream<>(this), getEncoding());
 		final char[] buf = new char[blockSize];
 		long loc = 0;
 		while (loc < maxLen && offset() < length() - 1) {
@@ -426,7 +426,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads the next byte of data from the stream.
-	 * 
+	 *
 	 * @return the next byte of data, or -1 if the end of the stream is reached.
 	 * @throws IOException - if an I/O error occurs.
 	 */
@@ -436,7 +436,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads up to b.length bytes of data from the stream into an array of bytes.
-	 * 
+	 *
 	 * @return the total number of bytes read into the buffer.
 	 */
 	default int read(byte[] b) throws IOException {
@@ -445,7 +445,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads up to len bytes of data from the stream into an array of bytes.
-	 * 
+	 *
 	 * @return the total number of bytes read into the buffer.
 	 */
 	int read(byte[] b, int off, int len) throws IOException;
@@ -457,7 +457,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * of a number of conditions; reaching end of file before {@code n} bytes have
 	 * been skipped is only one possibility. The actual number of bytes skipped is
 	 * returned. If {@code n} is negative, no bytes are skipped.
-	 * 
+	 *
 	 * @param n - the number of bytes to be skipped.
 	 * @return the actual number of bytes skipped.
 	 * @throws IOException - if an I/O error occurs.
@@ -591,7 +591,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 					if (read() != '\n') seek(cur);
 					break;
 				default:
-					input.append((char)c);
+					input.append((char) c);
 					break;
 			}
 		}
@@ -674,7 +674,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	@Override
 	default void writeChars(final String s) throws IOException {
 		final int len = s.length();
-		for (int i = 0 ; i < len ; i++) {
+		for (int i = 0; i < len; i++) {
 			final int v = s.charAt(i);
 			write((v >>> 8) & 0xFF);
 			write((v >>> 0) & 0xFF);
