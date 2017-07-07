@@ -429,7 +429,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		if (len < 0) throw new IndexOutOfBoundsException();
 		int n = 0;
 		while (n < len) {
-			int count = read(b, off + n, len - n);
+			final int count = read(b, off + n, len - n);
 			if (count < 0) throw new EOFException();
 			n += count;
 		}
@@ -532,7 +532,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 					break;
 				case '\r':
 					eol = true;
-					long cur = offset();
+					final long cur = offset();
 					if (read() != '\n') seek(cur);
 					break;
 				default:
