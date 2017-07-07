@@ -439,12 +439,13 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 *
 	 * @return the total number of bytes read into the buffer.
 	 */
-	default int read(byte[] b) throws IOException {
+	default int read(final byte[] b) throws IOException {
 		return read(b, 0, b.length);
 	}
 
 	/**
-	 * Reads up to len bytes of data from the stream into an array of bytes.
+	 * Reads up to {@code len} bytes of data from the stream into an array of
+	 * bytes.
 	 *
 	 * @return the total number of bytes read into the buffer.
 	 */
