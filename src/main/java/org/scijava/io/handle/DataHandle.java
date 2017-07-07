@@ -630,5 +630,4 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	default void writeUTF(final String str) throws IOException {
 		DataHandles.writeUTF(str, this);
 	}
-
 }
