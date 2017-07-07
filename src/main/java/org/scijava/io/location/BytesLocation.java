@@ -31,33 +31,71 @@
 
 package org.scijava.io.location;
 
-import java.nio.ByteBuffer;
+import org.scijava.io.ByteArrayByteBank;
+import org.scijava.io.ByteBank;
+import org.scijava.util.ByteArray;
 
 /**
- * {@link Location} backed by a {@link ByteBuffer}.
+ * {@link Location} backed by a {@link ByteBank}.
  *
  * @author Curtis Rueden
+ * @author Gabriel Einsdorf
  */
 public class BytesLocation extends AbstractLocation {
 
-	private final ByteBuffer bytes;
+	private final ByteBank bytes;
 
-	public BytesLocation(final ByteBuffer bytes) {
+	/**
+	 * Creates a {@link BytesLocation} backed by the specified
+	 * {@link ByteBank}.
+	 *
+	 * @param bytes the {@link ByteBank} that will back this {@link Location}
+	 */
+	public BytesLocation(final ByteBank bytes) {
 		this.bytes = bytes;
 	}
 
-	public BytesLocation(final byte[] bytes) {
-		this(ByteBuffer.wrap(bytes));
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
+	 * with the specified initial capacity.
+	 */
+	public BytesLocation(final int initialCapacity) {
+		this.bytes = new ByteArrayByteBank(initialCapacity);
 	}
 
-	public BytesLocation(final byte[] bytes, final int offset, final int length) {
-		this(ByteBuffer.wrap(bytes, offset, length));
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
+	 * that wraps the specified {@link ByteArray}.
+	 */
+	public BytesLocation(final ByteArray bytes) {
+		this.bytes = new ByteArrayByteBank(bytes);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
+	 * which wraps the specified array.
+	 *
+	 * @param bytes the array to wrap
+	 */
+	public BytesLocation(final byte[] bytes) {
+		this.bytes = new ByteArrayByteBank(bytes);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
+	 * the specified initial capacity.
+	 */
+	public BytesLocation(final byte[] bytes, final int offset,
+		final int length)
+	{
+		this.bytes = new ByteArrayByteBank(length);
+		this.bytes.setBytes(0l, bytes, offset, length);
 	}
 
 	// -- BytesLocation methods --
 
-	/** Gets the associated {@link ByteBuffer}. */
-	public ByteBuffer getByteBuffer() {
+	/** Gets the backing {@link ByteBank}. */
+	public ByteBank getByteBank() {
 		return bytes;
 	}
 

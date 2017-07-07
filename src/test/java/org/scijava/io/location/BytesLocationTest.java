@@ -31,11 +31,10 @@
 
 package org.scijava.io.location;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
-import org.scijava.io.location.BytesLocation;
 
 /**
  * Tests {@link BytesLocation}.
@@ -47,22 +46,29 @@ public class BytesLocationTest {
 	/** Tests {@link BytesLocation#BytesLocation(byte[])}. */
 	@Test
 	public void testBytes() {
-		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final byte[] digits = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 };
 		final BytesLocation loc = new BytesLocation(digits);
-		assertSame(digits, loc.getByteBuffer().array());
-		assertEquals(0, loc.getByteBuffer().position());
-		assertEquals(digits.length, loc.getByteBuffer().remaining());
+
+		final byte[] testDigits = new byte[digits.length];
+		loc.getByteBank().getBytes(0, testDigits);
+		assertEquals(digits.length, loc.getByteBank().getMaxPos());
+		assertArrayEquals(digits, testDigits);
 	}
 
 	/** Tests {@link BytesLocation#BytesLocation(byte[], int, int)}. */
 	@Test
 	public void testBytesOffsetLength() {
-		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
+		final byte[] digits = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 };
 		final int offset = 3, length = 5;
 		final BytesLocation loc = new BytesLocation(digits, offset, length);
-		assertSame(digits, loc.getByteBuffer().array());
-		assertEquals(offset, loc.getByteBuffer().position());
-		assertEquals(length, loc.getByteBuffer().remaining());
+
+		final byte[] testDigits = new byte[digits.length];
+		loc.getByteBank().getBytes(0, testDigits);
+		assertEquals(length, loc.getByteBank().getMaxPos());
+
+		final byte[] expectedDigits = new byte[digits.length];
+		System.arraycopy(digits, offset, expectedDigits, 0, length);
+		assertArrayEquals(expectedDigits, testDigits);
 	}
 
 }
