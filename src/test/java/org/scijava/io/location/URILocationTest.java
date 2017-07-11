@@ -29,34 +29,37 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
-import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.junit.Test;
+import org.scijava.io.location.URILocation;
 
 /**
- * Tests {@link FileLocation}.
+ * Tests {@link URILocation}.
  * 
  * @author Curtis Rueden
  */
-public class FileLocationTest {
+public class URILocationTest {
 
-	/** Tests {@link FileLocation#FileLocation(String)}. */
+	/** Tests {@link URILocation#URILocation(URI)}. */
 	@Test
-	public void testFile() {
-		final String path = "/not/actually/a/real-file";
-		final FileLocation loc = new FileLocation(path);
-		final File realFile = loc.getFile();
-		assertEquals("real-file", realFile.getName());
-		final File a = realFile.getParentFile();
-		assertEquals("a", a.getName());
-		final File actually = a.getParentFile();
-		assertEquals("actually", actually.getName());
-		final File not = actually.getParentFile();
-		assertEquals("not", not.getName());
+	public void testURI() throws URISyntaxException {
+		final String uriString = "scheme://bob@big.server.somewhere:12345" +
+			"/foo/bar?pineapple=exquisite&strawberries=very%20delicious#anchor";
+		final URI uri = new URI(uriString);
+		final URILocation loc = new URILocation(uri);
+		assertSame(uri, loc.getURI());
+		final Map<String, String> queryMap = loc.getQueryMap();
+		assertEquals(2, queryMap.size());
+		assertEquals("exquisite", queryMap.get("pineapple"));
+		assertEquals("very delicious", queryMap.get("strawberries"));
 	}
 
 }

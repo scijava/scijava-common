@@ -29,39 +29,22 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import org.junit.Test;
+import org.scijava.io.location.Location;
+import org.scijava.plugin.AbstractWrapperService;
+import org.scijava.plugin.Plugin;
+import org.scijava.service.Service;
 
 /**
- * Tests {@link BytesLocation}.
+ * Default implementation of {@link DataHandleService}.
  * 
  * @author Curtis Rueden
  */
-public class BytesLocationTest {
-
-	/** Tests {@link BytesLocation#BytesLocation(byte[])}. */
-	@Test
-	public void testBytes() {
-		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
-		final BytesLocation loc = new BytesLocation(digits);
-		assertSame(digits, loc.getByteBuffer().array());
-		assertEquals(0, loc.getByteBuffer().position());
-		assertEquals(digits.length, loc.getByteBuffer().remaining());
-	}
-
-	/** Tests {@link BytesLocation#BytesLocation(byte[], int, int)}. */
-	@Test
-	public void testBytesOffsetLength() {
-		final byte[] digits = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9};
-		final int offset = 3, length = 5;
-		final BytesLocation loc = new BytesLocation(digits, offset, length);
-		assertSame(digits, loc.getByteBuffer().array());
-		assertEquals(offset, loc.getByteBuffer().position());
-		assertEquals(length, loc.getByteBuffer().remaining());
-	}
-
+@Plugin(type = Service.class)
+public class DefaultDataHandleService extends
+	AbstractWrapperService<Location, DataHandle<Location>> implements
+	DataHandleService
+{
+	// NB: No implementation needed.
 }

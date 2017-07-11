@@ -2,19 +2,19 @@
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
- * Copyright (C) 2009 - 2017 Board of Regents of the University of
+ * Copyright (C) 2009 - 2016 Board of Regents of the University of
  * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
  * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,46 +29,47 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.nio;
 
-import java.nio.ByteOrder;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.scijava.plugin.AbstractWrapperPlugin;
+import java.nio.ByteBuffer;
+
+import org.junit.Test;
 
 /**
- * Abstract base class for {@link DataHandle} plugins.
+ * Tests {@link ByteBufferByteBank}.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractDataHandle<L extends Location> extends
-	AbstractWrapperPlugin<L> implements DataHandle<L>
-{
+public class ByteBufferByteBankTest {
 
-	// -- Fields --
-
-	private ByteOrder order = ByteOrder.BIG_ENDIAN;
-	private String encoding = "UTF-8";
-
-	// -- DataHandle methods --
-
-	@Override
-	public ByteOrder getOrder() {
-		return order;
+	@Test
+	public void testReadOnlyDefault() {
+		final ByteBufferByteBank bank = new ByteBufferByteBank();
+		assertFalse(bank.isReadOnly());
 	}
 
-	@Override
-	public void setOrder(final ByteOrder order) {
-		this.order = order;
+	@Test
+	public void testReadOnlyAllocate() {
+		final ByteBufferByteBank bank = new ByteBufferByteBank(
+			ByteBuffer::allocate);
+		assertFalse(bank.isReadOnly());
+
+		final ByteBufferByteBank readOnlyBank = new ByteBufferByteBank(
+			capacity -> ByteBuffer.allocate(capacity).asReadOnlyBuffer());
+		assertTrue(readOnlyBank.isReadOnly());
 	}
 
-	@Override
-	public String getEncoding() {
-		return encoding;
-	}
+	@Test
+	public void testReadOnlyAllocateDirect() {
+		final ByteBufferByteBank bank = new ByteBufferByteBank(
+			ByteBuffer::allocateDirect);
+		assertFalse(bank.isReadOnly());
 
-	@Override
-	public void setEncoding(final String encoding) {
-		this.encoding = encoding;
+		final ByteBufferByteBank readOnlyBank = new ByteBufferByteBank(
+			capacity -> ByteBuffer.allocateDirect(capacity).asReadOnlyBuffer());
+		assertTrue(readOnlyBank.isReadOnly());
 	}
-
 }

@@ -29,29 +29,46 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.io.location;
 
-import org.scijava.Typed;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
- * Abstract base class for {@link TypedPlugin}s.
+ * Tests {@link BytesLocation}.
  * 
  * @author Curtis Rueden
- * @param <D> Data type associated with the plugin.
- * @see Typed
  */
-public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
-	implements TypedPlugin<D>
-{
-	// -- Typed methods --
+public class BytesLocationTest {
 
-	@Override
-	public boolean supports(final D data) {
-		// NB: Even though the compiler will often guarantee that only data
-		// of type T is provided here, we still need the runtime check
-		// for cases where the exact type is not known to compiler --
-		// e.g., if the object was manufactured by reflection.
-		return getType().isInstance(data);
+	/** Tests {@link BytesLocation#BytesLocation(byte[])}. */
+	@Test
+	public void testBytes() {
+		final byte[] digits = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 };
+		final BytesLocation loc = new BytesLocation(digits);
+
+		final byte[] testDigits = new byte[digits.length];
+		loc.getByteBank().getBytes(0, testDigits);
+		assertEquals(digits.length, loc.getByteBank().getMaxPos());
+		assertArrayEquals(digits, testDigits);
+	}
+
+	/** Tests {@link BytesLocation#BytesLocation(byte[], int, int)}. */
+	@Test
+	public void testBytesOffsetLength() {
+		final byte[] digits = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 };
+		final int offset = 3, length = 5;
+		final BytesLocation loc = new BytesLocation(digits, offset, length);
+
+		final byte[] testDigits = new byte[digits.length];
+		loc.getByteBank().getBytes(0, testDigits);
+		assertEquals(length, loc.getByteBank().getMaxPos());
+
+		final byte[] expectedDigits = new byte[digits.length];
+		System.arraycopy(digits, offset, expectedDigits, 0, length);
+		assertArrayEquals(expectedDigits, testDigits);
 	}
 
 }

@@ -29,29 +29,36 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.io.handle;
 
-import org.scijava.Typed;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.scijava.io.handle.DataHandle;
+import org.scijava.io.handle.FileHandle;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 
 /**
- * Abstract base class for {@link TypedPlugin}s.
- * 
+ * Tests {@link FileHandle}.
+ *
  * @author Curtis Rueden
- * @param <D> Data type associated with the plugin.
- * @see Typed
  */
-public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
-	implements TypedPlugin<D>
-{
-	// -- Typed methods --
+public class FileHandleTest extends DataHandleTest {
 
 	@Override
-	public boolean supports(final D data) {
-		// NB: Even though the compiler will often guarantee that only data
-		// of type T is provided here, we still need the runtime check
-		// for cases where the exact type is not known to compiler --
-		// e.g., if the object was manufactured by reflection.
-		return getType().isInstance(data);
+	public Class<? extends DataHandle<?>> getExpectedHandleType() {
+		return FileHandle.class;
+	}
+
+	@Override
+	public Location createLocation() throws IOException {
+		// create and populate a temp file
+		final File tmpFile = File.createTempFile("FileHandleTest", "test-file");
+		tmpFile.deleteOnExit();
+		populateData(new FileOutputStream(tmpFile));
+		return new FileLocation(tmpFile);
 	}
 
 }

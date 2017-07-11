@@ -29,32 +29,35 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import java.net.URI;
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
+import org.junit.Test;
+import org.scijava.io.location.FileLocation;
 
 /**
- * A <em>location</em> is a data descriptor, such as a file on disk, a remote
- * URL, or a database connection.
- * <p>
- * Analogous to a <a
- * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
- * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
- * the data resides, without necessarily specifying <em>how</em> to access that
- * data. The {@link DataHandle} interface defines a plugin that knows how to
- * provide a stream of bytes for a particular kind of location.
- * </p>
+ * Tests {@link FileLocation}.
  * 
  * @author Curtis Rueden
  */
-public interface Location {
+public class FileLocationTest {
 
-	/**
-	 * Gets the location expressed as a {@link URI}, or null if the location
-	 * cannot be expressed as such.
-	 */
-	default URI getURI() {
-		return null;
+	/** Tests {@link FileLocation#FileLocation(String)}. */
+	@Test
+	public void testFile() {
+		final String path = "/not/actually/a/real-file";
+		final FileLocation loc = new FileLocation(path);
+		final File realFile = loc.getFile();
+		assertEquals("real-file", realFile.getName());
+		final File a = realFile.getParentFile();
+		assertEquals("a", a.getName());
+		final File actually = a.getParentFile();
+		assertEquals("actually", actually.getName());
+		final File not = actually.getParentFile();
+		assertEquals("not", not.getName());
 	}
 
 }

@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,91 +29,108 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Arrays;
+
+import org.scijava.io.location.DummyLocation;
+import org.scijava.plugin.Plugin;
 
 /**
- * {@link InputStream} backed by a {@link DataHandle}.
- * 
+ * A {@link DataHandle} which reads all zeroes, and writes no actual data.
+ *
  * @author Curtis Rueden
- * @author Melissa Linkert
  */
-public class DataHandleInputStream<L extends Location> extends InputStream {
+@Plugin(type = DataHandle.class)
+public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 
 	// -- Fields --
 
-	private final DataHandle<L> handle;
+	private long offset;
+	private long length;
 
-	private long mark = -1;
-
-	// -- Constructors --
-
-	/** Creates an input stream around the given {@link DataHandle}. */
-	public DataHandleInputStream(final DataHandle<L> handle) {
-		this.handle = handle;
-	}
-
-	// -- DataHandleInputStream methods --
-
-	public DataHandle<L> getDataHandle() {
-		return handle;
-	}
-
-	// -- InputStream methods --
+	// -- DataHandle methods --
 
 	@Override
-	public int read() throws IOException {
-		return handle.read();
+	public long offset() throws IOException {
+		return offset;
 	}
 
 	@Override
-	public int read(final byte[] array, final int offset, final int n)
+	public void seek(final long pos) throws IOException {
+		if (pos > length()) setLength(pos);
+		offset = pos;
+	}
+
+	@Override
+	public long length() throws IOException {
+		return length;
+	}
+
+	@Override
+	public void setLength(final long length) throws IOException {
+		this.length = length;
+	}
+
+	@Override
+	public boolean isReadable() {
+		return true;
+	}
+
+	@Override
+	public boolean isWritable() {
+		return true;
+	}
+
+	// -- DataInput methods --
+
+	@Override
+	public byte readByte() throws IOException {
+		final long r = available(1);
+		if (r <= 0) return -1;
+		offset++;
+		return 0;
+	}
+
+	@Override
+	public int read(final byte[] b, final int off, final int len)
 		throws IOException
 	{
-		return handle.read(array, offset, n);
+		final int r = (int) available(len);
+		offset += r;
+		Arrays.fill(b, off, off + r, (byte) 0);
+		return r;
+	}
+
+	// -- DataOutput methods --
+
+	@Override
+	public void write(final int v) throws IOException {
+		ensureWritable(1);
+		offset++;
 	}
 
 	@Override
-	public long skip(final long n) throws IOException {
-		return handle.skip(n);
-	}
-
-	@Override
-	public int available() throws IOException {
-		long remain = handle.length() - handle.offset();
-		if (remain > Integer.MAX_VALUE) remain = Integer.MAX_VALUE;
-		return (int) remain;
-	}
-
-	@Override
-	public synchronized void mark(final int readLimit) {
-		try {
-			mark = handle.offset();
-		}
-		catch (final IOException exc) {
-			throw new IllegalStateException(exc);
-		}
-	}
-
-	@Override
-	public synchronized void reset() throws IOException {
-		if (mark < 0) throw new IOException("No mark set");
-		handle.seek(mark);
-	}
-
-	@Override
-	public boolean markSupported() {
-		return true;
+	public void write(final byte[] b, final int off, final int len)
+		throws IOException
+	{
+		ensureWritable(len);
+		offset += len;
 	}
 
 	// -- Closeable methods --
 
 	@Override
-	public void close() throws IOException {
-		handle.close();
-		mark = -1;
+	public void close() {
+		// NB: No action needed.
+	}
+
+	// -- Typed methods --
+
+	@Override
+	public Class<DummyLocation> getType() {
+		return DummyLocation.class;
 	}
 
 }

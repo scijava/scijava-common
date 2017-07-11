@@ -2,7 +2,7 @@
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
- * Copyright (C) 2009 - 2017 Board of Regents of the University of
+ * Copyright (C) 2009 - 2016 Board of Regents of the University of
  * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
  * Institute of Molecular Cell Biology and Genetics.
  * %%
@@ -29,28 +29,45 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.nio;
 
-import static org.junit.Assert.assertSame;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.junit.Test;
+import org.scijava.service.SciJavaService;
 
 /**
- * Tests {@link URLLocation}.
+ * Interface for services that work with the {@link java.nio} package,
+ * particularly NIO {@link ByteBuffer} objects.
  * 
+ * @author Chris Allan
  * @author Curtis Rueden
  */
-public class URLLocationTest {
+public interface NIOService extends SciJavaService {
 
-	/** Tests {@link URLLocation#URLLocation(URL)}. */
-	@Test
-	public void testURL() throws MalformedURLException {
-		final URL url = new URL("file:///non/existent/url");
-		final URLLocation loc = new URLLocation(url);
-		assertSame(url, loc.getURL());
-	}
+	/**
+	 * Allocates or maps the desired file data into memory.
+	 * <p>
+	 * This method provides a facade to byte buffer allocation that enables
+	 * <code>FileChannel.map()</code> usage on platforms where it's unlikely to
+	 * give us problems and heap allocation where it is.
+	 * </p>
+	 * 
+	 * @param channel File channel to allocate or map byte buffers from.
+	 * @param mapMode The map mode. Required but only used if memory mapped I/O is
+	 *          to occur.
+	 * @param bufferStartPosition The absolute position of the start of the
+	 *          buffer.
+	 * @param newSize The buffer size.
+	 * @return A newly allocated or mapped NIO byte buffer.
+	 * @see "http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5092131"
+	 * @see "http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6417205"
+	 * @throws IOException If there is an issue mapping, aligning or allocating
+	 *           the buffer.
+	 */
+	ByteBuffer allocate(FileChannel channel, MapMode mapMode,
+		long bufferStartPosition, int newSize) throws IOException;
 
 }

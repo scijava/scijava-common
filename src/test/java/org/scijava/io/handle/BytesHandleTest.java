@@ -2,7 +2,7 @@
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
- * Copyright (C) 2009 - 2017 Board of Regents of the University of
+ * Copyright (C) 2009 - 2016 Board of Regents of the University of
  * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
  * Institute of Molecular Cell Biology and Genetics.
  * %%
@@ -29,36 +29,31 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import java.nio.ByteBuffer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.scijava.io.location.BytesLocation;
+import org.scijava.io.location.Location;
 
 /**
- * {@link Location} backed by a {@link ByteBuffer}.
+ * Tests {@link BytesHandle}.
  *
  * @author Curtis Rueden
  */
-public class BytesLocation extends AbstractLocation {
+public class BytesHandleTest extends DataHandleTest {
 
-	private final ByteBuffer bytes;
-
-	public BytesLocation(final ByteBuffer bytes) {
-		this.bytes = bytes;
+	@Override
+	public Class<? extends DataHandle<?>> getExpectedHandleType() {
+		return BytesHandle.class;
 	}
 
-	public BytesLocation(final byte[] bytes) {
-		this(ByteBuffer.wrap(bytes));
-	}
-
-	public BytesLocation(final byte[] bytes, final int offset, final int length) {
-		this(ByteBuffer.wrap(bytes, offset, length));
-	}
-
-	// -- ByteArrayLocation methods --
-
-	/** Gets the associated {@link ByteBuffer}. */
-	public ByteBuffer getByteBuffer() {
-		return bytes;
+	@Override
+	public Location createLocation() throws IOException {
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		populateData(out);
+		return new BytesLocation(out.toByteArray());
 	}
 
 }

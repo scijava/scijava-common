@@ -29,29 +29,49 @@
  * #L%
  */
 
-package org.scijava.plugin;
+package org.scijava.io.location;
 
-import org.scijava.Typed;
+import java.net.URI;
+
+import org.scijava.io.handle.DataHandle;
 
 /**
- * Abstract base class for {@link TypedPlugin}s.
+ * A <em>location</em> is a data descriptor, such as a file on disk, a remote
+ * URL, or a database connection.
+ * <p>
+ * Analogous to a <a
+ * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
+ * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
+ * the data resides, without necessarily specifying <em>how</em> to access that
+ * data. The {@link DataHandle} interface defines a plugin that knows how to
+ * read and/or write bytes for a particular kind of location.
+ * </p>
  * 
  * @author Curtis Rueden
- * @param <D> Data type associated with the plugin.
- * @see Typed
+ * @author Gabriel Einsdorf
  */
-public abstract class AbstractTypedPlugin<D> extends AbstractRichPlugin
-	implements TypedPlugin<D>
-{
-	// -- Typed methods --
+public interface Location {
 
-	@Override
-	public boolean supports(final D data) {
-		// NB: Even though the compiler will often guarantee that only data
-		// of type T is provided here, we still need the runtime check
-		// for cases where the exact type is not known to compiler --
-		// e.g., if the object was manufactured by reflection.
-		return getType().isInstance(data);
+	/**
+	 * Gets the location expressed as a {@link URI}, or null if the location
+	 * cannot be expressed as such.
+	 */
+	default URI getURI() {
+		return null;
+	}
+
+	/**
+	 * Gets a (typically short) name expressing this location. This string is not
+	 * intended to unambiguously identify the location, but rather act as a
+	 * friendly, human-readable name. The precise behavior will depend on the
+	 * implementation, but as an example, a file-based location could return the
+	 * name of the associated file without its full path.
+	 *
+	 * @return The name, or an empty string if no name is available.
+	 */
+	default String getName() {
+		final URI uri = getURI();
+		return uri == null ? "" : uri.toString();
 	}
 
 }

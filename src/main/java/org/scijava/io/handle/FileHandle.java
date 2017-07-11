@@ -29,11 +29,12 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
 
 /**
@@ -80,6 +81,21 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	@Override
 	public long length() throws IOException {
 		return raf().length();
+	}
+
+	@Override
+	public void setLength(final long length) throws IOException {
+		raf().setLength(length);
+	}
+
+	@Override
+	public boolean isReadable() {
+		return getMode().contains("r");
+	}
+
+	@Override
+	public boolean isWritable() {
+		return getMode().contains("w");
 	}
 
 	@Override
@@ -279,6 +295,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	private synchronized void initRAF() throws IOException {
+		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
 	}
 

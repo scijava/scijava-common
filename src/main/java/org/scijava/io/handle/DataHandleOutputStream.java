@@ -29,31 +29,63 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+
+import org.scijava.io.location.Location;
 
 /**
- * Tests {@link FileHandle}.
- *
+ * {@link OutputStream} backed by a {@link DataHandle}.
+ * 
  * @author Curtis Rueden
+ * @author Melissa Linkert
  */
-public class FileHandleTest extends DataHandleTest {
+public class DataHandleOutputStream<L extends Location> extends OutputStream {
+
+	// -- Fields --
+
+	private final DataHandle<L> handle;
+
+	// -- Constructor --
+
+	/** Creates an output stream around the given {@link DataHandle}. */
+	public DataHandleOutputStream(final DataHandle<L> handle) {
+		this.handle = handle;
+	}
+
+	// -- OutputStream methods --
 
 	@Override
-	public Class<? extends DataHandle<?>> getExpectedHandleType() {
-		return FileHandle.class;
+	public void write(final int i) throws IOException {
+		handle.write(i);
 	}
 
 	@Override
-	public Location createLocation() throws IOException {
-		// create and populate a temp file
-		final File tmpFile = File.createTempFile("FileHandleTest", "test-file");
-		tmpFile.deleteOnExit();
-		populateData(new FileOutputStream(tmpFile));
-		return new FileLocation(tmpFile);
+	public void write(final byte[] b) throws IOException {
+		handle.write(b);
+	}
+
+	@Override
+	public void write(final byte[] b, final int off, final int len)
+		throws IOException
+	{
+		handle.write(b, off, len);
+	}
+
+	// -- Closeable methods --
+
+	@Override
+	public void close() throws IOException {
+		handle.close();
+	}
+
+	// -- Flushable methods --
+
+	@Override
+	public void flush() throws IOException {
+		// NB: No action needed.
 	}
 
 }

@@ -29,47 +29,85 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+
+import org.scijava.io.location.Location;
 
 /**
- * {@link OutputStream} backed by a {@link DataHandle}.
+ * {@link InputStream} backed by a {@link DataHandle}.
  * 
  * @author Curtis Rueden
  * @author Melissa Linkert
  */
-public class DataHandleOutputStream<L extends Location> extends OutputStream {
+public class DataHandleInputStream<L extends Location> extends InputStream {
 
 	// -- Fields --
 
 	private final DataHandle<L> handle;
 
-	// -- Constructor --
+	private long mark = -1;
 
-	/** Creates an output stream around the given {@link DataHandle}. */
-	public DataHandleOutputStream(final DataHandle<L> handle) {
+	// -- Constructors --
+
+	/** Creates an input stream around the given {@link DataHandle}. */
+	public DataHandleInputStream(final DataHandle<L> handle) {
 		this.handle = handle;
 	}
 
-	// -- OutputStream methods --
+	// -- DataHandleInputStream methods --
+
+	public DataHandle<L> getDataHandle() {
+		return handle;
+	}
+
+	// -- InputStream methods --
 
 	@Override
-	public void write(final int i) throws IOException {
-		handle.write(i);
+	public int read() throws IOException {
+		return handle.read();
 	}
 
 	@Override
-	public void write(final byte[] b) throws IOException {
-		handle.write(b);
-	}
-
-	@Override
-	public void write(final byte[] b, final int off, final int len)
+	public int read(final byte[] array, final int offset, final int n)
 		throws IOException
 	{
-		handle.write(b, off, len);
+		return handle.read(array, offset, n);
+	}
+
+	@Override
+	public long skip(final long n) throws IOException {
+		return handle.skip(n);
+	}
+
+	@Override
+	public int available() throws IOException {
+		long remain = handle.length() - handle.offset();
+		if (remain > Integer.MAX_VALUE) remain = Integer.MAX_VALUE;
+		return (int) remain;
+	}
+
+	@Override
+	public synchronized void mark(final int readLimit) {
+		try {
+			mark = handle.offset();
+		}
+		catch (final IOException exc) {
+			throw new IllegalStateException(exc);
+		}
+	}
+
+	@Override
+	public synchronized void reset() throws IOException {
+		if (mark < 0) throw new IOException("No mark set");
+		handle.seek(mark);
+	}
+
+	@Override
+	public boolean markSupported() {
+		return true;
 	}
 
 	// -- Closeable methods --
@@ -77,13 +115,7 @@ public class DataHandleOutputStream<L extends Location> extends OutputStream {
 	@Override
 	public void close() throws IOException {
 		handle.close();
-	}
-
-	// -- Flushable methods --
-
-	@Override
-	public void flush() throws IOException {
-		// NB: No action needed.
+		mark = -1;
 	}
 
 }

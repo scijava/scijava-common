@@ -29,13 +29,37 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
+
+import org.scijava.io.IOService;
+import org.scijava.io.location.Location;
+import org.scijava.plugin.WrapperService;
+import org.scijava.service.SciJavaService;
 
 /**
- * Abstract base class for {@link Location} implementations.
+ * Interface for low-level data I/O: reading and writing bytes using
+ * {@link DataHandle}s.
  * 
  * @author Curtis Rueden
+ * @see IOService
+ * @see Location
  */
-public abstract class AbstractLocation implements Location {
-	// NB: No implementation needed.
+public interface DataHandleService extends
+	WrapperService<Location, DataHandle<Location>>, SciJavaService
+{
+
+	// -- PTService methods --
+
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	default Class<DataHandle<Location>> getPluginType() {
+		return (Class) DataHandle.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<Location> getType() {
+		return Location.class;
+	}
 }

@@ -29,21 +29,45 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.handle;
 
-import org.scijava.plugin.AbstractWrapperService;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
+import org.scijava.io.location.Location;
+import org.scijava.plugin.AbstractWrapperPlugin;
 
 /**
- * Default implementation of {@link DataHandleService}.
- * 
+ * Abstract base class for {@link DataHandle} plugins.
+ *
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class)
-public class DefaultDataHandleService extends
-	AbstractWrapperService<Location, DataHandle<Location>> implements
-	DataHandleService
+public abstract class AbstractDataHandle<L extends Location> extends
+	AbstractWrapperPlugin<L> implements DataHandle<L>
 {
-	// NB: No implementation needed.
+
+	// -- Fields --
+
+	private ByteOrder order = ByteOrder.BIG_ENDIAN;
+	private String encoding = "UTF-8";
+
+	// -- DataHandle methods --
+
+	@Override
+	public ByteOrder getOrder() {
+		return order;
+	}
+
+	@Override
+	public void setOrder(final ByteOrder order) {
+		this.order = order;
+	}
+
+	@Override
+	public String getEncoding() {
+		return encoding;
+	}
+
+	@Override
+	public void setEncoding(final String encoding) {
+		this.encoding = encoding;
+	}
+
 }

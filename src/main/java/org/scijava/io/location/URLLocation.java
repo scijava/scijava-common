@@ -29,40 +29,47 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
- * {@link Location} backed by a {@link File} on disk.
+ * {@link Location} backed by a {@link URL}.
  *
  * @author Curtis Rueden
  */
-public class FileLocation extends AbstractLocation {
+public class URLLocation extends AbstractLocation {
 
-	private final File file;
+	/** The URL backing this location. */
+	private final URL url;
 
-	public FileLocation(final File file) {
-		this.file = file;
+	public URLLocation(final URL url) {
+		this.url = url;
 	}
 
-	public FileLocation(final String path) {
-		this(new File(path));
-	}
+	// -- URLLocation methods --
 
-	// -- FileLocation methods --
-
-	/** Gets the associated {@link File}. */
-	public File getFile() {
-		return file;
+	/** Gets the associated {@link URL}. */
+	public URL getURL() {
+		return url;
 	}
 
 	// -- Location methods --
 
+	/**
+	 * Gets the associated {@link URI}, or null if this URL is not formatted
+	 * strictly according to to RFC2396 and cannot be converted to a URI.
+	 */
 	@Override
 	public URI getURI() {
-		return getFile().toURI();
+		try {
+			return getURL().toURI();
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 }

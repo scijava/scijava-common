@@ -29,47 +29,29 @@
  * #L%
  */
 
-package org.scijava.io;
+package org.scijava.io.location;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import static org.junit.Assert.assertSame;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.Test;
+import org.scijava.io.location.URLLocation;
+
 /**
- * {@link Location} backed by a {@link URL}.
- *
+ * Tests {@link URLLocation}.
+ * 
  * @author Curtis Rueden
  */
-public class URLLocation extends AbstractLocation {
+public class URLLocationTest {
 
-	/** The URL backing this location. */
-	private final URL url;
-
-	public URLLocation(final URL url) {
-		this.url = url;
-	}
-
-	// -- URLLocation methods --
-
-	/** Gets the associated {@link URL}. */
-	public URL getURL() {
-		return url;
-	}
-
-	// -- Location methods --
-
-	/**
-	 * Gets the associated {@link URI}, or null if this URL is not formatted
-	 * strictly according to to RFC2396 and cannot be converted to a URI.
-	 */
-	@Override
-	public URI getURI() {
-		try {
-			return getURL().toURI();
-		}
-		catch (final URISyntaxException exc) {
-			return null;
-		}
+	/** Tests {@link URLLocation#URLLocation(URL)}. */
+	@Test
+	public void testURL() throws MalformedURLException {
+		final URL url = new URL("file:///non/existent/url");
+		final URLLocation loc = new URLLocation(url);
+		assertSame(url, loc.getURL());
 	}
 
 }
