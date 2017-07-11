@@ -61,8 +61,13 @@ public interface Location {
 	}
 
 	/**
-	 * Gets the name of the object addressed by this location, or an empty string
-	 * if it has no name.
+	 * Gets a (typically short) name expressing this location. This string is not
+	 * intended to unambiguously identify the location, but rather act as a
+	 * friendly, human-readable name. The precise behavior will depend on the
+	 * implementation, but as an example, a file-based location could return the
+	 * name of the associated file without its full path.
+	 *
+	 * @return The name, or an empty string if no name is available.
 	 */
 	default String getName() {
 		final URI uri = getURI();
