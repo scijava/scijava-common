@@ -32,8 +32,6 @@
 
 package org.scijava.io.location;
 
-import org.scijava.io.location.AbstractLocation;
-
 /**
  * {@link Location} backed by nothing whatsoever.
  *
