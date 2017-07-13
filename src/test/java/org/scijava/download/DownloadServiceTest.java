@@ -32,6 +32,10 @@
 package org.scijava.download;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +45,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.io.ByteBank;
+import org.scijava.io.location.BytesLocation;
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
+import org.scijava.test.TestUtils;
 import org.scijava.util.FileUtils;
 import org.scijava.util.MersenneTwisterFast;
 
@@ -94,6 +101,66 @@ public class DownloadServiceTest {
 		}
 	}
 
+	@Test
+	public void testDownloadCache() throws IOException, InterruptedException,
+		ExecutionException
+	{
+		// Create some data.
+		final byte[] data = randomBytes(0xcafecafe);
+
+		// Create source location.
+		final String prefix = getClass().getName();
+		final File inFile = File.createTempFile(prefix, "testDownloadCacheIn");
+		final Location src = new FileLocation(inFile);
+
+		// Create destination location.
+		final BytesLocation dest = new BytesLocation(data.length);
+
+		// Create a disk cache.
+		final File cacheDir = TestUtils.createTemporaryDirectory(
+			"testDownloadCacheBase", getClass());
+		final DiskLocationCache cache = new DiskLocationCache();
+		cache.setBaseDirectory(cacheDir);
+		cache.setFileLocationCachingEnabled(true);
+
+		try {
+			// Write the data to the source location.
+			FileUtils.writeFile(inFile, data);
+
+			// Sanity check: the cache should be empty.
+			assertNull(cache.loadChecksum(src));
+			final Location cachedSource = cache.cachedLocation(src);
+			assertTrue(cachedSource instanceof FileLocation);
+			final FileLocation cachedFile = (FileLocation) cachedSource;
+			assertFalse(cachedFile.getFile().exists());
+
+			// Download + cache the source.
+			final Download download = downloadService.download(src, dest, cache);
+			download.task().waitFor();
+
+			// Check that the data was read.
+			assertBytesEqual(data, dest.getByteBank());
+
+			// Check that the data was cached.
+			assertEquals(cachedSource, cache.cachedLocation(src));
+			assertTrue(cachedFile.getFile().exists());
+			final byte[] cachedData = FileUtils.readFile(cachedFile.getFile());
+			assertArrayEquals(data, cachedData);
+
+			// Check that the cache works, even after the source file is deleted.
+			inFile.delete();
+			assertFalse(inFile.exists());
+			final BytesLocation dest2 = new BytesLocation(data.length);
+			final Download download2 = downloadService.download(src, dest2, cache);
+			download2.task().waitFor();
+			assertBytesEqual(data, dest2.getByteBank());
+		}
+		finally {
+			if (inFile.exists()) inFile.delete();
+			FileUtils.deleteRecursively(cacheDir);
+		}
+	}
+
 	// -- Helper methods --
 
 	private byte[] randomBytes(final long seed) {
@@ -103,5 +170,11 @@ public class DownloadServiceTest {
 			data[i] = r.nextByte();
 		}
 		return data;
+	}
+
+	private void assertBytesEqual(byte[] data, ByteBank byteBank) {
+		for (int i=0; i<data.length; i++) {
+			assertEquals(data[i], byteBank.getByte(i));
+		}
 	}
 }

@@ -32,34 +32,48 @@
 
 package org.scijava.download;
 
+import java.io.IOException;
+
+import org.scijava.io.handle.DataHandle;
 import org.scijava.io.location.Location;
-import org.scijava.service.SciJavaService;
 
 /**
- * Service for managing retrieval of remote resources.
+ * An object which knows how to convert a slow (typically remote)
+ * {@link Location} to a faster (typically local) one.
  *
  * @author Curtis Rueden
  */
-public interface DownloadService extends SciJavaService {
+public interface LocationCache {
+
+	/** Gets whether the given location can be cached by this cache. */
+	boolean canCache(Location source);
 
 	/**
-	 * Downloads data from the given source, storing it into the given
-	 * destination.
+	 * Gets the cache location of a given data source.
 	 *
-	 * @param source The location of the needed data.
-	 * @param destination The location where the needed data should be stored.
+	 * @return A {@link Location} where the source data is, or would be, cached.
+	 * @throws IllegalArgumentException if the given source cannot be cached (see
+	 *           {@link #canCache}).
 	 */
-	Download download(Location source, Location destination);
+	Location cachedLocation(Location source);
 
 	/**
-	 * Downloads data from the given source, storing it into the given
-	 * destination.
+	 * Loads the checksum value which corresponds to the cached location.
 	 *
-	 * @param source The location of the needed data.
-	 * @param destination The location where the needed data should be stored.
-	 * @param cache The cache from which already-downloaded data should be pulled
-	 *          preferentially, and to which newly-downloaded data should be
-	 *          stored for next time.
+	 * @param source The source location for which the cached checksum is desired.
+	 * @return The loaded checksum, or null if one is not available.
+	 * @see DataHandle#checksum()
+	 * @throws IOException If something goes wrong accessing the checksum.
 	 */
-	Download download(Location source, Location destination, LocationCache cache);
+	String loadChecksum(Location source) throws IOException;
+
+	/**
+	 * Associates the given checksum value with the specified source location.
+	 *
+	 * @param source The source location for which the checksum should be cached.
+	 * @param checksum The checksum value to cache.
+	 * @see DataHandle#checksum()
+	 * @throws IOException If something goes wrong caching the checksum.
+	 */
+	void saveChecksum(Location source, String checksum) throws IOException;
 }
