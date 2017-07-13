@@ -65,6 +65,12 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/** Default bound on bytes to search when searching through the stream. */
 	int MAX_SEARCH_SIZE = 512 * 1024 * 1024; // 512 MB
 
+	/** Gets whether reading from this handle is supported. */
+	boolean isReadable();
+
+	/** Gets whether writing to this handle is supported. */
+	boolean isWritable();
+
 	/** Returns the current offset in the stream. */
 	long offset() throws IOException;
 
@@ -115,12 +121,6 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		final long remain = length() - offset();
 		return remain < count ? remain : count;
 	}
-
-	/** Gets whether reading from this handle is supported. */
-	boolean isReadable();
-
-	/** Gets whether writing to this handle is supported. */
-	boolean isWritable();
 
 	/**
 	 * Ensures that the handle has sufficient bytes available to read.

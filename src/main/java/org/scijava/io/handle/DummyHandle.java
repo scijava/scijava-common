@@ -54,6 +54,16 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	// -- DataHandle methods --
 
 	@Override
+	public boolean isReadable() {
+		return true;
+	}
+
+	@Override
+	public boolean isWritable() {
+		return true;
+	}
+
+	@Override
 	public long offset() throws IOException {
 		return offset;
 	}
@@ -72,16 +82,6 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	@Override
 	public void setLength(final long length) throws IOException {
 		this.length = length;
-	}
-
-	@Override
-	public boolean isReadable() {
-		return true;
-	}
-
-	@Override
-	public boolean isWritable() {
-		return true;
 	}
 
 	// -- DataInput methods --

@@ -75,6 +75,16 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	// -- DataHandle methods --
 
 	@Override
+	public boolean isReadable() {
+		return getMode().contains("r");
+	}
+
+	@Override
+	public boolean isWritable() {
+		return getMode().contains("w");
+	}
+
+	@Override
 	public long offset() throws IOException {
 		return raf().getFilePointer();
 	}
@@ -87,16 +97,6 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	@Override
 	public void setLength(final long length) throws IOException {
 		raf().setLength(length);
-	}
-
-	@Override
-	public boolean isReadable() {
-		return getMode().contains("r");
-	}
-
-	@Override
-	public boolean isWritable() {
-		return getMode().contains("w");
 	}
 
 	@Override

@@ -54,6 +54,16 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 	// -- DataHandle methods --
 
 	@Override
+	public boolean isReadable() {
+		return true;
+	}
+
+	@Override
+	public boolean isWritable() {
+		return !bytes().isReadOnly();
+	}
+
+	@Override
 	public long offset() {
 		return offset;
 	}
@@ -84,16 +94,6 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 	public void seek(final long pos) throws IOException {
 		if (pos > length()) setLength(pos);
 		offset = pos;
-	}
-
-	@Override
-	public boolean isReadable() {
-		return true;
-	}
-
-	@Override
-	public boolean isWritable() {
-		return !bytes().isReadOnly();
 	}
 
 	// -- DataInput methods --
