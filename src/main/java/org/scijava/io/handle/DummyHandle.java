@@ -64,6 +64,11 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	}
 
 	@Override
+	public boolean exists() {
+		return true;
+	}
+
+	@Override
 	public long offset() {
 		return offset;
 	}
@@ -133,5 +138,4 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	public Class<DummyLocation> getType() {
 		return DummyLocation.class;
 	}
-
 }

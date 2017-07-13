@@ -71,6 +71,14 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/** Gets whether writing to this handle is supported. */
 	boolean isWritable();
 
+	/**
+	 * Tests whether this handle's location actually exists at the source.
+	 * 
+	 * @return True if the location exists; false if not.
+	 * @throws IOException If something goes wrong with the existence check.
+	 */
+	boolean exists() throws IOException;
+
 	/** Returns the current offset in the stream. */
 	long offset() throws IOException;
 

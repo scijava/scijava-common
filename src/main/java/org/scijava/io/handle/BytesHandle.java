@@ -64,6 +64,11 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 	}
 
 	@Override
+	public boolean exists() {
+		return true;
+	}
+
+	@Override
 	public long offset() {
 		return offset;
 	}

@@ -85,6 +85,11 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
+	public boolean exists() {
+		return get().getFile().exists();
+	}
+
+	@Override
 	public long offset() throws IOException {
 		return raf().getFilePointer();
 	}
@@ -299,5 +304,4 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
 	}
-
 }
