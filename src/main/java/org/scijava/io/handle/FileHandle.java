@@ -103,7 +103,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	@Override
 	public long length() throws IOException {
-		return raf().length();
+		return exists() ? raf().length() : -1;
 	}
 
 	@Override

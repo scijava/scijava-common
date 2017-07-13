@@ -123,7 +123,11 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 */
 	void seek(long pos) throws IOException;
 
-	/** Returns the length of the data in bytes. */
+	/**
+	 * Returns the length of the data in bytes.
+	 * 
+	 * @return The length, or -1 if the length is unknown.
+	 */
 	long length() throws IOException;
 
 	/**
