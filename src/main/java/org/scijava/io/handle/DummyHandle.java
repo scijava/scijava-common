@@ -64,23 +64,23 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	}
 
 	@Override
-	public long offset() throws IOException {
+	public long offset() {
 		return offset;
 	}
 
 	@Override
-	public void seek(final long pos) throws IOException {
+	public void seek(final long pos) {
 		if (pos > length()) setLength(pos);
 		offset = pos;
 	}
 
 	@Override
-	public long length() throws IOException {
+	public long length() {
 		return length;
 	}
 
 	@Override
-	public void setLength(final long length) throws IOException {
+	public void setLength(final long length) {
 		this.length = length;
 	}
 
