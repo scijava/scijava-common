@@ -39,6 +39,7 @@ import java.io.DataOutput;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
@@ -78,6 +79,40 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @throws IOException If something goes wrong with the existence check.
 	 */
 	boolean exists() throws IOException;
+
+	/**
+	 * Gets the last modified timestamp of the location.
+	 * 
+	 * @return The last modified timestamp, or null if the handle does not support
+	 *         this feature or if the location does not exist.
+	 * @throws IOException If something goes wrong with the last modified check.
+	 */
+	default Date lastModified() throws IOException {
+		return null;
+	}
+
+	/**
+	 * Gets a "fast" checksum which succinctly represents the contents of the data
+	 * stream. The term "fast" here refers to the idea that the checksum be
+	 * retrievable quickly, without actually performing a thorough computation
+	 * across the entire data stream. Typically, such a thing is feasible because
+	 * the checksum was calculated a priori; e.g., artifacts deployed to remote
+	 * Maven repositories are always deployed with corresponding checksum files.
+	 * <p>
+	 * No guarantee is made about the exact nature of the checksum (e.g., SHA-1 or
+	 * MD5), only that the value is deterministic for this particular location
+	 * with its current contents. In other words: if a checksum differs from a
+	 * previous inquiry, you can be sure the contents have changed; conversely, if
+	 * the checksum is still the same, the contents are highly likely to be
+	 * unchanged.
+	 * </p>
+	 * 
+	 * @return The checksum, or null if the handle does not support this feature.
+	 * @throws IOException If something goes wrong when accessing the checksum.
+	 */
+	default String checksum() throws IOException {
+		return null;
+	}
 
 	/** Returns the current offset in the stream. */
 	long offset() throws IOException;

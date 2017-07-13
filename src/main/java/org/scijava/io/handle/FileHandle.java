@@ -34,6 +34,7 @@ package org.scijava.io.handle;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Date;
 
 import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
@@ -87,6 +88,12 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	@Override
 	public boolean exists() {
 		return get().getFile().exists();
+	}
+
+	@Override
+	public Date lastModified() {
+		final long lastModified = get().getFile().lastModified();
+		return lastModified == 0 ? null : new Date(lastModified);
 	}
 
 	@Override
