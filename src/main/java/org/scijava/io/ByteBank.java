@@ -92,7 +92,7 @@ public interface ByteBank {
 	 * @param length the number of elements to append from the bytes array
 	 */
 	default void appendBytes(byte[] bytes, int offset, int length) {
-		setBytes(getMaxPos() + 1, bytes, offset, length);
+		setBytes(size(), bytes, offset, length);
 	}
 
 	/**
@@ -103,9 +103,9 @@ public interface ByteBank {
 	 */
 	default void checkReadPos(final long start, final long end) {
 		basicRangeCheck(start, end);
-		if (start > getMaxPos()) {
+		if (start > size()) {
 			throw new IndexOutOfBoundsException("Requested position: " + start +
-				" is larger than the maximally buffered postion: " + getMaxPos());
+				" is outside the buffer: " + size());
 		}
 	}
 
@@ -117,18 +117,18 @@ public interface ByteBank {
 	 * @throws IndexOutOfBoundsException if
 	 */
 	default void checkWritePos(final long start, final long end) {
-		if (start > getMaxPos() + 1) { // we can't have holes in the buffer
+		if (start > size() + 1) { // we can't have holes in the buffer
 			throw new IndexOutOfBoundsException("Requested start position: " + start +
 				" would leave a hole in the buffer, largest legal position is: " +
-				getMaxPos() + 1);
+				size());
 		}
 		if (end < start) {
 			throw new IllegalArgumentException(
 				"Invalid range, end is smaller than start!");
 		}
 		if (end > getMaxBufferSize()) {
-			throw new IndexOutOfBoundsException("Requested postion " + end +
-				" is larger than the maximal buffer size: " + getMaxPos());
+			throw new IndexOutOfBoundsException("Requested position " + end +
+				" is larger than the maximal buffer size: " + getMaxBufferSize());
 		}
 	}
 
@@ -139,9 +139,9 @@ public interface ByteBank {
 	 * @param end the end of the range
 	 */
 	default void basicRangeCheck(final long start, final long end) {
-		if (start > getMaxPos()) {
-			throw new IndexOutOfBoundsException("Requested postion " + start +
-				" is larger than the maximal buffer size: " + getMaxPos());
+		if (start > size()) {
+			throw new IndexOutOfBoundsException("Requested position: " + start +
+				" is outside the buffer: " + size());
 		}
 		if (end < start) {
 			throw new IllegalArgumentException(
@@ -155,9 +155,9 @@ public interface ByteBank {
 	void clear();
 
 	/**
-	 * @return the position of the last byte in this ByteBank
+	 * @return the offset which follows the last byte stored in this ByteBank
 	 */
-	long getMaxPos();
+	long size();
 
 	/**
 	 * Sets the byte at the given position

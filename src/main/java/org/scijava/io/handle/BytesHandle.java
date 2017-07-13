@@ -60,7 +60,7 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	@Override
 	public long length() {
-		return bytes().getMaxPos();
+		return bytes().size();
 	}
 
 	@Override

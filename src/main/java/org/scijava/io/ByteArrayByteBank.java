@@ -36,29 +36,38 @@ import org.scijava.util.ByteArray;
 
 /**
  * {@link ByteBank} implementation backed by a {@link ByteArray}. Self-growing
- * up to a maximum capacity of {@link Integer#MAX_VALUE}
+ * up to a maximum capacity of {@link Integer#MAX_VALUE}.
  *
  * @author Gabriel Einsdorf
  */
 public class ByteArrayByteBank implements ByteBank {
 
 	private final ByteArray buffer;
-	private long maxBufferedPos = -1;
+	private long size;
 
 	/**
-	 * Creates a {@link ByteArrayByteBank}
+	 * Creates a {@link ByteArrayByteBank}.
 	 */
 	public ByteArrayByteBank() {
-		buffer = new ByteArray();
+		this(new ByteArray());
 	}
 
 	/**
-	 * Creates a {@link ByteArrayByteBank} with the specified initial capacity
+	 * Creates a {@link ByteArrayByteBank} with the specified initial capacity.
 	 *
 	 * @param initialCapacity the initial capacity of this {@link ByteBank}
 	 */
 	public ByteArrayByteBank(final int initialCapacity) {
-		buffer = new ByteArray(initialCapacity);
+		this(new ByteArray(initialCapacity));
+	}
+
+	/**
+	 * Creates a {@link ByteArrayByteBank} that wraps the provided byte array.
+	 *
+	 * @param bytes the bytes to wrap
+	 */
+	public ByteArrayByteBank(final byte[] bytes) {
+		this(new ByteArray(bytes));
 	}
 
 	/**
@@ -69,17 +78,7 @@ public class ByteArrayByteBank implements ByteBank {
 	 */
 	public ByteArrayByteBank(final ByteArray bytes) {
 		buffer = bytes;
-		maxBufferedPos = bytes.size();
-	}
-
-	/**
-	 * Creates a {@link ByteArrayByteBank} that wraps the provided byte array
-	 *
-	 * @param bytes the bytes to wrap
-	 */
-	public ByteArrayByteBank(final byte[] bytes) {
-		buffer = new ByteArray(bytes);
-		maxBufferedPos = bytes.length;
+		size = bytes.size();
 	}
 
 	@Override
@@ -93,13 +92,13 @@ public class ByteArrayByteBank implements ByteBank {
 	{
 		// ensure we have space
 		checkWritePos(startpos, startpos + length);
-		final int neededCapacity = (int) (Math.max(maxBufferedPos, 0) + length);
+		final int neededCapacity = (int) (size + length);
 		buffer.ensureCapacity(neededCapacity);
 
 		// copy the data
 		System.arraycopy(bytes, offset, buffer.getArray(), (int) startpos, length);
 		buffer.setSize(neededCapacity);
-		updateMaxPos(startpos + length - 1);
+		updateSize(startpos + length);
 	}
 
 	@Override
@@ -111,17 +110,13 @@ public class ByteArrayByteBank implements ByteBank {
 			buffer.setSize((int) (pos + 1));
 		}
 		buffer.setValue((int) pos, b);
-		updateMaxPos(pos);
-	}
-
-	private void updateMaxPos(final long pos) {
-		maxBufferedPos = pos > maxBufferedPos ? pos : maxBufferedPos;
+		updateSize(pos + 1);
 	}
 
 	@Override
 	public void clear() {
 		buffer.clear();
-		maxBufferedPos = 0;
+		size = 0;
 	}
 
 	@Override
@@ -138,13 +133,19 @@ public class ByteArrayByteBank implements ByteBank {
 	{
 		checkReadPos(startPos, startPos + length);
 		// ensure we don't try to read data which is not in the buffer
-		final int readLength = (int) Math.min(getMaxPos() - startPos + 1, length);
+		final int readLength = (int) Math.min(size() - startPos, length);
 		System.arraycopy(buffer.getArray(), (int) startPos, b, offset, readLength);
 		return readLength;
 	}
 
 	@Override
-	public long getMaxPos() {
-		return maxBufferedPos;
+	public long size() {
+		return size;
+	}
+
+	// -- Helper methods --
+
+	private void updateSize(final long newSize) {
+		size = newSize > size ? newSize : size;
 	}
 }

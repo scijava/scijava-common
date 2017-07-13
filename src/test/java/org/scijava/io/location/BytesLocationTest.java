@@ -52,7 +52,7 @@ public class BytesLocationTest {
 
 		final byte[] testDigits = new byte[digits.length];
 		loc.getByteBank().getBytes(0, testDigits);
-		assertEquals(digits.length, loc.getByteBank().getMaxPos());
+		assertEquals(digits.length, loc.getByteBank().size());
 		assertArrayEquals(digits, testDigits);
 	}
 
@@ -65,7 +65,7 @@ public class BytesLocationTest {
 
 		final byte[] testDigits = new byte[digits.length];
 		loc.getByteBank().getBytes(0, testDigits);
-		assertEquals(length - 1, loc.getByteBank().getMaxPos());
+		assertEquals(length, loc.getByteBank().size());
 
 		final byte[] expectedDigits = new byte[digits.length];
 		System.arraycopy(digits, offset, expectedDigits, 0, length);

@@ -93,10 +93,10 @@ public abstract class ByteBankTest {
 	@Test
 	public void testClear() {
 		bank.setBytes(0, testBytes, 0, testBytes.length);
-		assertEquals(testBytes.length - 1, bank.getMaxPos());
+		assertEquals(testBytes.length, bank.size());
 
 		bank.clear();
-		assertEquals(0, bank.getMaxPos());
+		assertEquals(0, bank.size());
 	}
 
 	@Test
