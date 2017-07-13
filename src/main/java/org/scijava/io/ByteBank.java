@@ -36,6 +36,7 @@ package org.scijava.io;
  * A {@link ByteBank} is a self-growing buffer over arbitrary bytes.
  *
  * @author Gabriel Einsdorf
+ * @author Curtis Rueden
  */
 public interface ByteBank {
 
@@ -62,6 +63,36 @@ public interface ByteBank {
 	 * @return number of bytes read
 	 */
 	int getBytes(long startPos, byte[] bytes, int offset, int length);
+
+	/**
+	 * Copies part of this buffer into a newly allocated byte array.
+	 * 
+	 * @param offset the initial position in the buffer
+	 * @param len the number of bytes to copy
+	 * @return The newly allocated byte array containing the data.
+	 */
+	default byte[] toByteArray(final long offset, final int len) {
+		if (offset < 0 || len < 0 || offset + len > size()) {
+			throw new IllegalArgumentException("Invalid range");
+		}
+		final byte[] bytes = new byte[len];
+		getBytes(offset, bytes);
+		return bytes;
+	}
+
+	/**
+	 * Copies this entire buffer into a newly allocated byte array.
+	 * 
+	 * @return The newly allocated byte array containing the data.
+	 */
+	default byte[] toByteArray() {
+		long max = size();
+		if (max > Integer.MAX_VALUE) {
+			throw new IllegalStateException(
+				"Byte bank is too large to store into a single byte[]");
+		}
+		return toByteArray(0, (int) max);
+	}
 
 	/**
 	 * Sets the bytes starting form the given position to the values form the
