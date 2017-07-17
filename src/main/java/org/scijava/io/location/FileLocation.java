@@ -33,14 +33,21 @@
 package org.scijava.io.location;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@link Location} backed by a {@link File} on disk.
  *
  * @author Curtis Rueden
+ * @author Gabriel Einsdorf
  */
-public class FileLocation extends AbstractLocation {
+public class FileLocation extends AbstractLocation implements
+	BrowsableLocation
+{
 
 	private final File file;
 
@@ -75,4 +82,47 @@ public class FileLocation extends AbstractLocation {
 		return file.getName();
 	}
 
+	// -- BrowsableLocation methods --
+
+	@Override
+	public FileLocation parent() throws IOException {
+		return new FileLocation(file.getParentFile());
+	}
+
+	@Override
+	public Set<BrowsableLocation> children() throws IOException {
+		validateDirectory();
+		final File[] files = file.listFiles();
+		if (files == null) return Collections.emptySet();
+
+		final Set<BrowsableLocation> out = new HashSet<>(files.length);
+		for (final File child : files) {
+			out.add(new FileLocation(child));
+		}
+		return out;
+	}
+
+	@Override
+	public FileLocation sibling(final String path) {
+		return new FileLocation(new File(file.getParentFile(), path));
+	}
+
+	@Override
+	public FileLocation child(final String name) {
+		validateDirectory();
+		return new FileLocation(new File(file, name));
+	}
+
+	@Override
+	public boolean isDirectory() {
+		return file.isDirectory();
+	}
+
+	// -- Helper methods --
+
+	private void validateDirectory() {
+		if (isDirectory()) return;
+		throw new IllegalArgumentException(
+			"This location does not point to a directory!");
+	}
 }
