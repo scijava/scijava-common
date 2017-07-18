@@ -80,7 +80,18 @@ public interface ByteBank {
 	 * @param length the number of elements to append from the bytes array
 	 */
 	default void appendBytes(byte[] bytes, int length) {
-		setBytes(getMaxPos() + 1, bytes, 0, length);
+		appendBytes(bytes, 0, length);
+	}
+
+	/**
+	 * Appends the given bytes to the buffer
+	 *
+	 * @param bytes the array containing the bytes to append to the buffer
+	 * @param offset the offset in the bytes array
+	 * @param length the number of elements to append from the bytes array
+	 */
+	default void appendBytes(byte[] bytes, int offset, int length) {
+		setBytes(getMaxPos() + 1, bytes, offset, length);
 	}
 
 	/**
