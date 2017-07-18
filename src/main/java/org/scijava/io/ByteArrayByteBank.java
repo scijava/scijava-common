@@ -68,7 +68,7 @@ public class ByteArrayByteBank implements ByteBank {
 	 */
 	public ByteArrayByteBank(final ByteArray bytes) {
 		buffer = bytes;
-		bytes.size();
+		maxBufferedPos = bytes.size();
 	}
 
 	/**
@@ -98,12 +98,17 @@ public class ByteArrayByteBank implements ByteBank {
 		// copy the data
 		System.arraycopy(bytes, offset, buffer.getArray(), (int) startpos, length);
 		buffer.setSize(neededCapacity);
-		updateMaxPos(startpos + length);
+		updateMaxPos(startpos + length - 1);
 	}
 
 	@Override
 	public void setByte(final long pos, final byte b) {
 		checkWritePos(pos, pos);
+		buffer.ensureCapacity((int) pos);
+		// NB: update the size of the underlying buffer before appending to it
+		if (pos == buffer.size()) {
+			buffer.setSize((int) (pos + 1));
+		}
 		buffer.setValue((int) pos, b);
 		updateMaxPos(pos);
 	}
@@ -131,7 +136,8 @@ public class ByteArrayByteBank implements ByteBank {
 		final int length)
 	{
 		checkReadPos(startPos, startPos + length);
-		final int readLength = (int) Math.min(getMaxPos() - startPos, length);
+		// ensure we don't try to read data which is not in the buffer
+		final int readLength = (int) Math.min(getMaxPos() - startPos + 1, length);
 		System.arraycopy(buffer.getArray(), (int) startPos, b, offset, readLength);
 		return readLength;
 	}
