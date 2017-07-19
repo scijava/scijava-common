@@ -29,6 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.download;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -39,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
@@ -50,6 +52,7 @@ import org.scijava.io.location.BytesLocation;
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
 import org.scijava.test.TestUtils;
+import org.scijava.util.ByteArray;
 import org.scijava.util.FileUtils;
 import org.scijava.util.MersenneTwisterFast;
 
@@ -161,6 +164,12 @@ public class DownloadServiceTest {
 		}
 	}
 
+	@Test
+	public void testDownloadZip() throws IOException {
+		final byte[] data = readResource("greetings.zip");
+		// START HERE
+	}
+
 	// -- Helper methods --
 
 	private byte[] randomBytes(final long seed) {
@@ -170,6 +179,23 @@ public class DownloadServiceTest {
 			data[i] = r.nextByte();
 		}
 		return data;
+	}
+
+	/** Totally awesome and not-at-all-overcomplicated way to open a resource. */
+	private byte[] readResource(final String path) throws IOException {
+		final ByteArray bytes = new ByteArray();
+		try (final InputStream in = getClass().getResourceAsStream(path)) {
+			final byte[] b = new byte[16384];
+			int len = 0;
+			while (true) {
+				final int r = in.read(b);
+				if (r < 0) break; // EOF
+				bytes.setSize(len + r);
+				System.arraycopy(b, 0, bytes.getArray(), len, r);
+				len += r;
+			}
+		}
+		return bytes.copyArray();
 	}
 
 	private void assertBytesEqual(byte[] data, ByteBank byteBank) {
