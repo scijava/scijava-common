@@ -193,8 +193,8 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *
 	 * @param files The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
-	 * @return The selected {@link File}s chosen by the user, or null if prompt is not
-	 *         available
+	 * @return The selected {@link File}s chosen by the user, or null if the
+	 *         user cancels the prompt.
 	 */
 	default File[] chooseFiles(File[] files, FileFilter filter) {
 		throw new UnsupportedOperationException();
@@ -205,12 +205,13 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *
 	 * @param fileList The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
-	 * @return The selected {@link File}s chosen by the user, or null if prompt is not
-	 *         available
+	 * @return The selected {@link File}s chosen by the user, or null if the
+	 *         user cancels the prompt.
 	 */
 	default List<File> chooseFiles(List<File> fileList, FileFilter filter) {
-		File[] files = fileList.toArray(new File[fileList.size()]);
-		return Arrays.asList(chooseFiles(files, filter));
+		final File[] initialFiles = fileList.toArray(new File[fileList.size()]);
+		final File[] chosenFiles = chooseFiles(initialFiles, filter);
+		return chosenFiles == null ? null : Arrays.asList(chosenFiles);
 	}
 
 	/**
