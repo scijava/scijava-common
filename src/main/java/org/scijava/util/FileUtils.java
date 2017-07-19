@@ -152,10 +152,12 @@ public final class FileUtils {
 		if (length > Integer.MAX_VALUE) {
 			throw new IllegalArgumentException("File too large");
 		}
-		final DataInputStream dis = new DataInputStream(new FileInputStream(file));
 		final byte[] bytes = new byte[(int) length];
-		dis.readFully(bytes);
-		dis.close();
+		try (final DataInputStream dis = new DataInputStream(new FileInputStream(
+			file)))
+		{
+			dis.readFully(bytes);
+		}
 		return bytes;
 	}
 
@@ -168,12 +170,8 @@ public final class FileUtils {
 	public static void writeFile(final File file, final byte[] bytes)
 		throws IOException
 	{
-		final FileOutputStream out = new FileOutputStream(file);
-		try {
+		try (final FileOutputStream out = new FileOutputStream(file)) {
 			out.write(bytes);
-		}
-		finally {
-			out.close();
 		}
 	}
 
@@ -577,29 +575,29 @@ public final class FileUtils {
 
 				final JarURLConnection connection =
 					(JarURLConnection) new URL(baseURL).openConnection();
-				final JarFile jar = connection.getJarFile();
-				for (final JarEntry entry : new IteratorPlus<>(jar.entries())) {
-					final String urlEncoded =
-						new URI(null, null, entry.getName(), null).toString();
-					if (urlEncoded.length() > prefix.length() && // omit directory itself
-						urlEncoded.startsWith(prefix))
-					{
-						if (filesOnly && urlEncoded.endsWith("/")) {
-							// URL is directory; exclude it
-							continue;
-						}
-						if (!recurse) {
-							// check whether this URL is a *direct* child of the directory
-							final int slash = urlEncoded.indexOf("/", prefix.length());
-							if (slash >= 0 && slash != urlEncoded.length() - 1) {
-								// not a direct child
+				try (final JarFile jar = connection.getJarFile()) {
+					for (final JarEntry entry : new IteratorPlus<>(jar.entries())) {
+						final String urlEncoded =
+							new URI(null, null, entry.getName(), null).toString();
+						if (urlEncoded.length() > prefix.length() && // omit directory itself
+							urlEncoded.startsWith(prefix))
+						{
+							if (filesOnly && urlEncoded.endsWith("/")) {
+								// URL is directory; exclude it
 								continue;
 							}
+							if (!recurse) {
+								// check whether this URL is a *direct* child of the directory
+								final int slash = urlEncoded.indexOf("/", prefix.length());
+								if (slash >= 0 && slash != urlEncoded.length() - 1) {
+									// not a direct child
+									continue;
+								}
+							}
+							result.add(new URL(baseURL + urlEncoded));
 						}
-						result.add(new URL(baseURL + urlEncoded));
 					}
 				}
-				jar.close();
 			}
 			catch (final IOException e) {
 				e.printStackTrace();
