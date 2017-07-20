@@ -42,13 +42,17 @@ public interface Typed<T> {
 	/**
 	 * Gets whether this object is compatible with the given data object.
 	 * <p>
-	 * By default, this method will return {@code true} always, since the type is
-	 * known to be compatible. But individual implementations may have other
-	 * requirements beyond class assignability.
+	 * By default, this method will return {@code true} iff the data is assignable
+	 * to the associated type given by {@link #getType()}. But individual
+	 * implementations may have other requirements beyond class assignability.
 	 * </p>
 	 */
-	default boolean supports(@SuppressWarnings("unused") T data) {
-		return true;
+	default boolean supports(final T data) {
+		// NB: Even though the compiler will often guarantee that only data
+		// of type T is provided here, we still need the runtime check
+		// for cases where the exact type is not known to compiler --
+		// e.g., if the object was manufactured by reflection.
+		return getType().isInstance(data);
 	}
 
 	/** Gets the type associated with the object. */
