@@ -35,15 +35,41 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
+import org.scijava.io.ByteBank;
+import org.scijava.io.ByteBankTest;
 
 /**
  * Tests {@link ByteBufferByteBank}.
  *
  * @author Curtis Rueden
+ * @author Gabriel Einsdorf
+ * @see ByteBankTest
  */
-public class ByteBufferByteBankTest {
+@RunWith(Parameterized.class)
+public class ByteBufferByteBankTest extends ByteBankTest {
+
+	@Parameter
+	public Function<Integer, ByteBuffer> supplier;
+
+	@Parameters
+	public static Object[] params() {
+		final Function<Integer, ByteBuffer> alloc = ByteBuffer::allocate;
+		final Function<Integer, ByteBuffer> allocDirect =
+			ByteBuffer::allocateDirect;
+		return new Function[] { alloc, allocDirect };
+	}
+
+	@Override
+	public ByteBank createByteBank() {
+		return new ByteBufferByteBank(supplier);
+	}
 
 	@Test
 	public void testReadOnlyDefault() {

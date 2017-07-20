@@ -93,12 +93,15 @@ public class ByteBufferByteBank implements ByteBank {
 		buffer.put(bytes, offset, length);
 
 		// update the maxpos
-		updateMaxPos(startpos + length);
+		updateMaxPos(startpos + length - 1);
 	}
 
 	@Override
 	public void setByte(final long pos, final byte b) {
 		checkWritePos(pos, pos);
+		if (pos == buffer.capacity()) {
+			ensureCapacity((int) pos + 1);
+		}
 		buffer.put((int) pos, b);
 		updateMaxPos(pos);
 	}
@@ -127,10 +130,12 @@ public class ByteBufferByteBank implements ByteBank {
 		final int length)
 	{
 		checkReadPos(startPos, startPos + length);
+		// ensure we don't try to read data which is not in the buffer
+		final int readLength = (int) Math.min(getMaxPos() - startPos + 1, length);
 		buffer.position((int) startPos);
-		buffer.get(b, offset, length);
+		buffer.get(b, offset, readLength);
 
-		return length;
+		return readLength;
 	}
 
 	@Override
