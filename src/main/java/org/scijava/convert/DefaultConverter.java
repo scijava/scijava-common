@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ArrayUtils;
 import org.scijava.util.ClassUtils;
@@ -55,7 +56,7 @@ import org.scijava.util.GenericUtils;
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class)
+@Plugin(type = Converter.class, priority = Priority.EXTREMELY_LOW)
 public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	// -- ConversionHandler methods --
