@@ -147,7 +147,7 @@ public class ConvertServiceTest {
 	 */
 	@Test
 	public void testArrays() {
-		// Test that each primitive [] is compatible in either direciton with its
+		// Test that each primitive [] is compatible in either direction with its
 		// paired PrimitiveArray
 		testIntechangeable(int[].class, IntArray.class);
 		testIntechangeable(long[].class, LongArray.class);
@@ -157,7 +157,7 @@ public class ConvertServiceTest {
 		testIntechangeable(char[].class, CharArray.class);
 		testIntechangeable(boolean[].class, BoolArray.class);
 
-		// Test that primitive [] can not be convertied to mismatched PrimitiveArray
+		// Test that primitive [] can not be converted to mismatched PrimitiveArray
 		assertFalse(convertService.supports(int[].class, LongArray.class));
 
 		// Test that lists can be converted to any primitive []
@@ -883,7 +883,7 @@ public class ConvertServiceTest {
 	// -- Helper methods --
 
 	/**
-	 * Verify bi-direciotnal conversion is supported between the two classes
+	 * Verify bi-directional conversion is supported between the two classes
 	 */
 	private void testIntechangeable(final Class<?> c1, final Class<?> c2) {
 		assertTrue(convertService.supports(c1, c2));
