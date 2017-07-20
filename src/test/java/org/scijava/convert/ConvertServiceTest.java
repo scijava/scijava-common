@@ -40,7 +40,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,12 +56,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.Priority;
+import org.scijava.convert.ArrayConverters.ByteArrayWrapper;
+import org.scijava.convert.ArrayConverters.DoubleArrayUnwrapper;
+import org.scijava.convert.ArrayConverters.FloatArrayWrapper;
+import org.scijava.convert.ArrayConverters.LongArrayWrapper;
+import org.scijava.convert.ArrayConverters.ShortArrayUnwrapper;
+import org.scijava.convert.NumberConverters.ByteToLongConverter;
+import org.scijava.convert.NumberConverters.DoubleToBigDecimalConverter;
+import org.scijava.convert.NumberConverters.ShortToFloatConverter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.BoolArray;
+import org.scijava.util.ByteArray;
 import org.scijava.util.CharArray;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.DoubleArray;
 import org.scijava.util.FloatArray;
+import org.scijava.util.GenericUtils;
 import org.scijava.util.IntArray;
 import org.scijava.util.LongArray;
 import org.scijava.util.PrimitiveArray;
@@ -563,6 +575,126 @@ public class ConvertServiceTest {
 		assertEquals(StringHisListConverter.S2, compatibleInputs.get(1));
 		assertEquals(StringHisListConverter.S3, compatibleInputs.get(2));
 		assertEquals(StringHisListConverter.S4, compatibleInputs.get(3));
+	}
+
+	/**
+	 * Tests that the {@link NullConverter} is chosen for null src and/or dest.
+	 */
+	@Test
+	public void testNullConverterMatching() {
+		final Converter<?, ?> c = convertService.getHandler(new ConversionRequest(
+			null, List.class));
+		assertEquals(NullConverter.class, c.getClass());
+
+		final Converter<?, ?> cc = convertService.getHandler(new ConversionRequest(
+			new Object(), (Class<?>) null));
+		assertEquals(NullConverter.class, cc.getClass());
+
+		final Converter<?, ?> ccc = convertService.getHandler(new ConversionRequest(
+			null, (Class<?>) null));
+		assertEquals(NullConverter.class, ccc.getClass());
+	}
+
+	/**
+	 * Tests the the appropriate wrapping ArrayConverter is chosen for converting
+	 * primitive arrays to scijava wrappers.
+	 */
+	@Test
+	public void testArrayConverterWrappingMatching() {
+		final byte[] b = new byte[] { -128, 0, 127 };
+		final long[] l = new long[] { 13, 17, -103209, 0, 6 };
+		final float[] f = new float[] { 12.125f, -0.0625f, 2.5f };
+
+		final Converter<?, ?> c = convertService.getHandler(b, ByteArray.class);
+		assertEquals(ByteArrayWrapper.class, c.getClass());
+
+		final Converter<?, ?> cc = convertService.getHandler(l, LongArray.class);
+		assertEquals(LongArrayWrapper.class, cc.getClass());
+
+		final Converter<?, ?> ccc = convertService.getHandler(f, FloatArray.class);
+		assertEquals(FloatArrayWrapper.class, ccc.getClass());
+	}
+
+	/**
+	 * Tests that the appropriate unwrapping ArrayConverter is chosen for
+	 * converting scijava arrays to primitive arrays.
+	 */
+	@Test
+	public void testArrayConverterUnwrappingMatching() {
+		final ShortArray s = new ShortArray();
+		final DoubleArray d = new DoubleArray();
+
+		final Converter<?, ?> c = convertService.getHandler(s, short[].class);
+		assertEquals(ShortArrayUnwrapper.class, c.getClass());
+
+		final Converter<?, ?> cc = convertService.getHandler(d, double[].class);
+		assertEquals(DoubleArrayUnwrapper.class, cc.getClass());
+	}
+
+	/**
+	 * Tests that the {@link CastingConverter} is called when casting is possible.
+	 */
+	@Test
+	public void testCastingConverterMatching() {
+		final ArrayList<Double> al = new ArrayList<>();
+
+		final Converter<?, ?> c = convertService.getHandler(al, Collection.class);
+		assertEquals(CastingConverter.class, c.getClass());
+	}
+
+	/**
+	 * Tests the that the appropriate {@link NumberToNumberConverter} is chosen.
+	 */
+	@Test
+	public void testNumberConverterMatching() {
+		final double d = -24312926.0625;
+		final byte b = 64;
+		final short s = 32625;
+
+		// Number converters only handle widening conversions
+		final Converter<?, ?> c = convertService.getHandler(d, BigDecimal.class);
+		assertEquals(DoubleToBigDecimalConverter.class, c.getClass());
+
+		final Converter<?, ?> cc = convertService.getHandler(b, long.class);
+		assertEquals(ByteToLongConverter.class, cc.getClass());
+
+		final Converter<?, ?> ccc = convertService.getHandler(s, float.class);
+		assertEquals(ShortToFloatConverter.class, ccc.getClass());
+	}
+
+	/**
+	 * Tests that the {@link DefaultConverter} is chosen when no other suitable
+	 * converter is available.
+	 */
+	@Test
+	public void testDefaultConverterMatching() {
+		final float f = 13624292.25f;
+		final List<String> l = new ArrayList<>();
+
+		// Narrowing number conversion
+		final Converter<?, ?> c = convertService.getHandler(f, byte.class);
+		assertEquals(DefaultConverter.class, c.getClass());
+
+		// List to Array
+		final Converter<?, ?> cc = convertService.getHandler(l, String[].class);
+		assertEquals(DefaultConverter.class, cc.getClass());
+
+		// Object to String
+		final Converter<?, ?> os = convertService.getHandler(new Object(),
+			String.class);
+		assertEquals(DefaultConverter.class, os.getClass());
+
+		// String to Character
+		final Converter<?, ?> ss = convertService.getHandler("hello", char.class);
+		assertEquals(DefaultConverter.class, ss.getClass());
+
+		// String to Enum
+		final Converter<?, ?> se = convertService.getHandler("bye", Words.class);
+		assertEquals(DefaultConverter.class, se.getClass());
+
+		// Source which can be wrapped as destination
+		final Converter<?, ?> w = convertService.getHandler(10122017l, Date.class);
+		assertEquals(DefaultConverter.class, w.getClass());
 	}
 
 // -- Helper Methods --
