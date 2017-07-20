@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -29,14 +29,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.download;
 
-package org.scijava.io.location;
+import org.scijava.io.location.Location;
+import org.scijava.task.Task;
 
 /**
- * {@link Location} backed by nothing whatsoever.
+ * Object representing an asynchronous download task.
  *
  * @author Curtis Rueden
+ * @see Task
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public interface Download {
+
+	Location source();
+	Location destination();
+	Task task();
 }

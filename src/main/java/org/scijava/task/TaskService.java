@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -30,13 +30,24 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.task;
+
+import org.scijava.service.SciJavaService;
 
 /**
- * {@link Location} backed by nothing whatsoever.
+ * Service for working with {@link Task}s.
  *
  * @author Curtis Rueden
+ * @see Task
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public interface TaskService extends SciJavaService {
+
+	/**
+	 * Creates a new, empty {@link Task}. It is the responsibility of the caller
+	 * to then launch the task via the {@link Task#run(Runnable)} method.
+	 * 
+	 * @param name The task's name, to differentiate it from others.
+	 * @return A newly created task which awaits execution.
+	 */
+	Task createTask(String name);
 }

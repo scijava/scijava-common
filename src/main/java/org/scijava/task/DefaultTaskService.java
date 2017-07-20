@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -30,13 +30,35 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.task;
+
+import org.scijava.event.EventService;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.service.AbstractService;
+import org.scijava.service.Service;
+import org.scijava.thread.ThreadService;
 
 /**
- * {@link Location} backed by nothing whatsoever.
+ * Default implementation of {@link TaskService}.
  *
  * @author Curtis Rueden
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+@Plugin(type = Service.class)
+public class DefaultTaskService extends AbstractService implements
+	TaskService
+{
+
+	@Parameter
+	private ThreadService threadService;
+
+	@Parameter(required = false)
+	private EventService eventService;
+
+	@Override
+	public Task createTask(String name) {
+		final DefaultTask task = new DefaultTask(threadService, eventService);
+		task.setName(name);
+		return task;
+	}
 }

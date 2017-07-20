@@ -49,7 +49,7 @@ public class ByteBufferByteBank implements ByteBank {
 
 	private ByteBuffer buffer;
 
-	private int maxBufferedPos = -1;
+	private int size;
 
 	private Function<Integer, ByteBuffer> provider;
 
@@ -86,7 +86,7 @@ public class ByteBufferByteBank implements ByteBank {
 	{
 		// ensure we have space
 		checkWritePos(startpos, startpos + length);
-		final int neededCapacity = Math.max(maxBufferedPos, 0) + length;
+		final int neededCapacity = size + length;
 		ensureCapacity(neededCapacity);
 
 		// copy the data
@@ -94,7 +94,7 @@ public class ByteBufferByteBank implements ByteBank {
 		buffer.put(bytes, offset, length);
 
 		// update the maxpos
-		updateMaxPos(startpos + length - 1);
+		updateSize(startpos + length);
 	}
 
 	@Override
@@ -104,17 +104,13 @@ public class ByteBufferByteBank implements ByteBank {
 			ensureCapacity((int) pos + 1);
 		}
 		buffer.put((int) pos, b);
-		updateMaxPos(pos);
-	}
-
-	private void updateMaxPos(final long pos) {
-		maxBufferedPos = (int) (pos > maxBufferedPos ? pos : maxBufferedPos);
+		updateSize(pos + 1);
 	}
 
 	@Override
 	public void clear() {
 		buffer.clear();
-		maxBufferedPos = 0;
+		size = 0;
 	}
 
 	@Override
@@ -132,7 +128,7 @@ public class ByteBufferByteBank implements ByteBank {
 	{
 		checkReadPos(startPos, startPos + length);
 		// ensure we don't try to read data which is not in the buffer
-		final int readLength = (int) Math.min(getMaxPos() - startPos + 1, length);
+		final int readLength = (int) Math.min(size() - startPos, length);
 		buffer.position((int) startPos);
 		buffer.get(b, offset, readLength);
 
@@ -140,8 +136,8 @@ public class ByteBufferByteBank implements ByteBank {
 	}
 
 	@Override
-	public long getMaxPos() {
-		return maxBufferedPos;
+	public long size() {
+		return size;
 	}
 
 	@Override
@@ -154,6 +150,8 @@ public class ByteBufferByteBank implements ByteBank {
 		return className.equals("java.nio.HeapByteBufferR") ||
 			className.equals("java.nio.DirectByteBufferR");
 	}
+
+	// -- Helper methods --
 
 	private void ensureCapacity(final int minCapacity) {
 		final int oldCapacity = buffer.capacity();
@@ -177,4 +175,9 @@ public class ByteBufferByteBank implements ByteBank {
 		newBuffer.put(buffer);
 		buffer = newBuffer;
 	}
+
+	private void updateSize(final long newSize) {
+		size = (int) (newSize > size ? newSize : size);
+	}
+
 }

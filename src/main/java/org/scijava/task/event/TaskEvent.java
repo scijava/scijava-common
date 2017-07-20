@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -29,14 +29,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.task.event;
 
-package org.scijava.io.location;
+import org.scijava.event.SciJavaEvent;
+import org.scijava.task.Task;
 
 /**
- * {@link Location} backed by nothing whatsoever.
- *
+ * An event indicating a {@link Task} has been updated.
+ * 
  * @author Curtis Rueden
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public class TaskEvent extends SciJavaEvent {
+
+	private final Task task;
+
+	public TaskEvent(final Task task) {
+		this.task = task;
+	}
+
+	// -- TaskEvent methods --
+
+	public Task getTask() {
+		return task;
+	}
+
+	// -- Object methods --
+
+	@Override
+	public String toString() {
+		return super.toString() + "\n\ttask = " + task;
+	}
 }

@@ -34,6 +34,7 @@ package org.scijava.io.handle;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Date;
 
 import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.Plugin;
@@ -75,21 +76,6 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	// -- DataHandle methods --
 
 	@Override
-	public long offset() throws IOException {
-		return raf().getFilePointer();
-	}
-
-	@Override
-	public long length() throws IOException {
-		return raf().length();
-	}
-
-	@Override
-	public void setLength(final long length) throws IOException {
-		raf().setLength(length);
-	}
-
-	@Override
 	public boolean isReadable() {
 		return getMode().contains("r");
 	}
@@ -97,6 +83,32 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	@Override
 	public boolean isWritable() {
 		return getMode().contains("w");
+	}
+
+	@Override
+	public boolean exists() {
+		return get().getFile().exists();
+	}
+
+	@Override
+	public Date lastModified() {
+		final long lastModified = get().getFile().lastModified();
+		return lastModified == 0 ? null : new Date(lastModified);
+	}
+
+	@Override
+	public long offset() throws IOException {
+		return raf().getFilePointer();
+	}
+
+	@Override
+	public long length() throws IOException {
+		return exists() ? raf().length() : -1;
+	}
+
+	@Override
+	public void setLength(final long length) throws IOException {
+		raf().setLength(length);
 	}
 
 	@Override
@@ -299,5 +311,4 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
 	}
-
 }

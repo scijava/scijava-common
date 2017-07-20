@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -30,13 +30,36 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.download;
+
+import org.scijava.io.location.Location;
+import org.scijava.service.SciJavaService;
 
 /**
- * {@link Location} backed by nothing whatsoever.
+ * Service for managing retrieval of remote resources.
  *
  * @author Curtis Rueden
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public interface DownloadService extends SciJavaService {
+
+	/**
+	 * Downloads data from the given source, storing it into the given
+	 * destination.
+	 *
+	 * @param source The location of the needed data.
+	 * @param destination The location where the needed data should be stored.
+	 */
+	Download download(Location source, Location destination);
+
+	/**
+	 * Downloads data from the given source, storing it into the given
+	 * destination.
+	 *
+	 * @param source The location of the needed data.
+	 * @param destination The location where the needed data should be stored.
+	 * @param cache The cache from which already-downloaded data should be pulled
+	 *          preferentially, and to which newly-downloaded data should be
+	 *          stored for next time.
+	 */
+	Download download(Location source, Location destination, LocationCache cache);
 }

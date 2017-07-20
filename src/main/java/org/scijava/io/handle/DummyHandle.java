@@ -54,27 +54,6 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	// -- DataHandle methods --
 
 	@Override
-	public long offset() throws IOException {
-		return offset;
-	}
-
-	@Override
-	public void seek(final long pos) throws IOException {
-		if (pos > length()) setLength(pos);
-		offset = pos;
-	}
-
-	@Override
-	public long length() throws IOException {
-		return length;
-	}
-
-	@Override
-	public void setLength(final long length) throws IOException {
-		this.length = length;
-	}
-
-	@Override
 	public boolean isReadable() {
 		return true;
 	}
@@ -82,6 +61,32 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	@Override
 	public boolean isWritable() {
 		return true;
+	}
+
+	@Override
+	public boolean exists() {
+		return true;
+	}
+
+	@Override
+	public long offset() {
+		return offset;
+	}
+
+	@Override
+	public void seek(final long pos) {
+		if (pos > length()) setLength(pos);
+		offset = pos;
+	}
+
+	@Override
+	public long length() {
+		return length;
+	}
+
+	@Override
+	public void setLength(final long length) {
+		this.length = length;
 	}
 
 	// -- DataInput methods --
@@ -133,5 +138,4 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	public Class<DummyLocation> getType() {
 		return DummyLocation.class;
 	}
-
 }

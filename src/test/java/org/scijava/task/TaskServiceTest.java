@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -29,14 +29,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package org.scijava.task;
 
-package org.scijava.io.location;
+import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.ExecutionException;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.scijava.Context;
 
 /**
- * {@link Location} backed by nothing whatsoever.
- *
+ * Tests {@link TaskService}.
+ * 
  * @author Curtis Rueden
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public class TaskServiceTest {
+
+	private TaskService taskService;
+
+	@Before
+	public void setUp() {
+		final Context ctx = new Context(TaskService.class);
+		taskService = ctx.service(TaskService.class);
+	}
+
+	@After
+	public void tearDown() {
+		taskService.context().dispose();
+	}
+
+	@Test
+	public void testTask() throws InterruptedException, ExecutionException {
+		final int[] result = new int[1];
+		final Task task = taskService.createTask("hello");
+		task.run(() -> {
+			task.setStatusMessage("Hello");
+			task.setProgressMaximum(10);
+			task.setProgressValue(5);
+			result[0] = 100;
+		});
+		task.waitFor();
+		assertEquals(100, result[0]);
+	}
 }

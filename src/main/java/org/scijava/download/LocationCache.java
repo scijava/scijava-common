@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -30,13 +30,50 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.download;
+
+import java.io.IOException;
+
+import org.scijava.io.handle.DataHandle;
+import org.scijava.io.location.Location;
 
 /**
- * {@link Location} backed by nothing whatsoever.
+ * An object which knows how to convert a slow (typically remote)
+ * {@link Location} to a faster (typically local) one.
  *
  * @author Curtis Rueden
  */
-public class DummyLocation extends AbstractLocation {
-	// NB: No implementation needed.
+public interface LocationCache {
+
+	/** Gets whether the given location can be cached by this cache. */
+	boolean canCache(Location source);
+
+	/**
+	 * Gets the cache location of a given data source.
+	 *
+	 * @return A {@link Location} where the source data is, or would be, cached.
+	 * @throws IllegalArgumentException if the given source cannot be cached (see
+	 *           {@link #canCache}).
+	 */
+	Location cachedLocation(Location source);
+
+	/**
+	 * Loads the checksum value which corresponds to the cached location.
+	 *
+	 * @param source The source location for which the cached checksum is desired.
+	 * @return The loaded checksum, or null if one is not available.
+	 * @see DataHandle#checksum()
+	 * @throws IOException If something goes wrong accessing the checksum.
+	 */
+	String loadChecksum(Location source) throws IOException;
+
+	/**
+	 * Associates the given checksum value with the specified source location.
+	 *
+	 * @param source The source location for which the checksum should be cached.
+	 * @param checksum The checksum value to cache.
+	 * @see DataHandle#checksum()
+	 * @throws IOException If something goes wrong caching the checksum.
+	 */
+	void saveChecksum(Location source, String checksum) throws IOException;
 }
