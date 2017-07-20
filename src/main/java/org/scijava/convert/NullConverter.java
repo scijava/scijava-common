@@ -40,8 +40,8 @@ import org.scijava.util.ConversionUtils;
 
 /**
  * {@link Converter} implementation for handling {@code null} values. Performs
- * basic casting when given a {@code null} source and returns {@code} null
- * directly when given a {@code} null destination.
+ * basic casting when given a {@code null} source and returns {@code null}
+ * directly when given a {@code null} destination.
  * <p>
  * By running at {@link Priority#FIRST}, other converters should
  * not need to worry about {@code null} source or destination parameters.
