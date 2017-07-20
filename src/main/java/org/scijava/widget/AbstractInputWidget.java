@@ -67,4 +67,11 @@ public abstract class AbstractInputWidget<T, W> extends
 	public WidgetModel get() {
 		return widgetModel;
 	}
+
+	// -- Typed methods --
+
+	@Override
+	public boolean supports(final WidgetModel data) {
+		return InputWidget.super.supports(data);
+	}
 }
