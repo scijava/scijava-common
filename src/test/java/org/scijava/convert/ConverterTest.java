@@ -94,11 +94,11 @@ public class ConverterTest {
 
 	@Test
 	public void testCanConvertToGenericCollection() {
-		final DefaultConverter dc = new DefaultConverter();
+		final CastingConverter cc = new CastingConverter();
 
 		final Field destField = ClassUtils.getField(getClass(), "collection");
 		final Type destType = GenericUtils.getFieldType(destField, getClass());
-		assertTrue(dc.canConvert(ArrayList.class, destType));
+		assertTrue(cc.canConvert(ArrayList.class, destType));
 	}
 
 	private static class NumberConverter extends AbstractConverter<Number, Number> {

@@ -80,15 +80,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		if (dest == null) return null;
-		if (src == null) return ConversionUtils.getNullValue(dest);
-
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<T> saneDest = ConversionUtils.getNonprimitiveType(dest);
-
-		// cast the existing object, if possible
-		if (ConversionUtils.canCast(src, saneDest)) return ConversionUtils.cast(
-			src, saneDest);
 
 		// Handle array types
 		if (isArray(dest)) {
@@ -302,15 +295,9 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Override
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-
-		if (src == null || dest == null) return true;
-
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
-		
-		// OK if the existing object can be casted
-		if (ConversionUtils.canCast(src, saneDest)) return true;
-		
+
 		// OK for numerical conversions
 		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
 			Number.class) &&
