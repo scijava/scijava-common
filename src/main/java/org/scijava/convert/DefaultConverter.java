@@ -53,6 +53,20 @@ import org.scijava.util.GenericUtils;
 /**
  * Default {@link Converter} implementation. Provides useful conversion
  * functionality for many common conversion cases.
+ * <p>
+ * Supported conversions include:
+ * </p>
+ * <ul>
+ * <li>Object to Array</li>
+ * <li>Object to Collection</li>
+ * <li>Number to Number</li>
+ * <li>Object to String</li>
+ * <li>String to Character</li>
+ * <li>String to Enum</li>
+ * <li>Objects where the destination Class has a constructor which takes that
+ * Object
+ * </li>
+ * </ul>
  *
  * @author Mark Hiner
  */
