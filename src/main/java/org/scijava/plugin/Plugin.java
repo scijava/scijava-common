@@ -116,18 +116,18 @@ public @interface Plugin {
 	 * Any double value is allowed, but for convenience, there are some presets:
 	 * </p>
 	 * <ul>
-	 * <li>{@link Priority#FIRST_PRIORITY}</li>
-	 * <li>{@link Priority#VERY_HIGH_PRIORITY}</li>
-	 * <li>{@link Priority#HIGH_PRIORITY}</li>
-	 * <li>{@link Priority#NORMAL_PRIORITY}</li>
-	 * <li>{@link Priority#LOW_PRIORITY}</li>
-	 * <li>{@link Priority#VERY_LOW_PRIORITY}</li>
-	 * <li>{@link Priority#LAST_PRIORITY}</li>
+	 * <li>{@link Priority#FIRST}</li>
+	 * <li>{@link Priority#VERY_HIGH}</li>
+	 * <li>{@link Priority#HIGH}</li>
+	 * <li>{@link Priority#NORMAL}</li>
+	 * <li>{@link Priority#LOW}</li>
+	 * <li>{@link Priority#VERY_LOW}</li>
+	 * <li>{@link Priority#LAST}</li>
 	 * </ul>
 	 * 
 	 * @see org.scijava.service.Service
 	 */
-	double priority() default Priority.NORMAL_PRIORITY;
+	double priority() default Priority.NORMAL;
 
 	/**
 	 * Whether the plugin can be selected in the user interface. A plugin's

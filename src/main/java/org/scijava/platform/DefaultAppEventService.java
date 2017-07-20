@@ -49,7 +49,7 @@ import org.scijava.service.Service;
 
 /** @deprecated Use {@link AppService} and {@link App} instead. */
 @Deprecated
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = Service.class, priority = Priority.LOW)
 public class DefaultAppEventService extends AbstractService implements
 	AppEventService
 {

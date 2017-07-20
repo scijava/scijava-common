@@ -55,7 +55,7 @@ import org.scijava.util.ListUtils;
  * @author Curtis Rueden
  */
 @Plugin(type = UserInterface.class, name = HeadlessUI.NAME,
-	priority = Priority.VERY_LOW_PRIORITY)
+	priority = Priority.VERY_LOW)
 public class HeadlessUI extends AbstractRichPlugin implements UserInterface {
 
 	public static final String NAME = "headless";

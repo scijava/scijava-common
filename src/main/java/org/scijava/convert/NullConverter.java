@@ -43,7 +43,7 @@ import org.scijava.util.ConversionUtils;
  * basic casting when given a {@code null} source and returns {@code} null
  * directly when given a {@code} null destination.
  * <p>
- * By running at {@link Priority#FIRST_PRIORITY}, other converters should
+ * By running at {@link Priority#FIRST}, other converters should
  * not need to worry about {@code null} source or destination parameters.
  * </p>
  * <p>
@@ -54,7 +54,7 @@ import org.scijava.util.ConversionUtils;
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class, priority = Priority.FIRST_PRIORITY)
+@Plugin(type = Converter.class, priority = Priority.FIRST)
 public class NullConverter extends AbstractConverter<Object, Object> {
 
 	@Override

@@ -46,26 +46,45 @@ public final class Priority {
 		// prevent instantiation of utility class
 	}
 
-	/** Priority for items that must be sorted first. */
-	public static final double FIRST_PRIORITY = Double.POSITIVE_INFINITY;
+	/**
+	 * Priority for items that must be sorted first.
+	 * <p>
+	 * Note that it <em>is</em> still possible to prioritize something earlier
+	 * than this value (e.g., for testing purposes), although doing so strongly
+	 * discouraged in production.
+	 * </p>
+	 */
+	public static final double FIRST = +1e300;
+
+	/** Priority for items that very strongly prefer to be sorted early. */
+	public static final double EXTREMELY_HIGH = +1000000;
 
 	/** Priority for items that strongly prefer to be sorted early. */
-	public static final double VERY_HIGH_PRIORITY = +10000;
+	public static final double VERY_HIGH = +10000;
 
 	/** Priority for items that prefer to be sorted earlier. */
-	public static final double HIGH_PRIORITY = +100;
+	public static final double HIGH = +100;
 
 	/** Default priority for items. */
-	public static final double NORMAL_PRIORITY = 0;
+	public static final double NORMAL = 0;
 
 	/** Priority for items that prefer to be sorted later. */
-	public static final double LOW_PRIORITY = -100;
+	public static final double LOW = -100;
 
 	/** Priority for items that strongly prefer to be sorted late. */
-	public static final double VERY_LOW_PRIORITY = -10000;
+	public static final double VERY_LOW = -10000;
 
-	/** Priority for items that must be sorted last. */
-	public static final double LAST_PRIORITY = Double.NEGATIVE_INFINITY;
+	/** Priority for items that very strongly prefer to be sorted late. */
+	public static final double EXTREMELY_LOW = -1000000;
+
+	/** Priority for items that must be sorted last.
+	 * <p>
+	 * Note that it <em>is</em> still possible to prioritize something later
+	 * than this value (e.g., for testing purposes), although doing so strongly
+	 * discouraged in production.
+	 * </p>
+	 */
+	public static final double LAST = -1e300;
 
 	/**
 	 * Compares two {@link Prioritized} objects.
@@ -109,4 +128,33 @@ public final class Priority {
 		return true;
 	}
 
+	// -- Deprecated --
+
+	/** @deprecated Use {@link #FIRST} instead. */
+	@Deprecated
+	public static final double FIRST_PRIORITY = Double.POSITIVE_INFINITY;
+
+	/** @deprecated Use {@link #VERY_HIGH} instead. */
+	@Deprecated
+	public static final double VERY_HIGH_PRIORITY = +10000;
+
+	/** @deprecated Use {@link #HIGH} instead. */
+	@Deprecated
+	public static final double HIGH_PRIORITY = +100;
+
+	/** @deprecated Use {@link #NORMAL} instead. */
+	@Deprecated
+	public static final double NORMAL_PRIORITY = 0;
+
+	/** @deprecated Use {@link #LOW} instead. */
+	@Deprecated
+	public static final double LOW_PRIORITY = -100;
+
+	/** @deprecated Use {@link #VERY_LOW} instead. */
+	@Deprecated
+	public static final double VERY_LOW_PRIORITY = -10000;
+
+	/** @deprecated Use {@link #LAST} instead. */
+	@Deprecated
+	public static final double LAST_PRIORITY = Double.NEGATIVE_INFINITY;
 }

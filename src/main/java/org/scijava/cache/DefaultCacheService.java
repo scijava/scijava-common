@@ -43,7 +43,7 @@ import org.scijava.service.Service;
 /**
  * Trivial {@link CacheService} implementation. Wraps a {@link WeakHashMap}
  */
-@Plugin(type = Service.class, priority = Priority.VERY_LOW_PRIORITY)
+@Plugin(type = Service.class, priority = Priority.VERY_LOW)
 public class DefaultCacheService extends AbstractService implements
 	CacheService
 {

@@ -51,10 +51,10 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_LOW_PRIORITY - 1)
+	priority = Priority.VERY_LOW - 1)
 public class SaveInputsPreprocessor extends AbstractPreprocessorPlugin {
 
-	public static final double PRIORITY = Priority.VERY_LOW_PRIORITY - 1;
+	public static final double PRIORITY = Priority.VERY_LOW - 1;
 
 	@Parameter
 	private ModuleService moduleService;

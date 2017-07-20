@@ -45,7 +45,7 @@ import org.scijava.plugin.Plugin;
  * @author Johannes Schindelin
  */
 @Plugin(type = Platform.class, name = "Default",
-	priority = Priority.VERY_LOW_PRIORITY)
+	priority = Priority.VERY_LOW)
 public class DefaultPlatform extends AbstractPlatform {
 
 	// -- PlatformHandler methods --

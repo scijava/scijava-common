@@ -50,7 +50,7 @@ import org.scijava.util.ConversionUtils;
  *
  * @author Curtis Rueden
  */
-@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH_PRIORITY)
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH)
 public class DefaultValuePreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter

@@ -48,7 +48,7 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = PreprocessorPlugin.class, priority = Priority.HIGH_PRIORITY)
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.HIGH)
 public class InitPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)

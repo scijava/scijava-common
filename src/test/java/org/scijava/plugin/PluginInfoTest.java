@@ -74,19 +74,19 @@ public class PluginInfoTest {
 		// NB: Marker interface.
 	}
 
-	@Plugin(type = IceCream.class, priority = Priority.VERY_LOW_PRIORITY)
+	@Plugin(type = IceCream.class, priority = Priority.VERY_LOW)
 	public static class Flavorless implements SciJavaPlugin {
 		// NB: No implementation needed.
 	}
 
 	@Plugin(type = IceCream.class, name = "vanilla",
-		priority = Priority.LOW_PRIORITY)
+		priority = Priority.LOW)
 	public static class Vanilla implements SciJavaPlugin {
 		// NB: No implementation needed.
 	}
 
 	@Plugin(type = IceCream.class, name = "chocolate",
-		priority = Priority.VERY_HIGH_PRIORITY)
+		priority = Priority.VERY_HIGH)
 	public static class Chocolate implements IceCream {
 		// NB: No implementation needed.
 	}

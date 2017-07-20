@@ -51,7 +51,7 @@ public abstract class AbstractUIDetails extends AbstractBasicDetails implements 
 	private String iconPath;
 
 	/** Sort priority of the object. */
-	private double priority = Priority.NORMAL_PRIORITY;
+	private double priority = Priority.NORMAL;
 
 	/** Whether the object can be selected in the user interface. */
 	private boolean selectable;

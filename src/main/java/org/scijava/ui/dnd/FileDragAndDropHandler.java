@@ -49,7 +49,7 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  * @author Barry DeZonia
  */
-@Plugin(type = DragAndDropHandler.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = DragAndDropHandler.class, priority = Priority.LOW)
 public class FileDragAndDropHandler extends
 	AbstractDragAndDropHandler<File>
 {

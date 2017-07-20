@@ -75,7 +75,7 @@ import org.scijava.util.ColorRGBA;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.HIGH_PRIORITY)
+@Plugin(type = Service.class, priority = Priority.HIGH)
 public class DefaultScriptService extends
 	AbstractSingletonService<ScriptLanguage> implements ScriptService
 {

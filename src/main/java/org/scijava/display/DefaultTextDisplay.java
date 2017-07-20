@@ -40,7 +40,7 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Display.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = Display.class, priority = Priority.LOW)
 public class DefaultTextDisplay extends AbstractDisplay<String> implements
 	TextDisplay
 {

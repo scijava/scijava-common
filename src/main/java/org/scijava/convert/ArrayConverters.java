@@ -54,7 +54,7 @@ public class ArrayConverters {
 
 	// -- Integer array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class IntArrayWrapper extends
 		PrimitiveArrayWrapper<int[], Integer, IntArray>
 	{
@@ -70,7 +70,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class IntArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<int[], Integer, IntArray>
 	{
@@ -88,7 +88,7 @@ public class ArrayConverters {
 
 	// -- Byte array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class ByteArrayWrapper extends
 		PrimitiveArrayWrapper<byte[], Byte, ByteArray>
 	{
@@ -104,7 +104,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class ByteArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<byte[], Byte, ByteArray>
 	{
@@ -122,7 +122,7 @@ public class ArrayConverters {
 
 	// -- Bool array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class BoolArrayWrapper extends
 		PrimitiveArrayWrapper<boolean[], Boolean, BoolArray>
 	{
@@ -138,7 +138,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class BoolArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<boolean[], Boolean, BoolArray>
 	{
@@ -156,7 +156,7 @@ public class ArrayConverters {
 
 	// -- Char array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class CharArrayWrapper extends
 		PrimitiveArrayWrapper<char[], Character, CharArray>
 	{
@@ -172,7 +172,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class CharArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<char[], Character, CharArray>
 	{
@@ -190,7 +190,7 @@ public class ArrayConverters {
 
 	// -- Short array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class ShortArrayWrapper extends
 		PrimitiveArrayWrapper<short[], Short, ShortArray>
 	{
@@ -206,7 +206,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class ShortArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<short[], Short, ShortArray>
 	{
@@ -224,7 +224,7 @@ public class ArrayConverters {
 
 	// -- Float array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class FloatArrayWrapper extends
 		PrimitiveArrayWrapper<float[], Float, FloatArray>
 	{
@@ -240,7 +240,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class FloatArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<float[], Float, FloatArray>
 	{
@@ -258,7 +258,7 @@ public class ArrayConverters {
 
 	// -- Double array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class DoubleArrayWrapper extends
 		PrimitiveArrayWrapper<double[], Double, DoubleArray>
 	{
@@ -274,7 +274,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class DoubleArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<double[], Double, DoubleArray>
 	{
@@ -292,7 +292,7 @@ public class ArrayConverters {
 
 	// -- Long array converters --
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class LongArrayWrapper extends
 		PrimitiveArrayWrapper<long[], Long, LongArray>
 	{
@@ -308,7 +308,7 @@ public class ArrayConverters {
 		}
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = Converter.class, priority = Priority.HIGH)
 	public static class LongArrayUnwrapper extends
 		PrimitiveArrayUnwrapper<long[], Long, LongArray>
 	{

@@ -39,7 +39,7 @@ package org.scijava.display;
 // using Object#toString()), but until it exists, discovery of this display
 // merely causes the UIService to eventually issue some warnings anyway
 // ("No suitable viewer found for display" and "No viewer found for display").
-//@Plugin(type = Display.class, priority = Priority.VERY_LOW_PRIORITY)
+//@Plugin(type = Display.class, priority = Priority.VERY_LOW)
 /**
  * Default display for objects, when no other displays are available.
  * 

@@ -251,7 +251,7 @@ public class CommandModuleTest {
 	 * populated.
 	 */
 	@Plugin(type = PreprocessorPlugin.class,
-		priority = Priority.VERY_HIGH_PRIORITY)
+		priority = Priority.VERY_HIGH)
 	public static class StuffPreprocessor extends AbstractPreprocessorPlugin {
 
 		@Override

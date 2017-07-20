@@ -54,7 +54,7 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class,
-	priority = Priority.VERY_HIGH_PRIORITY)
+	priority = Priority.VERY_HIGH)
 public class ActiveDisplayPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)

@@ -47,7 +47,7 @@ import org.scijava.service.Service;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = Service.class, priority = Priority.LOW)
 public class StderrLogService extends AbstractLogService {
 
 	@Override

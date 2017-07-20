@@ -74,7 +74,7 @@ public class DefaultEventService extends AbstractService implements
 	 * {@code priority = DefaultEventService.PRIORITY + 1} or similar.
 	 * </p>
 	 */
-	public static final double PRIORITY = 10 * Priority.VERY_HIGH_PRIORITY;
+	public static final double PRIORITY = 10 * Priority.VERY_HIGH;
 
 	@Parameter
 	private LogService log;

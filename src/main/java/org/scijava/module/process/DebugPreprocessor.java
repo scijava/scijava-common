@@ -43,7 +43,7 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = PreprocessorPlugin.class, priority = Priority.FIRST_PRIORITY)
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.FIRST)
 public class DebugPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)

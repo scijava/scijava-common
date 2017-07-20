@@ -49,7 +49,7 @@ import org.scijava.util.ClassUtils;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = CodeRunner.class, priority = Priority.LOW_PRIORITY)
+@Plugin(type = CodeRunner.class, priority = Priority.LOW)
 public class MainCodeRunner extends AbstractCodeRunner {
 
 	@Parameter(required = false)

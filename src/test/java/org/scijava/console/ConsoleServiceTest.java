@@ -220,7 +220,7 @@ public class ConsoleServiceTest {
 
 	// -- Helper classes --
 
-	@Plugin(type = ConsoleArgument.class, priority = Priority.HIGH_PRIORITY)
+	@Plugin(type = ConsoleArgument.class, priority = Priority.HIGH)
 	public static class FooArgument extends AbstractConsoleArgument {
 
 		public FooArgument() {

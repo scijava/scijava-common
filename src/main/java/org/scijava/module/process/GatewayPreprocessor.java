@@ -54,7 +54,7 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  */
 @Plugin(type = PreprocessorPlugin.class, //
-	priority = 2 * Priority.VERY_HIGH_PRIORITY)
+	priority = 2 * Priority.VERY_HIGH)
 public class GatewayPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter

@@ -57,7 +57,7 @@ import org.scijava.module.ModuleItem;
  */
 public interface InputHarvester<P, W> {
 
-	double PRIORITY = Priority.VERY_LOW_PRIORITY;
+	double PRIORITY = Priority.VERY_LOW;
 
 	/**
 	 * Performs the harvesting process.

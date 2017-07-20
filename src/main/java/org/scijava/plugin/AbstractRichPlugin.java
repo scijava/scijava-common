@@ -45,7 +45,7 @@ public abstract class AbstractRichPlugin extends AbstractContextual implements
 {
 
 	/** The priority of the plugin. */
-	private double priority = Priority.NORMAL_PRIORITY;
+	private double priority = Priority.NORMAL;
 
 	/** The metadata associated with the plugin. */
 	private PluginInfo<?> info;
