@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ArrayUtils;
 import org.scijava.util.ClassUtils;
@@ -52,10 +53,24 @@ import org.scijava.util.GenericUtils;
 /**
  * Default {@link Converter} implementation. Provides useful conversion
  * functionality for many common conversion cases.
+ * <p>
+ * Supported conversions include:
+ * </p>
+ * <ul>
+ * <li>Object to Array</li>
+ * <li>Object to Collection</li>
+ * <li>Number to Number</li>
+ * <li>Object to String</li>
+ * <li>String to Character</li>
+ * <li>String to Enum</li>
+ * <li>Objects where the destination Class has a constructor which takes that
+ * Object
+ * </li>
+ * </ul>
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class)
+@Plugin(type = Converter.class, priority = Priority.EXTREMELY_LOW)
 public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	// -- ConversionHandler methods --
@@ -79,15 +94,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		if (dest == null) return null;
-		if (src == null) return ConversionUtils.getNullValue(dest);
-
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<T> saneDest = ConversionUtils.getNonprimitiveType(dest);
-
-		// cast the existing object, if possible
-		if (ConversionUtils.canCast(src, saneDest)) return ConversionUtils.cast(
-			src, saneDest);
 
 		// Handle array types
 		if (isArray(dest)) {
@@ -301,15 +309,9 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Override
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-
-		if (src == null || dest == null) return true;
-
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
-		
-		// OK if the existing object can be casted
-		if (ConversionUtils.canCast(src, saneDest)) return true;
-		
+
 		// OK for numerical conversions
 		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
 			Number.class) &&

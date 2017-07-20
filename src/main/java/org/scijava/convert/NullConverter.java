@@ -40,8 +40,8 @@ import org.scijava.util.ConversionUtils;
 
 /**
  * {@link Converter} implementation for handling {@code null} values. Performs
- * basic casting when given a {@code null} source and returns {@code} null
- * directly when given a {@code} null destination.
+ * basic casting when given a {@code null} source and returns {@code null}
+ * directly when given a {@code null} destination.
  * <p>
  * By running at {@link Priority#FIRST}, other converters should
  * not need to worry about {@code null} source or destination parameters.
@@ -60,23 +60,24 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 	@Override
 	public boolean canConvert(final ConversionRequest request) {
 		if (request == null) return false;
-		if (request.destType() == null && request.destClass() == null) return false;
-		return request.sourceObject() == null && request.sourceClass() == null;
+		return (request.destType() == null && request.destClass() == null) ||
+			(request.sourceObject() == null && request.sourceClass() == null);
 	}
 
 	@Override
 	public boolean canConvert(final Object src, final Type dest) {
-		return src == null && dest != null;
+		return src == null || dest == null;
 	}
 
 	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
-		return src == null && dest != null;
+		return src == null || dest == null;
 	}
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		return src == null && dest != null;
+		if (src == null) return false;
+		return dest == null;
 	}
 
 	@Override
