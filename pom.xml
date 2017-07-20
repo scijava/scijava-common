@@ -159,8 +159,9 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
 		<license.copyrightOwners>Board of Regents of the University of
-Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
-Institute of Molecular Cell Biology and Genetics.</license.copyrightOwners>
+Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
+Institute of Molecular Cell Biology and Genetics, University of
+Konstanz, and KNIME GmbH.</license.copyrightOwners>
 	</properties>
 
 	<dependencies>
