@@ -304,7 +304,7 @@ public interface UIService extends SciJavaService {
 	 * @param files The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict the choice of files
 	 */
-	File[] chooseFiles(File[] files, FileFilter filter);
+	File[] chooseFiles(File parent, File[] files, FileFilter filter, String style);
 
 	/**
 	 * Prompts the user to select one or multiple files.
@@ -315,7 +315,7 @@ public interface UIService extends SciJavaService {
 	 * @param fileList The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict the choice of files
 	 */
-	List<File> chooseFiles(List<File> fileList, FileFilter filter);
+	List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style);
 
 	/**
 	 * Displays a popup context menu for the given display at the specified

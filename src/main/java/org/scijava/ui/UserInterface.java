@@ -191,26 +191,30 @@ public interface UserInterface extends RichPlugin, Disposable {
 	/**
 	 * Prompts the user to choose a list of files.
 	 *
+	 * @param parent Parent folder for file selection
 	 * @param files The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
+	 * @param style File selection style (files, directories, or both) and optional filters
 	 * @return The selected {@link File}s chosen by the user, or null if the
 	 *         user cancels the prompt.
 	 */
-	default File[] chooseFiles(File[] files, FileFilter filter) {
+	default File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Prompts the user to choose a list of files.
 	 *
+	 * @param parent Parent folder for file selection
 	 * @param fileList The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
+	 * @param style File selection style (files, directories, or both) and optional filters
 	 * @return The selected {@link File}s chosen by the user, or null if the
 	 *         user cancels the prompt.
 	 */
-	default List<File> chooseFiles(List<File> fileList, FileFilter filter) {
+	default List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
 		final File[] initialFiles = fileList.toArray(new File[fileList.size()]);
-		final File[] chosenFiles = chooseFiles(initialFiles, filter);
+		final File[] chosenFiles = chooseFiles(parent, initialFiles, filter, style);
 		return chosenFiles == null ? null : Arrays.asList(chosenFiles);
 	}
 

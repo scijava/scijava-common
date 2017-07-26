@@ -56,7 +56,9 @@ public class FileListPreprocessor extends AbstractPreprocessorPlugin {
 		final File[] files = fileInput.getValue(module);
 
 		// show file chooser dialog box
-		final File[] result = uiService.chooseFiles(files, null);
+		// TODO decide how to create filter from style attributes
+		// TODO retrieve parent folder??
+		final File[] result = uiService.chooseFiles(null, files, null, fileInput.getWidgetStyle());
 		if (result == null) {
 			cancel("");
 			return;

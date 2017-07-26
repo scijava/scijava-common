@@ -321,15 +321,15 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@Override
-	public File[] chooseFiles(File[] files, FileFilter filter) {
+	public File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
 		final UserInterface ui = getDefaultUI();
-		return ui == null ? null : ui.chooseFiles(files, filter);
+		return ui == null ? null : ui.chooseFiles(parent, files, filter, style);
 	}
 	
 	@Override
-	public List<File> chooseFiles(List<File> fileList, FileFilter filter) {
+	public List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
 		final UserInterface ui = getDefaultUI();
-		return ui == null ? null : ui.chooseFiles(fileList, filter);
+		return ui == null ? null : ui.chooseFiles(parent, fileList, filter, style);
 	}
 
 	@Override

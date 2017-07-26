@@ -34,5 +34,24 @@ package org.scijava.widget;
 import java.io.File;
 
 public interface FileListWidget<U> extends InputWidget<File[], U> {
-	// NB: No changes to interface.
+	/**
+	 * Widget style to allow file selection only
+	 * 
+	 * @see org.scijava.plugin.Parameter#style()
+	 */
+	String FILES_ONLY = "files";
+
+	/**
+	 * Widget style to allow directory selection only
+	 * 
+	 * @see org.scijava.plugin.Parameter#style()
+	 */
+	String DIRECTORIES_ONLY = "directories";
+
+	/**
+	 * Widget style to allow selection of both files and directories
+	 * 
+	 * @see org.scijava.plugin.Parameter#style()
+	 */
+	String FILES_AND_DIRECTORIES = "both";
 }
