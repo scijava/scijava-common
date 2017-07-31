@@ -33,6 +33,7 @@
 package org.scijava.ui;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 
 import org.scijava.app.StatusService;
@@ -295,6 +296,28 @@ public interface UIService extends SciJavaService {
 	File chooseFile(String title, File file, String style);
 
 	/**
+	 * Prompts the user to select one or multiple files.
+	 * <p>
+	 * The prompt is displayed in the default user interface.
+	 * </p>
+	 * 
+	 * @param files The initial value displayed in the file chooser prompt.
+	 * @param filter A filter allowing to restrict the choice of files
+	 */
+	File[] chooseFiles(File[] files, FileFilter filter);
+
+	/**
+	 * Prompts the user to select one or multiple files.
+	 * <p>
+	 * The prompt is displayed in the default user interface.
+	 * </p>
+	 * 
+	 * @param fileList The initial value displayed in the file chooser prompt.
+	 * @param filter A filter allowing to restrict the choice of files
+	 */
+	List<File> chooseFiles(List<File> fileList, FileFilter filter);
+
+	/**
 	 * Displays a popup context menu for the given display at the specified
 	 * position.
 	 * <p>
@@ -309,5 +332,4 @@ public interface UIService extends SciJavaService {
 	 * @see StatusService#getStatusMessage(String, StatusEvent)
 	 */
 	String getStatusMessage(StatusEvent statusEvent);
-
 }
