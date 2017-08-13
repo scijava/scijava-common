@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,13 +41,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 
+import org.scijava.io.ByteBank;
 import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
 
 /**
  * A <em>data handle</em> is a plugin which provides both streaming and random
  * access to bytes at a {@link Location} (e.g., files or arrays).
- * 
+ *
  * @author Curtis Rueden
  * @see DataHandleInputStream
  * @see DataHandleOutputStream
@@ -57,7 +58,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 {
 
 	public enum ByteOrder {
-		LITTLE_ENDIAN, BIG_ENDIAN
+			LITTLE_ENDIAN, BIG_ENDIAN
 	}
 
 	/** Default block size to use when searching through the stream. */
@@ -74,7 +75,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Tests whether this handle's location actually exists at the source.
-	 * 
+	 *
 	 * @return True if the location exists; false if not.
 	 * @throws IOException If something goes wrong with the existence check.
 	 */
@@ -82,7 +83,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Gets the last modified timestamp of the location.
-	 * 
+	 *
 	 * @return The last modified timestamp, or null if the handle does not support
 	 *         this feature or if the location does not exist.
 	 * @throws IOException If something goes wrong with the last modified check.
@@ -106,7 +107,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * the checksum is still the same, the contents are highly likely to be
 	 * unchanged.
 	 * </p>
-	 * 
+	 *
 	 * @return The checksum, or null if the handle does not support this feature.
 	 * @throws IOException If something goes wrong when accessing the checksum.
 	 */
@@ -125,22 +126,22 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Returns the length of the data in bytes.
-	 * 
+	 *
 	 * @return The length, or -1 if the length is unknown.
 	 */
 	long length() throws IOException;
 
 	/**
 	 * Sets the new length of the handle.
-	 * 
+	 *
 	 * @param length New length.
 	 * @throws IOException If there is an error changing the handle's length.
 	 */
 	void setLength(long length) throws IOException;
 
 	/**
-	 * Gets the number of bytes which can be read from, or written to, the
-	 * data handle, bounded by the specified number of bytes.
+	 * Gets the number of bytes which can be read from, or written to, the data
+	 * handle, bounded by the specified number of bytes.
 	 * <p>
 	 * In the case of reading, attempting to read the returned number of bytes is
 	 * guaranteed not to throw {@link EOFException}. However, be aware that the
@@ -160,8 +161,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * </p>
 	 *
 	 * @param count Desired number of bytes to read/write.
-	 * @return The actual number of bytes which could be read/written,
-	 *         which might be less than the requested value.
+	 * @return The actual number of bytes which could be read/written, which might
+	 *         be less than the requested value.
 	 * @throws IOException If something goes wrong with the check.
 	 */
 	default long available(final long count) throws IOException {
@@ -171,7 +172,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Ensures that the handle has sufficient bytes available to read.
-	 * 
+	 *
 	 * @param count Number of bytes to read.
 	 * @see #available(long)
 	 * @throws EOFException If there are insufficient bytes available.
@@ -186,7 +187,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/**
 	 * Ensures that the handle has the correct length to be written to, and
 	 * extends it as required.
-	 * 
+	 *
 	 * @param count Number of bytes to write.
 	 * @return {@code true} if the handle's length was sufficient, or
 	 *         {@code false} if the handle's length required an extension.
@@ -265,7 +266,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads a string ending with one of the characters in the given string.
-	 * 
+	 *
 	 * @see #findString(String...)
 	 */
 	default String readString(final String lastChars) throws IOException {
@@ -279,7 +280,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads a string ending with one of the given terminating substrings.
-	 * 
+	 *
 	 * @param terminators The strings for which to search.
 	 * @return The string from the initial position through the end of the
 	 *         terminating sequence, or through the end of the stream if no
@@ -452,6 +453,56 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * @return the total number of bytes read into the buffer.
 	 */
 	int read(byte[] b, int off, int len) throws IOException;
+
+	/**
+	 * Reads up to {{@link #length()}} bytes of data from the handle into the
+	 * provided {@link ByteBank}, starting at the current position.
+	 *
+	 * @param bank
+	 * @return
+	 * @throws IOException
+	 */
+	default int read(ByteBank bank) throws IOException {
+		return read(bank, 0l, length());
+	}
+
+	/**
+	 * Reads up to <code>length</code> bytes of data from the handle into the
+	 * provided {@link ByteBank}, starting at the current position of this handle
+	 * and inserting from the <code>offset</code> position.
+	 *
+	 * @param bank the bank to read the data into
+	 * @param offset the offset in <code>bank</code>
+	 * @param length the number of bytes to read
+	 * @return
+	 * @throws IOException
+	 */
+	default int read(ByteBank bank, long offset, long length) throws IOException {
+
+		// check invariants
+		bank.checkWritePos(offset, offset + length);
+		long targetLength = length() >= offset() + length ? length : length();
+
+		int chunkSize = 10_000;
+		byte[] buffer = new byte[chunkSize];
+		int totalRead = 0;
+		long localOffset = offset;
+
+		while (totalRead < targetLength) {
+			// copy into buffer
+			int read = read(buffer);
+
+			if (read == -1) { // reached end of the handle
+				return totalRead;
+			}
+
+			// copy into bank
+			bank.setBytes(localOffset, buffer, 0, read);
+			totalRead += read;
+			localOffset += read;
+		}
+		return totalRead;
+	}
 
 	/**
 	 * Skips over and discards {@code n} bytes of data from the stream. The
@@ -651,6 +702,39 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	}
 
 	// -- DataOutput methods --
+
+	/**
+	 * Writes all content of the provided {@link ByteBank} to the this handle.
+	 *
+	 * @param bank the {@link ByteBank} to use
+	 * @throws IOException
+	 */
+	default void write(final ByteBank bank) throws IOException {
+		write(bank, 0, bank.size());
+	}
+
+	/**
+	 * Writes the content of the provided {@link ByteBank} to the this handle,
+	 * specified by the provided offset and length.
+	 *
+	 * @param bank the {@link ByteBank} to use
+	 * @param offset the offset within <code>bank</code>
+	 * @param length the number of bytes to read from <code>bank</code>
+	 * @throws IOException
+	 */
+	default void write(final ByteBank bank, final long offset, final long length)
+		throws IOException
+	{
+		final int chunkSize = 10_000;
+		final byte[] buffer = new byte[chunkSize];
+		int read;
+		long localOffset = offset;
+		while (localOffset < length) {
+			read = bank.getBytes(offset, buffer);
+			localOffset += read;
+			write(buffer, 0, read);
+		}
+	}
 
 	@Override
 	default void write(final byte[] b) throws IOException {
