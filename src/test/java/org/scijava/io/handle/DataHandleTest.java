@@ -53,7 +53,7 @@ import org.scijava.util.Bytes;
  */
 public abstract class DataHandleTest {
 
-	private static final byte[] BYTES = { //
+	protected static final byte[] BYTES = { //
 		'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '\n', //
 			9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, -128, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, //
 			125, 127, -127, -125, -3, -2, -1 };
@@ -208,9 +208,9 @@ public abstract class DataHandleTest {
 		}
 	}
 
-	// -- Helper methods --
+	// -- Internal methods --
 
-	private void assertBytesMatch(final int offset, final int length,
+	protected void assertBytesMatch(final int offset, final int length,
 		final byte[] b)
 	{
 		assertEquals(length, b.length);
@@ -219,7 +219,7 @@ public abstract class DataHandleTest {
 		}
 	}
 
-	private String msg(final int i) {
+	protected String msg(final int i) {
 		return "[" + i + "]:";
 	}
 
