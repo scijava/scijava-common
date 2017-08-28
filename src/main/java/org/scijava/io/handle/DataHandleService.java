@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import org.scijava.service.SciJavaService;
 /**
  * Interface for low-level data I/O: reading and writing bytes using
  * {@link DataHandle}s.
- * 
+ *
  * @author Curtis Rueden
  * @see IOService
  * @see Location
@@ -62,5 +62,31 @@ public interface DataHandleService extends
 	@Override
 	default Class<Location> getType() {
 		return Location.class;
+	}
+
+	/**
+	 * Wraps the provided {@link DataHandle} in a read-only buffer for accelerated
+	 * reading.
+	 *
+	 * @param handle the handle to wrap
+	 * @see SparseBufferedHandle#SparseBufferedHandle(DataHandle)
+	 */
+	default DataHandle<Location> createReadBuffer(
+		final DataHandle<Location> handle)
+	{
+		return new SparseBufferedHandle(handle);
+	}
+
+	/**
+	 * Wraps the provided {@link DataHandle} in a write-only buffer for
+	 * accelerated writing.
+	 *
+	 * @param handle the handle to wrap
+	 * @see WriteBufferHandle#WriteBufferHandle(DataHandle)
+	 */
+	default WriteBufferHandle<Location> writeBuffer(
+		final DataHandle<Location> handle)
+	{
+		return new WriteBufferHandle<>(handle);
 	}
 }
