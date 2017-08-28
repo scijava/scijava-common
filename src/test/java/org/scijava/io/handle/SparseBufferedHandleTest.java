@@ -32,8 +32,15 @@
 
 package org.scijava.io.handle;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +50,7 @@ import org.scijava.io.location.Location;
 
 /**
  * Tests {@link SparseBufferedHandle}
+ *
  * @author Gabriel Einsdorf
  */
 public class SparseBufferedHandleTest extends DataHandleTest {
@@ -54,12 +62,12 @@ public class SparseBufferedHandleTest extends DataHandleTest {
 	@Test
 	public void testDataHandle() throws IOException {
 
-		Location loc = createLocation();
+		final Location loc = createLocation();
 		try (final DataHandle<Location> handle = //
-			dataHandleService.create(loc))
+			dataHandleService.create(loc);
+				SparseBufferedHandle bufferedHandle = //
+					new SparseBufferedHandle(handle))
 		{
-			SparseBufferedHandle bufferedHandle = //
-				new SparseBufferedHandle(handle, 100);
 			checkReads(bufferedHandle);
 		}
 	}
@@ -67,14 +75,51 @@ public class SparseBufferedHandleTest extends DataHandleTest {
 	@Test
 	public void testSmallBuffer() throws IOException {
 
-		Location loc = createLocation();
+		final Location loc = createLocation();
 		try (final DataHandle<Location> handle = //
-			dataHandleService.create(loc))
+			dataHandleService.create(loc);
+				SparseBufferedHandle bufferedHandle = //
+					new SparseBufferedHandle(handle, 5))
 		{
 			// check with small buffersize
-			SparseBufferedHandle bufferedHandle = //
-				new SparseBufferedHandle(handle, 5);
 			checkReads(bufferedHandle);
+		}
+	}
+
+	@Test
+	public void testLargeRead() throws Exception {
+
+		final int size = 10_00;
+		final byte[] bytes = new byte[size];
+		Random r = new Random(42);
+		r.nextBytes(bytes);
+
+		final Location loc = new BytesLocation(bytes);
+		try (final DataHandle<Location> handle = //
+			dataHandleService.create(loc);
+				SparseBufferedHandle bufferedHandle = //
+					new SparseBufferedHandle(handle, 12, 3))
+		{
+			// check with small buffersize
+			final byte[] actual = new byte[size];
+
+			// create evenly sized slice ranges
+			int slices = 60;
+			int range = (size + slices - 1) / slices;
+			List<SimpleEntry<Integer, Integer>> ranges = new ArrayList<>();
+			for (int i = 0; i < slices; i++) {
+				int start = range * i;
+				int end = range * (i + 1);
+				ranges.add(new SimpleEntry<>(start, end));
+			}
+			Collections.shuffle(ranges, r);
+
+			for (SimpleEntry<Integer, Integer> e : ranges) {
+				bufferedHandle.seek(e.getKey());
+				bufferedHandle.read(actual, e.getKey(), e.getValue() - e.getKey());
+			}
+
+			assertArrayEquals(bytes, actual);
 		}
 	}
 

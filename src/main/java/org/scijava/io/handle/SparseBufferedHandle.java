@@ -33,70 +33,145 @@
 package org.scijava.io.handle;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.scijava.io.location.Location;
 
 /**
- * Read-only Buffered Handle
+ * Read-only buffered {@link DataHandle}. It buffers the underlying handle into
+ * a fixed number of pages, swapping them out when necessary.
  */
 public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 
 	private static final int DEFAULT_PAGE_SIZE = 10_000;
+	private static final int DEFAULT_NUM_PAGES = 10;
+
 	private final int pageSize;
-	private final Map<Integer, byte[]> pages;
+	private final List<byte[]> pages;
+	private final int[] slotToPage;
+	private final LRUReplacementStrategy replacementStrategy;
+	private final Map<Integer, Integer> pageToSlot;
 
 	private long offset = 0l;
 	private byte[] currentPage;
+	private int currentPageID = -1;
 
 	/**
-	 * Creates a {@link SparseBufferedHandle} that
+	 * Creates a {@link SparseBufferedHandle} wrapping the provided handle using
+	 * the default values for the size of the pages ({@value #DEFAULT_PAGE_SIZE} byte)
+	 * and number of pages ({@link #DEFAULT_NUM_PAGES}).
 	 *
-	 * @param handle
+	 * @param handle the handle to wrap
 	 */
 	public SparseBufferedHandle(final DataHandle<Location> handle) {
-		super(handle);
-		this.pageSize = DEFAULT_PAGE_SIZE;
-		pages = new HashMap<>();
+		this(handle, DEFAULT_PAGE_SIZE);
 	}
 
+	/**
+	 * Creates a {@link SparseBufferedHandle} wrapping the provided handle using
+	 * the default value for the number of pages ({@link #DEFAULT_NUM_PAGES}).
+	 *
+	 * @param handle the handle to wrap
+	 * @param pageSize the size of the used pages
+	 */
 	public SparseBufferedHandle(final DataHandle<Location> handle,
 		final int pageSize)
 	{
+		this(handle, pageSize, DEFAULT_NUM_PAGES);
+	}
+
+	/**
+	 * Creates a {@link SparseBufferedHandle} wrapping the provided handle.
+	 *
+	 * @param handle the handle to wrap
+	 * @param pageSize the size of the used pages
+	 * @param numPages the number of pages to use
+	 */
+	public SparseBufferedHandle(final DataHandle<Location> handle,
+		final int pageSize, final int numPages)
+	{
 		super(handle);
 		this.pageSize = pageSize;
-		pages = new HashMap<>();
+
+		// init maps
+		slotToPage = new int[numPages];
+		Arrays.fill(slotToPage, -1);
+
+		pages = new ArrayList<>(numPages);
+		for (int i = 0; i < numPages; i++) {
+			pages.add(null);
+		}
+
+		pageToSlot = new HashMap<>();
+		replacementStrategy = new LRUReplacementStrategy(numPages);
+	}
+
+	/**
+	 * Ensures that the byte at the given offset is buffered, and sets the current
+	 * page to be the one containing the specified location.
+	 */
+	private void ensureBuffered(final long globalOffset) throws IOException {
+		ensureOpen();
+		final int pageID = (int) (globalOffset / pageSize);
+		if (pageID == currentPageID) return;
+
+		final int slotID = pageToSlot.computeIfAbsent(pageID,
+			replacementStrategy::pickVictim);
+		final int inSlotID = slotToPage[slotID];
+
+		if (inSlotID != pageID) { // desired page is not buffered
+			// update the mappings
+			slotToPage[slotID] = pageID;
+			pageToSlot.put(pageID, slotID);
+			pageToSlot.put(inSlotID, null);
+
+			// read the page
+			currentPage = readPage(pageID, slotID);
+		}
+		else {
+			currentPage = pages.get(slotID);
+		}
+		replacementStrategy.accessed(slotID);
+		currentPageID = pageID;
+	}
+
+	/**
+	 * Reads the page with the id <code>pageID</code> into the slot with the id
+	 * <code>slotID</code>.
+	 *
+	 * @param pageID the id of the page to read
+	 * @param slotID the id of the slot to read the page into
+	 * @return the read page
+	 * @throws IOException if the reading fails
+	 */
+	private byte[] readPage(final int pageID, final int slotID)
+		throws IOException
+	{
+		replacementStrategy.accessed(slotID);
+		byte[] page = pages.get(slotID);
+		if (page == null) {
+			// lazy initialization
+			page = new byte[pageSize];
+			pages.set(slotID, page);
+		}
+
+		final long startOfPage = pageID * (long) pageSize;
+		handle().seek(startOfPage);
+		handle().read(page);
+		return page;
 	}
 
 	/**
 	 * Calculates the offset in the current page for the given global offset
 	 */
-	private int localOffsetFromGlobal(final long off) {
+	private int globalToLocalOffset(final long off) {
 		return (int) off % pageSize;
-	}
-
-	private void ensureBuffered(final long globalOffset) throws IOException {
-		final int pageID = (int) (globalOffset / pageSize);
-		byte[] page = pages.get(pageID);
-		if (page == null) { // page is not buffered
-			page = readPage(pageID);
-			pages.put(pageID, page);
-		}
-		currentPage = page;
-	}
-
-	/**
-	 * reads a page
-	 *
-	 * @throws IOException
-	 */
-	private byte[] readPage(final int pageID) throws IOException {
-		final byte[] page = new byte[pageSize];
-		final long startOfPage = pageID * (long) pageSize;
-		handle().seek(startOfPage);
-		handle().read(page);
-		return page;
 	}
 
 	@Override
@@ -105,7 +180,7 @@ public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 	}
 
 	@Override
-	public int read(final byte[] b, final int targetOff, final int len)
+	public int read(final byte[] b, final int targetOffset, final int len)
 		throws IOException
 	{
 		// the last position we will read
@@ -115,13 +190,13 @@ public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 		final int readLength = (int) (endPos < length() ? len : length() - offset);
 
 		int read = 0; // the number of bytes we have read
-		int localTargetOff = targetOff;
+		int localTargetOff = targetOffset;
 
 		while (read < readLength) {
 			ensureBuffered(offset);
 
-			// calculate offsets
-			final int pageOffset = localOffsetFromGlobal(offset);
+			// calculate local offsets
+			final int pageOffset = globalToLocalOffset(offset);
 			int localLength = pageSize - pageOffset;
 			if (read + localLength > readLength) {
 				localLength = readLength - read;
@@ -135,19 +210,18 @@ public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 			offset += localLength;
 			localTargetOff += localLength;
 		}
-
 		return read;
 	}
 
 	@Override
 	public byte readByte() throws IOException {
 		ensureBuffered(offset);
-		return currentPage[localOffsetFromGlobal(offset++)];
+		return currentPage[globalToLocalOffset(offset++)];
 	}
 
 	@Override
 	public boolean isReadable() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -157,7 +231,8 @@ public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 
 	@Override
 	protected void cleanup() {
-		this.pages.clear();
+		pages.clear();
+		currentPage = null;
 	}
 
 	@Override
@@ -175,5 +250,46 @@ public class SparseBufferedHandle extends AbstractHigherOrderHandle<Location> {
 	@Override
 	public void setLength(final long length) throws IOException {
 		throw new IOException("This handle is read-only!");
+	}
+
+	/**
+	 * Simple strategy to pick the slot that get's evicted from the cache. This
+	 * strategy always picks the least recently used slot.
+	 */
+	private class LRUReplacementStrategy {
+
+		private final Deque<Integer> que;
+
+		/**
+		 * Creates a {@link LRUReplacementStrategy} with the specified number of
+		 * slots.
+		 *
+		 * @param numSlots the number of slots to use
+		 */
+		public LRUReplacementStrategy(final int numSlots) {
+			que = new ArrayDeque<>(numSlots);
+
+			// fill the que
+			for (int i = 0; i < numSlots; i++) {
+				que.add(i);
+			}
+		}
+
+		/**
+		 * Notifies this strategy that a slot has been accessed, pushing it to the
+		 * end of the que.
+		 *
+		 * @param slotID the id of the slot that has been accessed
+		 */
+		public void accessed(final int slotID) {
+			// put accessed element to the end of the que
+			que.remove(slotID);
+			que.add(slotID);
+		}
+
+		@SuppressWarnings("unused")
+		public int pickVictim(final int pageID) {
+			return que.peek();
+		}
 	}
 }
