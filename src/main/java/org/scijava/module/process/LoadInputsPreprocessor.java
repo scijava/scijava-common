@@ -33,6 +33,8 @@
 package org.scijava.module.process;
 
 import org.scijava.convert.ConvertService;
+import org.scijava.log.LogService;
+import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
@@ -62,6 +64,9 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 	@Parameter
 	private ConvertService conversionService;
 
+	@Parameter(required = false)
+	private LogService log;
+
 	// -- ModuleProcessor methods --
 
 	@Override
@@ -69,6 +74,12 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
 		for (final ModuleItem<?> item : inputs) {
 			loadValue(module, item);
+			try {
+				item.callback(module);
+			}
+			catch (final MethodCallException exc) {
+				if (log != null) log.debug(exc);
+			}
 		}
 	}
 
