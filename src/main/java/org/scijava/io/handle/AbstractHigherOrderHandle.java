@@ -32,61 +32,81 @@
 
 package org.scijava.io.handle;
 
-import org.scijava.io.IOService;
+import java.io.IOException;
+
 import org.scijava.io.location.Location;
-import org.scijava.plugin.WrapperService;
-import org.scijava.service.SciJavaService;
 
 /**
- * Interface for low-level data I/O: reading and writing bytes using
+ * Abstract superclass for {@link DataHandle}s that operate over other
  * {@link DataHandle}s.
  *
- * @author Curtis Rueden
- * @see IOService
- * @see Location
+ * @author Gabriel Einsdorf
  */
-public interface DataHandleService extends
-	WrapperService<Location, DataHandle<Location>>, SciJavaService
+public abstract class AbstractHigherOrderHandle<L extends Location> extends
+	AbstractDataHandle<L>
 {
 
-	// -- PTService methods --
+	private final DataHandle<L> handle;
+	private boolean closed;
 
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	default Class<DataHandle<Location>> getPluginType() {
-		return (Class) DataHandle.class;
+	public AbstractHigherOrderHandle(final DataHandle<L> handle) {
+		this.handle = handle;
 	}
 
-	// -- Typed methods --
+	@Override
+	public boolean isReadable() {
+		return handle.isReadable();
+	}
 
 	@Override
-	default Class<Location> getType() {
-		return Location.class;
+	public boolean isWritable() {
+		return handle.isWritable();
+	}
+
+	@Override
+	public long length() throws IOException {
+		return handle.length();
+	}
+
+	@Override
+	public Class<L> getType() {
+		return handle.getType();
+	}
+
+	@Override
+	public boolean exists() throws IOException {
+		return handle.exists();
+	}
+
+	@Override
+	public void close() throws IOException {
+		if (!closed) {
+			cleanup();
+			closed = true;
+			handle.close();
+		}
+	}
+
+	protected void ensureOpen() throws IOException {
+		if (closed) {
+			throw new IOException("This handle is closed!");
+		}
 	}
 
 	/**
-	 * Wraps the provided {@link DataHandle} in a read-only buffer for accelerated
-	 * reading.
+	 * Clean up data structures after a handle has been closed in the
+	 * {@link #close()} method.
 	 *
-	 * @param handle the handle to wrap
-	 * @see SparseBufferedHandle#SparseBufferedHandle(DataHandle)
+	 * @throws IOException
 	 */
-	default DataHandle<Location> createReadBuffer(
-		final DataHandle<Location> handle)
-	{
-		return new SparseBufferedHandle(handle);
-	}
+	protected abstract void cleanup() throws IOException;
 
 	/**
-	 * Wraps the provided {@link DataHandle} in a write-only buffer for
-	 * accelerated writing.
-	 *
-	 * @param handle the handle to wrap
-	 * @see WriteBufferHandle#WriteBufferHandle(DataHandle)
+	 * @return the {@link DataHandle} wrapped by this
+	 *         {@link AbstractHigherOrderHandle}
 	 */
-	default WriteBufferHandle<Location> writeBuffer(
-		final DataHandle<Location> handle)
-	{
-		return new WriteBufferHandle<>(handle);
+	protected DataHandle<L> handle() {
+		return handle;
 	}
+
 }
