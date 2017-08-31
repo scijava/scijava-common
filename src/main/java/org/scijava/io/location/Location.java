@@ -71,8 +71,20 @@ public interface Location {
 	 * @return The name, or an empty string if no name is available.
 	 */
 	default String getName() {
-		final URI uri = getURI();
-		return uri == null ? "" : uri.toString();
+		return defaultName();
 	}
 
+	/**
+	 * Gets the default name used when no explicit name is assigned.
+	 * <p>
+	 * Note: this is mostly intended for debugging, since most kinds of
+	 * {@code Location} will assign some non-default name. But in cases where that
+	 * does not occur, this value can be useful to detect the situation.
+	 * </p>
+	 * 
+	 * @return The default name string.
+	 */
+	default String defaultName() {
+		return "Location.defaultName";
+	}
 }
