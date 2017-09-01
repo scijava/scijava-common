@@ -72,14 +72,7 @@ public abstract class AbstractLogService extends AbstractService implements
 			LogService.LOG_LEVEL_PROPERTY + ":");
 	}
 
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		if (classAndPackageLevels.isEmpty()) return currentLevel;
-		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
-			currentLevel);
-	}
+	// -- AbstractLogService methods --
 
 	@Override
 	public void setLevel(final int level) {
@@ -91,9 +84,28 @@ public abstract class AbstractLogService extends AbstractService implements
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
 
+	// -- Logger methods --
+
 	@Override
 	public void alwaysLog(final int level, final Object msg, final Throwable t) {
 		rootLogger.alwaysLog(level, msg, t);
+	}
+
+	@Override
+	public String getName() {
+		return rootLogger.getName();
+	}
+
+	@Override
+	public int getLevel() {
+		if (classAndPackageLevels.isEmpty()) return currentLevel;
+		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
+			currentLevel);
+	}
+
+	@Override
+	public Logger subLogger(String nameExtension, int level) {
+		return rootLogger.subLogger(nameExtension, level);
 	}
 
 	// -- Listenable methods --
@@ -162,17 +174,12 @@ public abstract class AbstractLogService extends AbstractService implements
 	private class RootLogger extends DefaultLogger {
 
 		public RootLogger() {
-			super(LogLevel.NONE);
+			super(AbstractLogService.this::notifyListeners, "", LogLevel.NONE);
 		}
 
 		@Override
 		public int getLevel() {
 			return AbstractLogService.this.getLevel();
-		}
-
-		@Override
-		protected void messageLogged(LogMessage message) {
-			AbstractLogService.this.notifyListeners(message);
 		}
 	}
 }

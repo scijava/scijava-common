@@ -171,11 +171,14 @@ public class LogServiceTest {
 		TestableLogService logService = new TestableLogService();
 		TestLogListener listener = new TestLogListener();
 		String msg1 = "Hello World!";
+		String msg2 = "foo bar";
 		// process
 		logService.addListener(listener);
 		logService.error(msg1);
+		logService.subLogger("xyz").debug(msg2);
 		// test
 		listener.hasLogged(m -> msg1.equals(m.text()));
+		listener.hasLogged(m -> msg2.equals(m.text()));
 	}
 
 	// -- Helper classes --
