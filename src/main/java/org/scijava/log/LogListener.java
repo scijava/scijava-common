@@ -35,6 +35,7 @@ package org.scijava.log;
  * Callback function used by {@link Logger}.
  *
  * @author Matthias Arzt
+ * @see Logger
  * @see LogMessage
  */
 public interface LogListener {

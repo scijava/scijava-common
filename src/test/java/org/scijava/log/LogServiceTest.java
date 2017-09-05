@@ -219,7 +219,7 @@ public class LogServiceTest {
 		}
 
 		@Override
-		void notifyListeners(LogMessage message) {
+		public void notifyListeners(LogMessage message) {
 			this.message = message.toString();
 			this.exception = message.throwable();
 		}

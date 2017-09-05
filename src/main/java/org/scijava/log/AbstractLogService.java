@@ -72,10 +72,6 @@ public abstract class AbstractLogService extends AbstractService implements
 			LogService.LOG_LEVEL_PROPERTY + ":");
 	}
 
-	// -- AbstractLogService methods --
-
-	abstract void notifyListeners(LogMessage message);
-
 	// -- Logger methods --
 
 	@Override
@@ -100,6 +96,8 @@ public abstract class AbstractLogService extends AbstractService implements
 		rootLogger.alwaysLog(level, msg, t);
 	}
 
+	// -- Listenable methods --
+
 	@Override
 	public void addListener(final LogListener listener) {
 		rootLogger.addListener(listener);
@@ -108,6 +106,11 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public void removeListener(final LogListener listener) {
 		rootLogger.removeListener(listener);
+	}
+
+	@Override
+	public void notifyListeners(final LogMessage event) {
+		rootLogger.notifyListeners(event);
 	}
 
 	// -- Deprecated --

@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Default implementation of {@link Logger}.
  *
  * @author Matthias Arzt
+ * @author Curtis Rueden
  */
 @IgnoreAsCallingClass
 public class DefaultLogger implements Logger {
@@ -54,8 +55,7 @@ public class DefaultLogger implements Logger {
 	// -- DefaultLogger methods --
 
 	protected void messageLogged(final LogMessage message) {
-		for (LogListener listener : listeners)
-			listener.messageLogged(message);
+		notifyListeners(message);
 	}
 
 	// -- Logger methods --
@@ -70,6 +70,8 @@ public class DefaultLogger implements Logger {
 		messageLogged(new LogMessage(level, msg, t));
 	}
 
+	// -- Listenable methods --
+
 	@Override
 	public void addListener(final LogListener listener) {
 		listeners.add(listener);
@@ -78,5 +80,11 @@ public class DefaultLogger implements Logger {
 	@Override
 	public void removeListener(final LogListener listener) {
 		listeners.remove(listener);
+	}
+
+	@Override
+	public void notifyListeners(final LogMessage message) {
+		for (LogListener listener : listeners)
+			listener.messageLogged(message);
 	}
 }
