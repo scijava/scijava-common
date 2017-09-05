@@ -31,6 +31,7 @@
 
 package org.scijava.module.process;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -39,12 +40,13 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
+import org.scijava.log.DefaultLogger;
+import org.scijava.log.LogLevel;
 import org.scijava.log.LogService;
+import org.scijava.log.LogSource;
 import org.scijava.log.Logger;
 import org.scijava.log.TestLogListener;
 import org.scijava.plugin.Parameter;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link LoggerPreprocessor}.
@@ -62,6 +64,25 @@ public class LoggerPreprocessorTest {
 
 		commandService.run(CommandWithLogger.class, true).get();
 		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
+	}
+
+	/** Tests redirection of a command's log output. */
+	@Test
+	public void testCustomLogger() throws ExecutionException,
+		InterruptedException
+	{
+		// setup
+		final Context context = new Context(CommandService.class);
+		final CommandService commandService = context.service(CommandService.class);
+		final TestLogListener listener = new TestLogListener();
+		final LogSource source = LogSource.newRoot();
+		final DefaultLogger customLogger = new DefaultLogger(listener, source,
+			LogLevel.TRACE);
+		// process
+		commandService.run(CommandWithLogger.class, true, "log", customLogger)
+			.get();
+		// test
+		assertTrue(listener.hasLogged(m -> m.source().equals(source)));
 	}
 
 	public static class CommandWithLogger implements Command {
