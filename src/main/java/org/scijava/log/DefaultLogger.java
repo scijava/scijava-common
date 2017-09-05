@@ -102,8 +102,7 @@ public class DefaultLogger implements Logger, LogListener {
 
 	@Override
 	public void messageLogged(final LogMessage message) {
-		for (LogListener listener : listeners)
-			listener.messageLogged(message);
+		notifyListeners(message);
 		destination.messageLogged(message);
 	}
 }
