@@ -112,6 +112,15 @@ public final class DataHandles {
 				"No usable DataOutputStream.writeUTF(String, DataOutput)", exc);
 		}
 	}
+	
+	protected static IOException readOnlyException() {
+		return new IOException("This handle is read-only!");
+	}
+
+	protected static IOException writeOnlyException() {
+		return new IOException("This handle is write-only!");
+	}
+
 
 	/**
 	 * Copies all bytes from the input to the output handle. Reading and writing
