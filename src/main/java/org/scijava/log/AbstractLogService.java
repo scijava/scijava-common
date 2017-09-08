@@ -70,6 +70,7 @@ public abstract class AbstractLogService extends AbstractService implements
 		if (level >= 0) currentLevel = level;
 		classAndPackageLevels = setupMapFromProperties(properties,
 			LogService.LOG_LEVEL_PROPERTY + ":");
+		initLogSourceLevels(properties);
 	}
 
 	// -- AbstractLogService methods --
@@ -139,6 +140,12 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
+
+	private void initLogSourceLevels(Properties properties) {
+		Map<String, Integer> nameLevels = setupMapFromProperties(properties,
+			LOG_LEVEL_BY_SOURCE_PROPERTY + ":");
+		nameLevels.forEach(this::setLevelForLogger);
+	}
 
 	private int getLevelForClass(String classOrPackageName, int defaultLevel) {
 		// check for a custom log level for calling class or its parent packages

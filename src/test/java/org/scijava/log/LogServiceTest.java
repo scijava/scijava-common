@@ -166,6 +166,16 @@ public class LogServiceTest {
 	}
 
 	@Test
+	public void testSubLoggerLogLevelViaProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":Hello:World", LogLevel.prefix(LogLevel.ERROR));
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":foo:bar", LogLevel.prefix(LogLevel.TRACE));
+		final LogService log = new TestableLogService(properties);
+		Logger sub = log.subLogger("foo").subLogger("bar");
+		assertEquals(LogLevel.TRACE, sub.getLevel());
+	}
+
+	@Test
 	public void testPackageLogLevel() {
 		final LogService log = new TestableLogService();
 		log.setLevel("org.scijava.log", LogLevel.TRACE);
