@@ -71,10 +71,14 @@ public abstract class AbstractLogService extends AbstractService implements
 	// -- constructor --
 
 	public AbstractLogService() {
+		this(System.getProperties());
+	}
+
+	public AbstractLogService(final Properties properties) {
 		// check SciJava log level system properties for initial logging levels
 
 		// global log level property
-		final String logProp = System.getProperty(LOG_LEVEL_PROPERTY);
+		final String logProp = properties.getProperty(LOG_LEVEL_PROPERTY);
 		final int level = LogLevel.value(logProp);
 		if (level >= 0) setLevel(level);
 
@@ -83,14 +87,13 @@ public abstract class AbstractLogService extends AbstractService implements
 
 		// populate custom class- and package-specific log level properties
 		final String logLevelPrefix = LOG_LEVEL_PROPERTY + ":";
-		final Properties props = System.getProperties();
-		for (final Object propKey : props.keySet()) {
+		for (final Object propKey : properties.keySet()) {
 			if (!(propKey instanceof String)) continue;
 			final String propName = (String) propKey;
 			if (!propName.startsWith(logLevelPrefix)) continue;
 			final String classOrPackageName =
 				propName.substring(logLevelPrefix.length());
-			setLevel(classOrPackageName, LogLevel.value(props.getProperty(propName)));
+			setLevel(classOrPackageName, LogLevel.value(properties.getProperty(propName)));
 		}
 
 	}

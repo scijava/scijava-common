@@ -2,6 +2,7 @@ package org.scijava.log;
 
 import org.junit.Test;
 
+import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -116,6 +117,54 @@ public class LogServiceTest {
 		assertTrue(isLevel.apply(logService));
 	}
 
+	@Test
+	public void testDefaultLevel() {
+		assertEquals(LogLevel.INFO, new TestableLogService().getLevel());
+	}
+
+	@Test
+	public void testMainSystemProperty() {
+		Properties properties = new Properties();
+		properties.setProperty(LogService.LOG_LEVEL_PROPERTY, "error");
+		int level = new TestableLogService(properties).getLevel();
+		assertEquals(LogLevel.ERROR, level);
+	}
+
+	static class Dummy {
+		public static int getLevel(LogService log) {
+			return log.getLevel();
+		}
+	}
+
+	@Test
+	public void testClassLogLevel() {
+		final TestableLogService log = new TestableLogService();
+		log.setLevel(LogLevel.DEBUG);
+		log.setLevel(Dummy.class.getName(), LogLevel.ERROR);
+		int level = Dummy.getLevel(log);
+		assertEquals(LogLevel.ERROR, level);
+	}
+
+	@Test
+	public void testClassLogLevelViaProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + Dummy.class.getName(), LogLevel.prefix(LogLevel.ERROR));
+		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + this.getClass().getName(), LogLevel.prefix(LogLevel.TRACE));
+		final LogService log = new TestableLogService(properties);
+		log.setLevel(LogLevel.DEBUG);
+		int level = Dummy.getLevel(log);
+		assertEquals(LogLevel.ERROR, level);
+	}
+
+	@Test
+	public void testPackageLogLevel() {
+		final LogService log = new TestableLogService();
+		log.setLevel("org.scijava.log", LogLevel.TRACE);
+		log.setLevel("xyz.foo.bar", LogLevel.ERROR);
+		int level = log.getLevel();
+		assertEquals(LogLevel.TRACE, level);
+	}
+
 	// -- Helper classes --
 
 	private static class MyTestClass {
@@ -139,6 +188,14 @@ public class LogServiceTest {
 
 		String message = null;
 		Throwable exception = null;
+
+		public TestableLogService() {
+			this(new Properties());
+		}
+
+		public TestableLogService(Properties properties) {
+			super(properties);
+		}
 
 		public String message() {
 			return message;
