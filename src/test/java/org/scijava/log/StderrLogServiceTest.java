@@ -38,11 +38,11 @@ import static org.scijava.log.LogService.WARN;
 import org.junit.Test;
 
 /**
- * Tests {@link LogService}.
+ * Tests {@link StderrLogService}.
  * 
  * @author Johannes Schindelin
  */
-public class LogServiceTest {
+public class StderrLogServiceTest {
 	@Test
 	public void testDefaultLevel() {
 		final LogService log = new StderrLogService();
