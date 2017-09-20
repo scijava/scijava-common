@@ -3,19 +3,18 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,47 +31,38 @@
 
 package org.scijava.log;
 
-import org.scijava.service.SciJavaService;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * Interface for the logging service.
- * <p>
- * The service supports five common logging levels: {@link #ERROR},
- * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It provides
- * methods for logging messages, exception stack traces and combinations of the
- * two.
- * </p>
+ * Tests {@link CallingClassUtils}.
  * 
- * @author Curtis Rueden
+ * @author Matthias Arzt
  */
-public interface LogService extends SciJavaService, Logger {
+public class CallingClassUtilsTest {
+	@Test
+	public void testGetCallingClass() {
+		Class<?> callingClass = CallingClassUtils.getCallingClass();
+		assertEquals(this.getClass(), callingClass);
+	}
 
-	/** System property to set for overriding the default logging level. */
-	String LOG_LEVEL_PROPERTY = "scijava.log.level";
+	@Test
+	public void testIgnoreAsCallingClass() {
+		assertEquals(ClassA.class, ClassA.returnGetCallingClass());
+		assertEquals(this.getClass(), ClassB.returnGetCallingClass());
+	}
 
-	// -- Deprecated --
+	public static class ClassA {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
+	}
 
-	/** @deprecated Use {@link LogLevel#NONE}. */
-	@Deprecated
-	int NONE = LogLevel.NONE;
-	/** @deprecated Use {@link LogLevel#ERROR}. */
-	@Deprecated
-	int ERROR = LogLevel.ERROR;
-	/** @deprecated Use {@link LogLevel#WARN}. */
-	@Deprecated
-	int WARN = LogLevel.WARN;
-	/** @deprecated Use {@link LogLevel#INFO}. */
-	@Deprecated
-	int INFO = LogLevel.INFO;
-	/** @deprecated Use {@link LogLevel#DEBUG}. */
-	@Deprecated
-	int DEBUG = LogLevel.DEBUG;
-	/** @deprecated Use {@link LogLevel#TRACE}. */
-	@Deprecated
-	int TRACE = LogLevel.TRACE;
-
-	void setLevel(int level);
-
-	void setLevel(String classOrPackageName, int level);
-
+	@IgnoreAsCallingClass
+	private static class ClassB {
+		static Class<?> returnGetCallingClass() {
+			return CallingClassUtils.getCallingClass();
+		}
+	}
 }

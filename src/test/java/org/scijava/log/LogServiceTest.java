@@ -206,12 +206,8 @@ public class LogServiceTest {
 		}
 
 		@Override
-		protected void log(String msg) {
-			this.message = msg;
-		}
-
-		@Override
-		protected void log(Throwable t) {
+		public void alwaysLog(int level, Object msg, Throwable t) {
+			this.message = LogLevel.prefix(level) + msg;
 			this.exception = t;
 		}
 	}

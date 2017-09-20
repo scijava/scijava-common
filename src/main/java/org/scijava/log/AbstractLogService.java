@@ -42,31 +42,16 @@ import org.scijava.service.AbstractService;
  * Base class for {@link LogService} implementations.
  *
  * @author Johannes Schindelin
+ * @author Curtis Rueden
  */
+@IgnoreAsCallingClass
 public abstract class AbstractLogService extends AbstractService implements
 	LogService
 {
 
 	private int currentLevel = levelFromEnvironment();
 
-	private final Map<String, Integer> classAndPackageLevels =
-		new HashMap<>();
-
-	// -- abstract methods --
-
-	/**
-	 * Displays a message.
-	 *
-	 * @param msg the message to display.
-	 */
-	protected abstract void log(final String msg);
-
-	/**
-	 * Displays an exception.
-	 *
-	 * @param t the exception to display.
-	 */
-	protected abstract void log(final Throwable t);
+	private final Map<String, Integer> classAndPackageLevels;
 
 	// -- constructor --
 
@@ -75,160 +60,21 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	public AbstractLogService(final Properties properties) {
-		// check SciJava log level system properties for initial logging levels
-
-		// global log level property
-		final String logProp = properties.getProperty(LOG_LEVEL_PROPERTY);
-		final int level = LogLevel.value(logProp);
-		if (level >= 0) setLevel(level);
-
-		if (getLevel() == 0)
-			setLevel(levelFromEnvironment());
-
-		// populate custom class- and package-specific log level properties
-		final String logLevelPrefix = LOG_LEVEL_PROPERTY + ":";
-		for (final Object propKey : properties.keySet()) {
-			if (!(propKey instanceof String)) continue;
-			final String propName = (String) propKey;
-			if (!propName.startsWith(logLevelPrefix)) continue;
-			final String classOrPackageName =
-				propName.substring(logLevelPrefix.length());
-			setLevel(classOrPackageName, LogLevel.value(properties.getProperty(propName)));
-		}
-
+		// provide this constructor to enable unit tests
+		final int level = LogLevel.value(properties.getProperty(
+			LogService.LOG_LEVEL_PROPERTY));
+		if (level >= 0) currentLevel = level;
+		classAndPackageLevels = setupMapFromProperties(properties,
+			LogService.LOG_LEVEL_PROPERTY + ":");
 	}
 
-	// -- helper methods --
-
-	protected void log(final int level, final Object msg, final Throwable t) {
-		if (level > getLevel()) return;
-
-		if (msg != null || t == null) {
-			log(level, msg);
-		}
-		if (t != null) log(t);
-	}
-
-	protected void log(final int level, final Object msg) {
-		final String prefix = LogLevel.prefix(level);
-		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	// -- LogService methods --
-
-	@Override
-	public void debug(final Object msg) {
-		log(LogLevel.DEBUG, msg, null);
-	}
-
-	@Override
-	public void debug(final Throwable t) {
-		log(LogLevel.DEBUG, null, t);
-	}
-
-	@Override
-	public void debug(final Object msg, final Throwable t) {
-		log(LogLevel.DEBUG, msg, t);
-	}
-
-	@Override
-	public void error(final Object msg) {
-		log(LogLevel.ERROR, msg, null);
-	}
-
-	@Override
-	public void error(final Throwable t) {
-		log(LogLevel.ERROR, null, t);
-	}
-
-	@Override
-	public void error(final Object msg, final Throwable t) {
-		log(LogLevel.ERROR, msg, t);
-	}
-
-	@Override
-	public void info(final Object msg) {
-		log(LogLevel.INFO, msg, null);
-	}
-
-	@Override
-	public void info(final Throwable t) {
-		log(LogLevel.INFO, null, t);
-	}
-
-	@Override
-	public void info(final Object msg, final Throwable t) {
-		log(LogLevel.INFO, msg, t);
-	}
-
-	@Override
-	public void trace(final Object msg) {
-		log(LogLevel.TRACE, msg, null);
-	}
-
-	@Override
-	public void trace(final Throwable t) {
-		log(LogLevel.TRACE, null, t);
-	}
-
-	@Override
-	public void trace(final Object msg, final Throwable t) {
-		log(LogLevel.TRACE, msg, t);
-	}
-
-	@Override
-	public void warn(final Object msg) {
-		log(LogLevel.WARN, msg, null);
-	}
-
-	@Override
-	public void warn(final Throwable t) {
-		log(LogLevel.WARN, null, t);
-	}
-
-	@Override
-	public void warn(final Object msg, final Throwable t) {
-		log(LogLevel.WARN, msg, t);
-	}
-
-	@Override
-	public boolean isDebug() {
-		return getLevel() >= LogLevel.DEBUG;
-	}
-
-	@Override
-	public boolean isError() {
-		return getLevel() >= LogLevel.ERROR;
-	}
-
-	@Override
-	public boolean isInfo() {
-		return getLevel() >= LogLevel.INFO;
-	}
-
-	@Override
-	public boolean isTrace() {
-		return getLevel() >= LogLevel.TRACE;
-	}
-
-	@Override
-	public boolean isWarn() {
-		return getLevel() >= LogLevel.WARN;
-	}
+	// -- Logger methods --
 
 	@Override
 	public int getLevel() {
-		if (!classAndPackageLevels.isEmpty()) {
-			// check for a custom log level for calling class or its parent packages
-			String classOrPackageName = callingClass();
-			while (classOrPackageName != null) {
-				final Integer level = classAndPackageLevels.get(classOrPackageName);
-				if (level != null) return level;
-				classOrPackageName = parentPackage(classOrPackageName);
-			}
-		}
-		// no custom log level; return the global log level
-		return currentLevel;
+		if (classAndPackageLevels.isEmpty()) return currentLevel;
+		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
+			currentLevel);
 	}
 
 	@Override
@@ -251,14 +97,14 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	// -- Helper methods --
 
-	private String callingClass() {
-		final String thisClass = AbstractLogService.class.getName();
-		for (final StackTraceElement element : new Exception().getStackTrace()) {
-			final String className = element.getClassName();
-			// NB: Skip stack trace elements from other methods of this class.
-			if (!thisClass.equals(className)) return className;
+	private int getLevelForClass(String classOrPackageName, int defaultLevel) {
+		// check for a custom log level for calling class or its parent packages
+		while (classOrPackageName != null) {
+			final Integer level = classAndPackageLevels.get(classOrPackageName);
+			if (level != null) return level;
+			classOrPackageName = parentPackage(classOrPackageName);
 		}
-		return null;
+		return defaultLevel;
 	}
 
 	private String parentPackage(final String classOrPackageName) {
@@ -272,4 +118,15 @@ public abstract class AbstractLogService extends AbstractService implements
 		return System.getenv("DEBUG") == null ? LogLevel.INFO : LogLevel.DEBUG;
 	}
 
+	private Map<String, Integer> setupMapFromProperties(Properties properties,
+		String prefix)
+	{
+		final HashMap<String, Integer> map = new HashMap<>();
+		for (final String propName : properties.stringPropertyNames())
+			if (propName.startsWith(prefix)) {
+				final String key = propName.substring(prefix.length());
+				map.put(key, LogLevel.value(properties.getProperty(propName)));
+			}
+		return map;
+	}
 }
