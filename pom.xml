@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>13.1.0</version>
+		<version>16.2.0</version>
 		<relativePath />
 	</parent>
 
@@ -172,6 +172,10 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 		</dependency>
 
 		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.googlecode.gentyref</groupId>
 			<artifactId>gentyref</artifactId>
