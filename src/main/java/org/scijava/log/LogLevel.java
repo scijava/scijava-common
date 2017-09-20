@@ -3,9 +3,8 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,51 +31,66 @@
 
 package org.scijava.log;
 
-import org.scijava.Priority;
-import org.scijava.plugin.Plugin;
-import org.scijava.service.Service;
-
 /**
- * Implementation of {@link LogService} using the standard error stream.
- * <p>
- * Actually, this service is somewhat misnamed now, since it prints {@code WARN}
- * and {@code ERROR} messages to stderr, but messages at lesser severities to
- * stdout.
- * </p>
+ * Constants for specifying a logger's level of verbosity.
  * 
- * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.LOW)
-public class StderrLogService extends AbstractLogService {
+public final class LogLevel {
 
-	@Override
-	protected void log(final int level, final Object msg) {
-		final String prefix = LogLevel.prefix(level);
-		final String message = (prefix == null ? "" : prefix + " ") + msg;
-		// NB: Emit severe messages to stderr, and less severe ones to stdout.
-		if (level <= LogLevel.WARN) System.err.println(message);
-		else System.out.println(message);
+	private LogLevel() {
+		// prevent instantiation of utility class
+	}
+
+	public static final int NONE = 0;
+	public static final int ERROR = 1;
+	public static final int WARN = 2;
+	public static final int INFO = 3;
+	public static final int DEBUG = 4;
+	public static final int TRACE = 5;
+
+	public static String prefix(final int level) {
+		switch (level) {
+			case ERROR:
+				return "ERROR";
+			case WARN:
+				return "WARNING";
+			case INFO:
+				return "INFO";
+			case DEBUG:
+				return "DEBUG";
+			case TRACE:
+				return "TRACE";
+			default:
+				return "LEVEL" + level;
+		}
 	}
 
 	/**
-	 * Prints a message to stderr.
+	 * Extracts the log level value from a string.
 	 * 
-	 * @param message the message
+	 * @return The log level, or -1 if the level cannot be parsed.
 	 */
-	@Override
-	protected void log(final String message) {
-		System.err.println(message);
-	}
+	public static int value(final String s) {
+		if (s == null) return -1;
 
-	/**
-	 * Prints an exception to stderr.
-	 * 
-	 * @param t the exception
-	 */
-	@Override
-	protected void log(final Throwable t) {
-		t.printStackTrace();
+		// check whether it's a string label (e.g., "debug")
+		final String log = s.trim().toLowerCase();
+		if (log.startsWith("n")) return LogLevel.NONE;
+		if (log.startsWith("e")) return LogLevel.ERROR;
+		if (log.startsWith("w")) return LogLevel.WARN;
+		if (log.startsWith("i")) return LogLevel.INFO;
+		if (log.startsWith("d")) return LogLevel.DEBUG;
+		if (log.startsWith("t")) return LogLevel.TRACE;
+
+		// check whether it's a numerical value (e.g., 5)
+		try {
+			return Integer.parseInt(log);
+		}
+		catch (final NumberFormatException exc) {
+			// nope!
+		}
+		return -1;
 	}
 
 }

@@ -71,11 +71,15 @@ public abstract class AbstractLogService extends AbstractService implements
 	// -- constructor --
 
 	public AbstractLogService() {
+		this(System.getProperties());
+	}
+
+	public AbstractLogService(final Properties properties) {
 		// check SciJava log level system properties for initial logging levels
 
 		// global log level property
-		final String logProp = System.getProperty(LOG_LEVEL_PROPERTY);
-		final int level = level(logProp);
+		final String logProp = properties.getProperty(LOG_LEVEL_PROPERTY);
+		final int level = LogLevel.value(logProp);
 		if (level >= 0) setLevel(level);
 
 		if (getLevel() == 0)
@@ -83,14 +87,13 @@ public abstract class AbstractLogService extends AbstractService implements
 
 		// populate custom class- and package-specific log level properties
 		final String logLevelPrefix = LOG_LEVEL_PROPERTY + ":";
-		final Properties props = System.getProperties();
-		for (final Object propKey : props.keySet()) {
+		for (final Object propKey : properties.keySet()) {
 			if (!(propKey instanceof String)) continue;
 			final String propName = (String) propKey;
 			if (!propName.startsWith(logLevelPrefix)) continue;
 			final String classOrPackageName =
 				propName.substring(logLevelPrefix.length());
-			setLevel(classOrPackageName, level(props.getProperty(propName)));
+			setLevel(classOrPackageName, LogLevel.value(properties.getProperty(propName)));
 		}
 
 	}
@@ -107,127 +110,110 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	protected void log(final int level, final Object msg) {
-		final String prefix = getPrefix(level);
+		final String prefix = LogLevel.prefix(level);
 		log((prefix == null ? "" : prefix + " ") + msg);
-	}
-
-	protected String getPrefix(final int level) {
-		switch (level) {
-			case ERROR:
-				return "[ERROR]";
-			case WARN:
-				return "[WARNING]";
-			case INFO:
-				return "[INFO]";
-			case DEBUG:
-				return "[DEBUG]";
-			case TRACE:
-				return "[TRACE]";
-			default:
-				return null;
-		}
 	}
 
 	// -- LogService methods --
 
 	@Override
 	public void debug(final Object msg) {
-		log(DEBUG, msg, null);
+		log(LogLevel.DEBUG, msg, null);
 	}
 
 	@Override
 	public void debug(final Throwable t) {
-		log(DEBUG, null, t);
+		log(LogLevel.DEBUG, null, t);
 	}
 
 	@Override
 	public void debug(final Object msg, final Throwable t) {
-		log(DEBUG, msg, t);
+		log(LogLevel.DEBUG, msg, t);
 	}
 
 	@Override
 	public void error(final Object msg) {
-		log(ERROR, msg, null);
+		log(LogLevel.ERROR, msg, null);
 	}
 
 	@Override
 	public void error(final Throwable t) {
-		log(ERROR, null, t);
+		log(LogLevel.ERROR, null, t);
 	}
 
 	@Override
 	public void error(final Object msg, final Throwable t) {
-		log(ERROR, msg, t);
+		log(LogLevel.ERROR, msg, t);
 	}
 
 	@Override
 	public void info(final Object msg) {
-		log(INFO, msg, null);
+		log(LogLevel.INFO, msg, null);
 	}
 
 	@Override
 	public void info(final Throwable t) {
-		log(INFO, null, t);
+		log(LogLevel.INFO, null, t);
 	}
 
 	@Override
 	public void info(final Object msg, final Throwable t) {
-		log(INFO, msg, t);
+		log(LogLevel.INFO, msg, t);
 	}
 
 	@Override
 	public void trace(final Object msg) {
-		log(TRACE, msg, null);
+		log(LogLevel.TRACE, msg, null);
 	}
 
 	@Override
 	public void trace(final Throwable t) {
-		log(TRACE, null, t);
+		log(LogLevel.TRACE, null, t);
 	}
 
 	@Override
 	public void trace(final Object msg, final Throwable t) {
-		log(TRACE, msg, t);
+		log(LogLevel.TRACE, msg, t);
 	}
 
 	@Override
 	public void warn(final Object msg) {
-		log(WARN, msg, null);
+		log(LogLevel.WARN, msg, null);
 	}
 
 	@Override
 	public void warn(final Throwable t) {
-		log(WARN, null, t);
+		log(LogLevel.WARN, null, t);
 	}
 
 	@Override
 	public void warn(final Object msg, final Throwable t) {
-		log(WARN, msg, t);
+		log(LogLevel.WARN, msg, t);
 	}
 
 	@Override
 	public boolean isDebug() {
-		return getLevel() >= DEBUG;
+		return getLevel() >= LogLevel.DEBUG;
 	}
 
 	@Override
 	public boolean isError() {
-		return getLevel() >= ERROR;
+		return getLevel() >= LogLevel.ERROR;
 	}
 
 	@Override
 	public boolean isInfo() {
-		return getLevel() >= INFO;
+		return getLevel() >= LogLevel.INFO;
 	}
 
 	@Override
 	public boolean isTrace() {
-		return getLevel() >= TRACE;
+		return getLevel() >= LogLevel.TRACE;
 	}
 
 	@Override
 	public boolean isWarn() {
-		return getLevel() >= WARN;
+		return getLevel() >= LogLevel.WARN;
 	}
 
 	@Override
@@ -255,30 +241,15 @@ public abstract class AbstractLogService extends AbstractService implements
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
 
-	// -- Helper methods --
+	// -- Deprecated --
 
-	/** Extracts the log level value from a string. */
-	private int level(final String logProp) {
-		if (logProp == null) return -1;
-
-		// check whether it's a string label (e.g., "debug")
-		final String log = logProp.trim().toLowerCase();
-		if (log.startsWith("n")) return NONE;
-		if (log.startsWith("e")) return ERROR;
-		if (log.startsWith("w")) return WARN;
-		if (log.startsWith("i")) return INFO;
-		if (log.startsWith("d")) return DEBUG;
-		if (log.startsWith("t")) return TRACE;
-
-		// check whether it's a numerical value (e.g., 5)
-		try {
-			return Integer.parseInt(log);
-		}
-		catch (final NumberFormatException exc) {
-			// nope!
-		}
-		return -1;
+	/** @deprecated Use {@link LogLevel#prefix(int)} instead. */
+	@Deprecated
+	protected String getPrefix(final int level) {
+		return "[" + LogLevel.prefix(level) + "]";
 	}
+
+	// -- Helper methods --
 
 	private String callingClass() {
 		final String thisClass = AbstractLogService.class.getName();
@@ -298,7 +269,7 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private int levelFromEnvironment() {
 		// use the default, which is INFO unless the DEBUG env. variable is set
-		return System.getenv("DEBUG") == null ? INFO : DEBUG;
+		return System.getenv("DEBUG") == null ? LogLevel.INFO : LogLevel.DEBUG;
 	}
 
 }
