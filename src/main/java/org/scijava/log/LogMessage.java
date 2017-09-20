@@ -38,8 +38,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 
+import org.scijava.event.EventService;
+
 /**
- * LogMessage represents a log message.
+ * A log message broadcast by a {@link Logger}.
+ * <p>
+ * NB: The message is published <em>on the calling thread</em> by
+ * {@link Logger#notifyListeners}, <em>not</em> on a dedicated event dispatch
+ * thread by the {@link EventService}. This is done to avoid the overhead of the
+ * event service's synchronized pub/sub implementation, as well as to avoid
+ * potential infinite loops caused by debugging log messages surrounding event
+ * publication.
+ * </p>
  *
  * @author Matthias Arzt
  */
