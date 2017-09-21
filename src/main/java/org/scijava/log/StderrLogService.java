@@ -32,6 +32,9 @@
 
 package org.scijava.log;
 
+import java.io.PrintStream;
+import java.util.function.Function;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
@@ -50,13 +53,16 @@ import org.scijava.service.Service;
 @Plugin(type = Service.class, priority = Priority.LOW)
 public class StderrLogService extends AbstractLogService {
 
+	private Function<Integer, PrintStream> levelToStream =
+		level -> (level <= LogLevel.WARN) ? System.err : System.out;
+
+	public void setPrintStreams(Function<Integer, PrintStream> levelToStream) {
+		this.levelToStream = levelToStream;
+	}
+
 	@Override
-	public void alwaysLog(final int level, final Object msg, final Throwable t) {
-		final String prefix = LogLevel.prefix(level);
-		final String message = (prefix == null ? "" : prefix + " ") + msg;
-		// NB: Emit severe messages to stderr, and less severe ones to stdout.
-		if (level <= LogLevel.WARN) System.err.println(message);
-		else System.out.println(message);
-		if (t != null) t.printStackTrace();
+	public void notifyListeners(LogMessage message) {
+		final PrintStream out = levelToStream.apply(message.level());
+		out.print(message);
 	}
 }

@@ -49,6 +49,7 @@ import org.scijava.service.SciJavaService;
  */
 public interface ConsoleService extends
 	HandlerService<LinkedList<String>, ConsoleArgument>, SciJavaService
+	// TODO: SJC3: Extend Listenable<OutputListener, OutputEvent>
 {
 
 	/** Handles arguments from an external source such as the command line. */

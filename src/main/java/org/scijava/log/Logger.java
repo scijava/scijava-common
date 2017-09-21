@@ -37,6 +37,8 @@ import static org.scijava.log.LogLevel.INFO;
 import static org.scijava.log.LogLevel.TRACE;
 import static org.scijava.log.LogLevel.WARN;
 
+import org.scijava.Listenable;
+
 /**
  * Interface for objects which can produce log messages.
  * <p>
@@ -49,7 +51,7 @@ import static org.scijava.log.LogLevel.WARN;
  * @see LogService
  */
 @IgnoreAsCallingClass
-public interface Logger {
+public interface Logger extends Listenable<LogListener, LogMessage> {
 
 	default void debug(final Object msg) {
 		log(DEBUG, msg);
@@ -161,7 +163,7 @@ public interface Logger {
 
 	/**
 	 * Logs a message with an exception.
-	 * 
+	 *
 	 * @param level The level at which the information will be logged. If the
 	 *          current level (given by {@link #getLevel()} is below this one, no
 	 *          logging is performed.
@@ -182,6 +184,30 @@ public interface Logger {
 	 */
 	void alwaysLog(int level, Object msg, Throwable t);
 
+	/** Returns the name of this logger. */
+	default String getName() {
+		return getSource().name();
+	}
+
+	/** Returns the {@link LogSource} associated with this logger. */
+	LogSource getSource();
+
 	/** Returns the log level of this logger. see {@link LogLevel} */
 	int getLevel();
+
+	/**
+	 * Creates a sub logger, that forwards the message it gets to this logger. The
+	 * sub logger will have the same log level as this logger.
+	 */
+	default Logger subLogger(String name) {
+		return subLogger(name, getLevel());
+	}
+
+	/**
+	 * Creates a sub logger, that forwards the message it gets to this logger.
+	 *
+	 * @param name The name of the sub logger.
+	 * @param level The log level of the sub logger.
+	 */
+	Logger subLogger(String name, int level);
 }

@@ -157,12 +157,47 @@ public class LogServiceTest {
 	}
 
 	@Test
+	public void testSubLoggerLogLevel() {
+		final TestableLogService log = new TestableLogService();
+		log.setLevel(LogLevel.ERROR);
+		log.setLevelForLogger("foo:bar", LogLevel.TRACE);
+		Logger sub = log.subLogger("foo").subLogger("bar");
+		assertEquals(LogLevel.TRACE, sub.getLevel());
+	}
+
+	@Test
+	public void testSubLoggerLogLevelViaProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":Hello:World", LogLevel.prefix(LogLevel.ERROR));
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":foo:bar", LogLevel.prefix(LogLevel.TRACE));
+		final LogService log = new TestableLogService(properties);
+		Logger sub = log.subLogger("foo").subLogger("bar");
+		assertEquals(LogLevel.TRACE, sub.getLevel());
+	}
+
+	@Test
 	public void testPackageLogLevel() {
 		final LogService log = new TestableLogService();
 		log.setLevel("org.scijava.log", LogLevel.TRACE);
 		log.setLevel("xyz.foo.bar", LogLevel.ERROR);
 		int level = log.getLevel();
 		assertEquals(LogLevel.TRACE, level);
+	}
+
+	@Test
+	public void testListener() {
+		// setup
+		TestableLogService logService = new TestableLogService();
+		TestLogListener listener = new TestLogListener();
+		String msg1 = "Hello World!";
+		String msg2 = "foo bar";
+		// process
+		logService.addListener(listener);
+		logService.error(msg1);
+		logService.subLogger("xyz").debug(msg2);
+		// test
+		listener.hasLogged(m -> msg1.equals(m.text()));
+		listener.hasLogged(m -> msg2.equals(m.text()));
 	}
 
 	// -- Helper classes --
@@ -206,9 +241,9 @@ public class LogServiceTest {
 		}
 
 		@Override
-		public void alwaysLog(int level, Object msg, Throwable t) {
-			this.message = LogLevel.prefix(level) + msg;
-			this.exception = t;
+		public void notifyListeners(LogMessage message) {
+			this.message = message.toString();
+			this.exception = message.throwable();
 		}
 	}
 }

@@ -43,6 +43,7 @@ import org.scijava.service.AbstractService;
  *
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ * @author Matthias Arzt
  */
 @IgnoreAsCallingClass
 public abstract class AbstractLogService extends AbstractService implements
@@ -53,6 +54,8 @@ public abstract class AbstractLogService extends AbstractService implements
 
 	private final Map<String, Integer> classAndPackageLevels;
 
+	private final Logger rootLogger;
+
 	// -- constructor --
 
 	public AbstractLogService() {
@@ -60,22 +63,17 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	public AbstractLogService(final Properties properties) {
+		rootLogger = new RootLogger();
 		// provide this constructor to enable unit tests
 		final int level = LogLevel.value(properties.getProperty(
 			LogService.LOG_LEVEL_PROPERTY));
 		if (level >= 0) currentLevel = level;
 		classAndPackageLevels = setupMapFromProperties(properties,
 			LogService.LOG_LEVEL_PROPERTY + ":");
+		initLogSourceLevels(properties);
 	}
 
-	// -- Logger methods --
-
-	@Override
-	public int getLevel() {
-		if (classAndPackageLevels.isEmpty()) return currentLevel;
-		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
-			currentLevel);
-	}
+	// -- AbstractLogService methods --
 
 	@Override
 	public void setLevel(final int level) {
@@ -87,6 +85,52 @@ public abstract class AbstractLogService extends AbstractService implements
 		classAndPackageLevels.put(classOrPackageName, level);
 	}
 
+	@Override
+	public void setLevelForLogger(final String source, final int level) {
+		rootLogger.getSource().subSource(source).setLogLevel(level);
+	}
+
+	// -- Logger methods --
+
+	@Override
+	public void alwaysLog(final int level, final Object msg, final Throwable t) {
+		rootLogger.alwaysLog(level, msg, t);
+	}
+
+	@Override
+	public LogSource getSource() {
+		return rootLogger.getSource();
+	}
+
+	@Override
+	public int getLevel() {
+		if (classAndPackageLevels.isEmpty()) return currentLevel;
+		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
+			currentLevel);
+	}
+
+	@Override
+	public Logger subLogger(String name, int level) {
+		return rootLogger.subLogger(name, level);
+	}
+
+	// -- Listenable methods --
+
+	@Override
+	public void addListener(final LogListener listener) {
+		rootLogger.addListener(listener);
+	}
+
+	@Override
+	public void removeListener(final LogListener listener) {
+		rootLogger.removeListener(listener);
+	}
+
+	@Override
+	public void notifyListeners(final LogMessage event) {
+		rootLogger.notifyListeners(event);
+	}
+
 	// -- Deprecated --
 
 	/** @deprecated Use {@link LogLevel#prefix(int)} instead. */
@@ -96,6 +140,12 @@ public abstract class AbstractLogService extends AbstractService implements
 	}
 
 	// -- Helper methods --
+
+	private void initLogSourceLevels(Properties properties) {
+		Map<String, Integer> nameLevels = setupMapFromProperties(properties,
+			LOG_LEVEL_BY_SOURCE_PROPERTY + ":");
+		nameLevels.forEach(this::setLevelForLogger);
+	}
 
 	private int getLevelForClass(String classOrPackageName, int defaultLevel) {
 		// check for a custom log level for calling class or its parent packages
@@ -128,5 +178,21 @@ public abstract class AbstractLogService extends AbstractService implements
 				map.put(key, LogLevel.value(properties.getProperty(propName)));
 			}
 		return map;
+	}
+
+	// -- Helper classes --
+
+	@IgnoreAsCallingClass
+	private class RootLogger extends DefaultLogger {
+
+		public RootLogger() {
+			super(AbstractLogService.this::notifyListeners, LogSource.newRoot(),
+				LogLevel.NONE);
+		}
+
+		@Override
+		public int getLevel() {
+			return AbstractLogService.this.getLevel();
+		}
 	}
 }

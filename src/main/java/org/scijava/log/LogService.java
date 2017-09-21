@@ -38,17 +38,42 @@ import org.scijava.service.SciJavaService;
  * Interface for the logging service.
  * <p>
  * The service supports five common logging levels: {@link #ERROR},
- * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It provides
- * methods for logging messages, exception stack traces and combinations of the
- * two.
+ * {@link #WARN}, {@link #INFO}, {@link #TRACE} and {@link #DEBUG}. It is
+ * extensible to additional levels as needed. It provides methods for logging
+ * messages, exception stack traces and combinations of the two.
  * </p>
  * 
  * @author Curtis Rueden
+ * @author Matthias Arzt
  */
 public interface LogService extends SciJavaService, Logger {
 
 	/** System property to set for overriding the default logging level. */
 	String LOG_LEVEL_PROPERTY = "scijava.log.level";
+
+	String LOG_LEVEL_BY_SOURCE_PROPERTY = "scijava.log.level.source";
+
+	/** Changes the log level of the root logger. */
+	void setLevel(int level);
+
+	/**
+	 * For messages that are logged directly to the LogService. The log level can
+	 * be set depending on the class that makes the log.
+	 * 
+	 * @param classOrPackageName If this is the name of a class. Messages logged
+	 *          directly by this class are logged, if the message's level is less
+	 *          or equal to the given level. If this is a package, the same holds
+	 *          for all classes in this package.
+	 * @param level Given level.
+	 */
+	void setLevel(String classOrPackageName, int level);
+
+	/**
+	 * Setting the log level for loggers depending on their {@link LogSource}.
+	 * This will only affect loggers that are created after this method has been
+	 * called.
+	 */
+	void setLevelForLogger(String source, int level);
 
 	// -- Deprecated --
 
@@ -70,9 +95,4 @@ public interface LogService extends SciJavaService, Logger {
 	/** @deprecated Use {@link LogLevel#TRACE}. */
 	@Deprecated
 	int TRACE = LogLevel.TRACE;
-
-	void setLevel(int level);
-
-	void setLevel(String classOrPackageName, int level);
-
 }
