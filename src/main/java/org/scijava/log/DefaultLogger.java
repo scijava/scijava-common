@@ -76,21 +76,20 @@ public class DefaultLogger implements Logger, LogListener {
 		messageLogged(new LogMessage(source, level, msg, t));
 	}
 
+	@Override
 	public Logger subLogger(final String name, final int level) {
 		LogSource source = getSource().subSource(name);
 		int actualLevel = source.hasLogLevel() ? source.logLevel() : level;
 		return new DefaultLogger(this, source, actualLevel);
 	}
 
-	// -- Listenable methods --
-
 	@Override
-	public void addListener(final LogListener listener) {
+	public void addLogListener(final LogListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(final LogListener listener) {
+	public void removeLogListener(final LogListener listener) {
 		listeners.remove(listener);
 	}
 

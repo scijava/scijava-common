@@ -60,7 +60,7 @@ public class LoggerPreprocessorTest {
 		final Context context = new Context(CommandService.class);
 		final CommandService commandService = context.service(CommandService.class);
 		final TestLogListener listener = new TestLogListener();
-		context.service(LogService.class).addListener(listener);
+		context.service(LogService.class).addLogListener(listener);
 
 		commandService.run(CommandWithLogger.class, true).get();
 		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));

@@ -192,7 +192,7 @@ public class LogServiceTest {
 		String msg1 = "Hello World!";
 		String msg2 = "foo bar";
 		// process
-		logService.addListener(listener);
+		logService.addLogListener(listener);
 		logService.error(msg1);
 		logService.subLogger("xyz").debug(msg2);
 		// test

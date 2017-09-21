@@ -114,16 +114,14 @@ public abstract class AbstractLogService extends AbstractService implements
 		return rootLogger.subLogger(name, level);
 	}
 
-	// -- Listenable methods --
-
 	@Override
-	public void addListener(final LogListener listener) {
-		rootLogger.addListener(listener);
+	public void addLogListener(final LogListener listener) {
+		rootLogger.addLogListener(listener);
 	}
 
 	@Override
-	public void removeListener(final LogListener listener) {
-		rootLogger.removeListener(listener);
+	public void removeLogListener(final LogListener listener) {
+		rootLogger.removeLogListener(listener);
 	}
 
 	@Override

@@ -37,8 +37,6 @@ import static org.scijava.log.LogLevel.INFO;
 import static org.scijava.log.LogLevel.TRACE;
 import static org.scijava.log.LogLevel.WARN;
 
-import org.scijava.Listenable;
-
 /**
  * Interface for objects which can produce log messages.
  * <p>
@@ -51,7 +49,7 @@ import org.scijava.Listenable;
  * @see LogService
  */
 @IgnoreAsCallingClass
-public interface Logger extends Listenable<LogListener, LogMessage> {
+public interface Logger {
 
 	default void debug(final Object msg) {
 		log(DEBUG, msg);
@@ -210,4 +208,13 @@ public interface Logger extends Listenable<LogListener, LogMessage> {
 	 * @param level The log level of the sub logger.
 	 */
 	Logger subLogger(String name, int level);
+
+	/** Adds an item to the list of registered listeners. */
+	void addLogListener(LogListener listener);
+
+	/** Removes an item from the list of registered listeners. */
+	void removeLogListener(LogListener listener);
+
+	/** Broadcasts the given log message to the registered listeners. */
+	void notifyListeners(final LogMessage message);
 }

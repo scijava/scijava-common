@@ -54,7 +54,7 @@ public class DefaultLoggerTest {
 	public void setup() {
 		logger = new DefaultLogger(message -> {}, LogSource.newRoot(), LogLevel.INFO);
 		listener = new TestLogListener();
-		logger.addListener(listener);
+		logger.addLogListener(listener);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class DefaultLoggerTest {
 		listener.clear();
 		Logger sub = logger.subLogger("xyz");
 		TestLogListener subListener = new TestLogListener();
-		sub.addListener(subListener);
+		sub.addLogListener(subListener);
 
 		sub.error("Hello World!");
 		logger.error("Goodbye!");
