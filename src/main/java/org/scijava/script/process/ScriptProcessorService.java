@@ -58,8 +58,8 @@ public interface ScriptProcessorService extends
 	 * line in sequence.
 	 */
 	default String process(final ScriptInfo info) throws IOException {
-		final List<ScriptProcessor> processors = getPlugins().stream().map(
-			p -> pluginService().createInstance(p)).collect(Collectors.toList());
+		final List<ScriptProcessor> processors = //
+			pluginService().createInstances(getPlugins());
 
 		BufferedReader reader = info.getReader();
 		if (reader == null) {
