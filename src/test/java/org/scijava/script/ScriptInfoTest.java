@@ -60,6 +60,8 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
+import org.scijava.MenuPath;
+import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
@@ -262,6 +264,40 @@ public class ScriptInfoTest {
 		for (final ModuleItem<?> outItem : info.outputs()) {
 			assertSame(outputs[outputCount++], outItem);
 		}
+	}
+
+	/** Tests {@code #@script} directives. */
+	@Test
+	public void testScriptDirective() {
+		final String script = "" + //
+			"#@script(name = \"my_script\"" + //
+			", label = \"My Script\"" + //
+			", description = \"What a great script.\"" + //
+			", menuPath = \"Plugins > Do All The Things\"" + //
+			", menuRoot = \"special\"" + //
+			", iconPath = \"/path/to/myIcon.png\"" + //
+			", priority = \"extremely-high\"" + //
+			", headless = true" + //
+			", foo = \"bar\"" + //
+			")\n" +
+			"WOOT\n";
+
+		ScriptInfo info = null;
+		info =
+			new ScriptInfo(context, "scriptHeader.bsizes", new StringReader(script));
+		info.inputs(); // HACK: Force lazy initialization.
+
+		assertEquals("my_script", info.getName());
+		assertEquals("My Script", info.getLabel());
+		assertEquals("What a great script.", info.getDescription());
+		final MenuPath menuPath = info.getMenuPath();
+		assertEquals(2, menuPath.size());
+		assertEquals("Plugins", menuPath.get(0).getName());
+		assertEquals("Do All The Things", menuPath.get(1).getName());
+		assertEquals("/path/to/myIcon.png", info.getIconPath());
+		assertEquals(Priority.EXTREMELY_HIGH, info.getPriority(), 0.0);
+		assertTrue(info.canRunHeadless());
+		assertEquals("bar", info.get("foo"));
 	}
 
 	/**
