@@ -297,9 +297,7 @@ public class DefaultModuleService extends AbstractService implements
 			return;
 		}
 
-		// FIXME: Convert to string, instead of just calling toString.
-		// Otherwise many things (e.g. File[]) are persisted improperly.
-		final String sValue = value == null ? "" : value.toString();
+		final String sValue = value == null ? "" : convertService.convert(value, String.class);
 
 		// do not persist if object cannot be converted back from a string
 		if (!convertService.supports(sValue, item.getType())) return;

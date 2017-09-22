@@ -32,6 +32,7 @@
 
 package org.scijava.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -46,6 +47,21 @@ import org.junit.Test;
  * @author Richard Domander (Royal Veterinary College, London)
  */
 public class StringUtilsTest {
+
+	/** Tests {@link StringUtils#splitUnquoted}. */
+	@Test
+	public void testSplitUnquoted() {
+		// See https://stackoverflow.com/a/1757107/1919049
+		final String line = "foo,bar,c;qual=\"baz,blurb\",d;junk=\"quux,syzygy\"";
+		final String[] expected = {
+			"foo",
+			"bar",
+			"c;qual=\"baz,blurb\"",
+			"d;junk=\"quux,syzygy\""
+		};
+		final String[] actual = StringUtils.splitUnquoted(line, ",");
+		assertArrayEquals(expected, actual);
+	}
 
 	@Test
 	public void isNullOrEmptyFalseIfString() throws Exception {
