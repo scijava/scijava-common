@@ -264,6 +264,24 @@ public class ScriptInfoTest {
 		}
 	}
 
+	/**
+	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
+	 * script.
+	 */
+	@Test
+	public void testReaderSanity() throws Exception {
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT Integer output";
+
+		final ScriptInfo info =
+			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
+		final BufferedReader reader1 = info.getReader();
+		final BufferedReader reader2 = info.getReader();
+
+		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
+	}
+
 	private void assertItem(final String name, final Class<?> type,
 		final String label, final ItemIO ioType, final boolean required,
 		final boolean persist, final String persistKey, final String style,
@@ -286,25 +304,6 @@ public class ScriptInfoTest {
 		assertEquals(softMax, item.getSoftMaximum());
 		assertEquals(stepSize, item.getStepSize());
 		assertEquals(choices, item.getChoices());
-	}
-
-	/**
-	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
-	 * script.
-	 */
-	@Test
-	public void testReaderSanity() throws Exception {
-		final String script = "" + //
-			"% @LogService log\n" + //
-			"% @OUTPUT Integer output";
-
-		final ScriptInfo info =
-			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
-		final BufferedReader reader1 = info.getReader();
-		final BufferedReader reader2 = info.getReader();
-
-		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
-
 	}
 
 	@Plugin(type = ScriptLanguage.class)
