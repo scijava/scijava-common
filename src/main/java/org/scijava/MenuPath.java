@@ -62,7 +62,7 @@ public class MenuPath extends ArrayList<MenuEntry> {
 
 	/**
 	 * Creates a menu path with entries parsed from the given string. Assumes
-	 * "&gt;" as the separator (e.g., "File&gt;New&gt;Image").
+	 * {@code >} as the separator (e.g., {@code File>New>Image}).
 	 * 
 	 * @see #PATH_SEPARATOR
 	 */
