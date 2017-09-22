@@ -63,6 +63,7 @@ package org.scijava.util;
 
 import java.io.File;
 import java.text.DecimalFormatSymbols;
+import java.util.regex.Pattern;
 
 /**
  * Useful methods for working with {@link String}s.
@@ -78,6 +79,16 @@ public final class StringUtils {
 
 	private StringUtils() {
 		// NB: prevent instantiation of utility class.
+	}
+
+	/**
+	 * Splits a string only at separators outside of quotation marks ({@code "}).
+	 * Does not handle escaped quotes.
+	 */
+	public static String[] splitUnquoted(final String s, final String separator) {
+		// See https://stackoverflow.com/a/1757107/1919049
+		return s.split(Pattern.quote(separator) +
+			"(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 	}
 
 	/** Normalizes the decimal separator for the user's locale. */
