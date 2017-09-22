@@ -332,6 +332,11 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 		return new ScriptModule(this);
 	}
 
+	@Override
+	public boolean canRunHeadless() {
+		return is("headless");
+	}
+
 	// -- Contextual methods --
 
 	@Override
