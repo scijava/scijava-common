@@ -62,8 +62,9 @@ import org.scijava.script.ScriptService;
  * supported:
  * </p>
  * <ul>
- * <li>{@code #@<type> <varName>}</li>
- * <li>{@code #@<type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}</li>
+ * <li>{@code #@ <type> <varName>}</li>
+ * <li>{@code #@ <type>(<attr1>=<value1>, ..., <attrN>=<valueN>) <varName>}</li>
+ * <li>{@code #@<IOType> <varName>}</li>
  * <li>{@code #@<IOType> <type> <varName>}</li>
  * <li>{@code #@<IOType>(<attr1>=<value1>, ..., <attrN>=<valueN>) <type>
  * <varName>}</li>
@@ -77,7 +78,8 @@ import org.scijava.script.ScriptService;
  * <li>{@code <IOType>} - one of {@code INPUT}, {@code OUTPUT}, or {@code BOTH}.
  * </li>
  * <li>{@code <varName>} - the name of the input or output variable.</li>
- * <li>{@code <type>} - the Java {@link Class} of the variable.</li>
+ * <li>{@code <type>} - the Java {@link Class} of the variable, or
+ * {@link Object} if none specified.</li>
  * <li>{@code <attr*>} - an attribute key.</li>
  * <li>{@code <value*>} - an attribute value.</li>
  * </ul>
@@ -90,9 +92,9 @@ import org.scijava.script.ScriptService;
  * <ul>
  * <li>{@code #@Dataset dataset}</li>
  * <li>{@code #@double(type=OUTPUT) result}</li>
- * <li>{@code #@BOTH ImageDisplay display}</li>
- * <li>{@code #@INPUT(persist=false, visibility=INVISIBLE) boolean verbose}
- * </li>
+ * <li>{@code #@both ImageDisplay display}</li>
+ * <li>{@code #@input(persist=false, visibility=INVISIBLE) boolean verbose}</li>
+ * <li>{@code #@output thing}</li>
  * </ul>
  * <p>
  * Parameters will be parsed and filled just like @{@link Parameter}-annotated
@@ -187,11 +189,18 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		final String typeName, varName;
 		final String maybeIOType = tokens[0].toUpperCase();
 		if (isIOType(maybeIOType)) {
-			// assume syntax: <IOType> <type> <varName>
-			if (tokens.length < 3) return false;
+			if (tokens.length == 2) {
+				// <IOType> <varName>
+				typeName = "Object";
+				varName = tokens[1];
+			}
+			else if (tokens.length == 3) {
+				// <IOType> <type> <varName>
+				typeName = tokens[1];
+				varName = tokens[2];
+			}
+			else return false;
 			attrs.put("type", maybeIOType);
-			typeName = tokens[1];
-			varName = tokens[2];
 		}
 		else {
 			// assume syntax: <type> <varName>
