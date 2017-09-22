@@ -119,7 +119,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	private LogService log;
 
 	private ScriptInfo info;
-	private boolean header = true;
+	private boolean header;
 
 	// -- ScriptProcessor methods --
 
@@ -127,6 +127,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	public void begin(final ScriptInfo scriptInfo) {
 		info = scriptInfo;
 		info.setReturnValueAppended(true);
+		header = true;
 	}
 
 	@Override
