@@ -112,6 +112,7 @@ public class LogMessage {
 	 * {@link #attach(Object)}.
 	 */
 	public Collection<Object> attachments() {
+		if (attachments == null) return Collections.emptyList();
 		return Collections.unmodifiableCollection(attachments);
 	}
 
