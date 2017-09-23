@@ -34,6 +34,12 @@ package org.scijava.log;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests {@link LogMessage}.
  * 
@@ -67,5 +73,14 @@ public class LogMessageTest {
 
 		// test
 		Assert.assertTrue("Log message contains level", s.contains(LogLevel.prefix(message.level())));
+	}
+
+	@Test
+	public void testAttachments() {
+		LogMessage message = new LogMessage(LogSource.newRoot(), LogLevel.ERROR, "Message")	;
+		assertTrue(message.attachments().isEmpty());
+		Object object = new Object();
+		message.attach(object);
+		assertEquals(Collections.singletonList(object), new ArrayList<>(message.attachments()));
 	}
 }
