@@ -69,7 +69,12 @@ import org.scijava.test.TestUtils;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
-/** Tests {@link ScriptInfo}. */
+/**
+ * Tests {@link ScriptInfo}.
+ * 
+ * @author Curtis Rueden
+ * @author Mark Hiner
+ */
 public class ScriptInfoTest {
 
 	private static Context context;
