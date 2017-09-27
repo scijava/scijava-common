@@ -33,6 +33,7 @@
 package org.scijava.object;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 /**
  * Interface for objects created lazily. This interface provides a mechanism to
@@ -41,9 +42,10 @@ import java.util.Collection;
  * 
  * @author Curtis Rueden
  */
-public interface LazyObjects<T> {
+public interface LazyObjects<T> extends Supplier<Collection<T>> {
 
 	/** Gets the collection of objects. */
+	@Override
 	Collection<T> get();
 
 }
