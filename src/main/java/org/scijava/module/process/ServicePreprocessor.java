@@ -51,7 +51,7 @@ import org.scijava.service.Service;
  * <p>
  * Many modules (e.g., most {@link Command}s) use @{@link Parameter}-annotated
  * service fields, resulting in those parameters being populated when the
- * SciJava application context is injected (via {@link Context#inject(Object)}.
+ * SciJava application context is injected (via {@link Context#inject(Object)}).
  * However, some modules may have service parameters which are programmatically
  * generated (i.e., returned directly as inputs from {@link ModuleInfo#inputs()}
  * and as such not populated by context injection. E.g., this situation is the
