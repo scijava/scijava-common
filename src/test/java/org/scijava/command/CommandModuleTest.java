@@ -250,8 +250,7 @@ public class CommandModuleTest {
 	 * not as early as {@link Service} and {@link Context} parameters get
 	 * populated.
 	 */
-	@Plugin(type = PreprocessorPlugin.class,
-		priority = Priority.VERY_HIGH)
+	@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH)
 	public static class StuffPreprocessor extends AbstractPreprocessorPlugin {
 
 		@Override

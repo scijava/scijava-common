@@ -41,8 +41,7 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  * @see AppService
  */
-@Plugin(type = App.class, name = SciJavaApp.NAME,
-	priority = Priority.LOW)
+@Plugin(type = App.class, name = SciJavaApp.NAME, priority = Priority.LOW)
 public class SciJavaApp extends AbstractApp {
 
 	public static final String NAME = "SciJava";

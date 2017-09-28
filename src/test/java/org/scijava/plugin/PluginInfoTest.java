@@ -79,8 +79,7 @@ public class PluginInfoTest {
 		// NB: No implementation needed.
 	}
 
-	@Plugin(type = IceCream.class, name = "vanilla",
-		priority = Priority.LOW)
+	@Plugin(type = IceCream.class, name = "vanilla", priority = Priority.LOW)
 	public static class Vanilla implements SciJavaPlugin {
 		// NB: No implementation needed.
 	}
