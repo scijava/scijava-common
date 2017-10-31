@@ -47,6 +47,7 @@ import org.scijava.prefs.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.text.TextService;
+import org.scijava.ui.UIService;
 import org.scijava.ui.event.UIShownEvent;
 import org.scijava.util.DigestUtils;
 import org.scijava.welcome.event.WelcomeEvent;
@@ -82,6 +83,9 @@ public class DefaultWelcomeService extends AbstractService implements
 
 	@Parameter
 	private EventService eventService;
+
+	@Parameter
+	private UIService uiService;
 
 	@Parameter
 	private PrefService prefService;
@@ -127,7 +131,7 @@ public class DefaultWelcomeService extends AbstractService implements
 	/** Displays the welcome text when a UI is shown for the first time. */
 	@EventHandler
 	protected void onEvent(@SuppressWarnings("unused") final UIShownEvent evt) {
-		if (!isFirstRun()) return;
+		if (uiService.isHeadless() || !isFirstRun()) return;
 		eventService.publish(new WelcomeEvent());
 		setFirstRun(false);
 		displayWelcome(false);
