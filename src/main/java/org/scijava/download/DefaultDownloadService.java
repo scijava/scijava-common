@@ -37,6 +37,7 @@ import java.util.Date;
 
 import org.scijava.io.handle.DataHandle;
 import org.scijava.io.handle.DataHandleService;
+import org.scijava.io.handle.DataHandles;
 import org.scijava.io.location.Location;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -70,7 +71,7 @@ public class DefaultDownloadService extends AbstractService implements
 						destination))
 			{
 				task.setStatusMessage("Downloading " + source.getURI());
-				copy(task, in, out);
+				DataHandles.copy(in, out, task);
 			}
 			catch (final IOException exc) {
 				// TODO: Improve error handling:
@@ -102,13 +103,13 @@ public class DefaultDownloadService extends AbstractService implements
 				if (isCachedHandleValid(source, cache, sourceHandle, cachedHandle)) {
 					// The data is cached; download from the cached source instead.
 					task.setStatusMessage("Retrieving " + source.getURI());
-					copy(task, cachedHandle, destHandle);
+					DataHandles.copy(cachedHandle, destHandle, task);
 				}
 				else {
 					// Data is not yet cached; write to the destination _and_ the cache.
 					task.setStatusMessage("Downloading + caching " + source.getURI());
-					copy(task, sourceHandle, //
-						new MultiWriteHandle(cachedHandle, destHandle));
+					DataHandles.copy(sourceHandle, //
+						new MultiWriteHandle(cachedHandle, destHandle), task);
 				}
 			}
 			catch (final IOException exc) {
@@ -121,31 +122,6 @@ public class DefaultDownloadService extends AbstractService implements
 	}
 
 	// -- Helper methods --
-
-	private void copy(final Task task, final DataHandle<Location> in,
-		final DataHandle<Location> out) throws IOException
-	{
-		long length;
-		try {
-			length = in.length();
-		}
-		catch (final IOException exc) {
-			// Assume unknown length.
-			length = 0;
-		}
-		if (length > 0) task.setProgressMaximum(length);
-
-		final int chunkSize = 64 * 1024; // TODO: Make size configurable.
-		final byte[] buf = new byte[chunkSize];
-		while (true) {
-			if (task.isCanceled()) return;
-			final int r = in.read(buf);
-			if (r <= 0) break; // EOF
-			if (task.isCanceled()) return;
-			out.write(buf, 0, r);
-			if (length > 0) task.setProgressValue(task.getProgressValue() + r);
-		}
-	}
 
 	private boolean isCachedHandleValid(final Location source,
 		final LocationCache cache, final DataHandle<Location> sourceHandle,
