@@ -234,10 +234,13 @@ public final class AppUtils {
 		if (baseSubdirectory != null) basePrefix += baseSubdirectory + "/";
 
 		final String targetClassesSuffix = basePrefix + "target/classes";
-		if (path.endsWith(targetClassesSuffix)) {
-			// NB: The class is a file beneath the Maven build directory
-			// ("target/classes").
-			path = path.substring(0, path.length() - targetClassesSuffix.length());
+		final String targetTestClassesSuffix = basePrefix + "target/test-classes";
+		final String[] suffixes = {targetClassesSuffix, targetTestClassesSuffix};
+		for (final String suffix : suffixes) {
+			if (!path.endsWith(suffix)) continue;
+
+			// NB: The class is a file beneath a Maven build directory.
+			path = path.substring(0, path.length() - suffix.length());
 
 			File dir = new File(path);
 			if (baseSubdirectory == null) {

@@ -54,6 +54,8 @@ public class AppUtilsTest {
 		assertEquals(new File(tmp), AppUtils.getBaseDirectory(new File(
 			tmp + "/app/target/classes"), "app"));
 		assertEquals(new File(tmp), AppUtils.getBaseDirectory(new File(
+			tmp + "/app/target/test-classes"), "app"));
+		assertEquals(new File(tmp), AppUtils.getBaseDirectory(new File(
 			tmp + "/app/target/ij-app-1.57.jar"), "app"));
 	}
 
