@@ -95,6 +95,35 @@ public class ScriptInfoTest {
 
 	// -- Tests --
 
+	/** Tests script identifiers. */
+	@Test
+	public void testGetIdentifier() {
+		final String name = "strategerize";
+
+		final String namedPath = "victory.bsizes";
+		final String named = "" + //
+			"#@script(name = '" + name + "')\n" + //
+			"zxywvutsrqponmlkjihgfdcba\n";
+
+		final String unnamedPath = "alphabet.bsizes";
+		final String unnamed = "" + //
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ\n" + //
+			"0123456789\n";
+
+		// Test named, with explicit path.
+		assertEquals("script:" + name, id(namedPath, named));
+
+		// Test named, and no path given.
+		assertEquals("script:" + name, id(null, named));
+
+		// Test unnamed, with explicit path.
+		assertEquals("script:" + unnamedPath, id(unnamedPath, unnamed));
+
+		// Test unnamed, and no path given.
+		final String hex = DigestUtils.bestHex(unnamed);
+		assertEquals("script:<" + hex + ">", id(null, unnamed));
+	}
+
 	/** Tests whether new-style parameter syntax are parsed correctly. */
 	@Test
 	public void testNewStyle() throws Exception {
@@ -321,6 +350,15 @@ public class ScriptInfoTest {
 		final BufferedReader reader2 = info.getReader();
 
 		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
+	}
+
+	// -- Helper methods --
+
+	private String id(final String path, final String script) {
+		final ScriptInfo info = //
+			new ScriptInfo(context, path, new StringReader(script));
+		info.inputs(); // NB: Force parameter parsing.
+		return info.getIdentifier();
 	}
 
 	private void assertItem(final String name, final Class<?> type,

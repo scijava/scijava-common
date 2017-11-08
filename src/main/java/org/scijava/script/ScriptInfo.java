@@ -359,7 +359,12 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	@Override
 	public String getIdentifier() {
-		return "script:" + (path == null ? "<inline>" : path);
+		final String name = getName();
+		final String prefix = "script:";
+		if (name != null) return prefix + name;
+		if (path != null) return prefix + path;
+		if (script != null) return prefix + "<" + DigestUtils.bestHex(script) + ">";
+		return prefix + "<unknown>";
 	}
 
 	// -- Locatable methods --
