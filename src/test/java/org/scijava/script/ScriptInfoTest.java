@@ -54,8 +54,8 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.ItemIO;
@@ -77,19 +77,19 @@ import org.scijava.util.FileUtils;
  */
 public class ScriptInfoTest {
 
-	private static Context context;
-	private static ScriptService scriptService;
+	private Context context;
+	private ScriptService scriptService;
 
 	// -- Test setup --
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		context = new Context();
 		scriptService = context.service(ScriptService.class);
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		context.dispose();
 	}
 
