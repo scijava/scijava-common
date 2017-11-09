@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,10 +38,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.scijava.io.location.Location;
+import org.scijava.task.Task;
+
 /**
  * Utility methods for working with {@link DataHandle}s.
- * 
+ *
  * @author Curtis Rueden
+ * @author Gabriel Einsdorf
  */
 public final class DataHandles {
 
@@ -107,5 +111,142 @@ public final class DataHandles {
 			throw new IllegalStateException(
 				"No usable DataOutputStream.writeUTF(String, DataOutput)", exc);
 		}
+	}
+
+	/**
+	 * Copies all bytes from the input to the output handle. Reading and writing
+	 * start at the current positions of the handles.
+	 *
+	 * @param in the input handle
+	 * @param out the output handle
+	 * @return the number of bytes copied
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static long copy(final DataHandle<Location> in,
+		final DataHandle<Location> out) throws IOException
+	{
+		return copy(in, out, 0l, null);
+	}
+
+	/**
+	 * Copies all bytes from the input to the output handle, reporting the
+	 * progress to the provided task. Reading and writing start at the current
+	 * positions of the handles.
+	 *
+	 * @param in the input handle
+	 * @param out the output handle
+	 * @param task task to report progress to
+	 * @return the number of bytes copied
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static long copy(final DataHandle<Location> in,
+		final DataHandle<Location> out, final Task task) throws IOException
+	{
+		return copy(in, out, 0l, task);
+	}
+
+	/**
+	 * Copies up to <code>length</code> bytes from the input to the output handle.
+	 * Reading and writing start at the current positions of the handles. Stops
+	 * early if there are no more bytes available from the input handle.
+	 *
+	 * @param in the input handle
+	 * @param out the output handle
+	 * @param length maximum number of bytes to copy; will copy all bytes if set
+	 *          to <code>0</code>
+	 * @return the number of bytes copied
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static long copy(final DataHandle<Location> in,
+		final DataHandle<Location> out, final int length) throws IOException
+	{
+		return copy(in, out, length, null);
+	}
+
+	/**
+	 * Copies up to <code>length</code> bytes from the input to the output handle,
+	 * reporting the progress to the provided task. Reading and writing start at
+	 * the current positions of the handles. Stops early if there are no more
+	 * bytes available from the input handle.
+	 *
+	 * @param in input handle
+	 * @param out the output handle
+	 * @param length maximum number of bytes to copy; will copy all bytes if set
+	 *          to <code>0</code>
+	 * @param task a task object to use for reporting the status of the copy
+	 *          operation. Can be <code>null</code> if no reporting is needed.
+	 * @return the number of bytes copied
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static long copy(final DataHandle<Location> in,
+		final DataHandle<Location> out, final long length, final Task task)
+		throws IOException
+	{
+		return copy(in, out, length, task, 64 * 1024);
+	}
+
+	/**
+	 * Copies up to <code>length</code> bytes from the input to the output handle,
+	 * reporting the progress to the provided task. Reading and writing start at
+	 * the current positions of the handles. Stops early if there are no more
+	 * bytes available from the input handle. Uses a buffer of the provided size,
+	 * instead of using the default size.
+	 *
+	 * @param in input handle
+	 * @param out the output handle
+	 * @param length maximum number of bytes to copy, will copy all bytes if set
+	 *          to <code>0</code>
+	 * @param task a task object to use for reporting the status of the copy
+	 *          operation. Can be <code>null</code> if no reporting is needed.
+	 * @return the number of bytes copied
+	 * @throws IOException if an I/O error occurs.
+	 */
+	public static long copy(final DataHandle<Location> in,
+		final DataHandle<Location> out, final long length, final Task task,
+		final int bufferSize) throws IOException
+	{
+
+		// get length of input
+		final long inputlength;
+		{
+			long i = 0;
+			try {
+				i = in.length();
+			}
+			catch (final IOException exc) {
+				// Assume unknown length.
+				i = 0;
+			}
+			inputlength = i;
+		}
+
+		if (task != null) {
+			if (length > 0) task.setProgressMaximum(length);
+			else if (inputlength > 0) task.setProgressMaximum(inputlength);
+		}
+
+		final byte[] buffer = new byte[bufferSize];
+		long totalRead = 0;
+
+		while (true) {
+			if (task != null && task.isCanceled()) break;
+			final int r;
+			// ensure we do not read more than required into the buffer
+			if (length > 0 && totalRead + bufferSize > length) {
+				int remaining = (int) (length - totalRead);
+				r = in.read(buffer, 0, remaining);
+			}
+			else {
+				r = in.read(buffer);
+			}
+			if (r <= 0) break; // EOF
+			if (task != null && task.isCanceled()) break;
+			out.write(buffer, 0, r);
+			totalRead += r;
+			if (task != null) {
+				task.setProgressValue(task.getProgressValue() + r);
+			}
+		}
+		return totalRead;
 	}
 }
