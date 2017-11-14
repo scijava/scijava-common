@@ -32,12 +32,16 @@
 
 package org.scijava.io.handle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.scijava.io.handle.DataHandle;
-import org.scijava.io.handle.FileHandle;
+import org.junit.Test;
+import org.scijava.Context;
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
 
@@ -62,4 +66,27 @@ public class FileHandleTest extends DataHandleTest {
 		return new FileLocation(tmpFile);
 	}
 
+	@Test
+	public void testExists() throws IOException {
+		final Context ctx = new Context();
+		final DataHandleService dhs = ctx.service(DataHandleService.class);
+
+		final File nonExistentFile = //
+			File.createTempFile("FileHandleTest", "nonexistent-file");
+		assertTrue(nonExistentFile.delete());
+		assertFalse(nonExistentFile.exists());
+
+		final FileLocation loc = new FileLocation(nonExistentFile);
+		final DataHandle<?> handle = dhs.create(loc);
+		assertTrue(handle instanceof FileHandle);
+		assertFalse(handle.exists());
+		assertEquals(-1, handle.length());
+
+		handle.writeBoolean(true);
+		assertTrue(handle.exists());
+		assertEquals(1, handle.length());
+
+		// Clean up.
+		assertTrue(nonExistentFile.delete());
+	}
 }
