@@ -290,7 +290,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	@Override
 	public void close() throws IOException {
-		raf().close();
+		if (raf != null) raf().close();
 	}
 
 	// -- Typed methods --
