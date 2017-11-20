@@ -89,4 +89,23 @@ public class FileHandleTest extends DataHandleTest {
 		// Clean up.
 		assertTrue(nonExistentFile.delete());
 	}
+
+	@Test
+	public void testNotCreatedByClose() throws IOException {
+		final Context ctx = new Context();
+		final DataHandleService dhs = ctx.service(DataHandleService.class);
+
+		final File nonExistentFile = //
+			File.createTempFile("FileHandleTest", "nonexistent-file");
+		assertTrue(nonExistentFile.delete());
+		assertFalse(nonExistentFile.exists());
+
+		final FileLocation loc = new FileLocation(nonExistentFile);
+		final DataHandle<?> handle = dhs.create(loc);
+		assertTrue(handle instanceof FileHandle);
+		assertFalse(handle.exists());
+
+		handle.close();
+		assertFalse(nonExistentFile.exists());
+	}
 }
