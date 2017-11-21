@@ -55,6 +55,9 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	/** The mode of the {@link RandomAccessFile}. */
 	private String mode = "rw";
 
+	/** True iff the {@link #close()} has already been called. */
+	private boolean closed;
+
 	// -- FileHandle methods --
 
 	/** Gets the random access file object backing this FileHandle. */
@@ -289,8 +292,9 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	// -- Closeable methods --
 
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		if (raf != null) raf().close();
+		closed = true;
 	}
 
 	// -- Typed methods --
@@ -308,6 +312,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	private synchronized void initRAF() throws IOException {
+		if (closed) throw new IOException("Handle already closed");
 		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
 	}
