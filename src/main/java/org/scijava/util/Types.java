@@ -1416,7 +1416,7 @@ public final class Types {
 				// parameters must either be absent from the subject type, within
 				// the bounds of the wildcard type, or be an exact match to the
 				// parameters of the target type.
-				if (fromTypeArg != null && !toTypeArg.equals(fromTypeArg) &&
+				if (fromTypeArg != null && !fromTypeArg.equals(toTypeArg) &&
 					!(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg,
 						toTypeArg, typeVarAssigns)))
 				{
