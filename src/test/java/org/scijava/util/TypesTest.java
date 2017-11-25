@@ -510,6 +510,31 @@ public class TypesTest {
 		Types.isAssignable(Object.class, null);
 	}
 
+	/** Tests {@link Types#isAssignable(Type, Type)} with type variable. */
+	@Test
+	public <T extends Number> void testIsAssignableT() {
+		final Type t = new Nil<T>() {}.getType();
+		final Type listT = new Nil<List<T>>() {}.getType();
+		final Type listNumber = new Nil<List<Number>>() {}.getType();
+		final Type listInteger = new Nil<List<Integer>>() {}.getType();
+		final Type listExtendsNumber = new Nil<List<? extends Number>>() {}.getType();
+
+		assertTrue(Types.isAssignable(t, t));
+		assertTrue(Types.isAssignable(listT, listT));
+		assertTrue(Types.isAssignable(listNumber, listNumber));
+		assertTrue(Types.isAssignable(listInteger, listInteger));
+		assertTrue(Types.isAssignable(listExtendsNumber, listExtendsNumber));
+
+		assertTrue(Types.isAssignable(listT, listExtendsNumber));
+		assertTrue(Types.isAssignable(listNumber, listExtendsNumber));
+		assertTrue(Types.isAssignable(listInteger, listExtendsNumber));
+
+		assertFalse(Types.isAssignable(listNumber, listT));
+		assertFalse(Types.isAssignable(listInteger, listT));
+		assertFalse(Types.isAssignable(listExtendsNumber, listT));
+		assertFalse(Types.isAssignable(listExtendsNumber, listNumber));
+	}
+
 	/** Tests {@link Types#isInstance(Object, Class)}. */
 	@Test
 	public void testIsInstance() {
