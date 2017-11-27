@@ -34,6 +34,7 @@ package org.scijava.io.location;
 
 import org.scijava.io.ByteArrayByteBank;
 import org.scijava.io.ByteBank;
+import org.scijava.io.handle.DataHandle;
 import org.scijava.util.ByteArray;
 
 /**
@@ -57,8 +58,9 @@ public class BytesLocation extends AbstractLocation {
 	}
 
 	/**
-	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
-	 * with the specified initial capacity.
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
+	 * the specified initial capacity, but with a reported size of 0. This method
+	 * can be used to avoid needing to grow the underlying {@link ByteBank}.
 	 */
 	public BytesLocation(final int initialCapacity) {
 		this.bytes = new ByteArrayByteBank(initialCapacity);
@@ -84,7 +86,11 @@ public class BytesLocation extends AbstractLocation {
 
 	/**
 	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
-	 * the specified initial capacity.
+	 * the specified initial capacity and the provided data.
+	 * 
+	 * @param bytes the bytes to copy into the new {@link BytesLocation}
+	 * @param offset the offset in the bytes array to start copying from
+	 * @param length the number of bytes to copy, starting from the offset
 	 */
 	public BytesLocation(final byte[] bytes, final int offset,
 		final int length)
