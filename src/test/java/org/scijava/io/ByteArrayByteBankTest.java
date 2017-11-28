@@ -32,6 +32,8 @@
 
 package org.scijava.io;
 
+import org.junit.Test;
+
 /**
  * Tests {@link ByteArrayByteBank}
  *
@@ -43,5 +45,11 @@ public class ByteArrayByteBankTest extends ByteBankTest {
 	@Override
 	public ByteBank createByteBank() {
 		return new ByteArrayByteBank();
+	}
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
+	public void testCreateByteBankWithCapacity() {
+		ByteArrayByteBank bank = new ByteArrayByteBank(50);
+		bank.getByte(0);
 	}
 }

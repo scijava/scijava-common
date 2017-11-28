@@ -58,7 +58,7 @@ public class ByteArrayByteBank implements ByteBank {
 	 * @param initialCapacity the initial capacity of this {@link ByteBank}
 	 */
 	public ByteArrayByteBank(final int initialCapacity) {
-		this(new ByteArray(initialCapacity));
+		this(emptyByteArrayOfCapacity(initialCapacity));
 	}
 
 	/**
@@ -147,5 +147,11 @@ public class ByteArrayByteBank implements ByteBank {
 
 	private void updateSize(final long newSize) {
 		size = newSize > size ? newSize : size;
+	}
+
+	private static ByteArray emptyByteArrayOfCapacity(final int capacity) {
+		final ByteArray byteArray = new ByteArray(new byte[capacity]);
+		byteArray.setSize(0);
+		return byteArray;
 	}
 }
