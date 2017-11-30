@@ -412,6 +412,30 @@ public final class FileUtils {
 	 * 
 	 * @param prefix The prefix string to be used in generating the file's name;
 	 *          see {@link File#createTempFile(String, String, File)}
+	 * @return An abstract pathname denoting a newly-created empty directory
+	 * @throws IOException
+	 */
+	public static File createTemporaryDirectory(final String prefix)
+		throws IOException
+	{
+		return createTemporaryDirectory(prefix, null, null);
+	}
+
+	/**
+	 * Creates a temporary directory.
+	 * <p>
+	 * Since there is no atomic operation to do that, we create a temporary file,
+	 * delete it and create a directory in its place. To avoid race conditions, we
+	 * use the optimistic approach: if the directory cannot be created, we try to
+	 * obtain a new temporary file rather than erroring out.
+	 * </p>
+	 * <p>
+	 * It is the caller's responsibility to make sure that the directory is
+	 * deleted; see {@link #deleteRecursively(File)}.
+	 * </p>
+	 * 
+	 * @param prefix The prefix string to be used in generating the file's name;
+	 *          see {@link File#createTempFile(String, String, File)}
 	 * @param suffix The suffix string to be used in generating the file's name;
 	 *          see {@link File#createTempFile(String, String, File)}
 	 * @return An abstract pathname denoting a newly-created empty directory
