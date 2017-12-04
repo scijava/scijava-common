@@ -2,6 +2,8 @@ package org.scijava.log;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -200,6 +202,15 @@ public class LogServiceTest {
 		listener.hasLogged(m -> msg2.equals(m.text()));
 	}
 
+	@Test
+	public void testLogListenerIsNotifiedOnce() {
+		List<LogMessage> list = new ArrayList<>();
+		LogService logService = new TestableLogService();
+		logService.addLogListener(list::add);
+		logService.error("dummy");
+		assertEquals(1, list.size());
+	}
+
 	// -- Helper classes --
 
 	private static class MyTestClass {
@@ -241,7 +252,7 @@ public class LogServiceTest {
 		}
 
 		@Override
-		public void notifyListeners(LogMessage message) {
+		protected void messageLogged(LogMessage message) {
 			this.message = message.toString();
 			this.exception = message.throwable();
 		}

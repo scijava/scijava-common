@@ -61,7 +61,7 @@ public class StderrLogService extends AbstractLogService {
 	}
 
 	@Override
-	public void notifyListeners(LogMessage message) {
+	protected void messageLogged(LogMessage message) {
 		final PrintStream out = levelToStream.apply(message.level());
 		out.print(message);
 	}
