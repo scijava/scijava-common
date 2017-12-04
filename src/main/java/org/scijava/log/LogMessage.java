@@ -129,20 +129,12 @@ public class LogMessage {
 
 	@Override
 	public String toString() {
-		return format(this);
-	}
-
-	// -- Utility methods --
-
-	public static String format(final LogMessage message) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter printer = new PrintWriter(sw);
-		printer.print("[" + message.time() + "] ");
-		printer.print("[" + LogLevel.prefix(message.level()) + "] ");
-		printer.print("[" + message.source() + "] ");
-		printer.println(message.text());
-		if (message.throwable() != null) {
-			message.throwable().printStackTrace(printer);
+		printer.print("[" + LogLevel.prefix(level()) + "] ");
+		printer.println(text());
+		if (throwable() != null) {
+			throwable().printStackTrace(printer);
 		}
 		return sw.toString();
 	}

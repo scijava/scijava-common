@@ -90,6 +90,8 @@ public abstract class AbstractLogService extends AbstractService implements
 		rootLogger.getSource().subSource(source).setLogLevel(level);
 	}
 
+	abstract protected void messageLogged(LogMessage message);
+
 	// -- Logger methods --
 
 	@Override
@@ -184,7 +186,7 @@ public abstract class AbstractLogService extends AbstractService implements
 	private class RootLogger extends DefaultLogger {
 
 		public RootLogger() {
-			super(AbstractLogService.this::notifyListeners, LogSource.newRoot(),
+			super(AbstractLogService.this::messageLogged, LogSource.newRoot(),
 				LogLevel.NONE);
 		}
 
