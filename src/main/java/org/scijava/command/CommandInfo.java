@@ -300,9 +300,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			return loadClass();
 		}
 		catch (final InstantiableException exc) {
-			final ClassNotFoundException cnfe = new ClassNotFoundException();
-			cnfe.initCause(exc);
-			throw cnfe;
+			throw new ClassNotFoundException(null, exc);
 		}
 	}
 
