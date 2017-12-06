@@ -54,12 +54,14 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.ItemIO;
 import org.scijava.ItemVisibility;
+import org.scijava.MenuPath;
+import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Plugin;
@@ -67,26 +69,60 @@ import org.scijava.test.TestUtils;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
 
-/** Tests {@link ScriptInfo}. */
+/**
+ * Tests {@link ScriptInfo}.
+ * 
+ * @author Curtis Rueden
+ * @author Mark Hiner
+ */
 public class ScriptInfoTest {
 
-	private static Context context;
-	private static ScriptService scriptService;
+	private Context context;
+	private ScriptService scriptService;
 
 	// -- Test setup --
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		context = new Context();
 		scriptService = context.service(ScriptService.class);
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		context.dispose();
 	}
 
 	// -- Tests --
+
+	/** Tests script identifiers. */
+	@Test
+	public void testGetIdentifier() {
+		final String name = "strategerize";
+
+		final String namedPath = "victory.bsizes";
+		final String named = "" + //
+			"#@script(name = '" + name + "')\n" + //
+			"zxywvutsrqponmlkjihgfdcba\n";
+
+		final String unnamedPath = "alphabet.bsizes";
+		final String unnamed = "" + //
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ\n" + //
+			"0123456789\n";
+
+		// Test named, with explicit path.
+		assertEquals("script:" + name, id(namedPath, named));
+
+		// Test named, and no path given.
+		assertEquals("script:" + name, id(null, named));
+
+		// Test unnamed, with explicit path.
+		assertEquals("script:" + unnamedPath, id(unnamedPath, unnamed));
+
+		// Test unnamed, and no path given.
+		final String hex = DigestUtils.bestHex(unnamed);
+		assertEquals("script:<" + hex + ">", id(null, unnamed));
+	}
 
 	/** Tests whether new-style parameter syntax are parsed correctly. */
 	@Test
@@ -264,6 +300,67 @@ public class ScriptInfoTest {
 		}
 	}
 
+	/** Tests {@code #@script} directives. */
+	@Test
+	public void testScriptDirective() {
+		final String script = "" + //
+			"#@script(name = \"my_script\"" + //
+			", label = \"My Script\"" + //
+			", description = \"What a great script.\"" + //
+			", menuPath = \"Plugins > Do All The Things\"" + //
+			", menuRoot = \"special\"" + //
+			", iconPath = \"/path/to/myIcon.png\"" + //
+			", priority = \"extremely-high\"" + //
+			", headless = true" + //
+			", foo = \"bar\"" + //
+			")\n" +
+			"WOOT\n";
+
+		ScriptInfo info = null;
+		info =
+			new ScriptInfo(context, "scriptHeader.bsizes", new StringReader(script));
+		info.inputs(); // HACK: Force lazy initialization.
+
+		assertEquals("my_script", info.getName());
+		assertEquals("My Script", info.getLabel());
+		assertEquals("What a great script.", info.getDescription());
+		final MenuPath menuPath = info.getMenuPath();
+		assertEquals(2, menuPath.size());
+		assertEquals("Plugins", menuPath.get(0).getName());
+		assertEquals("Do All The Things", menuPath.get(1).getName());
+		assertEquals("/path/to/myIcon.png", info.getIconPath());
+		assertEquals(Priority.EXTREMELY_HIGH, info.getPriority(), 0.0);
+		assertTrue(info.canRunHeadless());
+		assertEquals("bar", info.get("foo"));
+	}
+
+	/**
+	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
+	 * script.
+	 */
+	@Test
+	public void testReaderSanity() throws Exception {
+		final String script = "" + //
+			"% @LogService log\n" + //
+			"% @OUTPUT Integer output";
+
+		final ScriptInfo info =
+			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
+		final BufferedReader reader1 = info.getReader();
+		final BufferedReader reader2 = info.getReader();
+
+		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
+	}
+
+	// -- Helper methods --
+
+	private String id(final String path, final String script) {
+		final ScriptInfo info = //
+			new ScriptInfo(context, path, new StringReader(script));
+		info.inputs(); // NB: Force parameter parsing.
+		return info.getIdentifier();
+	}
+
 	private void assertItem(final String name, final Class<?> type,
 		final String label, final ItemIO ioType, final boolean required,
 		final boolean persist, final String persistKey, final String style,
@@ -286,25 +383,6 @@ public class ScriptInfoTest {
 		assertEquals(softMax, item.getSoftMaximum());
 		assertEquals(stepSize, item.getStepSize());
 		assertEquals(choices, item.getChoices());
-	}
-
-	/**
-	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
-	 * script.
-	 */
-	@Test
-	public void testReaderSanity() throws Exception {
-		final String script = "" + //
-			"% @LogService log\n" + //
-			"% @OUTPUT Integer output";
-
-		final ScriptInfo info =
-			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
-		final BufferedReader reader1 = info.getReader();
-		final BufferedReader reader2 = info.getReader();
-
-		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
-
 	}
 
 	@Plugin(type = ScriptLanguage.class)

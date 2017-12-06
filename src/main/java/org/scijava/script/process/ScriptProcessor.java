@@ -32,7 +32,7 @@
 
 package org.scijava.script.process;
 
-import org.scijava.plugin.SingletonPlugin;
+import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.script.ScriptInfo;
 
 /**
@@ -46,7 +46,7 @@ import org.scijava.script.ScriptInfo;
  * 
  * @author Curtis Rueden
  */
-public interface ScriptProcessor extends SingletonPlugin {
+public interface ScriptProcessor extends SciJavaPlugin {
 
 	void begin(ScriptInfo info);
 	String process(String line);

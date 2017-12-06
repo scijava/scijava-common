@@ -32,7 +32,7 @@
 
 package org.scijava.script.process;
 
-import org.scijava.plugin.AbstractSingletonService;
+import org.scijava.plugin.AbstractPTService;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
@@ -43,8 +43,7 @@ import org.scijava.service.Service;
  */
 @Plugin(type = Service.class)
 public class DefaultScriptProcessorService extends
-	AbstractSingletonService<ScriptProcessor> implements
-	ScriptProcessorService
+	AbstractPTService<ScriptProcessor> implements ScriptProcessorService
 {
 	// NB: No implementation needed.
 }

@@ -36,7 +36,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.scijava.plugin.PTService;
 import org.scijava.script.ScriptInfo;
@@ -58,8 +57,8 @@ public interface ScriptProcessorService extends
 	 * line in sequence.
 	 */
 	default String process(final ScriptInfo info) throws IOException {
-		final List<ScriptProcessor> processors = getPlugins().stream().map(
-			p -> pluginService().createInstance(p)).collect(Collectors.toList());
+		final List<ScriptProcessor> processors = //
+			pluginService().createInstances(getPlugins());
 
 		BufferedReader reader = info.getReader();
 		if (reader == null) {
