@@ -521,6 +521,6 @@ public class DefaultModuleService extends AbstractService implements
 	private String prefKey(final ModuleItem<?> item) {
 		final String persistKey = item.getPersistKey();
 		return persistKey == null || persistKey.isEmpty() ? //
-			persistKey : item.getName();
+			item.getName() : persistKey;
 	}
 }
