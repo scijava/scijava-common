@@ -294,6 +294,7 @@ public class DefaultModuleService extends AbstractService implements
 			// NB: Do not persist the value if it is the default.
 			// This is nice if the default value might change later,
 			// such as when iteratively developing a script.
+			prefService.remove(prefClass(item), prefKey(item));
 			return;
 		}
 
