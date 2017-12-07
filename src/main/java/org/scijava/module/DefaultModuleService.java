@@ -302,13 +302,7 @@ public class DefaultModuleService extends AbstractService implements
 		// do not persist if object cannot be converted back from a string
 		if (!convertService.supports(sValue, item.getType())) return;
 
-		final String persistKey = item.getPersistKey();
-		if (persistKey == null || persistKey.isEmpty()) {
-			final Class<?> prefClass = delegateClass(item);
-			final String prefKey = item.getName();
-			prefService.put(prefClass, prefKey, sValue);
-		}
-		else prefService.put(persistKey, sValue);
+		prefService.put(prefClass(item), prefKey(item), sValue);
 	}
 
 	@Override
@@ -316,14 +310,7 @@ public class DefaultModuleService extends AbstractService implements
 		// if there is nothing to load from persistence return nothing
 		if (!item.isPersisted()) return null;
 
-		final String sValue;
-		final String persistKey = item.getPersistKey();
-		if (persistKey == null || persistKey.isEmpty()) {
-			final Class<?> prefClass = delegateClass(item);
-			final String prefKey = item.getName();
-			sValue = prefService.get(prefClass, prefKey);
-		}
-		else sValue = prefService.get(persistKey);
+		final String sValue = prefService.get(prefClass(item), prefKey(item));
 
 		// if persisted value has never been set before return null
 		if (sValue == null) return null;
@@ -524,4 +511,15 @@ public class DefaultModuleService extends AbstractService implements
 		}
 	}
 
+	private Class<?> prefClass(final ModuleItem<?> item) {
+		final String persistKey = item.getPersistKey();
+		return persistKey == null || persistKey.isEmpty() ? //
+			delegateClass(item) : null;
+	}
+
+	private String prefKey(final ModuleItem<?> item) {
+		final String persistKey = item.getPersistKey();
+		return persistKey == null || persistKey.isEmpty() ? //
+			persistKey : item.getName();
+	}
 }
