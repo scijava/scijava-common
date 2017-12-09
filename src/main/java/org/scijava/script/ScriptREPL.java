@@ -134,22 +134,38 @@ public class ScriptREPL {
 		}
 	}
 
-	/** Outputs a greeting, and sets up the initial language of the REPL. */
+	/**
+	 * Outputs a greeting, and sets up the initial language and variables of the
+	 * REPL.
+	 */
 	public void initialize() {
-		out.println("Welcome to the SciJava REPL!");
-		out.println();
-		help();
-		final List<ScriptLanguage> langs = getInterpretedLanguages();
-		if (langs.isEmpty()) {
-			out.println("--------------------------------------------------------------");
-			out.println("Uh oh! There are no SciJava script languages available!");
-			out.println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
-			out.println("--------------------------------------------------------------");
+		initialize(true);
+	}
+
+	/**
+	 * Sets up the initial language and variables of the REPL.
+	 * 
+	 * @param verbose Whether to output an initial greeting.
+	 */
+	public void initialize(final boolean verbose) {
+		if (verbose) {
+			out.println("Welcome to the SciJava REPL!");
 			out.println();
-			return;
+			help();
 		}
-		out.println("Have fun!");
-		out.println();
+		final List<ScriptLanguage> langs = getInterpretedLanguages();
+		if (verbose) {
+			if (langs.isEmpty()) {
+				out.println("--------------------------------------------------------------");
+				out.println("Uh oh! There are no SciJava script languages available!");
+				out.println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
+				out.println("--------------------------------------------------------------");
+				out.println();
+				return;
+			}
+			out.println("Have fun!");
+			out.println();
+		}
 		lang(langs.get(0).getLanguageName());
 		populateBindings(interpreter.getBindings());
 	}
@@ -249,6 +265,17 @@ public class ScriptREPL {
 			out.println("No such language: " + langName);
 			return;
 		}
+		lang(language);
+		out.println("language -> " + interpreter.getLanguage().getLanguageName());
+	}
+
+	/**
+	 * Creates a new {@link ScriptInterpreter} to interpret statements, preserving
+	 * existing variables from the previous interpreter.
+	 * 
+	 * @param language The script language of the new interpreter.
+	 */
+	public void lang(final ScriptLanguage language) {
 		final ScriptInterpreter newInterpreter =
 			new DefaultScriptInterpreter(language);
 
@@ -259,8 +286,6 @@ public class ScriptREPL {
 		catch (final Throwable t) {
 			t.printStackTrace(out);
 		}
-		out.println("language -> " +
-			newInterpreter.getLanguage().getLanguageName());
 		interpreter = newInterpreter;
 	}
 
