@@ -79,15 +79,15 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Clears the node indexed under the given class.
 	 */
-	void clear(Class<?> prefClass, String key);
+	void clear(Class<?> prefClass, String name);
 
 	/** Removes the node. */
-	void remove(Class<?> prefClass, String key);
+	void remove(Class<?> prefClass, String name);
 
 	/**
 	 * Puts a Map into the preferences, indexed under the specified class.
 	 */
-	void putMap(Class<?> prefClass, Map<String, String> map, String key);
+	void putMap(Class<?> prefClass, Map<String, String> map, String name);
 
 	/**
 	 * Puts a Map into the preferences, indexed under the given class.
@@ -97,7 +97,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Gets a map from the preferences, indexed under the specified class.
 	 */
-	Map<String, String> getMap(Class<?> prefClass, String key);
+	Map<String, String> getMap(Class<?> prefClass, String name);
 
 	/** Gets a Map from the preferences. */
 	Map<String, String> getMap(Class<?> prefClass);
@@ -105,7 +105,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Puts a list into the preferences, indexed under the specified class.
 	 */
-	void putList(Class<?> prefClass, List<String> list, String key);
+	void putList(Class<?> prefClass, List<String> list, String name);
 
 	/** Puts a list into the preferences. */
 	void putList(Class<?> prefClass, List<String> list);
@@ -113,7 +113,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Gets a List from the preferences, indexed under the specified class.
 	 */
-	List<String> getList(Class<?> prefClass, String key);
+	List<String> getList(Class<?> prefClass, String name);
 
 	/**
 	 * Gets a List from the preferences. Returns an empty list if nothing in
@@ -124,12 +124,12 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Puts an iterable into the preferences.
 	 */
-	void putIterable(Class<?> prefClass, Iterable<String> iterable, String key);
+	void putIterable(Class<?> prefClass, Iterable<String> iterable, String name);
 
 	/**
 	 * Gets an iterable from the preferences.
 	 */
-	Iterable<String> getIterable(Class<?> prefClass, String key);
+	Iterable<String> getIterable(Class<?> prefClass, String name);
 
 	// -- Deprecated methods --
 
