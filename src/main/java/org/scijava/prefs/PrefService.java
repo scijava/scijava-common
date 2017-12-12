@@ -45,30 +45,43 @@ import org.scijava.service.Service;
  */
 public interface PrefService extends SciJavaService {
 
+	@Deprecated
 	String get(String name);
 
+	@Deprecated
 	String get(String name, String defaultValue);
 
+	@Deprecated
 	boolean getBoolean(String name, boolean defaultValue);
 
+	@Deprecated
 	double getDouble(String name, double defaultValue);
 
+	@Deprecated
 	float getFloat(String name, float defaultValue);
 
+	@Deprecated
 	int getInt(String name, int defaultValue);
 
+	@Deprecated
 	long getLong(String name, long defaultValue);
 
+	@Deprecated
 	void put(String name, String value);
 
+	@Deprecated
 	void put(String name, boolean value);
 
+	@Deprecated
 	void put(String name, double value);
 
+	@Deprecated
 	void put(String name, float value);
 
+	@Deprecated
 	void put(String name, int value);
 
+	@Deprecated
 	void put(String name, long value);
 
 	String get(Class<?> c, String name);
@@ -103,6 +116,7 @@ public interface PrefService extends SciJavaService {
 	void clearAll();
 
 	/** Clears the node. */
+	@Deprecated
 	void clear(String key);
 
 	/**
@@ -113,14 +127,17 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Clears the ndoe indexed under the given path.
 	 */
+	@Deprecated
 	void clear(String absolutePath, String key);
 
 	/** Removes the node. */
 	void remove(Class<?> prefClass, String key);
 
+	@Deprecated
 	void remove(String absolutePath, String key);
 
 	/** Puts a Map into the preferences. */
+	@Deprecated
 	void putMap(Map<String, String> map, String key);
 
 	/**
@@ -131,6 +148,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Puts a Map into the preferences, indexed under the given path.
 	 */
+	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map);
 
 	/**
@@ -142,9 +160,11 @@ public interface PrefService extends SciJavaService {
 	 * Puts a Map into the preferences, indexed under the given path and
 	 * relative key path.
 	 */
+	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map, String key);
 
 	/** Gets a Map from the preferences. */
+	@Deprecated
 	Map<String, String> getMap(String key);
 
 	/**
@@ -155,9 +175,11 @@ public interface PrefService extends SciJavaService {
 	/** Gets a Map from the preferences. */
 	Map<String, String> getMap(Class<?> prefClass);
 
+	@Deprecated
 	Map<String, String> getMap(String absolutePath, String key);
 
 	/** Puts a list into the preferences. */
+	@Deprecated
 	void putList(List<String> list, String key);
 
 	/**
@@ -169,20 +191,24 @@ public interface PrefService extends SciJavaService {
 	 * Puts a list into the preferences, indexed under the specified path and
 	 * relative key.
 	 */
+	@Deprecated
 	void putList(String absolutePath, List<String> list, String key);
 
 	/** Puts a list into the preferences. */
 	void putList(Class<?> prefClass, List<String> list);
 
 	/** Puts a list into the preferences, indexed under the specified path. */
+	@Deprecated
 	void putList(String absolutePath, List<String> list);
 
 	/** Gets a List from the preferences. */
+	@Deprecated
 	List<String> getList(String key);
 
 	/**
 	 * Gets a List from the preferences, indexed under the specified path.
 	 */
+	@Deprecated
 	List<String> getList(String absolutePath, String key);
 
 	/**
@@ -199,6 +225,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Puts an iterable into the preferences.
 	 */
+	@Deprecated
 	void putIterable(Iterable<String> iterable, String key);
 
 	/**
@@ -209,6 +236,7 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Gets an iterable from the preferences.
 	 */
+	@Deprecated
 	Iterable<String> getIterable(String key);
 
 	/**
