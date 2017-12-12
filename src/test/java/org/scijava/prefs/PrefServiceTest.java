@@ -142,7 +142,7 @@ public class PrefServiceTest {
 	}
 
 	/**
-	 * Tests {@link PrefService#putMap(Class, Map, String)} and
+	 * Tests {@link PrefService#put(Class, String, Map)} and
 	 * {@link PrefService#getMap(Class, String)}.
 	 */
 	@Test
@@ -153,25 +153,25 @@ public class PrefServiceTest {
 		map.put("2", "C");
 		map.put("3", "D");
 		map.put("5", "f");
-		final String mapKey = "MapKey";
-		prefService.putMap(getClass(), map, mapKey);
-		final Map<String, String> result = prefService.getMap(getClass(), mapKey);
+		final String mapName = "MapKey";
+		prefService.put(getClass(), mapName, map);
+		final Map<String, String> result = prefService.getMap(getClass(), mapName);
 		assertEquals(map, result);
 	}
 
 	/**
-	 * Tests {@link PrefService#putList(Class, List, String)} and
+	 * Tests {@link PrefService#put(Class, String, List)} and
 	 * {@link PrefService#getList(Class, String)}.
 	 */
 	@Test
 	public void testList() {
-		final String recentFilesKey = "RecentFiles";
+		final String recentFilesName = "RecentFiles";
 		final List<String> recentFiles = new ArrayList<>();
 		recentFiles.add("some/path1");
 		recentFiles.add("some/path2");
 		recentFiles.add("some/path3");
-		prefService.putList(getClass(), recentFiles, recentFilesKey);
-		final List<String> result = prefService.getList(getClass(), recentFilesKey);
+		prefService.put(getClass(), recentFilesName, recentFiles);
+		final List<String> result = prefService.getList(getClass(), recentFilesName);
 		assertEquals(recentFiles, result);
 	}
 
@@ -190,8 +190,8 @@ public class PrefServiceTest {
 			"zyxwvutsrqponmlkjihgfedcba";
 		final String lyrics =
 			"Now I know my ABC's. Next time won't you sing with me?";
-		prefService.put(longKey, lyrics);
-		final String recovered = prefService.get(longKey);
+		prefService.put(getClass(), longKey, lyrics);
+		final String recovered = prefService.get(getClass(), longKey);
 		assertEquals(lyrics, recovered);
 	}
 
