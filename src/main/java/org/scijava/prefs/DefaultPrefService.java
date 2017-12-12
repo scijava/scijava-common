@@ -106,6 +106,16 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
+	public Map<String, String> getMap(final Class<?> c, final String name) {
+		return prefs(c).node(key(c, name)).getMap();
+	}
+
+	@Override
+	public List<String> getList(final Class<?> c, final String name) {
+		return prefs(c).node(key(c, name)).getList();
+	}
+
+	@Override
 	public void put(final Class<?> c, final String name, final String value) {
 		prefs(c).put(key(c, name), value);
 	}
@@ -136,6 +146,20 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
+	public void put(final Class<?> c, final String name,
+		final Map<String, String> value)
+	{
+		prefs(c).node(key(c, name)).putMap(value);
+	}
+
+	@Override
+	public void put(final Class<?> c, final String name,
+		final List<String> value)
+	{
+		prefs(c).node(key(c, name)).putList(value);
+	}
+
+	@Override
 	public void clear(final Class<?> c) {
 		prefs(c).clear();
 	}
@@ -156,46 +180,41 @@ public class DefaultPrefService extends AbstractPrefService {
 		prefs(prefClass).remove(key(prefClass, name));
 	}
 
+	@Deprecated
 	@Override
 	public void putMap(final Class<?> prefClass, final Map<String, String> map,
 		final String name)
 	{
-		prefs(prefClass).node(key(prefClass, name)).putMap(map);
+		put(prefClass, name, map);
 	}
 
+	@Deprecated
 	@Override
 	public void putMap(final Class<?> prefClass, final Map<String, String> map) {
 		prefs(prefClass).putMap(map);
 	}
 
-	@Override
-	public Map<String, String> getMap(final Class<?> prefClass, final String name)
-	{
-		return prefs(prefClass).node(key(prefClass, name)).getMap();
-	}
-
+	@Deprecated
 	@Override
 	public Map<String, String> getMap(final Class<?> prefClass) {
 		return prefs(prefClass).getMap();
 	}
 
+	@Deprecated
 	@Override
 	public void putList(final Class<?> prefClass, final List<String> list,
 		final String name)
 	{
-		prefs(prefClass).node(key(prefClass, name)).putList(list);
+		put(prefClass, name, list);
 	}
 
+	@Deprecated
 	@Override
 	public void putList(final Class<?> prefClass, final List<String> list) {
 		prefs(prefClass).putList(list);
 	}
 
-	@Override
-	public List<String> getList(final Class<?> prefClass, final String name) {
-		return prefs(prefClass).node(key(prefClass, name)).getList();
-	}
-
+	@Deprecated
 	@Override
 	public List<String> getList(final Class<?> prefClass) {
 		return prefs(prefClass).getList();
@@ -207,8 +226,14 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String name) {
+	public void putIterable(final Class<?> prefClass, final String name, final Iterable<String> iterable) {
 		prefs(prefClass).node(key(prefClass, name)).putIterable(iterable);
+	}
+
+	@Deprecated
+	@Override
+	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String name) {
+		putIterable(prefClass, name, iterable);
 	}
 
 	// -- Deprecated methods --

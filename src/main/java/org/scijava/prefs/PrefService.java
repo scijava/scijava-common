@@ -59,6 +59,10 @@ public interface PrefService extends SciJavaService {
 
 	long getLong(Class<?> c, String name, long defaultValue);
 
+	Map<String, String> getMap(Class<?> c, String name);
+
+	List<String> getList(Class<?> c, String name);
+
 	void put(Class<?> c, String name, String value);
 
 	void put(Class<?> c, String name, boolean value);
@@ -70,6 +74,10 @@ public interface PrefService extends SciJavaService {
 	void put(Class<?> c, String name, int value);
 
 	void put(Class<?> c, String name, long value);
+
+	void put(Class<?> c, String name, Map<String, String> value);
+
+	void put(Class<?> c, String name, List<String> list);
 
 	void clear(Class<?> c);
 
@@ -87,48 +95,51 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Puts a Map into the preferences, indexed under the specified class.
 	 */
+	@Deprecated
 	void putMap(Class<?> prefClass, Map<String, String> map, String name);
 
 	/**
 	 * Puts a Map into the preferences, indexed under the given class.
 	 */
+	@Deprecated
 	void putMap(Class<?> prefClass, Map<String, String> map);
 
-	/**
-	 * Gets a map from the preferences, indexed under the specified class.
-	 */
-	Map<String, String> getMap(Class<?> prefClass, String name);
-
 	/** Gets a Map from the preferences. */
+	@Deprecated
 	Map<String, String> getMap(Class<?> prefClass);
 
 	/**
 	 * Puts a list into the preferences, indexed under the specified class.
 	 */
+	@Deprecated
 	void putList(Class<?> prefClass, List<String> list, String name);
 
 	/** Puts a list into the preferences. */
+	@Deprecated
 	void putList(Class<?> prefClass, List<String> list);
-
-	/**
-	 * Gets a List from the preferences, indexed under the specified class.
-	 */
-	List<String> getList(Class<?> prefClass, String name);
 
 	/**
 	 * Gets a List from the preferences. Returns an empty list if nothing in
 	 * prefs.
 	 */
+	@Deprecated
 	List<String> getList(Class<?> prefClass);
 
 	/**
 	 * Puts an iterable into the preferences.
 	 */
+	void putIterable(Class<?> prefClass, String name, Iterable<String> iterable);
+
+	/**
+	 * Puts an iterable into the preferences.
+	 */
+	@Deprecated
 	void putIterable(Class<?> prefClass, Iterable<String> iterable, String name);
 
 	/**
 	 * Gets an iterable from the preferences.
 	 */
+	@Deprecated
 	Iterable<String> getIterable(Class<?> prefClass, String name);
 
 	// -- Deprecated methods --
