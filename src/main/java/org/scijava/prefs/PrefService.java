@@ -45,6 +45,94 @@ import org.scijava.service.Service;
  */
 public interface PrefService extends SciJavaService {
 
+	String get(Class<?> c, String name);
+
+	String get(Class<?> c, String name, String defaultValue);
+
+	boolean getBoolean(Class<?> c, String name, boolean defaultValue);
+
+	double getDouble(Class<?> c, String name, double defaultValue);
+
+	float getFloat(Class<?> c, String name, float defaultValue);
+
+	int getInt(Class<?> c, String name, int defaultValue);
+
+	long getLong(Class<?> c, String name, long defaultValue);
+
+	void put(Class<?> c, String name, String value);
+
+	void put(Class<?> c, String name, boolean value);
+
+	void put(Class<?> c, String name, double value);
+
+	void put(Class<?> c, String name, float value);
+
+	void put(Class<?> c, String name, int value);
+
+	void put(Class<?> c, String name, long value);
+
+	void clear(Class<?> c);
+
+	/** Clears everything. */
+	void clearAll();
+
+	/**
+	 * Clears the node indexed under the given class.
+	 */
+	void clear(Class<?> prefClass, String key);
+
+	/** Removes the node. */
+	void remove(Class<?> prefClass, String key);
+
+	/**
+	 * Puts a Map into the preferences, indexed under the specified class.
+	 */
+	void putMap(Class<?> prefClass, Map<String, String> map, String key);
+
+	/**
+	 * Puts a Map into the preferences, indexed under the given class.
+	 */
+	void putMap(Class<?> prefClass, Map<String, String> map);
+
+	/**
+	 * Gets a map from the preferences, indexed under the specified class.
+	 */
+	Map<String, String> getMap(Class<?> prefClass, String key);
+
+	/** Gets a Map from the preferences. */
+	Map<String, String> getMap(Class<?> prefClass);
+
+	/**
+	 * Puts a list into the preferences, indexed under the specified class.
+	 */
+	void putList(Class<?> prefClass, List<String> list, String key);
+
+	/** Puts a list into the preferences. */
+	void putList(Class<?> prefClass, List<String> list);
+
+	/**
+	 * Gets a List from the preferences, indexed under the specified class.
+	 */
+	List<String> getList(Class<?> prefClass, String key);
+
+	/**
+	 * Gets a List from the preferences. Returns an empty list if nothing in
+	 * prefs.
+	 */
+	List<String> getList(Class<?> prefClass);
+
+	/**
+	 * Puts an iterable into the preferences.
+	 */
+	void putIterable(Class<?> prefClass, Iterable<String> iterable, String key);
+
+	/**
+	 * Gets an iterable from the preferences.
+	 */
+	Iterable<String> getIterable(Class<?> prefClass, String key);
+
+	// -- Deprecated methods --
+
 	@Deprecated
 	String get(String name);
 
@@ -84,163 +172,48 @@ public interface PrefService extends SciJavaService {
 	@Deprecated
 	void put(String name, long value);
 
-	String get(Class<?> c, String name);
-
-	String get(Class<?> c, String name, String defaultValue);
-
-	boolean getBoolean(Class<?> c, String name, boolean defaultValue);
-
-	double getDouble(Class<?> c, String name, double defaultValue);
-
-	float getFloat(Class<?> c, String name, float defaultValue);
-
-	int getInt(Class<?> c, String name, int defaultValue);
-
-	long getLong(Class<?> c, String name, long defaultValue);
-
-	void put(Class<?> c, String name, String value);
-
-	void put(Class<?> c, String name, boolean value);
-
-	void put(Class<?> c, String name, double value);
-
-	void put(Class<?> c, String name, float value);
-
-	void put(Class<?> c, String name, int value);
-
-	void put(Class<?> c, String name, long value);
-
-	void clear(Class<?> c);
-
-	/** Clears everything. */
-	void clearAll();
-
-	/** Clears the node. */
 	@Deprecated
 	void clear(String key);
 
-	/**
-	 * Clears the node indexed under the given class.
-	 */
-	void clear(Class<?> prefClass, String key);
-
-	/**
-	 * Clears the ndoe indexed under the given path.
-	 */
 	@Deprecated
 	void clear(String absolutePath, String key);
-
-	/** Removes the node. */
-	void remove(Class<?> prefClass, String key);
 
 	@Deprecated
 	void remove(String absolutePath, String key);
 
-	/** Puts a Map into the preferences. */
 	@Deprecated
 	void putMap(Map<String, String> map, String key);
 
-	/**
-	 * Puts a Map into the preferences, indexed under the specified class.
-	 */
-	void putMap(Class<?> prefClass, Map<String, String> map, String key);
-
-	/**
-	 * Puts a Map into the preferences, indexed under the given path.
-	 */
 	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map);
 
-	/**
-	 * Puts a Map into the preferences, indexed under the given class.
-	 */
-	void putMap(Class<?> prefClass, Map<String, String> map);
-
-	/**
-	 * Puts a Map into the preferences, indexed under the given path and
-	 * relative key path.
-	 */
 	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map, String key);
 
-	/** Gets a Map from the preferences. */
 	@Deprecated
 	Map<String, String> getMap(String key);
-
-	/**
-	 * Gets a map from the preferences, indexed under the specified class.
-	 */
-	Map<String, String> getMap(Class<?> prefClass, String key);
-
-	/** Gets a Map from the preferences. */
-	Map<String, String> getMap(Class<?> prefClass);
 
 	@Deprecated
 	Map<String, String> getMap(String absolutePath, String key);
 
-	/** Puts a list into the preferences. */
 	@Deprecated
 	void putList(List<String> list, String key);
 
-	/**
-	 * Puts a list into the preferences, indexed under the specified class.
-	 */
-	void putList(Class<?> prefClass, List<String> list, String key);
-
-	/**
-	 * Puts a list into the preferences, indexed under the specified path and
-	 * relative key.
-	 */
 	@Deprecated
 	void putList(String absolutePath, List<String> list, String key);
 
-	/** Puts a list into the preferences. */
-	void putList(Class<?> prefClass, List<String> list);
-
-	/** Puts a list into the preferences, indexed under the specified path. */
 	@Deprecated
 	void putList(String absolutePath, List<String> list);
 
-	/** Gets a List from the preferences. */
 	@Deprecated
 	List<String> getList(String key);
 
-	/**
-	 * Gets a List from the preferences, indexed under the specified path.
-	 */
 	@Deprecated
 	List<String> getList(String absolutePath, String key);
 
-	/**
-	 * Gets a List from the preferences, indexed under the specified class.
-	 */
-	List<String> getList(Class<?> prefClass, String key);
-
-	/**
-	 * Gets a List from the preferences. Returns an empty list if nothing in
-	 * prefs.
-	 */
-	List<String> getList(Class<?> prefClass);
-
-	/**
-	 * Puts an iterable into the preferences.
-	 */
 	@Deprecated
 	void putIterable(Iterable<String> iterable, String key);
 
-	/**
-	 * Puts an iterable into the preferences.
-	 */
-	void putIterable(Class<?> prefClass, Iterable<String> iterable, String key);
-
-	/**
-	 * Gets an iterable from the preferences.
-	 */
 	@Deprecated
 	Iterable<String> getIterable(String key);
-
-	/**
-	 * Gets an iterable from the preferences.
-	 */
-	Iterable<String> getIterable(Class<?> prefClass, String key);
 }
