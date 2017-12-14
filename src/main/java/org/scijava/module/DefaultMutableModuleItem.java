@@ -92,6 +92,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		persisted = super.isPersisted();
 		persistKey = super.getPersistKey();
 		initializer = super.getInitializer();
+		validater = super.getValidater();
 		callback = super.getCallback();
 		widgetStyle = super.getWidgetStyle();
 		minimumValue = super.getMinimumValue();
@@ -118,6 +119,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		persisted = item.isPersisted();
 		persistKey = item.getPersistKey();
 		initializer = item.getInitializer();
+		validater = item.getValidater();
 		callback = item.getCallback();
 		widgetStyle = item.getWidgetStyle();
 		minimumValue = item.getMinimumValue();
