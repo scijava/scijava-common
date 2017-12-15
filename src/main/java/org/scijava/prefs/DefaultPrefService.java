@@ -472,9 +472,7 @@ public class DefaultPrefService extends AbstractPrefService {
 			final List<String> list = new ArrayList<>();
 			for (int index = 0; index < Integer.MAX_VALUE; index++) {
 				final String value = get("" + index);
-				if (value == null) {
-					break;
-				}
+				if (value == null) break;
 				list.add(value);
 			}
 			return list;
