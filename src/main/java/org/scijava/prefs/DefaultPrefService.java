@@ -166,64 +166,64 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void clear(final Class<?> prefClass, final String name) {
-		prefs(prefClass).clear(key(prefClass, name));
+	public void clear(final Class<?> c, final String name) {
+		prefs(c).clear(key(c, name));
 	}
 
 	@Override
-	public void remove(final Class<?> prefClass, final String name) {
-		prefs(prefClass).remove(key(prefClass, name));
+	public void remove(final Class<?> c, final String name) {
+		prefs(c).remove(key(c, name));
 	}
 
 	@Deprecated
 	@Override
-	public void putMap(final Class<?> prefClass, final Map<String, String> map,
+	public void putMap(final Class<?> c, final Map<String, String> map,
 		final String name)
 	{
-		put(prefClass, name, map);
+		put(c, name, map);
 	}
 
 	@Deprecated
 	@Override
-	public void putMap(final Class<?> prefClass, final Map<String, String> map) {
-		prefs(prefClass).putMap(map);
+	public void putMap(final Class<?> c, final Map<String, String> map) {
+		prefs(c).putMap(map);
 	}
 
 	@Deprecated
 	@Override
-	public Map<String, String> getMap(final Class<?> prefClass) {
-		return prefs(prefClass).getMap();
+	public Map<String, String> getMap(final Class<?> c) {
+		return prefs(c).getMap();
 	}
 
 	@Deprecated
 	@Override
-	public void putList(final Class<?> prefClass, final List<String> list,
+	public void putList(final Class<?> c, final List<String> list,
 		final String name)
 	{
-		put(prefClass, name, list);
+		put(c, name, list);
 	}
 
 	@Deprecated
 	@Override
-	public void putList(final Class<?> prefClass, final List<String> list) {
-		prefs(prefClass).putList(list);
+	public void putList(final Class<?> c, final List<String> list) {
+		prefs(c).putList(list);
 	}
 
 	@Deprecated
 	@Override
-	public List<String> getList(final Class<?> prefClass) {
-		return prefs(prefClass).getList();
+	public List<String> getList(final Class<?> c) {
+		return prefs(c).getList();
 	}
 
 	@Override
-	public Iterable<String> getIterable(final Class<?> prefClass, final String name) {
-		return prefs(prefClass).node(key(prefClass, name)).getIterable();
+	public Iterable<String> getIterable(final Class<?> c, final String name) {
+		return prefs(c).node(key(c, name)).getIterable();
 	}
 
 	@Deprecated
 	@Override
-	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String name) {
-		put(prefClass, name, iterable);
+	public void putIterable(final Class<?> c, final Iterable<String> iterable, final String name) {
+		put(c, name, iterable);
 	}
 
 	// -- Deprecated methods --

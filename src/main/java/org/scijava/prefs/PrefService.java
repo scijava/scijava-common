@@ -89,55 +89,55 @@ public interface PrefService extends SciJavaService {
 	/**
 	 * Clears the node indexed under the given class.
 	 */
-	void clear(Class<?> prefClass, String name);
+	void clear(Class<?> c, String name);
 
 	/** Removes the node. */
-	void remove(Class<?> prefClass, String name);
+	void remove(Class<?> c, String name);
 
 	/**
 	 * Puts a Map into the preferences, indexed under the specified class.
 	 */
 	@Deprecated
-	void putMap(Class<?> prefClass, Map<String, String> map, String name);
+	void putMap(Class<?> c, Map<String, String> map, String name);
 
 	/**
 	 * Puts a Map into the preferences, indexed under the given class.
 	 */
 	@Deprecated
-	void putMap(Class<?> prefClass, Map<String, String> map);
+	void putMap(Class<?> c, Map<String, String> map);
 
 	/** Gets a Map from the preferences. */
 	@Deprecated
-	Map<String, String> getMap(Class<?> prefClass);
+	Map<String, String> getMap(Class<?> c);
 
 	/**
 	 * Puts a list into the preferences, indexed under the specified class.
 	 */
 	@Deprecated
-	void putList(Class<?> prefClass, List<String> list, String name);
+	void putList(Class<?> c, List<String> list, String name);
 
 	/** Puts a list into the preferences. */
 	@Deprecated
-	void putList(Class<?> prefClass, List<String> list);
+	void putList(Class<?> c, List<String> list);
 
 	/**
 	 * Gets a List from the preferences. Returns an empty list if nothing in
 	 * prefs.
 	 */
 	@Deprecated
-	List<String> getList(Class<?> prefClass);
+	List<String> getList(Class<?> c);
 
 	/**
 	 * Puts an iterable into the preferences.
 	 */
 	@Deprecated
-	void putIterable(Class<?> prefClass, Iterable<String> iterable, String name);
+	void putIterable(Class<?> c, Iterable<String> iterable, String name);
 
 	/**
 	 * Gets an iterable from the preferences.
 	 */
 	@Deprecated
-	Iterable<String> getIterable(Class<?> prefClass, String name);
+	Iterable<String> getIterable(Class<?> c, String name);
 
 	// -- Deprecated methods --
 
