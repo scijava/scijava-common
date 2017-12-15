@@ -62,96 +62,96 @@ public class DefaultPrefService extends AbstractPrefService {
 	public String get(final Class<?> c, final String name,
 		final String defaultValue)
 	{
-		return prefs(c).get(key(c, name), defaultValue);
+		return prefs(c).get(name, defaultValue);
 	}
 
 	@Override
 	public boolean getBoolean(final Class<?> c, final String name,
 		final boolean defaultValue)
 	{
-		return prefs(c).getBoolean(key(c, name), defaultValue);
+		return prefs(c).getBoolean(name, defaultValue);
 	}
 
 	@Override
 	public double getDouble(final Class<?> c, final String name,
 		final double defaultValue)
 	{
-		return prefs(c).getDouble(key(c, name), defaultValue);
+		return prefs(c).getDouble(name, defaultValue);
 	}
 
 	@Override
 	public float getFloat(final Class<?> c, final String name,
 		final float defaultValue)
 	{
-		return prefs(c).getFloat(key(c, name), defaultValue);
+		return prefs(c).getFloat(name, defaultValue);
 	}
 
 	@Override
 	public int
 		getInt(final Class<?> c, final String name, final int defaultValue)
 	{
-		return prefs(c).getInt(key(c, name), defaultValue);
+		return prefs(c).getInt(name, defaultValue);
 	}
 
 	@Override
 	public long getLong(final Class<?> c, final String name,
 		final long defaultValue)
 	{
-		return prefs(c).getLong(key(c, name), defaultValue);
+		return prefs(c).getLong(name, defaultValue);
 	}
 
 	@Override
 	public Map<String, String> getMap(final Class<?> c, final String name) {
-		return prefs(c).node(key(c, name)).getMap();
+		return prefs(c).node(name).getMap();
 	}
 
 	@Override
 	public List<String> getList(final Class<?> c, final String name) {
-		return prefs(c).node(key(c, name)).getList();
+		return prefs(c).node(name).getList();
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final String value) {
-		prefs(c).put(key(c, name), value);
+		prefs(c).put(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final boolean value) {
-		prefs(c).putBoolean(key(c, name), value);
+		prefs(c).putBoolean(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final double value) {
-		prefs(c).putDouble(key(c, name), value);
+		prefs(c).putDouble(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final float value) {
-		prefs(c).putFloat(key(c, name), value);
+		prefs(c).putFloat(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final int value) {
-		prefs(c).putInt(key(c, name), value);
+		prefs(c).putInt(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name, final long value) {
-		prefs(c).putLong(key(c, name), value);
+		prefs(c).putLong(name, value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name,
 		final Map<String, String> value)
 	{
-		prefs(c).node(key(c, name)).putMap(value);
+		prefs(c).node(name).putMap(value);
 	}
 
 	@Override
 	public void put(final Class<?> c, final String name,
 		final Iterable<String> value)
 	{
-		prefs(c).node(key(c, name)).putList(value);
+		prefs(c).node(name).putList(value);
 	}
 
 	@Override
@@ -167,12 +167,12 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void clear(final Class<?> c, final String name) {
-		prefs(c).clear(key(c, name));
+		prefs(c).clear(name);
 	}
 
 	@Override
 	public void remove(final Class<?> c, final String name) {
-		prefs(c).remove(key(c, name));
+		prefs(c).remove(name);
 	}
 
 	// -- Deprecated methods --
@@ -204,7 +204,7 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Deprecated
 	@Override
 	public Iterable<String> getIterable(final Class<?> c, final String name) {
-		return prefs(c).node(key(c, name)).getIterable();
+		return prefs(c).node(name).getIterable();
 	}
 
 	@Deprecated
@@ -299,13 +299,10 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	// -- Helper methods --
 
-	private static String key(final Class<?> c, final String name) {
-		return c == null ? name : c.getSimpleName() + "." + name;
-	}
-
 	private SmartPrefs prefs(final Class<?> c) {
+		final Class<?> nodeClass = c == null ? PrefService.class : c;
 		return new SmartPrefs(java.util.prefs.Preferences.userNodeForPackage(
-			c == null ? PrefService.class : c), log);
+			nodeClass).node(nodeClass.getSimpleName()), log);
 	}
 
 	private SmartPrefs prefs(final String absolutePath) {
