@@ -45,174 +45,397 @@ import org.scijava.service.Service;
  */
 public interface PrefService extends SciJavaService {
 
-	String get(String name);
+	/**
+	 * Gets a persisted key as a {@link String}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @return The value of the key as a {@link String}, or null if the key is not
+	 *         present.
+	 */
+	default String get(final Class<?> c, final String name) {
+		return get(c, name, null);
+	}
 
-	String get(String name, String defaultValue);
-
-	boolean getBoolean(String name, boolean defaultValue);
-
-	double getDouble(String name, double defaultValue);
-
-	float getFloat(String name, float defaultValue);
-
-	int getInt(String name, int defaultValue);
-
-	long getLong(String name, long defaultValue);
-
-	void put(String name, String value);
-
-	void put(String name, boolean value);
-
-	void put(String name, double value);
-
-	void put(String name, float value);
-
-	void put(String name, int value);
-
-	void put(String name, long value);
-
-	String get(Class<?> c, String name);
-
+	/**
+	 * Gets a persisted key as a {@link String}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as a {@link String}.
+	 */
 	String get(Class<?> c, String name, String defaultValue);
 
+	/**
+	 * Gets a persisted key as a {@code boolean}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as a {@code boolean}.
+	 */
 	boolean getBoolean(Class<?> c, String name, boolean defaultValue);
 
+	/**
+	 * Gets a persisted key as a {@code double}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as a {@code double}.
+	 */
 	double getDouble(Class<?> c, String name, double defaultValue);
 
+	/**
+	 * Gets a persisted key as a {@code float}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as a {@code float}.
+	 */
 	float getFloat(Class<?> c, String name, float defaultValue);
 
+	/**
+	 * Gets a persisted key as an {@code int}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as an {@code int}.
+	 */
 	int getInt(Class<?> c, String name, int defaultValue);
 
+	/**
+	 * Gets a persisted key as a {@code long}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @param defaultValue The value to return if the key is not present.
+	 * @return The value of the key as an {@code long}.
+	 */
 	long getLong(Class<?> c, String name, long defaultValue);
 
+	/**
+	 * Gets a persisted key as a {@code Map}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @return The value of the key as an {@code Map}, or null if the key is not
+	 *         present.
+	 */
+	Map<String, String> getMap(Class<?> c, String name);
+
+	/**
+	 * Gets a persisted key as a {@code List}.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to retrieve.
+	 * @return The value of the key as an {@code List}, or null if the key is not
+	 *         present.
+	 */
+	List<String> getList(Class<?> c, String name);
+
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #get(Class, String)
+	 * @see #get(Class, String, String)
+	 */
 	void put(Class<?> c, String name, String value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getBoolean(Class, String, boolean)
+	 */
 	void put(Class<?> c, String name, boolean value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getDouble(Class, String, double)
+	 */
 	void put(Class<?> c, String name, double value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getFloat(Class, String, float)
+	 */
 	void put(Class<?> c, String name, float value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getInt(Class, String, int)
+	 */
 	void put(Class<?> c, String name, int value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getLong(Class, String, long)
+	 */
 	void put(Class<?> c, String name, long value);
 
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getMap(Class, String)
+	 */
+	void put(Class<?> c, String name, Map<String, String> value);
+
+	/**
+	 * Saves a key/value pair in persistent storage.
+	 * 
+	 * @param c The class with which the key/value pair is associated.
+	 * @param name The key where the value should be stored.
+	 * @param value The value to store.
+	 * @see #getList(Class, String)
+	 */
+	void put(Class<?> c, String name, Iterable<String> value);
+
+	/**
+	 * Deletes a key from persistent storage.
+	 * 
+	 * @param c The class with which the key is associated.
+	 * @param name The key to remove.
+	 */
+	void remove(Class<?> c, String name);
+
+	/**
+	 * Deletes all of the given {@link Class}'s keys from persistent storage.
+	 * @param c The class whose keys should be removed.
+	 */
 	void clear(Class<?> c);
 
-	/** Clears everything. */
+	/** Deletes all information from the data store. Use with care! */
 	void clearAll();
 
-	/** Clears the node. */
-	void clear(String key);
+	// -- Deprecated methods --
+
+	/** @deprecated Use {@link #put(Class, String, Map)}. */
+	@Deprecated
+	default void putMap(final Class<?> c, final Map<String, String> map,
+		final String name)
+	{
+		put(c, name, map);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, Map)}. */
+	@Deprecated
+	void putMap(Class<?> c, Map<String, String> map);
+
+	/** @deprecated Use {@link #getMap(Class, String)}. */
+	@Deprecated
+	Map<String, String> getMap(Class<?> c);
+
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
+	default void putList(final Class<?> c, final List<String> list,
+		final String name)
+	{
+		put(c, name, list);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
+	void putList(Class<?> c, List<String> list);
+
+	/** @deprecated Use {@link #getList(Class, String)}. */
+	@Deprecated
+	List<String> getList(Class<?> c);
+
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
+	default void putIterable(final Class<?> c, final Iterable<String> iterable,
+		final String name)
+	{
+		put(c, name, iterable);
+	}
+
+	/** @deprecated Use {@link #getList(Class, String)}. */
+	@Deprecated
+	Iterable<String> getIterable(Class<?> c, String name);
+
+	/** @deprecated Use {@link #get(Class, String)}. */
+	@Deprecated
+	default String get(final String name) {
+		return get((Class<?>) null, name);
+	}
+
+	/** @deprecated Use {@link #get(Class, String, String)}. */
+	@Deprecated
+	default String get(final String name, final String defaultValue) {
+		return get(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #getBoolean(Class, String, boolean)}. */
+	@Deprecated
+	default boolean getBoolean(final String name, final boolean defaultValue) {
+		return getBoolean(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #getDouble(Class, String, double)}. */
+	@Deprecated
+	default double getDouble(final String name, final double defaultValue) {
+		return getDouble(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #getFloat(Class, String, float)}. */
+	@Deprecated
+	default float getFloat(final String name, final float defaultValue) {
+		return getFloat(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #getInt(Class, String, int)}. */
+	@Deprecated
+	default int getInt(final String name, final int defaultValue) {
+		return getInt(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #getLong(Class, String, long)}. */
+	@Deprecated
+	default long getLong(final String name, final long defaultValue) {
+		return getLong(null, name, defaultValue);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, String)}. */
+	@Deprecated
+	default void put(final String name, final String value) {
+		put(null, name, value);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, boolean)}. */
+	@Deprecated
+	default void put(final String name, final boolean value) {
+		put(null, name, value);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, double)}. */
+	@Deprecated
+	default void put(final String name, final double value) {
+		put(null, name, value);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, float)}. */
+	@Deprecated
+	default void put(final String name, final float value) {
+		put(null, name, value);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, int)}. */
+	@Deprecated
+	default void put(final String name, final int value) {
+		put(null, name, value);
+	}
+
+	/** @deprecated Use {@link #put(Class, String, long)}. */
+	@Deprecated
+	default void put(final String name, final long value) {
+		put(null, name, value);
+	}
 
 	/**
-	 * Clears the node indexed under the given class.
+	 * @deprecated Use {@link #remove(Class, String)} or {@link #clear(Class)}.
 	 */
-	void clear(Class<?> prefClass, String key);
+	@Deprecated
+	default void clear(final String key) {
+		clear((Class<?>) null, key);
+	}
 
-	/**
-	 * Clears the ndoe indexed under the given path.
-	 */
+	/** @deprecated Use {@link #remove(Class, String)}. */
+	@Deprecated
 	void clear(String absolutePath, String key);
 
-	/** Removes the node. */
-	void remove(Class<?> prefClass, String key);
-
+	/** @deprecated Use {@link #remove(Class, String)}. */
+	@Deprecated
 	void remove(String absolutePath, String key);
 
-	/** Puts a Map into the preferences. */
-	void putMap(Map<String, String> map, String key);
+	/** @deprecated Use {@link #put(Class, String, Map)}. */
+	@Deprecated
+	default void putMap(final Map<String, String> map, final String key) {
+		putMap((Class<?>) null, map, key);
+	}
 
-	/**
-	 * Puts a Map into the preferences, indexed under the specified class.
-	 */
-	void putMap(Class<?> prefClass, Map<String, String> map, String key);
-
-	/**
-	 * Puts a Map into the preferences, indexed under the given path.
-	 */
+	/** @deprecated Use {@link #put(Class, String, Map)}. */
+	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map);
 
-	/**
-	 * Puts a Map into the preferences, indexed under the given class.
-	 */
-	void putMap(Class<?> prefClass, Map<String, String> map);
-
-	/**
-	 * Puts a Map into the preferences, indexed under the given path and
-	 * relative key path.
-	 */
+	/** @deprecated Use {@link #put(Class, String, Map)}. */
+	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map, String key);
 
-	/** Gets a Map from the preferences. */
-	Map<String, String> getMap(String key);
+	/** @deprecated Use {@link #getMap(Class, String)}. */
+	@Deprecated
+	default Map<String, String> getMap(final String key) {
+		return getMap((Class<?>) null, key);
+	}
 
-	/**
-	 * Gets a map from the preferences, indexed under the specified class.
-	 */
-	Map<String, String> getMap(Class<?> prefClass, String key);
-
-	/** Gets a Map from the preferences. */
-	Map<String, String> getMap(Class<?> prefClass);
-
+	/** @deprecated Use {@link #getMap(Class, String)}. */
+	@Deprecated
 	Map<String, String> getMap(String absolutePath, String key);
 
-	/** Puts a list into the preferences. */
-	void putList(List<String> list, String key);
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
+	default void putList(final List<String> list, final String key) {
+		putList((Class<?>) null, list, key);
+	}
 
-	/**
-	 * Puts a list into the preferences, indexed under the specified class.
-	 */
-	void putList(Class<?> prefClass, List<String> list, String key);
-
-	/**
-	 * Puts a list into the preferences, indexed under the specified path and
-	 * relative key.
-	 */
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
 	void putList(String absolutePath, List<String> list, String key);
 
-	/** Puts a list into the preferences. */
-	void putList(Class<?> prefClass, List<String> list);
-
-	/** Puts a list into the preferences, indexed under the specified path. */
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
 	void putList(String absolutePath, List<String> list);
 
-	/** Gets a List from the preferences. */
-	List<String> getList(String key);
+	/** @deprecated Use {@link #getList(Class, String)}. */
+	@Deprecated
+	default List<String> getList(final String key) {
+		return getList((Class<?>) null, key);
+	}
 
-	/**
-	 * Gets a List from the preferences, indexed under the specified path.
-	 */
+	/** @deprecated Use {@link #getList(Class, String)}. */
+	@Deprecated
 	List<String> getList(String absolutePath, String key);
 
-	/**
-	 * Gets a List from the preferences, indexed under the specified class.
-	 */
-	List<String> getList(Class<?> prefClass, String key);
+	/** @deprecated Use {@link #put(Class, String, Iterable)}. */
+	@Deprecated
+	default void putIterable(final Iterable<String> iterable, final String key) {
+		putIterable((Class<?>) null, iterable, key);
+	}
 
-	/**
-	 * Gets a List from the preferences. Returns an empty list if nothing in
-	 * prefs.
-	 */
-	List<String> getList(Class<?> prefClass);
+	/** @deprecated User {@link #getList(Class, String)}. */
+	@Deprecated
+	default Iterable<String> getIterable(final String key) {
+		return getIterable((Class<?>) null, key);
+	}
 
-	/**
-	 * Puts an iterable into the preferences.
-	 */
-	void putIterable(Iterable<String> iterable, String key);
-
-	/**
-	 * Puts an iterable into the preferences.
-	 */
-	void putIterable(Class<?> prefClass, Iterable<String> iterable, String key);
-
-	/**
-	 * Gets an iterable from the preferences.
-	 */
-	Iterable<String> getIterable(String key);
-
-	/**
-	 * Gets an iterable from the preferences.
-	 */
-	Iterable<String> getIterable(Class<?> prefClass, String key);
+	/** @deprecated Use {@link #remove(Class, String)}. */
+	@Deprecated
+	void clear(Class<?> c, String name);
 }

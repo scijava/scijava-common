@@ -142,7 +142,7 @@ public class PrefServiceTest {
 	}
 
 	/**
-	 * Tests {@link PrefService#putMap(Class, Map, String)} and
+	 * Tests {@link PrefService#put(Class, String, Map)} and
 	 * {@link PrefService#getMap(Class, String)}.
 	 */
 	@Test
@@ -153,26 +153,45 @@ public class PrefServiceTest {
 		map.put("2", "C");
 		map.put("3", "D");
 		map.put("5", "f");
-		final String mapKey = "MapKey";
-		prefService.putMap(getClass(), map, mapKey);
-		final Map<String, String> result = prefService.getMap(getClass(), mapKey);
+		final String mapName = "MapKey";
+		prefService.put(getClass(), mapName, map);
+		final Map<String, String> result = prefService.getMap(getClass(), mapName);
 		assertEquals(map, result);
 	}
 
 	/**
-	 * Tests {@link PrefService#putList(Class, List, String)} and
+	 * Tests {@link PrefService#put(Class, String, Iterable)} and
 	 * {@link PrefService#getList(Class, String)}.
 	 */
 	@Test
 	public void testList() {
-		final String recentFilesKey = "RecentFiles";
+		final String recentFilesName = "RecentFiles";
 		final List<String> recentFiles = new ArrayList<>();
 		recentFiles.add("some/path1");
 		recentFiles.add("some/path2");
 		recentFiles.add("some/path3");
-		prefService.putList(getClass(), recentFiles, recentFilesKey);
-		final List<String> result = prefService.getList(getClass(), recentFilesKey);
+		prefService.put(getClass(), recentFilesName, recentFiles);
+		final List<String> result = prefService.getList(getClass(), recentFilesName);
 		assertEquals(recentFiles, result);
+	}
+
+	@Test
+	public void testClear() {
+		prefService.put(getClass(), "dog", "lazy");
+		prefService.put(getClass(), "fox", "quick");
+		assertEquals("lazy", prefService.get(getClass(), "dog"));
+		assertEquals("quick", prefService.get(getClass(), "fox"));
+		prefService.clear(getClass());
+		assertNull(prefService.get(getClass(), "dog"));
+		assertNull(prefService.get(getClass(), "fox"));
+	}
+
+	@Test
+	public void testRemove() {
+		prefService.put(getClass(), "hello", "world");
+		assertEquals("world", prefService.get(getClass(), "hello"));
+		prefService.remove(getClass(), "hello");
+		assertNull(prefService.get(getClass(), "hello"));
 	}
 
 	/**
@@ -190,9 +209,75 @@ public class PrefServiceTest {
 			"zyxwvutsrqponmlkjihgfedcba";
 		final String lyrics =
 			"Now I know my ABC's. Next time won't you sing with me?";
-		prefService.put(longKey, lyrics);
-		final String recovered = prefService.get(longKey);
+		prefService.put(getClass(), longKey, lyrics);
+		final String recovered = prefService.get(getClass(), longKey);
 		assertEquals(lyrics, recovered);
 	}
 
+	@Test
+	public void testClassesInSamePackage() {
+		final String blueDog = "lazy", blueFox = "quick";
+		final String redDog = "friendly", redCat = "snuggly";
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.put(BlueNode.class, "dog", "lazy");
+		prefService.put(BlueNode.class, "fox", "quick");
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertEquals(blueDog, prefService.get(BlueNode.class, "dog"));
+		assertEquals(blueFox, prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.put(RedNode.class, "dog", redDog);
+		prefService.put(RedNode.class, "cat", redCat);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertEquals(blueDog, prefService.get(BlueNode.class, "dog"));
+		assertEquals(blueFox, prefService.get(BlueNode.class, "fox"));
+		assertEquals(redCat, prefService.get(RedNode.class, "cat"));
+		assertEquals(redDog, prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.clear(BlueNode.class);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertEquals(redCat, prefService.get(RedNode.class, "cat"));
+		assertEquals(redDog, prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.clear(RedNode.class);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+	}
+
+	// -- Helper classes --
+
+	/**
+	 * A class to use for anchoring preferences. Needed to test that preferences
+	 * are stored with each class specifically, rather than the package as a
+	 * whole. (Because the Java Preferences API uses packages for nodes, a
+	 * potential pitfall here is that clear(Class) might delete too much.)
+	 */
+	private interface BlueNode {}
+
+	/**
+	 * Another class for anchoring preferences, in the same package as
+	 * {@link BlueNode}.
+	 */
+	private interface RedNode {}
 }
