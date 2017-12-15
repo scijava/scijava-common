@@ -100,7 +100,11 @@ public interface PrefService extends SciJavaService {
 	 * Puts a Map into the preferences, indexed under the specified class.
 	 */
 	@Deprecated
-	void putMap(Class<?> c, Map<String, String> map, String name);
+	default void putMap(final Class<?> c, final Map<String, String> map,
+		final String name)
+	{
+		put(c, name, map);
+	}
 
 	/**
 	 * Puts a Map into the preferences, indexed under the given class.
@@ -116,7 +120,11 @@ public interface PrefService extends SciJavaService {
 	 * Puts a list into the preferences, indexed under the specified class.
 	 */
 	@Deprecated
-	void putList(Class<?> c, List<String> list, String name);
+	default void putList(final Class<?> c, final List<String> list,
+		final String name)
+	{
+		put(c, name, list);
+	}
 
 	/** Puts a list into the preferences. */
 	@Deprecated
@@ -133,7 +141,11 @@ public interface PrefService extends SciJavaService {
 	 * Puts an iterable into the preferences.
 	 */
 	@Deprecated
-	void putIterable(Class<?> c, Iterable<String> iterable, String name);
+	default void putIterable(final Class<?> c, final Iterable<String> iterable,
+		final String name)
+	{
+		put(c, name, iterable);
+	}
 
 	/**
 	 * Gets an iterable from the preferences.
@@ -142,46 +154,74 @@ public interface PrefService extends SciJavaService {
 	Iterable<String> getIterable(Class<?> c, String name);
 
 	@Deprecated
-	String get(String name);
+	default String get(final String name) {
+		return get((Class<?>) null, name);
+	}
 
 	@Deprecated
-	String get(String name, String defaultValue);
+	default String get(final String name, final String defaultValue) {
+		return get(null, name, defaultValue);
+	}
 
 	@Deprecated
-	boolean getBoolean(String name, boolean defaultValue);
+	default boolean getBoolean(final String name, final boolean defaultValue) {
+		return getBoolean(null, name, defaultValue);
+	}
 
 	@Deprecated
-	double getDouble(String name, double defaultValue);
+	default double getDouble(final String name, final double defaultValue) {
+		return getDouble(null, name, defaultValue);
+	}
 
 	@Deprecated
-	float getFloat(String name, float defaultValue);
+	default float getFloat(final String name, final float defaultValue) {
+		return getFloat(null, name, defaultValue);
+	}
 
 	@Deprecated
-	int getInt(String name, int defaultValue);
+	default int getInt(final String name, final int defaultValue) {
+		return getInt(null, name, defaultValue);
+	}
 
 	@Deprecated
-	long getLong(String name, long defaultValue);
+	default long getLong(final String name, final long defaultValue) {
+		return getLong(null, name, defaultValue);
+	}
 
 	@Deprecated
-	void put(String name, String value);
+	default void put(final String name, final String value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void put(String name, boolean value);
+	default void put(final String name, final boolean value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void put(String name, double value);
+	default void put(final String name, final double value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void put(String name, float value);
+	default void put(final String name, final float value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void put(String name, int value);
+	default void put(final String name, final int value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void put(String name, long value);
+	default void put(final String name, final long value) {
+		put(null, name, value);
+	}
 
 	@Deprecated
-	void clear(String key);
+	default void clear(final String key) {
+		clear((Class<?>) null, key);
+	}
 
 	@Deprecated
 	void clear(String absolutePath, String key);

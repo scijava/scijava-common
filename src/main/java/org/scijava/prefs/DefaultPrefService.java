@@ -179,14 +179,6 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Deprecated
 	@Override
-	public void putMap(final Class<?> c, final Map<String, String> map,
-		final String name)
-	{
-		put(c, name, map);
-	}
-
-	@Deprecated
-	@Override
 	public void putMap(final Class<?> c, final Map<String, String> map) {
 		prefs(c).putMap(map);
 	}
@@ -195,14 +187,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Override
 	public Map<String, String> getMap(final Class<?> c) {
 		return prefs(c).getMap();
-	}
-
-	@Deprecated
-	@Override
-	public void putList(final Class<?> c, final List<String> list,
-		final String name)
-	{
-		put(c, name, list);
 	}
 
 	@Deprecated
@@ -221,96 +205,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Override
 	public Iterable<String> getIterable(final Class<?> c, final String name) {
 		return prefs(c).node(key(c, name)).getIterable();
-	}
-
-	@Deprecated
-	@Override
-	public void putIterable(final Class<?> c, final Iterable<String> iterable, final String name) {
-		put(c, name, iterable);
-	}
-
-	@Deprecated
-	@Override
-	public String get(final String name) {
-		return get((Class<?>) null, name);
-	}
-
-	@Deprecated
-	@Override
-	public String get(final String name, final String defaultValue) {
-		return get(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public boolean getBoolean(final String name, final boolean defaultValue) {
-		return getBoolean(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public double getDouble(final String name, final double defaultValue) {
-		return getDouble(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public float getFloat(final String name, final float defaultValue) {
-		return getFloat(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public int getInt(final String name, final int defaultValue) {
-		return getInt(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public long getLong(final String name, final long defaultValue) {
-		return getLong(null, name, defaultValue);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final String value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final boolean value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final double value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final float value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final int value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void put(final String name, final long value) {
-		put(null, name, value);
-	}
-
-	@Deprecated
-	@Override
-	public void clear(final String key) {
-		clear((Class<?>) null, key);
 	}
 
 	@Deprecated
