@@ -175,6 +175,25 @@ public class PrefServiceTest {
 		assertEquals(recentFiles, result);
 	}
 
+	@Test
+	public void testClear() {
+		prefService.put(getClass(), "dog", "lazy");
+		prefService.put(getClass(), "fox", "quick");
+		assertEquals("lazy", prefService.get(getClass(), "dog"));
+		assertEquals("quick", prefService.get(getClass(), "fox"));
+		prefService.clear(getClass());
+		assertNull(prefService.get(getClass(), "dog"));
+		assertNull(prefService.get(getClass(), "fox"));
+	}
+
+	@Test
+	public void testRemove() {
+		prefService.put(getClass(), "hello", "world");
+		assertEquals("world", prefService.get(getClass(), "hello"));
+		prefService.remove(getClass(), "hello");
+		assertNull(prefService.get(getClass(), "hello"));
+	}
+
 	/**
 	 * The Java Preferences API does not support keys longer than 80 characters.
 	 * Let's test that our service does not fall victim to this limitation.
