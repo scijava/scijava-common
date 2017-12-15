@@ -305,10 +305,6 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		// -- SmartPrefs methods --
 
-		public void clear(final String key) {
-			if (nodeExists(key)) node(key).clear();
-		}
-
 		public void remove(final String key) {
 			if (nodeExists(key)) node(key).removeNode();
 		}
@@ -545,6 +541,10 @@ public class DefaultPrefService extends AbstractPrefService {
 			return "..." + s.substring(len - max + 3, len);
 		}
 
+		@Deprecated
+		public void clear(final String key) {
+			if (nodeExists(key)) node(key).clear();
+		}
 	}
 
 }
