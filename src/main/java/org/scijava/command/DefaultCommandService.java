@@ -41,6 +41,7 @@ import java.util.concurrent.Future;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
+import org.scijava.module.Module;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.AbstractPTService;
 import org.scijava.plugin.Parameter;
@@ -182,6 +183,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	public Future<CommandModule> run(final CommandInfo info,
 		final boolean process, final Object... inputs)
 	{
+		validateModuleType(info);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		final Future<CommandModule> future =
 			(Future) moduleService.run(info, process, inputs);
@@ -192,6 +194,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	public Future<CommandModule> run(final CommandInfo info,
 		final boolean process, final Map<String, Object> inputMap)
 	{
+		validateModuleType(info);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		final Future<CommandModule> future =
 			(Future) moduleService.run(info, process, inputMap);
@@ -348,4 +351,26 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 		return typedPlugins;
 	}
 
+	/**
+	 * A HACK to prevent calling run when the resultant module will not be a
+	 * {@link CommandModule}. This is an API design flaw in CommandService
+	 * currently, but for now work around it rather than breaking backwards API
+	 * compatibility.
+	 */
+	private void validateModuleType(final CommandInfo info) {
+		try {
+			final Class<?> commandClass = info.loadDelegateClass();
+			if (Module.class.isAssignableFrom(commandClass)) {
+				throw new IllegalArgumentException("Cannot use " +
+					"commandService.run(commandClass, ...) " +
+					"with classes that extend Module directly. Please call " +
+					"moduleService.run(commandService.getCommand(commandClass), ...) " +
+					"instead.");
+			}
+		}
+		catch (final ClassNotFoundException exc) {
+			throw new IllegalStateException("Command class unavailable: " + //
+				info.getDelegateClassName(), exc);
+		}
+	}
 }
