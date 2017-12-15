@@ -155,6 +155,11 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
+	public void remove(final Class<?> c, final String name) {
+		prefs(c).remove(name);
+	}
+
+	@Override
 	public void clear(final Class<?> c) {
 		prefs(c).removeNode();
 	}
@@ -163,11 +168,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	public void clearAll() {
 		for (final String name : allPrefs())
 			prefs(name).removeNode();
-	}
-
-	@Override
-	public void remove(final Class<?> c, final String name) {
-		prefs(c).remove(name);
 	}
 
 	// -- Deprecated methods --

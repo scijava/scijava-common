@@ -81,13 +81,13 @@ public interface PrefService extends SciJavaService {
 
 	void put(Class<?> c, String name, Iterable<String> list);
 
+	/** Removes the node. */
+	void remove(Class<?> c, String name);
+
 	void clear(Class<?> c);
 
 	/** Clears everything. */
 	void clearAll();
-
-	/** Removes the node. */
-	void remove(Class<?> c, String name);
 
 	// -- Deprecated methods --
 
