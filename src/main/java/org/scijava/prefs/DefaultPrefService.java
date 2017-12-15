@@ -156,7 +156,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void clear(final Class<?> c) {
-		prefs(c).clear();
+		prefs(c).removeNode();
 	}
 
 	@Override
