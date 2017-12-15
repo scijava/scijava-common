@@ -59,11 +59,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	private LogService log;
 
 	@Override
-	public String get(final Class<?> c, final String name) {
-		return get(c, name, null);
-	}
-
-	@Override
 	public String get(final Class<?> c, final String name,
 		final String defaultValue)
 	{

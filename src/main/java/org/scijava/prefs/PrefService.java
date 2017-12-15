@@ -45,7 +45,9 @@ import org.scijava.service.Service;
  */
 public interface PrefService extends SciJavaService {
 
-	String get(Class<?> c, String name);
+	default String get(final Class<?> c, final String name) {
+		return get(c, name, null);
+	}
 
 	String get(Class<?> c, String name, String defaultValue);
 
