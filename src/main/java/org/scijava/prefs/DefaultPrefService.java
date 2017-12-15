@@ -307,6 +307,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		public void remove(final String key) {
 			if (nodeExists(key)) node(key).removeNode();
+			p.remove(safeKey(key));
 		}
 
 		public void putMap(final Map<String, String> map) {
