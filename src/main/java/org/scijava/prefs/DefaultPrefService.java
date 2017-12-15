@@ -216,12 +216,6 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Deprecated
 	@Override
-	public void putMap(final Map<String, String> map, final String key) {
-		putMap((Class<?>) null, map, key);
-	}
-
-	@Deprecated
-	@Override
 	public void putMap(final String absolutePath, final Map<String, String> map,
 		final String key)
 	{
@@ -236,22 +230,10 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Deprecated
 	@Override
-	public Map<String, String> getMap(final String key) {
-		return getMap((Class<?>) null, key);
-	}
-
-	@Deprecated
-	@Override
 	public Map<String, String>
 		getMap(final String absolutePath, final String key)
 	{
 		return prefs(absolutePath).node(key).getMap();
-	}
-
-	@Deprecated
-	@Override
-	public void putList(final List<String> list, final String key) {
-		putList((Class<?>) null, list, key);
 	}
 
 	@Deprecated
@@ -270,26 +252,8 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Deprecated
 	@Override
-	public List<String> getList(final String key) {
-		return getList((Class<?>) null, key);
-	}
-
-	@Deprecated
-	@Override
 	public List<String> getList(final String absolutePath, final String key) {
 		return prefs(absolutePath).node(key).getList();
-	}
-
-	@Deprecated
-	@Override
-	public Iterable<String> getIterable(final String key) {
-		return getIterable((Class<?>) null, key);
-	}
-
-	@Deprecated
-	@Override
-	public void putIterable(final Iterable<String> iterable, final String key) {
-		putIterable((Class<?>) null, iterable, key);
 	}
 
 	@Deprecated

@@ -225,7 +225,9 @@ public interface PrefService extends SciJavaService {
 	void remove(String absolutePath, String key);
 
 	@Deprecated
-	void putMap(Map<String, String> map, String key);
+	default void putMap(final Map<String, String> map, final String key) {
+		putMap((Class<?>) null, map, key);
+	}
 
 	@Deprecated
 	void putMap(String absolutePath, Map<String, String> map);
@@ -234,13 +236,17 @@ public interface PrefService extends SciJavaService {
 	void putMap(String absolutePath, Map<String, String> map, String key);
 
 	@Deprecated
-	Map<String, String> getMap(String key);
+	default Map<String, String> getMap(final String key) {
+		return getMap((Class<?>) null, key);
+	}
 
 	@Deprecated
 	Map<String, String> getMap(String absolutePath, String key);
 
 	@Deprecated
-	void putList(List<String> list, String key);
+	default void putList(final List<String> list, final String key) {
+		putList((Class<?>) null, list, key);
+	}
 
 	@Deprecated
 	void putList(String absolutePath, List<String> list, String key);
@@ -249,16 +255,22 @@ public interface PrefService extends SciJavaService {
 	void putList(String absolutePath, List<String> list);
 
 	@Deprecated
-	List<String> getList(String key);
+	default List<String> getList(final String key) {
+		return getList((Class<?>) null, key);
+	}
 
 	@Deprecated
 	List<String> getList(String absolutePath, String key);
 
 	@Deprecated
-	void putIterable(Iterable<String> iterable, String key);
+	default void putIterable(final Iterable<String> iterable, final String key) {
+		putIterable((Class<?>) null, iterable, key);
+	}
 
 	@Deprecated
-	Iterable<String> getIterable(String key);
+	default Iterable<String> getIterable(final String key) {
+		return getIterable((Class<?>) null, key);
+	}
 
 	@Deprecated
 	void clear(Class<?> c, String name);
