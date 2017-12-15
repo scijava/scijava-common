@@ -175,6 +175,8 @@ public class DefaultPrefService extends AbstractPrefService {
 		prefs(c).remove(key(c, name));
 	}
 
+	// -- Deprecated methods --
+
 	@Deprecated
 	@Override
 	public void putMap(final Class<?> c, final Map<String, String> map,
@@ -215,6 +217,7 @@ public class DefaultPrefService extends AbstractPrefService {
 		return prefs(c).getList();
 	}
 
+	@Deprecated
 	@Override
 	public Iterable<String> getIterable(final Class<?> c, final String name) {
 		return prefs(c).node(key(c, name)).getIterable();
@@ -225,8 +228,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	public void putIterable(final Class<?> c, final Iterable<String> iterable, final String name) {
 		put(c, name, iterable);
 	}
-
-	// -- Deprecated methods --
 
 	@Deprecated
 	@Override

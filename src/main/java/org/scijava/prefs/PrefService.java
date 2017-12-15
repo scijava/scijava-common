@@ -94,6 +94,8 @@ public interface PrefService extends SciJavaService {
 	/** Removes the node. */
 	void remove(Class<?> c, String name);
 
+	// -- Deprecated methods --
+
 	/**
 	 * Puts a Map into the preferences, indexed under the specified class.
 	 */
@@ -138,8 +140,6 @@ public interface PrefService extends SciJavaService {
 	 */
 	@Deprecated
 	Iterable<String> getIterable(Class<?> c, String name);
-
-	// -- Deprecated methods --
 
 	@Deprecated
 	String get(String name);
