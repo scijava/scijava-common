@@ -195,4 +195,70 @@ public class PrefServiceTest {
 		assertEquals(lyrics, recovered);
 	}
 
+	@Test
+	public void testClassesInSamePackage() {
+		final String blueDog = "lazy", blueFox = "quick";
+		final String redDog = "friendly", redCat = "snuggly";
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.put(BlueNode.class, "dog", "lazy");
+		prefService.put(BlueNode.class, "fox", "quick");
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertEquals(blueDog, prefService.get(BlueNode.class, "dog"));
+		assertEquals(blueFox, prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.put(RedNode.class, "dog", redDog);
+		prefService.put(RedNode.class, "cat", redCat);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertEquals(blueDog, prefService.get(BlueNode.class, "dog"));
+		assertEquals(blueFox, prefService.get(BlueNode.class, "fox"));
+		assertEquals(redCat, prefService.get(RedNode.class, "cat"));
+		assertEquals(redDog, prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.clear(BlueNode.class);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertEquals(redCat, prefService.get(RedNode.class, "cat"));
+		assertEquals(redDog, prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+
+		prefService.clear(RedNode.class);
+
+		assertNull(prefService.get(BlueNode.class, "cat"));
+		assertNull(prefService.get(BlueNode.class, "dog"));
+		assertNull(prefService.get(BlueNode.class, "fox"));
+		assertNull(prefService.get(RedNode.class, "cat"));
+		assertNull(prefService.get(RedNode.class, "dog"));
+		assertNull(prefService.get(RedNode.class, "fox"));
+	}
+
+	// -- Helper classes --
+
+	/**
+	 * A class to use for anchoring preferences. Needed to test that preferences
+	 * are stored with each class specifically, rather than the package as a
+	 * whole. (Because the Java Preferences API uses packages for nodes, a
+	 * potential pitfall here is that clear(Class) might delete too much.)
+	 */
+	private interface BlueNode {}
+
+	/**
+	 * Another class for anchoring preferences, in the same package as
+	 * {@link BlueNode}.
+	 */
+	private interface RedNode {}
 }
