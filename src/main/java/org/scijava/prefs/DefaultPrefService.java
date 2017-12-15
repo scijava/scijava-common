@@ -154,7 +154,7 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Override
 	public void put(final Class<?> c, final String name,
-		final List<String> value)
+		final Iterable<String> value)
 	{
 		prefs(c).node(key(c, name)).putList(value);
 	}
@@ -225,15 +225,10 @@ public class DefaultPrefService extends AbstractPrefService {
 		return prefs(prefClass).node(key(prefClass, name)).getIterable();
 	}
 
-	@Override
-	public void putIterable(final Class<?> prefClass, final String name, final Iterable<String> iterable) {
-		prefs(prefClass).node(key(prefClass, name)).putIterable(iterable);
-	}
-
 	@Deprecated
 	@Override
 	public void putIterable(final Class<?> prefClass, final Iterable<String> iterable, final String name) {
-		putIterable(prefClass, name, iterable);
+		put(prefClass, name, iterable);
 	}
 
 	// -- Deprecated methods --
@@ -486,12 +481,13 @@ public class DefaultPrefService extends AbstractPrefService {
 			return map;
 		}
 
-		public void putList(final List<String> list) {
-			for (int index = 0; list != null && index < list.size(); index++) {
-				final Object value = list.get(index);
-				put("" + index, value);
+		public void putList(final Iterable<String> list) {
+			int index = 0;
+			for (final String value : list) {
+				put("" + index++, value);
 			}
 		}
+
 
 		public List<String> getList() {
 			final List<String> list = new ArrayList<>();
@@ -501,13 +497,6 @@ public class DefaultPrefService extends AbstractPrefService {
 				list.add(value);
 			}
 			return list;
-		}
-
-		public void putIterable(final Iterable<String> iterable) {
-			int index = 0;
-			for (final String value : iterable) {
-				put("" + index++, value);
-			}
 		}
 
 		public Iterable<String> getIterable() {

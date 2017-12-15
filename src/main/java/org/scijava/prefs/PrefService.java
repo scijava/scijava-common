@@ -77,7 +77,7 @@ public interface PrefService extends SciJavaService {
 
 	void put(Class<?> c, String name, Map<String, String> value);
 
-	void put(Class<?> c, String name, List<String> list);
+	void put(Class<?> c, String name, Iterable<String> list);
 
 	void clear(Class<?> c);
 
@@ -124,11 +124,6 @@ public interface PrefService extends SciJavaService {
 	 */
 	@Deprecated
 	List<String> getList(Class<?> prefClass);
-
-	/**
-	 * Puts an iterable into the preferences.
-	 */
-	void putIterable(Class<?> prefClass, String name, Iterable<String> iterable);
 
 	/**
 	 * Puts an iterable into the preferences.

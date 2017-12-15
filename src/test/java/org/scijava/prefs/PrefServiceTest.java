@@ -160,7 +160,7 @@ public class PrefServiceTest {
 	}
 
 	/**
-	 * Tests {@link PrefService#put(Class, String, List)} and
+	 * Tests {@link PrefService#put(Class, String, Iterable)} and
 	 * {@link PrefService#getList(Class, String)}.
 	 */
 	@Test
