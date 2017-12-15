@@ -86,11 +86,6 @@ public interface PrefService extends SciJavaService {
 	/** Clears everything. */
 	void clearAll();
 
-	/**
-	 * Clears the node indexed under the given class.
-	 */
-	void clear(Class<?> c, String name);
-
 	/** Removes the node. */
 	void remove(Class<?> c, String name);
 
@@ -264,4 +259,7 @@ public interface PrefService extends SciJavaService {
 
 	@Deprecated
 	Iterable<String> getIterable(String key);
+
+	@Deprecated
+	void clear(Class<?> c, String name);
 }

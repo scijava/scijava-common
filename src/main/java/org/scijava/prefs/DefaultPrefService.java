@@ -166,11 +166,6 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public void clear(final Class<?> c, final String name) {
-		prefs(c).clear(name);
-	}
-
-	@Override
 	public void remove(final Class<?> c, final String name) {
 		prefs(c).remove(name);
 	}
@@ -295,6 +290,12 @@ public class DefaultPrefService extends AbstractPrefService {
 	@Override
 	public void putIterable(final Iterable<String> iterable, final String key) {
 		putIterable((Class<?>) null, iterable, key);
+	}
+
+	@Deprecated
+	@Override
+	public void clear(final Class<?> c, final String name) {
+		prefs(c).clear(name);
 	}
 
 	// -- Helper methods --
