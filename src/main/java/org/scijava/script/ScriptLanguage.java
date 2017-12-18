@@ -159,7 +159,6 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 
 	@Override
 	default String getEngineVersion() {
-		return "0.0";
+		return VersionUtils.getVersion(getClass());
 	}
-
 }
