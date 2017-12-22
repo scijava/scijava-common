@@ -34,8 +34,14 @@ package org.scijava.plugin;
 
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.scijava.Priority;
 import org.scijava.service.SciJavaService;
 
 /**
@@ -254,4 +260,23 @@ public interface PluginService extends SciJavaService {
 	 */
 	<PT extends SciJavaPlugin> PT createInstance(PluginInfo<PT> info);
 
+	/**
+	 * Sorts the given list of plugin instances by priority.
+	 * 
+	 * @param instances List of plugin instances to sort.
+	 * @param type The type of plugin these instances represent.
+	 */
+	default <PT extends SciJavaPlugin> void sort(final List<PT> instances,
+		final Class<PT> type)
+	{
+		// Create a mapping from plugin classes to priorities.
+		final List<PluginInfo<PT>> plugins = getPluginsOfType(type);
+		final Map<Class<?>, PluginInfo<PT>> infos = plugins.stream().collect(//
+			Collectors.toMap(PluginInfo::getPluginClass, Function.identity()));
+
+		// Compare plugin instances by priority via the mapping.
+		final Comparator<PT> comparator = (o1, o2) -> Priority.compare(//
+			infos.get(o1.getClass()), infos.get(o2.getClass()));
+		Collections.sort(instances, comparator);
+	}
 }
