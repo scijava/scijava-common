@@ -140,4 +140,8 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 		return cancelReason;
 	}
 
+	// HACK: For OptionsPlugin.
+	public void uncancel() {
+		cancelReason = null;
+	}
 }

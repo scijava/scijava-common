@@ -108,19 +108,20 @@ public abstract class OptionsPlugin extends DynamicCommand implements
 		prefService.clear(getClass());
 	}
 
+	// -- Module methods --
+
+	@Override
+	public void cancel() {
+		resetState();
+	}
+
 	// -- Runnable methods --
 
 	@Override
 	public void run() {
 		save();
-
-		// NB: Clear "resolved" status of all inputs.
-		// Otherwise, no inputs are harvested on next run.
-		for (final ModuleItem<?> input : getInfo().inputs()) {
-			unresolveInput(input.getName());
-		}
-
 		eventService.publish(new OptionsEvent(this));
+		resetState();
 	}
 
 	// -- Helper methods --
@@ -135,4 +136,15 @@ public abstract class OptionsPlugin extends DynamicCommand implements
 		moduleService.save(input, value);
 	}
 
+	private void resetState() {
+		// NB: Clear "resolved" status of all inputs.
+		// Otherwise, no inputs are harvested on next run.
+		for (final ModuleItem<?> input : getInfo().inputs()) {
+			unresolveInput(input.getName());
+		}
+
+		// NB: Clear "canceled" status.
+		// Otherwise, the command cannot run again.
+		uncancel();
+	}
 }
