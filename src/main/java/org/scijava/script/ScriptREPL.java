@@ -165,8 +165,9 @@ public class ScriptREPL {
 			}
 			out.println("Have fun!");
 			out.println();
+			lang(langs.get(0).getLanguageName());
 		}
-		lang(langs.get(0).getLanguageName());
+		else if (!langs.isEmpty()) lang(langs.get(0));
 		populateBindings(interpreter.getBindings());
 	}
 
