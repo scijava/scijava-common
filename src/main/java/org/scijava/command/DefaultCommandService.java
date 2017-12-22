@@ -183,22 +183,16 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	public Future<CommandModule> run(final CommandInfo info,
 		final boolean process, final Object... inputs)
 	{
-		validateModuleType(info);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		final Future<CommandModule> future =
-			(Future) moduleService.run(info, process, inputs);
-		return future;
+		final Future<Module> future = moduleService.run(info, process, inputs);
+		return validateFuture(future, info);
 	}
 
 	@Override
 	public Future<CommandModule> run(final CommandInfo info,
 		final boolean process, final Map<String, Object> inputMap)
 	{
-		validateModuleType(info);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		final Future<CommandModule> future =
-			(Future) moduleService.run(info, process, inputMap);
-		return future;
+		final Future<Module> future = moduleService.run(info, process, inputMap);
+		return validateFuture(future, info);
 	}
 
 	// -- PTService methods --
@@ -352,25 +346,32 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	}
 
 	/**
-	 * A HACK to prevent calling run when the resultant module will not be a
-	 * {@link CommandModule}. This is an API design flaw in CommandService
-	 * currently, but for now work around it rather than breaking backwards API
-	 * compatibility.
+	 * A HACK to avoid {@link ClassCastException} when calling run when the
+	 * resultant module will not be a {@link CommandModule}. This is an API design
+	 * flaw in CommandService currently, but for now we work around it rather than
+	 * breaking backwards API compatibility.
 	 */
-	private void validateModuleType(final CommandInfo info) {
+	private Future<CommandModule> validateFuture(final Future<Module> future,
+		final CommandInfo info)
+	{
 		try {
 			final Class<?> commandClass = info.loadDelegateClass();
 			if (Module.class.isAssignableFrom(commandClass)) {
-				throw new IllegalArgumentException("Cannot use " +
-					"commandService.run(commandClass, ...) " +
-					"with classes that extend Module directly. Please call " +
-					"moduleService.run(commandService.getCommand(commandClass), ...) " +
-					"instead.");
+				log.debug("The command '" + info.getIdentifier() +
+					"' extends Module directly. Due to a design flaw in the " +
+					"CommandService API, the result cannot be coerced to a " +
+					"Future<CommandModule>, so null will be returned instead. " +
+					"If you need the resulting module, please instead call " +
+					"moduleService.run(commandService.getCommand(commandClass), ...).");
+				return null;
 			}
 		}
 		catch (final ClassNotFoundException exc) {
 			throw new IllegalStateException("Command class unavailable: " + //
 				info.getDelegateClassName(), exc);
 		}
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		final Future<CommandModule> result = (Future) future;
+		return result;
 	}
 }
