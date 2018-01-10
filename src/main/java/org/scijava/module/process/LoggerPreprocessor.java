@@ -66,7 +66,7 @@ public class LoggerPreprocessor extends AbstractPreprocessorPlugin {
 		if (loggerInput == null || !loggerInput.isAutoFill()) return;
 
 		String loggerName = loggerInput.getLabel();
-		if(loggerName.isEmpty())
+		if(loggerName == null || loggerName.isEmpty())
 			loggerName = module.getDelegateObject().getClass().getSimpleName();
 		Logger logger = logService.subLogger(loggerName);
 
