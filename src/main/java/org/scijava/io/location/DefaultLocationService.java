@@ -33,7 +33,6 @@
 package org.scijava.io.location;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,17 +52,6 @@ public class DefaultLocationService extends
 {
 
 	private final Map<String, LocationResolver> resolvers = new HashMap<>();
-
-	@Override
-	public Class<LocationResolver> getPluginType() {
-		return LocationResolver.class;
-	}
-
-	@Override
-	public Class<URI> getType() {
-		return URI.class;
-	}
-
 
 	@Override
 	public LocationResolver getResolver(final URI uri) {

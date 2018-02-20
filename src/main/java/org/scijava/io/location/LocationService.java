@@ -83,4 +83,18 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 	 *         <code>null</code> if no resolver could be found.
 	 */
 	LocationResolver getResolver(URI uri);
+
+	// -- PTService methods --
+
+	@Override
+	default Class<LocationResolver> getPluginType() {
+		return LocationResolver.class;
+	}
+
+	// -- Typed methods --
+
+	@Override
+	default Class<URI> getType() {
+		return URI.class;
+	}
 }
