@@ -41,8 +41,8 @@ import java.util.Map;
 import javax.script.ScriptEngineFactory;
 
 import org.scijava.log.LogService;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.FileUtils;
+import org.scijava.util.Types;
 
 /**
  * Data structure for managing registered scripting languages.
@@ -184,6 +184,6 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	/** Helper method of {@link #overwriteMessage}. */
 	private String details(final ScriptLanguage language) {
 		final Class<?> c = language.getClass();
-		return c.getName() + " [" + ClassUtils.getLocation(c);
+		return c.getName() + " [" + Types.location(c);
 	}
 }

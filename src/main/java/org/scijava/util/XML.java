@@ -129,7 +129,7 @@ public class XML {
 		// configured services, including the
 		// com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl).
 		if (debug) {
-			System.err.println(ClassUtils.getLocation(XPathFactory.class));
+			System.err.println(Types.location(XPathFactory.class));
 		}
 
 		XPath xp = null;
@@ -147,7 +147,7 @@ public class XML {
 					} catch (Throwable t) {
 						if (debug) {
 							System.err.println("There was a problem with " + xp.getClass() +
-								" in " + ClassUtils.getLocation(xp.getClass()) + ":");
+								" in " + Types.location(xp.getClass()) + ":");
 							t.printStackTrace();
 						}
 						throw new Error(t);

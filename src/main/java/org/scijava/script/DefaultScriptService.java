@@ -65,9 +65,9 @@ import org.scijava.plugin.PluginService;
 import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.script.process.ScriptProcessorService;
 import org.scijava.service.Service;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.ColorRGB;
 import org.scijava.util.ColorRGBA;
+import org.scijava.util.Types;
 
 /**
  * Default service for working with scripts.
@@ -204,11 +204,11 @@ public class DefaultScriptService extends
 		final Class<?> type = aliasMap().get(componentAlias);
 		if (type != null) {
 			final int arrayDim = (alias.length() - componentAlias.length()) / 2;
-			return makeArrayType(type, arrayDim);
+			return Types.array(type, arrayDim);
 		}
 
 		try {
-			final Class<?> c = ClassUtils.loadClass(alias, false);
+			final Class<?> c = Types.load(alias, false);
 			aliasMap().put(alias, c);
 			return c;
 		}
@@ -405,10 +405,4 @@ public class DefaultScriptService extends
 		if (!alias.endsWith("[]")) return alias;
 		return stripArrayNotation(alias.substring(0, alias.length() - 2));
 	}
-
-	private Class<?> makeArrayType(final Class<?> type, final int arrayDim) {
-		if (arrayDim <= 0) return type;
-		return makeArrayType(ClassUtils.getArrayClass(type), arrayDim - 1);
-	}
-
 }

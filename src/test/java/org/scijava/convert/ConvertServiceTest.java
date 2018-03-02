@@ -76,6 +76,7 @@ import org.scijava.util.IntArray;
 import org.scijava.util.LongArray;
 import org.scijava.util.PrimitiveArray;
 import org.scijava.util.ShortArray;
+import org.scijava.util.Types;
 
 /**
  * Tests {@link ConvertService}.
@@ -706,7 +707,7 @@ public class ConvertServiceTest {
 	private void setFieldValue(final Object o, final String fieldName,
 		final Object value)
 	{
-		ClassUtils.setValue(ClassUtils.getField(o.getClass(), fieldName), o, value);
+		ClassUtils.setValue(Types.field(o.getClass(), fieldName), o, value);
 	}
 
 	/**

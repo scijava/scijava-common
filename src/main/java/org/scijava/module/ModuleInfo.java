@@ -42,7 +42,7 @@ import org.scijava.ValidityProblem;
 import org.scijava.Versioned;
 import org.scijava.event.EventService;
 import org.scijava.module.event.ModulesUpdatedEvent;
-import org.scijava.util.ClassUtils;
+import org.scijava.util.Types;
 import org.scijava.util.VersionUtils;
 
 /**
@@ -220,7 +220,7 @@ public interface ModuleInfo extends UIDetails, Validated, Identifiable,
 		// If the same delegate class is used for more than one module, though,
 		// it may need to override this method to indicate a different location.
 		try {
-			return ClassUtils.getLocation(loadDelegateClass()).toExternalForm();
+			return Types.location(loadDelegateClass()).toExternalForm();
 		}
 		catch (final ClassNotFoundException exc) {
 			return null;

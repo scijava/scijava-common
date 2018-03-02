@@ -139,7 +139,7 @@ public class Manifest implements Versioned {
 	/** Gets the JAR manifest associated with the given class. */
 	public static Manifest getManifest(final Class<?> c) {
 		try {
-			return getManifest(new URL("jar:" + ClassUtils.getLocation(c) + "!/"));
+			return getManifest(new URL("jar:" + Types.location(c) + "!/"));
 		}
 		catch (final IOException e) {
 			return null;

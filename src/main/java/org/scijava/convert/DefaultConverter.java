@@ -46,9 +46,8 @@ import java.util.Set;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ArrayUtils;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.ConversionUtils;
-import org.scijava.util.GenericUtils;
+import org.scijava.util.Types;
 
 /**
  * Default {@link Converter} implementation. Provides useful conversion
@@ -79,8 +78,10 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	public Object convert(final Object src, final Type dest) {
 
 		// Handle array types, including generic array types.
-		if (isArray(dest)) {
-			return convertToArray(src, GenericUtils.getComponentClass(dest));
+		final Type componentType = Types.component(dest);
+		if (componentType != null) {
+			// NB: Destination is an array type.
+			return convertToArray(src, Types.raw(componentType));
 		}
 
 		// Handle parameterized collection types.
@@ -89,18 +90,18 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		}
 
 		// This wasn't a collection or array, so convert it as a single element.
-		return convert(src, GenericUtils.getClass(dest));
+		return convert(src, Types.raw(dest));
 	}
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<T> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		final Class<T> saneDest = Types.box(dest);
 
 		// Handle array types
 		if (isArray(dest)) {
 			@SuppressWarnings("unchecked")
-			T array = (T) convertToArray(src, GenericUtils.getComponentClass(dest));
+			T array = (T) convertToArray(src, Types.raw(Types.component(dest)));
 			return array;
 		}
 
@@ -151,7 +152,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			final String s = (String) src;
 			if (s.isEmpty()) {
 				// return null for empty strings
-				return ConversionUtils.getNullValue(dest);
+				return Types.nullValue(dest);
 			}
 
 			// use first character when converting to Character
@@ -208,7 +209,9 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	{
 		for (final Constructor<?> ctor : type.getConstructors()) {
 			final Class<?>[] params = ctor.getParameterTypes();
-			if (params.length == 1 && ConversionUtils.canCast(argType, params[0])) {
+			if (params.length == 1 && //
+				Types.isAssignable(Types.box(argType), Types.box(params[0])))
+			{
 				return ctor;
 			}
 		}
@@ -216,12 +219,11 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	}
 
 	private boolean isArray(final Type type) {
-		return GenericUtils.getComponentClass(type) != null;
+		return Types.component(type) != null;
 	}
 
 	private boolean isCollection(final Type type) {
-		return ConversionUtils.canCast(GenericUtils.getClass(type),
-			Collection.class);
+		return Types.isAssignable(Types.raw(type), Collection.class);
 	}
 
 	private Object
@@ -247,8 +249,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	private Object convertToCollection(final Object value,
 		final ParameterizedType pType)
 	{
-		final Collection<Object> collection =
-			createCollection(GenericUtils.getClass(pType));
+		final Collection<Object> collection = createCollection(Types.raw(pType));
 		if (collection == null) return null;
 
 		// Populate the collection.
@@ -268,8 +269,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
 			// We don't have a concrete class. If it's a set or a list, we use
 			// the typical default implementation. Otherwise we won't convert.
-			if (ConversionUtils.canCast(type, List.class)) return new ArrayList<>();
-			if (ConversionUtils.canCast(type, Set.class)) return new HashSet<>();
+			if (Types.isAssignable(type, List.class)) return new ArrayList<>();
+			if (Types.isAssignable(type, Set.class)) return new HashSet<>();
 			return null;
 		}
 
@@ -298,7 +299,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 		// Handle parameterized collection types.
 		if (dest instanceof ParameterizedType && isCollection(dest) &&
-			createCollection(GenericUtils.getClass(dest)) != null)
+			createCollection(Types.raw(dest)) != null)
 		{
 			return true;
 		}
@@ -310,14 +311,12 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
+		final Class<?> saneDest = Types.box(dest);
 
 		// OK for numerical conversions
-		if (ConversionUtils.canCast(ConversionUtils.getNonprimitiveType(src),
-			Number.class) &&
-			(ClassUtils.isByte(dest) || ClassUtils.isDouble(dest) ||
-					ClassUtils.isFloat(dest) || ClassUtils.isInteger(dest) ||
-					ClassUtils.isLong(dest) || ClassUtils.isShort(dest)))
+		if (Types.isAssignable(Types.box(src), Number.class) && //
+			(Types.isByte(dest) || Types.isDouble(dest) || Types.isFloat(dest) ||
+				Types.isInteger(dest) || Types.isLong(dest) || Types.isShort(dest)))
 		{
 			return true;
 		}
@@ -325,7 +324,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		// OK if string
 		if (saneDest == String.class) return true;
 		
-		if (ConversionUtils.canCast(src, String.class)) {
+		if (Types.isAssignable(src, String.class)) {
 			// OK if source type is string and destination type is character
 			// (in this case, the first character of the string would be used)
 			if (saneDest == Character.class) return true;

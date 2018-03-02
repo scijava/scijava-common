@@ -63,7 +63,7 @@ import org.scijava.prefs.PrefService;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
-import org.scijava.util.ClassUtils;
+import org.scijava.util.Types;
 
 /**
  * Default service for keeping track of and executing available modules.
@@ -370,7 +370,7 @@ public class DefaultModuleService extends AbstractService implements
 	 * {@link ModuleInfo} argument is called).
 	 */
 	private Module getRegisteredModuleInstance(final ModuleInfo info) {
-		final Class<?> type = ClassUtils.loadClass(info.getDelegateClassName());
+		final Class<?> type = Types.load(info.getDelegateClassName());
 		if (type == null || !Module.class.isAssignableFrom(type)) return null;
 
 		// the module metadata's delegate class extends Module, so there is hope

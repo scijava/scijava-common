@@ -38,8 +38,7 @@ import java.util.Collection;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.AbstractHandlerPlugin;
 import org.scijava.plugin.Parameter;
-import org.scijava.util.ConversionUtils;
-import org.scijava.util.GenericUtils;
+import org.scijava.util.Types;
 
 /**
  * Abstract superclass for {@link Converter} plugins. Performs appropriate
@@ -109,15 +108,15 @@ public abstract class AbstractConverter<I, O> extends
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
 		if (src == null) return false;
-		final Class<?> saneSrc = ConversionUtils.getNonprimitiveType(src);
-		final Class<?> saneDest = ConversionUtils.getNonprimitiveType(dest);
-		return ConversionUtils.canCast(saneSrc, getInputType()) &&
-			ConversionUtils.canCast(getOutputType(), saneDest);
+		final Class<?> saneSrc = Types.box(src);
+		final Class<?> saneDest = Types.box(dest);
+		return Types.isAssignable(saneSrc, getInputType()) &&
+			Types.isAssignable(getOutputType(), saneDest);
 	}
 
 	@Override
 	public Object convert(final Object src, final Type dest) {
-		final Class<?> destClass = GenericUtils.getClass(dest);
+		final Class<?> destClass = Types.raw(dest);
 		return convert(src, destClass);
 	}
 
@@ -155,7 +154,7 @@ public abstract class AbstractConverter<I, O> extends
 	@Override
 	@Deprecated
 	public boolean canConvert(final Class<?> src, final Type dest) {
-		final Class<?> destClass = GenericUtils.getClass(dest);
+		final Class<?> destClass = Types.raw(dest);
 		return canConvert(src, destClass);
 	}
 }

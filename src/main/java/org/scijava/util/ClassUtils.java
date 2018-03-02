@@ -32,14 +32,11 @@
 
 package org.scijava.util;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,271 +86,6 @@ public final class ClassUtils {
 	private static final MethodCache methodCache = new MethodCache();
 
 	// -- Class loading, querying and reflection --
-
-	/**
-	 * Loads the class with the given name, using the current thread's context
-	 * class loader, or null if it cannot be loaded.
-	 *
-	 * @param name The name of the class to load.
-	 * @return The loaded class, or null if the class could not be loaded.
-	 * @see #loadClass(String, ClassLoader, boolean)
-	 */
-	public static Class<?> loadClass(final String name) {
-		return loadClass(name, null, true);
-	}
-
-	/**
-	 * Loads the class with the given name, using the specified
-	 * {@link ClassLoader}, or null if it cannot be loaded.
-	 *
-	 * @param name The name of the class to load.
-	 * @param classLoader The class loader with which to load the class; if null,
-	 *          the current thread's context class loader will be used.
-	 * @return The loaded class, or null if the class could not be loaded.
-	 * @see #loadClass(String, ClassLoader, boolean)
-	 */
-	public static Class<?> loadClass(final String name,
-		final ClassLoader classLoader)
-	{
-		return loadClass(name, classLoader, true);
-	}
-
-	/**
-	 * Loads the class with the given name, using the current thread's context
-	 * class loader.
-	 *
-	 * @param className the name of the class to load
-	 * @param quietly Whether to return {@code null} (rather than throwing
-	 *          {@link IllegalArgumentException}) if something goes wrong loading
-	 *          the class
-	 * @return The loaded class, or {@code null} if the class could not be loaded
-	 *         and the {@code quietly} flag is set.
-	 * @see #loadClass(String, ClassLoader, boolean)
-	 * @throws IllegalArgumentException If the class cannot be loaded and the
-	 *           {@code quietly} flag is not set.
-	 */
-	public static Class<?> loadClass(final String className,
-		final boolean quietly)
-	{
-		return loadClass(className, null, quietly);
-	}
-
-	/**
-	 * Loads the class with the given name, using the specified
-	 * {@link ClassLoader}, or null if it cannot be loaded.
-	 * <p>
-	 * This method is capable of parsing several different class name syntaxes. In
-	 * particular, array classes (including primitives) represented using either
-	 * square brackets or internal Java array name syntax are supported. Examples:
-	 * </p>
-	 * <ul>
-	 * <li>{@code boolean} is loaded as {@code boolean.class}</li>
-	 * <li>{@code Z} is loaded as {@code boolean.class}</li>
-	 * <li>{@code double[]} is loaded as {@code double[].class}</li>
-	 * <li>{@code string[]} is loaded as {@code java.lang.String.class}</li>
-	 * <li>{@code [F} is loaded as {@code float[].class}</li>
-	 * </ul>
-	 *
-	 * @param name The name of the class to load.
-	 * @param classLoader The class loader with which to load the class; if null,
-	 *          the current thread's context class loader will be used.
-	 * @param quietly Whether to return {@code null} (rather than throwing
-	 *          {@link IllegalArgumentException}) if something goes wrong loading
-	 *          the class
-	 * @return The loaded class, or {@code null} if the class could not be loaded
-	 *         and the {@code quietly} flag is set.
-	 * @throws IllegalArgumentException If the class cannot be loaded and the
-	 *           {@code quietly} flag is not set.
-	 */
-	public static Class<?> loadClass(final String name,
-		final ClassLoader classLoader, final boolean quietly)
-	{
-		// handle primitive types
-		if (name.equals("Z") || name.equals("boolean")) return boolean.class;
-		if (name.equals("B") || name.equals("byte")) return byte.class;
-		if (name.equals("C") || name.equals("char")) return char.class;
-		if (name.equals("D") || name.equals("double")) return double.class;
-		if (name.equals("F") || name.equals("float")) return float.class;
-		if (name.equals("I") || name.equals("int")) return int.class;
-		if (name.equals("J") || name.equals("long")) return long.class;
-		if (name.equals("S") || name.equals("short")) return short.class;
-		if (name.equals("V") || name.equals("void")) return void.class;
-
-		// handle built-in class shortcuts
-		final String className;
-		if (name.equals("string")) className = "java.lang.String";
-		else className = name;
-
-		// handle source style arrays (e.g.: "java.lang.String[]")
-		if (name.endsWith("[]")) {
-			final String elementClassName = name.substring(0, name.length() - 2);
-			return getArrayClass(loadClass(elementClassName, classLoader));
-		}
-
-		// handle non-primitive internal arrays (e.g.: "[Ljava.lang.String;")
-		if (name.startsWith("[L") && name.endsWith(";")) {
-			final String elementClassName = name.substring(2, name.length() - 1);
-			return getArrayClass(loadClass(elementClassName, classLoader));
-		}
-
-		// handle other internal arrays (e.g.: "[I", "[[I", "[[Ljava.lang.String;")
-		if (name.startsWith("[")) {
-			final String elementClassName = name.substring(1);
-			return getArrayClass(loadClass(elementClassName, classLoader));
-		}
-
-		// load the class!
-		try {
-			final ClassLoader cl =
-				classLoader == null ? Thread.currentThread().getContextClassLoader()
-					: classLoader;
-			return cl.loadClass(className);
-		}
-		catch (final Throwable t) {
-			// NB: Do not allow any failure to load the class to crash us.
-			// Not ClassNotFoundException.
-			// Not NoClassDefFoundError.
-			// Not UnsupportedClassVersionError!
-			if (quietly) return null;
-			throw new IllegalArgumentException("Cannot load class: " + className, t);
-		}
-	}
-
-	/**
-	 * Gets the array class corresponding to the given element type.
-	 * <p>
-	 * For example, {@code getArrayClass(double.class)} returns
-	 * {@code double[].class}.
-	 * </p>
-	 */
-	public static Class<?> getArrayClass(final Class<?> elementClass) {
-		if (elementClass == null) return null;
-		// NB: It appears the reflection API has no built-in way to do this.
-		// So unfortunately, we must allocate a new object and then inspect it.
-		try {
-			return Array.newInstance(elementClass, 0).getClass();
-		}
-		catch (final IllegalArgumentException exc) {
-			return null;
-		}
-	}
-
-	/** Checks whether a class with the given name exists. */
-	public static boolean hasClass(final String className) {
-		return hasClass(className, null);
-	}
-
-	/** Checks whether a class with the given name exists. */
-	public static boolean hasClass(final String className,
-		final ClassLoader classLoader)
-	{
-		return loadClass(className, classLoader) != null;
-	}
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param className The name of the class whose location is desired.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final String className) {
-		return getLocation(className, null);
-	}
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param className The name of the class whose location is desired.
-	 * @param classLoader The class loader to use when loading the class.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final String className,
-		final ClassLoader classLoader)
-	{
-		final Class<?> c = loadClass(className, classLoader);
-		return getLocation(c);
-	}
-
-	/**
-	 * Gets the base location of the given class.
-	 * <p>
-	 * If the class is directly on the file system (e.g.,
-	 * "/path/to/my/package/MyClass.class") then it will return the base directory
-	 * (e.g., "file:/path/to").
-	 * </p>
-	 * <p>
-	 * If the class is within a JAR file (e.g.,
-	 * "/path/to/my-jar.jar!/my/package/MyClass.class") then it will return the
-	 * path to the JAR (e.g., "file:/path/to/my-jar.jar").
-	 * </p>
-	 *
-	 * @param c The class whose location is desired.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
-	 */
-	public static URL getLocation(final Class<?> c) {
-		if (c == null) return null; // could not load the class
-
-		// try the easy way first
-		try {
-			final URL codeSourceLocation =
-				c.getProtectionDomain().getCodeSource().getLocation();
-			if (codeSourceLocation != null) return codeSourceLocation;
-		}
-		catch (final SecurityException e) {
-			// NB: Cannot access protection domain.
-		}
-		catch (final NullPointerException e) {
-			// NB: Protection domain or code source is null.
-		}
-
-		// NB: The easy way failed, so we try the hard way. We ask for the class
-		// itself as a resource, then strip the class's path from the URL string,
-		// leaving the base path.
-
-		// get the class's raw resource path
-		final URL classResource = c.getResource(c.getSimpleName() + ".class");
-		if (classResource == null) return null; // cannot find class resource
-
-		final String url = classResource.toString();
-		final String suffix = c.getCanonicalName().replace('.', '/') + ".class";
-		if (!url.endsWith(suffix)) return null; // weird URL
-
-		// strip the class's path from the URL string
-		final String base = url.substring(0, url.length() - suffix.length());
-
-		String path = base;
-
-		// remove the "jar:" prefix and "!/" suffix, if present
-		if (path.startsWith("jar:")) path = path.substring(4, path.length() - 2);
-
-		try {
-			return new URL(path);
-		}
-		catch (final MalformedURLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	/**
 	 * Gets the given class's {@link Method}s marked with the annotation of the
@@ -572,26 +304,6 @@ public final class ClassUtils {
 	}
 
 	/**
-	 * Gets the specified field of the given class, or null if it does not exist.
-	 */
-	public static Field getField(final String className, final String fieldName) {
-		return getField(loadClass(className), fieldName);
-	}
-
-	/**
-	 * Gets the specified field of the given class, or null if it does not exist.
-	 */
-	public static Field getField(final Class<?> c, final String fieldName) {
-		if (c == null) return null;
-		try {
-			return c.getDeclaredField(fieldName);
-		}
-		catch (final NoSuchFieldException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * Gets the given field's value of the specified object instance, or null if
 	 * the value cannot be obtained.
 	 */
@@ -623,8 +335,7 @@ public final class ClassUtils {
 			}
 			else {
 				// the given value needs to be converted to a compatible type
-				final Type fieldType =
-					GenericUtils.getFieldType(field, instance.getClass());
+				final Type fieldType = Types.fieldType(field, instance.getClass());
 				@SuppressWarnings("deprecation")
 				final Object convertedValue = ConversionUtils.convert(value, fieldType);
 				compatibleValue = convertedValue;
@@ -638,48 +349,6 @@ public final class ClassUtils {
 	}
 
 	// -- Type querying --
-
-	public static boolean isBoolean(final Class<?> type) {
-		return type == boolean.class || Boolean.class.isAssignableFrom(type);
-	}
-
-	public static boolean isByte(final Class<?> type) {
-		return type == byte.class || Byte.class.isAssignableFrom(type);
-	}
-
-	public static boolean isCharacter(final Class<?> type) {
-		return type == char.class || Character.class.isAssignableFrom(type);
-	}
-
-	public static boolean isDouble(final Class<?> type) {
-		return type == double.class || Double.class.isAssignableFrom(type);
-	}
-
-	public static boolean isFloat(final Class<?> type) {
-		return type == float.class || Float.class.isAssignableFrom(type);
-	}
-
-	public static boolean isInteger(final Class<?> type) {
-		return type == int.class || Integer.class.isAssignableFrom(type);
-	}
-
-	public static boolean isLong(final Class<?> type) {
-		return type == long.class || Long.class.isAssignableFrom(type);
-	}
-
-	public static boolean isShort(final Class<?> type) {
-		return type == short.class || Short.class.isAssignableFrom(type);
-	}
-
-	public static boolean isNumber(final Class<?> type) {
-		return Number.class.isAssignableFrom(type) || type == byte.class ||
-			type == double.class || type == float.class || type == int.class ||
-			type == long.class || type == short.class;
-	}
-
-	public static boolean isText(final Class<?> type) {
-		return String.class.isAssignableFrom(type) || isCharacter(type);
-	}
 
 	// -- Comparison --
 
@@ -707,6 +376,15 @@ public final class ClassUtils {
 	}
 
 	// -- Helper methods --
+
+	private static Class<?> arrayOrNull(final Class<?> componentType) {
+		try {
+			return Types.array(componentType);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
+	}
 
 	/**
 	 * Populates the cache of annotated elements for a particular class by looking
@@ -756,6 +434,132 @@ public final class ClassUtils {
 
 	// -- Deprecated methods --
 
+	/** @deprecated Use {@link Types#load(String)} instead. */
+	@Deprecated
+	public static Class<?> loadClass(final String name) {
+		return Types.load(name);
+	}
+
+	/** @deprecated Use {@link Types#load(String, ClassLoader)} instead. */
+	@Deprecated
+	public static Class<?> loadClass(final String name,
+		final ClassLoader classLoader)
+	{
+		return Types.load(name, classLoader);
+	}
+
+	/** @deprecated Use {@link Types#load(String, boolean)} instead. */
+	@Deprecated
+	public static Class<?> loadClass(final String className,
+		final boolean quietly)
+	{
+		return Types.load(className, quietly);
+	}
+
+	/**
+	 * @deprecated Use {@link Types#load(String, ClassLoader, boolean)} instead.
+	 */
+	@Deprecated
+	public static Class<?> loadClass(final String name,
+		final ClassLoader classLoader, final boolean quietly)
+	{
+		return Types.load(name, classLoader, quietly);
+	}
+
+	/** @deprecated Use {@link Types#load(String)} instead. */
+	@Deprecated
+	public static boolean hasClass(final String className) {
+		return Types.load(className) != null;
+	}
+
+	/** @deprecated Use {@link Types#load(String, ClassLoader)} instead. */
+	@Deprecated
+	public static boolean hasClass(final String className,
+		final ClassLoader classLoader)
+	{
+		return Types.load(className, classLoader) != null;
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final String className) {
+		return Types.location(Types.load(className));
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final String className,
+		final ClassLoader classLoader)
+	{
+		return Types.location(Types.load(className, classLoader));
+	}
+
+	/** @deprecated Use {@link Types#location} and {@link Types#load} instead. */
+	@Deprecated
+	public static URL getLocation(final Class<?> c) {
+		return Types.location(c);
+	}
+
+	/** @deprecated Use {@link Types#isBoolean} instead. */
+	@Deprecated
+	public static boolean isBoolean(final Class<?> type) {
+		return Types.isBoolean(type);
+	}
+
+	/** @deprecated Use {@link Types#isByte} instead. */
+	@Deprecated
+	public static boolean isByte(final Class<?> type) {
+		return Types.isByte(type);
+	}
+
+	/** @deprecated Use {@link Types#isCharacter} instead. */
+	@Deprecated
+	public static boolean isCharacter(final Class<?> type) {
+		return Types.isCharacter(type);
+	}
+
+	/** @deprecated Use {@link Types#isDouble} instead. */
+	@Deprecated
+	public static boolean isDouble(final Class<?> type) {
+		return Types.isDouble(type);
+	}
+
+	/** @deprecated Use {@link Types#isFloat} instead. */
+	@Deprecated
+	public static boolean isFloat(final Class<?> type) {
+		return Types.isFloat(type);
+	}
+
+	/** @deprecated Use {@link Types#isInteger} instead. */
+	@Deprecated
+	public static boolean isInteger(final Class<?> type) {
+		return Types.isInteger(type);
+	}
+
+	/** @deprecated Use {@link Types#isLong} instead. */
+	@Deprecated
+	public static boolean isLong(final Class<?> type) {
+		return Types.isLong(type);
+	}
+
+	/** @deprecated Use {@link Types#isShort} instead. */
+	@Deprecated
+	public static boolean isShort(final Class<?> type) {
+		return Types.isShort(type);
+	}
+
+	/** @deprecated Use {@link Types#isNumber} instead. */
+	@Deprecated
+	public static boolean isNumber(final Class<?> type) {
+		return Types.isNumber(type);
+	}
+
+	/** @deprecated Use {@link Types#isText} instead. */
+	@Deprecated
+	public static boolean isText(final Class<?> type) {
+		return Types.isText(type);
+	}
+
 	/** @deprecated use {@link ConversionUtils#convert(Object, Class)} */
 	@Deprecated
 	public static <T> T convert(final Object value, final Class<T> type) {
@@ -774,47 +578,68 @@ public final class ClassUtils {
 		return ConversionUtils.canConvert(value, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#cast(Object, Class)} */
+	/** @deprecated use {@link Types#cast(Object, Class)} */
 	@Deprecated
 	public static <T> T cast(final Object obj, final Class<T> type) {
-		return ConversionUtils.cast(obj, type);
+		return Types.cast(obj, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#canCast(Class, Class)} */
+	/** @deprecated use {@link Types#isAssignable(Type, Type)} */
 	@Deprecated
 	public static boolean canCast(final Class<?> c, final Class<?> type) {
-		return ConversionUtils.canCast(c, type);
+		return Types.isAssignable(c, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#canCast(Object, Class)} */
+	/** @deprecated use {@link Types#isInstance(Object, Class)} */
 	@Deprecated
 	public static boolean canCast(final Object obj, final Class<?> type) {
-		return ConversionUtils.canCast(obj, type);
+		return Types.isInstance(obj, type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#getNonprimitiveType(Class)} */
+	/** @deprecated use {@link Types#box(Class)} */
 	@Deprecated
 	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
-		return ConversionUtils.getNonprimitiveType(type);
+		return Types.box(type);
 	}
 
-	/** @deprecated use {@link ConversionUtils#getNullValue(Class)} */
+	/** @deprecated use {@link Types#nullValue(Class)} */
 	@Deprecated
 	public static <T> T getNullValue(final Class<T> type) {
-		return ConversionUtils.getNullValue(type);
+		return Types.nullValue(type);
 	}
 
-	/** @deprecated use {@link GenericUtils#getFieldClasses(Field, Class)} */
+	/**
+	 * @deprecated Use {@link Types#fieldType(Field, Class)} and {@link Types#raws}
+	 *             instead.
+	 */
 	@Deprecated
 	public static List<Class<?>> getTypes(final Field field, final Class<?> type)
 	{
-		return GenericUtils.getFieldClasses(field, type);
+		return Types.raws(Types.fieldType(field, type));
 	}
 
-	/** @deprecated use {@link GenericUtils#getFieldType(Field, Class)} */
+	/** @deprecated Use {@link Types#fieldType(Field, Class)} instead. */
 	@Deprecated
 	public static Type getGenericType(final Field field, final Class<?> type) {
-		return GenericUtils.getFieldType(field, type);
+		return Types.fieldType(field, type);
+	}
+
+	/** @deprecated Use {@link Types#field} instead. */
+	@Deprecated
+	public static Field getField(final String className, final String fieldName) {
+		return Types.field(Types.load(className), fieldName);
+	}
+
+	/** @deprecated Use {@link Types#field} instead. */
+	@Deprecated
+	public static Field getField(final Class<?> c, final String fieldName) {
+		return Types.field(c, fieldName);
+	}
+
+	/** @deprecated Use {@link Types#array(Class)} instead. */
+	@Deprecated
+	public static Class<?> getArrayClass(final Class<?> elementClass) {
+		return Types.raw(arrayOrNull(elementClass));
 	}
 
 	// -- Helper classes --

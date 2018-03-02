@@ -42,7 +42,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.run.AbstractCodeRunner;
 import org.scijava.run.CodeRunner;
-import org.scijava.util.ClassUtils;
+import org.scijava.util.Types;
 
 /**
  * Executes the given class's {@code main} method.
@@ -108,7 +108,7 @@ public class MainCodeRunner extends AbstractCodeRunner {
 
 	private Class<?> getClass(final Object code) {
 		if (code instanceof Class) return (Class<?>) code;
-		if (code instanceof String) return ClassUtils.loadClass((String) code);
+		if (code instanceof String) return Types.load((String) code);
 		return null;
 	}
 

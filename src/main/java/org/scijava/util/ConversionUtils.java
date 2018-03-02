@@ -38,16 +38,10 @@ import org.scijava.convert.ConversionRequest;
 import org.scijava.convert.ConvertService;
 import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
+import org.scijava.util.Types;
 
-/**
- * Useful methods for converting and casting between classes and types.
- * <p>
- * For extensible type conversion, use {@link ConvertService}.
- * </p>
- *
- * @author Curtis Rueden
- * @author Mark Hiner
- */
+/** @deprecated use {@link ConvertService} and {@link Types} */
+@Deprecated
 public class ConversionUtils {
 
 	private static ConvertService convertService;
@@ -60,184 +54,6 @@ public class ConversionUtils {
 		// prevent instantiation of utility class
 	}
 
-	// -- Type casting --
-
-	/**
-	 * Converts the given string value to an enumeration constant of the specified
-	 * type.
-	 *
-	 * @param src The value to convert.
-	 * @param dest The type of the enumeration constant.
-	 * @return The converted enumeration constant, or null if the type is not an
-	 *         enumeration type or has no such constant.
-	 */
-	public static <T> T convertToEnum(final String src, final Class<T> dest) {
-		if (src == null || !dest.isEnum()) return null;
-		try {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			final Enum result = Enum.valueOf((Class) dest, src);
-			@SuppressWarnings("unchecked")
-			final T typedResult = (T) result;
-			return typedResult;
-		}
-		catch (final IllegalArgumentException exc) {
-			// no such enum constant
-			return null;
-		}
-	}
-
-	/**
-	 * Casts the given object to the specified type, or null if the types are
-	 * incompatible.
-	 */
-	public static <T> T cast(final Object src, final Class<T> dest) {
-		if (!canCast(src, dest)) return null;
-		@SuppressWarnings("unchecked")
-		final T result = (T) src;
-		return result;
-	}
-
-	/**
-	 * Checks whether objects of the given class can be assigned to the specified
-	 * type. Unlike {@link Class#isAssignableFrom(Class)}, this method considers
-	 * auto-unboxing.
-	 * 
-	 * @return true If the destination class is assignable from the source one, or
-	 *         if the source class is null and destination class is non-null.
-	 */
-	public static boolean canAssign(final Class<?> src, final Class<?> dest) {
-		return canCast(src, dest);
-	}
-
-	/**
-	 * Checks whether the given object can be assigned to the specified type.
-	 * Unlike {@link Class#isAssignableFrom(Class)}, this method considers
-	 * auto-unboxing.
-	 * 
-	 * @return true If the destination class is assignable from the source
-	 *         object's class, or if the source object is null and destionation
-	 *         class is non-null.
-	 */
-	public static boolean canAssign(final Object src, final Class<?> dest) {
-		return canCast(src, dest);
-	}
-
-	/**
-	 * @deprecated use {@link #canAssign(Class, Class)} instead
-	 */
-	@Deprecated
-	public static boolean canCast(final Class<?> src, final Class<?> dest) {
-		if (dest == null) return false;
-		if (src == null) return true;
-		final Class<?> saneSrc = getNonprimitiveType(src);
-		final Class<?> saneDest = getNonprimitiveType(dest);
-		return saneDest.isAssignableFrom(saneSrc);
-	}
-
-	/**
-	 * @deprecated use {@link #canAssign(Object, Class)} instead
-	 */
-	@Deprecated
-	public static boolean canCast(final Object src, final Class<?> dest) {
-		if (dest == null) return false;
-		return src == null || canCast(src.getClass(), dest);
-	}
-
-	/**
-	 * Returns the primitive {@link Class} closest to the given type.
-	 * <p>
-	 * Specifically, the following type conversions are done:
-	 * </p>
-	 * <ul>
-	 * <li>Boolean.class becomes boolean.class</li>
-	 * <li>Byte.class becomes byte.class</li>
-	 * <li>Character.class becomes char.class</li>
-	 * <li>Double.class becomes double.class</li>
-	 * <li>Float.class becomes float.class</li>
-	 * <li>Integer.class becomes int.class</li>
-	 * <li>Long.class becomes long.class</li>
-	 * <li>Short.class becomes short.class</li>
-	 * <li>Void.class becomes void.class</li>
-	 * </ul>
-	 * <p>
-	 * All other types are unchanged.
-	 * </p>
-	 */
-	public static <T> Class<T> getPrimitiveType(final Class<T> type) {
-		final Class<?> destType;
-		if (type == Boolean.class) destType = boolean.class;
-		else if (type == Byte.class) destType = byte.class;
-		else if (type == Character.class) destType = char.class;
-		else if (type == Double.class) destType = double.class;
-		else if (type == Float.class) destType = float.class;
-		else if (type == Integer.class) destType = int.class;
-		else if (type == Long.class) destType = long.class;
-		else if (type == Short.class) destType = short.class;
-		else if (type == Void.class) destType = void.class;
-		else destType = type;
-		@SuppressWarnings("unchecked")
-		final Class<T> result = (Class<T>) destType;
-		return result;
-	}
-
-	/**
-	 * Returns the non-primitive {@link Class} closest to the given type.
-	 * <p>
-	 * Specifically, the following type conversions are done:
-	 * </p>
-	 * <ul>
-	 * <li>boolean.class becomes Boolean.class</li>
-	 * <li>byte.class becomes Byte.class</li>
-	 * <li>char.class becomes Character.class</li>
-	 * <li>double.class becomes Double.class</li>
-	 * <li>float.class becomes Float.class</li>
-	 * <li>int.class becomes Integer.class</li>
-	 * <li>long.class becomes Long.class</li>
-	 * <li>short.class becomes Short.class</li>
-	 * <li>void.class becomes Void.class</li>
-	 * </ul>
-	 * <p>
-	 * All other types are unchanged.
-	 * </p>
-	 */
-	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
-		final Class<?> destType;
-		if (type == boolean.class) destType = Boolean.class;
-		else if (type == byte.class) destType = Byte.class;
-		else if (type == char.class) destType = Character.class;
-		else if (type == double.class) destType = Double.class;
-		else if (type == float.class) destType = Float.class;
-		else if (type == int.class) destType = Integer.class;
-		else if (type == long.class) destType = Long.class;
-		else if (type == short.class) destType = Short.class;
-		else if (type == void.class) destType = Void.class;
-		else destType = type;
-		@SuppressWarnings("unchecked")
-		final Class<T> result = (Class<T>) destType;
-		return result;
-	}
-
-	/**
-	 * Gets the "null" value for the given type. For non-primitives, this will
-	 * actually be null. For primitives, it will be zero for numeric types, false
-	 * for boolean, and the null character for char.
-	 */
-	public static <T> T getNullValue(final Class<T> type) {
-		final Object defaultValue;
-		if (type == boolean.class) defaultValue = false;
-		else if (type == byte.class) defaultValue = (byte) 0;
-		else if (type == char.class) defaultValue = '\0';
-		else if (type == double.class) defaultValue = 0d;
-		else if (type == float.class) defaultValue = 0f;
-		else if (type == int.class) defaultValue = 0;
-		else if (type == long.class) defaultValue = 0L;
-		else if (type == short.class) defaultValue = (short) 0;
-		else defaultValue = null;
-		@SuppressWarnings("unchecked")
-		final T result = (T) defaultValue;
-		return result;
-	}
-
 	// -- ConvertService setter --
 
 	/**
@@ -246,8 +62,8 @@ public class ConversionUtils {
 	public static void setDelegateService(final ConvertService convertService,
 		final double priority)
 	{
-		if (ConversionUtils.convertService == null ||
-			Double.compare(priority, servicePriority) > 0)
+		if (ConversionUtils.convertService == null || Double.compare(priority,
+			servicePriority) > 0)
 		{
 			ConversionUtils.convertService = convertService;
 			servicePriority = priority;
@@ -316,19 +132,84 @@ public class ConversionUtils {
 		return (handler == null ? false : handler.canConvert(src, dest));
 	}
 
-	/** @deprecated use {@link GenericUtils#getClass(Type)} */
+	/** @deprecated use {@link Types#enumValue} */
+	@Deprecated
+	public static <T> T convertToEnum(final String src, final Class<T> dest) {
+		try {
+			return Types.enumValue(src,  dest);
+		}
+		catch (final IllegalArgumentException exc) {
+			return null;
+		}
+	}
+
+	/** @deprecated use {@link Types#raw} */
 	@Deprecated
 	public static Class<?> getClass(final Type type) {
-		return GenericUtils.getClass(type);
+		return Types.raw(type);
 	}
 
-	/** @deprecated use {@link GenericUtils#getComponentClass(Type)} */
+	/** @deprecated use {@link Types#cast} */
+	@Deprecated
+	public static <T> T cast(final Object src, final Class<T> dest) {
+		if (!canCast(src, dest)) return null;
+		@SuppressWarnings("unchecked")
+		final T result = (T) src;
+		return result;
+	}
+
+	/** @deprecated use {@link Types#isAssignable} */
+	@Deprecated
+	public static boolean canAssign(final Class<?> src, final Class<?> dest) {
+		return canCast(src, dest);
+	}
+
+	/** @deprecated use {@link Types#isInstance} */
+	@Deprecated
+	public static boolean canAssign(final Object src, final Class<?> dest) {
+		return canCast(src, dest);
+	}
+
+	/** @deprecated use {@link Types#isAssignable} */
+	@Deprecated
+	public static boolean canCast(final Class<?> src, final Class<?> dest) {
+		if (dest == null) return false;
+		if (src == null) return true;
+		return Types.isAssignable(Types.box(src), Types.box(dest));
+	}
+
+	/** @deprecated use {@link Types#isInstance} */
+	@Deprecated
+	public static boolean canCast(final Object src, final Class<?> dest) {
+		if (dest == null) return false;
+		return src == null || canCast(src.getClass(), dest);
+	}
+
+	/** @deprecated use {@link Types#raws} and {@link Types#component} */
 	@Deprecated
 	public static Class<?> getComponentClass(final Type type) {
-		return GenericUtils.getComponentClass(type);
+		return Types.raw(Types.component(type));
 	}
 
-//-- Helper methods --
+	/** @deprecated use {@link Types#unbox} */
+	@Deprecated
+	public static <T> Class<T> getPrimitiveType(final Class<T> type) {
+		return Types.unbox(type);
+	}
+
+	/** @deprecated use {@link Types#box} */
+	@Deprecated
+	public static <T> Class<T> getNonprimitiveType(final Class<T> type) {
+		return Types.box(type);
+	}
+
+	/** @deprecated Use {@link Types#nullValue} instead. */
+	@Deprecated
+	public static <T> T getNullValue(final Class<T> type) {
+		return Types.nullValue(type);
+	}
+
+	// -- Helper methods --
 
 	/**
 	 * Gets the {@link Converter} to use for the given conversion request. If the

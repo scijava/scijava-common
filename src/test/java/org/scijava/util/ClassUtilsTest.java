@@ -33,8 +33,6 @@
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.scijava.test.TestUtils.createTemporaryDirectory;
 
@@ -57,86 +55,6 @@ import org.junit.Test;
  * @author Curtis Rueden
  */
 public class ClassUtilsTest {
-
-	@Test
-	public void testLoadClass() {
-		assertLoaded(boolean.class, "boolean");
-		assertLoaded(byte.class, "byte");
-		assertLoaded(char.class, "char");
-		assertLoaded(double.class, "double");
-		assertLoaded(float.class, "float");
-		assertLoaded(int.class, "int");
-		assertLoaded(long.class, "long");
-		assertLoaded(short.class, "short");
-		assertLoaded(void.class, "void");
-		assertLoaded(String.class, "string");
-		assertLoaded(Number.class, "java.lang.Number");
-		assertLoaded(boolean[].class, "boolean[]");
-		assertLoaded(byte[].class, "byte[]");
-		assertLoaded(char[].class, "char[]");
-		assertLoaded(double[].class, "double[]");
-		assertLoaded(float[].class, "float[]");
-		assertLoaded(int[].class, "int[]");
-		assertLoaded(long[].class, "long[]");
-		assertLoaded(short[].class, "short[]");
-		assertLoaded(null, "void[]");
-		assertLoaded(String[].class, "string[]");
-		assertLoaded(Number[].class, "java.lang.Number[]");
-		assertLoaded(boolean[][].class, "boolean[][]");
-		assertLoaded(byte[][].class, "byte[][]");
-		assertLoaded(char[][].class, "char[][]");
-		assertLoaded(double[][].class, "double[][]");
-		assertLoaded(float[][].class, "float[][]");
-		assertLoaded(int[][].class, "int[][]");
-		assertLoaded(long[][].class, "long[][]");
-		assertLoaded(short[][].class, "short[][]");
-		assertLoaded(null, "void[][]");
-		assertLoaded(String[][].class, "string[][]");
-		assertLoaded(Number[][].class, "java.lang.Number[][]");
-		assertLoaded(boolean[].class, "[Z");
-		assertLoaded(byte[].class, "[B");
-		assertLoaded(char[].class, "[C");
-		assertLoaded(double[].class, "[D");
-		assertLoaded(float[].class, "[F");
-		assertLoaded(int[].class, "[I");
-		assertLoaded(long[].class, "[J");
-		assertLoaded(short[].class, "[S");
-		assertLoaded(null, "[V");
-		assertLoaded(String[].class, "[Lstring;");
-		assertLoaded(Number[].class, "[Ljava.lang.Number;");
-		assertLoaded(boolean[][].class, "[[Z");
-		assertLoaded(byte[][].class, "[[B");
-		assertLoaded(char[][].class, "[[C");
-		assertLoaded(double[][].class, "[[D");
-		assertLoaded(float[][].class, "[[F");
-		assertLoaded(int[][].class, "[[I");
-		assertLoaded(long[][].class, "[[J");
-		assertLoaded(short[][].class, "[[S");
-		assertLoaded(null, "[[V");
-		assertLoaded(String[][].class, "[[Lstring;");
-		assertLoaded(Number[][].class, "[[Ljava.lang.Number;");
-	}
-
-	@Test
-	public void testFailureQuiet() {
-		assertNull(ClassUtils.loadClass("a.non.existent.class"));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testFailureLoud() {
-		ClassUtils.loadClass("a.non.existent.class", false);
-	}
-
-	@Test
-	public void testGetArrayClass() {
-		assertSame(boolean[].class, ClassUtils.getArrayClass(boolean.class));
-		assertSame(String[].class, ClassUtils.getArrayClass(String.class));
-		assertSame(Number[].class, ClassUtils.getArrayClass(Number.class));
-		assertSame(boolean[][].class, ClassUtils.getArrayClass(boolean[].class));
-		assertSame(String[][].class, ClassUtils.getArrayClass(String[].class));
-		assertSame(Number[][].class, ClassUtils.getArrayClass(Number[].class));
-		assertNull(ClassUtils.getArrayClass(void.class));
-	}
 
 	@Test
 	public void testUnpackedClass() throws IOException {
@@ -193,10 +111,6 @@ public class ClassUtilsTest {
 		}
 		in.close();
 		if (closeOut) out.close();
-	}
-
-	private void assertLoaded(final Class<?> c, final String name) {
-		assertSame(c, ClassUtils.loadClass(name));
 	}
 
 }

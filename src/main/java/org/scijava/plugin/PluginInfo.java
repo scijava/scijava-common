@@ -47,6 +47,7 @@ import org.scijava.Versioned;
 import org.scijava.input.Accelerator;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
+import org.scijava.util.Types;
 import org.scijava.util.VersionUtils;
 
 /**
@@ -282,7 +283,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	public Class<? extends PT> loadClass() throws InstantiableException {
 		if (pluginClass == null) {
 			try {
-				final Class<?> c = ClassUtils.loadClass(className, classLoader, false);
+				final Class<?> c = Types.load(className, classLoader, false);
 				@SuppressWarnings("unchecked")
 				final Class<? extends PT> typedClass = (Class<? extends PT>) c;
 				pluginClass = typedClass;
@@ -332,7 +333,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	@Override
 	public String getLocation() {
 		try {
-			return ClassUtils.getLocation(loadClass()).toExternalForm();
+			return Types.location(loadClass()).toExternalForm();
 		}
 		catch (InstantiableException exc) {
 			return null;
