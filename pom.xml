@@ -9,11 +9,12 @@
 		<relativePath />
 	</parent>
 
-	<artifactId>scijava-common</artifactId>
-	<version>2.70.0-SNAPSHOT</version>
+	<artifactId>scijava-aggregator</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-	<name>SciJava Common</name>
-	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
+	<name>SciJava</name>
+	<description>Shared libraries for SciJava software.</description>
 	<url>https://github.com/scijava/scijava-common</url>
 	<inceptionYear>2009</inceptionYear>
 	<organization>
@@ -45,86 +46,7 @@
 	</developers>
 	<contributors>
 		<contributor>
-			<name>Mark Hiner</name>
-			<url>http://imagej.net/User:Hinerm</url>
-			<roles><role>founder</role></roles>
-			<properties><id>hinerm</id></properties>
-		</contributor>
-		<contributor>
-			<name>Johannes Schindelin</name>
-			<url>http://imagej.net/User:Schindelin</url>
-			<properties><id>dscho</id></properties>
-		</contributor>
-		<contributor>
-			<name>Chris Allan</name>
-			<properties><id>chris-allan</id></properties>
-		</contributor>
-		<contributor>
-			<name>Barry DeZonia</name>
-			<url>http://imagej.net/User:Bdezonia</url>
-			<properties><id>bdezonia</id></properties>
-		</contributor>
-		<contributor>
-			<name>Christian Dietz</name>
-			<url>http://imagej.net/User:Dietzc</url>
-			<properties><id>dietzc</id></properties>
-		</contributor>
-		<contributor>
-			<name>Richard Domander</name>
-			<url>http://imagej.net/User:Rdom</url>
-			<properties><id>rimadoma</id></properties>
-		</contributor>
-		<contributor>
-			<name>Gabriel Einsdorf</name>
-			<url>http://imagej.net/User:Gab1one</url>
-			<properties><id>gab1one</id></properties>
-		</contributor>
-		<contributor>
-			<name>Aivar Grislis</name>
-			<url>http://imagej.net/User:Grislis</url>
-			<properties><id>grislis</id></properties>
-		</contributor>
-		<contributor>
-			<name>Jonathan Hale</name>
-			<properties><id>Squareys</id></properties>
-		</contributor>
-		<contributor>
-			<name>Grant Harris</name>
-			<url>http://imagej.net/User:Harris</url>
-			<properties><id>tnargsirrah</id></properties>
-		</contributor>
-		<contributor>
-			<name>Lee Kamentsky</name>
-			<url>http://imagej.net/User:Leek</url>
-			<properties><id>LeeKamentsky</id></properties>
-		</contributor>
-		<contributor>
-			<name>Rick Lentz</name>
-			<url>http://imagej.net/User:Lentz</url>
-		</contributor>
-		<contributor>
-			<name>Melissa Linkert</name>
-			<url>http://imagej.net/User:Linkert</url>
-			<properties><id>melissalinkert</id></properties>
-		</contributor>
-		<contributor>
-			<name>Kevin Mader</name>
-			<url>http://imagej.net/User:Ksmader</url>
-			<properties><id>kmader</id></properties>
-		</contributor>
-		<contributor>
-			<name>Hadrien Mary</name>
-			<url>http://imagej.net/User:Hadim</url>
-			<properties><id>hadim</id></properties>
-		</contributor>
-		<contributor>
-			<name>Alison Walter</name>
-			<url>http://imagej.net/User:Awalter2</url>
-			<properties><id>awalter17</id></properties>
-		</contributor>
-		<contributor>
-			<name>Jay Warrick</name>
-			<properties><id>jaywarrick</id></properties>
+			<name>None</name>
 		</contributor>
 	</contributors>
 
@@ -137,6 +59,10 @@
 			<archive>https://groups.google.com/group/scijava</archive>
 		</mailingList>
 	</mailingLists>
+
+	<modules>
+		<module>todo</module>
+	</modules>
 
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
@@ -154,73 +80,7 @@
 	</ciManagement>
 
 	<properties>
-		<package-name>org.scijava</package-name>
-
 		<license.licenseName>bsd_2</license.licenseName>
-		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
-		<license.copyrightOwners>Board of Regents of the University of
-Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
-Institute of Molecular Cell Biology and Genetics, University of
-Konstanz, and KNIME GmbH.</license.copyrightOwners>
+		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
 	</properties>
-
-	<dependencies>
-		<!-- SciJava dependencies -->
-		<dependency>
-			<groupId>org.scijava</groupId>
-			<artifactId>parsington</artifactId>
-		</dependency>
-
-		<!-- Third-party dependencies -->
-		<dependency>
-			<groupId>org.bushe</groupId>
-			<artifactId>eventbus</artifactId>
-			<version>1.4</version>
-		</dependency>
-
-		<!-- Test scope dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<!--
-		SciJava Common provides a plugin indexer which handles its
-		@Plugin annotations, in the form of a compile-time annotation
-		processor. SJC also provides plugins of various sorts, such
-		as the core Service plugin implementations.
-
-		In order for these to be processed correctly and avoid a
-		chicken-and-egg problem with annotation processing here, we
-		disable annotation processing during compilation, and instead
-		run the plugin indexer manually in the process-classes phase.
-		-->
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>org.scijava.annotations.EclipseHelper</mainClass>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

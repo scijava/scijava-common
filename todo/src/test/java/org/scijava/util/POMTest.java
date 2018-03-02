@@ -93,7 +93,7 @@ public class POMTest {
 		assertEquals("pom-scijava", pom.getParentArtifactId());
 		assertNotNull(pom.getParentVersion());
 		assertEquals("org.scijava", pom.getGroupId());
-		assertEquals("scijava-common", pom.getArtifactId());
+		assertEquals("scijava-todo", pom.getArtifactId());
 		assertNotNull(pom.getVersion());
 		assertEquals("Travis CI", pom.getCIManagementSystem());
 		final String ciManagementURL = pom.getCIManagementURL();
@@ -107,9 +107,9 @@ public class POMTest {
 		assertEquals("http://www.scijava.org/", pom.getOrganizationURL());
 		assertTrue(pom.getPath().endsWith("pom.xml"));
 		assertTrue(pom.getProjectDescription().startsWith(
-			"SciJava Common is a shared library for SciJava software."));
+			"SciJava Common code that has not yet been modularized."));
 		assertEquals("2009", pom.getProjectInceptionYear());
-		assertEquals("SciJava Common", pom.getProjectName());
+		assertEquals("SciJava TODO", pom.getProjectName());
 		assertEquals("https://github.com/scijava/scijava-common", //
 			pom.getProjectURL());
 		final String scmConnection = pom.getSCMConnection();

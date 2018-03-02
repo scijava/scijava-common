@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>19.2.0</version>
+		<relativePath />
+	</parent>
+
+	<artifactId>scijava-todo</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+
+	<name>SciJava TODO</name>
+	<description>SciJava Common code that has not yet been modularized.</description>
+	<url>https://github.com/scijava/scijava-common</url>
+	<inceptionYear>2009</inceptionYear>
+	<organization>
+		<name>SciJava</name>
+		<url>http://www.scijava.org/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<url>http://imagej.net/User:Rueden</url>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Mark Hiner</name>
+			<url>http://imagej.net/User:Hinerm</url>
+			<roles><role>founder</role></roles>
+			<properties><id>hinerm</id></properties>
+		</contributor>
+		<contributor>
+			<name>Johannes Schindelin</name>
+			<url>http://imagej.net/User:Schindelin</url>
+			<properties><id>dscho</id></properties>
+		</contributor>
+		<contributor>
+			<name>Chris Allan</name>
+			<properties><id>chris-allan</id></properties>
+		</contributor>
+		<contributor>
+			<name>Barry DeZonia</name>
+			<url>http://imagej.net/User:Bdezonia</url>
+			<properties><id>bdezonia</id></properties>
+		</contributor>
+		<contributor>
+			<name>Christian Dietz</name>
+			<url>http://imagej.net/User:Dietzc</url>
+			<properties><id>dietzc</id></properties>
+		</contributor>
+		<contributor>
+			<name>Richard Domander</name>
+			<url>http://imagej.net/User:Rdom</url>
+			<properties><id>rimadoma</id></properties>
+		</contributor>
+		<contributor>
+			<name>Gabriel Einsdorf</name>
+			<url>http://imagej.net/User:Gab1one</url>
+			<properties><id>gab1one</id></properties>
+		</contributor>
+		<contributor>
+			<name>Aivar Grislis</name>
+			<url>http://imagej.net/User:Grislis</url>
+			<properties><id>grislis</id></properties>
+		</contributor>
+		<contributor>
+			<name>Jonathan Hale</name>
+			<properties><id>Squareys</id></properties>
+		</contributor>
+		<contributor>
+			<name>Grant Harris</name>
+			<url>http://imagej.net/User:Harris</url>
+			<properties><id>tnargsirrah</id></properties>
+		</contributor>
+		<contributor>
+			<name>Lee Kamentsky</name>
+			<url>http://imagej.net/User:Leek</url>
+			<properties><id>LeeKamentsky</id></properties>
+		</contributor>
+		<contributor>
+			<name>Rick Lentz</name>
+			<url>http://imagej.net/User:Lentz</url>
+		</contributor>
+		<contributor>
+			<name>Melissa Linkert</name>
+			<url>http://imagej.net/User:Linkert</url>
+			<properties><id>melissalinkert</id></properties>
+		</contributor>
+		<contributor>
+			<name>Kevin Mader</name>
+			<url>http://imagej.net/User:Ksmader</url>
+			<properties><id>kmader</id></properties>
+		</contributor>
+		<contributor>
+			<name>Hadrien Mary</name>
+			<url>http://imagej.net/User:Hadim</url>
+			<properties><id>hadim</id></properties>
+		</contributor>
+		<contributor>
+			<name>Alison Walter</name>
+			<url>http://imagej.net/User:Awalter2</url>
+			<properties><id>awalter17</id></properties>
+		</contributor>
+		<contributor>
+			<name>Jay Warrick</name>
+			<properties><id>jaywarrick</id></properties>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>SciJava</name>
+			<subscribe>https://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>https://groups.google.com/group/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>https://groups.google.com/group/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
+		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/scijava/scijava-common</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/scijava/scijava-common/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/scijava/scijava-common</url>
+	</ciManagement>
+
+	<properties>
+		<package-name>org.scijava</package-name>
+
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
+	</properties>
+
+	<dependencies>
+		<!-- SciJava dependencies -->
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>parsington</artifactId>
+		</dependency>
+
+		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>com.googlecode.gentyref</groupId>
+			<artifactId>gentyref</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bushe</groupId>
+			<artifactId>eventbus</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<!-- Test scope dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!--
+		SciJava Common provides a plugin indexer which handles its
+		@Plugin annotations, in the form of a compile-time annotation
+		processor. SJC also provides plugins of various sorts, such
+		as the core Service plugin implementations.
+
+		In order for these to be processed correctly and avoid a
+		chicken-and-egg problem with annotation processing here, we
+		disable annotation processing during compilation, and instead
+		run the plugin indexer manually in the process-classes phase.
+		-->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>org.scijava.annotations.EclipseHelper</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

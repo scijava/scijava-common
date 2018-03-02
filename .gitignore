@@ -1,13 +1,13 @@
 *.swp
 
 # Maven #
-/target/
+target/
 
 # Eclipse #
-/.classpath
-/.project
-/.settings/
+.classpath
+.project
+.settings/
 
 # IntelliJ #
-/*.iml
-/.idea/
+*.iml
+.idea/
