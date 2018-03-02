@@ -9,12 +9,11 @@
 		<relativePath />
 	</parent>
 
-	<artifactId>scijava-aggregator</artifactId>
+	<artifactId>scijava-util</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
-	<name>SciJava</name>
-	<description>Shared libraries for SciJava software.</description>
+	<name>SciJava Utilities</name>
+	<description>SciJava standalone utility classes.</description>
 	<url>https://github.com/scijava/scijava-common</url>
 	<inceptionYear>2009</inceptionYear>
 	<organization>
@@ -60,11 +59,6 @@
 		</mailingList>
 	</mailingLists>
 
-	<modules>
-		<module>todo</module>
-		<module>util</module>
-	</modules>
-
 	<scm>
 		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
 		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
@@ -81,7 +75,17 @@
 	</ciManagement>
 
 	<properties>
+		<package-name>org.scijava.util</package-name>
+
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

@@ -161,6 +161,13 @@
 	</properties>
 
 	<dependencies>
+		<!-- SciJava core dependencies -->
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- SciJava dependencies -->
 		<dependency>
 			<groupId>org.scijava</groupId>
