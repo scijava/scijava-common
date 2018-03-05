@@ -76,6 +76,7 @@ import org.scijava.util.FileUtils;
  * Utility class for working with generic types, fields and methods.
  * <p>
  * Logic and inspiration were drawn from the following excellent libraries:
+ * </p>
  * <ul>
  * <li>Google Guava's {@code com.google.common.reflect} package.</li>
  * <li>Apache Commons Lang 3's {@code org.apache.commons.lang3.reflect} package.
@@ -83,7 +84,6 @@ import org.scijava.util.FileUtils;
  * <li><a href="https://github.com/coekarts/gentyref">GenTyRef</a> (Generic Type
  * Reflector), a library for runtime generic type introspection.</li>
  * </ul>
- * </p>
  *
  * @author Curtis Rueden
  */
@@ -416,6 +416,7 @@ public final class Types {
 	 * Returns the non-primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>boolean.class becomes Boolean.class</li>
 	 * <li>byte.class becomes Byte.class</li>
@@ -427,6 +428,7 @@ public final class Types {
 	 * <li>short.class becomes Short.class</li>
 	 * <li>void.class becomes Void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -451,6 +453,7 @@ public final class Types {
 	 * Returns the primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>Boolean.class becomes boolean.class</li>
 	 * <li>Byte.class becomes byte.class</li>
@@ -462,6 +465,7 @@ public final class Types {
 	 * <li>Short.class becomes short.class</li>
 	 * <li>Void.class becomes void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
