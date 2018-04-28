@@ -93,6 +93,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 
 	/** Synchronizes the user interface appearance with the display model. */
 	default void onDisplayUpdatedEvent(final DisplayUpdatedEvent e) {
+		if (getPanel() == null) return;
 		if (e.getLevel() == DisplayUpdateLevel.REBUILD) {
 			getPanel().redoLayout();
 		}
@@ -102,6 +103,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 	/** Removes the user interface when the display is deleted. */
 	@SuppressWarnings("unused")
 	default void onDisplayDeletedEvent(final DisplayDeletedEvent e) {
+		if (getPanel() == null || getPanel().getWindow() == null) return;
 		getPanel().getWindow().close();
 	}
 
@@ -112,6 +114,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 	 */
 	@SuppressWarnings("unused")
 	default void onDisplayActivatedEvent(final DisplayActivatedEvent e) {
+		if (getPanel() == null || getPanel().getWindow() == null) return;
 		getPanel().getWindow().requestFocus();
 	}
 
