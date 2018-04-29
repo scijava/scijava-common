@@ -42,6 +42,7 @@ import org.scijava.io.IOService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.startup.StartupService;
 
 /**
  * Handles the {@code --open} command line argument.
@@ -56,6 +57,9 @@ public class OpenArgument extends AbstractConsoleArgument {
 
 	@Parameter(required = false)
 	private DisplayService displayService;
+
+	@Parameter(required = false)
+	private StartupService startupService;
 
 	@Parameter(required = false)
 	private LogService log;
@@ -75,19 +79,23 @@ public class OpenArgument extends AbstractConsoleArgument {
 		args.removeFirst(); // --open
 		final String source = args.removeFirst();
 
-		try {
-			final Object o = ioService.open(source);
-			displayService.createDisplay(o);
-		}
-		catch (IOException exc) {
-			if (log != null) log.error(exc);
-		}
+		// open the source after the UI is shown
+		startupService.addOperation(() -> {
+			try {
+				final Object o = ioService.open(source);
+				displayService.createDisplay(o);
+			}
+			catch (final IOException exc) {
+				if (log != null) log.error(exc);
+			}
+		});
 	}
 
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
-		return ioService != null && displayService != null && super.supports(args);
+		return startupService != null && ioService != null &&
+			displayService != null && super.supports(args);
 	}
 }
