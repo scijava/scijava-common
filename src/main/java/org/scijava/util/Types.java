@@ -2771,6 +2771,9 @@ public final class Types {
 			if (type instanceof WildcardType) {
 				return wildcardTypeToString((WildcardType) type, done);
 			}
+			if (type instanceof CaptureType) {
+				return captureTypeToString((CaptureType) type, done);
+			}
 			if (type instanceof TypeVariable) {
 				return typeVariableToString((TypeVariable<?>) type, done);
 			}
@@ -2944,18 +2947,25 @@ public final class Types {
 			final StringBuilder buf = new StringBuilder().append('?');
 			if (done.contains(w)) return buf.toString();
 			done.add(w);
-			final Type[] lowerBounds = w.getLowerBounds();
-			final Type[] upperBounds = w.getUpperBounds();
-			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
-				lowerBounds[0] != null)
-			{
-				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
-			}
-			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
-				!Object.class.equals(upperBounds[0]))
-			{
-				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
-			}
+			appendTypeBounds(buf, w.getLowerBounds(), w.getUpperBounds(), done);
+			return buf.toString();
+		}
+
+		/**
+		 * Format a {@link CaptureType} as a {@link String}.
+		 *
+		 * @param t {@code CaptureType} to format
+		 * @param done list of already-encountered types
+		 * @return String
+		 * @since 3.2
+		 */
+		private static String captureTypeToString(final CaptureType t,
+			final Set<Type> done)
+		{
+			final StringBuilder buf = new StringBuilder().append("capture of ?");
+			if (done.contains(t)) return buf.toString();
+			done.add(t);
+			appendTypeBounds(buf, t.getLowerBounds(), t.getUpperBounds(), done);
 			return buf.toString();
 		}
 
@@ -2968,6 +2978,21 @@ public final class Types {
 		 */
 		private static String genericArrayTypeToString(final GenericArrayType g) {
 			return String.format("%s[]", toString(g.getGenericComponentType()));
+		}
+
+		private static void appendTypeBounds(final StringBuilder buf,
+			final Type[] lowerBounds, final Type[] upperBounds, final Set<Type> done)
+		{
+			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
+				lowerBounds[0] != null)
+			{
+				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
+			}
+			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
+				!Object.class.equals(upperBounds[0]))
+			{
+				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
+			}
 		}
 
 		/**
