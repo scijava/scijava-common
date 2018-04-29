@@ -35,6 +35,8 @@ package org.scijava.startup;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -51,6 +53,9 @@ public class DefaultStartupService extends AbstractService implements
 
 	private final Deque<Runnable> operations = new ArrayDeque<>();
 
+	@Parameter(required = false)
+	private LogService log;
+
 	@Override
 	public void addOperation(final Runnable operation) {
 		operations.add(operation);
@@ -60,7 +65,12 @@ public class DefaultStartupService extends AbstractService implements
 	public void executeOperations() {
 		while (!operations.isEmpty()) {
 			final Runnable operation = operations.pop();
-			operation.run();
+			try {
+				operation.run();
+			}
+			catch (final RuntimeException exc) {
+				if (log != null) log.error(exc);
+			}
 		}
 	}
 }
