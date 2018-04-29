@@ -56,6 +56,7 @@ import org.scijava.plugin.PluginService;
 import org.scijava.plugin.RichPlugin;
 import org.scijava.script.ScriptService;
 import org.scijava.service.Service;
+import org.scijava.startup.StartupService;
 import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 import org.scijava.tool.IconService;
@@ -310,6 +311,13 @@ public interface Gateway extends RichPlugin {
 	 * @return The {@link ScriptService} of this application context.
 	 */
 	ScriptService script();
+
+	/**
+	 * Gets this application context's {@link StartupService}.
+	 *
+	 * @return The {@link StartupService} of this application context.
+	 */
+	StartupService startup();
 
 	/**
 	 * Gets this application context's {@link StatusService}.

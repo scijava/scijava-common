@@ -58,6 +58,7 @@ import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.script.ScriptService;
 import org.scijava.service.Service;
+import org.scijava.startup.StartupService;
 import org.scijava.text.TextService;
 import org.scijava.thread.ThreadService;
 import org.scijava.tool.IconService;
@@ -101,6 +102,9 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 		// display the user interface (NB: does not block)
 		// NB: When running headless, the HeadlessUI will be used.
 		if (mainCount == 0) ui().showUI();
+
+		// perform all pending startup operations
+		startup().executeOperations();
 
 		if (ui().isHeadless()) {
 			// now that CLI processing/execution is done, we can shut down
@@ -231,6 +235,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public ScriptService script() {
 		return get(ScriptService.class);
+	}
+
+	@Override
+	public StartupService startup() {
+		return get(StartupService.class);
 	}
 
 	@Override
