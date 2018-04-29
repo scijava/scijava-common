@@ -43,6 +43,7 @@ import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.run.RunService;
+import org.scijava.startup.StartupService;
 
 /**
  * Handles the {@code --run} command line argument.
@@ -54,6 +55,9 @@ public class RunArgument extends AbstractConsoleArgument {
 
 	@Parameter
 	private RunService runService;
+
+	@Parameter
+	private StartupService startupService;
 
 	@Parameter
 	private ParseService parser;
@@ -78,22 +82,24 @@ public class RunArgument extends AbstractConsoleArgument {
 		final String arg = getParam(args);
 		if (arg != null) args.removeFirst(); // argument list was given
 
-		try {
-			if (arg == null) runService.run(code);
-			else {
-				final Items items = parser.parse(arg);
-				if (items.isMap()) runService.run(code, items.asMap());
-				else if (items.isList()) runService.run(code, items.toArray());
+		startupService.addOperation(() -> {
+			try {
+				if (arg == null) runService.run(code);
 				else {
-					throw new IllegalArgumentException("Arguments are inconsistent. " +
-						"Please pass either a list of key/value pairs, " +
-						"or a list of values.");
+					final Items items = parser.parse(arg);
+					if (items.isMap()) runService.run(code, items.asMap());
+					else if (items.isList()) runService.run(code, items.toArray());
+					else {
+						throw new IllegalArgumentException("Arguments are inconsistent. " +
+							"Please pass either a list of key/value pairs, " +
+							"or a list of values.");
+					}
 				}
 			}
-		}
-		catch (final InvocationTargetException exc) {
-			throw new RuntimeException(exc);
-		}
+			catch (final InvocationTargetException exc) {
+				throw new RuntimeException(exc);
+			}
+		});
 	}
 
 	// -- Typed methods --
