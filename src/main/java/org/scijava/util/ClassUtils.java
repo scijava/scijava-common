@@ -627,13 +627,21 @@ public final class ClassUtils {
 	/** @deprecated Use {@link Types#field} instead. */
 	@Deprecated
 	public static Field getField(final String className, final String fieldName) {
-		return Types.field(Types.load(className), fieldName);
+		try {
+			return Types.field(Types.load(className), fieldName);
+		} catch (final IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	/** @deprecated Use {@link Types#field} instead. */
 	@Deprecated
 	public static Field getField(final Class<?> c, final String fieldName) {
-		return Types.field(c, fieldName);
+		try {
+			return Types.field(c, fieldName);
+		} catch (final IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	/** @deprecated Use {@link Types#array(Class)} instead. */
