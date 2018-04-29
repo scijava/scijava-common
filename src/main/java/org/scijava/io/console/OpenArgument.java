@@ -51,13 +51,13 @@ import org.scijava.plugin.Plugin;
 @Plugin(type = ConsoleArgument.class)
 public class OpenArgument extends AbstractConsoleArgument {
 
-	@Parameter
+	@Parameter(required = false)
 	private IOService ioService;
 
-	@Parameter
+	@Parameter(required = false)
 	private DisplayService displayService;
 
-	@Parameter
+	@Parameter(required = false)
 	private LogService log;
 
 	// -- Constructor --
@@ -80,7 +80,14 @@ public class OpenArgument extends AbstractConsoleArgument {
 			displayService.createDisplay(o);
 		}
 		catch (IOException exc) {
-			log.error(exc);
+			if (log != null) log.error(exc);
 		}
+	}
+
+	// -- Typed methods --
+
+	@Override
+	public boolean supports(final LinkedList<String> args) {
+		return ioService != null && displayService != null && super.supports(args);
 	}
 }
