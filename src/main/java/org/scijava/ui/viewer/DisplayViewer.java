@@ -69,6 +69,27 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 
 	/**
 	 * Begins viewing the given display.
+	 * <p>
+	 * The default behavior of this method is to ask the given
+	 * {@link UserInterface} to create a {@link DisplayWindow} via
+	 * {@link UserInterface#createDisplayWindow(Display)} and then pass it to
+	 * {@link #view(DisplayWindow, Display)}. Viewers needing to customize details
+	 * of the {@link DisplayWindow} creation can do so via this method.
+	 * </p>
+	 * 
+	 * @param ui The user interface with which the viewer will be associated.
+	 * @param d the model for the display to show.
+	 */
+	default void view(final UserInterface ui, final Display<?> d) {
+		final DisplayWindow w = ui.createDisplayWindow(d);
+		w.setTitle(d.getName());
+		view(w, d);
+		w.showDisplay(true);
+		d.update();
+	}
+
+	/**
+	 * Begins viewing the given display.
 	 * 
 	 * @param w The frame / window that will contain the GUI elements
 	 * @param d the model for the display to show.

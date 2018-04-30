@@ -44,7 +44,6 @@ import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.thread.ThreadService;
 import org.scijava.ui.viewer.DisplayViewer;
-import org.scijava.ui.viewer.DisplayWindow;
 
 /**
  * Abstract superclass for {@link UserInterface} implementations.
@@ -138,12 +137,8 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 		threadService.queue(new Runnable() {
 			@Override
 			public void run() {
-				final DisplayWindow displayWindow = createDisplayWindow(display);
-				finalViewer.view(displayWindow, display);
-				displayWindow.setTitle(display.getName());
+				finalViewer.view(AbstractUserInterface.this, display);
 				uiService.addDisplayViewer(finalViewer);
-				displayWindow.showDisplay(true);
-				display.update();
 			}
 		});
 	}
