@@ -46,7 +46,7 @@ public abstract class AbstractHigherOrderHandle<L extends Location> extends
 	AbstractDataHandle<L>
 {
 
-	private final DataHandle<L> handle;
+	private DataHandle<L> handle;
 	private boolean closed;
 
 	public AbstractHigherOrderHandle(final DataHandle<L> handle) {
@@ -66,6 +66,7 @@ public abstract class AbstractHigherOrderHandle<L extends Location> extends
 
 	@Override
 	public long length() throws IOException {
+		ensureOpen();
 		return handle.length();
 	}
 
@@ -85,6 +86,7 @@ public abstract class AbstractHigherOrderHandle<L extends Location> extends
 			cleanup();
 			closed = true;
 			handle.close();
+			handle = null;
 		}
 	}
 
