@@ -137,8 +137,8 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 		threadService.queue(new Runnable() {
 			@Override
 			public void run() {
-				finalViewer.view(AbstractUserInterface.this, display);
 				uiService.addDisplayViewer(finalViewer);
+				finalViewer.view(AbstractUserInterface.this, display);
 			}
 		});
 	}
