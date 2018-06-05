@@ -310,6 +310,12 @@ public class TypesTest {
 		}
 	}
 
+	/** Tests [@link Types#unbox(Class)}. */
+	@Test
+	public void testUnbox() {
+		// TODO
+	}
+
 	/** Tests {@link Types#nullValue(Class)}. */
 	@Test
 	public void testNullValue() {
@@ -597,11 +603,30 @@ public class TypesTest {
 		Types.enumValue("HOOYAH", String.class);
 	}
 
+	/** Tests {@link Types#parameterize(Class, Map)}. */
+	@Test
+	public void testParameterizeMap() {
+		// TODO
+	}
+
+	/** Tests {@link Types#parameterize(Class, Type...)}. */
+	@Test
+	public void testParameterizeTypes() {
+		// TODO
+	}
+
+	/** Tests {@link Types#parameterizeWithOwner(Type, Class, Type...)}. */
+	@Test
+	public void testParameterizeWithOwner() {
+		// TODO
+	}
+
 	// -- Helper classes --
 
 	// TODO: Migrate these helper classes into ExampleTypes.
 
 	private static class Thing<T> {
+
 		@SuppressWarnings("unused")
 		private T thing;
 	}
