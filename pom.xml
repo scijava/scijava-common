@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.74.2-SNAPSHOT</version>
+	<version>2.74.3-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
