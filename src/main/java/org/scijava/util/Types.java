@@ -322,7 +322,7 @@ public final class Types {
 	public static String name(final Type t) {
 		if (t instanceof Class) {
 			final Class<?> c = (Class<?>) t;
-			return c.isArray() ? (name(component(c)) + "[]") : c.getName();
+			return c.isArray() ? name(component(c)) + "[]" : c.getName();
 		}
 		return t.toString();
 	}
@@ -521,7 +521,7 @@ public final class Types {
 	 * use {@link Field#setAccessible(boolean)} in order to manipulate the field's
 	 * contents.
 	 * </p>
-	 * 
+	 *
 	 * @param c The class (or subclass thereof) containing the desired field.
 	 * @param name
 	 * @return The first field with the given name in the class's superclass
@@ -553,7 +553,7 @@ public final class Types {
 	 * accessible; if the method is not {@code public}, calling code will need to
 	 * use {@link Method#setAccessible(boolean)} in order to invoke the method.
 	 * </p>
-	 * 
+	 *
 	 * @param c The class (or subclass thereof) containing the desired method.
 	 * @param name Name of the method.
 	 * @param parameterTypes Types of the method parameters.
@@ -1435,7 +1435,7 @@ public final class Types {
 			@Override
 			public boolean equals(final Object obj) {
 				return obj == this || obj instanceof ParameterizedType && TypeUtils
-					.equals(this, ((ParameterizedType) obj));
+					.equals(this, (ParameterizedType) obj);
 			}
 
 			@Override
@@ -3405,7 +3405,7 @@ public final class Types {
 
 		/**
 		 * Maps type parameters in a type to their values.
-		 * 
+		 *
 		 * @param toMapType Type possibly containing type arguments
 		 * @param typeAndParams must be either ParameterizedType, or (in case there
 		 *          are no type arguments, or it's a raw type) Class
@@ -3457,7 +3457,7 @@ public final class Types {
 		 * unbound wildcard ("?"). For example,
 		 * <tt>addWildcardParameters(Map.class)</tt> returns a type representing
 		 * <tt>Map&lt;?,?&gt;</tt>.
-		 * 
+		 *
 		 * @return
 		 *         <ul>
 		 *         <li>If clazz is a class or interface without type parameters,
@@ -3538,7 +3538,7 @@ public final class Types {
 		 * <tt>class StringList implements List&lt;String&gt;</tt>,
 		 * <tt>getTypeParameter(StringList.class, Collection.class.getTypeParameters()[0])</tt>
 		 * returns <tt>String</tt>.
-		 * 
+		 *
 		 * @param type The type to inspect.
 		 * @param variable The type variable to find the value for.
 		 * @return The type parameter for the given variable. Or null if type is not
@@ -3877,7 +3877,7 @@ public final class Types {
 		 * different sorts of types, and you are only really interested in concrete
 		 * classes and interfaces.
 		 * </p>
-		 * 
+		 *
 		 * @return A List of classes, each of them a supertype of the given type. If
 		 *         the given type is a class or interface itself, returns a List
 		 *         with just the given type. The list contains no duplicates, and is
@@ -3946,7 +3946,7 @@ public final class Types {
 		/**
 		 * Creates an uninitialized CaptureTypeImpl. Before using this type,
 		 * {@link #init(VarMap)} must be called.
-		 * 
+		 *
 		 * @param wildcard The wildcard this is a capture of
 		 * @param variable The type variable where the wildcard is a parameter for.
 		 */
@@ -4007,8 +4007,7 @@ public final class Types {
 	 */
 	private static class VarMap {
 
-		private final Map<TypeVariable<?>, Type> map =
-			new HashMap<>();
+		private final Map<TypeVariable<?>, Type> map = new HashMap<>();
 
 		/**
 		 * Creates an empty VarMap

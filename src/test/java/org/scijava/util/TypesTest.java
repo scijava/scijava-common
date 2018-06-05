@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -157,13 +157,13 @@ public class TypesTest {
 		final File tmpDir = createTemporaryDirectory("class-utils-test-");
 		final String path = getClass().getName().replace('.', '/') + ".class";
 		final File classFile = new File(tmpDir, path);
-		assertTrue(classFile.getParentFile().exists() ||
-			classFile.getParentFile().mkdirs());
-		copy(getClass().getResource("/" + path).openStream(),
-			new FileOutputStream(classFile), true);
+		assertTrue(classFile.getParentFile().exists() || classFile.getParentFile()
+			.mkdirs());
+		copy(getClass().getResource("/" + path).openStream(), new FileOutputStream(
+			classFile), true);
 
-		final ClassLoader classLoader =
-			new URLClassLoader(new URL[] { tmpDir.toURI().toURL() }, null);
+		final ClassLoader classLoader = new URLClassLoader(new URL[] { tmpDir
+			.toURI().toURL() }, null);
 		final Class<?> c = Types.load(getClass().getName(), classLoader);
 		final URL location = Types.location(c);
 		assertEquals(tmpDir, FileUtils.urlToFile(location));
@@ -180,8 +180,8 @@ public class TypesTest {
 		out.putNextEntry(new ZipEntry(path));
 		copy(getClass().getResource("/" + path).openStream(), out, true);
 
-		final ClassLoader classLoader =
-			new URLClassLoader(new URL[] { jar.toURI().toURL() }, null);
+		final ClassLoader classLoader = new URLClassLoader(new URL[] { jar.toURI()
+			.toURL() }, null);
 		final Class<?> c = Types.load(getClass().getName(), classLoader);
 		final URL location = Types.location(c);
 		assertEquals(jar, FileUtils.urlToFile(location));
@@ -243,7 +243,8 @@ public class TypesTest {
 		final Field field = Types.field(Thing.class, "thing");
 
 		// Object
-		assertAllTheSame(Types.raws(Types.fieldType(field, Thing.class)), Object.class);
+		assertAllTheSame(Types.raws(Types.fieldType(field, Thing.class)),
+			Object.class);
 
 		// N extends Number
 		assertAllTheSame(Types.raws(Types.fieldType(field, NumberThing.class)),
@@ -290,22 +291,22 @@ public class TypesTest {
 
 		final Class<?>[] types = { //
 			Boolean.class, Byte.class, Character.class, Double.class, //
-				Float.class, Integer.class, Long.class, Short.class, //
-				Void.class, //
-				String.class, //
-				Number.class, BigInteger.class, BigDecimal.class, //
-				boolean[].class, byte[].class, char[].class, double[].class, //
-				float[].class, int[].class, long[].class, short[].class, //
-				Boolean[].class, Byte[].class, Character[].class, Double[].class, //
-				Float[].class, Integer[].class, Long[].class, Short[].class, //
-				Void[].class, //
-				Object.class, Object[].class, String[].class, //
-				Object[][].class, String[][].class, //
-				Collection.class, //
-				List.class, ArrayList.class, LinkedList.class, //
-				Set.class, HashSet.class, //
-				Map.class, HashMap.class, //
-				Collection[].class, List[].class, Set[].class, Map[].class };
+			Float.class, Integer.class, Long.class, Short.class, //
+			Void.class, //
+			String.class, //
+			Number.class, BigInteger.class, BigDecimal.class, //
+			boolean[].class, byte[].class, char[].class, double[].class, //
+			float[].class, int[].class, long[].class, short[].class, //
+			Boolean[].class, Byte[].class, Character[].class, Double[].class, //
+			Float[].class, Integer[].class, Long[].class, Short[].class, //
+			Void[].class, //
+			Object.class, Object[].class, String[].class, //
+			Object[][].class, String[][].class, //
+			Collection.class, //
+			List.class, ArrayList.class, LinkedList.class, //
+			Set.class, HashSet.class, //
+			Map.class, HashMap.class, //
+			Collection[].class, List[].class, Set[].class, Map[].class };
 		for (final Class<?> c : types) {
 			final Class<?> type = Types.box(c);
 			assertSame(c, type);
@@ -418,7 +419,7 @@ public class TypesTest {
 			Types.array(void.class);
 			fail("Unexpected success creating void[]");
 		}
-		catch (final IllegalArgumentException exc) { }
+		catch (final IllegalArgumentException exc) {}
 
 		// multidimensional cases
 		assertSame(Number[][].class, Types.array(Number.class, 2));
@@ -428,7 +429,7 @@ public class TypesTest {
 			Types.array(char.class, -1);
 			fail("Unexpected success creating negative dimensional array");
 		}
-		catch (final IllegalArgumentException exc) { }
+		catch (final IllegalArgumentException exc) {}
 	}
 
 	/** Tests {@link Types#component(Type)}. */
@@ -525,7 +526,8 @@ public class TypesTest {
 		final Type listT = new Nil<List<T>>() {}.getType();
 		final Type listNumber = new Nil<List<Number>>() {}.getType();
 		final Type listInteger = new Nil<List<Integer>>() {}.getType();
-		final Type listExtendsNumber = new Nil<List<? extends Number>>() {}.getType();
+		final Type listExtendsNumber = new Nil<List<? extends Number>>() {}
+			.getType();
 
 		assertTrue(Types.isAssignable(t, t));
 		assertTrue(Types.isAssignable(listT, listT));
@@ -946,14 +948,14 @@ public class TypesTest {
 
 	/** Enumeration for testing conversion to enum types. */
 	public static enum Words {
-		FOO, BAR, FUBAR
+			FOO, BAR, FUBAR
 	}
 
 	// -- Helper methods --
 
 	/**
 	 * Copies bytes from an {@link InputStream} to an {@link OutputStream}.
-	 * 
+	 *
 	 * @param in the source
 	 * @param out the sink
 	 * @param closeOut whether to close the sink after we're done
@@ -975,7 +977,7 @@ public class TypesTest {
 	private Class<?> loadCustomClass() {
 		// NB: The bytecode below was compiled from the following source:
 		//
-		//     public class Hello {}
+		// public class Hello {}
 		//
 		final byte[] bytecode = { -54, -2, -70, -66, 0, 0, 0, 52, 0, 13, 10, 0, 3,
 			0, 10, 7, 0, 11, 7, 0, 12, 1, 0, 6, 60, 105, 110, 105, 116, 62, 1, 0, 3,
@@ -989,6 +991,7 @@ public class TypesTest {
 			0, 1, 0, 0, 0, 1, 0, 1, 0, 8, 0, 0, 0, 2, 0, 9 };
 
 		class BytesClassLoader extends ClassLoader {
+
 			public Class<?> load(final String name, final byte[] b) {
 				return defineClass(name, b, 0, b.length);
 			}
