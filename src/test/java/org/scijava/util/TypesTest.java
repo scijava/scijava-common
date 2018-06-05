@@ -66,13 +66,15 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import org.junit.Test;
-import org.scijava.util.FileUtils;
+import org.scijava.types.Nil;
+
 /**
  * Tests {@link Types}.
- * 
+ *
  * @author Curtis Rueden
  * @author Mark Hiner
  * @author Johannes Schindelin
+ * @author Gabe Selzer
  */
 public class TypesTest {
 
@@ -554,6 +556,271 @@ public class TypesTest {
 		assertFalse(Types.isInstance(new Object(), null));
 	}
 
+	/** Tests {@link Types#satisfies(Type[], Type[])} for raw classes. */
+	@Test
+	public void testSatisfiesRaw() {
+		// f(Number, Integer)
+		final Type[] dest = { Number.class, Integer.class };
+
+		// f(Double, Integer)
+		// [OK] Double -> Number
+		final Type[] srcOK = { Double.class, Integer.class };
+		assertTrue(Types.satisfies(srcOK, dest));
+
+		// f(String, Integer)
+		// [MISS] String is not assignable to Number
+		final Type[] srcMiss = { String.class, Integer.class };
+		assertFalse(Types.satisfies(srcMiss, dest));
+
+	}
+
+	/** Tests {@link Types#satisfies(Type[], Type[])} for single arguments. */
+	@Test
+	public <T extends Number, U extends BigInteger> void testSatisfiesSingle() {
+		// <T extends Number> f(T)
+		final Type t = new Nil<T>() {}.getType();
+		final Type u = new Nil<U>() {}.getType();
+		final Type[] tDest = { t };
+
+		assertTrue(Types.satisfies(new Type[] { Double.class }, tDest));
+		assertTrue(Types.satisfies(new Type[] { Number.class }, tDest));
+		assertTrue(Types.satisfies(new Type[] { t }, tDest));
+		assertTrue(Types.satisfies(new Type[] { u }, tDest));
+		// String does not extend Number
+		assertFalse(Types.satisfies(new Type[] { String.class }, tDest));
+
+		// -SINGLY RECURSIVE CALLS-
+
+		// <T extends Number> f(List<T>)
+		final Type listT = new Nil<List<T>>() {}.getType();
+		final Type[] listTDest = { listT };
+		// <U extends BigInteger> f(List<U>)
+		final Type listU = new Nil<List<U>>() {}.getType();
+		final Type[] listUDest = { listU };
+		// f(List<Double>)
+		final Type listDouble = new Nil<List<Double>>() {}.getType();
+		final Type[] listDoubleDest = { listDouble };
+		// f(List<? super Number>)
+		final Type listSuperNumber = new Nil<List<? super Number>>() {}.getType();
+		final Type[] listSuperNumberDest = { listSuperNumber };
+		// f(List<? extends Number>)
+		final Type listExtendsNumber = new Nil<List<? extends Number>>() {}
+			.getType();
+		final Type[] listExtendsNumberDest = { listExtendsNumber };
+
+		assertTrue(Types.satisfies(new Type[] { listT }, listTDest));
+		assertTrue(Types.satisfies(listUDest, listTDest));
+		// not all Numbers are BigIntegers.
+		assertFalse(Types.satisfies(listTDest, listUDest));
+		assertTrue(Types.satisfies(listTDest, listExtendsNumberDest));
+		assertTrue(Types.satisfies(listUDest, listExtendsNumberDest));
+		assertTrue(Types.satisfies(listTDest, listSuperNumberDest));
+		// BigInteger extends Number, not the other way around.
+		assertFalse(Types.satisfies(listUDest, listSuperNumberDest));
+		assertTrue(Types.satisfies(listDoubleDest, listExtendsNumberDest));
+		// Double extends Number, not the other way around.
+		assertFalse(Types.satisfies(listDoubleDest, listSuperNumberDest));
+
+		// -MULTIPLY RECURSIVE CALLS-
+
+		final Type MapListTT = new Nil<Map<List<T>, T>>() {}.getType();
+		final Type MapListTU = new Nil<Map<List<T>, U>>() {}.getType();
+		final Type MapListUU = new Nil<Map<List<U>, U>>() {}.getType();
+		final Type MapListTDouble = new Nil<Map<List<T>, Double>>() {}.getType();
+		final Type MapListDoubleDouble = new Nil<Map<List<Double>, Double>>() {}
+			.getType();
+		final Type MapListDoubleString = new Nil<Map<List<Double>, String>>() {}
+			.getType();
+		final Type MapListDoubleNumber = new Nil<Map<List<Double>, Number>>() {}
+			.getType();
+		final Type MapListNumberDouble = new Nil<Map<List<Number>, Double>>() {}
+			.getType();
+
+		// T might not always extend BigInteger(U)
+		assertFalse(Types.satisfies(new Type[] { MapListTT }, new Type[] {
+			MapListTU }));
+		// T might not always be the same as U
+		assertFalse(Types.satisfies(new Type[] { MapListTU }, new Type[] {
+			MapListTT }));
+		assertTrue(Types.satisfies(new Type[] { MapListUU }, new Type[] {
+			MapListTT }));
+		// T might not always extend BigInteger(U)
+		assertFalse(Types.satisfies(new Type[] { MapListTT }, new Type[] {
+			MapListUU }));
+		// T might not always be Double
+		assertFalse(Types.satisfies(new Type[] { MapListTDouble }, new Type[] {
+			MapListTT }));
+		// T does not extend String.
+		assertFalse(Types.satisfies(new Type[] { MapListDoubleString }, new Type[] {
+			MapListTT }));
+		assertTrue(Types.satisfies(new Type[] { MapListDoubleDouble }, new Type[] {
+			MapListTT }));
+		// T is already fixed to Double (in a parameterized Map), cannot accomodate
+		// Nubmer.
+		assertFalse(Types.satisfies(new Type[] { MapListNumberDouble }, new Type[] {
+			MapListTT }));
+		// T is already fixed to Double (in a parameterized List) , cannot
+		// accomodate Number
+		assertFalse(Types.satisfies(new Type[] { MapListDoubleNumber }, new Type[] {
+			MapListTT }));
+	}
+
+	@Test
+	public <T extends Number, U extends String, V extends BigInteger> void
+		testSatisfiesGenericArrays()
+	{
+		// generic arrays
+		final Type arrayT = new Nil<T[]>() {}.getType();
+		final Type arrayU = new Nil<U[]>() {}.getType();
+		final Type arrayV = new Nil<V[]>() {}.getType();
+		final Type arrayDouble = new Nil<Double[]>() {}.getType();
+
+		assertTrue(Types.satisfies(new Type[] { arrayDouble }, new Type[] {
+			arrayT }));
+		// Double does not extend String
+		assertFalse(Types.satisfies(new Type[] { arrayDouble }, new Type[] {
+			arrayU }));
+		assertTrue(Types.satisfies(new Type[] { arrayT }, new Type[] { arrayT }));
+		assertTrue(Types.satisfies(new Type[] { arrayV }, new Type[] { arrayT }));
+		// Number does not extend BigInteger
+		assertFalse(Types.satisfies(new Type[] { arrayT }, new Type[] { arrayV }));
+
+		// generic multi-dimensional arrays
+		final Type arrayT2D = new Nil<T[][]>() {}.getType();
+		final Type arrayV2D = new Nil<V[][]>() {}.getType();
+		final Type arrayDouble2D = new Nil<Double[][]>() {}.getType();
+
+		assertTrue(Types.satisfies(new Type[] { arrayDouble2D }, new Type[] {
+			arrayT2D }));
+		assertTrue(Types.satisfies(new Type[] { arrayV2D }, new Type[] {
+			arrayT2D }));
+		// A 2D array does not satisfy a 1D array
+		assertFalse(Types.satisfies(new Type[] { arrayT2D }, new Type[] {
+			arrayT }));
+		// A 1D array does not satisfy a 2D array
+		assertFalse(Types.satisfies(new Type[] { arrayT }, new Type[] {
+			arrayT2D }));
+
+		// generic parameterized type arrays
+		final Type arrayListT = new Nil<List<T>[]>() {}.getType();
+		final Type arrayListDouble = new Nil<List<Double>[]>() {}.getType();
+		final Type arrayListString = new Nil<List<String>[]>() {}.getType();
+
+		assertTrue(Types.satisfies(new Type[] { arrayListDouble }, new Type[] {
+			arrayListT }));
+		// String does not extend Number
+		assertFalse(Types.satisfies(new Type[] { arrayListString }, new Type[] {
+			arrayListT }));
+		// Number does not extend BigInteger
+		assertFalse(Types.satisfies(new Type[] { arrayListT }, new Type[] {
+			arrayU }));
+
+	}
+
+	@Test
+	public <S, T extends Thing<S>, U extends IntegerThing, V extends RecursiveThing<V>, W extends RecursiveThing<W> & Loop, X extends Thing<S> & Loop>
+		void testSatisfiesTypeVariables()
+	{
+		final Type t = new Nil<T>() {}.getType();
+		final Type u = new Nil<U>() {}.getType();
+		final Type thingInt = new Nil<Thing<Integer>>() {}.getType();
+		final Type numberThingInt = new Nil<NumberThing<Integer>>() {}.getType();
+		final Type numberThingDouble = new Nil<NumberThing<Double>>() {}.getType();
+		final Type strangeThingDouble = new Nil<StrangeThing<Double>>() {}
+			.getType();
+		final Type strangerThingString = new Nil<StrangerThing<String>>() {}
+			.getType();
+		final Type integerThing = new Nil<IntegerThing>() {}.getType();
+
+		assertTrue(Types.satisfies(new Type[] { thingInt, thingInt, numberThingInt,
+			integerThing }, new Type[] { t, t, t, t }));
+		assertTrue(Types.satisfies(new Type[] { thingInt, numberThingInt,
+			strangerThingString }, new Type[] { t, t, t }));
+		assertTrue(Types.satisfies(new Type[] { thingInt, numberThingInt,
+			integerThing }, new Type[] { t, t, t }));
+		assertTrue(Types.satisfies(new Type[] { numberThingInt,
+			strangeThingDouble }, new Type[] { t, t }));
+		// S cannot accommodate a Double since S is already locked to Integer from
+		// the first argument.
+		assertFalse(Types.satisfies(new Type[] { thingInt, numberThingInt,
+			numberThingDouble }, new Type[] { t, t, t }));
+		assertTrue(Types.satisfies(new Type[] { u }, new Type[] { t }));
+
+		// recursive Type Variables
+		final Type circularThing = new Nil<CircularThing>() {}.getType();
+		final Type loopingThing = new Nil<LoopingThing>() {}.getType();
+		final Type recursiveThingCircular =
+			new Nil<RecursiveThing<CircularThing>>()
+			{}.getType();
+		final Type v = new Nil<V>() {}.getType();
+		final Type w = new Nil<W>() {}.getType();
+		final Type x = new Nil<X>() {}.getType();
+
+		assertTrue(Types.satisfies(new Type[] { circularThing, circularThing,
+			loopingThing }, new Type[] { t, t, t }));
+		// V cannot accommodate LoopingThing since V is already locked to
+		// CircularThing
+		assertFalse(Types.satisfies(new Type[] { circularThing, circularThing,
+			loopingThing }, new Type[] { v, v, v }));
+		// V cannot accommodate RecursiveThing since V is already locked to
+		// CircularThing (V has to extend RecursiveThing<itself>, not
+		// RecursiveThing<not itself>).
+		assertFalse(Types.satisfies(new Type[] { circularThing, circularThing,
+			recursiveThingCircular }, new Type[] { v, v, v }));
+		// V cannot accommodate RecursiveThing<CircularThing> since V must extend
+		// RecursiveThing<V> (it cannot extend RecursiveThing<not V>)
+		assertFalse(Types.satisfies(new Type[] { recursiveThingCircular,
+			recursiveThingCircular, recursiveThingCircular }, new Type[] { v, v,
+				v }));
+		assertTrue(Types.satisfies(new Type[] { recursiveThingCircular,
+			recursiveThingCircular, recursiveThingCircular }, new Type[] { t, t,
+				t }));
+		assertTrue(Types.satisfies(new Type[] { circularThing, circularThing,
+			circularThing }, new Type[] { w, w, w }));
+		// W cannot accommodate LoopingThing since W is already
+		// fixed to CircularThing
+		assertFalse(Types.satisfies(new Type[] { circularThing, loopingThing,
+			circularThing }, new Type[] { w, w, w }));
+		assertTrue(Types.satisfies(new Type[] { circularThing, loopingThing,
+			circularThing }, new Type[] { x, x, x }));
+
+	}
+
+	/**
+	 * Tests {@link Types#satisfies(Type[], Type[])} when the same type parameter
+	 * appears across multiple destination types.
+	 */
+	@Test
+	public <T> void testSatisfiesMatchingT() {
+		// <T> f(List<T>, List<T>)
+		final Type[] params = { //
+			new Nil<List<T>>()
+			{}.getType(), //
+			new Nil<List<T>>()
+			{}.getType(), //
+		};
+
+		// f(List<Integer>, List<Integer>)
+		// [OK] T -> Integer
+		final Type[] argsOK = { //
+			new Nil<List<Integer>>()
+			{}.getType(), //
+			new Nil<List<Integer>>()
+			{}.getType() };
+		assertTrue(Types.satisfies(argsOK, params));
+
+		// f(List<String>, List<Number>)
+		// [MISS] T cannot be both String and Number
+		final Type[] argsMiss = { //
+			new Nil<List<Double>>()
+			{}.getType(), //
+			new Nil<List<Number>>()
+			{}.getType() //
+		};
+		assertFalse(Types.satisfies(argsMiss, params));
+
+	}
+
 	/** Tests {@link Types#cast(Object, Class)}. */
 	@Test
 	public void testCast() {
@@ -641,6 +908,38 @@ public class TypesTest {
 
 	private static class ComplexThing<T extends Serializable & Cloneable> extends
 		Thing<T>
+	{
+		// NB: No implementation needed.
+	}
+
+	private static class StrangeThing<S extends Number> extends Thing<Integer> {
+		// NB: No implementation needed.
+	}
+
+	private static class StrangerThing<R extends String> extends
+		StrangeThing<Double>
+	{
+		// NB: No implementation needed.
+	}
+
+	private static class RecursiveThing<T extends RecursiveThing<T>> extends
+		Thing<Integer>
+	{
+		// NB: No implementation needed.
+	}
+
+	private static interface Loop {
+		// NB: No implementation needed.
+	}
+
+	private static class CircularThing extends RecursiveThing<CircularThing>
+		implements Loop
+	{
+		// NB: No implementation needed.
+	}
+
+	private static class LoopingThing extends RecursiveThing<LoopingThing>
+		implements Loop
 	{
 		// NB: No implementation needed.
 	}
