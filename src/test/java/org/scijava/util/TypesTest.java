@@ -599,6 +599,8 @@ public class TypesTest {
 
 	// -- Helper classes --
 
+	// TODO: Migrate these helper classes into ExampleTypes.
+
 	private static class Thing<T> {
 		@SuppressWarnings("unused")
 		private T thing;
