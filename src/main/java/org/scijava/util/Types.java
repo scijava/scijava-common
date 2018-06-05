@@ -31,6 +31,8 @@
 
 package org.scijava.util;
 
+import com.google.common.reflect.TypeToken;
+
 import java.io.File;
 
 // Portions of this class were adapted from the
@@ -68,9 +70,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-
-import org.scijava.util.FileUtils;
 
 /**
  * Utility class for working with generic types, fields and methods.
@@ -86,6 +87,7 @@ import org.scijava.util.FileUtils;
  * </p>
  *
  * @author Curtis Rueden
+ * @author Gabe Selzer
  */
 public final class Types {
 
@@ -787,22 +789,22 @@ public final class Types {
 	public static ParameterizedType parameterize(final Class<?> rawType,
 		final Type... typeArgs)
 	{
-		return parameterize(rawType, rawType.getDeclaringClass(), typeArgs);
+		return parameterizeWithOwner(null, rawType, typeArgs);
 	}
 
 	/**
 	 * Creates a new {@link ParameterizedType} of the given class together with
 	 * the specified type arguments.
 	 *
-	 * @param rawType The class of the {@link ParameterizedType}.
 	 * @param ownerType The owner type of the parameterized class.
+	 * @param rawType The class of the {@link ParameterizedType}.
 	 * @param typeArgs The type arguments to use in parameterizing it.
 	 * @return The newly created {@link ParameterizedType}.
 	 */
-	public static ParameterizedType parameterize(final Class<?> rawType,
-		final Type ownerType, final Type... typeArgs)
+	public static ParameterizedType parameterizeWithOwner(final Type ownerType,
+		final Class<?> rawType, final Type... typeArgs)
 	{
-		return new TypeUtils.ParameterizedTypeImpl(rawType, ownerType, typeArgs);
+		return TypeUtils.parameterizeWithOwner(ownerType, rawType, typeArgs);
 	}
 
 	/**
@@ -3177,7 +3179,7 @@ public final class Types {
 				Arrays.fill(arguments, UNBOUND_WILDCARD);
 				final Type owner = clazz.getDeclaringClass() == null ? null
 					: addWildcardParameters(clazz.getDeclaringClass());
-				return parameterize(clazz, owner, arguments);
+				return parameterizeWithOwner(owner, clazz, arguments);
 			}
 			else {
 				return clazz;
@@ -3555,9 +3557,9 @@ public final class Types {
 				for (final CaptureTypeImpl captured : toInit) {
 					captured.init(varMap);
 				}
-				final Type ownerType = (pType.getOwnerType() == null) ? null : capture(
+				final Type ownerType = pType.getOwnerType() == null ? null : capture(
 					pType.getOwnerType());
-				return parameterize(clazz, ownerType, capturedArguments);
+				return parameterizeWithOwner(ownerType, clazz, capturedArguments);
 			}
 			return type;
 		}
@@ -3735,9 +3737,10 @@ public final class Types {
 			}
 			else if (type instanceof ParameterizedType) {
 				final ParameterizedType pType = (ParameterizedType) type;
-				return parameterize((Class<?>) pType.getRawType(), pType
-					.getOwnerType() == null ? pType.getOwnerType() : map(pType
-						.getOwnerType()), map(pType.getActualTypeArguments()));
+				final Type ownerType = pType.getOwnerType() == null ? //
+					pType.getOwnerType() : map(pType.getOwnerType());
+				return parameterizeWithOwner(ownerType, (Class<?>) pType.getRawType(),
+					map(pType.getActualTypeArguments()));
 			}
 			else if (type instanceof WildcardType) {
 				final WildcardType wType = (WildcardType) type;
