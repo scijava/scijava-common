@@ -784,8 +784,8 @@ public final class Types {
 			if (!satisfiesRawTypes(args[i], params[i])) return false;
 
 			if (params[i] instanceof ParameterizedType) {
-				if (!satisfiesParameterizedTypes((ParameterizedType) args[i],
-					(ParameterizedType) params[i], typeBounds)) return false;
+				if (!satisfiesParameterizedTypes(args[i], (ParameterizedType) params[i],
+					typeBounds)) return false;
 			}
 			else if (params[i] instanceof TypeVariable) {
 				if (!satisfiesTypeVariable(args[i], (TypeVariable<?>) params[i],
@@ -828,14 +828,18 @@ public final class Types {
 		return true;
 	}
 
-	private static boolean satisfiesParameterizedTypes(
-		final ParameterizedType arg, final ParameterizedType param,
+	private static boolean satisfiesParameterizedTypes(final Type arg,
+		final ParameterizedType param,
 		final HashMap<TypeVariable<?>, TypeVarInfo> typeBounds)
 	{
-		// get an array of the source parameter types
-		final Type[] srcTypes = arg.getActualTypeArguments();
 		// get an array of the destination parameter types
 		final Type[] destTypes = param.getActualTypeArguments();
+
+		// get an array of the source argument types
+		final Type[] srcTypes = new Type[destTypes.length];
+		for (int i = 0; i < srcTypes.length; i++) {
+			srcTypes[i] = Types.param(arg, Types.raw(arg), i);
+		}
 		// check to see if any of the Types of this ParameterizedType are
 		// TypeVariables, if so restrict them to the type parameter of the argument.
 		for (int i = 0; i < destTypes.length; i++) {
