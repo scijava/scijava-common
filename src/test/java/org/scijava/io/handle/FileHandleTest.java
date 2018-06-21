@@ -35,10 +35,12 @@ package org.scijava.io.handle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import org.junit.Test;
 import org.scijava.Context;
@@ -107,5 +109,29 @@ public class FileHandleTest extends DataHandleTest {
 
 		handle.close();
 		assertFalse(nonExistentFile.exists());
+	}
+
+	@Test
+	public void testNotCreatedByRead() throws IOException {
+		final Context ctx = new Context();
+		final DataHandleService dhs = ctx.service(DataHandleService.class);
+
+		final File nonExistentFile = //
+			File.createTempFile("FileHandleTest", "none xistent file");
+		final URI uri = nonExistentFile.toURI();
+		assertTrue(nonExistentFile.delete());
+		assertFalse(nonExistentFile.exists());
+
+		final FileLocation loc = new FileLocation(uri);
+		try (final DataHandle<?> handle = dhs.create(loc)) {
+			assertFalse(handle.exists());
+			handle.read(); // this will fail as there is no underlying file!
+			fail("Read successfully from non-existing file!");
+		}
+		catch (final IOException exc) {
+			// should be thrown
+		}
+		assertFalse(nonExistentFile.exists());
+		// reading from the non-existing file should not create it!
 	}
 }
