@@ -337,6 +337,19 @@ public class ScriptInfoTest {
 		assertEquals("bar", info.get("foo"));
 	}
 
+	/** Tests {@code #@import} directives. */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testImportDirective() {
+		final String script = "" + //
+				"#@import(\"myutils\", scope=\"utils\")\n";
+		ScriptInfo info = null;
+		info = new ScriptInfo(context, "scriptHeader.bsizes", new StringReader(script));
+		info.inputs(); // HACK: Force lazy initialization.
+
+		assertEquals("utils", ((Map<String, ScriptImport>) info.getProperty("imports")).get("myutils").getScope());
+	}
+
 	/**
 	 * Ensures the ScriptInfos Reader can be reused for multiple executions of the
 	 * script.

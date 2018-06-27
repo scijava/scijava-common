@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.scijava.MenuPath;
 import org.scijava.Priority;
@@ -146,6 +147,28 @@ public class DefaultModuleService extends AbstractService implements
 			if (id.equals(infoID)) return info;
 		}
 		return null;
+	}
+
+	@Override
+	public ModuleInfo getModuleByName(final String name) {
+		// TODO: Cache names in a hash?
+		List<ModuleInfo> moduleInfos = getModules().stream().filter(m -> name.equals(m.getName()))
+				.collect(Collectors.toList());
+		if (moduleInfos.size() > 1) {
+			log.warn("Duplicate name " + name + " for modules: " + //
+					String.join(", ", moduleInfos.stream().map(ModuleInfo::getIdentifier).collect(Collectors.toList())));
+			log.warn("Using first registered module");
+			return moduleInfos.get(0);
+		}
+		else if (moduleInfos.size() == 1) return moduleInfos.get(0);
+		return null;
+		/*
+		for (final ModuleInfo info : getModules()) {
+			final String infoName = info.getName();
+			if (name.equals(infoName)) return info;
+		}
+		return null;
+		*/
 	}
 
 	@Override

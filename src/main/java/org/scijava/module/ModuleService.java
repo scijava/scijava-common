@@ -98,6 +98,14 @@ public interface ModuleService extends SciJavaService {
 	ModuleInfo getModuleById(String id);
 
 	/**
+	 * Gets the module with the given name.
+	 * 
+	 * @param name The name of the desired module.
+	 * @return The {@link Identifiable} module with the given name.
+	 */
+	ModuleInfo getModuleByName(String name);
+
+	/**
 	 * Gets the module for a given keyboard shortcut.
 	 * 
 	 * @param acc the accelerator for which to search.

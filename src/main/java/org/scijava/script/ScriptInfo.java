@@ -41,7 +41,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scijava.Context;
 import org.scijava.Contextual;
@@ -70,6 +72,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	private final URL url;
 	private final String path;
 	private final String script;
+	private Map<String, Object> propertyMap = new HashMap<>();
 
 	@Parameter
 	private Context context;
@@ -272,6 +275,26 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	public List<ScriptCallback> callbacks() {
 		if (callbacks == null) callbacks = new ArrayList<>();
 		return callbacks;
+	}
+	
+	/**
+	 * Gets the property object for the given key from the property map.
+	 * 
+	 * @param key
+	 * @return property object
+	 */
+	public Object getProperty(String key) {
+		return propertyMap.get(key);
+	}
+	
+	/**
+	 * Sets a given property object in the property map
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void setProperty(String key, Object value) {
+		propertyMap.put(key, value);
 	}
 
 	// -- AbstractModuleInfo methods --
