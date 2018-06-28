@@ -162,6 +162,8 @@
 Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
 Institute of Molecular Cell Biology and Genetics, University of
 Konstanz, and KNIME GmbH.</license.copyrightOwners>
+
+		<scijava.compiler.args>-proc:none --add-modules java.xml.bind</scijava.compiler.args>
 	</properties>
 
 	<dependencies>
@@ -208,7 +210,11 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<compilerArgument>-proc:none</compilerArgument>
+					<compilerArgs>
+						<arg>-proc:none</arg>
+						<arg>--add-modules</arg>
+						<arg>java.xml.bind</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -228,4 +234,17 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>java-9</id>
+			<activation>
+				<jdk>9</jdk>
+			</activation>
+			<properties>
+				<scijava.compiler.args>-proc:none --add-modules java.xml.bind</scijava.compiler.args>
+				<scijava.jvm.version>1.9</scijava.jvm.version>
+			</properties>
+		</profile>
+	</profiles>
 </project>
