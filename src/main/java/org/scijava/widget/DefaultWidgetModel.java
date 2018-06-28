@@ -169,14 +169,10 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		module.setInput(name, convertedInput);
 
 		if (initialized) {
-			threadService.run(new Runnable() {
-
-				@Override
-				public void run() {
-					callback();
-					inputPanel.refresh(); // must be on AWT thread?
-					module.preview();
-				}
+			threadService.queue(() -> {
+				callback();
+				inputPanel.refresh(); // must be on AWT thread?
+				module.preview();
 			});
 		}
 	}
