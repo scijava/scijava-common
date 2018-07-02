@@ -61,7 +61,7 @@ public class URLLocation extends AbstractLocation {
 
 	/**
 	 * Gets the associated {@link URI}, or null if this URL is not formatted
-	 * strictly according to to RFC2396 and cannot be converted to a URI.
+	 * strictly according to RFC2396 and cannot be converted to a URI.
 	 */
 	@Override
 	public URI getURI() {
