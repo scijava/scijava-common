@@ -80,12 +80,7 @@ public abstract class AbstractUIInputWidget<T, W> extends AbstractInputWidget<T,
 	  // on the EDT.
 		if (ui().requiresEDT()) {
 			try {
-				threadService.invoke(new Runnable() {
-					@Override
-					public void run() {
-						doRefresh();
-					}
-				});
+				threadService.invoke(() -> doRefresh());
 			}
 			catch (InterruptedException e) {
 				log.error("Interrupted while refresh widget: " + getClass(), e);
