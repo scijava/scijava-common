@@ -35,7 +35,6 @@ package org.scijava.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.scijava.object.LazyObjects;
 import org.scijava.object.ObjectService;
 
 /**
@@ -95,13 +94,7 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 	@Override
 	default void initialize() {
 		// add singleton instances to the object index... IN THE FUTURE!
-		objectService().getIndex().addLater(new LazyObjects<Object>() {
-
-			@Override
-			public ArrayList<Object> get() {
-				return new ArrayList<>(getInstances());
-			}
-		});
+		objectService().getIndex().addLater(() -> new ArrayList<>(getInstances()));
 	}
 
 }
