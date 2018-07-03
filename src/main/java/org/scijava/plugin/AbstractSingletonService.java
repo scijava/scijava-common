@@ -32,13 +32,17 @@
 
 package org.scijava.plugin;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.scijava.event.EventHandler;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
+import org.scijava.plugin.event.PluginsAddedEvent;
+import org.scijava.plugin.event.PluginsRemovedEvent;
 
 /**
  * Abstract base class for {@link SingletonService}s.
@@ -56,9 +60,6 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	@Parameter
 	private ObjectService objectService;
 
-	// TODO: Listen for PluginsAddedEvent and PluginsRemovedEvent
-	// and update the list of singletons accordingly.
-
 	/** List of singleton plugin instances. */
 	private List<PT> instances;
 
@@ -74,7 +75,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	@Override
 	public List<PT> getInstances() {
 		if (instances == null) initInstances();
-		return instances;
+		return Collections.unmodifiableList(instances);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -84,20 +85,63 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		return (P) instanceMap.get(pluginClass);
 	}
 
+//-- Event handlers --
+
+	@EventHandler
+	protected void onEvent(final PluginsRemovedEvent event) {
+		if (instanceMap == null) return;
+		for (final PluginInfo<?> info : event.getItems()) {
+			final PT obj = instanceMap.remove(info.getPluginClass());
+			if (obj != null) { // we actually removed a plugin
+				instances.remove(obj);
+				objectService.removeObject(obj);
+			}
+		}
+	}
+
+	@EventHandler
+	protected void onEvent(final PluginsAddedEvent event) {
+		if (instanceMap == null) return;
+		// collect singleton plugins
+		final List<PluginInfo<PT>> singletons = new ArrayList<>();
+		for (final PluginInfo<?> pluginInfo : event.getItems()) {
+			if (getPluginType().isAssignableFrom(pluginInfo.getPluginType())) {
+				@SuppressWarnings("unchecked")
+				final PT plugin = pluginService().createInstance(
+					(PluginInfo<PT>) pluginInfo);
+				@SuppressWarnings("unchecked")
+				final Class<? extends PT> pluginClass = (Class<? extends PT>) plugin
+					.getClass();
+				instanceMap.put(pluginClass, plugin);
+				instances.add(plugin);
+			}
+		}
+
+		for (final PluginInfo<PT> pluginInfo : singletons) {
+			final PT plugin = pluginService().createInstance(pluginInfo);
+			@SuppressWarnings("unchecked")
+			final Class<? extends PT> pluginClass = (Class<? extends PT>) plugin
+				.getClass();
+			instanceMap.put(pluginClass, plugin);
+			instances.add(plugin);
+		}
+
+	}
+
 	// -- Helper methods --
 
 	private synchronized void initInstances() {
 		if (instances != null) return;
 
-		final List<PT> list = Collections.unmodifiableList(filterInstances(
-			pluginService().createInstancesOfType(getPluginType())));
+		@SuppressWarnings("unchecked")
+		final List<PT> list = (List<PT>) filterInstances(pluginService()
+			.createInstancesOfType(getPluginType()));
 
-		final HashMap<Class<? extends PT>, PT> map =
-			new HashMap<>();
+		final Map<Class<? extends PT>, PT> map = new HashMap<>();
 
 		for (final PT plugin : list) {
 			@SuppressWarnings("unchecked")
-			final Class<? extends PT> ptClass =
+			final Class<? extends PT> ptClass = //
 				(Class<? extends PT>) plugin.getClass();
 			map.put(ptClass, plugin);
 		}
