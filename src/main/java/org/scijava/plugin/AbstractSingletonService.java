@@ -34,11 +34,16 @@ package org.scijava.plugin;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.scijava.event.EventHandler;
+import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.object.ObjectService;
+import org.scijava.plugin.event.PluginsAddedEvent;
+import org.scijava.plugin.event.PluginsRemovedEvent;
 
 /**
  * Abstract base class for {@link SingletonService}s.
@@ -56,8 +61,8 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	@Parameter
 	private ObjectService objectService;
 
-	// TODO: Listen for PluginsAddedEvent and PluginsRemovedEvent
-	// and update the list of singletons accordingly.
+	@Parameter
+	private EventService eventService;
 
 	/** List of singleton plugin instances. */
 	private List<PT> instances;
@@ -74,7 +79,7 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	@Override
 	public List<PT> getInstances() {
 		if (instances == null) initInstances();
-		return instances;
+		return Collections.unmodifiableList(instances);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,8 +94,9 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 	private synchronized void initInstances() {
 		if (instances != null) return;
 
-		final List<PT> list = Collections.unmodifiableList(filterInstances(
-			pluginService().createInstancesOfType(getPluginType())));
+		@SuppressWarnings("unchecked")
+		final List<PT> list = (List<PT>) filterInstances(pluginService()
+			.createInstancesOfType(getPluginType()));
 
 		final HashMap<Class<? extends PT>, PT> map =
 			new HashMap<>();
@@ -109,4 +115,53 @@ public abstract class AbstractSingletonService<PT extends SingletonPlugin>
 		instances = list;
 	}
 
+	// -- Event handlers --
+
+	@EventHandler
+	protected void onEvent(final PluginsAddedEvent event) {
+		if (instances == null) {
+			initInstances();
+			return;
+		}
+
+		List<PT> list = new LinkedList<>();
+		event.getItems().forEach(info -> {
+			try {
+				PT instance = getPluginType().cast(pluginService()
+					.createInstance(info));
+				list.add(instance);
+			}
+			catch (ClassCastException exc) { /* NB */ }
+		});
+
+		filterInstances(list).forEach(instance -> {
+			@SuppressWarnings("unchecked")
+			final Class<? extends PT> ptClass = (Class<? extends PT>) instance
+				.getClass();
+
+			// Remove previous instances
+			PT oldInstance = instanceMap.get(ptClass);
+			if (oldInstance != null) {
+				instances.remove(oldInstance);
+			}
+
+			instanceMap.put(ptClass, instance); // Replaces previous instance
+			instances.add(instance); // Add new instance
+		});
+	}
+
+	@EventHandler
+	protected void onEvent(final PluginsRemovedEvent event) {
+		if (instances == null) {
+			initInstances();
+			return;
+		}
+
+		event.getItems().forEach(info -> {
+			Class<?> pluginClass = info.getPluginClass();
+			PT instance = instanceMap.get(pluginClass);
+			instanceMap.remove(pluginClass);
+			instances.remove(instance);
+		});
+	}
 }
