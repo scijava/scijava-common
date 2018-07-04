@@ -82,6 +82,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	public DefaultWidgetModel(final Context context, final InputPanel<?, ?> inputPanel,
 		final Module module, final ModuleItem<?> item, final List<?> objectPool)
 	{
+		System.out.println("======== CREATING DEFAULTWIDGETMODEL FOR ITEM: " + item.getName());
 		setContext(context);
 		this.inputPanel = inputPanel;
 		this.module = module;
@@ -92,6 +93,9 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		if (item.getValue(module) == null) {
 			// assign the item's default value as the current value
 			setValue(moduleService.getDefaultValue(item));
+		}
+		else {
+			System.out.println("ITEM VALUE IS NULL");
 		}
 	}
 
@@ -144,14 +148,42 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		if (getObjectPool().size() > 0) return ensureValidObject(value);
 		return value;
 	}
+	// CTR START HERE
+	//
+	// imagej-common
+	// - Delete DatasetToImgConverter
+	//  -- A Dataset is already an Img
+	//
+	// Here, setValue(null) is passed because the default value is null.
+	// But that does not make much sense.
+	// Better would be to set the value to the first one on the list.
+	// And make getValue really return the current value of the model,
+	// instead of doing the massaging in the getter.
+	//
+	// Double check that conversion is really working as expected!
+	// We should not be getting back an ImagePlus here; only an Img.
+	// And verify that converted value is getting saved into the weak
+	// hash map. I suspect not, based on an earlier debugging session.
+	//
+	// When value is converted (e.g. ImagePlus -> Img), we want the
+	// string representation to be of the _correctly typed_ object (Img),
+	// not the "compatible" but wrongly typed object (ImagePlus).
+	//
+	// Perhaps we also need a way to override this string value? Otherwise,
+	// @ImagePlus parameters will look crappy since toString is used (?).
 
 	@Override
 	public void setValue(final Object value) {
+		final boolean debug = item.getName().equals("d1");
+		if (debug) new Exception("[WidgetModel.setValue] value -> " + value).printStackTrace();
 		final String name = item.getName();
 		if (Objects.equals(item.getValue(module), value)) return; // no change
+		if (debug) System.out.println("[WidgetModel.setValue] old value = " + item.getValue(module));
 
 		// Check if a converted value is present
 		Object convertedInput = convertedObjects.get(value);
+		if (debug) System.out.println("[WidgetModel.setValue] value = " + value);
+		if (debug) System.out.println("[WidgetModel.setValue] convertedInput from convertedObjects = " + convertedInput);
 		if (convertedInput != null &&
 			Objects.equals(item.getValue(module), convertedInput))
 		{
@@ -160,20 +192,27 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 		// Pass the value through the convertService
 		convertedInput = convertService.convert(value, item.getType());
+		if (debug) System.out.println("[WidgetModel.setValue] convertedInput from convertService = " + convertedInput);
 
 		// If we get a different (converted) value back, cache it weakly.
 		if (convertedInput != value) {
 			convertedObjects.put(value, convertedInput);
+			if (debug) System.out.println("[WidgetModel.setValue] ADDED To convertedObjects");
 		}
 
 		module.setInput(name, convertedInput);
 
 		if (initialized) {
-			threadService.queue(() -> {
-				callback();
-				inputPanel.refresh(); // must be on AWT thread?
-				module.preview();
-			});
+			try {
+				threadService.invoke(() -> {
+					callback();
+					inputPanel.refresh();
+					module.preview();
+				});
+			}
+			catch (Exception exc) {
+				exc.printStackTrace();
+			}
 		}
 	}
 
@@ -312,10 +351,14 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	/** Ensures the value is on the given list. */
 	private Object ensureValid(final Object value, final List<?> list) {
 		for (final Object o : list) {
-			if (o.equals(value)) return value; // value is valid
+			if (o.equals(value)) {
+				System.out.println("[ensureValid] valid value: " + o);
+				return value; // value is valid
+			}
 			// check if value was converted and cached
 			final Object convertedValue = convertedObjects.get(o);
 			if (convertedValue != null && value.equals(convertedValue)) {
+				System.out.println("[ensureValid] converted value: " + o + " -> " + convertedValue);
 				return convertedValue;
 			}
 		}
@@ -323,7 +366,8 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		// value is not valid; override with the first item on the list instead
 		final Object validValue = list.get(0);
 		// CTR TODO: Mutating the model in a getter is dirty. Find a better way?
-		setValue(validValue);
+		//setValue(validValue);
+		System.out.println("[ensureValid] INVALID: using item #0: " + value + " -> " + validValue);
 		return validValue;
 	}
 
