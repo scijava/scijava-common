@@ -165,9 +165,7 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	 * </p>
 	 */
 	private HashMap<String, ShadowMenu> rootMenus() {
-		if (rootMenus == null) {
-			initRootMenus();
-		}
+		if (rootMenus == null) initRootMenus();
 		return rootMenus;
 	}
 
