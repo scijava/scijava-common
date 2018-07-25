@@ -75,7 +75,7 @@ import org.scijava.util.Types;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.HIGH)
+@Plugin(type = Service.class)
 public class DefaultScriptService extends
 	AbstractSingletonService<ScriptLanguage> implements ScriptService
 {
