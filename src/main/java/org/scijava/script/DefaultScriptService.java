@@ -353,7 +353,7 @@ public class DefaultScriptService extends
 	 * are registered with the service.
 	 */
 	private ScriptInfo getOrCreate(final File file) {
-		final ScriptInfo info = scripts().get(file);
+		final ScriptInfo info = scripts().get(file.getAbsolutePath());
 		if (info != null) return info;
 		return new ScriptInfo(getContext(), file);
 	}
