@@ -68,6 +68,32 @@ public final class DebugUtils {
 	}
 
 	/**
+	 * Provides a stack dump of the given thread.
+	 * <p>
+	 * The output is similar to a subset of that given when Ctrl+\ (or Ctrl+Pause
+	 * on Windows) is pressed from the console.
+	 * </p>
+	 */
+	public static String getStackDump(final Thread thread) {
+		return getStackDump(thread, thread.getStackTrace());
+	}
+
+	/**
+	 * Provides a stack dump of the given thread + call stack.
+	 * <p>
+	 * The output is similar to a subset of that given when Ctrl+\ (or Ctrl+Pause
+	 * on Windows) is pressed from the console.
+	 * </p>
+	 */
+	public static String getStackDump(final Thread thread,
+		final StackTraceElement[] stackTrace)
+	{
+		final StringBuilder sb = new StringBuilder();
+		dumpThread(thread, stackTrace, sb);
+		return sb.toString();
+	}
+
+	/**
 	 * Provides a complete stack dump of all threads.
 	 * <p>
 	 * The output is similar to a subset of that given when Ctrl+\ (or Ctrl+Pause

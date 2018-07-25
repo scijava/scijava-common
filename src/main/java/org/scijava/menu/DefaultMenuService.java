@@ -79,25 +79,22 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	// -- Event handlers --
 
 	@EventHandler
-	protected void onEvent(final ModulesAddedEvent event) {
-		if (rootMenus == null) {
-			// add *all* known modules, which includes the ones given here
-			rootMenus();
-			return;
-		}
-		// data structure already exists; add *these* modules only
+	protected synchronized void onEvent(final ModulesAddedEvent event) {
+		if (rootMenus == null) return; // menus not yet initialized
 		addModules(event.getItems());
 	}
 
 	@EventHandler
-	protected void onEvent(final ModulesRemovedEvent event) {
+	protected synchronized void onEvent(final ModulesRemovedEvent event) {
+		if (rootMenus == null) return; // menus not yet initialized
 		for (final ShadowMenu menu : rootMenus().values()) {
 			menu.removeAll(event.getItems());
 		}
 	}
 
 	@EventHandler
-	protected void onEvent(final ModulesUpdatedEvent event) {
+	protected synchronized void onEvent(final ModulesUpdatedEvent event) {
+		if (rootMenus == null) return; // menus not yet initialized
 		for (final ShadowMenu menu : rootMenus().values()) {
 			menu.updateAll(event.getItems());
 		}
@@ -165,9 +162,7 @@ public class DefaultMenuService extends AbstractService implements MenuService
 	 * </p>
 	 */
 	private HashMap<String, ShadowMenu> rootMenus() {
-		if (rootMenus == null) {
-			initRootMenus();
-		}
+		if (rootMenus == null) initRootMenus();
 		return rootMenus;
 	}
 
