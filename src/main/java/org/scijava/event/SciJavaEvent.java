@@ -33,6 +33,7 @@
 package org.scijava.event;
 
 import org.scijava.AbstractContextual;
+import org.scijava.util.DebugUtils;
 
 /**
  * Base class for all SciJava events.
@@ -81,6 +82,14 @@ public abstract class SciJavaEvent extends AbstractContextual {
 	 */
 	public StackTraceElement[] getStackTrace() {
 		return stackTrace;
+	}
+
+	/**
+	 * Gets a stack trace for the calling thread when the event was published.
+	 * This method is useful for debugging what triggered an event.
+	 */
+	public String dumpStack() {
+		return DebugUtils.getStackDump(getCallingThread(), getStackTrace());
 	}
 
 	// Object methods --
