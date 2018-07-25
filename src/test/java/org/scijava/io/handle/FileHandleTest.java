@@ -103,11 +103,10 @@ public class FileHandleTest extends DataHandleTest {
 		assertFalse(nonExistentFile.exists());
 
 		final FileLocation loc = new FileLocation(nonExistentFile);
-		final DataHandle<?> handle = dhs.create(loc);
-		assertTrue(handle instanceof FileHandle);
-		assertFalse(handle.exists());
-
-		handle.close();
+		try (final DataHandle<?> handle = dhs.create(loc)) {
+			assertTrue(handle instanceof FileHandle);
+			assertFalse(handle.exists());
+		}
 		assertFalse(nonExistentFile.exists());
 	}
 
