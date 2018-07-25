@@ -226,14 +226,8 @@ public class DefaultScriptService extends
 		super.initialize();
 
 		// add scripts to the module index... only when needed!
-		moduleService.getIndex().addLater(new LazyObjects<ScriptInfo>() {
-
-			@Override
-			public Collection<ScriptInfo> get() {
-				return scripts().values();
-			}
-
-		});
+		final LazyObjects<ScriptInfo> lazyScripts = () -> scripts().values();
+		moduleService.getIndex().addLater(lazyScripts);
 	}
 
 	// -- Helper methods - lazy initialization --
