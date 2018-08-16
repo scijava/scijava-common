@@ -177,7 +177,10 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		final boolean debug = item.getName().equals("d1");
 		if (debug) new Exception("[WidgetModel.setValue] value -> " + value).printStackTrace();
 		final String name = item.getName();
-		if (Objects.equals(item.getValue(module), value)) return; // no change
+		if (Objects.equals(item.getValue(module), value)) {
+			System.out.println("[WidgetModel.setValue] no change in value: " + value);
+			return; // no change
+		}
 		if (debug) System.out.println("[WidgetModel.setValue] old value = " + item.getValue(module));
 
 		// Check if a converted value is present
