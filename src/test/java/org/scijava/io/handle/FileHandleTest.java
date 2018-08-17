@@ -46,7 +46,6 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
-import org.scijava.util.PlatformUtils;
 
 /**
  * Tests {@link FileHandle}.
@@ -76,22 +75,22 @@ public class FileHandleTest extends DataHandleTest {
 
 		final File nonExistentFile = //
 			File.createTempFile("FileHandleTest", "nonexistent-file");
-		final boolean deleted = delete(nonExistentFile);
+		assertTrue(nonExistentFile.delete());
+		assertFalse(nonExistentFile.exists());
 
 		final FileLocation loc = new FileLocation(nonExistentFile);
-		final DataHandle<?> handle = dhs.create(loc);
-		assertTrue(handle instanceof FileHandle);
-		if (deleted) {
+		try (final DataHandle<?> handle = dhs.create(loc)) {
+			assertTrue(handle instanceof FileHandle);
 			assertFalse(handle.exists());
 			assertEquals(-1, handle.length());
+
+			handle.writeBoolean(true);
+			assertTrue(handle.exists());
+			assertEquals(1, handle.length());			
 		}
 
-		handle.writeBoolean(true);
-		assertTrue(handle.exists());
-		assertEquals(1, handle.length());
-
 		// Clean up.
-		delete(nonExistentFile);
+		assertTrue(nonExistentFile.delete());
 	}
 
 	@Test
@@ -120,7 +119,8 @@ public class FileHandleTest extends DataHandleTest {
 		final File nonExistentFile = //
 			File.createTempFile("FileHandleTest", "none xistent file");
 		final URI uri = nonExistentFile.toURI();
-		delete(nonExistentFile);
+		assertTrue(nonExistentFile.delete());
+		assertFalse(nonExistentFile.exists());
 
 		final FileLocation loc = new FileLocation(uri);
 		try (final DataHandle<?> handle = dhs.create(loc)) {
@@ -133,16 +133,5 @@ public class FileHandleTest extends DataHandleTest {
 		}
 		assertFalse(nonExistentFile.exists());
 		// reading from the non-existing file should not create it!
-	}
-
-	/** A workaround for Windows being bad at deleting files. */
-	private boolean delete(final File file) {
-		final boolean success = file.delete();
-		if (!success) file.deleteOnExit();
-		if (!PlatformUtils.isWindows()) {
-			assertTrue(success);
-			assertFalse(file.exists());
-		}
-		return success;
 	}
 }
