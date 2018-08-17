@@ -79,16 +79,17 @@ public class FileHandleTest extends DataHandleTest {
 		final boolean deleted = delete(nonExistentFile);
 
 		final FileLocation loc = new FileLocation(nonExistentFile);
-		final DataHandle<?> handle = dhs.create(loc);
-		assertTrue(handle instanceof FileHandle);
-		if (deleted) {
-			assertFalse(handle.exists());
-			assertEquals(-1, handle.length());
-		}
+		try (final DataHandle<?> handle = dhs.create(loc)) {
+			assertTrue(handle instanceof FileHandle);
+			if (deleted) {
+				assertFalse(handle.exists());
+				assertEquals(-1, handle.length());
+			}
 
-		handle.writeBoolean(true);
-		assertTrue(handle.exists());
-		assertEquals(1, handle.length());
+			handle.writeBoolean(true);
+			assertTrue(handle.exists());
+			assertEquals(1, handle.length());			
+		}
 
 		// Clean up.
 		delete(nonExistentFile);
