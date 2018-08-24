@@ -33,7 +33,6 @@
 package org.scijava.io.handle;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import org.scijava.io.IOService;
 import org.scijava.io.location.Location;
@@ -77,7 +76,7 @@ public interface DataHandleService extends
 	 */
 	default boolean exists(final Location location) throws IOException {
 		try (DataHandle<Location> handle = create(location)) {
-			return handle.exists();
+			return handle == null ? false : handle.exists();
 		}
 	}
 
@@ -89,8 +88,7 @@ public interface DataHandleService extends
 	 * @see ReadBufferDataHandle#ReadBufferDataHandle(DataHandle)
 	 */
 	default DataHandle<Location> readBuffer(final DataHandle<Location> handle) {
-		Objects.nonNull(handle);
-		return new ReadBufferDataHandle(handle);
+		return handle == null ? null : new ReadBufferDataHandle(handle);
 	}
 
 	/**
@@ -113,7 +111,6 @@ public interface DataHandleService extends
 	 * @see WriteBufferDataHandle#WriteBufferDataHandle(DataHandle)
 	 */
 	default DataHandle<Location> writeBuffer(final DataHandle<Location> handle) {
-		Objects.nonNull(handle);
-		return new WriteBufferDataHandle(handle);
+		return handle == null ? null : new WriteBufferDataHandle(handle);
 	}
 }
