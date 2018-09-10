@@ -192,18 +192,18 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 	</dependencies>
 
 	<build>
-		<!--
-		SciJava Common provides a plugin indexer which handles its
-		@Plugin annotations, in the form of a compile-time annotation
-		processor. SJC also provides plugins of various sorts, such
-		as the core Service plugin implementations.
-
-		In order for these to be processed correctly and avoid a
-		chicken-and-egg problem with annotation processing here, we
-		disable annotation processing during compilation, and instead
-		run the plugin indexer manually in the process-classes phase.
-		-->
 		<plugins>
+			<!--
+			SciJava Common provides a plugin indexer which handles its
+			@Plugin annotations, in the form of a compile-time annotation
+			processor. SJC also provides plugins of various sorts, such
+			as the core Service plugin implementations.
+
+			In order for these to be processed correctly and avoid a
+			chicken-and-egg problem with annotation processing here, we
+			disable annotation processing during compilation, and instead
+			run the plugin indexer manually in the process-classes phase.
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
