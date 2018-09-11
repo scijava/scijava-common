@@ -37,8 +37,6 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.scijava.util.Types;
-
 /**
  * Useful methods for obtaining details of the SciJava application environment.
  * 
@@ -53,7 +51,7 @@ public final class AppUtils {
 		// Get the class whose main method launched the application. The heuristic
 		// will fail if the main thread has terminated before this class loads.
 		final String className = DebugUtils.getMainClassName();
-		mainClass = className == null ? null : Types.load(className);
+		mainClass = className == null ? null : ClassUtils.loadClass(className);
 	}
 
 	private AppUtils() {
@@ -104,8 +102,7 @@ public final class AppUtils {
 		// repository cache (~/.m2/repository), so the corePath will be null.
 		// However, the classes of the launching project will be located in
 		// target/classes, so we search up the tree from one of those.
-		final Class<?> mc = AppUtils.getMainClass();
-		final File appPath = mc == null ? null : AppUtils.getBaseDirectory(mc);
+		final File appPath = AppUtils.getBaseDirectory(AppUtils.getMainClass());
 		if (appPath != null) return appPath;
 
 		// last resort: use current working directory
@@ -136,7 +133,7 @@ public final class AppUtils {
 		// see: http://stackoverflow.com/a/12733172/1207769
 
 		// step 1: convert Class to URL
-		final URL location = Types.location(c);
+		final URL location = ClassUtils.getLocation(c);
 
 		// step 2: convert URL to File
 		File baseFile;

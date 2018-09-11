@@ -31,8 +31,6 @@
 
 package org.scijava.util;
 
-import java.io.File;
-
 // Portions of this class were adapted from the
 // org.apache.commons.lang3.reflect.TypeUtils and
 // org.apache.commons.lang3.Validate classes of
@@ -70,13 +68,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.scijava.util.FileUtils;
-
 /**
  * Utility class for working with generic types, fields and methods.
  * <p>
  * Logic and inspiration were drawn from the following excellent libraries:
- * </p>
  * <ul>
  * <li>Google Guava's {@code com.google.common.reflect} package.</li>
  * <li>Apache Commons Lang 3's {@code org.apache.commons.lang3.reflect} package.
@@ -84,6 +79,7 @@ import org.scijava.util.FileUtils;
  * <li><a href="https://github.com/coekarts/gentyref">GenTyRef</a> (Generic Type
  * Reflector), a library for runtime generic type introspection.</li>
  * </ul>
+ * </p>
  *
  * @author Curtis Rueden
  */
@@ -205,8 +201,8 @@ public final class Types {
 
 		// load the class!
 		try {
-			final ClassLoader cl = classLoader == null ? //
-				Thread.currentThread().getContextClassLoader() : classLoader;
+			final ClassLoader cl = classLoader == null ? Thread.currentThread()
+				.getContextClassLoader() : classLoader;
 			return cl.loadClass(className);
 		}
 		catch (final Throwable t) {
@@ -252,7 +248,6 @@ public final class Types {
 	 *         determined and the {@code quietly} flag is set.
 	 * @throws IllegalArgumentException If the location cannot be determined and
 	 *           the {@code quietly} flag is not set.
-	 * @see FileUtils#urlToFile(URL) to convert the result to a {@link File}.
 	 */
 	public static URL location(final Class<?> c, final boolean quietly) {
 		Exception cause = null;
@@ -413,10 +408,32 @@ public final class Types {
 	}
 
 	/**
+	 * Compares two {@link Class} objects using their fully qualified names.
+	 * <p>
+	 * Note: this method provides a natural ordering that may be inconsistent with
+	 * equals. Specifically, two unequal classes may return 0 when compared in
+	 * this fashion if they represent the same class loaded using two different
+	 * {@link ClassLoader}s. Hence, if this method is used as a basis for
+	 * implementing {@link Comparable#compareTo} or
+	 * {@link java.util.Comparator#compare}, that implementation may want to
+	 * impose logic beyond that of this method, for breaking ties, if a total
+	 * ordering consistent with equals is always required.
+	 * </p>
+	 *
+	 * @see org.scijava.Priority#compare(org.scijava.Prioritized,
+	 *      org.scijava.Prioritized)
+	 */
+	public static int compare(final Class<?> c1, final Class<?> c2) {
+		if (c1 == c2) return 0;
+		final String name1 = c1 == null ? null : c1.getName();
+		final String name2 = c2 == null ? null : c2.getName();
+		return MiscUtils.compare(name1, name2);
+	}
+
+	/**
 	 * Returns the non-primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
-	 * </p>
 	 * <ul>
 	 * <li>boolean.class becomes Boolean.class</li>
 	 * <li>byte.class becomes Byte.class</li>
@@ -428,7 +445,6 @@ public final class Types {
 	 * <li>short.class becomes Short.class</li>
 	 * <li>void.class becomes Void.class</li>
 	 * </ul>
-	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -453,7 +469,6 @@ public final class Types {
 	 * Returns the primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
-	 * </p>
 	 * <ul>
 	 * <li>Boolean.class becomes boolean.class</li>
 	 * <li>Byte.class becomes byte.class</li>
@@ -465,7 +480,6 @@ public final class Types {
 	 * <li>Short.class becomes short.class</li>
 	 * <li>Void.class becomes void.class</li>
 	 * </ul>
-	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -2771,9 +2785,6 @@ public final class Types {
 			if (type instanceof WildcardType) {
 				return wildcardTypeToString((WildcardType) type, done);
 			}
-			if (type instanceof CaptureType) {
-				return captureTypeToString((CaptureType) type, done);
-			}
 			if (type instanceof TypeVariable) {
 				return typeVariableToString((TypeVariable<?>) type, done);
 			}
@@ -2947,25 +2958,18 @@ public final class Types {
 			final StringBuilder buf = new StringBuilder().append('?');
 			if (done.contains(w)) return buf.toString();
 			done.add(w);
-			appendTypeBounds(buf, w.getLowerBounds(), w.getUpperBounds(), done);
-			return buf.toString();
-		}
-
-		/**
-		 * Format a {@link CaptureType} as a {@link String}.
-		 *
-		 * @param t {@code CaptureType} to format
-		 * @param done list of already-encountered types
-		 * @return String
-		 * @since 3.2
-		 */
-		private static String captureTypeToString(final CaptureType t,
-			final Set<Type> done)
-		{
-			final StringBuilder buf = new StringBuilder().append("capture of ?");
-			if (done.contains(t)) return buf.toString();
-			done.add(t);
-			appendTypeBounds(buf, t.getLowerBounds(), t.getUpperBounds(), done);
+			final Type[] lowerBounds = w.getLowerBounds();
+			final Type[] upperBounds = w.getUpperBounds();
+			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
+				lowerBounds[0] != null)
+			{
+				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
+			}
+			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
+				!Object.class.equals(upperBounds[0]))
+			{
+				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
+			}
 			return buf.toString();
 		}
 
@@ -2978,21 +2982,6 @@ public final class Types {
 		 */
 		private static String genericArrayTypeToString(final GenericArrayType g) {
 			return String.format("%s[]", toString(g.getGenericComponentType()));
-		}
-
-		private static void appendTypeBounds(final StringBuilder buf,
-			final Type[] lowerBounds, final Type[] upperBounds, final Set<Type> done)
-		{
-			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
-				lowerBounds[0] != null)
-			{
-				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
-			}
-			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
-				!Object.class.equals(upperBounds[0]))
-			{
-				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
-			}
 		}
 
 		/**

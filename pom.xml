@@ -193,6 +193,37 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<!-- Add code from subprojects, including tests, to the build. -->
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>util/src/main/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>util/src/test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<!--
 			SciJava Common provides a plugin indexer which handles its
 			@Plugin annotations, in the form of a compile-time annotation
