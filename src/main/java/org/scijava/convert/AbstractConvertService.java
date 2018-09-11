@@ -150,7 +150,13 @@ public abstract class AbstractConvertService extends AbstractHandlerService<Conv
 		final Set<Class<?>> compatibleClasses = new HashSet<>();
 
 		for (final Converter<?, ?> converter : getInstances()) {
-			addIfMatches(source, converter.getInputType(), converter.getOutputType(), compatibleClasses);
+			try {
+				addIfMatches(source, converter.getInputType(), converter.getOutputType(), compatibleClasses);
+			}
+			catch (final Throwable t) {
+				log().error("Malfunctioning converter plugin: " + //
+					converter.getClass().getName(), t);
+			}
 		}
 
 		return compatibleClasses;

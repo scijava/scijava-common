@@ -68,8 +68,13 @@ public interface TypedService<DT, PT extends TypedPlugin<DT>> extends
 	 */
 	default PT find(final DT data) {
 		for (final PluginInfo<PT> plugin : getPlugins()) {
-			final PT instance = pluginService().createInstance(plugin);
-			if (instance != null && instance.supports(data)) return instance;
+			try {
+				final PT instance = pluginService().createInstance(plugin);
+				if (instance != null && instance.supports(data)) return instance;
+			}
+			catch (final Throwable t) {
+				log().error("Malfunctioning plugin: " + plugin.getClassName(), t);
+			}
 		}
 		return null;
 	}
