@@ -32,78 +32,84 @@
 
 package org.scijava.io.handle;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.function.Supplier;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import org.scijava.Context;
+import org.scijava.io.handle.DataHandle.ByteOrder;
 import org.scijava.io.location.BytesLocation;
 import org.scijava.io.location.Location;
 
 public class WriteBufferDataHandleTest extends DataHandleTest {
 
-	private Location loc;
-
 	@Override
 	public Class<? extends DataHandle<?>> getExpectedHandleType() {
 		// not needed
-		return null;
-	}
-
-	@Override
-	@Test
-	public void testDataHandle() throws IOException {
-		final Context context = new Context(DataHandleService.class);
-		final DataHandleService dataHandleService = context.service(
-			DataHandleService.class);
-
-		loc = createLocation();
-		try (final DataHandle<Location> handle = //
-			dataHandleService.create(loc);
-				final DataHandle<Location> buffer = //
-					new WriteBufferDataHandle(handle))
-		{
-			checkWrites(buffer);
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Location createLocation() throws IOException {
-
-		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-		populateData(out);
-		return new BytesLocation(out.toByteArray());
+		// not needed
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected <L extends Location> void checkWrites(final DataHandle<L> handle)
-		throws IOException
-	{
-		final byte[] copy = BYTES.clone();
+	public DataHandle<? extends Location> createHandle() {
+		final DataHandle<Location> handle = //
+			dataHandleService.create(new BytesLocation(new byte[42]));
+		return dataHandleService.writeBuffer(handle);
+	}
 
-		// change the data
-		handle.seek(7);
-		final String splice = "there";
-		for (int i = 0; i < splice.length(); i++) {
-			final char c = splice.charAt(i);
-			handle.write(c);
-			copy[7 + i] = (byte) c;
-		}
-		handle.close();
+	@Test
+	@Ignore
+	@Override
+	public void testReading() throws IOException {
+		// nothing to do
+	}
 
-		final Context context = new Context(DataHandleService.class);
-		final DataHandleService dataHandleService = context.service(
-			DataHandleService.class);
+	@Test
+	@Ignore
+	@Override
+	public void checkSkip() throws IOException {
+		// nothing to do
+	}
 
-		try (final DataHandle<? extends Location> readHandle = //
-			dataHandleService.create(loc))
-		{
-			readHandle.seek(0);
-			for (int i = 0; i < copy.length; i++) {
-				assertEquals(msg(i), 0xff & copy[i], readHandle.read());
-			}
-		}
+	@Test(expected = IOException.class)
+	public void ensureNotReadable() throws IOException {
+		createHandle().read();
+	}
+
+	@Override
+	@Test
+	public void testWriting() throws IOException {
+		final ByteArrayOutputStream os = new ByteArrayOutputStream(42);
+		populateData(os);
+		final BytesLocation location = new BytesLocation(os.toByteArray());
+		final DataHandle<Location> handle = //
+			dataHandleService.create(location);
+		final DataHandle<Location> writeHandle = dataHandleService.writeBuffer(
+			handle);
+
+		checkBasicWrites(handle, writeHandle);
+	}
+
+	@Test
+	public void testEndiannessWriting() throws IOException {
+		final BytesLocation location = new BytesLocation(new byte[42]);
+		final Supplier<DataHandle<Location>> readHandleSupplier =
+			() -> dataHandleService.create(location);
+		final Supplier<DataHandle<Location>> writeHandleSupplier = () -> {
+			final DataHandle<Location> h = dataHandleService.create(location);
+			return dataHandleService.writeBuffer(h);
+		};
+
+		checkWriteEndianes(readHandleSupplier, writeHandleSupplier,
+			ByteOrder.LITTLE_ENDIAN);
+		checkWriteEndianes(readHandleSupplier, writeHandleSupplier,
+			ByteOrder.LITTLE_ENDIAN);
+		checkAdvancedStringWriting(readHandleSupplier, writeHandleSupplier);
 	}
 }
