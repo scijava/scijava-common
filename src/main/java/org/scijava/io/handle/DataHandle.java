@@ -563,7 +563,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	default String readLine() throws IOException {
 		// NB: Adapted from java.io.RandomAccessFile.readLine().
 
-		final StringBuffer input = new StringBuffer();
+		final StringBuilder input = new StringBuilder();
 		int c = -1;
 		boolean eol = false;
 
