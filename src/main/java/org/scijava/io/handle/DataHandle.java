@@ -250,6 +250,11 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/** Sets the native encoding of the stream. */
 	void setEncoding(String encoding);
 
+	/**
+	 * @return a 8 byte long buffer array used for type conversions
+	 */
+	byte[] conversionBuffer();
+
 	/** Reads a string of arbitrary length, terminated by a null char. */
 	default String readCString() throws IOException {
 		final String line = findString("\0");
@@ -515,7 +520,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default short readShort() throws IOException {
-		final byte[] buf = new byte[2];
+		final byte[] buf = conversionBuffer();
 		final int read = read(buf, 0, 2);
 		if (read < 2) throw new EOFException();
 		return Bytes.toShort(buf, isLittleEndian());
@@ -533,7 +538,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default int readInt() throws IOException {
-		final byte[] buf = new byte[4];
+		final byte[] buf = conversionBuffer();
 		final int read = read(buf, 0, 4);
 		if (read < 4) throw new EOFException();
 		return Bytes.toInt(buf, isLittleEndian());
@@ -541,9 +546,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default long readLong() throws IOException {
-		byte[] buf = new byte[8];
-		int read = read(buf, 0, 8);
-		if (read < 0) {
+		final byte[] buf = conversionBuffer();
+		final int read = read(buf, 0, 8);
+		if (read < 8) {
 			throw new EOFException();
 		}
 		return Bytes.toLong(buf, isLittleEndian());
@@ -614,32 +619,42 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default void writeShort(final int v) throws IOException {
-		write(Bytes.fromShort((short) v, isLittleEndian()));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 2, isLittleEndian());
+		write(buf, 0, 2);
 	}
 
 	@Override
 	default void writeChar(final int v) throws IOException {
-		write(Bytes.fromShort((short) v, isLittleEndian()));
+		writeShort(v);
 	}
 
 	@Override
 	default void writeInt(final int v) throws IOException {
-		write(Bytes.fromInt(v, isLittleEndian()));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 4, isLittleEndian());
+		write(buf, 0, 4);
 	}
 
 	@Override
 	default void writeLong(final long v) throws IOException {
-		write(Bytes.fromLong(v, isLittleEndian()));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 8, isLittleEndian());
+		write(buf, 0, 8);
 	}
 
 	@Override
 	default void writeFloat(final float v) throws IOException {
-		write(Bytes.fromFloat(v, isLittleEndian()));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(Float.floatToIntBits(v), buf, 0, 4, isLittleEndian());
+		write(buf, 0, 4);
 	}
 
 	@Override
 	default void writeDouble(final double v) throws IOException {
-		write(Bytes.fromDouble(v, isLittleEndian()));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(Double.doubleToLongBits(v), buf, 0, 8, isLittleEndian());
+		write(buf, 0, 8);
 	}
 
 	@Override
