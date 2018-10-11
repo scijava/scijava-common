@@ -34,25 +34,195 @@ package org.scijava.plugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.convert.AbstractConverter;
+import org.scijava.convert.ConvertService;
+import org.scijava.convert.Converter;
+import org.scijava.plugin.event.PluginsAddedEvent;
+import org.scijava.plugin.event.PluginsRemovedEvent;
 
 /**
  * Tests for the {@link SingletonService}
  *
  * @author Gabriel Einsdorf KNIME GmbH
+ * @author Stefan Helfrich KNIME GmbH
  */
 public class SingletonServiceTest {
 
+	private PluginService pluginService;
+	private ConvertService convertService;
+
+	@Before
+	public void setUp() {
+		final Context context = new Context(PluginService.class,
+			ConvertService.class);
+		pluginService = context.service(PluginService.class);
+		convertService = context.service(ConvertService.class);
+	}
+
+	@After
+	public void tearDown() {
+		pluginService.context().dispose();
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsAddedEvent}s originating from the {@link PluginService}.
+	 */
+	@Test
+	public void testSingletonServicePluginsAddedHandling() {
+		@SuppressWarnings("rawtypes")
+		final PluginInfo<Converter> converterInfo = new PluginInfo<>(
+			FoodConverter.class, Converter.class);
+
+		pluginService.addPlugin(converterInfo);
+
+		assertNotNull(pluginService.getPlugin(FoodConverter.class));
+		assertTrue(convertService.supports(new Apple() {}, Peach.class));
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsAddedEvent}s that replace an instance.
+	 */
+	@Test
+	public void testSingletonServicePluginsAddedHandlingDuplicates() {
+		@SuppressWarnings("rawtypes")
+		final PluginInfo<Converter> converterInfo = new PluginInfo<>(
+			FoodConverter.class, Converter.class);
+
+		pluginService.addPlugin(converterInfo);
+		final FoodConverter firstInstance = convertService.getInstance(
+			FoodConverter.class);
+
+		pluginService.addPlugin(converterInfo);
+		final FoodConverter secondInstance = convertService.getInstance(
+			FoodConverter.class);
+
+		assertNotSame(firstInstance, secondInstance);
+		assertTrue(convertService.supports(new Apple() {}, Peach.class));
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsRemovedEvent}s originating from the {@link PluginService}.
+	 */
+	@Test
+	public void testSingletonServiceManuallyAddedPluginsRemovedHandling() {
+		@SuppressWarnings("rawtypes")
+		final PluginInfo<Converter> converterInfo = new PluginInfo<>(
+			FoodConverter.class, Converter.class);
+
+		pluginService.addPlugin(converterInfo);
+
+		// De-register DummyStringConverter
+		pluginService.removePlugin(converterInfo);
+
+		assertNull(pluginService.getPlugin(FoodConverter.class));
+		assertFalse(convertService.supports(new Apple() {}, Peach.class));
+	}
+
+	/**
+	 * Tests that the {@link AbstractSingletonService} properly handles
+	 * {@link PluginsRemovedEvent}s originating from the {@link PluginService}.
+	 */
+	@Test
+	public void testSingletonServiceCompileTimePluginsRemovedHandling() {
+		final PluginInfo<SciJavaPlugin> pluginInfo = pluginService.getPlugin(
+			DiscoveredFoodConverter.class);
+
+		// De-register DiscoveredFoodConverter
+		pluginService.removePlugin(pluginInfo);
+
+		assertNull(pluginService.getPlugin(DiscoveredFoodConverter.class));
+		assertFalse(convertService.supports(new Orange() {}, Peach.class));
+	}
+
+	/**
+	 * Dummy {@link Converter}.
+	 */
+	public static class FoodConverter extends AbstractConverter<Apple, Peach> {
+
+		@Override
+		public <T> T convert(final Object src, final Class<T> dest) {
+			return null;
+		}
+
+		@Override
+		public Class<Peach> getOutputType() {
+			return Peach.class;
+		}
+
+		@Override
+		public Class<Apple> getInputType() {
+			return Apple.class;
+		}
+	}
+
+	/**
+	 * Dummy {@link Converter} that is added automatically.
+	 */
+	@Plugin(type = Converter.class)
+	public static class DiscoveredFoodConverter extends
+		AbstractConverter<Orange, Peach>
+	{
+
+		@Override
+		public <T> T convert(final Object src, final Class<T> dest) {
+			return null;
+		}
+
+		@Override
+		public Class<Peach> getOutputType() {
+			return Peach.class;
+		}
+
+		@Override
+		public Class<Orange> getInputType() {
+			return Orange.class;
+		}
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface Apple {
+		// NB
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface Orange {
+		// NB
+	}
+
+	/**
+	 * Type interface for conversion
+	 */
+	public interface Peach {
+		// NB
+	}
+
+	/**
+	 * Tests that plugins are added to and removed from the correct singleton
+	 * service
+	 */
 	@Test
 	public void testListenToRemove() {
 
-		final Context ctx = new Context(PluginService.class, DummySingletonService.class,
-				DummySingletonService2.class);
+		final Context ctx = new Context(PluginService.class,
+			DummySingletonService.class, DummySingletonService2.class);
 
 		final DummySingletonService dss = ctx.getService(
 			DummySingletonService.class);
