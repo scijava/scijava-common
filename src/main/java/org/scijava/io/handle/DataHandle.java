@@ -43,6 +43,7 @@ import java.util.Date;
 
 import org.scijava.io.location.Location;
 import org.scijava.plugin.WrapperPlugin;
+import org.scijava.util.Bytes;
 
 /**
  * A <em>data handle</em> is a plugin which provides both streaming and random
@@ -248,6 +249,11 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/** Sets the native encoding of the stream. */
 	void setEncoding(String encoding);
+
+	/**
+	 * @return a 8 byte long buffer array used for type conversions
+	 */
+	byte[] conversionBuffer();
 
 	/** Reads a string of arbitrary length, terminated by a null char. */
 	default String readCString() throws IOException {
@@ -514,18 +520,10 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default short readShort() throws IOException {
-		final int ch0;
-		final int ch1;
-		if (isBigEndian()) {
-			ch0 = read();
-			ch1 = read();
-		}
-		else {
-			ch1 = read();
-			ch0 = read();
-		}
-		if ((ch0 | ch1) < 0) throw new EOFException();
-		return (short) ((ch0 << 8) + (ch1 << 0));
+		final byte[] buf = conversionBuffer();
+		final int read = read(buf, 0, 2);
+		if (read < 2) throw new EOFException();
+		return Bytes.toShort(buf, isLittleEndian());
 	}
 
 	@Override
@@ -540,68 +538,20 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default int readInt() throws IOException {
-		final int ch0;
-		final int ch1;
-		final int ch2;
-		final int ch3;
-		if (isBigEndian()) {
-			ch0 = read();
-			ch1 = read();
-			ch2 = read();
-			ch3 = read();
-		}
-		else {
-			ch3 = read();
-			ch2 = read();
-			ch1 = read();
-			ch0 = read();
-		}
-		if ((ch0 | ch1 | ch2 | ch3) < 0) throw new EOFException();
-		return ((ch0 << 24) + (ch1 << 16) + (ch2 << 8) + (ch3 << 0));
+		final byte[] buf = conversionBuffer();
+		final int read = read(buf, 0, 4);
+		if (read < 4) throw new EOFException();
+		return Bytes.toInt(buf, isLittleEndian());
 	}
 
 	@Override
 	default long readLong() throws IOException {
-		final int ch0;
-		final int ch1;
-		final int ch2;
-		final int ch3;
-		final int ch4;
-		final int ch5;
-		final int ch6;
-		final int ch7;
-		if (isBigEndian()) {
-			ch0 = read();
-			ch1 = read();
-			ch2 = read();
-			ch3 = read();
-			ch4 = read();
-			ch5 = read();
-			ch6 = read();
-			ch7 = read();
-		}
-		else {
-			ch7 = read();
-			ch6 = read();
-			ch5 = read();
-			ch4 = read();
-			ch3 = read();
-			ch2 = read();
-			ch1 = read();
-			ch0 = read();
-		}
-		if ((ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7) < 0) {
+		final byte[] buf = conversionBuffer();
+		final int read = read(buf, 0, 8);
+		if (read < 8) {
 			throw new EOFException();
 		}
-		// TODO: Double check this inconsistent code.
-		return ((long) ch0 << 56) + //
-			((long) (ch1 & 255) << 48) + //
-			((long) (ch2 & 255) << 40) + //
-			((long) (ch3 & 255) << 32) + //
-			((long) (ch4 & 255) << 24) + //
-			((ch5 & 255) << 16) + //
-			((ch6 & 255) << 8) + //
-			((ch7 & 255) << 0);
+		return Bytes.toLong(buf, isLittleEndian());
 	}
 
 	@Override
@@ -618,7 +568,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	default String readLine() throws IOException {
 		// NB: Adapted from java.io.RandomAccessFile.readLine().
 
-		final StringBuffer input = new StringBuffer();
+		final StringBuilder input = new StringBuilder();
 		int c = -1;
 		boolean eol = false;
 
@@ -669,76 +619,42 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	@Override
 	default void writeShort(final int v) throws IOException {
-		if (isBigEndian()) {
-			write((v >>> 8) & 0xFF);
-			write((v >>> 0) & 0xFF);
-		}
-		else {
-			write((v >>> 0) & 0xFF);
-			write((v >>> 8) & 0xFF);
-		}
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 2, isLittleEndian());
+		write(buf, 0, 2);
 	}
 
 	@Override
 	default void writeChar(final int v) throws IOException {
-		if (isBigEndian()) {
-			write((v >>> 8) & 0xFF);
-			write((v >>> 0) & 0xFF);
-		}
-		else {
-			write((v >>> 0) & 0xFF);
-			write((v >>> 8) & 0xFF);
-		}
+		writeShort(v);
 	}
 
 	@Override
 	default void writeInt(final int v) throws IOException {
-		if (isBigEndian()) {
-			write((v >>> 24) & 0xFF);
-			write((v >>> 16) & 0xFF);
-			write((v >>> 8) & 0xFF);
-			write((v >>> 0) & 0xFF);
-		}
-		else {
-			write((v >>> 0) & 0xFF);
-			write((v >>> 8) & 0xFF);
-			write((v >>> 16) & 0xFF);
-			write((v >>> 24) & 0xFF);
-		}
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 4, isLittleEndian());
+		write(buf, 0, 4);
 	}
 
 	@Override
 	default void writeLong(final long v) throws IOException {
-		if (isBigEndian()) {
-			write((byte) (v >>> 56));
-			write((byte) (v >>> 48));
-			write((byte) (v >>> 40));
-			write((byte) (v >>> 32));
-			write((byte) (v >>> 24));
-			write((byte) (v >>> 16));
-			write((byte) (v >>> 8));
-			write((byte) (v >>> 0));
-		}
-		else {
-			write((byte) (v >>> 0));
-			write((byte) (v >>> 8));
-			write((byte) (v >>> 16));
-			write((byte) (v >>> 24));
-			write((byte) (v >>> 32));
-			write((byte) (v >>> 40));
-			write((byte) (v >>> 48));
-			write((byte) (v >>> 56));
-		}
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(v, buf, 0, 8, isLittleEndian());
+		write(buf, 0, 8);
 	}
 
 	@Override
 	default void writeFloat(final float v) throws IOException {
-		writeInt(Float.floatToIntBits(v));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(Float.floatToIntBits(v), buf, 0, 4, isLittleEndian());
+		write(buf, 0, 4);
 	}
 
 	@Override
 	default void writeDouble(final double v) throws IOException {
-		writeLong(Double.doubleToLongBits(v));
+		final byte[] buf = conversionBuffer();
+		Bytes.unpack(Double.doubleToLongBits(v), buf, 0, 8, isLittleEndian());
+		write(buf, 0, 8);
 	}
 
 	@Override
@@ -750,9 +666,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	default void writeChars(final String s) throws IOException {
 		final int len = s.length();
 		for (int i = 0; i < len; i++) {
-			final int v = s.charAt(i);
-			write((v >>> 8) & 0xFF);
-			write((v >>> 0) & 0xFF);
+			writeChar(s.charAt(i));
 		}
 	}
 

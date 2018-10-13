@@ -152,21 +152,6 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
-	public char readChar() throws IOException {
-		return reader().readChar();
-	}
-
-	@Override
-	public double readDouble() throws IOException {
-		return reader().readDouble();
-	}
-
-	@Override
-	public float readFloat() throws IOException {
-		return reader().readFloat();
-	}
-
-	@Override
 	public void readFully(final byte[] b) throws IOException {
 		reader().readFully(b);
 	}
@@ -179,33 +164,13 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
-	public int readInt() throws IOException {
-		return reader().readInt();
-	}
-
-	@Override
 	public String readLine() throws IOException {
 		return reader().readLine();
 	}
 
 	@Override
-	public long readLong() throws IOException {
-		return reader().readLong();
-	}
-
-	@Override
-	public short readShort() throws IOException {
-		return reader().readShort();
-	}
-
-	@Override
 	public int readUnsignedByte() throws IOException {
 		return reader().readUnsignedByte();
-	}
-
-	@Override
-	public int readUnsignedShort() throws IOException {
-		return reader().readUnsignedShort();
 	}
 
 	@Override
@@ -253,38 +218,8 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	}
 
 	@Override
-	public void writeChar(final int v) throws IOException {
-		writer().writeChar(v);
-	}
-
-	@Override
 	public void writeChars(final String s) throws IOException {
 		writer().writeChars(s);
-	}
-
-	@Override
-	public void writeDouble(final double v) throws IOException {
-		writer().writeDouble(v);
-	}
-
-	@Override
-	public void writeFloat(final float v) throws IOException {
-		writer().writeFloat(v);
-	}
-
-	@Override
-	public void writeInt(final int v) throws IOException {
-		writer().writeInt(v);
-	}
-
-	@Override
-	public void writeLong(final long v) throws IOException {
-		writer().writeLong(v);
-	}
-
-	@Override
-	public void writeShort(final int v) throws IOException {
-		writer().writeShort(v);
 	}
 
 	@Override

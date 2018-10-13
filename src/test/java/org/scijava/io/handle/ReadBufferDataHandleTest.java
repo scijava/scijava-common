@@ -42,9 +42,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.scijava.Context;
 import org.scijava.io.location.BytesLocation;
 import org.scijava.io.location.Location;
 
@@ -54,23 +53,6 @@ import org.scijava.io.location.Location;
  * @author Gabriel Einsdorf
  */
 public class ReadBufferDataHandleTest extends DataHandleTest {
-
-	private Context context;
-	private DataHandleService dataHandleService;
-
-	@Override
-	@Test
-	public void testDataHandle() throws IOException {
-
-		final Location loc = createLocation();
-		try (final DataHandle<Location> handle = //
-			dataHandleService.create(loc);
-				AbstractDataHandle<Location> bufferedHandle = //
-					new ReadBufferDataHandle(handle))
-		{
-			checkReads(bufferedHandle);
-		}
-	}
 
 	@Test
 	public void testSmallBuffer() throws IOException {
@@ -82,8 +64,30 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 					new ReadBufferDataHandle(handle, 5))
 		{
 			// check with small buffersize
-			checkReads(bufferedHandle);
+			checkBasicReadMethods(bufferedHandle);
+			checkEndiannessReading(bufferedHandle);
 		}
+	}
+
+	@Test(expected = IOException.class)
+	public void ensureNotWritable() throws IOException {
+		createHandle().write(1);
+	}
+
+	@Override
+	public DataHandle<? extends Location> createHandle() {
+		Location loc;
+		try {
+			loc = createLocation();
+		}
+		catch (final IOException exc) {
+			throw new RuntimeException(exc);
+		}
+		final DataHandle<Location> handle = //
+			dataHandleService.create(loc);
+		final AbstractDataHandle<Location> bufferedHandle = //
+			new ReadBufferDataHandle(handle, 5);
+		return bufferedHandle;
 	}
 
 	@Test
@@ -91,7 +95,7 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 
 		final int size = 10_00;
 		final byte[] bytes = new byte[size];
-		Random r = new Random(42);
+		final Random r = new Random(42);
 		r.nextBytes(bytes);
 
 		final Location loc = new BytesLocation(bytes);
@@ -104,34 +108,34 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 			final byte[] actual = new byte[size];
 
 			// create evenly sized slice ranges
-			int slices = 60;
-			int range = (size + slices - 1) / slices;
-			List<SimpleEntry<Integer, Integer>> ranges = new ArrayList<>();
+			final int slices = 60;
+			final int range = (size + slices - 1) / slices;
+			final List<SimpleEntry<Integer, Integer>> ranges = new ArrayList<>();
 			for (int i = 0; i < slices; i++) {
-				int start = range * i;
-				int end = range * (i + 1);
+				final int start = range * i;
+				final int end = range * (i + 1);
 				ranges.add(new SimpleEntry<>(start, end));
 			}
 			Collections.shuffle(ranges, r);
 
-			for (SimpleEntry<Integer, Integer> e : ranges) {
+			for (final SimpleEntry<Integer, Integer> e : ranges) {
 				bufferedHandle.seek(e.getKey());
 				bufferedHandle.read(actual, e.getKey(), e.getValue() - e.getKey());
 			}
-
 			assertArrayEquals(bytes, actual);
 		}
 	}
 
-	@Before
-	public void setup() {
-		context = new Context(DataHandleService.class);
-		dataHandleService = context.service(DataHandleService.class);
+	@Test
+	@Ignore
+	@Override
+	public void testWriting() throws IOException {
+		// nothing to do here
 	}
 
 	@Override
 	public Class<? extends DataHandle<?>> getExpectedHandleType() {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
