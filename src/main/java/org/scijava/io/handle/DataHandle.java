@@ -350,10 +350,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		final StringBuilder out = new StringBuilder();
 		final long startPos = offset();
 		long bytesDropped = 0;
-		final long inputLen = length();
-		long maxLen = inputLen - startPos;
-		final boolean tooLong = saveString && maxLen > MAX_SEARCH_SIZE;
-		if (tooLong) maxLen = MAX_SEARCH_SIZE;
+		final long maxLen = saveString ? MAX_SEARCH_SIZE : Long.MAX_VALUE;
 		boolean match = false;
 		int maxTermLen = 0;
 		for (final String term : terminators) {
@@ -366,7 +363,10 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 			new DataHandleInputStream<>(this), getEncoding());
 		final char[] buf = new char[blockSize];
 		long loc = 0;
-		while (loc < maxLen && offset() < length() - 1) {
+		int r = 0;
+
+		// NB: we need at least 2 bytes to read a char
+		while (loc < maxLen && ((r = in.read(buf, 0, blockSize)) > 1)) {
 			// if we're not saving the string, drop any old, unnecessary output
 			if (!saveString) {
 				final int outLen = out.length();
@@ -378,16 +378,12 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 					bytesDropped += dropIndex;
 				}
 			}
-
-			// read block from stream
-			final int r = in.read(buf, 0, blockSize);
-			if (r <= 0) throw new IOException("Cannot read from stream: " + r);
-
 			// append block to output
 			out.append(buf, 0, r);
 
 			// check output, returning smallest possible string
-			int min = Integer.MAX_VALUE, tagLen = 0;
+			int min = Integer.MAX_VALUE;
+			int tagLen = 0;
 			for (final String t : terminators) {
 				final int len = t.length();
 				final int start = (int) (loc - bytesDropped - len);
@@ -415,7 +411,9 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 		}
 
 		// no match
-		if (tooLong) throw new IOException("Maximum search length reached.");
+		if (loc > MAX_SEARCH_SIZE) {
+			throw new IOException("Maximum search length reached.");
+		}
 		return saveString ? out.toString() : null;
 	}
 
