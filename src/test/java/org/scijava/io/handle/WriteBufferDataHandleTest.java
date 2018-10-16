@@ -64,14 +64,12 @@ public class WriteBufferDataHandleTest extends DataHandleTest {
 	}
 
 	@Test
-	@Ignore
 	@Override
 	public void testReading() throws IOException {
 		// nothing to do
 	}
 
 	@Test
-	@Ignore
 	@Override
 	public void checkSkip() throws IOException {
 		// nothing to do

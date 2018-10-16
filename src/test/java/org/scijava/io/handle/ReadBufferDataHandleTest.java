@@ -64,7 +64,7 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 					new ReadBufferDataHandle(handle, 5))
 		{
 			// check with small buffersize
-			checkBasicReadMethods(bufferedHandle);
+			checkBasicReadMethods(bufferedHandle, true);
 			checkEndiannessReading(bufferedHandle);
 		}
 	}
@@ -127,7 +127,6 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 	}
 
 	@Test
-	@Ignore
 	@Override
 	public void testWriting() throws IOException {
 		// nothing to do here
