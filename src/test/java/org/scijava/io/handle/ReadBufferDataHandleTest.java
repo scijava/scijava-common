@@ -127,7 +127,6 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 	}
 
 	@Test
-	@Ignore
 	@Override
 	public void testWriting() throws IOException {
 		// nothing to do here
