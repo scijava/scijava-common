@@ -404,7 +404,9 @@ public abstract class DataHandleTest {
 		final Supplier<DataHandle<L>> writeHandleCreator) throws IOException
 	{
 		// test writeUTF() / readUTF()
-		final String utfTestString = "abcäúöäéëåáðßïœœø¶🤓🍕😋";
+		final String utfTestString = "abc\u00E4\u00FA\u00F6\u00E4" +
+			"\u00E9\u00EB\u00E5\u00E1\u00F0\u00DF\u00EF\u0153\u0153" +
+			"\u00F8\u00B6\uD83E\uDD13\uD83C\uDF55\uD83D\uDE0B";
 		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.writeUTF(utfTestString);
 		}
