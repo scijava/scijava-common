@@ -63,4 +63,17 @@ public class LocationServiceTest {
 		assertEquals(uri, loc.resolve(uri.toString()).getURI());
 	}
 
+	@Test
+	public void testFallBack() throws URISyntaxException {
+		final Context ctx = new Context(LocationService.class);
+		final LocationService loc = ctx.getService(LocationService.class);
+
+		final String uri = new File(".").getAbsolutePath();
+		final Location res = loc.resolve(uri);
+
+		assertTrue(res instanceof FileLocation);
+		FileLocation resFile = (FileLocation) res;
+		assertEquals(uri, resFile.getFile().getAbsolutePath());
+	}
+
 }

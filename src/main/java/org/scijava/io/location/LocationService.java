@@ -32,6 +32,7 @@
 
 package org.scijava.io.location;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -50,25 +51,29 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 
 	/**
 	 * Turns the given string into an {@link URI}, then resolves it to a
-	 * {@link Location}
-	 * 
-	 * @param uri the uri to resolve
+	 * {@link Location}.
+	 *
+	 * @param uriString the uri to resolve
 	 * @return the resolved {@link Location}
 	 * @throws URISyntaxException if the URI is malformed
 	 */
-	default Location resolve(final String uri) throws URISyntaxException {
-		return resolve(new URI(uri));
+	default Location resolve(final String uriString) throws URISyntaxException {
+		return resolve(new URI(uriString));
 	}
 
 	/**
-	 * Resolves the given {@link URI} to a location.
-	 * 
+	 * Resolves the given {@link URI} to a location. If the {@code scheme} part of
+	 * the URI is {@code null} the path component is resolved as a local file.
+	 *
 	 * @param uri the uri to resolve
 	 * @return the resolved {@link Location} or <code>null</code> if no resolver
 	 *         could be found.
 	 * @throws URISyntaxException if the URI is malformed
 	 */
-	default Location resolve(final URI uri) throws URISyntaxException {
+	default Location resolve(URI uri) throws URISyntaxException {
+		if (uri.getScheme() == null) { // Fallback for local files
+			uri = new  File(uri.getPath()).toURI();
+		}
 		final LocationResolver resolver = getResolver(uri);
 		return resolver != null ? resolver.resolve(uri) : null;
 	}
