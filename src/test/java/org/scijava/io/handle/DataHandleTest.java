@@ -113,7 +113,7 @@ public abstract class DataHandleTest {
 	@Test
 	public void testReading() throws IOException {
 		try (final DataHandle<? extends Location> handle = createHandle()) {
-			checkBasicReadMethods(handle);
+			checkBasicReadMethods(handle, true);
 			checkEndiannessReading(handle);
 		}
 	}
@@ -168,13 +168,14 @@ public abstract class DataHandleTest {
 	 * Checks basic byte reading methods.
 	 *
 	 * @param handle the handle to test
+	 * @param lengthKnown whether the length of the handle is know
 	 * @throws IOException
 	 */
 	public <L extends Location> void checkBasicReadMethods(
-		final DataHandle<L> handle) throws IOException
+		final DataHandle<L> handle, boolean lengthKnown) throws IOException
 	{
 		assertEquals(0, handle.offset());
-		assertEquals(BYTES.length, handle.length());
+		assertEquals(lengthKnown ? BYTES.length : -1, handle.length());
 		assertEquals("UTF-8", handle.getEncoding());
 
 		// test read()

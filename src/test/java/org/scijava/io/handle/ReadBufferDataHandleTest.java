@@ -64,7 +64,7 @@ public class ReadBufferDataHandleTest extends DataHandleTest {
 					new ReadBufferDataHandle(handle, 5))
 		{
 			// check with small buffersize
-			checkBasicReadMethods(bufferedHandle);
+			checkBasicReadMethods(bufferedHandle, true);
 			checkEndiannessReading(bufferedHandle);
 		}
 	}
