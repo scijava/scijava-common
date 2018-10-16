@@ -438,13 +438,10 @@ public abstract class DataHandleTest {
 	/**
 	 * Checks writing methods affected by endianness.
 	 *
-	 * @param readHandleCreator a supplier that creates properly initialized
-	 *          handles for reading, all created handles must point to the same
+	 * @param handleCreator a supplier that creates properly initialized
+	 *          handles. All created handles must point to the same
 	 *          location!
-	 * @param writeHandleCreator a supplier that creates properly initialized
-	 *          handles for reading, all created handles must point to the same
-	 *          location!
-	 * @throws IOException
+	 * @param order Byte order to use when writing to the handles.
 	 */
 	public <L extends Location> void checkWriteEndianes(
 		final Supplier<DataHandle<L>> handleCreator, final ByteOrder order)
@@ -453,6 +450,18 @@ public abstract class DataHandleTest {
 		checkWriteEndianes(handleCreator, handleCreator, order);
 	}
 
+	/**
+	 * Checks writing methods affected by endianness.
+	 *
+	 * @param readHandleCreator a supplier that creates properly initialized
+	 *          handles for reading. All created handles must point to the same
+	 *          location!
+	 * @param writeHandleCreator a supplier that creates properly initialized
+	 *          handles for writing. All created handles must point to the same
+	 *          location!
+	 * @param order Byte order to use when writing to the handles.
+	 * @throws IOException
+	 */
 	public <L extends Location> void checkWriteEndianes(
 		final Supplier<DataHandle<L>> readHandleCreator,
 		final Supplier<DataHandle<L>> writeHandleCreator, final ByteOrder order)
