@@ -71,7 +71,7 @@ public abstract class DataHandleTest {
 
 	@Test
 	public void checkSkip() throws IOException {
-		try (DataHandle<? extends Location> handle = createHandle()) {
+		try (final DataHandle<? extends Location> handle = createHandle()) {
 			handle.seek(0);
 			handle.skip(10);
 			assertEquals(10, handle.offset());
@@ -83,7 +83,7 @@ public abstract class DataHandleTest {
 	@Test
 	public void testEndianesSettings() throws IOException {
 
-		try (DataHandle<? extends Location> handle = createHandle()) {
+		try (final DataHandle<? extends Location> handle = createHandle()) {
 			final ByteOrder original = handle.getOrder();
 
 			handle.setOrder(ByteOrder.BIG_ENDIAN);
@@ -120,7 +120,7 @@ public abstract class DataHandleTest {
 
 	@Test
 	public void testWriting() throws IOException {
-		try (DataHandle<? extends Location> handle = createHandle()) {
+		try (final DataHandle<? extends Location> handle = createHandle()) {
 			checkBasicWriteMethods(handle);
 			final Location loc = createLocation();
 			checkWriteEndianes(() -> dataHandleService.create(loc),
@@ -405,28 +405,28 @@ public abstract class DataHandleTest {
 	{
 		// test writeUTF() / readUTF()
 		final String utfTestString = "abcäúöäéëåáðßïœœø¶🤓🍕😋";
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.writeUTF(utfTestString);
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			assertEquals(utfTestString, readHandle.readUTF());
 		}
 
 		// test writeLine()
 		final String testString = "The quick brown fox jumps over the lazy dog.";
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.writeLine(testString);
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			assertEquals(testString, readHandle.readLine());
 		}
 
 		// test writeChars / findString
 		final String testString2 = "The five boxing wizards jump quickly.";
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.writeChars(testString2);
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			for (int i = 0; i < testString2.length(); i++) {
 				assertEquals(testString2.charAt(i), readHandle.readChar());
 			}
@@ -459,14 +459,14 @@ public abstract class DataHandleTest {
 		final boolean little = order == ByteOrder.LITTLE_ENDIAN;
 
 		// test writeChar()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 2; i += 2) {
 				writeHandle.writeChar(Bytes.toInt(BYTES, i, 2, little));
 			}
 		}
 
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 2; i += 2) {
 				assertEquals(msg(i), Bytes.toShort(BYTES, i, little), readHandle
@@ -475,14 +475,14 @@ public abstract class DataHandleTest {
 		}
 
 		// test writeShort()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 2; i += 2) {
 				writeHandle.writeShort(Bytes.toShort(BYTES, i, little));
 			}
 		}
 
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 2; i += 2) {
 				assertEquals(msg(i), Bytes.toShort(BYTES, i, little), readHandle
@@ -491,13 +491,13 @@ public abstract class DataHandleTest {
 		}
 
 		// test writeInt()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 4; i += 4) {
 				writeHandle.writeInt(Bytes.toInt(BYTES, i, little));
 			}
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 4; i += 4) {
 				assertEquals(msg(i), Bytes.toInt(BYTES, i, little), readHandle
@@ -506,13 +506,13 @@ public abstract class DataHandleTest {
 		}
 
 		// test writeLong()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 8; i += 8) {
 				writeHandle.writeLong(Bytes.toLong(BYTES, i, little));
 			}
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 8; i += 8) {
 				assertEquals(msg(i), Bytes.toLong(BYTES, i, little), readHandle
@@ -521,13 +521,13 @@ public abstract class DataHandleTest {
 		}
 
 		// test writeFloat()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 4; i += 4) {
 				writeHandle.writeFloat(Bytes.toFloat(BYTES, i, little));
 			}
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 4; i += 4) {
 				assertEquals(msg(i), Bytes.toFloat(BYTES, i, little), readHandle
@@ -536,13 +536,13 @@ public abstract class DataHandleTest {
 		}
 
 		// test writeDouble()
-		try (DataHandle<L> writeHandle = writeHandleCreator.get()) {
+		try (final DataHandle<L> writeHandle = writeHandleCreator.get()) {
 			writeHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 8; i += 8) {
 				writeHandle.writeDouble(Bytes.toDouble(BYTES, i, little));
 			}
 		}
-		try (DataHandle<L> readHandle = readHandleCreator.get()) {
+		try (final DataHandle<L> readHandle = readHandleCreator.get()) {
 			readHandle.setOrder(order);
 			for (int i = 0; i < BYTES.length / 8; i += 8) {
 				assertEquals(msg(i), Bytes.toDouble(BYTES, i, little), readHandle
