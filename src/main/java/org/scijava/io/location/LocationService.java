@@ -58,7 +58,15 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 	 * @throws URISyntaxException if the URI is malformed
 	 */
 	default Location resolve(final String uriString) throws URISyntaxException {
-		return resolve(new URI(uriString));
+	    try {
+	        return resolve(new URI(uriString));
+	    }
+	    catch (final URISyntaxException exc) {
+	        // In general, filenames are not valid URI strings.
+	        // Particularly on Windows, there are backslashes, which are invalid in URIs.
+	        // So we explicitly turn this string into a file if an error happens above.
+	        return resolve(new File(uriString).toURI());
+	    }
 	}
 
 	/**
