@@ -50,7 +50,6 @@ import org.scijava.Context;
 import org.scijava.Gateway;
 import org.scijava.InstantiableException;
 import org.scijava.MenuPath;
-import org.scijava.Priority;
 import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
 import org.scijava.log.LogService;
