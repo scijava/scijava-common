@@ -324,6 +324,9 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	void addAlias(String alias, Class<?> type);
 
 	/** TODO */
+	Map<String, Class<?>> getAliases();
+
+	/** TODO */
 	Class<?> lookupClass(String typeName) throws ScriptException;
 
 	// -- PTService methods --

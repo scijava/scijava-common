@@ -196,6 +196,11 @@ public class DefaultScriptService extends
 	}
 
 	@Override
+	public Map<String, Class<?>> getAliases() {
+		return Collections.unmodifiableMap(aliasMap());
+	}
+
+	@Override
 	public synchronized Class<?> lookupClass(final String alias)
 		throws ScriptException
 	{
