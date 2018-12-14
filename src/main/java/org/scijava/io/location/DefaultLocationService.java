@@ -33,8 +33,6 @@
 package org.scijava.io.location;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Plugin;
@@ -50,11 +48,5 @@ public class DefaultLocationService extends
 	AbstractHandlerService<URI, LocationResolver> implements
 	LocationService
 {
-
-	private final Map<String, LocationResolver> resolvers = new HashMap<>();
-
-	@Override
-	public LocationResolver getResolver(final URI uri) {
-		return resolvers.computeIfAbsent(uri.getScheme(), u -> getHandler(uri));
-	}
+	// NB: No implementation needed.
 }

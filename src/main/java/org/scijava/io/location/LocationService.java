@@ -86,16 +86,11 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 		return resolver != null ? resolver.resolve(uri) : null;
 	}
 
-	/**
-	 * Returns a {@link LocationResolver} capable of resolving URL like the one
-	 * provided to this method. Allows faster repeated resolving of similar URIs
-	 * without going through this service.
-	 * 
-	 * @param uri the uri
-	 * @return the {@link LocationResolver} for this uri type, or
-	 *         <code>null</code> if no resolver could be found.
-	 */
-	LocationResolver getResolver(URI uri);
+	/** @deprecated Use {@link #getHandler(URI)} instead. */
+	@Deprecated
+	default LocationResolver getResolver(URI uri) {
+		return getHandler(uri);
+	}
 
 	// -- PTService methods --
 

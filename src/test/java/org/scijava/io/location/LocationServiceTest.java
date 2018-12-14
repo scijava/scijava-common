@@ -55,7 +55,7 @@ public class LocationServiceTest {
 		final LocationService loc = ctx.getService(LocationService.class);
 
 		final URI uri = new File(new File(".").getAbsolutePath()).toURI();
-		final LocationResolver res = loc.getResolver(uri);
+		final LocationResolver res = loc.getHandler(uri);
 
 		assertTrue(res instanceof FileLocationResolver);
 		assertEquals(uri, res.resolve(uri).getURI());
