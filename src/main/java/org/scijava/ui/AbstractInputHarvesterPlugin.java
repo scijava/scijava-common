@@ -34,6 +34,7 @@ package org.scijava.ui;
 
 import org.scijava.module.Module;
 import org.scijava.module.ModuleException;
+import org.scijava.module.ModuleItem;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.plugin.Parameter;
 import org.scijava.widget.AbstractInputHarvester;
@@ -71,6 +72,23 @@ public abstract class AbstractInputHarvesterPlugin<P, W> extends
 
 		// do not harvest if the UI is inactive!
 		if (!uiService.isVisible(getUI())) return;
+		
+		// It is intuitive to put more checks here
+		// I.e.: iterate the module, is everything resolved?
+		// But... edge cases
+		// 1. unresolved input where no widget is available
+		//   ultimately do not want to show the thing anyway.
+		//   this is covered later in harvest(Module)
+		// 2. ...
+		// I guess we should think about this more later.
+
+		boolean somethingToHarvest = false;
+		for (final ModuleItem<?> item : module.getInfo().inputs()) {
+			if (!module.isInputResolved(item.getName()) && !isMessage(item)) {
+				//
+			}
+			
+		}
 
 		// proceed with input harvesting
 		try {

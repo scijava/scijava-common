@@ -68,6 +68,8 @@ public interface InputHarvester<P, W> {
 	default void harvest(final Module module) throws ModuleException {
 		final InputPanel<P, W> inputPanel = createInputPanel();
 		buildPanel(inputPanel, module);
+
+		// This check is stilll needed I think.. right?
 		if (!inputPanel.hasWidgets()) return; // no inputs left to harvest
 
 		final boolean ok = harvestInputs(inputPanel, module);
