@@ -37,7 +37,6 @@ import java.io.IOException;
 import org.scijava.io.AbstractIOPlugin;
 import org.scijava.io.IOPlugin;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
 import org.scijava.script.ScriptService;
 
 /**
@@ -46,7 +45,6 @@ import org.scijava.script.ScriptService;
  * @author Curtis Rueden
  * @see ScriptService
  */
-@Plugin(type = IOPlugin.class)
 public class ScriptIOPlugin extends AbstractIOPlugin<String> {
 
 	@Parameter(required = false)
