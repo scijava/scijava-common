@@ -86,7 +86,7 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 		return resolver != null ? resolver.resolve(uri) : null;
 	}
 
-	/** @deprecated Use {@link #getHandler(URI)} instead. */
+	/** @deprecated Use {@link #getHandler} instead. */
 	@Deprecated
 	default LocationResolver getResolver(URI uri) {
 		return getHandler(uri);
