@@ -50,7 +50,7 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 {
 
 	/**
-	 * Turns the given string into an {@link URI}, then resolves it to a
+	 * Turns the given string into a {@link URI}, then resolves it to a
 	 * {@link Location}.
 	 *
 	 * @param uriString the uri to resolve
@@ -80,7 +80,7 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 	 */
 	default Location resolve(URI uri) throws URISyntaxException {
 		if (uri.getScheme() == null) { // Fallback for local files
-			uri = new  File(uri.getPath()).toURI();
+			uri = new File(uri.getPath()).toURI();
 		}
 		final LocationResolver resolver = getResolver(uri);
 		return resolver != null ? resolver.resolve(uri) : null;
