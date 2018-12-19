@@ -257,13 +257,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 			final File pomFile = new File(baseDir, "pom.xml");
 			return new POM(pomFile);
 		}
-		catch (final IOException e) {
-			return null;
-		}
-		catch (final ParserConfigurationException e) {
-			return null;
-		}
-		catch (final SAXException e) {
+		catch (final IOException | ParserConfigurationException | SAXException e) {
 			return null;
 		}
 	}
