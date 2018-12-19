@@ -1,20 +1,24 @@
 
 package org.scijava.io.handle;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-
-import org.scijava.io.location.DummyLocation;
-import org.scijava.io.location.Location;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.scijava.io.location.DummyLocation;
+import org.scijava.io.location.Location;
 
 public class ReadBufferDataHandleMockTest {
 
@@ -59,34 +63,40 @@ public class ReadBufferDataHandleMockTest {
 
 		// set length of stubbed handle
 		when(mock.length()).thenReturn(30l);
+		byte[] value = new byte[10];
+		when(mock.read(aryEq(value), eq(0), eq(10))).thenReturn(10);
+		when(mock.read(aryEq(value), anyInt(), anyInt())).thenReturn(10);
 
 		// read the first byte
 		buf.read();
 		verify(mock, times(0)).seek(0);
 		// buffer should read a whole page
-		verify(mock).read(aryEq(byteArrayLen10));
+		verify(mock).read(aryEq(byteArrayLen10), eq(0), eq(10));
 
 		buf.seek(0);
 		// ensure seek was not called again
 		verify(mock, times(0)).seek(0);
 
+		when(mock.offset()).thenReturn(10l);
+
 		// read over the edge of the current page
 		buf.read(new byte[12]);
 		verify(mock, times(0)).seek(anyLong());
-		verify(mock, times(2)).read(aryEq(byteArrayLen10));
+		verify(mock, times(2)).read(aryEq(byteArrayLen10), eq(0), eq(10));
 
 		assertEquals(12, buf.offset());
 
 		// read the last page
+		when(mock.offset()).thenReturn(20l);
 		buf.read(new byte[12]);
 		verify(mock, times(0)).seek(anyLong());
-		verify(mock, times(3)).read(aryEq(byteArrayLen10));
+		verify(mock, times(3)).read(aryEq(byteArrayLen10), eq(0), eq(10));
 
 		// first page should no longer be buffered, must be reread in
 		buf.seek(0);
 		buf.read();
 		verify(mock).seek(0);
-		verify(mock, times(4)).read(aryEq(byteArrayLen10));
+		verify(mock, times(4)).read(aryEq(byteArrayLen10), eq(0), eq(10));
 	}
 
 	/**
@@ -99,11 +109,12 @@ public class ReadBufferDataHandleMockTest {
 
 		// set length of stubbed handle
 		when(mock.length()).thenReturn(40l);
+		when(mock.read(any(), anyInt(), anyInt())).thenReturn(10);
 
 		// read the first byte
 		buf.read();
 		verify(mock, times(0)).seek(anyLong());
-		verify(mock).read(aryEq(byteArrayLen10));
+		verify(mock, times(1)).read(aryEq(byteArrayLen10), eq(0), eq(10));
 
 		// skip the second page
 		buf.seek(30l);
@@ -111,7 +122,8 @@ public class ReadBufferDataHandleMockTest {
 
 		// read the third page
 		verify(mock).seek(30l);
-		verify(mock, times(2)).read(aryEq(byteArrayLen10));
+		verify(mock, times(2)).read(aryEq(byteArrayLen10), eq(0), eq(10));
+		when(mock.offset()).thenReturn(40l);
 
 		// go back to already buffered page
 		buf.seek(0l);
@@ -123,6 +135,6 @@ public class ReadBufferDataHandleMockTest {
 		buf.seek(35);
 		buf.read();
 		verify(mock, times(1)).seek(anyLong());
-		verify(mock, times(2)).read(any());
+		verify(mock, times(2)).read(any(), anyInt(), anyInt());
 	}
 }

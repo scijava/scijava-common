@@ -167,7 +167,17 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 		if (handle().offset() != startOfPage) {
 			handle().seek(startOfPage);
 		}
-		handle().read(page);
+
+		// NB: we read repeatedly until the page is full or EOF is reached
+		// handle().read(..) might read less bytes than requested
+		int off = 0;
+		while (off < pageSize) {
+			final int read = handle().read(page, off, pageSize - off);
+			if (read == -1) { // EOF
+				break;
+			}
+			off += read;
+		}
 		return page;
 	}
 
