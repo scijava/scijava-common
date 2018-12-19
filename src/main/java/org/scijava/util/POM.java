@@ -222,6 +222,8 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	 * @param c The class to use as a base when searching for a pom.xml.
 	 * @param groupId The Maven groupId of the desired POM.
 	 * @param artifactId The Maven artifactId of the desired POM.
+	 * @return {@link POM} object representing the discovered POM, or null if no
+	 *         POM could be found.
 	 */
 	public static POM getPOM(final Class<?> c, final String groupId,
 		final String artifactId)
