@@ -232,11 +232,24 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 				location.toString().endsWith(".jar"))
 			{
 				// look for pom.xml in JAR's META-INF/maven subdirectory
-				final String pomPath =
-					"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-				final URL pomURL =
-					new URL("jar:" + location.toString() + "!/" + pomPath);
-				return new POM(pomURL);
+				if (groupId == null || artifactId == null) {
+					// groupId and/or artifactId is unknown; scan for the POM
+					final URL pomBase = new URL("jar:" + //
+						location.toString() + "!/META-INF/maven");
+					for (final URL url : FileUtils.listContents(pomBase, true, true)) {
+						if (url.toExternalForm().endsWith("/pom.xml")) {
+							return new POM(url);
+						}
+					}
+				}
+				else {
+					// known groupId and artifactId; grab it directly
+					final String pomPath =
+						"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
+					final URL pomURL =
+						new URL("jar:" + location.toString() + "!/" + pomPath);
+					return new POM(pomURL);
+				}
 			}
 			// look for the POM in the class's base directory
 			final File file = FileUtils.urlToFile(location);
