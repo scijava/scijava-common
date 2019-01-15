@@ -91,7 +91,7 @@ public final class GenericUtils {
 		return Types.raws(Types.fieldType(field, type));
 	}
 
-	/** @deprecated Use {@link Types#returnType} instead. */
+	/** @deprecated Use {@link Types#methodReturnType} instead. */
 	@Deprecated
 	public static Type getMethodReturnType(final Method method,
 		final Class<?> type)
@@ -100,7 +100,7 @@ public final class GenericUtils {
 	}
 
 	/**
-	 * @deprecated Use {@link Types#returnType} and {@link Types#raws} instead.
+	 * @deprecated Use {@link Types#methodReturnType} and {@link Types#raws} instead.
 	 */
 	@Deprecated
 	public static List<Class<?>> getMethodReturnClasses(final Method method,

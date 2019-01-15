@@ -87,8 +87,12 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	@Override
 	public int read(final byte[] b, final int off, int len) throws IOException {
+		if(len == 0) return 0;
 		if (offset + len > length()) {
 			len = (int) (length() - offset);
+		}
+		if(len == 0) { // EOF
+			return -1;
 		}
 		bytes().getBytes(offset, b, off, len);
 		offset += len;

@@ -38,6 +38,7 @@ import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.module.ModuleInfo;
+import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
@@ -95,7 +96,7 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = ScriptProcessor.class)
+@Plugin(type = ScriptProcessor.class, priority=Priority.HIGH)
 public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 
 	public ScriptDirectiveScriptProcessor() {
@@ -104,6 +105,9 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 
 	@Parameter
 	private LogService log;
+	
+	@Parameter
+	private ModuleService moduleService;
 
 	// -- Internal DirectiveScriptProcessor methods --
 
@@ -114,6 +118,7 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 		for (final String k : attrs.keySet()) {
 			assignAttribute(k == null ? "name" : k, attrs.get(k));
 		}
+		moduleService.addModule(info()); // TODO how to handle duplicate names?
 		return "";
 	}
 

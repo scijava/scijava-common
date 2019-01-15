@@ -220,8 +220,21 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	 * Gets the Maven POM associated with the given class.
 	 * 
 	 * @param c The class to use as a base when searching for a pom.xml.
+	 * @return {@link POM} object representing the discovered POM, or null if no
+	 *         POM could be found.
+	 */
+	public static POM getPOM(final Class<?> c) {
+		return getPOM(c, null, null);
+	}
+
+	/**
+	 * Gets the Maven POM associated with the given class.
+	 * 
+	 * @param c The class to use as a base when searching for a pom.xml.
 	 * @param groupId The Maven groupId of the desired POM.
 	 * @param artifactId The Maven artifactId of the desired POM.
+	 * @return {@link POM} object representing the discovered POM, or null if no
+	 *         POM could be found.
 	 */
 	public static POM getPOM(final Class<?> c, final String groupId,
 		final String artifactId)
@@ -232,11 +245,24 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 				location.toString().endsWith(".jar"))
 			{
 				// look for pom.xml in JAR's META-INF/maven subdirectory
-				final String pomPath =
-					"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-				final URL pomURL =
-					new URL("jar:" + location.toString() + "!/" + pomPath);
-				return new POM(pomURL);
+				if (groupId == null || artifactId == null) {
+					// groupId and/or artifactId is unknown; scan for the POM
+					final URL pomBase = new URL("jar:" + //
+						location.toString() + "!/META-INF/maven");
+					for (final URL url : FileUtils.listContents(pomBase, true, true)) {
+						if (url.toExternalForm().endsWith("/pom.xml")) {
+							return new POM(url);
+						}
+					}
+				}
+				else {
+					// known groupId and artifactId; grab it directly
+					final String pomPath =
+						"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
+					final URL pomURL =
+						new URL("jar:" + location.toString() + "!/" + pomPath);
+					return new POM(pomURL);
+				}
 			}
 			// look for the POM in the class's base directory
 			final File file = FileUtils.urlToFile(location);
@@ -244,13 +270,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 			final File pomFile = new File(baseDir, "pom.xml");
 			return new POM(pomFile);
 		}
-		catch (final IOException e) {
-			return null;
-		}
-		catch (final ParserConfigurationException e) {
-			return null;
-		}
-		catch (final SAXException e) {
+		catch (final IOException | ParserConfigurationException | SAXException e) {
 			return null;
 		}
 	}

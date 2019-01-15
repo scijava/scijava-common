@@ -87,7 +87,6 @@ public class ContextCreationTest {
 	public void testFull() {
 		final Class<?>[] expected =
 			{ org.scijava.event.DefaultEventService.class,
-				org.scijava.script.DefaultScriptService.class,
 				org.scijava.app.DefaultAppService.class,
 				org.scijava.app.DefaultStatusService.class,
 				org.scijava.command.DefaultCommandService.class,
@@ -113,7 +112,9 @@ public class ContextCreationTest {
 				org.scijava.prefs.DefaultPrefService.class,
 				org.scijava.run.DefaultRunService.class,
 				org.scijava.script.DefaultScriptHeaderService.class,
+				org.scijava.script.DefaultScriptService.class,
 				org.scijava.script.process.DefaultScriptProcessorService.class,
+				org.scijava.startup.DefaultStartupService.class,
 				org.scijava.task.DefaultTaskService.class,
 				org.scijava.text.DefaultTextService.class,
 				org.scijava.thread.DefaultThreadService.class,

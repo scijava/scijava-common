@@ -104,7 +104,8 @@ public final class AppUtils {
 		// repository cache (~/.m2/repository), so the corePath will be null.
 		// However, the classes of the launching project will be located in
 		// target/classes, so we search up the tree from one of those.
-		final File appPath = AppUtils.getBaseDirectory(AppUtils.getMainClass());
+		final Class<?> mc = AppUtils.getMainClass();
+		final File appPath = mc == null ? null : AppUtils.getBaseDirectory(mc);
 		if (appPath != null) return appPath;
 
 		// last resort: use current working directory

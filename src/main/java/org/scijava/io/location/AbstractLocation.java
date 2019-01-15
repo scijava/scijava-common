@@ -32,6 +32,7 @@
 
 package org.scijava.io.location;
 
+import java.net.URI;
 import java.util.Objects;
 
 /**
@@ -58,4 +59,13 @@ public abstract class AbstractLocation implements Location {
 		return Objects.equals(getURI(), other.getURI());
 	}
 
+	@Override
+	public String toString() {
+		final String prefix = getClass().getSimpleName() + ":";
+		final URI uri = getURI();
+		if (uri != null) return prefix + uri;
+		final String name = getName();
+		if (name != null) return prefix + name;
+		return prefix + defaultName();
+	}
 }

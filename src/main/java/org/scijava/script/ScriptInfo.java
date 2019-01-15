@@ -40,6 +40,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,7 +133,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	public ScriptInfo(final Context context, final URL url, final String path)
 		throws IOException
 	{
-		this(context, url, path, new InputStreamReader(url.openStream()));
+		this(context, url, path, new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
 	}
 
 	/**

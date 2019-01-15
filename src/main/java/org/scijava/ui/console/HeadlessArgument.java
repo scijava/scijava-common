@@ -70,11 +70,11 @@ public class HeadlessArgument extends AbstractConsoleArgument {
 
 		uiService.setHeadless(true);
 	}
+
 	// -- Typed methods --
 
 	@Override
 	public boolean supports(final LinkedList<String> args) {
 		return uiService != null && super.supports(args);
 	}
-
 }

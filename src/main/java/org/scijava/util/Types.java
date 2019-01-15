@@ -77,6 +77,7 @@ import java.util.Set;
  * Utility class for working with generic types, fields and methods.
  * <p>
  * Logic and inspiration were drawn from the following excellent libraries:
+ * </p>
  * <ul>
  * <li>Google Guava's {@code com.google.common.reflect} package.</li>
  * <li>Apache Commons Lang 3's {@code org.apache.commons.lang3.reflect} package.
@@ -84,7 +85,6 @@ import java.util.Set;
  * <li><a href="https://github.com/coekarts/gentyref">GenTyRef</a> (Generic Type
  * Reflector), a library for runtime generic type introspection.</li>
  * </ul>
- * </p>
  *
  * @author Curtis Rueden
  * @author Gabe Selzer
@@ -207,8 +207,8 @@ public final class Types {
 
 		// load the class!
 		try {
-			final ClassLoader cl = classLoader == null ? Thread.currentThread()
-				.getContextClassLoader() : classLoader;
+			final ClassLoader cl = classLoader == null ? //
+				Thread.currentThread().getContextClassLoader() : classLoader;
 			return cl.loadClass(className);
 		}
 		catch (final Throwable t) {
@@ -418,6 +418,7 @@ public final class Types {
 	 * Returns the non-primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>boolean.class becomes Boolean.class</li>
 	 * <li>byte.class becomes Byte.class</li>
@@ -429,6 +430,7 @@ public final class Types {
 	 * <li>short.class becomes Short.class</li>
 	 * <li>void.class becomes Void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -453,6 +455,7 @@ public final class Types {
 	 * Returns the primitive {@link Class} closest to the given type.
 	 * <p>
 	 * Specifically, the following type conversions are done:
+	 * </p>
 	 * <ul>
 	 * <li>Boolean.class becomes boolean.class</li>
 	 * <li>Byte.class becomes byte.class</li>
@@ -464,6 +467,7 @@ public final class Types {
 	 * <li>Short.class becomes short.class</li>
 	 * <li>Void.class becomes void.class</li>
 	 * </ul>
+	 * <p>
 	 * All other types are unchanged.
 	 * </p>
 	 */
@@ -3072,6 +3076,9 @@ public final class Types {
 			if (type instanceof WildcardType) {
 				return wildcardTypeToString((WildcardType) type, done);
 			}
+			if (type instanceof CaptureType) {
+				return captureTypeToString((CaptureType) type, done);
+			}
 			if (type instanceof TypeVariable) {
 				return typeVariableToString((TypeVariable<?>) type, done);
 			}
@@ -3245,18 +3252,25 @@ public final class Types {
 			final StringBuilder buf = new StringBuilder().append('?');
 			if (done.contains(w)) return buf.toString();
 			done.add(w);
-			final Type[] lowerBounds = w.getLowerBounds();
-			final Type[] upperBounds = w.getUpperBounds();
-			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
-				lowerBounds[0] != null)
-			{
-				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
-			}
-			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
-				!Object.class.equals(upperBounds[0]))
-			{
-				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
-			}
+			appendTypeBounds(buf, w.getLowerBounds(), w.getUpperBounds(), done);
+			return buf.toString();
+		}
+
+		/**
+		 * Format a {@link CaptureType} as a {@link String}.
+		 *
+		 * @param t {@code CaptureType} to format
+		 * @param done list of already-encountered types
+		 * @return String
+		 * @since 3.2
+		 */
+		private static String captureTypeToString(final CaptureType t,
+			final Set<Type> done)
+		{
+			final StringBuilder buf = new StringBuilder().append("capture of ?");
+			if (done.contains(t)) return buf.toString();
+			done.add(t);
+			appendTypeBounds(buf, t.getLowerBounds(), t.getUpperBounds(), done);
 			return buf.toString();
 		}
 
@@ -3269,6 +3283,21 @@ public final class Types {
 		 */
 		private static String genericArrayTypeToString(final GenericArrayType g) {
 			return String.format("%s[]", toString(g.getGenericComponentType()));
+		}
+
+		private static void appendTypeBounds(final StringBuilder buf,
+			final Type[] lowerBounds, final Type[] upperBounds, final Set<Type> done)
+		{
+			if (lowerBounds.length > 1 || lowerBounds.length == 1 &&
+				lowerBounds[0] != null)
+			{
+				appendAllTo(buf.append(" super "), " & ", done, lowerBounds);
+			}
+			else if (upperBounds.length > 1 || upperBounds.length == 1 &&
+				!Object.class.equals(upperBounds[0]))
+			{
+				appendAllTo(buf.append(" extends "), " & ", done, upperBounds);
+			}
 		}
 
 		/**

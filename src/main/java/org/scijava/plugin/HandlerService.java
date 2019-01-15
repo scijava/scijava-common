@@ -57,7 +57,12 @@ public interface HandlerService<DT, PT extends HandlerPlugin<DT>> extends
 	 */
 	default PT getHandler(final DT data) {
 		for (final PT handler : getInstances()) {
-			if (handler.supports(data)) return handler;
+			try {
+				if (handler.supports(data)) return handler;
+			}
+			catch (final Throwable t) {
+				log().error("Malfunctioning plugin: " + handler.getClass().getName(), t);
+			}
 		}
 		return null;
 	}

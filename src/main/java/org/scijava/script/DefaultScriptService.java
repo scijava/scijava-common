@@ -50,7 +50,6 @@ import org.scijava.Context;
 import org.scijava.Gateway;
 import org.scijava.InstantiableException;
 import org.scijava.MenuPath;
-import org.scijava.Priority;
 import org.scijava.app.AppService;
 import org.scijava.command.CommandService;
 import org.scijava.log.LogService;
@@ -75,7 +74,7 @@ import org.scijava.util.Types;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
-@Plugin(type = Service.class, priority = Priority.HIGH)
+@Plugin(type = Service.class)
 public class DefaultScriptService extends
 	AbstractSingletonService<ScriptLanguage> implements ScriptService
 {
@@ -197,6 +196,11 @@ public class DefaultScriptService extends
 	}
 
 	@Override
+	public Map<String, Class<?>> getAliases() {
+		return Collections.unmodifiableMap(aliasMap());
+	}
+
+	@Override
 	public synchronized Class<?> lookupClass(final String alias)
 		throws ScriptException
 	{
@@ -226,14 +230,8 @@ public class DefaultScriptService extends
 		super.initialize();
 
 		// add scripts to the module index... only when needed!
-		moduleService.getIndex().addLater(new LazyObjects<ScriptInfo>() {
-
-			@Override
-			public Collection<ScriptInfo> get() {
-				return scripts().values();
-			}
-
-		});
+		final LazyObjects<ScriptInfo> lazyScripts = () -> scripts().values();
+		moduleService.getIndex().addLater(lazyScripts);
 	}
 
 	// -- Helper methods - lazy initialization --
@@ -359,7 +357,7 @@ public class DefaultScriptService extends
 	 * are registered with the service.
 	 */
 	private ScriptInfo getOrCreate(final File file) {
-		final ScriptInfo info = scripts().get(file);
+		final ScriptInfo info = scripts().get(file.getAbsolutePath());
 		if (info != null) return info;
 		return new ScriptInfo(getContext(), file);
 	}

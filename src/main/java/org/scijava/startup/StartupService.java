@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,50 +30,23 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.startup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.scijava.Context;
+import org.scijava.service.SciJavaService;
 
 /**
- * Tests {@link LocationService}.
+ * Interface for service managing startup operations.
  * 
- * @author Gabriel Einsdorf
+ * @author Curtis Rueden
  */
-public class LocationServiceTest {
+public interface StartupService extends SciJavaService {
 
-	@Test
-	public void testResolve() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	/** Adds an operation that will run as soon as the application starts up. */
+	void addOperation(Runnable r);
 
-		final URI uri = new File(new File(".").getAbsolutePath()).toURI();
-		final LocationResolver res = loc.getHandler(uri);
-
-		assertTrue(res instanceof FileLocationResolver);
-		assertEquals(uri, res.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri.toString()).getURI());
-	}
-
-	@Test
-	public void testFallBack() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
-
-		final String uri = new File(".").getAbsolutePath();
-		final Location res = loc.resolve(uri);
-
-		assertTrue(res instanceof FileLocation);
-		FileLocation resFile = (FileLocation) res;
-		assertEquals(uri, resFile.getFile().getAbsolutePath());
-	}
-
+	/**
+	 * Execute all registered startup operations, in the order they were
+	 * registered, blocking until complete.
+	 */
+	void executeOperations();
 }

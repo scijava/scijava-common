@@ -30,84 +30,47 @@
  * #L%
  */
 
-package org.scijava.run.console;
+package org.scijava.startup;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-import org.scijava.console.AbstractConsoleArgument;
-import org.scijava.console.ConsoleArgument;
 import org.scijava.log.LogService;
-import org.scijava.parse.Items;
-import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.run.RunService;
-import org.scijava.startup.StartupService;
+import org.scijava.service.AbstractService;
+import org.scijava.service.Service;
 
 /**
- * Handles the {@code --run} command line argument.
- *
+ * Default implementation of {@link StartupService}.
+ * 
  * @author Curtis Rueden
  */
-@Plugin(type = ConsoleArgument.class)
-public class RunArgument extends AbstractConsoleArgument {
+@Plugin(type = Service.class)
+public class DefaultStartupService extends AbstractService implements
+	StartupService
+{
 
-	@Parameter
-	private RunService runService;
+	private final Deque<Runnable> operations = new ArrayDeque<>();
 
-	@Parameter
-	private StartupService startupService;
-
-	@Parameter
-	private ParseService parser;
-
-	@Parameter
+	@Parameter(required = false)
 	private LogService log;
 
-	// -- Constructor --
-
-	public RunArgument() {
-		super(2, "--run");
+	@Override
+	public void addOperation(final Runnable operation) {
+		operations.add(operation);
 	}
 
-	// -- ConsoleArgument methods --
-
 	@Override
-	public void handle(final LinkedList<String> args) {
-		if (!supports(args)) return;
-
-		args.removeFirst(); // --run
-		final String code = args.removeFirst();
-		final String arg = getParam(args);
-		if (arg != null) args.removeFirst(); // argument list was given
-
-		startupService.addOperation(() -> {
+	public void executeOperations() {
+		while (!operations.isEmpty()) {
+			final Runnable operation = operations.pop();
 			try {
-				if (arg == null) runService.run(code);
-				else {
-					final Items items = parser.parse(arg);
-					if (items.isMap()) runService.run(code, items.asMap());
-					else if (items.isList()) runService.run(code, items.toArray());
-					else {
-						throw new IllegalArgumentException("Arguments are inconsistent. " +
-							"Please pass either a list of key/value pairs, " +
-							"or a list of values.");
-					}
-				}
+				operation.run();
 			}
-			catch (final InvocationTargetException exc) {
-				throw new RuntimeException(exc);
+			catch (final RuntimeException exc) {
+				if (log != null) log.error(exc);
 			}
-		});
+		}
 	}
-
-	// -- Typed methods --
-
-	@Override
-	public boolean supports(final LinkedList<String> args) {
-		if (!super.supports(args)) return false;
-		return runService.supports(args.get(1));
-	}
-
 }

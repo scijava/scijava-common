@@ -3,9 +3,8 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,50 +29,37 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.io.handle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.scijava.Context;
+import org.scijava.io.location.Location;
 
 /**
- * Tests {@link LocationService}.
- * 
- * @author Gabriel Einsdorf
+ * Abstract base class for {@link StreamHandle} implementations.
+ *
+ * @author Curtis Rueden
+ * @author Melissa Linkert
  */
-public class LocationServiceTest {
+public abstract class AbstractStreamHandle<L extends Location> extends
+	AbstractDataHandle<L> implements StreamHandle<L>
+{
 
-	@Test
-	public void testResolve() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	// -- Fields --
 
-		final URI uri = new File(new File(".").getAbsolutePath()).toURI();
-		final LocationResolver res = loc.getHandler(uri);
+	/** Current position within the stream(s). */
+	private long offset;
 
-		assertTrue(res instanceof FileLocationResolver);
-		assertEquals(uri, res.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri.toString()).getURI());
+	// -- StreamHandle methods --
+
+	@Override
+	public void setOffset(final long offset) {
+		this.offset = offset;
 	}
 
-	@Test
-	public void testFallBack() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	// -- DataHandle methods --
 
-		final String uri = new File(".").getAbsolutePath();
-		final Location res = loc.resolve(uri);
-
-		assertTrue(res instanceof FileLocation);
-		FileLocation resFile = (FileLocation) res;
-		assertEquals(uri, resFile.getFile().getAbsolutePath());
+	@Override
+	public long offset() {
+		return offset;
 	}
 
 }

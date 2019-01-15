@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>19.2.0</version>
+		<version>23.2.0</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.75.0-SNAPSHOT</version>
+	<version>2.77.1-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
@@ -188,21 +188,26 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+			</dependency>
 	</dependencies>
 
 	<build>
-		<!--
-		SciJava Common provides a plugin indexer which handles its
-		@Plugin annotations, in the form of a compile-time annotation
-		processor. SJC also provides plugins of various sorts, such
-		as the core Service plugin implementations.
-
-		In order for these to be processed correctly and avoid a
-		chicken-and-egg problem with annotation processing here, we
-		disable annotation processing during compilation, and instead
-		run the plugin indexer manually in the process-classes phase.
-		-->
 		<plugins>
+			<!--
+			SciJava Common provides a plugin indexer which handles its
+			@Plugin annotations, in the form of a compile-time annotation
+			processor. SJC also provides plugins of various sorts, such
+			as the core Service plugin implementations.
+
+			In order for these to be processed correctly and avoid a
+			chicken-and-egg problem with annotation processing here, we
+			disable annotation processing during compilation, and instead
+			run the plugin indexer manually in the process-classes phase.
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

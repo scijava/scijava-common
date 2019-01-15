@@ -9,13 +9,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,50 +30,38 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.scijava.Context;
+import java.util.List;
 
 /**
- * Tests {@link LocationService}.
- * 
- * @author Gabriel Einsdorf
+ * A wrapper around a data object, for storing it in a tree structure.
+ *
+ * @author Alison Walter
+ * @param <T> type of data associated with the node
  */
-public class LocationServiceTest {
+public interface TreeNode<T> {
 
-	@Test
-	public void testResolve() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	/** Gets the data associated with the node. */
+	T data();
 
-		final URI uri = new File(new File(".").getAbsolutePath()).toURI();
-		final LocationResolver res = loc.getHandler(uri);
+	/** Gets the parent of this node. */
+	TreeNode<?> parent();
 
-		assertTrue(res instanceof FileLocationResolver);
-		assertEquals(uri, res.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri.toString()).getURI());
+	void setParent(TreeNode<?> parent);
+
+	/**
+	 * Gets the node's children. If this list is mutated, the children will be
+	 * affected accordingly. It is the responsibility of the caller to ensure
+	 * continued integrity, particularly of parent linkages.
+	 */
+	List<TreeNode<?>> children();
+
+	/** Adds the given list of children to this node. */
+	default void addChildren(final List<? extends TreeNode<?>> nodes) {
+		for (final TreeNode<?> child : nodes) {
+			child.setParent(parent());
+		}
+		children().addAll(nodes);
 	}
-
-	@Test
-	public void testFallBack() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
-
-		final String uri = new File(".").getAbsolutePath();
-		final Location res = loc.resolve(uri);
-
-		assertTrue(res instanceof FileLocation);
-		FileLocation resFile = (FileLocation) res;
-		assertEquals(uri, resFile.getFile().getAbsolutePath());
-	}
-
 }

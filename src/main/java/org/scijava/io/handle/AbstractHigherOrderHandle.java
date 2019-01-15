@@ -30,50 +30,86 @@
  * #L%
  */
 
-package org.scijava.io.location;
+package org.scijava.io.handle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.io.IOException;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.scijava.Context;
+import org.scijava.io.location.Location;
 
 /**
- * Tests {@link LocationService}.
- * 
+ * Abstract superclass for {@link DataHandle}s that operate over other
+ * {@link DataHandle}s.
+ *
  * @author Gabriel Einsdorf
  */
-public class LocationServiceTest {
+public abstract class AbstractHigherOrderHandle<L extends Location> extends
+	AbstractDataHandle<L>
+{
 
-	@Test
-	public void testResolve() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	private DataHandle<L> handle;
+	private boolean closed;
 
-		final URI uri = new File(new File(".").getAbsolutePath()).toURI();
-		final LocationResolver res = loc.getHandler(uri);
-
-		assertTrue(res instanceof FileLocationResolver);
-		assertEquals(uri, res.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri).getURI());
-		assertEquals(uri, loc.resolve(uri.toString()).getURI());
+	public AbstractHigherOrderHandle(final DataHandle<L> handle) {
+		this.handle = handle;
+		set(handle.get()); // provides access to underlying location
 	}
 
-	@Test
-	public void testFallBack() throws URISyntaxException {
-		final Context ctx = new Context(LocationService.class);
-		final LocationService loc = ctx.getService(LocationService.class);
+	@Override
+	public boolean isReadable() {
+		return !closed && handle.isReadable();
+	}
 
-		final String uri = new File(".").getAbsolutePath();
-		final Location res = loc.resolve(uri);
+	@Override
+	public boolean isWritable() {
+		return !closed && handle.isWritable();
+	}
 
-		assertTrue(res instanceof FileLocation);
-		FileLocation resFile = (FileLocation) res;
-		assertEquals(uri, resFile.getFile().getAbsolutePath());
+	@Override
+	public long length() throws IOException {
+		ensureOpen();
+		return handle.length();
+	}
+
+	@Override
+	public Class<L> getType() {
+		return handle.getType();
+	}
+
+	@Override
+	public boolean exists() throws IOException {
+		return handle.exists();
+	}
+
+	@Override
+	public void close() throws IOException {
+		if (!closed) {
+			cleanup();
+			closed = true;
+			handle.close();
+			handle = null;
+		}
+	}
+
+	protected void ensureOpen() throws IOException {
+		if (closed) {
+			throw new IOException("This handle is closed!");
+		}
+	}
+
+	/**
+	 * Clean up data structures after a handle has been closed in the
+	 * {@link #close()} method.
+	 *
+	 * @throws IOException
+	 */
+	protected abstract void cleanup() throws IOException;
+
+	/**
+	 * @return the {@link DataHandle} wrapped by this
+	 *         {@link AbstractHigherOrderHandle}
+	 */
+	protected DataHandle<L> handle() {
+		return handle;
 	}
 
 }

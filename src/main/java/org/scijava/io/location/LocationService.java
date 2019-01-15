@@ -32,6 +32,7 @@
 
 package org.scijava.io.location;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -49,40 +50,47 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 {
 
 	/**
-	 * Turns the given string into an {@link URI}, then resolves it to a
-	 * {@link Location}
-	 * 
-	 * @param uri the uri to resolve
+	 * Turns the given string into a {@link URI}, then resolves it to a
+	 * {@link Location}.
+	 *
+	 * @param uriString the uri to resolve
 	 * @return the resolved {@link Location}
 	 * @throws URISyntaxException if the URI is malformed
 	 */
-	default Location resolve(final String uri) throws URISyntaxException {
-		return resolve(new URI(uri));
+	default Location resolve(final String uriString) throws URISyntaxException {
+	    try {
+	        return resolve(new URI(uriString));
+	    }
+	    catch (final URISyntaxException exc) {
+	        // In general, filenames are not valid URI strings.
+	        // Particularly on Windows, there are backslashes, which are invalid in URIs.
+	        // So we explicitly turn this string into a file if an error happens above.
+	        return resolve(new File(uriString).toURI());
+	    }
 	}
 
 	/**
-	 * Resolves the given {@link URI} to a location.
-	 * 
+	 * Resolves the given {@link URI} to a location. If the {@code scheme} part of
+	 * the URI is {@code null} the path component is resolved as a local file.
+	 *
 	 * @param uri the uri to resolve
 	 * @return the resolved {@link Location} or <code>null</code> if no resolver
 	 *         could be found.
 	 * @throws URISyntaxException if the URI is malformed
 	 */
-	default Location resolve(final URI uri) throws URISyntaxException {
+	default Location resolve(URI uri) throws URISyntaxException {
+		if (uri.getScheme() == null) { // Fallback for local files
+			uri = new File(uri.getPath()).toURI();
+		}
 		final LocationResolver resolver = getResolver(uri);
 		return resolver != null ? resolver.resolve(uri) : null;
 	}
 
-	/**
-	 * Returns a {@link LocationResolver} capable of resolving URL like the one
-	 * provided to this method. Allows faster repeated resolving of similar URIs
-	 * without going through this service.
-	 * 
-	 * @param uri the uri
-	 * @return the {@link LocationResolver} for this uri type, or
-	 *         <code>null</code> if no resolver could be found.
-	 */
-	LocationResolver getResolver(URI uri);
+	/** @deprecated Use {@link #getHandler} instead. */
+	@Deprecated
+	default LocationResolver getResolver(URI uri) {
+		return getHandler(uri);
+	}
 
 	// -- PTService methods --
 

@@ -3,9 +3,8 @@
  * SciJava Common shared library for SciJava software.
  * %%
  * Copyright (C) 2009 - 2017 Board of Regents of the University of
- * Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
- * Institute of Molecular Cell Biology and Genetics, University of
- * Konstanz, and KNIME GmbH.
+ * Wisconsin-Madison, Broad Institute of MIT and Harvard, and Max Planck
+ * Institute of Molecular Cell Biology and Genetics.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,44 +29,44 @@
  * #L%
  */
 
-package org.scijava.script.io;
+package org.scijava.io.handle;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.scijava.io.AbstractIOPlugin;
-import org.scijava.io.IOPlugin;
-import org.scijava.plugin.Parameter;
-import org.scijava.script.ScriptService;
+import org.scijava.io.location.Location;
 
 /**
- * {@link IOPlugin} for scripts.
- * 
- * @author Curtis Rueden
- * @see ScriptService
+ * A {@link DataHandle} backed by an {@link InputStream} and/or
+ * {@link OutputStream}. Supports resetting the handle to the start of the
+ * internal stream(s).
  */
-public class ScriptIOPlugin extends AbstractIOPlugin<String> {
-
-	@Parameter(required = false)
-	private ScriptService scriptService;
-
-	// -- IOPlugin methods --
+public interface ResettableStreamHandle<L extends Location> extends
+	StreamHandle<L>
+{
 
 	@Override
-	public Class<String> getDataType() {
-		return String.class;
+	default void seek(final long pos) throws IOException {
+		final long off = offset();
+		if (pos == off) return; // nothing to do
+		if (pos > off) {
+			// jump from the current offset
+			jump(pos - off);
+		}
+		else {
+			// jump from the beginning of the stream
+			resetStream();
+			jump(pos);
+		}
+		setOffset(pos);
 	}
 
+	/**
+	 * Resets the stream to its start.
+	 *
+	 * @throws IOException If something goes wrong with the reset
+	 */
 	@Override
-	public boolean supportsOpen(final String source) {
-		if (scriptService == null) return false; // no service for opening scripts
-		return scriptService.canHandleFile(source);
-	}
-
-	@Override
-	public String open(final String source) throws IOException {
-		if (scriptService == null) return null; // no service for opening scripts
-		// TODO: Use the script service to open the file in the script editor.
-		return null;
-	}
-
+	void resetStream() throws IOException;
 }

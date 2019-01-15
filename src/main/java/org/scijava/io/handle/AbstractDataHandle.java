@@ -44,6 +44,13 @@ public abstract class AbstractDataHandle<L extends Location> extends
 	AbstractWrapperPlugin<L> implements DataHandle<L>
 {
 
+	private byte[] conversionBuffer = new byte[8];
+	
+	@Override
+	public byte[] conversionBuffer() {
+		return conversionBuffer;
+	}
+ 
 	// -- Fields --
 
 	private ByteOrder order = ByteOrder.BIG_ENDIAN;

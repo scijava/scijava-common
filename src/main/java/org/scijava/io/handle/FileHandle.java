@@ -60,9 +60,12 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	// -- FileHandle methods --
 
-	/** Gets the random access file object backing this FileHandle. */
+	/**
+	 * Gets the random access file object backing this FileHandle. If the
+	 * underlying file does not exist yet, it will be created.
+	 */
 	public RandomAccessFile getRandomAccessFile() throws IOException {
-		return raf();
+		return writer();
 	}
 
 	public String getMode() {
@@ -101,199 +104,134 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	@Override
 	public long offset() throws IOException {
-		return raf().getFilePointer();
+		return exists() ? reader().getFilePointer() : 0;
 	}
 
 	@Override
 	public long length() throws IOException {
-		return exists() ? raf().length() : -1;
+		return exists() ? reader().length() : -1;
 	}
 
 	@Override
 	public void setLength(final long length) throws IOException {
-		raf().setLength(length);
+		writer().setLength(length);
 	}
 
 	@Override
 	public int read() throws IOException {
-		return raf().read();
+		return reader().read();
 	}
 
 	@Override
 	public int read(final byte[] b) throws IOException {
-		return raf().read(b);
+		return reader().read(b);
 	}
 
 	@Override
 	public int read(final byte[] b, final int off, final int len)
 		throws IOException
 	{
-		return raf().read(b, off, len);
+		return reader().read(b, off, len);
 	}
 
 	@Override
 	public void seek(final long pos) throws IOException {
-		raf().seek(pos);
+		reader().seek(pos);
 	}
 
 	// -- DataInput methods --
 
 	@Override
 	public boolean readBoolean() throws IOException {
-		return raf().readBoolean();
+		return reader().readBoolean();
 	}
 
 	@Override
 	public byte readByte() throws IOException {
-		return raf().readByte();
-	}
-
-	@Override
-	public char readChar() throws IOException {
-		return raf().readChar();
-	}
-
-	@Override
-	public double readDouble() throws IOException {
-		return raf().readDouble();
-	}
-
-	@Override
-	public float readFloat() throws IOException {
-		return raf().readFloat();
+		return reader().readByte();
 	}
 
 	@Override
 	public void readFully(final byte[] b) throws IOException {
-		raf().readFully(b);
+		reader().readFully(b);
 	}
 
 	@Override
 	public void readFully(final byte[] b, final int off, final int len)
 		throws IOException
 	{
-		raf().readFully(b, off, len);
-	}
-
-	@Override
-	public int readInt() throws IOException {
-		return raf().readInt();
+		reader().readFully(b, off, len);
 	}
 
 	@Override
 	public String readLine() throws IOException {
-		return raf().readLine();
-	}
-
-	@Override
-	public long readLong() throws IOException {
-		return raf().readLong();
-	}
-
-	@Override
-	public short readShort() throws IOException {
-		return raf().readShort();
+		return reader().readLine();
 	}
 
 	@Override
 	public int readUnsignedByte() throws IOException {
-		return raf().readUnsignedByte();
-	}
-
-	@Override
-	public int readUnsignedShort() throws IOException {
-		return raf().readUnsignedShort();
+		return reader().readUnsignedByte();
 	}
 
 	@Override
 	public String readUTF() throws IOException {
-		return raf().readUTF();
+		return reader().readUTF();
 	}
 
 	@Override
 	public int skipBytes(final int n) throws IOException {
-		return raf().skipBytes(n);
+		return reader().skipBytes(n);
 	}
 
 	// -- DataOutput methods --
 
 	@Override
 	public void write(final byte[] b) throws IOException {
-		raf().write(b);
+		writer().write(b);
 	}
 
 	@Override
 	public void write(final byte[] b, final int off, final int len)
 		throws IOException
 	{
-		raf().write(b, off, len);
+		writer().write(b, off, len);
 	}
 
 	@Override
 	public void write(final int b) throws IOException {
-		raf().write(b);
+		writer().write(b);
 	}
 
 	@Override
 	public void writeBoolean(final boolean v) throws IOException {
-		raf().writeBoolean(v);
+		writer().writeBoolean(v);
 	}
 
 	@Override
 	public void writeByte(final int v) throws IOException {
-		raf().writeByte(v);
+		writer().writeByte(v);
 	}
 
 	@Override
 	public void writeBytes(final String s) throws IOException {
-		raf().writeBytes(s);
-	}
-
-	@Override
-	public void writeChar(final int v) throws IOException {
-		raf().writeChar(v);
+		writer().writeBytes(s);
 	}
 
 	@Override
 	public void writeChars(final String s) throws IOException {
-		raf().writeChars(s);
-	}
-
-	@Override
-	public void writeDouble(final double v) throws IOException {
-		raf().writeDouble(v);
-	}
-
-	@Override
-	public void writeFloat(final float v) throws IOException {
-		raf().writeFloat(v);
-	}
-
-	@Override
-	public void writeInt(final int v) throws IOException {
-		raf().writeInt(v);
-	}
-
-	@Override
-	public void writeLong(final long v) throws IOException {
-		raf().writeLong(v);
-	}
-
-	@Override
-	public void writeShort(final int v) throws IOException {
-		raf().writeShort(v);
+		writer().writeChars(s);
 	}
 
 	@Override
 	public void writeUTF(final String str) throws IOException {
-		raf().writeUTF(str);
+		writer().writeUTF(str);
 	}
 
 	// -- Closeable methods --
 
 	@Override
 	public synchronized void close() throws IOException {
-		if (raf != null) raf().close();
+		if (raf != null) raf.close();
 		closed = true;
 	}
 
@@ -306,12 +244,47 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	// -- Helper methods --
 
-	private RandomAccessFile raf() throws IOException {
-		if (raf == null) initRAF();
+	/**
+	 * Access method for the internal {@link RandomAccessFile}, that succeeds
+	 * independently of the underlying file existing on disk. This allows us to
+	 * create a new file for writing.
+	 *
+	 * @return the internal {@link RandomAccessFile} creating a new file on disk
+	 *         if needed.
+	 * @throws IOException if the {@link RandomAccessFile} could not be created.
+	 */
+	private RandomAccessFile writer() throws IOException {
+		if (raf == null) initRAF(true);
 		return raf;
 	}
 
-	private synchronized void initRAF() throws IOException {
+	/**
+	 * Access method for the internal {@link RandomAccessFile}, that only succeeds
+	 * if the underlying file exists on disk. This prevents accidental creation of
+	 * an empty file when calling read operations on a non-existent file.
+	 *
+	 * @return the internal {@link RandomAccessFile}.
+	 * @throws IOException if the {@link RandomAccessFile} could not be created,
+	 *           or the backing file does not exists.
+	 */
+	private RandomAccessFile reader() throws IOException {
+		if (raf == null) initRAF(false);
+		return raf;
+	}
+
+	/**
+	 * Initializes the {@link RandomAccessFile}.
+	 *
+	 * @param create whether to create the {@link RandomAccessFile} if the
+	 *          underlying file does not exist yet.
+	 * @throws IOException if the {@link RandomAccessFile} could not be created,
+	 *           or the backing file does not exist and the {@code create}
+	 *           parameter was set to {@code false}.
+	 */
+	private synchronized void initRAF(final boolean create) throws IOException {
+		if (!create && !exists()) {
+			throw new IOException("Trying to read from non-existent file!");
+		}
 		if (closed) throw new IOException("Handle already closed");
 		if (raf != null) return;
 		raf = new RandomAccessFile(get().getFile(), getMode());
