@@ -64,10 +64,16 @@ public final class DefaultIOService
 	@Override
 	public Object open(final String source) throws IOException {
 		final IOPlugin<?> opener = getOpener(source);
-		if (opener == null) return null; // no appropriate IOPlugin
+		if (opener == null) {
+			log.error("No opener IOPlugin found for " + source + ".");
+			return null;
+		}
 
 		final Object data = opener.open(source);
-		if (data == null) return null; // IOPlugin returned no data; canceled?
+		if (data == null) {
+			log.warn("Opener IOPlugin " + opener + " returned no data. Canceled?");
+			return null; // IOPlugin returned no data; canceled?
+		}
 
 		eventService.publish(new DataOpenedEvent(source, data));
 		return data;
@@ -81,6 +87,8 @@ public final class DefaultIOService
 		if (saver != null) {
 			saver.save(data, destination);
 			eventService.publish(new DataSavedEvent(destination, data));
+		} else {
+			log.error("No Saver IOPlugin found for " + data.toString() + ".");
 		}
 	}
 }
