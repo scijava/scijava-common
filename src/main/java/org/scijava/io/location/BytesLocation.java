@@ -34,7 +34,6 @@ package org.scijava.io.location;
 
 import org.scijava.io.ByteArrayByteBank;
 import org.scijava.io.ByteBank;
-import org.scijava.io.handle.DataHandle;
 import org.scijava.util.ByteArray;
 
 /**
@@ -47,6 +46,8 @@ public class BytesLocation extends AbstractLocation {
 
 	private final ByteBank bytes;
 
+	private final String name;
+
 	/**
 	 * Creates a {@link BytesLocation} backed by the specified
 	 * {@link ByteBank}.
@@ -54,7 +55,18 @@ public class BytesLocation extends AbstractLocation {
 	 * @param bytes the {@link ByteBank} that will back this {@link Location}
 	 */
 	public BytesLocation(final ByteBank bytes) {
+		this(bytes, null);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by the specified {@link ByteBank}.
+	 *
+	 * @param bytes the {@link ByteBank} that will back this {@link Location}
+	 * @param name the name of this {@link Location}
+	 */
+	public BytesLocation(final ByteBank bytes, final String name) {
 		this.bytes = bytes;
+		this.name = name;
 	}
 
 	/**
@@ -63,7 +75,19 @@ public class BytesLocation extends AbstractLocation {
 	 * can be used to avoid needing to grow the underlying {@link ByteBank}.
 	 */
 	public BytesLocation(final int initialCapacity) {
+		this(initialCapacity, null);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
+	 * the specified initial capacity, but with a reported size of 0. This method
+	 * can be used to avoid needing to grow the underlying {@link ByteBank}.
+	 *
+	 * @param name the name of this {@link Location}
+	 */
+	public BytesLocation(final int initialCapacity, final String name) {
 		this.bytes = new ByteArrayByteBank(initialCapacity);
+		this.name = name;
 	}
 
 	/**
@@ -71,7 +95,18 @@ public class BytesLocation extends AbstractLocation {
 	 * that wraps the specified {@link ByteArray}.
 	 */
 	public BytesLocation(final ByteArray bytes) {
+		this(bytes, null);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} that
+	 * wraps the specified {@link ByteArray}.
+	 *
+	 * @param name the name of this Location.
+	 */
+	public BytesLocation(final ByteArray bytes, final String name) {
 		this.bytes = new ByteArrayByteBank(bytes);
+		this.name = name;
 	}
 
 	/**
@@ -81,7 +116,19 @@ public class BytesLocation extends AbstractLocation {
 	 * @param bytes the array to wrap
 	 */
 	public BytesLocation(final byte[] bytes) {
+		this(bytes, null);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} which
+	 * wraps the specified array.
+	 *
+	 * @param bytes the array to wrap
+	 * @param name the name of this Location.
+	 */
+	public BytesLocation(final byte[] bytes, final String name) {
 		this.bytes = new ByteArrayByteBank(bytes);
+		this.name = name;
 	}
 
 	/**
@@ -92,11 +139,25 @@ public class BytesLocation extends AbstractLocation {
 	 * @param offset the offset in the bytes array to start copying from
 	 * @param length the number of bytes to copy, starting from the offset
 	 */
-	public BytesLocation(final byte[] bytes, final int offset,
-		final int length)
+	public BytesLocation(final byte[] bytes, final int offset, final int length) {
+		this(bytes, offset, length, null);
+	}
+
+	/**
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
+	 * the specified initial capacity and the provided data.
+	 *
+	 * @param bytes the bytes to copy into the new {@link BytesLocation}
+	 * @param offset the offset in the bytes array to start copying from
+	 * @param length the number of bytes to copy, starting from the offset
+	 * @param name the name of this Location.
+	 */
+	public BytesLocation(final byte[] bytes, final int offset, final int length,
+		final String name)
 	{
 		this.bytes = new ByteArrayByteBank(length);
 		this.bytes.setBytes(0l, bytes, offset, length);
+		this.name = name;
 	}
 
 	// -- BytesLocation methods --
@@ -104,6 +165,11 @@ public class BytesLocation extends AbstractLocation {
 	/** Gets the backing {@link ByteBank}. */
 	public ByteBank getByteBank() {
 		return bytes;
+	}
+
+	@Override
+	public String getName() {
+		return name != null ? name : defaultName();
 	}
 
 	// -- Object methods --
