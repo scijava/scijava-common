@@ -18,7 +18,7 @@
 	<inceptionYear>2009</inceptionYear>
 	<organization>
 		<name>SciJava</name>
-		<url>http://www.scijava.org/</url>
+		<url>https://scijava.org/</url>
 	</organization>
 	<licenses>
 		<license>
@@ -31,7 +31,7 @@
 		<developer>
 			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
-			<url>http://imagej.net/User:Rueden</url>
+			<url>https://imagej.net/User:Rueden</url>
 			<roles>
 				<role>founder</role>
 				<role>lead</role>
@@ -46,13 +46,13 @@
 	<contributors>
 		<contributor>
 			<name>Mark Hiner</name>
-			<url>http://imagej.net/User:Hinerm</url>
+			<url>https://imagej.net/User:Hinerm</url>
 			<roles><role>founder</role></roles>
 			<properties><id>hinerm</id></properties>
 		</contributor>
 		<contributor>
 			<name>Johannes Schindelin</name>
-			<url>http://imagej.net/User:Schindelin</url>
+			<url>https://imagej.net/User:Schindelin</url>
 			<properties><id>dscho</id></properties>
 		</contributor>
 		<contributor>
@@ -61,27 +61,27 @@
 		</contributor>
 		<contributor>
 			<name>Barry DeZonia</name>
-			<url>http://imagej.net/User:Bdezonia</url>
+			<url>https://imagej.net/User:Bdezonia</url>
 			<properties><id>bdezonia</id></properties>
 		</contributor>
 		<contributor>
 			<name>Christian Dietz</name>
-			<url>http://imagej.net/User:Dietzc</url>
+			<url>https://imagej.net/User:Dietzc</url>
 			<properties><id>dietzc</id></properties>
 		</contributor>
 		<contributor>
 			<name>Richard Domander</name>
-			<url>http://imagej.net/User:Rdom</url>
+			<url>https://imagej.net/User:Rdom</url>
 			<properties><id>rimadoma</id></properties>
 		</contributor>
 		<contributor>
 			<name>Gabriel Einsdorf</name>
-			<url>http://imagej.net/User:Gab1one</url>
+			<url>https://imagej.net/User:Gab1one</url>
 			<properties><id>gab1one</id></properties>
 		</contributor>
 		<contributor>
 			<name>Aivar Grislis</name>
-			<url>http://imagej.net/User:Grislis</url>
+			<url>https://imagej.net/User:Grislis</url>
 			<properties><id>grislis</id></properties>
 		</contributor>
 		<contributor>
@@ -90,36 +90,36 @@
 		</contributor>
 		<contributor>
 			<name>Grant Harris</name>
-			<url>http://imagej.net/User:Harris</url>
+			<url>https://imagej.net/User:Harris</url>
 			<properties><id>tnargsirrah</id></properties>
 		</contributor>
 		<contributor>
 			<name>Lee Kamentsky</name>
-			<url>http://imagej.net/User:Leek</url>
+			<url>https://imagej.net/User:Leek</url>
 			<properties><id>LeeKamentsky</id></properties>
 		</contributor>
 		<contributor>
 			<name>Rick Lentz</name>
-			<url>http://imagej.net/User:Lentz</url>
+			<url>https://imagej.net/User:Lentz</url>
 		</contributor>
 		<contributor>
 			<name>Melissa Linkert</name>
-			<url>http://imagej.net/User:Linkert</url>
+			<url>https://imagej.net/User:Linkert</url>
 			<properties><id>melissalinkert</id></properties>
 		</contributor>
 		<contributor>
 			<name>Kevin Mader</name>
-			<url>http://imagej.net/User:Ksmader</url>
+			<url>https://imagej.net/User:Ksmader</url>
 			<properties><id>kmader</id></properties>
 		</contributor>
 		<contributor>
 			<name>Hadrien Mary</name>
-			<url>http://imagej.net/User:Hadim</url>
+			<url>https://imagej.net/User:Hadim</url>
 			<properties><id>hadim</id></properties>
 		</contributor>
 		<contributor>
 			<name>Alison Walter</name>
-			<url>http://imagej.net/User:Awalter2</url>
+			<url>https://imagej.net/User:Awalter2</url>
 			<properties><id>awalter17</id></properties>
 		</contributor>
 		<contributor>
