@@ -104,7 +104,7 @@ public class POMTest {
 		assertEquals("https://github.com/scijava/scijava-common/issues",
 			issueManagementURL);
 		assertEquals("SciJava", pom.getOrganizationName());
-		assertEquals("http://www.scijava.org/", pom.getOrganizationURL());
+		assertEquals("https://scijava.org/", pom.getOrganizationURL());
 		assertTrue(pom.getPath().endsWith("pom.xml"));
 		assertTrue(pom.getProjectDescription().startsWith(
 			"SciJava Common is a shared library for SciJava software."));
