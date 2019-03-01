@@ -47,7 +47,7 @@ import java.util.TreeMap;
  * 
  * @author Johannes Schindelin
  */
-class ByteCodeAnalyzer {
+public class ByteCodeAnalyzer {
 
 	private byte[] buffer;
 	private int[] poolOffsets;
@@ -90,7 +90,7 @@ class ByteCodeAnalyzer {
 		final int offset = poolOffsets[index - 1];
 		if (getU1(offset) != 5) throw new RuntimeException("Constant " + index +
 			" does not refer to a long");
-		return (getU4(offset + 1) << 32) | getU4(offset + 5);
+		return getU4(offset + 1) << 32 | getU4(offset + 5);
 	}
 
 	private float getFloatConstant(final int index) {
@@ -104,7 +104,7 @@ class ByteCodeAnalyzer {
 		final int offset = poolOffsets[index - 1];
 		if (getU1(offset) != 6) throw new RuntimeException("Constant " + index +
 			" does not refer to a double");
-		return Double.longBitsToDouble((getU4(offset + 1) << 32) |
+		return Double.longBitsToDouble(getU4(offset + 1) << 32 |
 			getU4(offset + 5));
 	}
 
@@ -152,7 +152,7 @@ class ByteCodeAnalyzer {
 	}
 
 	private static long getU4(final byte[] buffer, final int offset) {
-		return ((long) getU2(buffer, offset)) << 16 | getU2(buffer, offset + 2);
+		return (long) getU2(buffer, offset) << 16 | getU2(buffer, offset + 2);
 	}
 
 	private String getString(final int offset) {
@@ -203,26 +203,43 @@ class ByteCodeAnalyzer {
 		}
 	}
 
-	private Map<String, Map<String, Object>> getAnnotations() {
-		final Map<String, Map<String, Object>> annotations =
+	private Map<String, Map<String, Map<String, Object>>> getAnnotations() {
+		final Map<String, Map<String, Map<String, Object>>> allAnnotations =
 			new TreeMap<>();
 		for (final Attribute attr : attributes) {
 			if ("RuntimeVisibleAnnotations".equals(attr.getName())) {
 				final byte[] buf = attr.attribute;
 				int count = getU2(buf, 0);
 				int offset = 2;
+				final Map<String, Map<String, Object>> annotations = new TreeMap<>();
+				final String topLevelClassName = ""; // FIXME
+				allAnnotations.put(topLevelClassName, annotations);
 				for (int i = 0; i < count; i++) {
-					final String className =
+					final String annotationClassName =
 						raw2className(getStringConstant(getU2(buf, offset)));
 					offset += 2;
-					final Map<String, Object> values =
-						new TreeMap<>();
-					annotations.put(className, values);
+					final Map<String, Object> values = new TreeMap<>();
+					annotations.put(annotationClassName, values);
 					offset = parseAnnotationValues(buf, offset, values);
 				}
 			}
+			else if ("InnerClasses".equals(attr.getName())){
+				for (;;) { // FIXME loop over inner classes
+					final String innerClassName = ""; // FIXME
+					final Map<String, Map<String, Object>> annotations = new TreeMap<>();
+					allAnnotations.put(innerClassName, annotations);
+					for (;;) { // FIXME loop over annotations of that inner class
+						final String annotationClassName = ""; // FIXME
+						final int annotationOffset = 0; // FIXME
+
+						final Map<String, Object> values = new TreeMap<>();
+						annotations.put(annotationClassName, values);
+						parseAnnotationValues(buf, annotationOffset, values);
+					}
+				}
+			}
 		}
-		return annotations;
+		return allAnnotations;
 	}
 
 	private int parseAnnotationValues(final byte[] buf, int offset,
@@ -347,7 +364,7 @@ class ByteCodeAnalyzer {
 		return out.toByteArray();
 	}
 
-	static Map<String, Map<String, Object>> getAnnotations(File file)
+	public static Map<String, Map<String, Object>> getAnnotations(File file)
 		throws IOException
 	{
 		return new ByteCodeAnalyzer(readFile(file)).getAnnotations();

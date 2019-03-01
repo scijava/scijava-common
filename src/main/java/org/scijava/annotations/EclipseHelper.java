@@ -142,7 +142,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			debug("Checking URL: " + url);
 			if (helper.autoDetectEclipse && first) {
 				if (!"file".equals(url.getProtocol()) ||
-					(!url.getPath().endsWith("/") && !url.getPath().contains("surefire")))
+					!url.getPath().endsWith("/") && !url.getPath().contains("surefire"))
 				{
 					debug("Not Eclipse because first entry is: " + url);
 					return;
@@ -219,7 +219,7 @@ public class EclipseHelper extends DirectoryIndexer {
 
 	private void index(File directory, ClassLoader loader) {
 		debug("Directory: " + directory);
-		if (!directory.canWrite() || upToDate(directory) || isIJ1(directory)) {
+		if (!directory.canWrite() /*|| upToDate(directory)*/ || isIJ1(directory)) {
 			debug("can write: " + directory.canWrite() + ", up-to-date: " +
 				upToDate(directory) + ", : is IJ1: " + isIJ1(directory));
 			return;

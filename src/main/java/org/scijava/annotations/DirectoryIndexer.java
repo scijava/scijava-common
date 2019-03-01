@@ -78,6 +78,9 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 			return;
 		}
 		for (final File file : list) {
+			if(file.getAbsolutePath().startsWith("/home/gabe")) {
+				System.out.println(file.getAbsolutePath());
+			}
 			if (file.isDirectory()) {
 				discoverAnnotations(file, classNamePrefix + file.getName() + ".",
 					loader);
@@ -90,6 +93,10 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				final String className =
 					classNamePrefix + fileName.substring(0, fileName.length() - 6);
 				try {
+					Map<String, Map<String, Object>> annotations = ByteCodeAnalyzer.getAnnotations(file);
+					//  Annotation -> key/value pairs of that annotation
+					//  Class -> (Annotation -> key/value pairs)
+					Map<String, Map<String, Map<String, Object>>> annotations
 					for (final Map.Entry<String, Map<String, Object>> entry : ByteCodeAnalyzer
 						.getAnnotations(file).entrySet())
 					{
