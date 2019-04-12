@@ -29,10 +29,6 @@
  * #L%
  */
 
-package org.scijava.util;
-
-import java.io.File;
-
 // Portions of this class were adapted from the
 // org.apache.commons.lang3.reflect.TypeUtils and
 // org.apache.commons.lang3.Validate classes of
@@ -46,6 +42,9 @@ import java.io.File;
 //
 // See NOTICE.txt for further details on third-party licenses.
 
+package org.scijava.util;
+
+import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
