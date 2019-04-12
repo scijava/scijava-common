@@ -310,6 +310,12 @@ public class TypesTest {
 		}
 	}
 
+	/** Tests {@link Types#unbox(Class)}. */
+	@Test
+	public void testUnbox() {
+		// TODO
+	}
+
 	/** Tests {@link Types#nullValue(Class)}. */
 	@Test
 	public void testNullValue() {
@@ -510,6 +516,31 @@ public class TypesTest {
 		Types.isAssignable(Object.class, null);
 	}
 
+	/** Tests {@link Types#isAssignable(Type, Type)} with type variable. */
+	@Test
+	public <T extends Number> void testIsAssignableT() {
+		final Type t = genericTestType("t");
+		final Type listT = genericTestType("listT");
+		final Type listNumber = genericTestType("listNumber");
+		final Type listInteger = genericTestType("listInteger");
+		final Type listExtendsNumber = genericTestType("listExtendsNumber");
+
+		assertTrue(Types.isAssignable(t, t));
+		assertTrue(Types.isAssignable(listT, listT));
+		assertTrue(Types.isAssignable(listNumber, listNumber));
+		assertTrue(Types.isAssignable(listInteger, listInteger));
+		assertTrue(Types.isAssignable(listExtendsNumber, listExtendsNumber));
+
+		assertTrue(Types.isAssignable(listT, listExtendsNumber));
+		assertTrue(Types.isAssignable(listNumber, listExtendsNumber));
+		assertTrue(Types.isAssignable(listInteger, listExtendsNumber));
+
+		assertFalse(Types.isAssignable(listNumber, listT));
+		assertFalse(Types.isAssignable(listInteger, listT));
+		assertFalse(Types.isAssignable(listExtendsNumber, listT));
+		assertFalse(Types.isAssignable(listExtendsNumber, listNumber));
+	}
+
 	/** Tests {@link Types#isInstance(Object, Class)}. */
 	@Test
 	public void testIsInstance() {
@@ -572,9 +603,28 @@ public class TypesTest {
 		Types.enumValue("HOOYAH", String.class);
 	}
 
+	/** Tests {@link Types#parameterize(Class, Map)}. */
+	@Test
+	public void testParameterizeMap() {
+		// TODO
+	}
+
+	/** Tests {@link Types#parameterize(Class, Type...)}. */
+	@Test
+	public void testParameterizeTypes() {
+		// TODO
+	}
+
+	/** Tests {@link Types#parameterizeWithOwner(Type, Class, Type...)}. */
+	@Test
+	public void testParameterizeWithOwner() {
+		// TODO
+	}
+
 	// -- Helper classes --
 
 	private static class Thing<T> {
+
 		@SuppressWarnings("unused")
 		private T thing;
 	}
@@ -596,6 +646,14 @@ public class TypesTest {
 	/** Enumeration for testing conversion to enum types. */
 	public static enum Words {
 		FOO, BAR, FUBAR
+	}
+
+	private interface TestTypes<T extends Number> {
+		T t();
+		List<T> listT();
+		List<Number> listNumber();
+		List<Integer> listInteger();
+		List<? extends Number> listExtendsNumber();
 	}
 
 	// -- Helper methods --
@@ -671,4 +729,7 @@ public class TypesTest {
 		}
 	}
 
+	private Type genericTestType(final String name) {
+		return Types.method(TestTypes.class, name).getGenericReturnType();
+	}
 }
