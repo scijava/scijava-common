@@ -81,6 +81,24 @@ import java.util.Set;
  * <li><a href="https://github.com/coekarts/gentyref">GenTyRef</a> (Generic Type
  * Reflector), a library for runtime generic type introspection.</li>
  * </ul>
+ * <p>
+ * All three of these libraries contain fantastic generics-related logic, but
+ * none of the three contained everything that SciJava needed for all its use
+ * cases. Hence, we have drawn from sources as needed to create a unified
+ * generics API for use from SciJava applications. See in particular the
+ * <a href="https://github.com/scijava/scijava-ops">SciJava Ops</a> project,
+ * which utilizes these functions heavily.
+ * </p>
+ * <p>
+ * NB: The <a href=
+ * "https://javadoc.scijava.org/Apache-Commons-Lang/org/apache/commons/lang3/reflect/TypeUtils.html">
+ * <code>org.apache.commons.reflect.TypeUtils</code></a> class of
+ * <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons
+ * Lang</a> version 3.4 is forked internally within this class. We did this for
+ * two reasons: 1) to avoid bringing in the whole of Apache Commons Lang as a
+ * dependency; and 2) to fix an infinite recursion bug in the
+ * {@code TypeUtils.toString(Type)} method.
+ * </p>
  *
  * @author Curtis Rueden
  * @author Gabe Selzer
