@@ -184,18 +184,19 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 
 	// -- Comparable methods --
 
+	private static final Comparator<String> STRING_COMPARATOR = //
+		Comparator.nullsFirst(String::compareTo);
+	private static final Comparator<POM> POM_COMPARATOR = Comparator//
+		// sort by groupId first
+		.comparing(POM::getGroupId, STRING_COMPARATOR)
+		// sort by artifactId second
+		.thenComparing(POM::getArtifactId, STRING_COMPARATOR)//
+		// finally, sort by version
+		.thenComparing(POM::getVersion, POM::compareVersions);
+
 	@Override
 	public int compareTo(final POM pom) {
-		// sort by groupId first
-		final int gid = getGroupId().compareTo(pom.getGroupId());
-		if (gid != 0) return gid;
-
-		// sort by artifactId second
-		final int aid = getArtifactId().compareTo(pom.getArtifactId());
-		if (aid != 0) return aid;
-
-		// finally, sort by version
-		return compareVersions(getVersion(), pom.getVersion());
+		return POM_COMPARATOR.compare(this, pom);
 	}
 
 	// -- Versioned methods --
