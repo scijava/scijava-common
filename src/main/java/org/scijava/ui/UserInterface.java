@@ -162,9 +162,12 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 */
 	default File chooseFile(final File file, final String style) {
 		final String title;
-		if (style.equals(FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
-		else if (style.equals(FileWidget.OPEN_STYLE)) title = "Open";
-		else if (style.equals(FileWidget.SAVE_STYLE)) title = "Save";
+		// style can be a string with multiple comma-separated keywords
+		// TODO use a utility class for style handling, e.g. StyleUtils.isStyle(style, ...)
+		if (style == null) title = "Choose a file";
+		else if (style.toLowerCase().contains(FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
+		else if (style.toLowerCase().contains(FileWidget.OPEN_STYLE)) title = "Open";
+		else if (style.toLowerCase().contains(FileWidget.SAVE_STYLE)) title = "Save";
 		else title = "Choose a file";
 
 		return chooseFile(title, file, style);
