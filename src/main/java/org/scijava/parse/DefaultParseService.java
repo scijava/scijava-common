@@ -62,9 +62,8 @@ public class DefaultParseService extends AbstractService implements
 	// -- Helper classes --
 
 	/**
-	 * {@link Items} implementation backed by the
-	 * <a href="https://github.com/scijava/scijava-expression-parser">SciJava
-	 * Expression Parser</a>.
+	 * {@link Items} implementation backed by
+	 * <a href="https://github.com/scijava/parsington">Parsington</a>.
 	 */
 	private static class ItemsList extends ObjectArray<Item> implements Items {
 
