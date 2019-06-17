@@ -39,7 +39,11 @@ import org.scijava.Context;
 import org.scijava.Contextual;
 import org.scijava.NullContextException;
 import org.scijava.module.DefaultMutableModule;
+import org.scijava.module.process.PreprocessorPlugin;
+import org.scijava.module.process.SaveInputsPreprocessor;
 import org.scijava.plugin.Parameter;
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.PluginService;
 import org.scijava.util.ClassUtils;
 
 /**
@@ -59,6 +63,9 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 
 	@Parameter
 	private CommandService commandService;
+
+	@Parameter
+	private PluginService pluginService;
 
 	private DynamicCommandInfo info;
 
@@ -143,5 +150,22 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 	// HACK: For OptionsPlugin.
 	public void uncancel() {
 		cancelReason = null;
+	}
+
+	// -- Internal methods --
+
+	/**
+	 * Persists current input values. Use e.g. for {@link InteractiveCommand}s
+	 * that want to persist values as they change, since interactive commands do
+	 * not complete the module execution lifecycle normally.
+	 */
+	protected void saveInputs() {
+		// https://forum.image.sc/t/how-to-save-interactivecommand-parameter-values/26645/5
+		final PluginInfo<PreprocessorPlugin> saveInputsPreprocessorInfo =
+			pluginService.getPlugin(SaveInputsPreprocessor.class,
+				PreprocessorPlugin.class);
+		final PreprocessorPlugin saveInputsPreprocessor = //
+			pluginService.createInstance(saveInputsPreprocessorInfo);
+		saveInputsPreprocessor.process(this);
 	}
 }
