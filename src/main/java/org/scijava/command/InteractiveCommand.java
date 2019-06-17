@@ -96,6 +96,7 @@ public abstract class InteractiveCommand extends DynamicCommand implements
 	public void preview() {
 		// NB: Interactive commands call run upon any parameter change.
 		run();
+		saveInputs();
 	}
 
 	@Override
