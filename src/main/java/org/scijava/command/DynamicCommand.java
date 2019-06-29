@@ -39,10 +39,8 @@ import org.scijava.Context;
 import org.scijava.Contextual;
 import org.scijava.NullContextException;
 import org.scijava.module.DefaultMutableModule;
-import org.scijava.module.process.PreprocessorPlugin;
-import org.scijava.module.process.SaveInputsPreprocessor;
+import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
-import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.util.ClassUtils;
 
@@ -66,6 +64,9 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 
 	@Parameter
 	private PluginService pluginService;
+
+	@Parameter
+	private ModuleService moduleService;
 
 	private DynamicCommandInfo info;
 
@@ -160,12 +161,6 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 	 * not complete the module execution lifecycle normally.
 	 */
 	protected void saveInputs() {
-		// https://forum.image.sc/t/how-to-save-interactivecommand-parameter-values/26645/5
-		final PluginInfo<PreprocessorPlugin> saveInputsPreprocessorInfo =
-			pluginService.getPlugin(SaveInputsPreprocessor.class,
-				PreprocessorPlugin.class);
-		final PreprocessorPlugin saveInputsPreprocessor = //
-			pluginService.createInstance(saveInputsPreprocessorInfo);
-		saveInputsPreprocessor.process(this);
+		moduleService.saveInputs(this);
 	}
 }

@@ -311,4 +311,9 @@ public interface ModuleService extends SciJavaService {
 	/** Gets the default value of the given {@link ModuleItem}. */
 	<T> T getDefaultValue(final ModuleItem<T> item);
 
+	/** Saves values to persistent storage from the given {@link Module}. */
+	void saveInputs(final Module module);
+
+	/** Loads values from persistent storage into the given {@link Module}. */
+	void loadInputs(final Module module);
 }

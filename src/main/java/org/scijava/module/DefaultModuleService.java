@@ -339,6 +339,16 @@ public class DefaultModuleService extends AbstractService implements
 		return null;
 	}
 
+	@Override
+	public void saveInputs(final Module module) {
+		module.getInfo().inputs().forEach(item -> saveInput(module, item));
+	}
+
+	@Override
+	public void loadInputs(final Module module) {
+		module.getInfo().inputs().forEach(item -> loadInput(module, item));
+	}
+
 	// -- Service methods --
 
 	@Override
@@ -522,5 +532,33 @@ public class DefaultModuleService extends AbstractService implements
 		final String persistKey = item.getPersistKey();
 		return persistKey == null || persistKey.isEmpty() ? //
 			item.getName() : persistKey;
+	}
+
+	/** Saves the value of the given module item to persistent storage. */
+	private <T> void saveInput(final Module module, final ModuleItem<T> item) {
+		final T value = item.getValue(module);
+		save(item, value);
+	}
+
+	/** Loads the value of the given module item from persistent storage. */
+	private <T> void loadInput(final Module module, final ModuleItem<T> item) {
+		// skip input that has already been resolved
+		if (module.isInputResolved(item.getName())) return;
+
+		final T prefValue = load(item);
+		final Class<T> type = item.getType();
+		final T defaultValue = item.getValue(module);
+		final T value = getBestValue(prefValue, defaultValue, type);
+		item.setValue(module, value);
+	}
+
+	private <T> T getBestValue(final Object prefValue,
+		final Object defaultValue, final Class<T> type)
+	{
+		if (prefValue != null) return convertService.convert(prefValue, type);
+		if (defaultValue != null) {
+			return convertService.convert(defaultValue, type);
+		}
+		return Types.nullValue(type);
 	}
 }

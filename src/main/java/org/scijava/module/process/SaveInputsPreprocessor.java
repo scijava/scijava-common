@@ -34,7 +34,6 @@ package org.scijava.module.process;
 
 import org.scijava.Priority;
 import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -59,22 +58,8 @@ public class SaveInputsPreprocessor extends AbstractPreprocessorPlugin {
 	@Parameter
 	private ModuleService moduleService;
 
-	// -- ModuleProcessor methods --
-
 	@Override
 	public void process(final Module module) {
-		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
-		for (final ModuleItem<?> item : inputs) {
-			saveValue(module, item);
-		}
+		moduleService.saveInputs(module);
 	}
-
-	// -- Helper methods --
-
-	/** Saves the value of the given module item to persistent storage. */
-	private <T> void saveValue(final Module module, final ModuleItem<T> item) {
-		final T value = item.getValue(module);
-		moduleService.save(item, value);
-	}
-
 }

@@ -32,13 +32,10 @@
 
 package org.scijava.module.process;
 
-import org.scijava.convert.ConvertService;
 import org.scijava.module.Module;
-import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.util.Types;
 import org.scijava.widget.InputHarvester;
 
 /**
@@ -59,41 +56,8 @@ public class LoadInputsPreprocessor extends AbstractPreprocessorPlugin {
 	@Parameter
 	private ModuleService moduleService;
 
-	@Parameter
-	private ConvertService conversionService;
-
-	// -- ModuleProcessor methods --
-
 	@Override
 	public void process(final Module module) {
-		final Iterable<ModuleItem<?>> inputs = module.getInfo().inputs();
-		for (final ModuleItem<?> item : inputs) {
-			loadValue(module, item);
-		}
+		moduleService.loadInputs(module);
 	}
-
-	// -- Helper methods --
-
-	/** Loads the value of the given module item from persistent storage. */
-	private <T> void loadValue(final Module module, final ModuleItem<T> item) {
-		// skip input that has already been resolved
-		if (module.isInputResolved(item.getName())) return;
-
-		final T prefValue = moduleService.load(item);
-		final Class<T> type = item.getType();
-		final T defaultValue = item.getValue(module);
-		final T value = getBestValue(prefValue, defaultValue, type);
-		item.setValue(module, value);
-	}
-
-	private <T> T getBestValue(final Object prefValue,
-		final Object defaultValue, final Class<T> type)
-	{
-		if (prefValue != null) return conversionService.convert(prefValue, type);
-		if (defaultValue != null) {
-			return conversionService.convert(defaultValue, type);
-		}
-		return Types.nullValue(type);
-	}
-
 }
