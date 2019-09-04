@@ -729,7 +729,7 @@ public final class FileUtils {
 			"shaded",
 			"sources",
 			"javadoc",
-			"native",
+			"natives?-?\\w*",
 			"(natives-)?(android|linux|macosx|solaris|windows)-" +
 				"(aarch64|amd64|arm|armv6|armv6hf|i586|universal|x86|x86_64)",
 		};

@@ -312,6 +312,12 @@ public class FileUtilsTest {
 		assertEquals("jars/jogl-all-natives-solaris-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-i586.jar"));
 		assertEquals("jars/jogl-all-natives-windows-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-amd64.jar"));
 		assertEquals("jars/jogl-all-natives-windows-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-i586.jar"));
+
+		// Test jinput style of native binary .jars
+		assertEquals("jars/jinput-natives-all.jar", FileUtils.stripFilenameVersion("jars/jinput-2.0.9-natives-all.jar"));
+
+		// Test that native-lib-loader is not misrecognized as a native classifier
+		assertEquals("jars/native-lib-loader.jar", FileUtils.stripFilenameVersion("jars/native-lib-loader-2.3.2.jar"));
 	}
 
 	@Test
