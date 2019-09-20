@@ -156,6 +156,13 @@ public class VersionUtils {
 			suffix1 = t1.substring(i1);
 			suffix2 = t2.substring(i2);
 		}
+
+		// Final version (empty string) is larger than non-final (non-empty).
+		// For example: 2.0.0 > 2.0.0-beta-1.
+		if (suffix1.isEmpty() && suffix2.isEmpty()) return 0;
+		if (suffix1.isEmpty()) return 1;
+		if (suffix2.isEmpty()) return -1;
+
 		// Compare lexicographically.
 		return suffix1.compareTo(suffix2);
 	}

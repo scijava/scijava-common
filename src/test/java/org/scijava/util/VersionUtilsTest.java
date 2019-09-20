@@ -60,7 +60,7 @@ public class VersionUtilsTest {
 		assertTrue(VersionUtils.compare("2.7.3", "1.7.3") > 0);
 
 		// Suffix indicates version is older than final release.
-		assertTrue(VersionUtils.compare("1.5.2", "1.5.2-beta-1") < 0);
+		assertTrue(VersionUtils.compare("1.5.2", "1.5.2-beta-1") > 0);
 
 		// Check when number of version tokens does not match.
 		assertTrue(VersionUtils.compare("1.5", "1.5.1") < 0);
