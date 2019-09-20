@@ -146,15 +146,18 @@ public class VersionUtils {
 	/** Compares one token of a multi-token version string. */
 	private static int compareToken(final String t1, final String t2) {
 		final int i1 = digitIndex(t1), i2 = digitIndex(t2);
+		String suffix1 = t1, suffix2 = t2;
 		if (i1 > 0 && i2 > 0) {
 			// Versions start with digits; compare them numerically.
 			final long d1 = Long.parseLong(t1.substring(0, i1));
 			final long d2 = Long.parseLong(t2.substring(0, i2));
 			if (d1 < d2) return -1;
 			if (d1 > d2) return 1;
+			suffix1 = t1.substring(i1);
+			suffix2 = t2.substring(i2);
 		}
-		// Compare remaining characters lexicographically.
-		return t1.substring(i1).compareTo(t2.substring(i2));
+		// Compare lexicographically.
+		return suffix1.compareTo(suffix2);
 	}
 
 	/** Gets the subsequent index to all the given string's leading digits. */

@@ -88,6 +88,7 @@ public class VersionUtilsTest {
 
 		// Check weird stuff.
 		assertTrue(VersionUtils.compare("1", "a") < 0);
+		assertTrue(VersionUtils.compare("1", "%") > 0);
 		assertTrue(VersionUtils.compare("", "1") < 0);
 		assertTrue(VersionUtils.compare("1", "1.") < 0);
 		assertTrue(VersionUtils.compare("", ".") < 0);
