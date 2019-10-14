@@ -120,7 +120,7 @@ import org.scijava.widget.WidgetService;
  * @author Mark Hiner
  * @author Curtis Rueden
  */
-public interface Gateway extends RichPlugin {
+public interface Gateway extends RichPlugin, Disposable {
 
 	/**
 	 * Perform launch operations associated with this gateway.
@@ -372,4 +372,8 @@ public interface Gateway extends RichPlugin {
 	/** @see org.scijava.app.App#getInfo(boolean) */
 	String getInfo(boolean mem);
 
+	@Override
+	default void dispose() {
+		context().dispose();
+	}
 }
