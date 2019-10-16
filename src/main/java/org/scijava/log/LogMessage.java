@@ -132,7 +132,7 @@ public class LogMessage {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter printer = new PrintWriter(sw);
 		printer.print("[" + LogLevel.prefix(level()) + "] ");
-		printer.println(text());
+		if(text() != null) printer.println(text());
 		if (throwable() != null) {
 			throwable().printStackTrace(printer);
 		}
