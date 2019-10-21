@@ -190,14 +190,9 @@ public final class DefaultThreadService extends AbstractService implements
 		if (disposed) return null;
 		if (queues == null) queues = new HashMap<>();
 		if (!queues.containsKey(id)) {
-			final ThreadFactory factory = new ThreadFactory() {
-
-				@Override
-				public Thread newThread(final Runnable r) {
-					final String threadName = contextThreadPrefix() + id;
-					return new Thread(r, threadName);
-				}
-
+			final ThreadFactory factory = r -> {
+				final String threadName = contextThreadPrefix() + id;
+				return new Thread(r, threadName);
 			};
 			final ExecutorService queue = Executors.newSingleThreadExecutor(factory);
 			queues.put(id, queue);
@@ -212,34 +207,28 @@ public final class DefaultThreadService extends AbstractService implements
 
 	private Runnable wrap(final Runnable r) {
 		final Thread parent = Thread.currentThread();
-		return new Runnable() {
-			@Override
-			public void run() {
-				final Thread thread = Thread.currentThread();
-				try {
-					if (parent != thread) parents.put(thread, parent);
-					r.run();
-				}
-				finally {
-					if (parent != thread) parents.remove(thread);
-				}
+		return () -> {
+			final Thread thread = Thread.currentThread();
+			try {
+				if (parent != thread) parents.put(thread, parent);
+				r.run();
+			}
+			finally {
+				if (parent != thread) parents.remove(thread);
 			}
 		};
 	}
 
 	private <V> Callable<V> wrap(final Callable<V> c) {
 		final Thread parent = Thread.currentThread();
-		return new Callable<V>() {
-			@Override
-			public V call() throws Exception {
-				final Thread thread = Thread.currentThread();
-				try {
-					if (parent != thread) parents.put(thread, parent);
-					return c.call();
-				}
-				finally {
-					if (parent != thread) parents.remove(thread);
-				}
+		return () -> {
+			final Thread thread = Thread.currentThread();
+			try {
+				if (parent != thread) parents.put(thread, parent);
+				return c.call();
+			}
+			finally {
+				if (parent != thread) parents.remove(thread);
 			}
 		};
 	}
