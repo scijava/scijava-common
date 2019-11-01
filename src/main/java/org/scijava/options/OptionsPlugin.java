@@ -35,7 +35,6 @@ package org.scijava.options;
 import org.scijava.command.DynamicCommand;
 import org.scijava.event.EventService;
 import org.scijava.module.ModuleItem;
-import org.scijava.module.ModuleService;
 import org.scijava.options.event.OptionsEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.SingletonPlugin;
@@ -83,9 +82,6 @@ public abstract class OptionsPlugin extends DynamicCommand implements
 
 	@Parameter
 	private PrefService prefService;
-
-	@Parameter
-	private ModuleService moduleService;
 
 	// -- OptionsPlugin methods --
 

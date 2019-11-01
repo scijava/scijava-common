@@ -66,7 +66,7 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 	private PluginService pluginService;
 
 	@Parameter
-	private ModuleService moduleService;
+	protected ModuleService moduleService;
 
 	private DynamicCommandInfo info;
 
