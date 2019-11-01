@@ -493,7 +493,7 @@ public class ShadowMenu extends AbstractContextual implements
 	// -- Helper methods --
 
 	private ShadowMenu addInternal(final ModuleInfo o) {
-		if (o.getMenuPath().isEmpty()) return null; // no menu
+		if (o.getMenuPath() == null || o.getMenuPath().isEmpty()) return null; // no menu
 		return addChild(o, 0);
 	}
 
