@@ -45,7 +45,6 @@ import org.scijava.Priority;
 import org.scijava.UIDetails;
 import org.scijava.Versioned;
 import org.scijava.input.Accelerator;
-import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
 import org.scijava.util.Types;
 import org.scijava.util.VersionUtils;
