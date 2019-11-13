@@ -386,6 +386,11 @@ public class ScriptREPL {
 	}
 
 	private String serviceName(final Service service) {
+		final PluginInfo<?> info = service.getInfo();
+		final String pluginName = info == null ? null : info.getName();
+		// Name was explicitly given in the @Plugin annotation.
+		if (pluginName != null && !pluginName.isEmpty()) return pluginName;
+		// No name was given; synthesize one from the class name.
 		final String serviceName = service.getClass().getSimpleName();
 		final String shortName = lowerCamelCase(
 			serviceName.replaceAll("^(Default)?(.*)Service$", "$2"));
