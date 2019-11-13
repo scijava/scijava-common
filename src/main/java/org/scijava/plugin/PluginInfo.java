@@ -33,6 +33,8 @@
 package org.scijava.plugin;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.Optional;
 
 import org.scijava.AbstractUIDetails;
 import org.scijava.Identifiable;
@@ -351,6 +353,143 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		}
 	}
 
+	// -- Utility methods --
+
+	/**
+	 * Finds a {@link PluginInfo} of the given plugin class in the specified
+	 * {@link PluginIndex}. <em>Note that to avoid loading plugin classes, class
+	 * identity is determined by class name equality only.</em>
+	 * 
+	 * @param pluginClass The concrete class of the plugin whose
+	 *          {@link PluginInfo} is desired.
+	 * @param pluginIndex The {@link PluginIndex} to search for a matching
+	 *          {@link PluginInfo}.
+	 * @return The matching {@link PluginInfo}, or null if none found.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <P extends SciJavaPlugin> PluginInfo<?> get(
+		final Class<P> pluginClass, final PluginIndex pluginIndex)
+	{
+		return get(pluginClass, (Collection) pluginIndex.getAll());
+	}
+
+	/**
+	 * Finds a {@link PluginInfo} of the given plugin class and plugin type in the
+	 * specified {@link PluginIndex}. <em>Note that to avoid loading plugin
+	 * classes, class identity is determined by class name equality only.</em>
+	 * 
+	 * @param pluginClass The concrete class of the plugin whose
+	 *          {@link PluginInfo} is desired.
+	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.
+	 * @param pluginIndex The {@link PluginIndex} to search for a matching
+	 *          {@link PluginInfo}.
+	 * @return The matching {@link PluginInfo}, or null if none found.
+	 */
+	public static <P extends PT, PT extends SciJavaPlugin> PluginInfo<PT> get(
+		final Class<P> pluginClass, final Class<PT> pluginType,
+		final PluginIndex pluginIndex)
+	{
+		return get(pluginClass, pluginIndex.getPlugins(pluginType));
+	}
+
+	/**
+	 * Finds a {@link PluginInfo} of the given plugin class in the specified list
+	 * of plugins. <em>Note that to avoid loading plugin classes, class identity
+	 * is determined by class name equality only.</em>
+	 * 
+	 * @param pluginClass The concrete class of the plugin whose
+	 *          {@link PluginInfo} is desired.
+	 * @param plugins The list of plugins to search for a match.
+	 * @return The matching {@link PluginInfo}, or null if none found.
+	 */
+	public static <P extends PT, PT extends SciJavaPlugin> PluginInfo<PT> get(
+		final Class<P> pluginClass,
+		final Collection<? extends PluginInfo<PT>> plugins)
+	{
+		final String className = pluginClass.getName();
+		final Optional<? extends PluginInfo<PT>> result = plugins.stream() //
+			.filter(info -> info.getClassName().equals(className)) //
+			.findFirst();
+		return result.isPresent() ? result.get() : null;
+	}
+
+	/**
+	 * Creates a {@link PluginInfo} for the given plugin class. The class must be
+	 * a concrete class annotated with the @{@link Plugin} annotation, from which
+	 * the plugin type will be inferred.
+	 * 
+	 * @param pluginClass The concrete class of the plugin for which a new
+	 *          {@link PluginInfo} is desired.
+	 * @return A newly created {@link PluginInfo} for the given plugin class.
+	 * @throws IllegalArgumentException if the given class is not annotated
+	 *           with @{@link Plugin}, or its annotated {@link Plugin#type()
+	 *           type()} is not a supertype of the plugin class.
+	 */
+	public static PluginInfo<?> create(
+		final Class<? extends SciJavaPlugin> pluginClass)
+	{
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		final PluginInfo<?> info = new PluginInfo(pluginClass, //
+			pluginType(pluginClass));
+		return info;
+	}
+
+	/**
+	 * Creates a {@link PluginInfo} for the given plugin class of the specified
+	 * plugin type.
+	 * 
+	 * @param pluginClass The concrete class of the plugin for which a new
+	 *          {@link PluginInfo} is desired.
+	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.
+	 * @return A newly created {@link PluginInfo} for the given plugin class.
+	 */
+	public static <P extends PT, PT extends SciJavaPlugin> PluginInfo<PT> create(
+		final Class<P> pluginClass, final Class<PT> pluginType)
+	{
+		return new PluginInfo<>(pluginClass, pluginType);
+	}
+
+	/**
+	 * Obtains a {@link PluginInfo} for the given plugin class. If one already
+	 * exists in the specified {@link PluginIndex}, it is retrieved (see
+	 * {@link #get(Class, PluginIndex)}); otherwise, a new one is created (see
+	 * {@link #create(Class)}) but not added to the index.
+	 * 
+	 * @param pluginClass The concrete class of the plugin whose
+	 *          {@link PluginInfo} is desired.
+	 * @param pluginIndex The {@link PluginIndex} to search for a matching
+	 *          {@link PluginInfo}.
+	 * @throws IllegalArgumentException when creating a new {@link PluginInfo} if
+	 *           the associated plugin type cannot be inferred; see
+	 *           {@link #create(Class)}.
+	 */
+	public static <P extends SciJavaPlugin> PluginInfo<?> getOrCreate(
+		final Class<P> pluginClass, final PluginIndex pluginIndex)
+	{
+		final PluginInfo<?> existing = get(pluginClass, pluginIndex);
+		return existing == null ? create(pluginClass) : existing;
+	}
+
+	/**
+	 * Obtains a {@link PluginInfo} for the given plugin class. If one already
+	 * exists in the specified {@link PluginIndex}, it is retrieved (see
+	 * {@link #get(Class, PluginIndex)}); otherwise, a new one is created (see
+	 * {@link #create(Class)}) but not added to the index.
+	 * 
+	 * @param pluginClass The concrete class of the plugin whose
+	 *          {@link PluginInfo} is desired.
+	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.
+	 * @param pluginIndex The {@link PluginIndex} to search for a matching
+	 *          {@link PluginInfo}.
+	 */
+	public static <P extends PT, PT extends SciJavaPlugin> PluginInfo<PT>
+		getOrCreate(final Class<P> pluginClass, final Class<PT> pluginType,
+			final PluginIndex pluginIndex)
+	{
+		final PluginInfo<PT> existing = get(pluginClass, pluginType, pluginIndex);
+		return existing == null ? create(pluginClass, pluginType) : existing;
+	}
+
 	// -- Helper methods --
 
 	/** Populates the entry to match the associated @{@link Plugin} annotation. */
@@ -412,4 +551,23 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 		return menuPath;
 	}
 
+	/** Extracts the plugin type from a class's @{@link Plugin} annotation. */
+	private static <P extends SciJavaPlugin> Class<? super P> pluginType(
+		final Class<P> pluginClass)
+	{
+		final Plugin annotation = pluginClass.getAnnotation(Plugin.class);
+		if (annotation == null) {
+			throw new IllegalArgumentException(
+				"Cannot infer plugin type from class '" + pluginClass.getName() +
+					"' with no @Plugin annotation.");
+		}
+		final Class<?> type = annotation.type();
+		if (!type.isAssignableFrom(pluginClass)) {
+			throw new IllegalArgumentException("Invalid plugin type '" + //
+				type.getName() + "' for class '" + pluginClass.getName() + "'");
+		}
+		@SuppressWarnings("unchecked")
+		final Class<? super P> pluginType = (Class<? super P>) type;
+		return pluginType;
+	}
 }
