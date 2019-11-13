@@ -33,10 +33,16 @@
 package org.scijava.plugin;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.InstantiableException;
@@ -49,11 +55,24 @@ import org.scijava.Priority;
  */
 public class PluginInfoTest {
 
+	private Context context;
+	private PluginIndex pluginIndex;
+
+	@Before
+	public void setUp() {
+		context = new Context(true);
+		pluginIndex = context.getPluginIndex();
+	}
+
+	@After
+	public void tearDown() {
+		context.dispose();
+		context = null;
+		pluginIndex = null;
+	}
+
 	@Test
 	public void testNames() throws InstantiableException {
-		final Context context = new Context(true);
-		final PluginIndex pluginIndex = context.getPluginIndex();
-
 		final List<PluginInfo<?>> infos = pluginIndex.get(IceCream.class);
 		assertEquals(3, infos.size());
 
@@ -62,9 +81,74 @@ public class PluginInfoTest {
 		assertPlugin(Flavorless.class, IceCream.class, "", infos.get(2));
 	}
 
+	@Test
+	public void testGet() throws InstantiableException {
+		final PluginInfo<?> chocolateInfo = //
+			PluginInfo.get(Chocolate.class, pluginIndex);
+		assertPlugin(Chocolate.class, IceCream.class, "chocolate", chocolateInfo);
+
+		final PluginInfo<IceCream> chocolateInfoWithType = //
+			PluginInfo.get(Chocolate.class, IceCream.class, pluginIndex);
+		assertSame(chocolateInfo, chocolateInfoWithType);
+
+		class Sherbet implements IceCream {}
+		assertNull(PluginInfo.get(Sherbet.class, pluginIndex));
+	}
+
+	@Test
+	public void testCreate() throws InstantiableException {
+		final PluginInfo<?> chocolateInfo = PluginInfo.create(Chocolate.class);
+		assertPlugin(Chocolate.class, IceCream.class, "chocolate", chocolateInfo);
+
+		final PluginInfo<IceCream> chocolateInfoWithType = //
+			PluginInfo.create(Chocolate.class, IceCream.class);
+		assertPlugin(Chocolate.class, IceCream.class, "chocolate",
+			chocolateInfoWithType);
+		assertNotSame(chocolateInfo, chocolateInfoWithType);
+
+		class Sherbet implements IceCream {}
+		final PluginInfo<IceCream> sherbetInfoWithType = //
+			PluginInfo.create(Sherbet.class, IceCream.class);
+		assertPlugin(Sherbet.class, IceCream.class, null, sherbetInfoWithType);
+
+		try {
+			final PluginInfo<?> result = PluginInfo.create(Sherbet.class);
+			fail("Expected IllegalArgumentException but got: " + result);
+		}
+		catch (final IllegalArgumentException exc) {
+			// NB: Expected.
+		}
+	}
+
+	@Test
+	public void testGetOrCreate() throws InstantiableException {
+		final PluginInfo<?> chocolateInfo = //
+			PluginInfo.getOrCreate(Chocolate.class, pluginIndex);
+		assertPlugin(Chocolate.class, IceCream.class, "chocolate", chocolateInfo);
+
+		final PluginInfo<IceCream> chocolateInfoWithType = //
+			PluginInfo.getOrCreate(Chocolate.class, IceCream.class, pluginIndex);
+		assertSame(chocolateInfo, chocolateInfoWithType);
+
+		class Sherbet implements IceCream {}
+		final PluginInfo<IceCream> sherbetInfoWithType = //
+			PluginInfo.getOrCreate(Sherbet.class, IceCream.class, pluginIndex);
+		assertPlugin(Sherbet.class, IceCream.class, null, sherbetInfoWithType);
+
+		try {
+			final PluginInfo<?> result = //
+				PluginInfo.getOrCreate(Sherbet.class, pluginIndex);
+			fail("Expected IllegalArgumentException but got: " + result);
+		}
+		catch (final IllegalArgumentException exc) {
+			// NB: Expected.
+		}
+	}
+
 	private void assertPlugin(Class<?> pluginClass, Class<?> pluginType,
 		String name, PluginInfo<?> info) throws InstantiableException
 	{
+		assertNotNull(info);
 		assertSame(pluginClass, info.loadClass());
 		assertSame(pluginType, info.getPluginType());
 		assertEquals(name, info.getName());

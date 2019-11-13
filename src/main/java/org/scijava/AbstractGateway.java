@@ -54,6 +54,7 @@ import org.scijava.options.OptionsService;
 import org.scijava.platform.AppEventService;
 import org.scijava.platform.PlatformService;
 import org.scijava.plugin.AbstractRichPlugin;
+import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
 import org.scijava.prefs.PrefService;
 import org.scijava.script.ScriptService;
@@ -86,7 +87,15 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 
 	public AbstractGateway(final String appName, final Context context) {
 		this.appName = appName;
-		if (context != null) setContext(context);
+		if (context != null) {
+			setContext(context);
+
+			// NB: Make a best effort to inject plugin metadata.
+			final PluginInfo<?> info = PluginInfo.getOrCreate(getClass(),
+				Gateway.class, context.getPluginIndex());
+			info.inject(this);
+			Priority.inject(this, info.getPriority());
+		}
 	}
 
 	// -- Gateway methods --
@@ -114,6 +123,8 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 
 	@Override
 	public String getShortName() {
+		final String pluginName = getInfo() == null ? null : getInfo().getName();
+		if (pluginName != null && !pluginName.isEmpty()) return pluginName;
 		return getClass().getSimpleName().toLowerCase();
 	}
 
