@@ -65,7 +65,7 @@ public class ServiceHelper extends AbstractContextual {
 	 * Classes to scan when searching for dependencies. Data structure is a map
 	 * with keys being relevant classes, and values being associated priorities.
 	 */
-	private final Map<Class<? extends Service>, Double> classPoolMap;
+	private final Map<Class<? extends Service>, PluginInfo<?>> classPoolMap;
 
 	/** Classes to scan when searching for dependencies, sorted by priority. */
 	private final List<Class<? extends Service>> classPoolList;
@@ -303,9 +303,10 @@ public class ServiceHelper extends AbstractContextual {
 		final S service = c.newInstance();
 		service.setContext(getContext());
 
-		// propagate priority if known
-		final Double priority = classPoolMap.get(c);
-		if (priority != null) service.setPriority(priority);
+		// propagate plugin metadata and priority if known
+		final PluginInfo<?> info = classPoolMap.get(c);
+		service.setInfo(info);
+		if (info != null) service.setPriority(info.getPriority());
 
 		// NB: If there are any @EventHandler annotated methods, we treat the
 		// EventService as a required dependency, _unless_ there is also an
@@ -358,7 +359,7 @@ public class ServiceHelper extends AbstractContextual {
 
 	/** Asks the plugin index for all available service implementations. */
 	private void findServiceClasses(
-		final Map<Class<? extends Service>, Double> serviceMap,
+		final Map<Class<? extends Service>, PluginInfo<?>> serviceMap,
 		final List<Class<? extends Service>> serviceList)
 	{
 		// ask the plugin index for the (sorted) list of available services
@@ -368,8 +369,7 @@ public class ServiceHelper extends AbstractContextual {
 		for (final PluginInfo<Service> info : services) {
 			try {
 				final Class<? extends Service> c = info.loadClass();
-				final double priority = info.getPriority();
-				serviceMap.put(c, priority);
+				serviceMap.put(c, info);
 				serviceList.add(c);
 			}
 			catch (final Throwable e) {
