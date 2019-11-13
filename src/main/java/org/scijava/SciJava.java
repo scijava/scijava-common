@@ -45,7 +45,7 @@ import org.scijava.service.Service;
  * 
  * @author Curtis Rueden
  */
-@Plugin(type = Gateway.class)
+@Plugin(type = Gateway.class, name = "sj")
 public class SciJava extends AbstractGateway {
 
 	// -- Constructors --
@@ -113,12 +113,4 @@ public class SciJava extends AbstractGateway {
 	public SciJava(final Context context) {
 		super(SciJavaApp.NAME, context);
 	}
-
-	// -- Gateway methods --
-
-	@Override
-	public String getShortName() {
-		return "sj";
-	}
-
 }

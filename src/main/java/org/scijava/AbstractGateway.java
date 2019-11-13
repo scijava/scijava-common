@@ -114,6 +114,8 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 
 	@Override
 	public String getShortName() {
+		final String pluginName = getInfo() == null ? null : getInfo().getName();
+		if (pluginName != null && !pluginName.isEmpty()) return pluginName;
 		return getClass().getSimpleName().toLowerCase();
 	}
 
