@@ -87,22 +87,10 @@ public class GatewayPreprocessor extends AbstractPreprocessorPlugin {
 		try {
 			gateway = type.getConstructor(Context.class).newInstance(context);
 		}
-		catch (final IllegalArgumentException exc) {
-			exception = exc;
-		}
-		catch (final SecurityException exc) {
-			exception = exc;
-		}
-		catch (final InstantiationException exc) {
-			exception = exc;
-		}
-		catch (final IllegalAccessException exc) {
-			exception = exc;
-		}
-		catch (final InvocationTargetException exc) {
-			exception = exc;
-		}
-		catch (final NoSuchMethodException exc) {
+		catch (final IllegalArgumentException | SecurityException
+				| InstantiationException | IllegalAccessException
+				| InvocationTargetException | NoSuchMethodException exc)
+		{
 			exception = exc;
 		}
 		if (exception != null) {
