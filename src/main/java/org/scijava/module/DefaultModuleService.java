@@ -497,9 +497,8 @@ public class DefaultModuleService extends AbstractService implements
 
 		for (final ModuleItem<?> item : items) {
 			final String name = item.getName();
-			final boolean resolved = module.isInputResolved(name);
-			if (resolved) continue; // skip resolved inputs
 			if (!item.isAutoFill()) continue; // skip unfillable inputs
+			if (module.isInputResolved(name)) continue; // skip resolved inputs
 			final Class<?> itemType = item.getType();
 			for (final Class<?> type : types) {
 				if (type.isAssignableFrom(itemType)) {

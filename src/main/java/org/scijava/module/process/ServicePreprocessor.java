@@ -70,7 +70,8 @@ public class ServicePreprocessor extends AbstractPreprocessorPlugin {
 	@Override
 	public void process(final Module module) {
 		for (final ModuleItem<?> input : module.getInfo().inputs()) {
-			if (!input.isAutoFill()) continue; // cannot auto-fill this input
+			if (!input.isAutoFill()) continue; // skip unfillable inputs
+			if (module.isInputResolved(input.getName())) continue; // skip resolved inputs
 			final Class<?> type = input.getType();
 			if (Service.class.isAssignableFrom(type)) {
 				// input is a service
@@ -79,7 +80,9 @@ public class ServicePreprocessor extends AbstractPreprocessorPlugin {
 					(ModuleItem<? extends Service>) input;
 				setServiceValue(getContext(), module, serviceInput);
 			}
-			if (type.isAssignableFrom(getContext().getClass())) {
+			if (Context.class.isAssignableFrom(type) && //
+				type.isAssignableFrom(getContext().getClass()))
+			{
 				// input is a compatible context
 				final String name = input.getName();
 				module.setInput(name, getContext());

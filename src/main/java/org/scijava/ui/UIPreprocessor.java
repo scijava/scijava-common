@@ -62,9 +62,12 @@ public class UIPreprocessor extends AbstractPreprocessorPlugin {
 		if (ui == null) return; // no default UI
 
 		for (final ModuleItem<?> input : module.getInfo().inputs()) {
-			if (!input.isAutoFill()) continue; // cannot auto-fill this input
+			if (!input.isAutoFill()) continue; // skip unfillable inputs
+			if (module.isInputResolved(input.getName())) continue; // skip resolved inputs
 			final Class<?> type = input.getType();
-			if (type.isAssignableFrom(ui.getClass())) {
+			if (UserInterface.class.isAssignableFrom(type) && //
+				type.isAssignableFrom(ui.getClass()))
+			{
 				// input is a compatible UI
 				final String name = input.getName();
 				module.setInput(name, ui);

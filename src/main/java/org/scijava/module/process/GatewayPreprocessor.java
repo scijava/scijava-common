@@ -64,7 +64,8 @@ public class GatewayPreprocessor extends AbstractPreprocessorPlugin {
 	@Override
 	public void process(final Module module) {
 		for (final ModuleItem<?> input : module.getInfo().inputs()) {
-			if (!input.isAutoFill()) continue; // cannot auto-fill this input
+			if (!input.isAutoFill()) continue; // skip unfillable inputs
+			if (module.isInputResolved(input.getName())) continue; // skip resolved inputs
 			final Class<?> type = input.getType();
 			if (Gateway.class.isAssignableFrom(type)) {
 				// input is a gateway
