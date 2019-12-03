@@ -39,6 +39,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.Priority;
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.PluginService;
+
+import java.util.List;
 
 /**
  * Unit tests for core {@link Display} classes.
@@ -132,4 +137,20 @@ public class DisplayTest {
 		assertEquals(value, result);
 	}
 
+	@Test
+	public void testMultipleDisplaysPriorityMatch() {
+		final Context context = new Context(DisplayService.class);
+		PluginInfo<Display> info = PluginInfo.create(CustomTextDisplay.class, Display.class);
+		info.setPriority(Priority.HIGH);
+		context.service(PluginService.class).addPlugin(info);
+		final DefaultDisplayService displayService =
+				context.getService(DefaultDisplayService.class);
+		final String name = "Text";
+		final String value = "Hello";
+		List<Display<?>> matchingDisplays = displayService.getMatchingDisplays(value);
+		assertNotNull(matchingDisplays);
+		assertTrue(matchingDisplays.size() > 1);
+		Display<?> display = displayService.createDisplay(name, value);
+		assertEquals(CustomTextDisplay.class, display.getClass());
+	}
 }
