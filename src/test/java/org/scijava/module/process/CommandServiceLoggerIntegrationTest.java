@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.command.Command;
+import org.scijava.command.CommandInfo;
 import org.scijava.command.CommandService;
 import org.scijava.log.DefaultLogger;
 import org.scijava.log.LogLevel;
@@ -49,40 +50,41 @@ import org.scijava.log.TestLogListener;
 import org.scijava.plugin.Parameter;
 
 /**
- * Tests {@link LoggerPreprocessor}.
+ * Tests logger injection with {@link CommandService}
  *
  * @author Matthias Arzt
  */
-public class LoggerPreprocessorTest {
+public class CommandServiceLoggerIntegrationTest {
 
+	private final Context context = new Context(CommandService.class);
+	private final CommandService commandService = context.service(CommandService.class);
+	private final LogService service = context.service(LogService.class);
+	private static final String MESSAGE_TEXT = "foobar";
+
+	/** Test logging, when no logger is explicitly given to {@link CommandService#run} */
 	@Test
 	public void testInjection() throws InterruptedException, ExecutionException {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService = context.service(CommandService.class);
+		// setup
 		final TestLogListener listener = new TestLogListener();
-		context.service(LogService.class).addLogListener(listener);
-
+		service.addLogListener(listener);
+		// process
 		commandService.run(CommandWithLogger.class, true).get();
-		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
+		// test
+		assertTrue(listener.hasLogged(m -> MESSAGE_TEXT.equals(m.text())));
 	}
 
 	/** Tests redirection of a command's log output. */
 	@Test
-	public void testCustomLogger() throws ExecutionException,
-		InterruptedException
-	{
+	public void testCustomLogger() throws ExecutionException, InterruptedException {
 		// setup
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService = context.service(CommandService.class);
 		final TestLogListener listener = new TestLogListener();
-		final LogSource source = LogSource.newRoot();
-		final DefaultLogger customLogger = new DefaultLogger(listener, source,
-			LogLevel.TRACE);
+		final LogSource customSource = LogSource.newRoot();
+		final DefaultLogger customLogger = new DefaultLogger(listener, customSource, LogLevel.TRACE);
 		// process
 		commandService.run(CommandWithLogger.class, true, "log", customLogger)
 			.get();
 		// test
-		assertTrue(listener.hasLogged(m -> m.source().equals(source)));
+		assertTrue(listener.hasLogged(m -> m.source().equals(customSource)));
 	}
 
 	public static class CommandWithLogger implements Command {
@@ -92,25 +94,7 @@ public class LoggerPreprocessorTest {
 
 		@Override
 		public void run() {
-			log.info("log from the command.");
-		}
-	}
-
-	@Test
-	public void testLoggerNameByAnnotation() throws ExecutionException, InterruptedException {
-		final Context context = new Context(CommandService.class);
-		final CommandService commandService = context.service(CommandService.class);
-		commandService.run(CommandWithNamedLogger.class, true).get();
-	}
-
-	public static class CommandWithNamedLogger implements Command {
-
-		@Parameter(label = "MyLoggerName")
-		public Logger log;
-
-		@Override
-		public void run() {
-			assertEquals("MyLoggerName", log.getName());
+			log.info(MESSAGE_TEXT);
 		}
 	}
 }

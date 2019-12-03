@@ -45,7 +45,9 @@ import org.scijava.event.ContextDisposingEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
+import org.scijava.log.Logger;
 import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginIndex;
 import org.scijava.service.Service;
 import org.scijava.service.ServiceHelper;
@@ -494,6 +496,22 @@ public class Context implements Disposable {
 
 				// populate Context parameter
 				ClassUtils.setValue(f, o, this);
+			}
+			else if (Logger.class.isAssignableFrom(type)) {
+				final Logger existingLogger = (Logger) ClassUtils.getValue(f, o);
+				if (existingLogger == null) {
+					final LogService logService = getService(LogService.class);
+					if(logService != null) {
+						Parameter annotation = f.getAnnotation(Parameter.class);
+						String label = annotation.label();
+						String name = label == null || label.isEmpty() ? o.getClass().getSimpleName() : label;
+						final Logger logger = logService.subLogger(name);
+						ClassUtils.setValue(f, o, logger);
+					} else if(f.getAnnotation(Parameter.class).required()) {
+						throw new IllegalArgumentException(
+								createMissingServiceMessage(LogService.class));
+					}
+				}
 			}
 			else if (!type.isPrimitive()) {
 				// the parameter is some other object; if it is non-null, we recurse

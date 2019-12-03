@@ -31,6 +31,8 @@
 
 package org.scijava.log;
 
+import org.scijava.Optional;
+
 import static org.scijava.log.LogLevel.DEBUG;
 import static org.scijava.log.LogLevel.ERROR;
 import static org.scijava.log.LogLevel.INFO;
@@ -49,7 +51,7 @@ import static org.scijava.log.LogLevel.WARN;
  * @see LogService
  */
 @IgnoreAsCallingClass
-public interface Logger {
+public interface Logger extends Optional {
 
 	default void debug(final Object msg) {
 		log(DEBUG, msg);
