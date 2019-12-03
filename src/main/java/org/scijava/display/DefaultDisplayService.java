@@ -33,9 +33,11 @@
 package org.scijava.display;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.scijava.Prioritized;
 import org.scijava.display.event.DisplayActivatedEvent;
 import org.scijava.display.event.DisplayCreatedEvent;
 import org.scijava.display.event.DisplayDeletedEvent;
@@ -219,20 +221,28 @@ public final class DefaultDisplayService extends AbstractService implements
 
 	@Override
 	public Display<?> createDisplayQuietly(final Object o) {
+		final List<Display<?>> matchingDisplays = getMatchingDisplays(o);
+		if(matchingDisplays.size() > 0) {
+			// use the display with the highest priority
+			Display<?> display = matchingDisplays.stream().max(Comparator.comparing(Prioritized::getPriority)).get();
+			display.display(o);
+			return display;
+		}
+		return null;
+	}
+
+	List<Display<?>> getMatchingDisplays(Object o) {
 		// get available display plugins from the plugin service
 		final List<PluginInfo<Display<?>>> displayPlugins = getDisplayPlugins();
-
+		final List<Display<?>> matchingDisplays = new ArrayList<>();
 		for (final PluginInfo<Display<?>> info : displayPlugins) {
 			final Display<?> display = pluginService.createInstance(info);
 			if (display == null) continue;
-			// display object using the first compatible Display
-			// TODO: how to handle multiple matches? prompt user with dialog box?
 			if (display.canDisplay(o)) {
-				display.display(o);
-				return display;
+				matchingDisplays.add(display);
 			}
 		}
-		return null;
+		return matchingDisplays;
 	}
 
 	// -- Event handlers --
