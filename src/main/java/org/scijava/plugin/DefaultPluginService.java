@@ -239,7 +239,9 @@ public class DefaultPluginService extends AbstractService implements
 			return p;
 		}
 		catch (final Throwable t) {
-			log.error("Cannot create plugin: " + info, t);
+			final String errorMessage = "Cannot create plugin: " + info;
+			if (log.isDebug()) log.debug(errorMessage, t);
+			else log.error(errorMessage);
 		}
 		return null;
 	}
