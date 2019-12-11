@@ -436,7 +436,10 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@EventHandler
-	protected void onEvent(@SuppressWarnings("unused") final AppQuitEvent event) {
+	protected synchronized void onEvent(
+		@SuppressWarnings("unused") final AppQuitEvent event)
+	{
+		if (!initialized) return;
 		for (final UserInterface ui : getVisibleUIs()) {
 			ui.saveLocation();
 		}
