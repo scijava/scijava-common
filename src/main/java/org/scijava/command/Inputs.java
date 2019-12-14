@@ -96,7 +96,7 @@ public final class Inputs extends DynamicCommand {
 		try {
 			final List<PreprocessorPlugin> pre = //
 				pluginService.createInstancesOfType(PreprocessorPlugin.class);
-			return moduleService.run(this, true, pre, null).get().getInputs();
+			return moduleService.run(this, pre, null).get().getInputs();
 		}
 		catch (final InterruptedException | ExecutionException exc) {
 			throw new RuntimeException(exc);
