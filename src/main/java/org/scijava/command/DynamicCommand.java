@@ -79,7 +79,8 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 	public DynamicCommandInfo getInfo() {
 		if (info == null) {
 			// NB: Create dynamic metadata lazily.
-			final CommandInfo commandInfo = commandService.getCommand(getClass());
+			CommandInfo commandInfo = commandService.getCommand(getClass());
+			if (commandInfo == null) commandInfo = new CommandInfo(getClass());
 			info = new DynamicCommandInfo(commandInfo, getClass());
 		}
 		return info;
