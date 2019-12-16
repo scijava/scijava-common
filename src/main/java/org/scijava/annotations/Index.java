@@ -223,7 +223,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		return new IndexItemIterator(annotation);
 	}
 
-	private static void log(String string) {
+	public static void log(String string) {
 		try {
 			String logFile = System.getenv("LOGFILE");
 			File file = new File(logFile);
