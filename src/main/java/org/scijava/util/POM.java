@@ -43,6 +43,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.scijava.Context;
 import org.scijava.Versioned;
 import org.xml.sax.SAXException;
 
@@ -280,8 +281,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	public static List<POM> getAllPOMs() {
 		// find all META-INF/maven/ folders on the classpath
 		final String pomPrefix = "META-INF/maven/";
-		final ClassLoader classLoader =
-			Thread.currentThread().getContextClassLoader();
+		final ClassLoader classLoader = Context.getClassLoader();
 		final Enumeration<URL> resources;
 		try {
 			resources = classLoader.getResources(pomPrefix);

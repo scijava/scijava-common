@@ -58,6 +58,8 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.scijava.Context;
+
 /**
  * Useful methods for working with file paths.
  * 
@@ -664,7 +666,7 @@ public final class FileUtils {
 		final String pathPrefix, final File baseDirectory)
 	{
 		// scan URL resource paths first
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		final ClassLoader loader = Context.getClassLoader();
 		final ArrayList<URL> urls = new ArrayList<>();
 		try {
 			urls.addAll(Collections.list(loader.getResources(pathPrefix + "/")));

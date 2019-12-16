@@ -45,6 +45,8 @@ import java.util.Map.Entry;
 
 import javax.xml.ws.Service;
 
+import org.scijava.Context;
+
 /**
  * Combines {@link Service} information from all JAR files on the classpath.
  * 
@@ -61,8 +63,7 @@ public class ServiceCombiner implements Combiner {
 		final Map<String, StringBuilder> files =
 			new HashMap<>();
 		final Enumeration<URL> directories =
-			Thread.currentThread().getContextClassLoader().getResources(
-				SERVICES_PREFIX);
+			Context.getClassLoader().getResources(SERVICES_PREFIX);
 
 		// Iterate over all the service files
 		while (directories.hasMoreElements()) {
