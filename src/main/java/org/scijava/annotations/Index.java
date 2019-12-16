@@ -32,6 +32,8 @@
 
 package org.scijava.annotations;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -98,6 +100,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	private Index(final Class<A> annotation, final ClassLoader loader) {
 		this.annotation = annotation;
 		this.loader = loader;
+		log("Index(Class, ClassLoader): annotation=" + annotation + ", loader=" + loader);
 	}
 
 	private class IndexItemIterator implements Iterator<IndexItem<A>> {
@@ -110,6 +113,7 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 		private Map<String, URL> legacyURLs;
 
 		public IndexItemIterator(final Class<A> annotation) {
+			log("IndexItemIterator(Class): annotation=" + annotation);
 			seen = new HashSet<>();
 			try {
 				legacyURLs = new LinkedHashMap<>();
@@ -217,5 +221,16 @@ public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 	@Override
 	public Iterator<IndexItem<A>> iterator() {
 		return new IndexItemIterator(annotation);
+	}
+
+	private static void log(String string) {
+		try {
+			String logFile = System.getenv("LOGFILE");
+			File file = new File(logFile);
+			try (FileWriter fr = new FileWriter(file, true)) {
+				fr.write(string);
+			}
+		}
+		catch (IOException exc) { throw new RuntimeException(exc); }
 	}
 }
