@@ -43,6 +43,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.scijava.Context;
 import org.scijava.util.Combiner;
 import org.scijava.util.FileUtils;
 
@@ -65,7 +66,7 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 		}
 		final Set<String> annotationFiles = getAnnotationFiles();
 
-		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		final ClassLoader loader = Context.getClassLoader();
 
 		log("");
 		log("Writing annotations to " + outputDirectory.getAbsolutePath());
@@ -92,7 +93,7 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 
 		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
 			final Enumeration<URL> directories =
-				Thread.currentThread().getContextClassLoader().getResources(prefix);
+				Context.getClassLoader().getResources(prefix);
 			while (directories.hasMoreElements()) {
 				final URL url = directories.nextElement();
 				for (final URL annotationIndexURL : FileUtils.listContents(url)) {

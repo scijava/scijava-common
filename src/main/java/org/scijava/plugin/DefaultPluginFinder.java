@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.scijava.Context;
 import org.scijava.annotations.Index;
 import org.scijava.annotations.IndexItem;
 
@@ -113,8 +114,8 @@ public class DefaultPluginFinder implements PluginFinder {
 	}
 
 	private ClassLoader getClassLoader() {
-		if (customClassLoader != null) return customClassLoader;
-		return Thread.currentThread().getContextClassLoader();
+		return customClassLoader != null ? //
+			customClassLoader : Context.getClassLoader();
 	}
 
 	// -- Helper classes --

@@ -440,6 +440,18 @@ public class Context implements Disposable {
 			Arrays.asList(serviceClasses) : Arrays.asList(Service.class);
 	}
 
+	/**
+	 * Gets the class loader to use. This will be the current thread's context
+	 * class loader if non-null; otherwise it will be the system class loader.
+	 * 
+	 * @see Thread#getContextClassLoader()
+	 * @see ClassLoader#getSystemClassLoader()
+	 */
+	public static ClassLoader getClassLoader() {
+		final ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
+		return contextCL != null ? contextCL : ClassLoader.getSystemClassLoader();
+	}
+
 	// -- Helper methods --
 
 	private List<Field> getParameterFields(final Object o) {
@@ -530,8 +542,7 @@ public class Context implements Disposable {
 		final Class<? extends Service> serviceType)
 	{
 		final String nl = System.getProperty("line.separator");
-		final ClassLoader classLoader = //
-			Thread.currentThread().getContextClassLoader();
+		final ClassLoader classLoader = getClassLoader();
 		final StringBuilder msg = new StringBuilder(
 			"Required service is missing: " + serviceType.getName() + nl);
 		msg.append("Context: " + this + nl);
@@ -569,5 +580,4 @@ public class Context implements Disposable {
 	private static boolean strict() {
 		return !"false".equals(System.getProperty(STRICT_PROPERTY));
 	}
-
 }

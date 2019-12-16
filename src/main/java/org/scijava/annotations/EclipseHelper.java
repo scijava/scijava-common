@@ -43,6 +43,7 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.scijava.Context;
 import org.scijava.util.FileUtils;
 
 /**
@@ -297,7 +298,7 @@ public class EclipseHelper extends DirectoryIndexer {
 	 */
 	public static void main(final String... args) {
 		System.setProperty(FORCE_ANNOTATION_INDEX_PROPERTY, "true");
-		updateAnnotationIndex(Thread.currentThread().getContextClassLoader());
+		updateAnnotationIndex(Context.getClassLoader());
 	}
 
 }

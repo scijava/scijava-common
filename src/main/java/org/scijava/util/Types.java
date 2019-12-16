@@ -69,6 +69,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.scijava.Context;
+
 /**
  * Utility class for working with generic types, fields and methods.
  * <p>
@@ -221,8 +223,8 @@ public final class Types {
 
 		// load the class!
 		try {
-			final ClassLoader cl = classLoader == null ? //
-				Thread.currentThread().getContextClassLoader() : classLoader;
+			final ClassLoader cl = //
+				classLoader != null ? classLoader : Context.getClassLoader();
 			return cl.loadClass(className);
 		}
 		catch (final Throwable t) {
