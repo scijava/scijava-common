@@ -34,6 +34,7 @@ package org.scijava.object;
 
 import java.util.List;
 
+import org.scijava.Named;
 import org.scijava.event.EventService;
 import org.scijava.service.SciJavaService;
 
@@ -54,8 +55,20 @@ public interface ObjectService extends SciJavaService {
 	/** Gets a list of all registered objects compatible with the given type. */
 	<T> List<T> getObjects(Class<T> type);
 
+	/**
+	 * Gets the name belonging to a given object.
+	 * 
+	 * If no explicit name was provided at registration time, the name will be
+	 * derived from {@link Named#getName()} if the object implements {@link Named},
+	 * or from the {@link Object#toString()} otherwise
+	 **/
+	String getName(Object obj);
+
 	/** Registers an object with the object service. */
 	void addObject(Object obj);
+
+	/** Registers a named object with the object service. */
+	void addObject(Object obj, String name);
 
 	/** Deregisters an object with the object service. */
 	void removeObject(Object obj);

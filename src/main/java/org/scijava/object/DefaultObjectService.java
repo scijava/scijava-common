@@ -34,6 +34,7 @@ package org.scijava.object;
 
 import java.util.List;
 
+import org.scijava.Named;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.object.event.ObjectCreatedEvent;
@@ -68,7 +69,7 @@ public final class DefaultObjectService extends AbstractService implements
 	private EventService eventService;
 
 	/** Index of registered objects. */
-	private ObjectIndex<Object> objectIndex;
+	private NamedObjectIndex<Object> objectIndex;
 
 	// -- ObjectService methods --
 
@@ -92,7 +93,12 @@ public final class DefaultObjectService extends AbstractService implements
 
 	@Override
 	public void addObject(final Object obj) {
-		objectIndex.add(obj);
+		addObject(obj, null);
+	}
+
+	@Override
+	public void addObject(Object obj, String name) {
+		objectIndex.add(obj, name);		
 		eventService.publish(new ObjectsAddedEvent(obj));
 	}
 
@@ -102,11 +108,23 @@ public final class DefaultObjectService extends AbstractService implements
 		eventService.publish(new ObjectsRemovedEvent(obj));
 	}
 
+	@Override
+	public String getName(Object obj) {
+		String name = objectIndex.getName(obj);
+		if (name != null) {
+			return name;
+		}
+		if (obj instanceof Named) {
+			return ((Named) obj).getName();
+		}
+		return obj.toString();
+	}
+
 	// -- Service methods --
 
 	@Override
 	public void initialize() {
-		objectIndex = new ObjectIndex<>(Object.class);
+		objectIndex = new NamedObjectIndex<>(Object.class);
 	}
 
 	// -- Event handlers --
@@ -120,5 +138,4 @@ public final class DefaultObjectService extends AbstractService implements
 	protected void onEvent(final ObjectDeletedEvent event) {
 		removeObject(event.getObject());
 	}
-
 }
