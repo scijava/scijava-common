@@ -699,12 +699,8 @@ public final class ClassUtils {
 		public List<T> getList(final Class<?> c,
 			final Class<? extends Annotation> annotationClass)
 		{
-			List<T> annotatedFields = null;
 			final Map<Class<? extends Annotation>, List<T>> annotationTypes = get(c);
-			if (annotationTypes != null) {
-				annotatedFields = annotationTypes.get(annotationClass);
-			}
-			return annotatedFields;
+			return annotationTypes == null ? null : annotationTypes.get(annotationClass);
 		}
 
 		/**
