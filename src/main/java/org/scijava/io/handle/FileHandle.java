@@ -136,7 +136,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	@Override
 	public void seek(final long pos) throws IOException {
-		reader().seek(pos);
+		writer().seek(pos);
 	}
 
 	// -- DataInput methods --
