@@ -321,12 +321,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	@Override
 	public String getIdentifier() {
-		try {
-			return "plugin:" + loadClass();
-		}
-		catch (final InstantiableException exc) {
-			return null;
-		}
+		return "plugin:" + getClassName();
 	}
 
 	// -- Locatable methods --
