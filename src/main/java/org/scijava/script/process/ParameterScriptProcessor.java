@@ -270,6 +270,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		else if (is(k, "max")) item.setMaximumValue(as(v, item.getType()));
 		else if (is(k, "min")) item.setMinimumValue(as(v, item.getType()));
 		else if (is(k, "name")) item.setName(as(v, String.class));
+		else if (is(k, "autoFill")) item.setAutoFill(as(v, boolean.class));
 		else if (is(k, "persist")) item.setPersisted(as(v, boolean.class));
 		else if (is(k, "persistKey")) item.setPersistKey(as(v, String.class));
 		else if (is(k, "required")) item.setRequired(as(v, boolean.class));

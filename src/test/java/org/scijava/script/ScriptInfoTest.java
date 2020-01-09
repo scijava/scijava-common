@@ -252,13 +252,14 @@ public class ScriptInfoTest {
 	@Test
 	public void testParameters() {
 		final String script = "" + //
-			"% @LogService(required = false) log\n" + //
-			"% @int(label=\"Slider Value\", softMin=5, softMax=15, " + //
+			"#@ LogService (required = false) log\n" + //
+			"#@ int (label=\"Slider Value\", softMin=5, softMax=15, " + //
 			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
-			"% @String(persist = false, family='Carnivora', " + //
+			"#@ String (persist = false, family='Carnivora', " + //
 			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
-			"% @String(visibility=MESSAGE) msg\n" + //
-			"% @BOTH java.lang.StringBuilder buffer";
+			"#@ Double (autoFill = false) notAutoFilled\n" + //
+			"#@ String (visibility=MESSAGE) msg\n" + //
+			"#@BOTH java.lang.StringBuilder buffer";
 
 		final ScriptInfo info =
 			new ScriptInfo(context, "params.bsizes", new StringReader(script));
@@ -280,6 +281,9 @@ public class ScriptInfoTest {
 			null, null, null, null, null, null, null, null, animalChoices, animal);
 		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
+		final ModuleItem<?> notAutoFilled = info.getInput("notAutoFilled");
+		assertFalse(notAutoFilled.isAutoFill());
+
 		final ModuleItem<?> msg = info.getInput("msg");
 		assertSame(ItemVisibility.MESSAGE, msg.getVisibility());
 
@@ -288,7 +292,7 @@ public class ScriptInfoTest {
 			null, null, null, null, null, null, null, null, noChoices, buffer);
 
 		int inputCount = 0;
-		final ModuleItem<?>[] inputs = { log, sliderValue, animal, msg, buffer };
+		final ModuleItem<?>[] inputs = { log, sliderValue, animal, notAutoFilled, msg, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
 			assertSame(inputs[inputCount++], inItem);
 		}
@@ -404,7 +408,7 @@ public class ScriptInfoTest {
 		}
 	}
 
-	// -- Test script langauge --
+	// -- Test script language --
 
 	private static class BindingSizesEngine extends AbstractScriptEngine {
 

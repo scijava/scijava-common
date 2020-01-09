@@ -54,6 +54,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private final Type genericType;
 	private ItemIO ioType;
 	private ItemVisibility visibility;
+	private boolean autoFill;
 	private boolean required;
 	private boolean persisted;
 	private String persistKey;
@@ -88,6 +89,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		genericType = type;
 		ioType = super.getIOType();
 		visibility = super.getVisibility();
+		autoFill = super.isAutoFill();
 		required = super.isRequired();
 		persisted = super.isPersisted();
 		persistKey = super.getPersistKey();
@@ -115,6 +117,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		genericType = item.getGenericType();
 		ioType = item.getIOType();
 		visibility = item.getVisibility();
+		autoFill = item.isAutoFill();
 		required = item.isRequired();
 		persisted = item.isPersisted();
 		persistKey = item.getPersistKey();
@@ -144,6 +147,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public void setVisibility(final ItemVisibility visibility) {
 		this.visibility = visibility;
+	}
+
+	@Override
+	public void setAutoFill(final boolean autoFill) {
+		this.autoFill = autoFill;
 	}
 
 	@Override
@@ -242,6 +250,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public ItemVisibility getVisibility() {
 		return visibility;
+	}
+
+	@Override
+	public boolean isAutoFill() {
+		return autoFill;
 	}
 
 	@Override

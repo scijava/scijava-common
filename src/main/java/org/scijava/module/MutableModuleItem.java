@@ -49,6 +49,8 @@ public interface MutableModuleItem<T> extends ModuleItem<T> {
 
 	void setVisibility(ItemVisibility visibility);
 
+	void setAutoFill(boolean autoFill);
+
 	void setRequired(boolean required);
 
 	void setPersisted(boolean persisted);
