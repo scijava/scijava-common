@@ -57,11 +57,13 @@ public interface ObjectService extends SciJavaService {
 
 	/**
 	 * Gets the name belonging to a given object.
-	 * 
+	 * <p>
 	 * If no explicit name was provided at registration time, the name will be
-	 * derived from {@link Named#getName()} if the object implements {@link Named},
-	 * or from the {@link Object#toString()} otherwise
-	 **/
+	 * derived from {@link Named#getName()} if the object implements
+	 * {@link Named}, or from the {@link Object#toString()} otherwise. It is
+	 * guaranteed that this method will not return {@code null}.
+	 * </p>
+	 */
 	String getName(Object obj);
 
 	/** Registers an object with the object service. */

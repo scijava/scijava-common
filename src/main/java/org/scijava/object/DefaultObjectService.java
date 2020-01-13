@@ -110,14 +110,16 @@ public final class DefaultObjectService extends AbstractService implements
 
 	@Override
 	public String getName(Object obj) {
-		String name = objectIndex.getName(obj);
-		if (name != null) {
-			return name;
-		}
+		if (obj == null) throw new NullPointerException();
+		final String name = objectIndex.getName(obj);
+		if (name != null) return name;
 		if (obj instanceof Named) {
-			return ((Named) obj).getName();
+			final String n = ((Named) obj).getName();
+			if (n != null) return n;
 		}
-		return obj.toString();
+		final String s = obj.toString();
+		if (s != null) return s;
+		return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
 	}
 
 	// -- Service methods --
