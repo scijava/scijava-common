@@ -47,6 +47,7 @@ import org.scijava.module.MethodCallException;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.ModuleService;
+import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.thread.ThreadService;
 import org.scijava.util.NumberUtils;
@@ -73,6 +74,9 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	@Parameter
 	private ModuleService moduleService;
+
+	@Parameter
+	private ObjectService objectService;
 
 	@Parameter(required = false)
 	private LogService log;
@@ -227,7 +231,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		final List<?> choicesList = item.getChoices();
 		final String[] choices = new String[choicesList.size()];
 		for (int i = 0; i < choices.length; i++) {
-			choices[i] = choicesList.get(i).toString();
+			choices[i] = objectService.getName(choicesList.get(i));
 		}
 		return choices;
 	}

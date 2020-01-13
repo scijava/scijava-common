@@ -32,14 +32,10 @@
 
 package org.scijava.object;
 
-import java.util.List;
-
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.object.event.ObjectCreatedEvent;
 import org.scijava.object.event.ObjectDeletedEvent;
-import org.scijava.object.event.ObjectsAddedEvent;
-import org.scijava.object.event.ObjectsRemovedEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
@@ -68,7 +64,7 @@ public final class DefaultObjectService extends AbstractService implements
 	private EventService eventService;
 
 	/** Index of registered objects. */
-	private ObjectIndex<Object> objectIndex;
+	private NamedObjectIndex<Object> objectIndex;
 
 	// -- ObjectService methods --
 
@@ -78,35 +74,15 @@ public final class DefaultObjectService extends AbstractService implements
 	}
 
 	@Override
-	public ObjectIndex<Object> getIndex() {
+	public NamedObjectIndex<Object> getIndex() {
 		return objectIndex;
-	}
-
-	@Override
-	public <T> List<T> getObjects(final Class<T> type) {
-		final List<Object> list = objectIndex.get(type);
-		@SuppressWarnings("unchecked")
-		final List<T> result = (List<T>) list;
-		return result;
-	}
-
-	@Override
-	public void addObject(final Object obj) {
-		objectIndex.add(obj);
-		eventService.publish(new ObjectsAddedEvent(obj));
-	}
-
-	@Override
-	public void removeObject(final Object obj) {
-		objectIndex.remove(obj);
-		eventService.publish(new ObjectsRemovedEvent(obj));
 	}
 
 	// -- Service methods --
 
 	@Override
 	public void initialize() {
-		objectIndex = new ObjectIndex<>(Object.class);
+		objectIndex = new NamedObjectIndex<>(Object.class);
 	}
 
 	// -- Event handlers --
@@ -120,5 +96,4 @@ public final class DefaultObjectService extends AbstractService implements
 	protected void onEvent(final ObjectDeletedEvent event) {
 		removeObject(event.getObject());
 	}
-
 }
