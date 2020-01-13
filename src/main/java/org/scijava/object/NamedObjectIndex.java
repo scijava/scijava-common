@@ -2,6 +2,11 @@ package org.scijava.object;
 
 import java.util.WeakHashMap;
 
+/**
+ * An {@link ObjectIndex} where each object can have an associated name.
+ *
+ * @author Jan Eglinger
+ */
 public class NamedObjectIndex<E> extends ObjectIndex<E> {
 	
 	private WeakHashMap<Object, String> nameMap;
