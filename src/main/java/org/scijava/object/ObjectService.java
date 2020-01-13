@@ -36,6 +36,8 @@ import java.util.List;
 
 import org.scijava.Named;
 import org.scijava.event.EventService;
+import org.scijava.object.event.ObjectsAddedEvent;
+import org.scijava.object.event.ObjectsRemovedEvent;
 import org.scijava.service.SciJavaService;
 
 /**
@@ -50,10 +52,15 @@ public interface ObjectService extends SciJavaService {
 	}
 
 	/** Gets the index of available objects. */
-	ObjectIndex<Object> getIndex();
+	NamedObjectIndex<Object> getIndex();
 
 	/** Gets a list of all registered objects compatible with the given type. */
-	<T> List<T> getObjects(Class<T> type);
+	default <T> List<T> getObjects(final Class<T> type) {
+		final List<Object> list = getIndex().get(type);
+		@SuppressWarnings("unchecked")
+		final List<T> result = (List<T>) list;
+		return result;
+	}
 
 	/**
 	 * Gets the name belonging to a given object.
@@ -63,17 +70,36 @@ public interface ObjectService extends SciJavaService {
 	 * {@link Named}, or from the {@link Object#toString()} otherwise. It is
 	 * guaranteed that this method will not return {@code null}.
 	 * </p>
-	 */
-	String getName(Object obj);
+	 **/
+	default String getName(final Object obj) {
+		if (obj == null) throw new NullPointerException();
+		final String name = getIndex().getName(obj);
+		if (name != null) return name;
+		if (obj instanceof Named) {
+			final String n = ((Named) obj).getName();
+			if (n != null) return n;
+		}
+		final String s = obj.toString();
+		if (s != null) return s;
+		return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
+	}
 
 	/** Registers an object with the object service. */
-	void addObject(Object obj);
+	default void addObject(Object obj) {
+		addObject(obj, null);
+	}
 
 	/** Registers a named object with the object service. */
-	void addObject(Object obj, String name);
+	default void addObject(final Object obj, final String name) {
+		getIndex().add(obj, name);
+		eventService().publish(new ObjectsAddedEvent(obj));
+	}
 
 	/** Deregisters an object with the object service. */
-	void removeObject(Object obj);
+	default void removeObject(final Object obj) {
+		getIndex().remove(obj);
+		eventService().publish(new ObjectsRemovedEvent(obj));
+	}
 
 	// -- Deprecated methods --
 

@@ -32,15 +32,10 @@
 
 package org.scijava.object;
 
-import java.util.List;
-
-import org.scijava.Named;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.object.event.ObjectCreatedEvent;
 import org.scijava.object.event.ObjectDeletedEvent;
-import org.scijava.object.event.ObjectsAddedEvent;
-import org.scijava.object.event.ObjectsRemovedEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
@@ -79,47 +74,8 @@ public final class DefaultObjectService extends AbstractService implements
 	}
 
 	@Override
-	public ObjectIndex<Object> getIndex() {
+	public NamedObjectIndex<Object> getIndex() {
 		return objectIndex;
-	}
-
-	@Override
-	public <T> List<T> getObjects(final Class<T> type) {
-		final List<Object> list = objectIndex.get(type);
-		@SuppressWarnings("unchecked")
-		final List<T> result = (List<T>) list;
-		return result;
-	}
-
-	@Override
-	public void addObject(final Object obj) {
-		addObject(obj, null);
-	}
-
-	@Override
-	public void addObject(Object obj, String name) {
-		objectIndex.add(obj, name);		
-		eventService.publish(new ObjectsAddedEvent(obj));
-	}
-
-	@Override
-	public void removeObject(final Object obj) {
-		objectIndex.remove(obj);
-		eventService.publish(new ObjectsRemovedEvent(obj));
-	}
-
-	@Override
-	public String getName(Object obj) {
-		if (obj == null) throw new NullPointerException();
-		final String name = objectIndex.getName(obj);
-		if (name != null) return name;
-		if (obj instanceof Named) {
-			final String n = ((Named) obj).getName();
-			if (n != null) return n;
-		}
-		final String s = obj.toString();
-		if (s != null) return s;
-		return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
 	}
 
 	// -- Service methods --
