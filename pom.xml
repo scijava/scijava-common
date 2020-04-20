@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>27.0.1</version>
+		<version>999</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.83.1-SNAPSHOT</version>
+	<version>999</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
@@ -162,6 +162,9 @@
 Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
 Institute of Molecular Cell Biology and Genetics, University of
 Konstanz, and KNIME GmbH.</license.copyrightOwners>
+
+		<scijava.jvm.version>11</scijava.jvm.version>
+		<scijava.jvm.build.version>[11,11.9999]</scijava.jvm.build.version>
 	</properties>
 
 	<dependencies>
@@ -223,7 +226,7 @@ Konstanz, and KNIME GmbH.</license.copyrightOwners>
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>org.scijava.annotations.EclipseHelper</mainClass>
+					<mainClass>org.scijava.common.annotations.EclipseHelper</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
