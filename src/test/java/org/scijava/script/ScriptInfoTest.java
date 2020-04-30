@@ -65,6 +65,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.test.TestUtils;
 import org.scijava.util.DigestUtils;
 import org.scijava.util.FileUtils;
+import org.scijava.widget.WidgetStyle;
 
 /**
  * Tests {@link ScriptInfo}.
@@ -251,7 +252,7 @@ public class ScriptInfoTest {
 		final String script = "" + //
 			"#@ LogService (required = false) log\n" + //
 			"#@ int (label=\"Slider Value\", softMin=5, softMax=15, " + //
-			"stepSize=3, value=11, style=\"slider\") sliderValue\n" + //
+			"stepSize=3, value=11, style=\" slidEr,\") sliderValue\n" + //
 			"#@ String (persist = false, family='Carnivora', " + //
 			"choices={'quick brown fox', 'lazy dog'}) animal\n" + //
 			"#@ Double (autoFill = false) notAutoFilled\n" + //
@@ -269,7 +270,8 @@ public class ScriptInfoTest {
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, "slider", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
+			true, null, " slidEr,", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
+		assertTrue("Case-insensitive trimmed style", WidgetStyle.isStyle(sliderValue, "slider"));
 
 		final ModuleItem<?> animal = info.getInput("animal");
 		final List<String> animalChoices = //
