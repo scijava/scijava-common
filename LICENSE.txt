@@ -1,7 +1,4 @@
-Copyright (c) 2009 - 2017, Board of Regents of the University of
-Wisconsin-Madison, Broad Institute of MIT and Harvard, Max Planck
-Institute of Molecular Cell Biology and Genetics, University of
-Konstanz, and KNIME GmbH.
+Copyright (c) 2009 - 2020, SciJava developers.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
