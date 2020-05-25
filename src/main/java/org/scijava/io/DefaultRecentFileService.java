@@ -175,6 +175,11 @@ public final class DefaultRecentFileService extends AbstractService implements
 		moduleService.addModules(recentModules.values());
 	}
 
+	@Override
+	public void dispose() {
+		clear();
+	}
+
 	// -- Event handlers --
 
 	@EventHandler
