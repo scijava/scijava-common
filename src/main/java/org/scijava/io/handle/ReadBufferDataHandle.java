@@ -182,7 +182,7 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 	 * Calculates the offset in the current page for the given global offset
 	 */
 	private int globalToLocalOffset(final long off) {
-		return (int) off % pageSize;
+		return (int) (off % pageSize);
 	}
 
 	@Override
