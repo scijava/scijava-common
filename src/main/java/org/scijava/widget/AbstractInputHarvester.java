@@ -30,7 +30,9 @@
 package org.scijava.widget;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
@@ -129,10 +131,10 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	@SuppressWarnings("unchecked")
 	private List<?> getObjects(final Class<?> type) {
 		@SuppressWarnings("rawtypes")
-		List compatibleInputs =
-			new ArrayList(convertService.getCompatibleInputs(type));
+		Set compatibleInputs =
+				new HashSet(convertService.getCompatibleInputs(type));
 		compatibleInputs.addAll(objectService.getObjects(type));
-		return compatibleInputs;
+		return new ArrayList<>(compatibleInputs);
 	}
 
 }
