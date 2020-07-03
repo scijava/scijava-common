@@ -43,33 +43,33 @@ import org.scijava.Context;
 public class PluginFinderTest {
 
 	/**
-	 * Tests that the {@code scijava.plugin.blacklist} system property works to
+	 * Tests that the {@code scijava.plugin.blocklist} system property works to
 	 * exclude plugins from the index, even when they are on the classpath.
 	 */
 	@Test
-	public void testPluginBlacklistSystemProperty() {
+	public void testPluginBlocklistSystemProperty() {
 		// check that the plugin is there, normally
 		Context context = new Context(PluginService.class);
 		PluginService pluginService = context.service(PluginService.class);
 		PluginInfo<SciJavaPlugin> plugin = //
-			pluginService.getPlugin(BlacklistedPlugin.class);
-		assertSame(BlacklistedPlugin.class.getName(), plugin.getClassName());
+			pluginService.getPlugin(BlocklistedPlugin.class);
+		assertSame(BlocklistedPlugin.class.getName(), plugin.getClassName());
 		context.dispose();
 
-		// blacklist the plugin, then check that it is absent
-		System.setProperty("scijava.plugin.blacklist", ".*BlacklistedPlugin");
+		// blocklist the plugin, then check that it is absent
+		System.setProperty("scijava.plugin.blocklist", ".*BlocklistedPlugin");
 		context = new Context(PluginService.class);
 		pluginService = context.service(PluginService.class);
-		plugin = pluginService.getPlugin(BlacklistedPlugin.class);
+		plugin = pluginService.getPlugin(BlocklistedPlugin.class);
 		assertNull(plugin);
 		context.dispose();
 
 		// reset the system
-		System.getProperties().remove("scijava.plugin.blacklist");
+		System.getProperties().remove("scijava.plugin.blocklist");
 	}
 
 	@Plugin(type = SciJavaPlugin.class)
-	public static class BlacklistedPlugin implements SciJavaPlugin {
+	public static class BlocklistedPlugin implements SciJavaPlugin {
 		// NB: No implementation needed.
 	}
 

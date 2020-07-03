@@ -53,7 +53,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	/** Class loader to use when querying the annotation indexes. */
 	private final ClassLoader customClassLoader;
 
-	private final PluginBlacklist blacklist;
+	private final PluginBlocklist blocklist;
 
 	// -- Constructors --
 
@@ -63,7 +63,7 @@ public class DefaultPluginFinder implements PluginFinder {
 
 	public DefaultPluginFinder(final ClassLoader classLoader) {
 		customClassLoader = classLoader;
-		blacklist = new SysPropBlacklist();
+		blocklist = new SysPropBlocklist();
 	}
 
 	// -- PluginFinder methods --
@@ -82,7 +82,7 @@ public class DefaultPluginFinder implements PluginFinder {
 
 		// create a PluginInfo object for each item in the index
 		for (final IndexItem<Plugin> item : annotationIndex) {
-			if (blacklist.contains(item.className())) continue;
+			if (blocklist.contains(item.className())) continue;
 			try {
 				final PluginInfo<?> info = createInfo(item, classLoader);
 				plugins.add(info);
@@ -117,23 +117,23 @@ public class DefaultPluginFinder implements PluginFinder {
 
 	// -- Helper classes --
 
-	private interface PluginBlacklist {
+	private interface PluginBlocklist {
 		boolean contains(String className);
 	}
 
 	/**
-	 * A blacklist defined by the {@code scijava.plugin.blacklist} system
+	 * A blocklist defined by the {@code scijava.plugin.blocklist} system
 	 * property, formatted as a colon-separated list of regexes.
 	 * <p>
 	 * If a plugin class matches any of the regexes, it is excluded from the
 	 * plugin index.
 	 * </p>
 	 */
-	private class SysPropBlacklist implements PluginBlacklist {
+	private class SysPropBlocklist implements PluginBlocklist {
 		private final List<Pattern> patterns;
 
-		public SysPropBlacklist() {
-			final String sysProp = System.getProperty("scijava.plugin.blacklist");
+		public SysPropBlocklist() {
+			final String sysProp = System.getProperty("scijava.plugin.blocklist");
 			final String[] regexes = //
 				sysProp == null ? new String[0] : sysProp.split(":");
 			patterns = new ArrayList<>(regexes.length);
@@ -147,7 +147,7 @@ public class DefaultPluginFinder implements PluginFinder {
 			}
 		}
 
-		// -- PluginBlacklist methods --
+		// -- PluginBlocklist methods --
 
 		@Override
 		public boolean contains(final String className) {
