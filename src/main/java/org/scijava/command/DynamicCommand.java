@@ -93,7 +93,7 @@ public abstract class DynamicCommand extends DefaultMutableModule implements
 	@Override
 	public Object getOutput(final String name) {
 		final Field field = getInfo().getOutputField(name);
-		if (field == null) return super.getInput(name);
+		if (field == null) return super.getOutput(name);
 		return ClassUtils.getValue(field, this);
 	}
 
