@@ -124,12 +124,10 @@ public class ModuleRunner extends AbstractContextual implements
 			run();
 		}
 		catch (final RuntimeException exc) {
-			if (log != null) log.error("Module threw exception", exc);
-			throw exc;
+			throw new RuntimeException("Module threw exception", exc);
 		}
 		catch (final Error err) {
-			if (log != null) log.error("Module threw error", err);
-			throw err;
+			throw new RuntimeException("Module threw error", err);
 		}
 		return module;
 	}
