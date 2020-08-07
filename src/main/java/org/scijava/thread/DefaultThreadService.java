@@ -73,7 +73,16 @@ public final class DefaultThreadService extends AbstractService implements
 
 	private boolean disposed;
 
+	private LifeCounter lifeCounter = new LifeCounter();
+
 	// -- ThreadService methods --
+
+	public DefaultThreadService() {
+		// NB: We need to call EventQueue.isDispatchThread() once before the JVM
+		// shuts down. Otherwise EventQueue.isDispatchThread won't work as
+		// expected during JVM shutdown.
+		EventQueue.isDispatchThread();
+	}
 
 	@Override
 	public <V> Future<V> run(final Callable<V> code) {
@@ -173,7 +182,9 @@ public final class DefaultThreadService extends AbstractService implements
 	@Override
 	public Thread newThread(final Runnable r) {
 		final String threadName = contextThreadPrefix() + nextThread++;
-		return new Thread(r, threadName);
+		Thread thread = new Thread(r, threadName);
+		thread.setDaemon(true);
+		return thread;
 	}
 
 	// -- Helper methods --
@@ -203,6 +214,7 @@ public final class DefaultThreadService extends AbstractService implements
 	}
 
 	private Runnable wrap(final Runnable r) {
+		lifeCounter.increase();
 		final Thread parent = Thread.currentThread();
 		return () -> {
 			final Thread thread = Thread.currentThread();
@@ -212,11 +224,13 @@ public final class DefaultThreadService extends AbstractService implements
 			}
 			finally {
 				if (parent != thread) parents.remove(thread);
+				lifeCounter.decrease();
 			}
 		};
 	}
 
 	private <V> Callable<V> wrap(final Callable<V> c) {
+		lifeCounter.increase();
 		final Thread parent = Thread.currentThread();
 		return () -> {
 			final Thread thread = Thread.currentThread();
@@ -226,6 +240,7 @@ public final class DefaultThreadService extends AbstractService implements
 			}
 			finally {
 				if (parent != thread) parents.remove(thread);
+				lifeCounter.decrease();
 			}
 		};
 	}
