@@ -75,4 +75,14 @@ public abstract class AbstractIOPlugin<D> extends
 			throw new IOException(e);
 		}
 	}
+
+	@Override
+	public D open(final String destination) throws IOException {
+		try {
+			return open(locationService.resolve(destination));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
+
 }
