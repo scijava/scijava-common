@@ -4,11 +4,12 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.io.location.FileLocation;
 import org.scijava.plugin.PluginInfo;
+import org.scijava.text.AbstractTextFormat;
 import org.scijava.text.TextFormat;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,5 +35,19 @@ public class IOServiceTest {
 		obj = io.open(new FileLocation(localFile));
 		assertNotNull(obj);
 		assertEquals(content, obj.toString());
+	}
+
+
+	public static class DummyTextFormat  extends AbstractTextFormat {
+
+		@Override
+		public List<String> getExtensions() {
+			return Collections.singletonList("txt");
+		}
+
+		@Override
+		public String asHTML(String text) {
+			return text;
+		}
 	}
 }
