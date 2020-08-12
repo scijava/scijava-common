@@ -30,6 +30,7 @@
 package org.scijava.io.event;
 
 
+import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
 
 /**
@@ -41,6 +42,27 @@ public class DataOpenedEvent extends IOEvent {
 
 	public DataOpenedEvent(final Location location, final Object data) {
 		super(location, data);
+	}
+
+	/**
+	 * @deprecated use {@link #DataOpenedEvent(Location, Object)} instead
+	 */
+	@Deprecated
+	public DataOpenedEvent(final String source, final Object data) {
+		this(new FileLocation(source), data);
+	}
+
+	/**
+	 * @deprecated use {@link #getLocation} instead
+	 */
+	@Deprecated
+	public String getSource() {
+		try {
+			FileLocation fileLocation = (FileLocation) getLocation();
+			return fileLocation.getFile().getAbsolutePath();
+		} catch(ClassCastException e) {
+			return getLocation().getURI().toString();
+		}
 	}
 
 }
