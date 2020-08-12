@@ -116,7 +116,9 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 *         not supported.
 	 * @throws IOException if something goes wrong loading the data.
 	 */
-	Object open(Location source) throws IOException;
+	default Object open(Location source) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Saves data to the given destination. The nature of the destination is left
@@ -144,7 +146,9 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * @param destination The destination location to which data should be saved.
 	 * @throws IOException if something goes wrong saving the data.
 	 */
-	void save(Object data, Location destination) throws IOException;
+	default void save(Object data, Location destination) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 
 	// -- HandlerService methods --
 
