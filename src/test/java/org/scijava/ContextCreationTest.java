@@ -114,6 +114,7 @@ public class ContextCreationTest {
 				org.scijava.startup.DefaultStartupService.class,
 				org.scijava.task.DefaultTaskService.class,
 				org.scijava.text.DefaultTextService.class,
+				org.scijava.text.io.DefaultTextIOService.class,
 				org.scijava.thread.DefaultThreadService.class,
 				org.scijava.tool.DefaultToolService.class,
 				org.scijava.ui.DefaultUIService.class,
