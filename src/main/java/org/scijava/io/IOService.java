@@ -31,6 +31,8 @@ package org.scijava.io;
 
 import java.io.IOException;
 
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
@@ -39,15 +41,23 @@ import org.scijava.service.SciJavaService;
  * 
  * @author Curtis Rueden
  */
-public interface IOService extends HandlerService<String, IOPlugin<?>>,
+public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	SciJavaService
 {
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
-	 * source.
+	 * location.
 	 */
 	default IOPlugin<?> getOpener(final String source) {
+		return getOpener(new FileLocation(source));
+	}
+
+	/**
+	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
+	 * location.
+	 */
+	default IOPlugin<?> getOpener(Location source) {
 		for (final IOPlugin<?> handler : getInstances()) {
 			if (handler.supportsOpen(source)) return handler;
 		}
@@ -56,9 +66,17 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
-	 * destination.
+	 * location.
 	 */
 	default <D> IOPlugin<D> getSaver(final D data, final String destination) {
+		return getSaver(data, new FileLocation(destination));
+	}
+
+	/**
+	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
+	 * location.
+	 */
+	default <D> IOPlugin<D> getSaver(D data, Location destination) {
 		for (final IOPlugin<?> handler : getInstances()) {
 			if (handler.supportsSave(data, destination)) {
 				@SuppressWarnings("unchecked")
@@ -77,7 +95,7 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	 * The opener to use is automatically determined based on available
 	 * {@link IOPlugin}s; see {@link #getOpener(String)}.
 	 * </p>
-	 * 
+	 *
 	 * @param source The source (e.g., file path) from which to data should be
 	 *          loaded.
 	 * @return An object representing the loaded data, or null if the source is
@@ -87,19 +105,50 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	Object open(String source) throws IOException;
 
 	/**
+	 * Loads data from the given location.
+	 * <p>
+	 * The opener to use is automatically determined based on available
+	 * {@link IOPlugin}s; see {@link #getOpener(Location)}.
+	 * </p>
+	 *
+	 * @param source The location from which to data should be loaded.
+	 * @return An object representing the loaded data, or null if the source is
+	 *         not supported.
+	 * @throws IOException if something goes wrong loading the data.
+	 */
+	default Object open(Location source) throws IOException {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
 	 * Saves data to the given destination. The nature of the destination is left
 	 * intentionally general, but the most common example is a file path.
 	 * <p>
 	 * The saver to use is automatically determined based on available
 	 * {@link IOPlugin}s; see {@link #getSaver(Object, String)}.
 	 * </p>
-	 * 
+	 *
 	 * @param data The data to be saved to the destination.
 	 * @param destination The destination (e.g., file path) to which data should
 	 *          be saved.
 	 * @throws IOException if something goes wrong saving the data.
 	 */
 	void save(Object data, String destination) throws IOException;
+
+	/**
+	 * Saves data to the given location.
+	 * <p>
+	 * The saver to use is automatically determined based on available
+	 * {@link IOPlugin}s; see {@link #getSaver(Object, Location)}.
+	 * </p>
+	 * 
+	 * @param data The data to be saved to the destination.
+	 * @param destination The destination location to which data should be saved.
+	 * @throws IOException if something goes wrong saving the data.
+	 */
+	default void save(Object data, Location destination) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 
 	// -- HandlerService methods --
 
@@ -110,7 +159,7 @@ public interface IOService extends HandlerService<String, IOPlugin<?>>,
 	}
 
 	@Override
-	default Class<String> getType() {
-		return String.class;
+	default Class<Location> getType() {
+		return Location.class;
 	}
 }

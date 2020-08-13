@@ -33,6 +33,8 @@ import java.io.IOException;
 
 import org.scijava.io.AbstractIOPlugin;
 import org.scijava.io.IOPlugin;
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.Parameter;
 import org.scijava.script.ScriptService;
 
@@ -55,13 +57,16 @@ public class ScriptIOPlugin extends AbstractIOPlugin<String> {
 	}
 
 	@Override
-	public boolean supportsOpen(final String source) {
+	public boolean supportsOpen(final Location source) {
 		if (scriptService == null) return false; // no service for opening scripts
-		return scriptService.canHandleFile(source);
+		// TODO: Update ScriptService to use Location instead of File.
+		if (!(source instanceof FileLocation)) return false;
+		final FileLocation loc = (FileLocation) source;
+		return scriptService.canHandleFile(loc.getFile());
 	}
 
 	@Override
-	public String open(final String source) throws IOException {
+	public String open(final Location source) throws IOException {
 		if (scriptService == null) return null; // no service for opening scripts
 		// TODO: Use the script service to open the file in the script editor.
 		return null;

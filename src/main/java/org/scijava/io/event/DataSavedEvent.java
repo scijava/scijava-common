@@ -29,6 +29,10 @@
 
 package org.scijava.io.event;
 
+
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
+
 /**
  * An event indicating that data has been saved to a destination.
  * 
@@ -36,15 +40,28 @@ package org.scijava.io.event;
  */
 public class DataSavedEvent extends IOEvent {
 
-	public DataSavedEvent(final String destination, final Object data) {
+	public DataSavedEvent(final Location destination, final Object data) {
 		super(destination, data);
 	}
 
-	// -- DataSavedEvent methods --
-
-	/** Gets the destination to which data was saved. */
-	public String getDestination() {
-		return getDescriptor();
+	/**
+	 * @deprecated use {@link #DataSavedEvent(Location, Object)} instead
+	 */
+	@Deprecated
+	public DataSavedEvent(final String destination, final Object data) {
+		this(new FileLocation(destination), data);
 	}
 
+	/**
+	 * @deprecated use {@link #getLocation} instead
+	 */
+	@Deprecated
+	public String getDestination() {
+		try {
+			FileLocation fileLocation = (FileLocation) getLocation();
+			return fileLocation.getFile().getAbsolutePath();
+		} catch(ClassCastException e) {
+			return getLocation().getURI().toString();
+		}
+	}
 }

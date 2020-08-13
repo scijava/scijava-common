@@ -36,6 +36,7 @@ import org.scijava.Priority;
 import org.scijava.display.Display;
 import org.scijava.display.DisplayService;
 import org.scijava.io.IOService;
+import org.scijava.io.location.FileLocation;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -68,7 +69,8 @@ public class FileDragAndDropHandler extends
 		if (!super.supports(file)) return false;
 
 		// verify that the file can be opened somehow
-		return ioService.getOpener(file.getAbsolutePath()) != null;
+		final FileLocation loc = new FileLocation(file);
+		return ioService.getOpener(loc) != null;
 	}
 
 	@Override
@@ -78,13 +80,12 @@ public class FileDragAndDropHandler extends
 		if (file == null) return true; // trivial case
 
 		// load the data
-		final String filename = file.getAbsolutePath();
 		final Object data;
 		try {
-			data = ioService.open(filename);
+			data = ioService.open(new FileLocation(file));
 		}
 		catch (final IOException exc) {
-			if (log != null) log.error("Error opening file: " + filename, exc);
+			if (log != null) log.error("Error opening file: " + file, exc);
 			return false;
 		}
 

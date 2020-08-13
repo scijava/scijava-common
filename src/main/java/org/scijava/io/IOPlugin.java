@@ -31,6 +31,8 @@ package org.scijava.io;
 
 import java.io.IOException;
 
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
 
@@ -48,7 +50,7 @@ import org.scijava.plugin.Plugin;
  * @see Plugin
  * @see IOService
  */
-public interface IOPlugin<D> extends HandlerPlugin<String> {
+public interface IOPlugin<D> extends HandlerPlugin<Location> {
 
 	/** The type of data opened and/or saved by the plugin. */
 	Class<D> getDataType();
@@ -56,20 +58,34 @@ public interface IOPlugin<D> extends HandlerPlugin<String> {
 	/** Checks whether the I/O plugin can open data from the given source. */
 	@SuppressWarnings("unused")
 	default boolean supportsOpen(final String source) {
+		return supportsOpen(new FileLocation(source));
+	}
+
+	/** Checks whether the I/O plugin can open data from the given location. */
+	default boolean supportsOpen(Location source) {
 		return false;
 	}
 
 	/** Checks whether the I/O plugin can save data to the given destination. */
 	@SuppressWarnings("unused")
 	default boolean supportsSave(final String destination) {
+		return supportsSave(new FileLocation(destination));
+	}
+
+	/** Checks whether the I/O plugin can save data to the given location. */
+	default boolean supportsSave(Location destination) {
 		return false;
 	}
 
 	/**
 	 * Checks whether the I/O plugin can save the given data to the specified
-	 * destination.
+	 * location.
 	 */
 	default boolean supportsSave(final Object data, final String destination) {
+		return supportsSave(destination) && getDataType().isInstance(data);
+	}
+
+	default boolean supportsSave(Object data, Location destination) {
 		return supportsSave(destination) && getDataType().isInstance(data);
 	}
 
@@ -79,21 +95,29 @@ public interface IOPlugin<D> extends HandlerPlugin<String> {
 		throw new UnsupportedOperationException();
 	}
 
+	/** Opens data from the given location. */
+	default D open(Location source) throws IOException {
+		throw new UnsupportedOperationException();
+	}
 	/** Saves the given data to the specified destination. */
 	@SuppressWarnings("unused")
 	default void save(final D data, final String destination) throws IOException {
+		save(data, new FileLocation(destination));
+	}
+
+	/** Saves the given data to the specified location. */
+	default void save(D data, Location destination) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
 	// -- Typed methods --
 
-	@Override
 	default boolean supports(final String descriptor) {
 		return supportsOpen(descriptor) || supportsSave(descriptor);
 	}
 
 	@Override
-	default Class<String> getType() {
-		return String.class;
+	default Class<Location> getType() {
+		return Location.class;
 	}
 }

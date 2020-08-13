@@ -29,22 +29,40 @@
 
 package org.scijava.io.event;
 
+
+import org.scijava.io.location.FileLocation;
+import org.scijava.io.location.Location;
+
 /**
- * An event indicating that data has been opened from a source.
+ * An event indicating that data has been opened from a location.
  * 
  * @author Curtis Rueden
  */
 public class DataOpenedEvent extends IOEvent {
 
-	public DataOpenedEvent(final String source, final Object data) {
-		super(source, data);
+	public DataOpenedEvent(final Location location, final Object data) {
+		super(location, data);
 	}
 
-	// -- DataOpenedEvent methods --
+	/**
+	 * @deprecated use {@link #DataOpenedEvent(Location, Object)} instead
+	 */
+	@Deprecated
+	public DataOpenedEvent(final String source, final Object data) {
+		this(new FileLocation(source), data);
+	}
 
-	/** Gets the source from which data was opened. */
+	/**
+	 * @deprecated use {@link #getLocation} instead
+	 */
+	@Deprecated
 	public String getSource() {
-		return getDescriptor();
+		try {
+			FileLocation fileLocation = (FileLocation) getLocation();
+			return fileLocation.getFile().getAbsolutePath();
+		} catch(ClassCastException e) {
+			return getLocation().getURI().toString();
+		}
 	}
 
 }
