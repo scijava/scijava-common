@@ -445,7 +445,8 @@ public class Context implements Disposable {
 	 * @see ClassLoader#getSystemClassLoader()
 	 */
 	public static ClassLoader getClassLoader() {
-		final ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
+		final ClassLoader contextCL = Thread.currentThread()
+			.getContextClassLoader();
 		return contextCL != null ? contextCL : ClassLoader.getSystemClassLoader();
 	}
 
@@ -570,8 +571,8 @@ public class Context implements Disposable {
 	}
 
 	private static List<Class<? extends Service>> services(final boolean empty) {
-		if (empty) return Collections.<Class<? extends Service>>emptyList();
-		return Arrays.<Class<? extends Service>>asList(Service.class);
+		if (empty) return Collections.<Class<? extends Service>> emptyList();
+		return Arrays.<Class<? extends Service>> asList(Service.class);
 	}
 
 	private static boolean strict() {
