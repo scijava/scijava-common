@@ -58,7 +58,7 @@ import org.scijava.util.Types;
  * @author Curtis Rueden
  * @see Service
  */
-public class Context implements Disposable {
+public class Context implements Disposable, AutoCloseable {
 
 	// -- Constants --
 
@@ -248,6 +248,13 @@ public class Context implements Disposable {
 	 * those of lower priority). See {@link ServiceHelper#loadServices()} for more
 	 * information.
 	 * </p>
+	 * <p>
+	 * NB: Instiantiation of a Context has an implied requirement of a
+	 * corresponding call to {@link Context#dispose()} at the end of the SciJava
+	 * applicaton's lifecycle. This cleans up any remaining resources and allows
+	 * the JVM to exit gracefully. This is called automatically when constructed as
+	 * an {@link AutoCloseable}.
+	 * </p>
 	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code DisplayService.class}).
@@ -421,6 +428,13 @@ public class Context implements Disposable {
 		for (int s = services.size() - 1; s >= 0; s--) {
 			services.get(s).dispose();
 		}
+	}
+
+	// -- AutoCloseable methods --
+
+	@Override
+	public void close() throws Exception {
+		dispose();
 	}
 
 	// -- Utility methods --
