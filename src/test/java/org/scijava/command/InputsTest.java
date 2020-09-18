@@ -40,8 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.InstantiableException;
-import org.scijava.log.LogLevel;
-import org.scijava.log.LogService;
 import org.scijava.module.Module;
 import org.scijava.module.ModuleItem;
 import org.scijava.module.MutableModuleItem;
@@ -81,7 +79,7 @@ public class InputsTest {
 		}});
 		Inputs inputs = new Inputs(context);
 		inputs.getInfo().setName("testSingleInput");//TEMP
-		inputs.addInput("sigma", Float.class);
+		addTempInput(inputs, "sigma", Float.class);
 		float sigma = (Float) inputs.harvest().get("sigma");
 		assertEquals(3.9f, sigma, 0);
 	}
@@ -95,8 +93,8 @@ public class InputsTest {
 		}});
 		Inputs inputs = new Inputs(context);
 		inputs.getInfo().setName("testTwoInputs");//TEMP
-		inputs.addInput("name", String.class);
-		inputs.addInput("age", Integer.class);
+		addTempInput(inputs, "name", String.class);
+		addTempInput(inputs, "age", Integer.class);
 		Map<String, Object> values = inputs.harvest();
 		String name = (String) values.get("name");
 		int age = (Integer) values.get("age");
@@ -113,11 +111,13 @@ public class InputsTest {
 		}});
 		Inputs inputs = new Inputs(context);
 		inputs.getInfo().setName("testWithConfiguration");//TEMP
-		MutableModuleItem<String> wordInput = inputs.addInput("word", String.class);
+		MutableModuleItem<String> wordInput = addTempInput(inputs, "word",
+			String.class);
 		wordInput.setLabel("Favorite word");
 		wordInput.setChoices(Arrays.asList("quick", "brown", "fox"));
 		wordInput.setDefaultValue("fox");
-		MutableModuleItem<Double> opacityInput = inputs.addInput("opacity", Double.class);
+		MutableModuleItem<Double> opacityInput = addTempInput(inputs, "opacity",
+			Double.class);
 		opacityInput.setMinimumValue(0.0);
 		opacityInput.setMaximumValue(1.0);
 		opacityInput.setDefaultValue(0.5);
@@ -143,6 +143,18 @@ public class InputsTest {
 		};
 		info.setPriority(InputHarvester.PRIORITY);
 		context.service(PluginService.class).addPlugin(info);
+	}
+
+	/**
+	 * Add a non-persisted input to ensure we are testing with the mock input
+	 * harvester.
+	 */
+	private static <T> MutableModuleItem<T> addTempInput(Inputs inputs,
+		String inputName, Class<T> inputType)
+	{
+		MutableModuleItem<T> input = inputs.addInput(inputName, inputType);
+		input.setPersisted(false);
+		return input;
 	}
 
 	public static class MockInputHarvester extends AbstractPreprocessorPlugin {
