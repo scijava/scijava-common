@@ -191,6 +191,11 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	}
 
 	@Override
+	public String getFormat() {
+		return getParameter().format();
+	}
+
+	@Override
 	public int getColumnCount() {
 		return getParameter().columns();
 	}

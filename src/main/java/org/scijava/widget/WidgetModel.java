@@ -176,6 +176,11 @@ public interface WidgetModel extends Contextual {
 	boolean isNumber();
 
 	/**
+	 * Gets the format for the value of the model.
+	 */
+	String getFormat();
+
+	/**
 	 * Gets whether the input is a boolean type (i.e., {@link Boolean} or
 	 * {@code boolean}).
 	 */

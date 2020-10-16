@@ -50,7 +50,7 @@ import org.scijava.plugin.Plugin;
  * 
  * @author Curtis Rueden
  */
-public class InvalidCommandTest {
+public class ValidNumberCommandTest {
 
 	private CommandService commandService;
 
@@ -61,26 +61,22 @@ public class InvalidCommandTest {
 	}
 
 	@Test
-	public void testInvalid() {
-		final CommandInfo info = commandService.getCommand(InvalidCommand.class);
+	public void testValid() {
+		final CommandInfo info = commandService.getCommand(ValidCommand.class);
 		assertNotNull(info);
-		assertFalse(info.isValid());
+		assertTrue(info.isValid());
 
 		final List<ValidityProblem> problems = info.getProblems();
 		assertNotNull(problems);
-		assertEquals(3, problems.size());
-
-		final String p0 = problems.get(0).getMessage();
-		assertEquals("Delegate class is abstract", p0);
-
-		final String p1 = problems.get(1).getMessage();
-		assertEquals("Invalid duplicate parameter: private int "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.x", p1);
-
-		final String p2 = problems.get(2).getMessage();
-		assertEquals("Invalid final parameter: private final float "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.y", p2);
+		assertEquals(0, problems.size());
+		
+		final Number stepSize = info.getInput("x").getStepSize();
+		final String format = info.getInput("x").getFormat();
+		assertNotNull(stepSize);
+		assertEquals(10, stepSize.intValue());
+		assertEquals("0.000000", format);
 	}
+
 
 	// -- Helper classes --
 
@@ -88,7 +84,7 @@ public class InvalidCommandTest {
 	@Plugin(type = Command.class)
 	public static class ValidCommand implements Command {
 
-		@Parameter(stepSize = "10")
+		@Parameter(stepSize = "10", format = "0.000000")
 		private double x;
 
 		@Parameter(type = ItemIO.OUTPUT)
@@ -101,34 +97,5 @@ public class InvalidCommandTest {
 
 	}
 
-	/** A very much invalid command, for multiple reasons, explained below. */
-	@Plugin(type = Command.class)
-	public static abstract class InvalidCommand extends ValidCommand {
-
-		/**
-		 * This parameter is invalid because it shadows a private parameter of a
-		 * superclass. Such parameters violate the principle of parameter names as
-		 * unique keys.
-		 */
-		@Parameter
-		private int x;
-
-		/**
-		 * This parameter is invalid because it is declared {@code final} without
-		 * being {@link org.scijava.ItemVisibility#MESSAGE} visibility. Java does
-		 * not allow such parameter values to be set via reflection.
-		 */
-		@Parameter
-		private final float y = 0;
-
-		@Parameter(type = ItemIO.OUTPUT)
-		private String invalidOutput;
-
-		@Override
-		public void run() {
-			invalidOutput = "InvalidCommand: FAILURE";
-		}
-
-	}
 
 }

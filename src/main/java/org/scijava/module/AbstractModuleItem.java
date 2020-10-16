@@ -266,6 +266,11 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	}
 
 	@Override
+	public String getFormat(){
+		return null;
+	}
+
+	@Override
 	public int getColumnCount() {
 		return 6;
 	}

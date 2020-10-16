@@ -152,6 +152,9 @@ public @interface Parameter {
 	/** Defines the step size to use (numeric parameters only). */
 	String stepSize() default "";
 
+	/** Defines the format to use */
+	String format() default "";
+
 	/** Defines the list of possible values (multiple choice text fields only). */
 	String[] choices() default {};
 

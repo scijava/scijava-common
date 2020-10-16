@@ -205,4 +205,6 @@ public interface ModuleItem<T> extends BasicDetails {
 	/** Sets the item's current value with respect to the given module. */
 	void setValue(Module module, T value);
 
+	/** Gets the item's format*/
+    String getFormat();
 }

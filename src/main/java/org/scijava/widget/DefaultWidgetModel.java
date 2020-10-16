@@ -263,6 +263,11 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	}
 
 	@Override
+	public String getFormat() {
+		return item.getFormat();
+	}
+
+	@Override
 	public boolean isBoolean() {
 		return Types.isBoolean(getItem().getType());
 	}
