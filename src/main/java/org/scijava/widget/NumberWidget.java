@@ -57,4 +57,11 @@ public interface NumberWidget<U> extends InputWidget<Number, U> {
 	 */
 	String SCROLL_BAR_STYLE = "scroll bar";
 
+	/**
+	 * Widget style for decimal formating with 8 digets.
+	 *
+	 * @see org.scijava.plugin.Parameter#style()
+	 */
+	String FORMAT_8_DIGITS = "format:0.00000000";
+
 }
