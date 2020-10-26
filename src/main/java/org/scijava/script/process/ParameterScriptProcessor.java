@@ -129,7 +129,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 
 	@Override
 	public String process(final String line) {
-		// parse new-style parameters starting with @# anywhere in the script.
+		// parse new-style parameters starting with #@ anywhere in the script.
 		if (line.matches("^#@.*")) {
 			final int at = line.indexOf('@');
 			return process(line, line.substring(at + 1));
@@ -140,7 +140,9 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 			// NB: Check if line contains an '@' with no prior alphameric
 			// characters. This assumes that only non-alphanumeric characters can
 			// be used as comment line markers.
-			if (line.matches("^[^\\w]*@.*")) {
+			// NB: In addition, to allow for commented-out new-style parameters, we exclude
+			// lines that have the new-style #@ preceded by non-alphanumeric characters.
+			if (line.matches("^[^\\w]*[^\\w#]@.*")) {
 				final int at = line.indexOf('@');
 				return process(line, line.substring(at + 1));
 			}
