@@ -129,12 +129,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	@Override
 	public boolean isStyle(final String style) {
-		final String widgetStyle = getItem().getWidgetStyle();
-		if (widgetStyle == null) return style == null;
-		for (final String s : widgetStyle.split(",")) {
-			if (s.equals(style)) return true;
-		}
-		return false;
+		return WidgetStyle.isStyle(getItem(), style);
 	}
 
 	@Override
