@@ -69,6 +69,8 @@ public class ScriptREPL {
 
 	private final PrintStream out;
 
+	private String languagePreference = null;
+
 	/** List of interpreter-friendly script languages. */
 	private List<ScriptLanguage> languages;
 
@@ -86,6 +88,15 @@ public class ScriptREPL {
 		context.inject(this);
 		this.out = out instanceof PrintStream ?
 			(PrintStream) out : new PrintStream(out);
+	}
+
+	public ScriptREPL(final Context context, final String language) {
+		this(context, language, System.out);
+	}
+
+	public ScriptREPL(final Context context, final String language, final OutputStream out) {
+		this(context, out);
+		languagePreference = language;
 	}
 
 	/**
@@ -162,10 +173,33 @@ public class ScriptREPL {
 			}
 			out.println("Have fun!");
 			out.println();
+
+			if(languagePreference != null) {
+			    selectPreferredLanguage(langs);
+			} else {
+				lang(langs.get(0).getLanguageName());
+			}
+		}
+		else if (!langs.isEmpty()) {
+			if(languagePreference != null) {
+				selectPreferredLanguage(langs);
+			} else {
+				lang(langs.get(0));
+			}
+		}
+
+		populateBindings(interpreter.getBindings());
+	}
+
+	private void selectPreferredLanguage(List<ScriptLanguage> langs) {
+		final ScriptLanguage preference = langs
+				.stream().filter(lang -> languagePreference.equals(lang.getLanguageName()))
+				.findAny().orElse(null);
+		if(preference != null) {
+			lang(preference);
+		} else {
 			lang(langs.get(0).getLanguageName());
 		}
-		else if (!langs.isEmpty()) lang(langs.get(0));
-		populateBindings(interpreter.getBindings());
 	}
 
 	/** Outputs the prompt. */
@@ -310,8 +344,15 @@ public class ScriptREPL {
 		// make a SciJava application context
 		final Context context = new Context();
 
-		// create the script interpreter
-		final ScriptREPL scriptCLI = new ScriptREPL(context);
+		// see if we have a preferred language
+		// and create the script interpreter
+		final ScriptREPL scriptCLI;
+		if(args.length > 0) {
+			final String preference = args[0];
+			scriptCLI = new ScriptREPL(context, preference);
+		} else {
+			scriptCLI = new ScriptREPL(context);
+		}
 
 		// start the REPL
 		scriptCLI.loop();
