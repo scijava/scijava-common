@@ -34,7 +34,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Classes annotated with {@link IgnoreAsCallingClass} are ignored by
- * {@link CallingClassUtils#getCallingClass()}.
+ * {@link CallingClassUtils#getCallingClassName()}.
  *
  * @author Matthias Arzt
  */

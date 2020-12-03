@@ -31,6 +31,8 @@ package org.scijava.log;
 
 import org.junit.Test;
 
+import java.util.function.Supplier;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -41,26 +43,26 @@ import static org.junit.Assert.assertEquals;
 public class CallingClassUtilsTest {
 	@Test
 	public void testGetCallingClass() {
-		Class<?> callingClass = CallingClassUtils.getCallingClass();
-		assertEquals(this.getClass(), callingClass);
+		String callingClass = CallingClassUtils.getCallingClassName();
+		assertEquals(this.getClass().getName(), callingClass);
 	}
 
 	@Test
 	public void testIgnoreAsCallingClass() {
-		assertEquals(ClassA.class, ClassA.returnGetCallingClass());
-		assertEquals(this.getClass(), ClassB.returnGetCallingClass());
+		assertEquals(ClassA.class.getName(), ClassA.returnGetCallingClass());
+		assertEquals(this.getClass().getName(), ClassB.returnGetCallingClass());
 	}
 
 	public static class ClassA {
-		static Class<?> returnGetCallingClass() {
-			return CallingClassUtils.getCallingClass();
+		static String returnGetCallingClass() {
+			return CallingClassUtils.getCallingClassName();
 		}
 	}
 
 	@IgnoreAsCallingClass
 	private static class ClassB {
-		static Class<?> returnGetCallingClass() {
-			return CallingClassUtils.getCallingClass();
+		static String returnGetCallingClass() {
+			return CallingClassUtils.getCallingClassName();
 		}
 	}
 }

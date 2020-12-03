@@ -43,12 +43,44 @@ public final class CallingClassUtils {
 	}
 
 	/**
+	 * Inspects the stack trace to return the name of the class that calls
+	 * this method, but ignores every class annotated with @IgnoreAsCallingClass.
+	 * <p>
+	 * If every class on the stack trace is annotated, then the class at the
+	 * root of the stack trace is returned.
+	 */
+	public static String getCallingClassName() {
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+		for (int i = 1; i < stackTrace.length - 2; i++) {
+			String className = stackTrace[i].getClassName();
+			if (!hasIgnoreAsCallingClassAnnotation(className)) return className;
+		}
+		return stackTrace[stackTrace.length - 1].getClassName();
+	}
+
+	private static boolean hasIgnoreAsCallingClassAnnotation(String className) {
+		try {
+			Class< ? > clazz = Class.forName(className);
+			return clazz.isAnnotationPresent(IgnoreAsCallingClass.class);
+		}
+		catch (ClassNotFoundException ignore) {
+			return false;
+		}
+	}
+
+	/**
+	 * @deprecated Use {@link #getCallingClassName()} instead.
+	 *
+	 * Warning: This method throws a IllegalStateException as soon as it comes
+	 * across a class that can't be loaded with the default class loader.
+	 *
 	 * Inspects the stack trace to return the class that calls this method, but
 	 * ignores every class annotated with @IgnoreAsCallingClass.
 	 *
 	 * @throws IllegalStateException if every method on the stack, is in a class
 	 *           annotated with @IgnoreAsCallingClass.
 	 */
+	@Deprecated
 	public static Class<?> getCallingClass() {
 		try {
 			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
