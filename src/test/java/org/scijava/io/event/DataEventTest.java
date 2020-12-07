@@ -28,15 +28,20 @@
  */
 package org.scijava.io.event;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.Test;
 
 public class DataEventTest {
 
 	@Test
-	public void testDeprecatedMethods() {
-		String localPath = "/local/absolute/path.txt";
+	public void testDeprecatedMethods() throws IOException {
+		File tmpFile = File.createTempFile("path", "txt");
+		tmpFile.deleteOnExit();
+		String localPath = tmpFile.getAbsolutePath();
 		Object obj = null;
 		DataOpenedEvent openedEvent = new DataOpenedEvent(localPath, obj);
 		DataSavedEvent savedEvent = new DataSavedEvent(localPath, obj);
