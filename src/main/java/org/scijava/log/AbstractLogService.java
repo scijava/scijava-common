@@ -104,7 +104,7 @@ public abstract class AbstractLogService extends AbstractService implements
 	@Override
 	public int getLevel() {
 		if (classAndPackageLevels.isEmpty()) return currentLevel;
-		return getLevelForClass(CallingClassUtils.getCallingClass().getName(),
+		return getLevelForClass(CallingClassUtils.getCallingClassName(),
 			currentLevel);
 	}
 
