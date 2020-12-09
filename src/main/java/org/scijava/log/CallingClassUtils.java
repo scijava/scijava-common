@@ -29,6 +29,8 @@
 
 package org.scijava.log;
 
+import org.scijava.Context;
+
 /**
  * Utility class for getting the calling class of a method.
  *
@@ -60,7 +62,7 @@ public final class CallingClassUtils {
 
 	private static boolean hasIgnoreAsCallingClassAnnotation(String className) {
 		try {
-			Class< ? > clazz = Class.forName(className);
+			Class< ? > clazz = Context.getClassLoader().loadClass(className);
 			return clazz.isAnnotationPresent(IgnoreAsCallingClass.class);
 		}
 		catch (ClassNotFoundException ignore) {
