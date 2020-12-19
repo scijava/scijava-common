@@ -29,6 +29,9 @@
 
 package org.scijava.object;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
 import org.scijava.object.event.ObjectCreatedEvent;
@@ -56,12 +59,16 @@ import org.scijava.service.Service;
 public final class DefaultObjectService extends AbstractService implements
 	ObjectService
 {
+	private static String DEFAULT_OBJECT_NAME = "an object";
 
 	@Parameter
 	private EventService eventService;
 
 	/** Index of registered objects. */
 	private NamedObjectIndex<Object> objectIndex;
+
+	/** Map of human-friendly names */
+	private Map<Class<?>, String> aliasMap = new HashMap<>();
 
 	// -- ObjectService methods --
 
@@ -73,6 +80,16 @@ public final class DefaultObjectService extends AbstractService implements
 	@Override
 	public NamedObjectIndex<Object> getIndex() {
 		return objectIndex;
+	}
+
+	@Override
+	public String getHumanFriendlyName(Class<?> c) {
+		return aliasMap.getOrDefault(c, DEFAULT_OBJECT_NAME);
+	}
+
+	@Override
+	public void addHumanFriendlyName(Class<?> c, String name) {
+		aliasMap.put(c, name);
 	}
 
 	// -- Service methods --
