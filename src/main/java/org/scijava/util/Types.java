@@ -365,6 +365,8 @@ public final class Types {
 	public static Class<?> raw(final Type type) {
 		if (type == null) return null;
 		if (type instanceof Class) return (Class<?>) type;
+		if (type instanceof GenericArrayType)
+			return array(raw(((GenericArrayType) type).getGenericComponentType()));
 		final List<Class<?>> c = raws(type);
 		if (c == null || c.size() == 0) return null;
 		return c.get(0);
