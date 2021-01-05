@@ -222,6 +222,7 @@ public class TypesTest {
 			private String[][] strings;
 			private Void v;
 			private List<String> list;
+			private List<String>[] listArray;
 			private HashMap<Integer, Float> map;
 		}
 		assertSame(int[].class, raw(Struct.class, "intArray"));
@@ -229,6 +230,7 @@ public class TypesTest {
 		assertSame(String[][].class, raw(Struct.class, "strings"));
 		assertSame(Void.class, raw(Struct.class, "v"));
 		assertSame(List.class, raw(Struct.class, "list"));
+		assertSame(List[].class, raw(Struct.class, "listArray"));
 		assertSame(HashMap.class, raw(Struct.class, "map"));
 	}
 
