@@ -98,17 +98,7 @@ public abstract class AbstractConverter<I, O> extends
 	public boolean canConvert(final Object src, final Class<?> dest) {
 		if (src == null) return false;
 		final Class<?> srcClass = src.getClass();
-
 		return canConvert(srcClass, dest);
-	}
-
-	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		if (src == null) return false;
-		final Class<?> saneSrc = Types.box(src);
-		final Class<?> saneDest = Types.box(dest);
-		return Types.isAssignable(saneSrc, getInputType()) &&
-			Types.isAssignable(getOutputType(), saneDest);
 	}
 
 	@Override
@@ -147,6 +137,16 @@ public abstract class AbstractConverter<I, O> extends
 	}
 
 	// -- Deprecated API --
+
+	@Override
+	@Deprecated
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		if (src == null) return false;
+		final Class<?> saneSrc = Types.box(src);
+		final Class<?> saneDest = Types.box(dest);
+		return Types.isAssignable(saneSrc, getInputType()) &&
+			Types.isAssignable(getOutputType(), saneDest);
+	}
 
 	@Override
 	@Deprecated
