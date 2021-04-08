@@ -1,0 +1,18 @@
+name: Java CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: |
+          curl -fsLO https://raw.githubusercontent.com/scijava/scijava-scripts/github-actions/github-action-build.sh
+          sh github-action-build.sh
