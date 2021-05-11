@@ -39,10 +39,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.command.CommandInfoTest.CommandWithEnumParam.Choice;
+import org.scijava.log.LogService;
 import org.scijava.module.ModuleItem;
 import org.scijava.plugin.Parameter;
 
@@ -53,12 +55,18 @@ import org.scijava.plugin.Parameter;
  */
 public class CommandInfoTest {
 
+	private Context ctx;
 	private CommandService commandService;
 
 	@Before
 	public void setUp() {
-		final Context ctx = new Context(CommandService.class);
+		ctx = new Context(CommandService.class);
 		commandService = ctx.getService(CommandService.class);
+	}
+
+	@After
+	public void tearDown() {
+		ctx.dispose();
 	}
 
 	@Test
@@ -88,6 +96,12 @@ public class CommandInfoTest {
 			choice.getChoices());
 	}
 
+	@Test
+	public void testDuplicateServiceParameters() {
+		CommandInfo commandInfo = new CommandInfo(ExtendedServiceCommand.class);
+		assertTrue(commandInfo.isValid());
+	}
+
 	// -- Helper classes --
 
 	/** A command with an enum parameter. */
@@ -110,6 +124,28 @@ public class CommandInfoTest {
 		@Override
 		public void run() {
 			// NB: No implementation needed.
+		}
+	}
+
+	private static class ServiceCommand implements Command {
+
+		@Parameter
+		private LogService logService;
+
+		@Override
+		public void run() {
+			// do nothing
+		}
+	}
+
+	private static class ExtendedServiceCommand extends ServiceCommand {
+
+		@Parameter
+		private LogService logService;
+
+		@Override
+		public void run() {
+			// do nothing
 		}
 	}
 }

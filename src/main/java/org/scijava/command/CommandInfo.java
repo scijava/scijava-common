@@ -52,6 +52,7 @@ import org.scijava.module.event.ModulesUpdatedEvent;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginInfo;
+import org.scijava.service.Service;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.StringMaker;
 import org.scijava.util.Types;
@@ -460,7 +461,8 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			}
 
 			final String name = f.getName();
-			if (inputMap.containsKey(name) || outputMap.containsKey(name)) {
+			if ((inputMap.containsKey(name) || outputMap.containsKey(name))
+					&& !Service.class.isAssignableFrom(f.getType())) {
 				// NB: Shadowed parameters are bad because they are ambiguous.
 				final String error = "Invalid duplicate parameter: " + f;
 				problems.add(new ValidityProblem(error));
