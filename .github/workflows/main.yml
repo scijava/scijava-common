@@ -12,12 +12,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Maven using GitHub Actions (test16)
+      - name: Build with Maven using GitHub Actions (test17)
         run: |
           curl -fsLO https://raw.githubusercontent.com/scijava/scijava-scripts/github-actions/github-action-build.sh
           sh github-action-build.sh
         env:
-          secure_env: ${{github.secret.github_token}}
+          secure_env: ${{secret.GITHUB_TOKEN}}
           pull_request: ${{github.event.number}}
           repo_fork: ${{github.repository}}
           runner_os: ${{runner.os}}
