@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Maven using GitHub Actions (test4)
+      - name: Build with Maven using GitHub Actions (test5)
         run: |
           curl -fsLO https://raw.githubusercontent.com/scijava/scijava-scripts/github-actions/github-action-build.sh
           sh github-action-build.sh
