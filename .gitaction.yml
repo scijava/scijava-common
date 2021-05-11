@@ -1,0 +1,17 @@
+language: java
+jdk: openjdk8
+branches:
+  only:
+  - master
+  - "/.*-[0-9]+\\..*/"
+install: true
+script: ".github/build.sh"
+cache:
+  directories:
+  - "~/.m2/repository"
+env:
+  global:
+  - secure: Xkwu2u/v0+kBqW2Mt80FpMS+2NRMnfRaZ6ptiEW44sViKkaENnJegmYVjdSm9RAwAJx9DEp6KYTLH4Hh56JbWp6s8qGcxm2vCbAWBE6ZesOj3oTvv/T4lucxarocZ8hK9NqfY9iCePjl8R10UDePThZgWBFidUQjvPbH+LcXo9g=
+  - secure: Jgj204N4hKv+7sUrXGtXMvUoXYuHAerhUvwbHsm0BJFpzUSyHP5QWJH2tHvCUL9Yb4VhNEjc46RLFVmiIXynJwAdAWJodT/VEnOTb5Cf7+0UHK4qCyjyjVHiWq1cf+R8Lr9fuKRqxUAdz9Hw6g0Yt23TX8kCa+wQW9lwchn0IG8=
+  - secure: RuGzuPrxyvBRJwsCpSJ10p9PdP2Hzc9lxb29L//Y/Fkc3bJwNMlNa0ST83oGNHJapYc4dWuFk22Ooy/2YioNgsVvR4n5MAslqXQXSY0VDle1Nbf1pudAlPU+quaiYxcAyyysjUUtqc5wADVgpkrDA7GJzAuCOWb4aSwiiIn6u4A=
+  - secure: bnsjVlj9MBJto8ahZdMwGpVPjZeyF7r5tZh+t+NhDuZsP0WMlURzGZ9/lJOO4quklgiWCyeVDB5uvDvsdG9BReBe5Q8Q6WZyxhxYtP2iLV0zRWSWsGKk0stGcrmJKk8wbicIJdXD8suiP+2Li5GfxTge/hkhL4CL0OOr6b1JqrM=
