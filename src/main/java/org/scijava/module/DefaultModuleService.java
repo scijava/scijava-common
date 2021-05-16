@@ -260,27 +260,23 @@ public class DefaultModuleService extends AbstractService implements
 	}
 
 	@Override
-	public <T> ModuleItem<T> getSingleInput(final Module module,
-		final Class<T> type)
-	{
-		return getTypedSingleItem(module, type, module.getInfo().inputs());
+	public <T> ModuleItem<T> getSingleInput(final Module module, final Class<T> type, boolean acrossTypes) {
+		return getTypedSingleItem(module, type, module.getInfo().inputs(), acrossTypes);
 	}
 
 	@Override
-	public <T> ModuleItem<T> getSingleOutput(final Module module,
-		final Class<T> type)
-	{
-		return getTypedSingleItem(module, type, module.getInfo().outputs());
+	public <T> ModuleItem<T> getSingleOutput(final Module module, final Class<T> type, boolean acrossTypes) {
+		return getTypedSingleItem(module, type, module.getInfo().outputs(), acrossTypes);
 	}
 
 	@Override
-	public ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types) {
-		return getSingleItem(module, types, module.getInfo().inputs());
+	public ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types, boolean acrossTypes) {
+		return getSingleItem(module, types, module.getInfo().inputs(), acrossTypes);
 	}
 
 	@Override
-	public ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types) {
-		return getSingleItem(module, types, module.getInfo().outputs());
+	public ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types, boolean acrossTypes) {
+		return getSingleItem(module, types, module.getInfo().outputs(), acrossTypes);
 	}
 
 	@Override
@@ -478,17 +474,17 @@ public class DefaultModuleService extends AbstractService implements
 	}
 
 	private <T> ModuleItem<T> getTypedSingleItem(final Module module,
-		final Class<T> type, final Iterable<ModuleItem<?>> items)
+		final Class<T> type, final Iterable<ModuleItem<?>> items, boolean acrossTypes)
 	{
 		Set<Class<?>> types = new HashSet<>();
 		types.add(type);
 		@SuppressWarnings("unchecked")
-		ModuleItem<T> result = (ModuleItem<T>) getSingleItem(module, types, items);
+		ModuleItem<T> result = (ModuleItem<T>) getSingleItem(module, types, items, acrossTypes);
 		return result;
 	}
 
 	private ModuleItem<?> getSingleItem(final Module module,
-		final Collection<Class<?>> types, final Iterable<ModuleItem<?>> items)
+		final Collection<Class<?>> types, final Iterable<ModuleItem<?>> items, boolean acrossTypes)
 	{
 		ModuleItem<?> result = null;
 
@@ -496,6 +492,7 @@ public class DefaultModuleService extends AbstractService implements
 			final String name = item.getName();
 			if (!item.isAutoFill()) continue; // skip unfillable inputs
 			if (module.isInputResolved(name)) continue; // skip resolved inputs
+			if (acrossTypes && result != null) return null; // multiple unresolved items
 			final Class<?> itemType = item.getType();
 			for (final Class<?> type : types) {
 				if (type.isAssignableFrom(itemType)) {
