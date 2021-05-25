@@ -35,6 +35,16 @@ public class WidgetStyle {
 		// prevent instantiation of utility class
 	}
 
+	/**
+	 * Check whether a given widget style contains the target style.
+	 * 
+	 * @param widgetStyle
+	 *            The style declaration to test, usually a comma-separated
+	 *            {@code String}; trailing spaces are ignored.
+	 * @param target
+	 *            The style being checked, case-insensitive.
+	 * @return {@code true} if the target style matches.
+	 */
 	public static boolean isStyle(String widgetStyle, String target) {
 		if (widgetStyle == null || target == null)
 			return widgetStyle == target;
@@ -44,20 +54,62 @@ public class WidgetStyle {
 		return false;
 	}
 
+	/**
+	 * Check whether a given {@link ModuleItem} has the target style.
+	 * 
+	 * @param item
+	 *            The module item to test.
+	 * @param target
+	 *            The style being checked, case-insensitive.
+	 * @return {@code true} if the module item has the target style.
+	 */
 	public static boolean isStyle(ModuleItem<?> item, String target) {
 		return isStyle(item.getWidgetStyle(), target);
 	}
 
-	public static String[] getStyleModifiers(String widgetStyle, String target) {
+	/**
+	 * Get the modifying value for a given style attribute in a style declaration.
+	 * 
+	 * <p>
+	 * For example, for {@code style="format:#0.00"}, this will return
+	 * {@code "#0.00"}.
+	 * </p>
+	 * 
+	 * @param widgetStyle
+	 *            The style declaration string, e.g. <code>"format:#0.00"</code>.
+	 * @param target
+	 *            The target style attribute, e.g. <code>"format"</code>.
+	 * @return The modifier for the given target, e.g. <code>"#0.00"</code>.
+	 */
+	public static String getStyleModifier(String widgetStyle, String target) {
 		if (widgetStyle == null || target == null)
 			return null;
 		String[] styles = widgetStyle.split(",");
 		for (String s : styles) {
 			if (s.trim().toLowerCase().startsWith(target.toLowerCase())) {
-				String suffix = s.split(":")[1];
-				return suffix.split("/");
+				return s.split(":")[1];
 			}
 		}
 		return null;
 	}
+
+	/**
+	 * Get an array of all modifying values for a given style attribute.
+	 * 
+	 * <p>
+	 * For example, for {@code style="extensions:png/gif/bmp"}, this will return {@code ["png", "gif", "bmp"]}.
+	 * </p>
+	 * 
+	 * @param widgetStyle
+	 *            The style declaration string, e.g. <code>"extensions:png/gif/bmp"</code>.
+	 * @param target
+	 *            The target style attribute, e.g. <code>"extensions"</code>.
+	 * @return An array of modifiers for the given target, e.g. <code>["png", "gif", "bmp"]</code>.
+	 */
+	public static String[] getStyleModifiers(String widgetStyle, String target) {
+		String suffix = getStyleModifier(widgetStyle, target);
+		if (suffix == null) return null;
+		return suffix.split("/");
+	}
+
 }
