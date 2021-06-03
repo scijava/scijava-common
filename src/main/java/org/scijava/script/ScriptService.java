@@ -128,6 +128,18 @@ public interface ScriptService extends SingletonService<ScriptLanguage>,
 	ScriptInfo getScript(File scriptFile);
 
 	/**
+	 * Creates the {@link ScriptInfo} metadata for the provided script.
+	 * 
+	 * @param path
+	 *            Pseudo-path to the script file. This file does not actually need
+	 *            to exist, but rather provides a name for the script with file
+	 *            extension.
+	 * @param script
+	 *            The script contents.
+	 */
+	ScriptInfo getScript(String path, String script);
+
+	/**
 	 * Executes the script in the given file.
 	 * 
 	 * @param file File containing the script to execute.
