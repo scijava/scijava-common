@@ -92,9 +92,9 @@ public class POMTest {
 		assertEquals("org.scijava", pom.getGroupId());
 		assertEquals("scijava-common", pom.getArtifactId());
 		assertNotNull(pom.getVersion());
-		assertEquals("Travis CI", pom.getCIManagementSystem());
+		assertEquals("GitHub Actions", pom.getCIManagementSystem());
 		final String ciManagementURL = pom.getCIManagementURL();
-		assertEquals("https://travis-ci.org/scijava/scijava-common",
+		assertEquals("https://github.com/scijava/scijava-common/actions",
 			ciManagementURL);
 		assertEquals("GitHub Issues", pom.getIssueManagementSystem());
 		final String issueManagementURL = pom.getIssueManagementURL();
