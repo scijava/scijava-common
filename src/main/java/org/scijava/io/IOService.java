@@ -50,7 +50,10 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * location.
 	 */
 	default IOPlugin<?> getOpener(final String source) {
-		return getOpener(new FileLocation(source));
+		for (final IOPlugin<?> handler : getInstances()) {
+			if (handler.supportsOpen(source)) return handler;
+		}
+		return null;
 	}
 
 	/**
