@@ -29,8 +29,11 @@
 
 package org.scijava.io.handle;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Date;
 
 import org.scijava.io.location.FileLocation;
@@ -50,7 +53,7 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	private RandomAccessFile raf;
 
 	/** The mode of the {@link RandomAccessFile}. */
-	private String mode = "rw";
+	private String mode;
 
 	/** True iff the {@link #close()} has already been called. */
 	private boolean closed;
@@ -230,6 +233,28 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	public synchronized void close() throws IOException {
 		if (raf != null) raf.close();
 		closed = true;
+	}
+
+	// -- WrapperPlugin methods --
+
+	@Override
+	public void set(FileLocation loc) {
+		super.set(loc);
+
+		// Infer the initial mode based on file existence + permissions.
+		final File file = loc.getFile();
+		String mode;
+		if (file.exists()) {
+			final Path path = loc.getFile().toPath();
+			mode = "";
+			if (Files.isReadable(path)) mode += "r";
+			if (Files.isWritable(path)) mode += "w";
+		}
+		else {
+			// Non-existent file; assume the intent is to create it.
+			mode = "rw";
+		}
+		setMode(mode);
 	}
 
 	// -- Typed methods --
