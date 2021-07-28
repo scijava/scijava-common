@@ -59,6 +59,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private String validater;
 	private String callback;
 	private String widgetStyle;
+	private String widgetGroup;
 	private T defaultValue;
 	private T minimumValue;
 	private T maximumValue;
@@ -94,6 +95,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		validater = super.getValidater();
 		callback = super.getCallback();
 		widgetStyle = super.getWidgetStyle();
+		widgetGroup = super.getWidgetGroup();
 		minimumValue = super.getMinimumValue();
 		maximumValue = super.getMaximumValue();
 		stepSize = super.getStepSize();
@@ -122,6 +124,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		validater = item.getValidater();
 		callback = item.getCallback();
 		widgetStyle = item.getWidgetStyle();
+		widgetGroup = item.getWidgetGroup();
 		minimumValue = item.getMinimumValue();
 		maximumValue = item.getMaximumValue();
 		softMinimum = item.getSoftMinimum();
@@ -287,6 +290,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public String getWidgetStyle() {
 		return widgetStyle;
+	}
+	
+	@Override
+	public String getWidgetGroup() {
+		return widgetGroup;
 	}
 
 	@Override

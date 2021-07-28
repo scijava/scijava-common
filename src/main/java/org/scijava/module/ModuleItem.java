@@ -153,6 +153,12 @@ public interface ModuleItem<T> extends BasicDetails {
 	 * interface.
 	 */
 	String getWidgetStyle();
+	
+	/**
+	 * Gets the name of the group the widget belongs to so it can be displayed within
+	 * the group.
+	 */
+	String getWidgetGroup();
 
 	/** Gets the default value. */
 	T getDefaultValue();

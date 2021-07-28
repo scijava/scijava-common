@@ -134,6 +134,11 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	public String getWidgetStyle() {
 		return getParameter().style();
 	}
+	
+	@Override
+	public String getWidgetGroup() {
+		return getParameter().group();
+	}
 
 	@Override
 	public T getMinimumValue() {

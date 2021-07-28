@@ -142,6 +142,9 @@ public @interface Parameter {
 	 * </p>
 	 */
 	String style() default "";
+	
+	/** Defines the widget group. */
+	String group() default "";
 
 	/** Defines the minimum allowed value (numeric parameters only). */
 	String min() default "";
