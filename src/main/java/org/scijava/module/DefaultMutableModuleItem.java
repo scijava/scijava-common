@@ -60,6 +60,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	private String callback;
 	private String widgetStyle;
 	private String widgetGroup;
+	private boolean expanded;
 	private T defaultValue;
 	private T minimumValue;
 	private T maximumValue;
@@ -96,6 +97,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		callback = super.getCallback();
 		widgetStyle = super.getWidgetStyle();
 		widgetGroup = super.getWidgetGroup();
+		expanded = super.isExpanded();
 		minimumValue = super.getMinimumValue();
 		maximumValue = super.getMaximumValue();
 		stepSize = super.getStepSize();
@@ -125,6 +127,7 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 		callback = item.getCallback();
 		widgetStyle = item.getWidgetStyle();
 		widgetGroup = item.getWidgetGroup();
+		expanded = item.isExpanded();
 		minimumValue = item.getMinimumValue();
 		maximumValue = item.getMaximumValue();
 		softMinimum = item.getSoftMinimum();
@@ -187,6 +190,16 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public void setWidgetStyle(final String widgetStyle) {
 		this.widgetStyle = widgetStyle;
+	}
+	
+	@Override
+	public void setWidgetGroup(final String widgetGroup) {
+		this.widgetGroup = widgetGroup;
+	}
+	
+	@Override
+	public void setExpanded(final boolean expanded) {
+		this.expanded = expanded;
 	}
 
 	@Override
@@ -295,6 +308,11 @@ public class DefaultMutableModuleItem<T> extends AbstractModuleItem<T>
 	@Override
 	public String getWidgetGroup() {
 		return widgetGroup;
+	}
+	
+	@Override
+	public boolean isExpanded() {
+		return expanded;
 	}
 
 	@Override

@@ -92,6 +92,9 @@ public @interface Parameter {
 	 * output, such as a "verbose" flag.</li>
 	 * <li>MESSAGE: parameter value is intended as a message only, not editable by
 	 * the user nor included as an input or output parameter.</li>
+	 * <li>GROUP: parameter value specifies a widget group, not editable by
+	 * the user nor included as an input or output parameter. Members are added
+	 * to the group using the group parameter annotation.</li>
 	 * </ul>
 	 */
 	ItemVisibility visibility() default ItemVisibility.NORMAL;
@@ -145,6 +148,12 @@ public @interface Parameter {
 	
 	/** Defines the widget group. */
 	String group() default "";
+	
+	/** 
+	 * Defines the state of the widget group. When true the group is expanded and visible. 
+	 * Otherwise, group members are hidden.
+	 * */
+	boolean expanded() default true;
 
 	/** Defines the minimum allowed value (numeric parameters only). */
 	String min() default "";

@@ -75,6 +75,7 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 		sm.append("callback", getCallback());
 		sm.append("widgetStyle", getWidgetStyle());
 		sm.append("widgetGroup", getWidgetGroup());
+		sm.append("expanded", isExpanded());
 		sm.append("default", getDefaultValue());
 		sm.append("min", getMinimumValue());
 		sm.append("max", getMaximumValue());
@@ -236,6 +237,11 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 	@Override
 	public String getWidgetGroup() {
 		return null;
+	}
+	
+	@Override
+	public boolean isExpanded() {
+		return true;
 	}
 
 	@Override

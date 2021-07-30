@@ -139,6 +139,11 @@ public class CommandModuleItem<T> extends AbstractModuleItem<T> {
 	public String getWidgetGroup() {
 		return getParameter().group();
 	}
+	
+	@Override
+	public boolean isExpanded() {
+		return getParameter().expanded();
+	}
 
 	@Override
 	public T getMinimumValue() {
