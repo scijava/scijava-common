@@ -133,8 +133,8 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	}
 	
 	@Override
-	public boolean isGroup(final String group) {
-		return getItem().getWidgetGroup().equals(group);
+	public String getGroup() {
+		return getItem().getWidgetGroup();
 	}
 
 	@Override
