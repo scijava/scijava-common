@@ -189,11 +189,8 @@ public final class ClassUtils {
 			cacheAnnotatedObjects(c, query);
 			cachedFields = fieldCache.getList(c, annotationClass);
 		}
-		// CTR START HERE: cachedFields should never be null now.
-		// But it is, with FilamentDetector 1.0.0. Figure out why and fix.
-		// Then cut release of scijava-common, and FilamentDetector.
 
-		fields.addAll(cachedFields);
+		if (cachedFields != null) fields.addAll(cachedFields);
 	}
 
 	/**
