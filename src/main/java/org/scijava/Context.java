@@ -433,7 +433,7 @@ public class Context implements Disposable, AutoCloseable {
 	// -- AutoCloseable methods --
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		dispose();
 	}
 
