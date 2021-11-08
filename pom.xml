@@ -142,7 +142,7 @@
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:git://github.com/scijava/scijava-common</connection>
+		<connection>scm:git:https://github.com/scijava/scijava-common</connection>
 		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/scijava-common</url>
