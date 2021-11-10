@@ -116,6 +116,14 @@ public final class DefaultUIService extends AbstractService implements
 	/** The default user interface to use, if one is not explicitly specified. */
 	private UserInterface defaultUI;
 
+	/**
+	 * When true, {@link #isHeadless()} will return true regardless of the value
+	 * of the {@code java.awt.headless} system property. When false, {@link
+	 * #isHeadless()} matches the global JVM headless state defined by {@code
+	 * java.awt.headless}.
+	 */
+	private boolean forceHeadless;
+
 	private boolean activationInvocationPending = false;
 
 	// -- UIService methods --
@@ -178,12 +186,14 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void setHeadless(final boolean headless) {
-		System.setProperty("java.awt.headless", String.valueOf(headless));
+		forceHeadless = headless;
 	}
 
 	@Override
 	public boolean isHeadless() {
-		return Boolean.getBoolean("java.awt.headless");
+		// NB: We do not use java.awt.GraphicsConfiguration.isHeadless()
+		// because scijava-common eschews java.awt.* classes when possible.
+		return forceHeadless || Boolean.getBoolean("java.awt.headless");
 	}
 
 	@Override

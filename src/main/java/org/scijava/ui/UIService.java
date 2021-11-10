@@ -101,7 +101,22 @@ public interface UIService extends SciJavaService {
 	/** Gets whether the UI with the given name or class name is visible. */
 	boolean isVisible(String name);
 
-	/** Sets whether the application is running in headless mode (no UI). */
+	/**
+	 * Sets whether the application should run in headless mode (no UI).
+	 * <p>
+	 * Note that if the system itself is headless&mdash;which can be detected via
+	 * the {@code java.awt.headless} system property or by calling
+	 * {@code java.awt.GraphicsEnvironment.isHeadless()}&mdash;then calling
+	 * {@code setHeadless(false)} will have no effect; the system will still be
+	 * headless, and {@link #isHeadless()} will still return true.
+	 * </p>
+	 * <p>
+	 * But if the system itself is <em>not</em> headless, calling
+	 * {@code setHeadless(true)} will force {@link #isHeadless()} to return true,
+	 * instructing the application to behave in a headless manner insofar as it
+	 * can.
+	 * </p>
+	 */
 	void setHeadless(boolean isHeadless);
 
 	/** Gets whether the UI is running in headless mode (no UI). */
