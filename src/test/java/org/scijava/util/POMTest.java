@@ -110,7 +110,7 @@ public class POMTest {
 		assertEquals("https://github.com/scijava/scijava-common", //
 			pom.getProjectURL());
 		final String scmConnection = pom.getSCMConnection();
-		assertEquals("scm:git:git://github.com/scijava/scijava-common",
+		assertEquals("scm:git:https://github.com/scijava/scijava-common",
 			scmConnection);
 		final String scmDeveloperConnection = pom.getSCMDeveloperConnection();
 		assertEquals("scm:git:git@github.com:scijava/scijava-common",
