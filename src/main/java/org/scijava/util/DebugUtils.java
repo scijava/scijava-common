@@ -36,7 +36,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 
 /**
@@ -105,13 +104,7 @@ public final class DebugUtils {
 		// sort list of threads by name
 		final ArrayList<Thread> threads =
 			new ArrayList<>(stackTraces.keySet());
-		Collections.sort(threads, new Comparator<Thread>() {
-
-			@Override
-			public int compare(final Thread t1, final Thread t2) {
-				return t1.getName().compareTo(t2.getName());
-			}
-		});
+		Collections.sort(threads, (t1, t2) -> t1.getName().compareTo(t2.getName()));
 
 		for (final Thread t : threads) {
 			dumpThread(t, stackTraces.get(t), sb);
