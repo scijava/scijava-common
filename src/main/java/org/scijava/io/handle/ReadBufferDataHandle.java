@@ -211,9 +211,9 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 			// calculate local offsets
 			final int pageOffset = globalToLocalOffset(offset);
 			int localLength = pageSize - pageOffset;
-			if (read + localLength > readLength) {
-				localLength = readLength - read;
-			}
+			localLength = Math.min(localLength, readLength - read);
+			localLength = Math.min(localLength, b.length - localTargetOff);
+			if (localLength == 0) break; // we've read all we can
 
 			// copy the data
 			System.arraycopy(currentPage, pageOffset, b, localTargetOff, localLength);
@@ -281,7 +281,7 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 		public LRUReplacementStrategy(final int numSlots) {
 			queue = new ArrayDeque<>(numSlots);
 
-			// fill the que
+			// fill the queue
 			for (int i = 0; i < numSlots; i++) {
 				queue.add(i);
 			}
@@ -295,12 +295,12 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 		 *            the id of the slot that has been accessed
 		 */
 		public void accessed(final int slotID) {
-			// put accessed element to the end of the que
+			// put accessed element to the end of the queue
 			queue.remove(slotID);
 			queue.add(slotID);
 		}
 
-		public int pickVictim(final int pageID) {
+		public int pickVictim(@SuppressWarnings("unused") final int pageID) {
 			return queue.peek();
 		}
 	}
