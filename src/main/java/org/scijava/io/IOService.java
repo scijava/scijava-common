@@ -87,6 +87,15 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 		return null;
 	}
 
+	/** A special type of "openned data" that can be returned by the
+	 * {@link #open(String)} and {@link #open(Location)} methods, and
+	 * that signals that data is opened outside the ImageJ2 data model.
+	 * Example is the opening of BigDataViewer's .xml files, in which case
+	 * no image is actually loaded into ImageJ2 per se, but an instance of
+	 * the BigDataViewer over the .xml file is opened/started instead.
+	 */
+	Object GOVERNING_APP_STARTED = new Object();
+
 	/**
 	 * Loads data from the given source. For extensibility, the nature of the
 	 * source is left intentionally general, but two common examples include file
@@ -95,11 +104,16 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * The opener to use is automatically determined based on available
 	 * {@link IOPlugin}s; see {@link #getOpener(String)}.
 	 * </p>
+	 * The opener may open the source in "external" application (e.g., in BigDataViewer)
+	 * in which case it must return {@link #GOVERNING_APP_STARTED} object (and not the
+	 * source data itself).
+	 * </p>
 	 *
 	 * @param source The source (e.g., file path) from which to data should be
 	 *          loaded.
-	 * @return An object representing the loaded data, or null if the source is
-	 *         not supported.
+	 * @return An object representing the loaded data, or {@link #GOVERNING_APP_STARTED}
+	 *         object signalling that the source was loaded into an external application,
+	 *         or null if the source is not supported.
 	 * @throws IOException if something goes wrong loading the data.
 	 */
 	Object open(String source) throws IOException;
@@ -110,10 +124,15 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * The opener to use is automatically determined based on available
 	 * {@link IOPlugin}s; see {@link #getOpener(Location)}.
 	 * </p>
+	 * The opener may open the source in "external" application (e.g., in BigDataViewer)
+	 * in which case it must return {@link #GOVERNING_APP_STARTED} object (and not the
+	 * source data itself).
+	 * </p>
 	 *
 	 * @param source The location from which to data should be loaded.
-	 * @return An object representing the loaded data, or null if the source is
-	 *         not supported.
+	 * @return An object representing the loaded data, or {@link #GOVERNING_APP_STARTED}
+	 *         object signalling that the source was loaded into an external application,
+	 *         or null if the source is not supported.
 	 * @throws IOException if something goes wrong loading the data.
 	 */
 	default Object open(Location source) throws IOException {
