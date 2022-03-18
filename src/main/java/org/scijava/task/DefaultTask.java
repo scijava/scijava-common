@@ -137,6 +137,7 @@ public class DefaultTask implements Task {
 	public void cancel(final String reason) {
 		canceled = true;
 		cancelReason = reason;
+		fireTaskEvent();
 	}
 
 	@Override
