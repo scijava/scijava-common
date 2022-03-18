@@ -51,6 +51,7 @@ public class DefaultTask implements Task {
 
 	private boolean canceled;
 	private String cancelReason;
+	volatile boolean isDone = false;
 
 	private String status;
 	private long step;
@@ -89,7 +90,7 @@ public class DefaultTask implements Task {
 
 	@Override
 	public boolean isDone() {
-		return future != null && future.isDone();
+		return (isDone) || (future != null && future.isDone());
 	}
 
 	@Override
@@ -169,7 +170,12 @@ public class DefaultTask implements Task {
 	private synchronized void initFuture(final Runnable r) {
 		if (future != null) return;
 		if (r == null) throw new IllegalArgumentException("Must call run first");
-		future = threadService.run(r);
+		future = threadService.run(() -> {
+			fireTaskEvent();
+			r.run();
+			isDone = true;
+			fireTaskEvent();
+		});
 	}
 
 	private void fireTaskEvent() {
