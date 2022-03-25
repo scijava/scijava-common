@@ -102,4 +102,14 @@ public interface Task extends Cancelable, Named {
 	 * @see #getProgressMaximum()
 	 */
 	void setProgressMaximum(long max);
+
+	/**
+	 * triggers a TaskEvent
+	 */
+	default void start() {}
+
+	/**
+	 * triggers a TaskEvent, and notifies that the task is finished, independently of the #run method
+	 */
+	default void finish() {}
 }

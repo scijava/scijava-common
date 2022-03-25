@@ -24,7 +24,7 @@ public class TaskEventTest {
     private TaskService taskService;
     private TaskEventListener eventListener;
 
-    static int nTasks = 3500; // Putting higher value can lead to issues because too many threads cannot be launched in parallel
+    static int nTasks = 500; // Putting higher value can lead to issues because too many threads cannot be launched in parallel
 
     @Before
     public void setUp() {
