@@ -112,4 +112,12 @@ public interface Task extends Cancelable, Named {
 	 * triggers a TaskEvent, and notifies that the task is finished, independently of the #run method
 	 */
 	default void finish() {}
+
+	/**
+	 * If the task is cancelled, this runnable should be executed
+	 * For instance, if the user clicks on a cancel button, this runnable
+	 * can be used to notify that the task is expected to be cancelled
+	 * @param runnable executed if this task is cancelled by
+	 */
+	default void setCancelCallBack(Runnable runnable) {}
 }

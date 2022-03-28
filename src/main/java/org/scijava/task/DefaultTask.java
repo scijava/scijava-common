@@ -59,6 +59,7 @@ public class DefaultTask implements Task {
 
 	private String name;
 
+	private Runnable cancelCallBack;
 	/**
 	 * Creates a new task.
 	 * 
@@ -136,9 +137,17 @@ public class DefaultTask implements Task {
 	@Override
 	public void cancel(final String reason) {
 		canceled = true;
-		isDone = true;
 		cancelReason = reason;
+		if (cancelCallBack!=null) cancelCallBack.run();
+		if (future!=null) {
+			isDone = future.cancel(true);
+		}
 		fireTaskEvent();
+	}
+
+	@Override
+	public void setCancelCallBack(Runnable r) {
+		this.cancelCallBack = r;
 	}
 
 	@Override
