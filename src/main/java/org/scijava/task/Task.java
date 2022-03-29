@@ -37,25 +37,55 @@ import org.scijava.Named;
 /**
  * A self-aware job which reports its status and progress as it runs.
  *
- * @author Curtis Rueden
+ * There are two ways to use a Task object:
+ * - A job can be run asynchronously by using {@link Task#run(Runnable)}, and
+ * can report its progression from within the Runnable.
+ *
+ * - A {@link Task} object can simply be used to report in a synchronous manner
+ * the progression of a piece of code. In the case of synchronous reporting,
+ * the job is considered started when {@link Task#start()} is called and
+ * finished when {@link Task#finish()} is called. A finished job can be finished
+ * either because it is done or because it has been cancelled.
+ *
+ * A cancel callback can be set with {@link Task#setCancelCallBack(Runnable)}.
+ * The runnable argument will be executed in the case of an external event
+ * requesting a cancellation of the task - typically, if a user clicks
+ * a cancel button on the GUI, task.cancel("User cancellation requested") will
+ * be called. As a result, the task implementors should run the callback.
+ * This callback can be used to make the task aware that a cancellation
+ * has been requested, and should proceed to stop its execution.
+ *
+ * See also {@link TaskService}, {@link DefaultTask}
+ *
+ * @author Curtis Rueden, Nicolas Chiaruttini
  */
 public interface Task extends Cancelable, Named {
 
 	/**
-	 * Starts running the task.
+	 * Starts running the task - asynchronous job
 	 *
 	 * @throws IllegalStateException if the task was already started.
 	 */
 	void run(Runnable r);
 
 	/**
-	 * Waits for the task to complete.
+	 * Waits for the task to complete - asynchronous job
 	 *
 	 * @throws IllegalStateException if {@link #run} has not been called yet.
 	 * @throws InterruptedException if the task is interrupted.
 	 * @throws ExecutionException if the task throws an exception while running.
 	 */
 	void waitFor() throws InterruptedException, ExecutionException;
+
+	/**
+	 * reports that the task is started - synchronous job
+	 */
+	default void start() {}
+
+	/**
+	 * reports that the task is finished - synchronous job
+	 */
+	default void finish() {}
 
 	/** Checks whether the task has completed. */
 	boolean isDone();
@@ -104,20 +134,10 @@ public interface Task extends Cancelable, Named {
 	void setProgressMaximum(long max);
 
 	/**
-	 * triggers a TaskEvent
-	 */
-	default void start() {}
-
-	/**
-	 * triggers a TaskEvent, and notifies that the task is finished, independently of the #run method
-	 */
-	default void finish() {}
-
-	/**
-	 * If the task is cancelled, this runnable should be executed
-	 * For instance, if the user clicks on a cancel button, this runnable
-	 * can be used to notify that the task is expected to be cancelled
-	 * @param runnable executed if this task is cancelled by
+	 * If the task is cancelled (external call to {@link Task#cancel(String)}),
+	 * the input runnable argument should be executed by task implementors.
+	 *
+	 * @param runnable : should be executed if this task is cancelled through {@link Task#cancel(String)}
 	 */
 	default void setCancelCallBack(Runnable runnable) {}
 }
