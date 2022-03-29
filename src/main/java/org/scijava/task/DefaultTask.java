@@ -36,11 +36,32 @@ import org.scijava.task.event.TaskEvent;
 import org.scijava.thread.ThreadService;
 
 /**
- * Default implementation of {@link Task}. It launches code via the linked
- * {@link ThreadService}, and reports status updates via the linked
- * {@link EventService}.
+ * Default implementation of {@link Task}. Throughout the task (or job),
+ * {@link Task#setProgressValue(long)} can be called to inform
+ * how the job is progressing.
  *
- * @author Curtis Rueden
+ * Asynchronous case:
+ * - A job (runnable) is sent for execution to the linked {@link ThreadService}.
+ * It reports status updates via the linked {@link EventService}.
+ * A {@link org.scijava.task.event.TaskEvent} is sent before the job
+ * is started and when finished.
+ * In the asynchronous case, upon task cancellation ({@link Task#cancel(String)} call),
+ * the runnable associated to the ThreadService is attempted to be stopped
+ * by calling {@link Future#cancel(boolean)}.
+ * This default behaviour can be supplemented by an additional
+ * custom callback which can be set in {@link Task#setCancelCallBack(Runnable)}.
+ *
+ * Synchronous case:
+ * - A job that reports its status in between calls of {@link Task#start()},
+ * and {@link Task#finish()}. It also reports its status via
+ * the linked {@link EventService}.
+ * Start and finish calls allow publishing proper {@link org.scijava.task.event.TaskEvent}
+ * to subscribers (with the EventService).
+ * Upon cancellation of a synchronous task, it is the responsibility
+ * of the synchronous task to handle its own cancellation through
+ * a custom callback which can be set via {@link Task#setCancelCallBack(Runnable)}.
+ *
+ * @author Curtis Rueden, Nicolas Chiaruttini
  */
 public class DefaultTask implements Task {
 
@@ -51,12 +72,15 @@ public class DefaultTask implements Task {
 
 	private boolean canceled;
 	private String cancelReason;
+	volatile boolean isDone = false;
 
 	private String status;
 	private long step;
 	private long max;
 
 	private String name;
+
+	private Runnable cancelCallBack;
 
 	/**
 	 * Creates a new task.
@@ -76,20 +100,35 @@ public class DefaultTask implements Task {
 
 	// -- Task methods --
 
+	// - Asynchronous
 	@Override
 	public void run(final Runnable r) {
 		if (r == null) throw new NullPointerException();
 		future(r);
 	}
 
+	// - Asynchronous
 	@Override
 	public void waitFor() throws InterruptedException, ExecutionException {
 		future().get();
 	}
 
+	// - Synchronous
+	@Override
+	public void start() {
+		fireTaskEvent();
+	}
+
+	// - Synchronous
+	@Override
+	public void finish() {
+		isDone=true;
+		fireTaskEvent();
+	}
+
 	@Override
 	public boolean isDone() {
-		return future != null && future.isDone();
+		return (isDone) || (future != null && future.isDone());
 	}
 
 	@Override
@@ -136,6 +175,16 @@ public class DefaultTask implements Task {
 	public void cancel(final String reason) {
 		canceled = true;
 		cancelReason = reason;
+		if (cancelCallBack!=null) cancelCallBack.run();
+		if (future!=null) {
+			isDone = future.cancel(true);
+		}
+		fireTaskEvent();
+	}
+
+	@Override
+	public void setCancelCallBack(Runnable r) {
+		this.cancelCallBack = r;
 	}
 
 	@Override
@@ -169,7 +218,15 @@ public class DefaultTask implements Task {
 	private synchronized void initFuture(final Runnable r) {
 		if (future != null) return;
 		if (r == null) throw new IllegalArgumentException("Must call run first");
-		future = threadService.run(r);
+		future = threadService.run(() -> {
+			try {
+				fireTaskEvent(); // Triggers an event just before the task is executed
+				r.run();
+			} finally {
+				isDone = true;
+				fireTaskEvent(); // Triggers an event just after the task has successfully completed or failed
+			}
+		});
 	}
 
 	private void fireTaskEvent() {
