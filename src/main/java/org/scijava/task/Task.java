@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -140,4 +140,12 @@ public interface Task extends Cancelable, Named {
 	 * @param runnable : should be executed if this task is cancelled through {@link Task#cancel(String)}
 	 */
 	default void setCancelCallBack(Runnable runnable) {}
+
+	/**
+	 * Returns the current cancel callback runnable,
+	 * This can be used to concatenate callbacks in order,
+	 * for instance, to ask for a user confirmation before cancelling the task
+	 */
+	default Runnable getCancelCallBack() { return () -> {}; }
+
 }
