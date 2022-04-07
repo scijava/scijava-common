@@ -137,15 +137,18 @@ public interface Task extends Cancelable, Named {
 	 * If the task is cancelled (external call to {@link Task#cancel(String)}),
 	 * the input runnable argument should be executed by task implementors.
 	 *
-	 * @param runnable : should be executed if this task is cancelled through {@link Task#cancel(String)}
+	 * @param runnable : should be executed if this task is cancelled through
+	 *          {@link Task#cancel(String)}
 	 */
 	default void setCancelCallBack(Runnable runnable) {}
 
 	/**
-	 * Returns the current cancel callback runnable,
-	 * This can be used to concatenate callbacks in order,
-	 * for instance, to ask for a user confirmation before cancelling the task
+	 * Returns the current cancel callback runnable, This can be used to
+	 * concatenate callbacks in order, for instance, to ask for a user
+	 * confirmation before cancelling the task
 	 */
-	default Runnable getCancelCallBack() { return () -> {}; }
+	default Runnable getCancelCallBack() {
+		return () -> {};
+	}
 
 }

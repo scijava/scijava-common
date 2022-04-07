@@ -92,7 +92,7 @@ public class DefaultTask implements Task {
 	 *          reported.
 	 */
 	public DefaultTask(final ThreadService threadService,
-					   final EventService eventService)
+		final EventService eventService)
 	{
 		this.threadService = threadService;
 		this.eventService = eventService;
@@ -123,7 +123,7 @@ public class DefaultTask implements Task {
 	// - Synchronous
 	@Override
 	public void finish() {
-		isDone=true;
+		isDone = true;
 		fireTaskEvent();
 	}
 
@@ -176,12 +176,12 @@ public class DefaultTask implements Task {
 	public void cancel(final String reason) {
 		canceled = true;
 		cancelReason = reason;
-		if (cancelCallBack!=null) cancelCallBack.run();
+		if (cancelCallBack != null) cancelCallBack.run();
 		fireTaskEvent();
 	}
 
 	void defaultCancelCallback() {
-		if (future!=null) {
+		if (future != null) {
 			isDone = future.cancel(true);
 		}
 	}
@@ -231,9 +231,11 @@ public class DefaultTask implements Task {
 			try {
 				fireTaskEvent(); // Triggers an event just before the task is executed
 				r.run();
-			} finally {
+			}
+			finally {
 				isDone = true;
-				fireTaskEvent(); // Triggers an event just after the task has successfully completed or failed
+				fireTaskEvent(); // Triggers an event just after the task has
+													// successfully completed or failed
 			}
 		});
 	}
