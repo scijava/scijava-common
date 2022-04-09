@@ -60,6 +60,11 @@
 			<properties><id>chris-allan</id></properties>
 		</contributor>
 		<contributor>
+			<name>Nicolas Chiaruttini</name>
+			<url>https://imagej.net/people/NicoKiaru</url>
+			<properties><id>NicoKiaru</id></properties>
+		</contributor>
+		<contributor>
 			<name>Barry DeZonia</name>
 			<url>https://imagej.net/people/bdezonia</url>
 			<properties><id>bdezonia</id></properties>
