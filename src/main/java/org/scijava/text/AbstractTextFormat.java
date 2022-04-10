@@ -32,6 +32,7 @@ package org.scijava.text;
 import java.io.File;
 
 import org.scijava.plugin.AbstractHandlerPlugin;
+import org.scijava.util.FileUtils;
 
 /**
  * Abstract superclass of {@link TextFormat} implementations.
@@ -41,5 +42,16 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractTextFormat extends AbstractHandlerPlugin<File>
 	implements TextFormat
 {
-	// NB: No implementation needed.
+        @Override
+	public boolean supports(final File file) {
+                for (final String ext : getExtensions()) {
+			if (FileUtils.getExtension(file).equalsIgnoreCase(ext)) return true;
+		}
+		return false;
+	}
+
+        @Override
+	public Class<File> getType() {
+		return File.class;
+	}
 }

@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -63,6 +64,23 @@ public class IOServiceTest {
 		obj = io.open(new FileLocation(localFile));
 		assertNotNull(obj);
 		assertEquals(content, obj.toString());
+	}
+
+	@Test
+	public void testUnsupportedFile() throws IOException {
+		// create context, add dummy text format
+		final Context ctx = new Context();
+		ctx.getPluginIndex().add(new PluginInfo<>(DummyTextFormat.class, TextFormat.class));
+		final IOService io = ctx.getService(IOService.class);
+
+		// open unsupported file from resources as String
+		String localFile = getClass().getResource("test.foobar").getPath();
+		Object obj = io.open(localFile);
+		assertNull(obj);
+
+		// open unsupported file from resources as FileLocation
+		obj = io.open(new FileLocation(localFile));
+		assertNull(obj);
 	}
 
 
