@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scijava.parsington.Variable;
-import org.scijava.parsington.eval.DefaultEvaluator;
+import org.scijava.parsington.eval.DefaultTreeEvaluator;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.AbstractService;
 import org.scijava.service.Service;
@@ -97,7 +97,7 @@ public class DefaultParseService extends AbstractService implements
 		}
 
 		private void parseItems(final String arg, final boolean strict) {
-			final DefaultEvaluator e = new DefaultEvaluator();
+			final DefaultTreeEvaluator e = new DefaultTreeEvaluator();
 			e.setStrict(strict);
 			final Object result = e.evaluate("(" + arg + ")");
 			if (result == null) {
