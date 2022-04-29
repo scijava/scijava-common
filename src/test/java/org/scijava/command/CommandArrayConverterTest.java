@@ -113,10 +113,7 @@ public class CommandArrayConverterTest {
         @Override
         public void run() {
             final StringBuilder sb = new StringBuilder();
-            System.out.println("userObjects length : "+userObjects.length);
-            System.out.println("class : "+userObjects.getClass());
             for (UserClass obj : userObjects) {
-                System.out.println("\t"+obj);
                 sb.append(obj.toString()+";");
             }
             result = sb.toString();
@@ -136,10 +133,7 @@ public class CommandArrayConverterTest {
         @Override
         public void run() {
             final StringBuilder sb = new StringBuilder();
-            System.out.println("userObjects length : "+userObjects.length);
-            System.out.println("class : "+userObjects.getClass());
             for (UserClass obj : userObjects) {
-                System.out.println("\t"+obj);
                 sb.append(obj.toString()+";");
             }
             result = sb.toString();

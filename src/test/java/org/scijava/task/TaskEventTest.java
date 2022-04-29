@@ -87,7 +87,6 @@ public class TaskEventTest {
         new Thread(
                 () -> {
                     try {
-                        System.out.println("Waiting to start task "+taskName);
                         Thread.sleep(msBeforeStart);
 
                         // Task started
