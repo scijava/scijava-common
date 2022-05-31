@@ -123,6 +123,13 @@ public class ScriptModule extends AbstractModule implements Contextual {
 
 	@Override
 	public void run() {
+		// HACK: Work around code (Groovy!) assuming
+		// context class loader can't be null.
+		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		if (cl == null) {
+			Thread.currentThread().setContextClassLoader(Context.getClassLoader());
+		}
+
 		final ScriptEngine engine = getEngine();
 		final String path = getInfo().getPath();
 
