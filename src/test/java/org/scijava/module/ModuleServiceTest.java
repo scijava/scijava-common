@@ -29,11 +29,9 @@
 
 package org.scijava.module;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -42,6 +40,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.util.ObjectArray;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link ModuleService}.
@@ -158,6 +159,66 @@ public class ModuleServiceTest {
 		assertSame(info.getInput("double2"), singleDouble);
 	}
 
+	@Test
+	public void testSaveAndLoad() {
+
+		List<Object[]> parameterizations = new ArrayList<>();
+		parameterizations.add(new Object[] { //
+			double[].class, new double[] {} //
+		});
+		parameterizations.add(new Object[] { //
+			double[].class, new double[] { 1., 2., 3. } //
+		});
+		parameterizations.add(new Object[] { //
+			Double[].class, new Double[] {} //
+		});
+		parameterizations.add(new Object[] { //
+			Double[].class, new Double[] { 1., 2., 3. } //
+		});
+
+		for (Object[] params : parameterizations) {
+			Class<?> type = (Class<?>) params[0];
+			Object expected = params[1];
+			// Get a ModuleItem of the right type
+			MutableModule m = new DefaultMutableModule();
+			m.getInfo().addInput(new DefaultMutableModuleItem<>(m, "a", type));
+			@SuppressWarnings("unchecked")
+			final ModuleItem<Object> item = (ModuleItem<Object>) moduleService
+				.getSingleInput(m, type);
+			// Save a value to the ModuleItem
+			moduleService.save(item, expected);
+			// Load that value from the ModuleItem
+			Object actual = moduleService.load(item);
+			// Assert equality
+			if (expected.getClass().isArray()) assertArrayEquality(expected, actual);
+			else assertEquals(expected, actual);
+		}
+	}
+
+	private void assertArrayEquality(Object arr1, Object arr2) {
+		// Ensure that both Objects are arrays of the same type!
+		assertEquals(arr1.getClass(), arr2.getClass());
+		assertTrue(arr1.getClass().isArray());
+
+		// We must check primitive arrays as they cannot be cast to Object[]
+		if (arr1 instanceof boolean[]) //
+			assertArrayEquals((boolean[]) arr1, (boolean[]) arr2);
+		else if (arr1 instanceof short[]) //
+			assertArrayEquals((short[]) arr1, (short[]) arr2);
+		else if (arr1 instanceof int[]) //
+			assertArrayEquals((int[]) arr1, (int[]) arr2);
+		else if (arr1 instanceof long[]) //
+			assertArrayEquals((long[]) arr1, (long[]) arr2);
+		else if (arr1 instanceof float[]) //
+			assertArrayEquals((float[]) arr1, (float[]) arr2, 1e-6f);
+		else if (arr1 instanceof double[]) //
+			assertArrayEquals((double[]) arr1, (double[]) arr2, 1e-6);
+		else if (arr1 instanceof char[]) //
+			assertArrayEquals((char[]) arr1, (char[]) arr2);
+		// Otherwise we can just cast to Object[]
+		else assertArrayEquals((Object[]) arr1, (Object[]) arr2);
+	}
+
 	// -- Helper methods --
 
 	private Object[] createInputArray() {
@@ -167,7 +228,7 @@ public class ModuleServiceTest {
 			"integer1", -2, //
 			"integer2", 7, //
 			"double1", Math.E, //
-			"double2", Math.PI //
+			"double2", Math.PI, //
 		};
 	}
 
@@ -198,7 +259,6 @@ public class ModuleServiceTest {
 
 	/** A sample module for testing the module service. */
 	public static class FooModule extends AbstractModule {
-
 		private final FooModuleInfo info;
 
 		public FooModule(final FooModuleInfo info) {
