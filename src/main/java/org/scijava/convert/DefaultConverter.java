@@ -173,7 +173,6 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 				final String elementString = ArrayUtils.toCollection(src).stream() //
 					.map(object -> convert(object, String.class)) //
 					.collect(Collectors.joining(","));
-				String sb = "[" + elementString + ']';
 				@SuppressWarnings("unchecked")
 				final T result = (T) elementString;
 				return result;
