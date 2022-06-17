@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
@@ -168,10 +169,21 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		}
 		if (saneDest == String.class) {
 			// destination type is String; use Object.toString() method
-			final String sValue = src.toString();
-			@SuppressWarnings("unchecked")
-			final T result = (T) sValue;
-			return result;
+			if (src.getClass().isArray()) {
+				final String elementString = ArrayUtils.toCollection(src).stream() //
+					.map(object -> convert(object, String.class)) //
+					.collect(Collectors.joining(","));
+				String sb = "[" + elementString + ']';
+				@SuppressWarnings("unchecked")
+				final T result = (T) elementString;
+				return result;
+			}
+			else {
+				final String sValue = src.toString();
+				@SuppressWarnings("unchecked")
+				final T result = (T) sValue;
+				return result;
+			}
 		}
 
 		// wrap the original object with one of the new type, using a constructor
