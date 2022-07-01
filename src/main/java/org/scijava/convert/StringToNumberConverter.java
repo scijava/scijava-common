@@ -19,7 +19,7 @@ public class StringToNumberConverter extends AbstractConverter<String, Number> {
 	@SuppressWarnings("unchecked")
 	public <T> T convert(Object src, Class<T> dest) {
 		// ensure type is well-behaved, rather than a primitive type
-		Class<T> saneDest = Types.box(dest);
+		Class<T> saneDest = sane(dest);
 		if (!(src instanceof String)) throw new IllegalArgumentException(
 			"Expected src to be a String but got a " + src.getClass());
 		if (!(Number.class.isAssignableFrom(saneDest)))
@@ -33,7 +33,6 @@ public class StringToNumberConverter extends AbstractConverter<String, Number> {
 		if (saneDest == Long.class) return (T) new Long(srcString);
 		if (saneDest == Float.class) return (T) new Float(srcString);
 		if (saneDest == Double.class) return (T) new Double(srcString);
-		if (saneDest == Number.class) return (T) new Double(srcString);
 		else throw new IllegalArgumentException("Unknown destination type: " +
 			saneDest);
 	}
@@ -51,6 +50,22 @@ public class StringToNumberConverter extends AbstractConverter<String, Number> {
 	@Override
 	public boolean canConvert(Object src, Class<?> dest) {
 		if (!Types.isAssignable(src.getClass(), String.class)) return false;
-		return Types.isAssignable(Types.box(dest), Number.class);
+		// The only way to know if the conversion is valid is to actually do it.
+		try {
+			String srcString = (String) src;
+			sane(dest).getConstructor(String.class).newInstance(srcString);
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+
+	// -- Helper functionality -- //
+
+	@SuppressWarnings("unchecked")
+	private <T> Class<T> sane(Class<T> c) {
+		if (c == Number.class) return (Class<T>) Double.class;
+		return Types.box(c);
 	}
 }

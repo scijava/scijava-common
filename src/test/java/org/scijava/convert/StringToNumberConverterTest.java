@@ -109,4 +109,12 @@ public class StringToNumberConverterTest {
 		Assert.assertTrue(conv.canConvert(s, Number.class));
 		Assert.assertEquals(0d, conv.convert(s, Number.class));
 	}
+
+	@Test
+	public void invalidStringToNumberTest() {
+		String s = "invalid";
+		Assert.assertFalse(conv.canConvert(s, Number.class));
+		Assert.assertThrows(IllegalArgumentException.class, () -> conv.convert(s,
+			Number.class));
+	}
 }
