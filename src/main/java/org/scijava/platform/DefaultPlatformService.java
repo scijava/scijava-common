@@ -54,6 +54,16 @@ import org.scijava.service.Service;
 public final class DefaultPlatformService extends
 	AbstractSingletonService<Platform> implements PlatformService
 {
+	
+	static {
+		//For ImageJ or Fiji, java.library.path = ".../Fiji.app/lib/win64:.../Fiji.app/mm/win64"
+		String java_library_path = System.getProperty("java.library.path");
+		
+		//Used by Java Native Access for JBlosc, sync with java.library.path
+		if(System.getProperty("jna.library.path") == null) {
+			System.setProperty("jna.library.path", java_library_path);
+		}
+	}
 
 	@Parameter
 	private LogService log;
@@ -154,6 +164,10 @@ public final class DefaultPlatformService extends
 	@Override
 	public void initialize() {
 		super.initialize();
+		
+		//report static configuration
+		log.debug("java.library.path = " + System.getProperty("java.library.path"));
+		log.debug("jna.library.path = " + System.getProperty("jna.library.path"));
 
 		// configure target platforms
 		final List<Platform> platforms = getInstances();
