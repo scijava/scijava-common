@@ -35,6 +35,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.scijava.Context;
 import org.scijava.plugin.PluginInfo;
 
 /**
@@ -140,7 +141,7 @@ public class AdaptedScriptLanguage extends AbstractScriptLanguage {
 	// -- Helper methods --
 
 	private static ScriptEngineFactory findFactory(final String factoryName) {
-		final ScriptEngineManager manager = new ScriptEngineManager();
+		final ScriptEngineManager manager = new ScriptEngineManager(Context.getClassLoader());
 		for (final ScriptEngineFactory factory : manager.getEngineFactories()) {
 			for (final String name : factory.getNames()) {
 				if (factoryName.equals(name)) return factory;
