@@ -78,6 +78,8 @@ public final class NumberUtils {
 		if (Types.isLong(type)) return Long.MIN_VALUE;
 		if (Types.isFloat(type)) return -Float.MAX_VALUE;
 		if (Types.isDouble(type)) return -Double.MAX_VALUE;
+		// Fallback for Number.class
+		if (Types.isNumber(type)) return -Double.MAX_VALUE;
 		return null;
 	}
 
@@ -88,6 +90,8 @@ public final class NumberUtils {
 		if (Types.isLong(type)) return Long.MAX_VALUE;
 		if (Types.isFloat(type)) return Float.MAX_VALUE;
 		if (Types.isDouble(type)) return Double.MAX_VALUE;
+		// Fallback for Number.class
+		if (Types.isNumber(type)) return Double.MAX_VALUE;
 		return null;
 	}
 
