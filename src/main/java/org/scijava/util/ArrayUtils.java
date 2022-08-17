@@ -122,12 +122,6 @@ public final class ArrayUtils {
 		if (value instanceof Object[]) {
 			return new ObjectArray<>((Object[]) value);
 		}
-		if (value instanceof String) {
-			String[] arr = ((String) value).split("\\s*,\\s*");
-			Collection<?> c = new ObjectArray<String>(arr);
-			c.removeIf(o -> o.equals(""));
-			return c;
-		}
 		// This object is neither an array nor a collection.
 		// So we wrap it in a list and return.
 		final List<Object> list = new ObjectArray<>(Object.class);
