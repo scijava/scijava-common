@@ -1,6 +1,6 @@
 [![](https://img.shields.io/maven-central/v/org.scijava/scijava-common.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22scijava-common%22)
 [![](https://github.com/scijava/scijava-common/actions/workflows/build-main.yml/badge.svg)](https://github.com/scijava/scijava-common/actions/workflows/build-main.yml)
-[![Join the chat at https://gitter.im/scijava/scijava-common](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scijava/scijava-common?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![developer chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://imagesc.zulipchat.com/#narrow/stream/327237-SciJava)
 
 SciJava Common is a common library for SciJava software. It provides a
 plugin framework, with an extensible mechanism for service discovery, backed
