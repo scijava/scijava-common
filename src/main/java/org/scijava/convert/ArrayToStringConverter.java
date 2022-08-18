@@ -31,8 +31,6 @@ package org.scijava.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.scijava.Priority;
@@ -67,11 +65,44 @@ public class ArrayToStringConverter extends AbstractConverter<Object, String> {
 		return convertService.supports(Array.get(src, 0), dest);
 	}
 
-	@Override public Object convert(Object src, Type dest) {
-		final String elementString = ArrayUtils.toCollection(src).stream() //
-				.map(object -> convertService.convert(object, String.class)) //
-				.collect(Collectors.joining(", "));
+	@Override
+	public Object convert(Object src, Type dest) {
+		// Preprocess the "string-likes"
+		if (src.getClass().equals(String[].class) || //
+			src.getClass().equals(Character[].class) || //
+			src.getClass().equals(char[].class)) //
+		{
+			src = preprocessCharacters(src);
+		}
+		// Convert each element to Strings
+		String elementString = ArrayUtils.toCollection(src).stream() //
+			.map(object -> convertService.convert(object, String.class)) //
+			.collect(Collectors.joining(", "));
 		return "{" + elementString + "}";
+	}
+
+	private String[] preprocessStrings(final Object src) {
+		int numElements = Array.getLength(src);
+		String[] processed = new String[numElements];
+		for (int i = 0; i < numElements; i++) {
+			processed[i] = preprocessString(Array.get(src, i));
+		}
+		return processed;
+	}
+
+	private String preprocessString(final Object o) {
+		String s = o.toString();
+		s = s.replace("\\", "\\\\");
+		s = s.replace("\"", "\\\"");
+		return "\"" + s + "\"";
+	}
+
+	private String[] preprocessCharacters(Object src) {
+		String[] processed = new String[Array.getLength(src)];
+		for (int i = 0; i < processed.length; i++) {
+			processed[i] = Array.get(src, i).toString();
+		}
+		return preprocessStrings(processed);
 	}
 
 	@SuppressWarnings("unchecked") @Override

@@ -116,7 +116,6 @@ public class StringToArrayConverterTest {
 		Assert.assertEquals(2, actual[1][0]);
 		Assert.assertEquals(3, actual[1][1]);
 	}
-
 	/**
 	 * Tests the ability of {@link StringToArrayConverter} in converting
 	 * 3-dimensional arrays
@@ -154,5 +153,40 @@ public class StringToArrayConverterTest {
 		String s = "{ConverterA}";
 		Assert.assertFalse(converter.canConvert(s, Converter[].class));
 	}
+
+	/**
+	 * Tests the special case of {@link String}s
+	 */
+	@Test
+	public void testStringArrayConversion() {
+		String[] expected = new String[] { //
+				"{foo", "bar}", //
+				"ha\nha", //
+				"foo,bar", //
+				"lol\"lol", //
+				"foo\\\"bar" //
+		};
+		String converted = convertService.convert(expected, String.class);
+		String[] actual = convertService.convert(converted, String[].class);
+		Assert.assertArrayEquals(expected, actual);
+	}
+
+	/**
+	 * Tests the special case of {@link Character}s
+	 */
+	@Test
+	public void testCharacterArrayConversion() {
+		Character[] expected = new Character[] { //
+				's', //
+				'\n', //
+				',', //
+				'{', //
+				'}' //
+		};
+		String converted = convertService.convert(expected, String.class);
+		Character[] actual = convertService.convert(converted, Character[].class);
+		Assert.assertArrayEquals(expected, actual);
+	}
+
 
 }
