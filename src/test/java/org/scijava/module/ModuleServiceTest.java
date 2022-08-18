@@ -29,7 +29,13 @@
 
 package org.scijava.module;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +46,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link ModuleService}.
@@ -164,19 +164,16 @@ public class ModuleServiceTest {
 
 	@Test
 	public void testSaveAndLoad() {
-
-		List<Object[]> objects = new ArrayList<>();
-		objects.add(new Object[] { new double[] {} });
-		objects.add(new Object[] { new double[] { 1., 2., 3. } });
-		objects.add(new Object[] { new Double[] {} });
-		objects.add(new Object[] { new Double[] { 1., 2., 3. } });
-
-		for (Object[] params : objects) {
-			saveParam(params[0]);
-		}
+		List<Object> objects = Arrays.asList( //
+			new double[] {}, //
+			new double[] { 1., 2., 3. }, //
+			new Double[] {}, //
+			new Double[] { 1., 2., 3. } //
+		);
+		objects.forEach(this::assertParamSavedAndLoaded);
 	}
 
-	private <T> void saveParam(T object) {
+	private <T> void assertParamSavedAndLoaded(T object) {
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>) object.getClass();
 		// Get a ModuleItem of the right type
