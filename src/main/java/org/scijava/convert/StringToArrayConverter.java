@@ -67,6 +67,11 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 		String srcString = (String) src;
 		if (!(srcString.startsWith("{") && srcString.endsWith("}"))) return false;
 		List<String> components = elements((String) src);
+		// NB this check is merely a heuristic. In the case of a heterogeneous
+		// array, canConvert may falsely return positive, if later elements in the
+		// string-ified array cannot be converted into Objects. We make this
+		// compromise in the interest of speed, however, as ensuring correctness
+		// would require a premature conversion of the entire array.
 		return components.size() == 0 || convertService.supports(components.get(0),
 			dest.getComponentType());
 	}
