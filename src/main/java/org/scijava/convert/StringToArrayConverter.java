@@ -30,6 +30,8 @@
 package org.scijava.convert;
 
 import org.scijava.Priority;
+import org.scijava.parsington.ExpressionParser;
+import org.scijava.parsington.SyntaxTree;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.Types;
@@ -38,6 +40,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A {@link Converter} that specializes in converting {@link String}s to
@@ -47,11 +50,13 @@ import java.util.List;
  * 
  * @author Gabriel Selzer
  */
-@Plugin(type = Converter.class, priority=Priority.VERY_LOW)
+@Plugin(type = Converter.class, priority = Priority.VERY_LOW)
 public class StringToArrayConverter extends AbstractConverter<String, Object> {
 
 	@Parameter
 	private ConvertService convertService;
+
+	private final ExpressionParser parser = new ExpressionParser();
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
@@ -62,18 +67,34 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 	}
 
 	@Override
+	public boolean canConvert(final Object src, final Type dest) {
+		return canConvert(src, Types.raw(dest));
+	}
+
+	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
+
+		// First, ensure the base types conform
 		if (!canConvert(src.getClass(), dest)) return false;
-		String srcString = (String) src;
-		if (!(srcString.startsWith("{") && srcString.endsWith("}"))) return false;
-		List<String> components = elements((String) src);
+		// Then, ensure we can parse the string
+		SyntaxTree tree;
+		try {
+			tree = parser.parseTree((String) src);
+		}
+		catch (IllegalArgumentException e) {
+			return false;
+		}
+		// We can always convert empty arrays as we don't have to create Objects
+		if (tree.count() == 0) return true;
+		// Finally, ensure that we can convert the elements of the array.
 		// NB this check is merely a heuristic. In the case of a heterogeneous
 		// array, canConvert may falsely return positive, if later elements in the
 		// string-ified array cannot be converted into Objects. We make this
 		// compromise in the interest of speed, however, as ensuring correctness
 		// would require a premature conversion of the entire array.
-		return components.size() == 0 || convertService.supports(components.get(0),
-			dest.getComponentType());
+		Object testSrc = firstElement(tree);
+		Class<?> testDest = unitComponentType(dest);
+		return convertService.supports(testSrc, testDest);
 	}
 
 	@Override
@@ -82,13 +103,19 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 		if (componentType == null) {
 			throw new IllegalArgumentException(dest + " is not an array type!");
 		}
-		return convertToArray((String) src, componentType);
+		try {
+			SyntaxTree tree = parser.parseTree((String) src);
+			return convertToArray(tree, Types.raw(componentType));
+		}
+		catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T convert(Object src, Class<T> dest) {
-		return (T) convert((String) src, (Type) dest);
+		return (T) convert(src, (Type) dest);
 	}
 
 	@Override
@@ -106,19 +133,53 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 	/**
 	 * Converts {@code src} into an array of component type {@code componentType}
 	 * 
-	 * @param src the {@link String} to convert
+	 * @param tree the {@link String} to convert
 	 * @param componentType the component type of the output array
 	 * @return an array of {@code componentType} whose elements were created from
 	 *         {@code src}
 	 */
-	private Object convertToArray(String src, final Type componentType) {
-		List<String> elements = elements( src);
-		Class<?> componentClass = Types.raw(componentType);
-		final Object array = Array.newInstance(componentClass, elements.size());
-		for (int i = 0; i < elements.size(); i++)
-			Array.set(array, i, convertService.convert(elements.get(i),
-				componentClass));
+	private Object convertToArray(SyntaxTree tree, final Class<?> componentType) {
+		// Create the array
+		final Object array = Array.newInstance(componentType, tree.count());
+		// Set each element of the array
+		for (int i = 0; i < tree.count(); i++) {
+			SyntaxTree subTree = tree.child(i);
+			Object element;
+			// Case 1: Element is an array
+			if (componentType.isArray()) {
+				element = convertToArray(subTree, componentType.getComponentType());
+			}
+			// Case 2: Element is a single object
+			else {
+				element = convertService.convert(subTree.token(), componentType);
+			}
+			Array.set(array, i, element);
+		}
 		return array;
+	}
+
+	/**
+	 * Similar to {@link Class#getComponentType()}, but handles nested array types
+	 *
+	 * @param c the {@link Class} that may be an array class
+	 * @return the <em>unit</em> component type of {@link Class} {@code c}
+	 */
+	private Class<?> unitComponentType(Class<?> c) {
+		if (!c.isArray()) return c;
+		return unitComponentType(c.getComponentType());
+	}
+
+	/**
+	 * Traverses {@code tree} to find the first element
+	 * 
+	 * @param tree the {@link SyntaxTree} containing elements
+	 * @return the first {@link Object} in {@code tree}
+	 */
+	private Object firstElement(SyntaxTree tree) {
+		while (tree.count() > 0) {
+			tree = tree.child(0);
+		}
+		return tree.token();
 	}
 
 	/**
@@ -173,6 +234,7 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 
 	/**
 	 * Helper method used to filter and format the additions to {@code list}
+	 * 
 	 * @param list the {@link List} to add to
 	 * @param s the {@link String} to (potentially) be added.
 	 */
