@@ -79,8 +79,9 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 	@Override
 	public Object convert(Object src, Type dest) {
 		final Type componentType = Types.component(dest);
-		if (componentType == null) throw new IllegalArgumentException(dest +
-			" is not an array type!");
+		if (componentType == null) {
+			throw new IllegalArgumentException(dest + " is not an array type!");
+		}
 		return convertToArray((String) src, componentType);
 	}
 
