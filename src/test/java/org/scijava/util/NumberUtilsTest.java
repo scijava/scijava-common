@@ -64,7 +64,7 @@ public class NumberUtilsTest {
 		assertEquals(Long.MAX_VALUE, NumberUtils.getMaximumNumber(Long.class));
 		assertEquals(Float.MAX_VALUE, NumberUtils.getMaximumNumber(Float.class));
 		assertEquals(Double.MAX_VALUE, NumberUtils.getMaximumNumber(Double.class));
-		// Number's minimum value should be the smallest of all the above -> Double
+		// Number's maximum value should be the largest of all the above -> Double
 		assertEquals(Double.MAX_VALUE, NumberUtils.getMaximumNumber(Number.class));
 	}
 }
