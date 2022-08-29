@@ -191,7 +191,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public boolean isHeadless() {
-		// NB: We do not use java.awt.GraphicsConfiguration.isHeadless()
+		// NB: We do not use java.awt.GraphicsEnvironment.isHeadless()
 		// because scijava-common eschews java.awt.* classes when possible.
 		return forceHeadless || Boolean.getBoolean("java.awt.headless");
 	}
