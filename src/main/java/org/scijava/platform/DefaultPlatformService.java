@@ -59,8 +59,8 @@ public final class DefaultPlatformService extends
 		//For ImageJ or Fiji, java.library.path = ".../Fiji.app/lib/win64:.../Fiji.app/mm/win64"
 		String java_library_path = System.getProperty("java.library.path");
 		
-		//Used by Java Native Access for JBlosc, sync with java.library.path
-		if(System.getProperty("jna.library.path") == null) {
+		//Allow Java Native Access to search java.library.path for versioned shared libraries on Linux
+		if(java_library_path != null && System.getProperty("jna.library.path") == null) {
 			System.setProperty("jna.library.path", java_library_path);
 		}
 	}
