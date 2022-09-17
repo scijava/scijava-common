@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * SciJava Common shared library for SciJava software.
  * %%
@@ -26,53 +26,61 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-
 package org.scijava.text;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
-import org.scijava.plugin.HandlerPlugin;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.scijava.Context;
 import org.scijava.plugin.Plugin;
-import org.scijava.util.FileUtils;
 
-/**
- * {@code TextFormat} is a plugin that provides handling for a text markup
- * language.
- * <p>
- * Text formats discoverable at runtime must implement this interface and be
- * annotated with @{@link Plugin} with attribute {@link Plugin#type()} =
- * {@link TextFormat}.class. While it possible to create a text format merely by
- * implementing this interface, it is encouraged to instead extend
- * {@link AbstractTextFormat}, for convenience.
- * </p>
- * 
- * @author Curtis Rueden
- * @see Plugin
- * @see TextService
- */
-public interface TextFormat extends HandlerPlugin<File> {
+/** Tests {@link TextService}. */
+public class TextServiceTest {
 
-	/** Gets the list of filename extensions for text in this format. */
-	List<String> getExtensions();
+	private Context ctx;
+	private TextService textService;
 
-	/** Expresses the given text string in HTML format. */
-	String asHTML(String text);
+	@Before
+	public void setUp() {
+		ctx = new Context(TextService.class);
+		textService = ctx.service(TextService.class);
+	}
 
-	// -- Typed methods --
+	@After
+	public void tearDown() {
+		ctx.dispose();
+	}
 
-	@Override
-	default boolean supports(final File file) {
-		if (!HandlerPlugin.super.supports(file)) return false;
-		for (final String ext : getExtensions()) {
-			if (FileUtils.getExtension(file).equalsIgnoreCase(ext)) return true;
+	@Test
+	public void testGetHandler() {
+		final TextFormat fooHandler = textService.getHandler(new File("data.foo"));
+		assertNotNull(fooHandler);
+		assertEquals(FooTextFormat.class, fooHandler.getClass());
+		System.out.println(fooHandler);
+
+		final TextFormat barHandler = textService.getHandler(new File("data.bar"));
+		assertNull(barHandler);
+	}
+
+	@Plugin(type = TextFormat.class)
+	public static class FooTextFormat extends AbstractTextFormat {
+
+		@Override
+		public List<String> getExtensions() {
+			return Arrays.asList("foo");
 		}
-		return false;
-	}
 
-	@Override
-	default Class<File> getType() {
-		return File.class;
+		@Override
+		public String asHTML(final String text) {
+			return "[FOO]" + text + "[/FOO]";
+		}
 	}
-
 }

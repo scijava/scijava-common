@@ -41,5 +41,14 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractTextFormat extends AbstractHandlerPlugin<File>
 	implements TextFormat
 {
-	// NB: No implementation needed.
+	// -- Typed methods --
+
+	@Override
+	public boolean supports(final File data) {
+		// NB: This override is necessary, because the default super is
+		// AbstractHandlerPlugin->AbstractTypedPlugin->TypedPlugin->Typed,
+		// which fails to invoke the needed TextFormat.super.
+		// See fiji/fiji#303 and fiji/HDF5_Vibez#18.
+		return TextFormat.super.supports(data);
+	}
 }
