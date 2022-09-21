@@ -50,7 +50,8 @@ import org.scijava.util.Types;
 @Plugin(type = Converter.class, priority = Priority.VERY_LOW)
 public class ArrayToStringConverter extends AbstractConverter<Object, String> {
 
-	@Parameter private ConvertService convertService;
+	@Parameter(required = false)
+	private ConvertService convertService;
 
 	@Override public boolean canConvert(final Class<?> src, final Class<?> dest) {
 		if (src == null) return false;
@@ -60,6 +61,7 @@ public class ArrayToStringConverter extends AbstractConverter<Object, String> {
 	}
 
 	@Override public boolean canConvert(final Object src, final Class<?> dest) {
+		if (convertService == null) return false;
 		if (!canConvert(src.getClass(), dest)) return false;
 		if (Array.getLength(src) == 0) return true;
 		return convertService.supports(Array.get(src, 0), dest);

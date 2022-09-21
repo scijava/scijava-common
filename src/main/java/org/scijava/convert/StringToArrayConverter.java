@@ -52,10 +52,10 @@ import java.lang.reflect.Type;
 @Plugin(type = Converter.class, priority = Priority.VERY_LOW)
 public class StringToArrayConverter extends AbstractConverter<String, Object> {
 
-	@Parameter
+	@Parameter(required = false)
 	private ConvertService convertService;
 
-	@Parameter
+	@Parameter(required = false)
 	private ParseService parseService;
 
 	private final ExpressionParser parser = new ExpressionParser();
@@ -75,6 +75,7 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 
 	@Override
 	public boolean canConvert(final Object src, final Class<?> dest) {
+		if (convertService == null || parseService == null) return false;
 
 		// First, ensure the base types conform
 		if (!canConvert(src.getClass(), dest)) return false;
