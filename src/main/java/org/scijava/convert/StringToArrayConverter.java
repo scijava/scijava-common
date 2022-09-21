@@ -38,9 +38,6 @@ import org.scijava.util.Types;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * A {@link Converter} that specializes in converting {@link String}s to

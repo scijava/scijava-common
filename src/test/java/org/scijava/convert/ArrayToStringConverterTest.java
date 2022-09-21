@@ -46,14 +46,12 @@ import org.scijava.Context;
 public class ArrayToStringConverterTest {
 
 	private final ArrayToStringConverter converter = new ArrayToStringConverter();
-	private ConvertService convertService;
 	private Context context;
 
 	@Before
 	public void setUp() {
 		context = new Context(ConvertService.class);
 		context.inject(converter);
-		convertService = context.getService(ConvertService.class);
 	}
 
 	@After
