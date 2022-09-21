@@ -168,6 +168,11 @@ public class StringToArrayConverterTest {
 				"foo\\\"bar" //
 		};
 		String converted = convertService.convert(expected, String.class);
+		Assert.assertEquals("{\"{foo\", \"bar}\", " + //
+			"\"ha\nha\", " + //
+			"\"foo,bar\", " + //
+			"\"lol\\\"lol\", " + //
+			"\"foo\\\\\\\"bar\"}", converted);
 		String[] actual = convertService.convert(converted, String[].class);
 		Assert.assertArrayEquals(expected, actual);
 	}
@@ -185,6 +190,7 @@ public class StringToArrayConverterTest {
 				'}' //
 		};
 		String converted = convertService.convert(expected, String.class);
+		Assert.assertEquals("{\"s\", \"\n\", \",\", \"{\", \"}\"}", converted);
 		Character[] actual = convertService.convert(converted, Character[].class);
 		Assert.assertArrayEquals(expected, actual);
 	}
