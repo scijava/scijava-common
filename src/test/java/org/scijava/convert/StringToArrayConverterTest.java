@@ -34,6 +34,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.parse.ParseService;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class StringToArrayConverterTest {
 
 	@Before
 	public void setUp() {
-		context = new Context(ConvertService.class);
+		context = new Context(ParseService.class, ConvertService.class);
 		context.inject(converter);
 		convertService = context.getService(ConvertService.class);
 	}

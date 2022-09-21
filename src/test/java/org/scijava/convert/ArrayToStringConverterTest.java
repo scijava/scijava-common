@@ -37,6 +37,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.parse.ParseService;
 
 /**
  * Tests {@link ArrayToStringConverter}.
@@ -50,7 +51,7 @@ public class ArrayToStringConverterTest {
 
 	@Before
 	public void setUp() {
-		context = new Context(ConvertService.class);
+		context = new Context(ConvertService.class, ParseService.class);
 		context.inject(converter);
 	}
 

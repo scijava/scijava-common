@@ -46,6 +46,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.parse.ParseService;
 
 /**
  * Tests {@link ModuleService}.
@@ -58,7 +59,7 @@ public class ModuleServiceTest {
 
 	@Before
 	public void setUp() {
-		final Context context = new Context(ModuleService.class);
+		final Context context = new Context(ModuleService.class, ParseService.class);
 		moduleService = context.service(ModuleService.class);
 	}
 

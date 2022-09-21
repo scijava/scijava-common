@@ -30,6 +30,8 @@
 package org.scijava.convert;
 
 import org.scijava.Priority;
+import org.scijava.parse.Items;
+import org.scijava.parse.ParseService;
 import org.scijava.parsington.ExpressionParser;
 import org.scijava.parsington.SyntaxTree;
 import org.scijava.plugin.Parameter;
@@ -52,6 +54,9 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 
 	@Parameter
 	private ConvertService convertService;
+
+	@Parameter
+	private ParseService parseService;
 
 	private final ExpressionParser parser = new ExpressionParser();
 
@@ -101,8 +106,9 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 			throw new IllegalArgumentException(dest + " is not an array type!");
 		}
 		try {
-			SyntaxTree tree = parser.parseTree((String) src);
-			return convertToArray(tree, Types.raw(componentType));
+			return convertToArray( //
+				parseService.parse((String) src), //
+				Types.raw(componentType));
 		}
 		catch (IllegalArgumentException e) {
 			return null;
@@ -135,21 +141,12 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 	 * @return an array of {@code componentType} whose elements were created from
 	 *         {@code src}
 	 */
-	private Object convertToArray(SyntaxTree tree, final Class<?> componentType) {
+	private Object convertToArray(Items tree, final Class<?> componentType) {
 		// Create the array
-		final Object array = Array.newInstance(componentType, tree.count());
+		final Object array = Array.newInstance(componentType, tree.size());
 		// Set each element of the array
-		for (int i = 0; i < tree.count(); i++) {
-			SyntaxTree subTree = tree.child(i);
-			Object element;
-			// Case 1: Element is an array
-			if (componentType.isArray()) {
-				element = convertToArray(subTree, componentType.getComponentType());
-			}
-			// Case 2: Element is a single object
-			else {
-				element = convertService.convert(subTree.token(), componentType);
-			}
+		for (int i = 0; i < tree.size(); i++) {
+			Object element = convertService.convert(tree.get(i).value(), componentType);
 			Array.set(array, i, element);
 		}
 		return array;
