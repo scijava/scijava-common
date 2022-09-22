@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.89.1-SNAPSHOT</version>
+	<version>2.89.1</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
@@ -149,7 +149,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/scijava/scijava-common</connection>
 		<developerConnection>scm:git:git@github.com:scijava/scijava-common</developerConnection>
-		<tag>HEAD</tag>
+		<tag>scijava-common-2.89.1</tag>
 		<url>https://github.com/scijava/scijava-common</url>
 	</scm>
 	<issueManagement>
