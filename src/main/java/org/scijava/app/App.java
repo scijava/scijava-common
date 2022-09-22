@@ -144,7 +144,7 @@ public interface App extends RichPlugin, SingletonPlugin {
 	/**
 	 * Gets the version of the application.
 	 * <p>
-	 * SciJava conforms to the <a href="http://semver.org/">Semantic
+	 * SciJava conforms to the <a href="https://semver.org/">Semantic
 	 * Versioning</a> specification.
 	 * </p>
 	 * 

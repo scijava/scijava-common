@@ -46,7 +46,7 @@ import org.scijava.util.LastRecentlyUsed;
  * The default implementation of a {@link ScriptInterpreter}.
  * <p>
  * Credit to Jason Sachs for the multi-line evaluation (see
- * <a href="http://stackoverflow.com/a/5598207">his post on StackOverflow</a>).
+ * <a href="https://stackoverflow.com/a/5598207">his post on StackOverflow</a>).
  * </p>
  *  
  * @author Johannes Schindelin
@@ -174,7 +174,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	 * fact that there was a syntax error in the 2nd line.</li>
 	 * </ul>
 	 * <p>
-	 * For further details, see <a href="http://stackoverflow.com/a/5598207">SO
+	 * For further details, see <a href="https://stackoverflow.com/a/5598207">SO
 	 * #5584674</a>.
 	 * </p>
 	 */

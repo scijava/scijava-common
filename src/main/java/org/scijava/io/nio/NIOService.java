@@ -60,8 +60,8 @@ public interface NIOService extends SciJavaService {
 	 *          buffer.
 	 * @param newSize The buffer size.
 	 * @return A newly allocated or mapped NIO byte buffer.
-	 * @see "http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5092131"
-	 * @see "http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6417205"
+	 * @see "https://bugs.java.com/bugdatabase/view_bug.do?bug_id=5092131"
+	 * @see "https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6417205"
 	 * @throws IOException If there is an issue mapping, aligning or allocating
 	 *           the buffer.
 	 */

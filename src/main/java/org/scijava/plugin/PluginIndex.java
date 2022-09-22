@@ -88,7 +88,7 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PluginIndex(final PluginFinder pluginFinder) {
-		// NB: See: http://stackoverflow.com/questions/4765520/
+		// NB: See: https://stackoverflow.com/questions/4765520/
 		super((Class) PluginInfo.class);
 		this.pluginFinder = pluginFinder;
 	}

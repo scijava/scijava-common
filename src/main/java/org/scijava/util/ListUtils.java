@@ -28,7 +28,7 @@
  */
 
 // File path shortening code adapted from:
-// from: http://www.rgagnon.com/javadetails/java-0661.html
+// from: https://www.rgagnon.com/javadetails/java-0661.html
 
 package org.scijava.util;
 

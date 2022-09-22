@@ -71,7 +71,7 @@ public @interface Parameter {
 	 * </ul>
 	 */
 	// NB: We use the fully qualified name to work around a javac bug:
-	// http://bugs.sun.com/view_bug.do?bug_id=6512707
+	// https://bugs.java.com/view_bug.do?bug_id=6512707
 	// See:
 	// http://groups.google.com/group/project-lombok/browse_thread/thread/c5568eb659cab203
 	ItemIO type() default org.scijava.ItemIO.INPUT;

@@ -112,7 +112,7 @@ public class URILocation extends AbstractLocation {
 	 * @see URLDecoder
 	 */
 	private String decode(final String s) {
-		// http://stackoverflow.com/a/6926987
+		// https://stackoverflow.com/a/6926987
 		try {
 			return URLDecoder.decode(s.replace("+", "%2B"), "UTF-8");
 		}

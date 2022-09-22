@@ -130,7 +130,7 @@ public final class AppUtils {
 	public static File getBaseDirectory(final Class<?> c,
 		final String baseSubdirectory)
 	{
-		// see: http://stackoverflow.com/a/12733172/1207769
+		// see: https://stackoverflow.com/a/12733172/1207769
 
 		// step 1: convert Class to URL
 		final URL location = Types.location(c);
@@ -171,7 +171,7 @@ public final class AppUtils {
 	 * this cache is located in {@code ~/.m2/repository}. The location will be
 	 * {@code groupId/artifactId/version/artifactId-version.jar} where
 	 * {@code groupId}, {@code artifactId} and {@code version} are the <a
-	 * href="http://maven.apache.org/pom.html#Maven_Coordinates">Maven GAV
+	 * href="https://maven.apache.org/pom.html#Maven_Coordinates">Maven GAV
 	 * coordinates</a>. Note that in this case, no base directory with respect to
 	 * the given class can be found, and this method will return null.</li>
 	 * <li><b>Within a JAR file beneath the base directory.</b> Common cases

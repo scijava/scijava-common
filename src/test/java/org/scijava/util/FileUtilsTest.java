@@ -157,8 +157,8 @@ public class FileUtilsTest {
 			.shortenPath("\\\\server\\p1\\p2\\p3\\p4\\p5\\p6"));
 		assertEquals("\\\\server\\p1\\p2\\p3", FileUtils
 			.shortenPath("\\\\server\\p1\\p2\\p3"));
-		assertEquals("http://www.rgagnon.com/p1/p2/p3/.../pb.html", FileUtils
-			.shortenPath("http://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html"));
+		assertEquals("https://www.rgagnon.com/p1/p2/p3/.../pb.html", FileUtils
+			.shortenPath("https://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html"));
 	}
 
 	@Test
@@ -177,8 +177,8 @@ public class FileUtilsTest {
 			"C:/1/2/3/4/5/test.txt", 15));
 		assertEquals("\\\\server\\p1\\p2\\...p6", FileUtils.limitPath(
 			"\\\\server\\p1\\p2\\p3\\p4\\p5\\p6", 20));
-		assertEquals("http://www...pb.html", FileUtils.limitPath(
-			"http://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html", 20));
+		assertEquals("https://www...pb.html", FileUtils.limitPath(
+			"https://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html", 21));
 	}
 
 	@Test

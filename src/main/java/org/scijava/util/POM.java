@@ -335,7 +335,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	 * that one has a suffix beginning with a dash ({@code -}), the version with
 	 * suffix will be considered <em>less than</em> the one without a suffix. The
 	 * reason for this is to accommodate the <a
-	 * href="http://semver.org/">SemVer</a> versioning scheme's usage of
+	 * href="https://semver.org/">SemVer</a> versioning scheme's usage of
 	 * "prerelease" version suffixes. For example, {@code 2.0.0} will compare
 	 * greater than {@code 2.0.0-beta-1}, whereas {@code 2.0.0} will compare less
 	 * than {@code 2.0.0.1}.</li>

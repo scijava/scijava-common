@@ -59,7 +59,7 @@ public final class DefaultTextService extends
 
 	@Override
 	public String open(final File file) throws IOException {
-		// This routine is from: http://stackoverflow.com/a/326440
+		// This routine is from: https://stackoverflow.com/a/326440
 		try (final FileInputStream stream = new FileInputStream(file)) {
 			final FileChannel fc = stream.getChannel();
 			final MappedByteBuffer bb =
