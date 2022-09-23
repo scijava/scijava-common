@@ -156,4 +156,20 @@ public class ArrayToStringConverterTest {
 		Assert.assertArrayEquals(expected, actual);
 	}
 
+	@Test
+	public void testNullConversion() {
+		String[] s1 = {null};
+		String[] s2 = {"null"};
+		String[] expected = new String[] {null};
+		// Do the first conversion
+		ArrayToStringConverter c1 = new ArrayToStringConverter();
+		context.inject(c1);
+		String converted = c1.convert(expected, String.class);
+		// Try to convert back
+		StringToArrayConverter c2 = new StringToArrayConverter();
+		context.inject(c2);
+		String[] actual = c2.convert(converted, String[].class);
+		// NB: we cannot recreate the original {null} state
+		Assert.assertNull(actual);
+	}
 }

@@ -93,16 +93,22 @@ public class ArrayToStringConverter extends AbstractConverter<Object, String> {
 	}
 
 	private String preprocessString(final Object o) {
-		String s = o.toString();
-		s = s.replace("\\", "\\\\");
-		s = s.replace("\"", "\\\"");
+		String s;
+		if (o == null) {
+			return null;
+		} else {
+			s = o.toString();
+			s = s.replace("\\", "\\\\");
+			s = s.replace("\"", "\\\"");
+		}
 		return "\"" + s + "\"";
 	}
 
 	private String[] preprocessCharacters(Object src) {
 		String[] processed = new String[Array.getLength(src)];
 		for (int i = 0; i < processed.length; i++) {
-			processed[i] = Array.get(src, i).toString();
+			Object value = Array.get(src, i);
+			processed[i] = value == null ? null : value.toString();
 		}
 		return preprocessStrings(processed);
 	}
