@@ -29,6 +29,7 @@
 
 package org.scijava.module.process;
 
+import org.scijava.Priority;
 import org.scijava.log.LogService;
 import org.scijava.log.Logger;
 import org.scijava.module.Module;
@@ -44,7 +45,7 @@ import org.scijava.plugin.Plugin;
  *
  * @author Matthias Arzt
  */
-@Plugin(type = PreprocessorPlugin.class)
+@Plugin(type = PreprocessorPlugin.class, priority = Priority.VERY_HIGH)
 public class LoggerPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)
