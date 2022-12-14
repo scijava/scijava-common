@@ -292,7 +292,17 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	public boolean canConvert(final Class<?> src, final Type dest) {
 
 		// Handle array types, including generic array types.
-		if (isArray(dest)) return true;
+		// The logic follows from the types that ArrayUtils.toCollection
+		// can convert
+		if (isArray(dest)){
+			// toCollection handles any type of Collection
+			if (Collection.class.isAssignableFrom(src)) return true;
+			// toCollection handles any type of array
+			if (src.isArray()) return true;
+			// toCollection can wrap objects into a Singleton list,
+			// but we only want to wrap up a T if the dest type is a T[].
+			return Types.isAssignable(src, Types.component(dest));
+		}
 
 		// Handle parameterized collection types.
 		if (dest instanceof ParameterizedType && isCollection(dest) &&

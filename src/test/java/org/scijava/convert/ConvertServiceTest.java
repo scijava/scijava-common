@@ -457,7 +457,7 @@ public class ConvertServiceTest {
 	/**
 	 * Tests setting an incompatible element value for a primitive array.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testBadPrimitiveArray() {
 		class Struct {
 
@@ -467,6 +467,7 @@ public class ConvertServiceTest {
 		final Struct struct = new Struct();
 
 		setFieldValue(struct, "intArray", "not an int array");
+		assertEquals(null, struct.intArray);
 	}
 
 	/**
@@ -486,7 +487,7 @@ public class ConvertServiceTest {
 
 		// Test abnormal behavior for an object array
 		setFieldValue(struct, "doubleArray", "not a double array");
-		assertEquals(null, struct.doubleArray[0]);
+		assertEquals(null, struct.doubleArray);
 
 		// Test abnormal behavior for a list
 		setFieldValue(struct, "nestedArray", "definitely not a set of char arrays");
