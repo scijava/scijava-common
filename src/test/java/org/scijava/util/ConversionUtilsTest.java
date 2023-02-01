@@ -29,6 +29,7 @@
 
 package org.scijava.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -43,7 +44,6 @@ import java.util.Random;
 import java.util.Set;
 
 import org.junit.Test;
-import org.scijava.util.Types;
 
 /**
  * Tests {@link ConversionUtils}.
@@ -254,23 +254,37 @@ public class ConversionUtilsTest {
 	 * and a collection.
 	 */
 	@Test
-	public void testBadObjectElements() {
+	public void testIncompatibleCollections() {
 		class Struct {
 
 			private Double[] doubleArray;
-			private List<String> stringList;
-			@SuppressWarnings("unused")
-			private Set<char[]> nestedArray;
+			private List<Number> numberList;
+			private Set<Integer[]> setOfIntegerArrays;
 		}
 		final Struct struct = new Struct();
 
-		// Test abnormal behavior for an object array
-		setFieldValue(struct, "doubleArray", "not a double array");
-		assertEquals(null, struct.doubleArray);
+		// NB: DefaultConverter converts non-collection/array objects to
+		// collection/array objects, even if some or all of the constituent elements
+		// cannot be converted to the array/collection component/element type.
 
-		// Test abnormal behavior for a list
-		setFieldValue(struct, "nestedArray", "definitely not a set of char arrays");
-		assertNull(struct.stringList);
+		// Test object to incompatible array type
+		setFieldValue(struct, "doubleArray", "not a double array");
+		assertArrayEquals(new Double[] {null}, struct.doubleArray);
+
+		// Test object to incompatible List type
+		setFieldValue(struct, "numberList", "not actually a list of numbers");
+		List<Number> expectedList = Arrays.asList((Number) null);
+		assertEquals(expectedList, struct.numberList);
+
+		// Test object to incompatible Set type
+		setFieldValue(struct, "setOfIntegerArrays", //
+			"definitely not a set of Integer[]");
+		assertNotNull(struct.setOfIntegerArrays);
+		assertEquals(1, struct.setOfIntegerArrays.size());
+		Integer[] singleton = struct.setOfIntegerArrays.iterator().next();
+		assertNotNull(singleton);
+		assertEquals(1, singleton.length);
+		assertNull(singleton[0]);
 	}
 
 	/**
