@@ -29,6 +29,7 @@
 
 package org.scijava.ui;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -191,9 +192,9 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public boolean isHeadless() {
-		// NB: We do not use java.awt.GraphicsEnvironment.isHeadless()
-		// because scijava-common eschews java.awt.* classes when possible.
-		return forceHeadless || Boolean.getBoolean("java.awt.headless");
+		return forceHeadless ||
+			Boolean.getBoolean("java.awt.headless") ||
+			GraphicsEnvironment.isHeadless();
 	}
 
 	@Override

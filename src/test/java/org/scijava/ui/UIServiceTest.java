@@ -31,6 +31,7 @@ package org.scijava.ui;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -79,19 +80,40 @@ public class UIServiceTest {
 
 	@Test
 	public void testHeadlessUI() {
+		// If true here, before we messed with it, the assumption is that we are
+		// in a truly headless environment, not just forced via setHeadless(true).
+		boolean reallyHeadless = uiService.isHeadless();
+
 		final MockUserInterface mockUI = new MockUserInterface();
 		uiService.setDefaultUI(mockUI);
 
 		// test non-headless behavior
-		uiService.setHeadless(false);
-		assertFalse(uiService.isHeadless());
-		assertTrue(uiService.getDefaultUI() instanceof MockUserInterface);
+		if (reallyHeadless) {
+			// This environment is truly headless, and
+			// we should not be able to override it.
+			uiService.setHeadless(false);
+			assertTrue(uiService.isHeadless());
+			assertTrue("UIService should return HeadlessUI when running \"headless\"",
+				uiService.getDefaultUI() instanceof HeadlessUI);
+		}
+		else {
+			// This environment is not headless! We can test more things.
+			assertSame("UIService default UI override failed",
+				mockUI, uiService.getDefaultUI());
 
-		// test headless behavior
-		uiService.setHeadless(true);
-		assertTrue(uiService.isHeadless());
-		assertTrue("UIService should return HeadlessUI when running \"headless\"",
-			uiService.getDefaultUI() instanceof HeadlessUI);
+			// This environment isn't headless now;
+			// let's test overriding it to be so.
+			uiService.setHeadless(true);
+			assertTrue(uiService.isHeadless());
+			assertTrue("UIService should return HeadlessUI when running \"headless\"",
+				uiService.getDefaultUI() instanceof HeadlessUI);
+
+			// Now we put it back!
+			uiService.setHeadless(false);
+			assertFalse(uiService.isHeadless());
+			assertSame("UIService default UI override was not restored",
+				mockUI, uiService.getDefaultUI());
+		}
 	}
 
 	private static final class MockUserInterface extends AbstractUserInterface {
