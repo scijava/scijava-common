@@ -29,7 +29,6 @@
 
 package org.scijava.util;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -269,7 +268,9 @@ public class ConversionUtilsTest {
 
 		// Test object to incompatible array type
 		setFieldValue(struct, "doubleArray", "not a double array");
-		assertArrayEquals(new Double[] {null}, struct.doubleArray);
+		assertNotNull(struct.doubleArray);
+		assertEquals(1, struct.doubleArray.length);
+		assertNull(struct.doubleArray[0]);
 
 		// Test object to incompatible List type
 		setFieldValue(struct, "numberList", "not actually a list of numbers");
