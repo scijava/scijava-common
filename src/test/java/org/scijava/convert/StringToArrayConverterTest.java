@@ -69,32 +69,31 @@ public class StringToArrayConverterTest {
 	 */
 	@Test
 	public void testArrayConversion() {
-		// Component types for array conversions
+		// Array types for array conversions
 		List<Class<?>> classes = Arrays.asList( //
-			byte.class, //
-			Byte.class, //
-			short.class, //
-			Short.class, //
-			int.class, //
-			Integer.class, //
-			long.class, //
-			Long.class, //
-			float.class, //
-			Float.class, //
-			double.class, //
-			Double.class //
+			byte[].class, //
+			Byte[].class, //
+			short[].class, //
+			Short[].class, //
+			int[].class, //
+			Integer[].class, //
+			long[].class, //
+			Long[].class, //
+			float[].class, //
+			Float[].class, //
+			double[].class, //
+			Double[].class //
 		);
 		// String input
 		String s = "{0, 1, 2}";
-		for (Class<?> c : classes) {
-			// Make the array class
-			Class<?> arrayClass = Array.newInstance(c, 0).getClass();
+		for (Class<?> arrayClass : classes) {
 			// Ensure our Converter can do the conversion
 			Assert.assertTrue(converter.canConvert(s, arrayClass));
 			// Do the conversion
 			Object converted = converter.convert(s, arrayClass);
 			// Ensure the output is the expected type
 			Assert.assertEquals(arrayClass, converted.getClass());
+			Class<?> c = arrayClass.getComponentType();
 			for (int i = 0; i < 3; i++) {
 				// Ensure element correctness
 				Object expected = convertService.convert(i, c);
