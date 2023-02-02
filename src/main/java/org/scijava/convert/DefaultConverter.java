@@ -185,7 +185,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		catch (final Exception exc) {
 			// TODO: Best not to catch blanket Exceptions here.
 			// no known way to convert
-			return null;
+			return Types.nullValue(dest);
 		}
 	}
 
