@@ -106,7 +106,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * Note that if the system itself is headless&mdash;which can be detected via
 	 * the {@code java.awt.headless} system property or by calling
-	 * {@code java.awt.GraphicsEnvironment.isHeadless()}&mdash;then calling
+	 * {@link java.awt.GraphicsEnvironment#isHeadless()}&mdash;then calling
 	 * {@code setHeadless(false)} will have no effect; the system will still be
 	 * headless, and {@link #isHeadless()} will still return true.
 	 * </p>
@@ -123,7 +123,7 @@ public interface UIService extends SciJavaService {
 	 * Gets whether the UI is running in headless mode (no UI).
 	 * <p>
 	 * More precisely: returns true when {@code java.awt.headless} system
-	 * property is set, and/or {@link java.awt.GraphicsEnvironment.isHeadless()}
+	 * property is set, and/or {@link java.awt.GraphicsEnvironment#isHeadless()}
 	 * returns true, and/or {@link #setHeadless(boolean)} was called with {@code
 	 * true} to force headless behavior in an otherwise headful environment.
 	 * </p>
