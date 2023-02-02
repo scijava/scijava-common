@@ -36,16 +36,16 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.scijava.plugin.AbstractHandlerService;
-import org.scijava.util.ConversionUtils;
 
 /**
- * Abstract superclass for {@link ConvertService} implementations. Sets this
- * service as the active delegate service in {@link ConversionUtils}.
+ * Abstract superclass for {@link ConvertService} implementations.
  *
  * @author Mark Hiner
  */
-public abstract class AbstractConvertService extends AbstractHandlerService<ConversionRequest, Converter<?, ?>>
-		implements ConvertService {
+public abstract class AbstractConvertService //
+	extends AbstractHandlerService<ConversionRequest, Converter<?, ?>> //
+	implements ConvertService
+{
 
 	// -- ConversionService methods --
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -157,13 +157,6 @@ public abstract class AbstractConvertService extends AbstractHandlerService<Conv
 		}
 
 		return compatibleClasses;
-	}
-
-	// -- Service methods --
-
-	@Override
-	public void initialize() {
-		ConversionUtils.setDelegateService(this, getPriority());
 	}
 
 	// -- Helper methods --
