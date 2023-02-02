@@ -35,7 +35,6 @@ import org.scijava.convert.ConversionRequest;
 import org.scijava.convert.ConvertService;
 import org.scijava.convert.Converter;
 import org.scijava.convert.DefaultConverter;
-import org.scijava.util.Types;
 
 /** @deprecated use {@link ConvertService} and {@link Types} */
 @Deprecated
