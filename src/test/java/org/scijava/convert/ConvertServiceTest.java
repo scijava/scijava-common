@@ -37,10 +37,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -68,7 +68,6 @@ import org.scijava.util.CharArray;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.DoubleArray;
 import org.scijava.util.FloatArray;
-import org.scijava.util.GenericUtils;
 import org.scijava.util.IntArray;
 import org.scijava.util.LongArray;
 import org.scijava.util.PrimitiveArray;
@@ -467,7 +466,9 @@ public class ConvertServiceTest {
 		final Struct struct = new Struct();
 
 		setFieldValue(struct, "intArray", "not an int array");
-		assertEquals(null, struct.intArray);
+		assertNotNull(struct.intArray);
+		assertEquals(1, struct.intArray.length);
+		assertSame(0, struct.intArray[0]);
 	}
 
 	/**
@@ -475,23 +476,39 @@ public class ConvertServiceTest {
 	 * and a collection.
 	 */
 	@Test
-	public void testBadObjectElements() {
+	public void testIncompatibleCollections() {
 		class Struct {
 
 			private Double[] doubleArray;
-			private List<String> stringList;
-			@SuppressWarnings("unused")
-			private Set<char[]> nestedArray;
+			private List<Number> numberList;
+			private Set<Integer[]> setOfIntegerArrays;
 		}
 		final Struct struct = new Struct();
 
-		// Test abnormal behavior for an object array
-		setFieldValue(struct, "doubleArray", "not a double array");
-		assertEquals(null, struct.doubleArray);
+		// NB: DefaultConverter converts non-collection/array objects to
+		// collection/array objects, even if some or all of the constituent elements
+		// cannot be converted to the array/collection component/element type.
 
-		// Test abnormal behavior for a list
-		setFieldValue(struct, "nestedArray", "definitely not a set of char arrays");
-		assertNull(struct.stringList);
+		// Test object to incompatible array type
+		setFieldValue(struct, "doubleArray", "not a double array");
+		assertNotNull(struct.doubleArray);
+		assertEquals(1, struct.doubleArray.length);
+		assertNull(struct.doubleArray[0]);
+
+		// Test object to incompatible List type
+		setFieldValue(struct, "numberList", "not actually a list of numbers");
+		List<Number> expectedList = Arrays.asList((Number) null);
+		assertEquals(expectedList, struct.numberList);
+
+		// Test object to incompatible Set type
+		setFieldValue(struct, "setOfIntegerArrays", //
+			"definitely not a set of Integer[]");
+		assertNotNull(struct.setOfIntegerArrays);
+		assertEquals(1, struct.setOfIntegerArrays.size());
+		Integer[] singleton = struct.setOfIntegerArrays.iterator().next();
+		assertNotNull(singleton);
+		assertEquals(1, singleton.length);
+		assertNull(singleton[0]);
 	}
 
 	/**
