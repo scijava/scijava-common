@@ -102,7 +102,16 @@ public class ScriptModule extends AbstractModule implements Contextual {
 	/** Gets the script engine used to execute the script. */
 	public ScriptEngine getEngine() {
 		if (scriptEngine == null) {
-			scriptEngine = getInfo().getLanguage().getScriptEngine();
+			final ScriptInfo scriptInfo = getInfo();
+			if (scriptInfo == null) {
+				throw new IllegalArgumentException("Invalid script");
+			}
+			final ScriptLanguage scriptLang = scriptInfo.getLanguage();
+			if (scriptLang == null) {
+				throw new IllegalArgumentException(
+					"No compatible script language available");
+			}
+			scriptEngine = scriptLang.getScriptEngine();
 		}
 		return scriptEngine;
 	}
