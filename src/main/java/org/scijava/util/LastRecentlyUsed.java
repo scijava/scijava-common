@@ -143,7 +143,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 			throw new IllegalArgumentException("No current entry at position " +
 				index);
 		}
-		if (newValue.equals(previous)) return false;
+		if (newValue.equals(previousValue)) return false;
 		map.remove(previousValue);
 		map.put(newValue, index);
 		entries[index] = newValue;
