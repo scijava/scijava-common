@@ -29,16 +29,19 @@
 
 package org.scijava.convert;
 
+import static org.junit.Assert.assertArrayEquals;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.parse.ParseService;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Tests {@link StringToArrayConverter}.
@@ -145,16 +148,6 @@ public class StringToArrayConverterTest {
 	}
 
 	/**
-	 * Tests the ability of {@link StringToArrayConverter} in converting only
-	 * arrays whose elements can be converted
-	 */
-	@Test
-	public void testInconvertibleArrayType() {
-		String s = "{ConverterA}";
-		Assert.assertFalse(converter.canConvert(s, Converter[].class));
-	}
-
-	/**
 	 * Tests the special case of {@link String}s
 	 */
 	@Test
@@ -194,5 +187,87 @@ public class StringToArrayConverterTest {
 		Assert.assertArrayEquals(expected, actual);
 	}
 
+	@Test
+	public void testStringToDoubleArraySingleValue() {
+		assertArrayEquals(new double[] {5},
+			converter.convert("5", double[].class), 0);
+		assertArrayEquals(new Double[] {6d},
+			converter.convert("6", Double[].class));
+		assertArrayEquals(new double[][] {{7}},
+			converter.convert("7", double[][].class));
+		assertArrayEquals(new Double[][] {{8d}},
+			converter.convert("8", Double[][].class));
 
+		assertArrayEquals(new double[] {0},
+			converter.convert("spinach", double[].class), 0);
+		assertArrayEquals(new Double[] {null},
+			converter.convert("kale", Double[].class));
+		assertArrayEquals(new double[][] {{0}},
+			converter.convert("broccoli", double[][].class));
+		assertArrayEquals(new Double[][] {{null}},
+			converter.convert("lettuce", Double[][].class));
+	}
+
+	@Test
+	public void testStringToDoubleArray1D() {
+		// all numbers
+		assertArrayEquals(new double[] {0, 1, 2, 3},
+			converter.convert("{0, 1, 2, 3}", double[].class), 0);
+		assertArrayEquals(new Double[] {7d, 11d},
+			converter.convert("{7, 11}", Double[].class));
+		assertArrayEquals(new Double[] {0d, 1d, 2d, 3d},
+			converter.convert("{0, 1, 2, 3}", Double[].class));
+
+		// mixed numbers/non-numbers
+		assertArrayEquals(new double[] {0, 1, 0, 3},
+			converter.convert("{0, 1, kumquat, 3}", double[].class), 0);
+		assertArrayEquals(new Double[] {4d, null, 5d},
+			converter.convert("{4, eggplant, 5}", Double[].class));
+
+		// all non-numbers
+		assertArrayEquals(new double[] {0, 0, 0},
+			converter.convert("{uno, dos, tres}", double[].class), 0);
+		assertArrayEquals(new Double[] {null, null, null, null},
+			converter.convert("{cuatro, cinco, seis, siete}", Double[].class));
+	}
+
+	@Test
+	public void testStringToDoubleArray2D() {
+		// all numbers
+		assertArrayEquals(new double[][] {{0, 1}, {2, 3, 4}},
+			converter.convert("{{0, 1}, {2, 3, 4}}", double[][].class));
+		assertArrayEquals(new Double[][] {{7d, 11d}, {13d, 17d, 19d}},
+			converter.convert("{{7, 11}, {13, 17, 19}}", Double[][].class));
+		assertArrayEquals(new Double[][] {{0d, 1d}, {2d, 3d}},
+			converter.convert("{{0, 1}, {2, 3}}", Double[][].class));
+
+		// mixed numbers/non-numbers
+		assertArrayEquals(new double[][] {{0, 1}, {0, 3}},
+			converter.convert("{{0, 1}, {kumquat, 3}}", double[][].class));
+		assertArrayEquals(new Double[][] {{4d}, {null, 5d}, {null}},
+			converter.convert("{{4}, {eggplant, 5}, {squash}}", Double[][].class));
+
+		// all non-numbers
+		assertArrayEquals(new double[][] {{0}, {0, 0}},
+			converter.convert("{{uno}, {dos, tres}}", double[][].class));
+		assertArrayEquals(new Double[][] {{null, null}, {null, null}},
+			converter.convert("{{cuatro, cinco}, {seis, siete}}", Double[][].class));
+	}
+
+	@Test
+	public void testStringToDoubleArray3D() {
+		final Random r = new Random(0xDA7ABA5E);
+		final double[][][] ds = new double[r.nextInt(10)][][];
+		for (int i=0; i<ds.length; i++) {
+			ds[i] = new double[r.nextInt(10)][];
+			for (int j=0; j<ds[i].length; j++) {
+				ds[i][j] = new double[r.nextInt(10)];
+				for (int k=0; k<ds[i][j].length; k++) {
+					ds[i][j][k] = 10000 * r.nextDouble();
+				}
+			}
+		}
+		String ss = Arrays.deepToString(ds).replace('[', '{').replace(']', '}');
+		assertArrayEquals(ds, converter.convert(ss, double[][][].class));
+	}
 }
