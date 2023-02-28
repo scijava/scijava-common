@@ -88,7 +88,7 @@ public final class ArrayUtils {
 	 * object is an array type, a {@link PrimitiveArray} wrapper will be created.
 	 */
 	public static Collection<?> toCollection(final Object value) {
-		// If the value is null or we we have a collection, just return it
+		// If the value is null or we have a collection, just return it
 		if (value == null || Collection.class.isAssignableFrom(value.getClass())) {
 			return (Collection<?>) value;
 		}

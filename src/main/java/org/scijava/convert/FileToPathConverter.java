@@ -44,7 +44,7 @@ public class FileToPathConverter extends AbstractConverter<File, Path> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T convert(Object src, Class<T> dest) {
+	public <T> T convert(final Object src, final Class<T> dest) {
 		File f = (File) src;
 		return (T) f.toPath();
 	}

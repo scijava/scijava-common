@@ -43,11 +43,11 @@ public abstract class NumberToNumberConverter<I extends Number, O extends Number
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		if (src == null || dest == null) throw new IllegalArgumentException(
-			"Null input");
+		if (src == null || dest == null) //
+			throw new IllegalArgumentException("Null input");
 		if (!getInputType().isInstance(src)) {
 			throw new IllegalArgumentException("Expected input of type " +
-				getInputType().getSimpleName() + ", but got " +
+				getInputType().getSimpleName() + ", but got " + //
 				src.getClass().getSimpleName());
 		}
 		if (Types.box(dest) != getOutputType()) {
@@ -55,7 +55,9 @@ public abstract class NumberToNumberConverter<I extends Number, O extends Number
 				"Expected output class of " + getOutputType().getSimpleName() +
 				", but got " + dest.getSimpleName());
 		}
-		return (T) convert((Number) src);
+		@SuppressWarnings("unchecked")
+		final T result = (T) convert((Number) src);
+		return result;
 	}
 
 	public abstract O convert(Number n);

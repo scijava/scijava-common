@@ -28,6 +28,8 @@
  */
 package org.scijava.convert;
 
+import java.lang.reflect.Type;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.Types;
@@ -37,7 +39,7 @@ import org.scijava.util.Types;
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class, priority = Priority.EXTREMELY_HIGH)
+@Plugin(type = Converter.class, priority = Priority.EXTREMELY_HIGH - 1)
 public class CastingConverter extends AbstractConverter<Object, Object> {
 
 	@Override
@@ -46,25 +48,23 @@ public class CastingConverter extends AbstractConverter<Object, Object> {
 	}
 
 	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+	public boolean canConvert(final Class<?> src, final Type dest) {
 		// OK if the existing object can be casted
 		return dest != null && Types.isAssignable(src, dest);
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		// NB: Invert functional flow from Converter interface:
+		// Converter: canConvert(Class, Type) -> canConvert(Class, Class)
+		// becomes: canConvert(Class, Class) -> canConvert(Class, Type)
+		final Type destType = dest;
+		return canConvert(src, destType);
+	}
+
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		// NB: Regardless of whether the destination type is an array or
-		// collection, we still want to cast directly if doing so is possible.
-		// But note that in general, this check does not detect cases of
-		// incompatible generic parameter types. If this limitation becomes a
-		// problem in the future we can extend the logic here to provide
-		// additional signatures of canCast which operate on Types in general
-		// rather than only Classes. However, the logic could become complex
-		// very quickly in various subclassing cases, generic parameters
-		// resolved vs. propagated, etc.
-		final Class<?> c = Types.raw(dest);
-		return (T) Types.cast(src, c);
+		return Types.cast(src, dest);
 	}
 
 	@Override

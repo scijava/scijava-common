@@ -30,21 +30,66 @@
 package org.scijava.util;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 
 import org.scijava.convert.ConversionRequest;
 import org.scijava.convert.ConvertService;
 import org.scijava.convert.Converter;
-import org.scijava.convert.DefaultConverter;
 
 /** @deprecated use {@link ConvertService} and {@link Types} */
 @Deprecated
 public class ConversionUtils {
 
-	private static ConvertService convertService;
-
-	private static Converter<?, ?> converterNoContext;
-
-	private static double servicePriority = 0.0;
+	private static List<Converter<?, ?>> converters = Arrays.asList(
+		new org.scijava.convert.NullConverter(),
+		new org.scijava.convert.CastingConverter(),
+		new org.scijava.convert.ArrayConverters.BoolArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.BoolArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.ByteArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.ByteArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.CharArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.CharArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.DoubleArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.DoubleArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.FloatArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.FloatArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.IntArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.IntArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.LongArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.LongArrayWrapper(),
+		new org.scijava.convert.ArrayConverters.ShortArrayUnwrapper(),
+		new org.scijava.convert.ArrayConverters.ShortArrayWrapper(),
+		new org.scijava.convert.FileListConverters.FileArrayToStringConverter(),
+		new org.scijava.convert.FileListConverters.FileToStringConverter(),
+		new org.scijava.convert.FileListConverters.StringToFileArrayConverter(),
+		new org.scijava.convert.FileListConverters.StringToFileConverter(),
+		new org.scijava.convert.NumberConverters.BigIntegerToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.ByteToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.ByteToBigIntegerConverter(),
+		new org.scijava.convert.NumberConverters.ByteToDoubleConverter(),
+		new org.scijava.convert.NumberConverters.ByteToFloatConverter(),
+		new org.scijava.convert.NumberConverters.ByteToIntegerConverter(),
+		new org.scijava.convert.NumberConverters.ByteToLongConverter(),
+		new org.scijava.convert.NumberConverters.ByteToShortConverter(),
+		new org.scijava.convert.NumberConverters.DoubleToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.FloatToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.FloatToDoubleConverter(),
+		new org.scijava.convert.NumberConverters.IntegerToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.IntegerToBigIntegerConverter(),
+		new org.scijava.convert.NumberConverters.IntegerToDoubleConverter(),
+		new org.scijava.convert.NumberConverters.IntegerToLongConverter(),
+		new org.scijava.convert.NumberConverters.LongToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.LongToBigIntegerConverter(),
+		new org.scijava.convert.NumberConverters.ShortToBigDecimalConverter(),
+		new org.scijava.convert.NumberConverters.ShortToBigIntegerConverter(),
+		new org.scijava.convert.NumberConverters.ShortToDoubleConverter(),
+		new org.scijava.convert.NumberConverters.ShortToFloatConverter(),
+		new org.scijava.convert.NumberConverters.ShortToIntegerConverter(),
+		new org.scijava.convert.NumberConverters.ShortToLongConverter(),
+		new org.scijava.convert.StringToNumberConverter(),
+		new org.scijava.convert.DefaultConverter()
+	);
 
 	private ConversionUtils() {
 		// prevent instantiation of utility class
@@ -52,18 +97,13 @@ public class ConversionUtils {
 
 	// -- ConvertService setter --
 
-	/**
-	 * Sets the {@link ConvertService} to use for handling conversion requests.
-	 */
+	/** @deprecated This method should not be used anymore. */
+	@Deprecated
+	@SuppressWarnings("unused")
 	public static void setDelegateService(final ConvertService convertService,
 		final double priority)
 	{
-		if (ConversionUtils.convertService == null || Double.compare(priority,
-			servicePriority) > 0)
-		{
-			ConversionUtils.convertService = convertService;
-			servicePriority = priority;
-		}
+		// NB: This method is now a no-op.
 	}
 
 	// -- Deprecated methods --
@@ -208,17 +248,11 @@ public class ConversionUtils {
 	// -- Helper methods --
 
 	/**
-	 * Gets the {@link Converter} to use for the given conversion request. If the
-	 * delegate {@link ConvertService} has not been explicitly set, then a
-	 * {@link DefaultConverter} will be used.
+	 * Gets the {@link Converter} to use for the given conversion request.
 	 *
 	 * @return The {@link Converter} to use for handling the given request.
 	 */
 	private static Converter<?, ?> handler(final ConversionRequest data) {
-		if (convertService != null) return convertService.getHandler(data);
-
-		if (converterNoContext == null) converterNoContext = new DefaultConverter();
-
-		return converterNoContext;
+		return converters.stream().filter(c -> c.supports(data)).findFirst().orElse(null);
 	}
 }

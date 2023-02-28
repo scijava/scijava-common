@@ -177,11 +177,14 @@ public class ConversionUtilsTest {
 		assertEquals(123456789012.0, struct.myDoubles.get(0), 0.0);
 		assertEquals(987654321098.0, struct.myDoubles.get(1), 0.0);
 
-		// Conversion to a list of strings (with no generic parameter) fails.
+		// Conversion to a list of strings (with no generic parameter) succeeds.
 
 		setFieldValue(struct, "myStrings", longArray);
 
-		assertNull(struct.myStrings);
+		assertNotNull(struct.myStrings);
+		assertEquals(2, struct.myStrings.size());
+		assertEquals("123456789012", struct.myStrings.get(0));
+		assertEquals("987654321098", struct.myStrings.get(1));
 	}
 
 	/**
@@ -239,7 +242,6 @@ public class ConversionUtilsTest {
 	public void testBadPrimitiveArray() {
 		class Struct {
 
-			@SuppressWarnings("unused")
 			private int[] intArray;
 		}
 		final Struct struct = new Struct();
@@ -256,7 +258,8 @@ public class ConversionUtilsTest {
 	public void testIncompatibleCollections() {
 		class Struct {
 
-			private Double[] doubleArray;
+			private double[] primitiveDoubleArray;
+			private Double[] boxedDoubleArray;
 			private List<Number> numberList;
 			private Set<Integer[]> setOfIntegerArrays;
 		}
@@ -266,11 +269,17 @@ public class ConversionUtilsTest {
 		// collection/array objects, even if some or all of the constituent elements
 		// cannot be converted to the array/collection component/element type.
 
-		// Test object to incompatible array type
-		setFieldValue(struct, "doubleArray", "not a double array");
-		assertNotNull(struct.doubleArray);
-		assertEquals(1, struct.doubleArray.length);
-		assertNull(struct.doubleArray[0]);
+		// Test object to incompatible primitive array type
+		setFieldValue(struct, "primitiveDoubleArray", "not a double array");
+		assertNotNull(struct.primitiveDoubleArray);
+		assertEquals(1, struct.primitiveDoubleArray.length);
+		assertEquals(0.0, struct.primitiveDoubleArray[0], 0.0);
+
+		// Test object to incompatible non-primitive array type
+		setFieldValue(struct, "boxedDoubleArray", "not a double array");
+		assertNotNull(struct.boxedDoubleArray);
+		assertEquals(1, struct.boxedDoubleArray.length);
+		assertNull(struct.boxedDoubleArray[0]);
 
 		// Test object to incompatible List type
 		setFieldValue(struct, "numberList", "not actually a list of numbers");

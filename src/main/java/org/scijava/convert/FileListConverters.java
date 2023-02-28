@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.StringUtils;
 
@@ -49,7 +48,7 @@ import org.scijava.util.StringUtils;
 public class FileListConverters {
 	// -- String to File (list) converters --
 
-	@Plugin(type = Converter.class, priority = Priority.NORMAL)
+	@Plugin(type = Converter.class)
 	public static class StringToFileConverter extends
 		AbstractConverter<String, File>
 	{
@@ -72,7 +71,7 @@ public class FileListConverters {
 
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.NORMAL)
+	@Plugin(type = Converter.class)
 	public static class StringToFileArrayConverter extends
 		AbstractConverter<String, File[]>
 	{
@@ -104,7 +103,7 @@ public class FileListConverters {
 
 	// -- File (list) to String converters --
 
-	@Plugin(type = Converter.class, priority = Priority.NORMAL)
+	@Plugin(type = Converter.class)
 	public static class FileToStringConverter extends
 		AbstractConverter<File, String>
 	{
@@ -127,7 +126,7 @@ public class FileListConverters {
 
 	}
 
-	@Plugin(type = Converter.class, priority = Priority.NORMAL)
+	@Plugin(type = Converter.class)
 	public static class FileArrayToStringConverter extends
 		AbstractConverter<File[], String>
 	{

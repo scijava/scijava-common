@@ -57,13 +57,12 @@ public class ConverterTest {
 	/**
 	 * Test case for the {@link NullConverter}
 	 */
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testNullConverter() {
 		final NullConverter nc = new NullConverter();
 		assertFalse(nc.canConvert(Object.class, Object.class));
 		assertFalse(nc.canConvert(Object.class, (Type) Object.class));
-		assertFalse(nc.canConvert((Class<?>) null, Object.class));
+		assertTrue(nc.canConvert((Class<?>) null, Object.class));
 		assertTrue(nc.canConvert((Object) null, Object.class));
 		assertTrue(nc.canConvert((ConverterTest) null, ArrayList.class));
 		assertNull(nc.convert((Object) null, Object.class));
