@@ -31,14 +31,17 @@ package org.scijava.convert;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
 /**
- * Service for converting between types using an extensible plugin:
- * {@link Converter}. Contains convenience signatures for the
- * {@link #getHandler} and {@link #supports} methods to avoid the need to create
+ * Service for converting between types using an {@link Converter} plugins.
+ * Contains convenience signatures for the {@link #getHandler} and
+ * {@link #supports} methods to avoid the need to create
  * {@link ConversionRequest} objects.
  *
  * @see ConversionRequest
@@ -51,83 +54,148 @@ public interface ConvertService extends
 	/**
 	 * @see Converter#convert(Object, Type)
 	 */
-	Object convert(Object src, Type dest);
+	default Object convert(final Object src, final Type dest) {
+		return convert(new ConversionRequest(src, dest));
+	}
 
 	/**
 	 * @see Converter#convert(Object, Class)
 	 */
-	<T> T convert(Object src, Class<T> dest);
+	default <T> T convert(final Object src, final Class<T> dest) {
+		// NB: repeated code with convert(ConversionRequest), because the
+		// handler's convert method respects the T provided
+		final Converter<?, ?> handler = getHandler(src, dest);
+		return handler == null ? null : handler.convert(src, dest);
+	}
 
 	/**
 	 * @see Converter#convert(ConversionRequest)
 	 */
-	Object convert(ConversionRequest request);
+	default Object convert(final ConversionRequest request) {
+		final Converter<?, ?> handler = getHandler(request);
+		return handler == null ? null : handler.convert(request);
+	}
 
 	/**
 	 * @see HandlerService#supports(Object)
 	 */
-	Converter<?, ?> getHandler(Object src, Class<?> dest);
+	default Converter<?, ?> getHandler(final Object src, final Type dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
 
 	/**
 	 * @see HandlerService#supports(Object)
 	 */
-	Converter<?, ?> getHandler(Object src, Type dest);
+	default Converter<?, ?> getHandler(final Object src, final Class<?> dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	/**
+	 * @see HandlerService#getHandler(Object)
+	 */
+	default Converter<?, ?> getHandler(final Class<?> src, final Type dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
+
+	/**
+	 * @see HandlerService#getHandler(Object)
+	 */
+	default Converter<?, ?> getHandler(final Class<?> src, final Class<?> dest) {
+		return getHandler(new ConversionRequest(src, dest));
+	}
 
 	/**
 	 * @see HandlerService#supports(Object)
 	 */
-	boolean supports(Object src, Class<?> dest);
+	default boolean supports(final Object src, final Type dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
 
 	/**
 	 * @see HandlerService#supports(Object)
 	 */
-	boolean supports(Object src, Type dest);
+	default boolean supports(final Object src, final Class<?> dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	/**
+	 * @see HandlerService#supports(Object)
+	 */
+	default boolean supports(final Class<?> src, final Type dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
+
+	/**
+	 * @see HandlerService#supports(Object)
+	 */
+	default boolean supports(final Class<?> src, final Class<?> dest) {
+		return supports(new ConversionRequest(src, dest));
+	}
 
 	/**
 	 * @return A collection of instances that could be converted to the
 	 *         specified class.
 	 */
-	Collection<Object> getCompatibleInputs(Class<?> dest);
+	default Collection<Object> getCompatibleInputs(final Class<?> dest) {
+		final Set<Object> objects = new LinkedHashSet<>();
+
+		for (final Converter<?, ?> c : getInstances()) {
+			if (dest.isAssignableFrom(c.getOutputType())) {
+				c.populateInputCandidates(objects);
+			}
+		}
+
+		return objects;
+	}
 
 	/**
 	 * @return A collection of all classes that could potentially be converted
 	 *         <b>to</b> the specified class.
 	 */
-	Collection<Class<?>> getCompatibleInputClasses(Class<?> dest);
+	default Collection<Class<?>> getCompatibleInputClasses(final Class<?> dest) {
+		final Set<Class<?>> compatibleClasses = new HashSet<>();
+
+		for (final Converter<?, ?> converter : getInstances()) {
+			if (dest == converter.getOutputType()) //
+				compatibleClasses.add(converter.getInputType());
+		}
+
+		return compatibleClasses;
+	}
 
 	/**
 	 * @return A collection of all classes that could potentially be converted
 	 *         <b>from</b> the specified class.
 	 */
-	Collection<Class<?>> getCompatibleOutputClasses(Class<?> dest);
+	default Collection<Class<?>> getCompatibleOutputClasses(final Class<?> source) {
+		final Set<Class<?>> compatibleClasses = new HashSet<>();
 
-	// -- Deprecated API --
+		for (final Converter<?, ?> converter : getInstances()) {
+			try {
+				if (source == converter.getInputType()) //
+					compatibleClasses.add(converter.getOutputType());
+			}
+			catch (final Throwable t) {
+				log().error("Malfunctioning converter plugin: " + //
+					converter.getClass().getName(), t);
+			}
+		}
 
-	/**
-	 * @see HandlerService#getHandler(Object)
-	 * @deprecated Use {@link #getHandler(Object, Class)}
-	 */
-	@Deprecated
-	Converter<?, ?> getHandler(Class<?> src, Class<?> dest);
+		return compatibleClasses;
+	}
 
-	/**
-	 * @see HandlerService#getHandler(Object)
-	 * @deprecated Use {@link #getHandler(Object, Type)}
-	 */
-	@Deprecated
-	Converter<?, ?> getHandler(Class<?> src, Type dest);
+	// -- PTService methods --
 
-	/**
-	 * @see HandlerService#supports(Object)
-	 * @deprecated Use {@link #supports(Object, Class)}
-	 */
-	@Deprecated
-	boolean supports(Class<?> src, Class<?> dest);
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	default Class<Converter<?, ?>> getPluginType() {
+		return (Class) Converter.class;
+	}
 
-	/**
-	 * @see HandlerService#supports(Object)
-	 * @deprecated Use {@link #supports(Object, Type)}
-	 */
-	@Deprecated
-	boolean supports(Class<?> src, Type dest);
+	// -- Typed methods --
+
+	@Override
+	default Class<ConversionRequest> getType() {
+		return ConversionRequest.class;
+	}
 }

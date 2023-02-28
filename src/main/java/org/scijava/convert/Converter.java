@@ -32,15 +32,24 @@ package org.scijava.convert;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.HandlerPlugin;
 import org.scijava.plugin.Plugin;
+import org.scijava.util.Types;
 
 /**
  * Extensible conversion {@link Plugin} for converting between classes and
  * types.
+ * <p>
+ * NB: by default, the provided {@link #canConvert} methods will return
+ * {@code false} if the input is {@code null}. This allows {@link Converter}
+ * implementors to assume any input is non-{@code null}. Casting
+ * {@code null Object} inputs is handled by the {@link NullConverter}, while
+ * {@code null} class inputs are handled by the {@link DefaultConverter}.
+ * </p>
  *
  * @see ConversionRequest
  * @author Mark Hiner
@@ -55,41 +64,107 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 	 *
 	 * @see #convert(ConversionRequest)
 	 */
-	boolean canConvert(ConversionRequest request);
+	default boolean canConvert(final ConversionRequest request) {
+		if (request == null) return false;
+		final Object src = request.sourceObject();
+		final Type destType = request.destType();
+		if (src != null && destType != null) {
+			return canConvert(src, destType);
+		}
+		if (src != null) {
+			return canConvert(src, request.destClass());
+		}
+		if (destType != null) {
+			return canConvert(request.sourceClass(), destType);
+		}
+		return canConvert(request.sourceClass(), request.destClass());
+	}
 
 	/**
 	 * Checks whether the given object's type can be converted to the specified
 	 * type.
-	 * <p>
-	 * Note that this does <em>not</em> necessarily entail that
-	 * {@link #convert(Object, Type)} on that specific object will succeed. For
-	 * example: {@code canConvert("5.1", int.class)} will return {@code true}
-	 * because a {@link String} can in general be converted to an {@code int}, but
-	 * calling {@code convert("5.1", int.class)} will throw a
-	 * {@link NumberFormatException} when the conversion is actually attempted via
-	 * the {@link Integer#Integer(String)} constructor.
-	 * </p>
 	 *
 	 * @see #convert(Object, Type)
 	 */
-	boolean canConvert(Object src, Type dest);
+	default boolean canConvert(final Object src, final Type dest) {
+		if (src == null || dest == null) return false;
+		return canConvert(src.getClass(), dest);
+	}
 
 	/**
 	 * Checks whether the given object's type can be converted to the specified
 	 * type.
+	 *
+	 * @see #convert(Object, Class)
+	 */
+	default boolean canConvert(final Object src, final Class<?> dest) {
+		if (src == null) return false;
+		Class<?> srcClass = src.getClass();
+		return canConvert(srcClass, dest);
+	}
+
+	/**
+	 * Checks whether objects of the given class can be converted to the specified
+	 * type.
 	 * <p>
 	 * Note that this does <em>not</em> necessarily entail that
-	 * {@link #convert(Object, Class)} on that specific object will succeed. For
-	 * example: {@code canConvert("5.1", int.class)} will return {@code true}
+	 * {@link #convert(Object, Type)} on a specific object of the given source
+	 * class will succeed. For example:
+	 * {@code canConvert(String.class, List<Integer>)} will return {@code true}
+	 * because a {@link String} can in general be converted to an {@code Integer}
+	 * and then wrapped into a {@code List}, but calling
+	 * {@code convert("5.1", List<Integer>)} will throw a
+	 * {@link NumberFormatException} when the conversion is actually attempted via
+	 * the {@link Integer#Integer(String)} constructor.
+	 * </p>
+	 * 
+	 * @see #convert(Object, Type)
+	 */
+	default boolean canConvert(final Class<?> src, final Type dest) {
+		final Class<?> destClass = Types.raw(dest);
+		return canConvert(src, destClass);
+	}
+
+	/**
+	 * Checks whether objects of the given class can be converted to the specified
+	 * type.
+	 * <p>
+	 * Note that this does <em>not</em> necessarily entail that
+	 * {@link #convert(Object, Class)} on a specific object of the given source
+	 * class will succeed. For example:
+	 * {@code canConvert(String.class, int.class)} will return {@code true}
 	 * because a {@link String} can in general be converted to an {@code int}, but
 	 * calling {@code convert("5.1", int.class)} will throw a
 	 * {@link NumberFormatException} when the conversion is actually attempted via
 	 * the {@link Integer#Integer(String)} constructor.
 	 * </p>
-	 *
+	 * 
 	 * @see #convert(Object, Class)
 	 */
-	boolean canConvert(Object src, Class<?> dest);
+	default boolean canConvert(final Class<?> src, final Class<?> dest) {
+		if (src == null) return false;
+		final Class<?> saneSrc = Types.box(src);
+		final Class<?> saneDest = Types.box(dest);
+		return Types.isAssignable(saneSrc, getInputType()) && //
+			Types.isAssignable(getOutputType(), saneDest);
+	}
+
+	/**
+	 * Converts the given {@link ConversionRequest#sourceObject()} to the
+	 * specified {@link ConversionRequest#destClass()} or
+	 * {@link ConversionRequest#destType()}.
+	 *
+	 * @see #convert(Object, Class)
+	 * @see #convert(Object, Type)
+	 * @param request {@link ConversionRequest} to process.
+	 * @return The conversion output
+	 */
+	default Object convert(final ConversionRequest request) {
+		if (request.destType() != null) {
+			return convert(request.sourceObject(), request.destType());
+		}
+		return convert(request.sourceObject(), request.destClass());
+	}
 
 	/**
 	 * As {@link #convert(Object, Class)} but capable of creating and populating
@@ -102,14 +177,17 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 	 * <p>
 	 * NB: This method should be capable of creating any array type, but if a
 	 * {@link Collection} interface or abstract class is provided we can only make
-	 * a best guess as to what container type to instantiate. Defaults are
-	 * provided for {@link Set} and {@link List} subclasses.
+	 * a best guess as to what container type to instantiate; defaults are
+	 * provided for {@link Set}, {@link Queue}, and {@link List}.
 	 * </p>
 	 *
 	 * @param src The object to convert.
 	 * @param dest Type to which the object should be converted.
 	 */
-	Object convert(Object src, Type dest);
+	default Object convert(final Object src, final Type dest) {
+		final Class<?> destClass = Types.raw(dest);
+		return convert(src, destClass);
+	}
 
 	/**
 	 * Converts the given object to an object of the specified type. The object is
@@ -125,18 +203,6 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 	 * @param dest Type to which the object should be converted.
 	 */
 	<T> T convert(Object src, Class<T> dest);
-
-	/**
-	 * Converts the given {@link ConversionRequest#sourceObject()} to the
-	 * specified {@link ConversionRequest#destClass()} or
-	 * {@link ConversionRequest#destType()}.
-	 *
-	 * @see #convert(Object, Class)
-	 * @see #convert(Object, Type)
-	 * @param request {@link ConversionRequest} to process.
-	 * @return The conversion output
-	 */
-	Object convert(ConversionRequest request);
 
 	/**
 	 * Populates the given collection with objects which are known to exist, and
@@ -170,25 +236,15 @@ public interface Converter<I, O> extends HandlerPlugin<ConversionRequest> {
 	 */
 	Class<I> getInputType();
 
-	// -- Deprecated API --
+	// -- Typed methods --
 
-	/**
-	 * Checks whether objects of the given class can be converted to the specified
-	 * type.
-	 *
-	 * @see #convert(Object, Type)
-	 * @deprecated Use {@link #canConvert(Object, Type)}
-	 */
-	@Deprecated
-	boolean canConvert(Class<?> src, Type dest);
+	@Override
+	default boolean supports(final ConversionRequest request) {
+		return canConvert(request);
+	}
 
-	/**
-	 * Checks whether objects of the given class can be converted to the specified
-	 * type.
-	 *
-	 * @see #convert(Object, Class)
-	 * @deprecated Use {@link #canConvert(Object, Class)}
-	 */
-	@Deprecated
-	boolean canConvert(Class<?> src, Class<?> dest);
+	@Override
+	default Class<ConversionRequest> getType() {
+		return ConversionRequest.class;
+	}
 }
