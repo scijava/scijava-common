@@ -49,17 +49,30 @@ public class CastingConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Type dest) {
-		// OK if the existing object can be casted
-		return dest != null && Types.isAssignable(src, dest);
+		// NB: You might think we want to use Types.isAssignable(src, dest)
+		// directly here. And you might be right. However, assignment involving
+		// generic types gets very tricky. If dest is e.g. a wildcard type such as
+		// "? extends Object", or a type variable such as "C extends Object", then
+		// no specific class will be assignable to it, because for that ? or C we
+		// do not know anything about the bound type other than that it's something
+		// that extends Object, so it could be anything, including things that
+		// aren't assignable from whatever src is.
+		//
+		// Unfortunately, when this casting conversion code was originally written,
+		// it did not have generics in mind, and calling code will pass in capture
+		// types (e.g. Type objects gleaned via ModuleItem#getGenericType())
+		// expecting them to be convertible as long as dest's raw type(s) are
+		// compatible targets for src.
+		//
+		// And so for backwards compatibility, we continue to behave that way here.
+
+		return dest != null && //
+			Types.raws(dest).stream().allMatch(c -> c.isAssignableFrom(src));
 	}
 
 	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		// NB: Invert functional flow from Converter interface:
-		// Converter: canConvert(Class, Type) -> canConvert(Class, Class)
-		// becomes: canConvert(Class, Class) -> canConvert(Class, Type)
-		final Type destType = dest;
-		return canConvert(src, destType);
+		return dest != null && dest.isAssignableFrom(src);
 	}
 
 	@Override
