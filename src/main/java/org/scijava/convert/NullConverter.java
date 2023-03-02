@@ -36,30 +36,17 @@ import org.scijava.plugin.Plugin;
 import org.scijava.util.Types;
 
 /**
- * {@link Converter} implementation for handling {@code null} values. Performs
- * basic casting when given a {@code null} source and returns {@code null}
- * directly when given a {@code null} destination.
+ * {@link Converter} implementation for handling {@code null} values. Returns
+ * {@code null} when given a {@code null} source or {@code null} destination.
  * <p>
- * By running at {@link Priority#FIRST}, other converters should
- * not need to worry about {@code null} source or destination parameters.
- * </p>
- * <p>
- * NB: if a {@link Class} source is queried for the {@link #canConvert},
- * this converter will always return false (as there is no way of knowing
- * if the source object will be null or not).
+ * By running at {@link Priority#EXTREMELY_HIGH}, other converters should not
+ * need to worry about {@code null} source or destination parameters.
  * </p>
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class, priority = Priority.FIRST)
+@Plugin(type = Converter.class, priority = Priority.EXTREMELY_HIGH)
 public class NullConverter extends AbstractConverter<Object, Object> {
-
-	@Override
-	public boolean canConvert(final ConversionRequest request) {
-		if (request == null) return false;
-		return (request.destType() == null && request.destClass() == null) ||
-			(request.sourceObject() == null && request.sourceClass() == null);
-	}
 
 	@Override
 	public boolean canConvert(final Object src, final Type dest) {
@@ -72,18 +59,21 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 	}
 
 	@Override
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		return src == null || dest == null;
+	}
+
+	@Override
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		if (src == null) return false;
-		return dest == null;
+		return src == null || dest == null;
 	}
 
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
 		if (dest == null) return null;
 		if (src == null) return Types.nullValue(dest);
-
 		throw new IllegalArgumentException("Attempting non-null conversion: " +
-			src + " > " + dest + " using NullConverter.");
+			src + " -> " + dest + " using NullConverter.");
 	}
 
 	@Override
@@ -95,5 +85,4 @@ public class NullConverter extends AbstractConverter<Object, Object> {
 	public Class<Object> getInputType() {
 		return Object.class;
 	}
-
 }

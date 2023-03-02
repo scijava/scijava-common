@@ -28,6 +28,8 @@
  */
 package org.scijava.convert;
 
+import java.lang.reflect.Type;
+
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.Types;
@@ -37,7 +39,7 @@ import org.scijava.util.Types;
  *
  * @author Mark Hiner
  */
-@Plugin(type = Converter.class, priority = Priority.EXTREMELY_HIGH)
+@Plugin(type = Converter.class, priority = Priority.EXTREMELY_HIGH - 1)
 public class CastingConverter extends AbstractConverter<Object, Object> {
 
 	@Override
@@ -46,25 +48,36 @@ public class CastingConverter extends AbstractConverter<Object, Object> {
 	}
 
 	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		// OK if the existing object can be casted
-		return dest != null && Types.isAssignable(src, dest);
+	public boolean canConvert(final Class<?> src, final Type dest) {
+		// NB: You might think we want to use Types.isAssignable(src, dest)
+		// directly here. And you might be right. However, assignment involving
+		// generic types gets very tricky. If dest is e.g. a wildcard type such as
+		// "? extends Object", or a type variable such as "C extends Object", then
+		// no specific class will be assignable to it, because for that ? or C we
+		// do not know anything about the bound type other than that it's something
+		// that extends Object, so it could be anything, including things that
+		// aren't assignable from whatever src is.
+		//
+		// Unfortunately, when this casting conversion code was originally written,
+		// it did not have generics in mind, and calling code will pass in capture
+		// types (e.g. Type objects gleaned via ModuleItem#getGenericType())
+		// expecting them to be convertible as long as dest's raw type(s) are
+		// compatible targets for src.
+		//
+		// And so for backwards compatibility, we continue to behave that way here.
+
+		return dest != null && //
+			Types.raws(dest).stream().allMatch(c -> c.isAssignableFrom(src));
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		return dest != null && dest.isAssignableFrom(src);
+	}
+
 	@Override
 	public <T> T convert(final Object src, final Class<T> dest) {
-		// NB: Regardless of whether the destination type is an array or
-		// collection, we still want to cast directly if doing so is possible.
-		// But note that in general, this check does not detect cases of
-		// incompatible generic parameter types. If this limitation becomes a
-		// problem in the future we can extend the logic here to provide
-		// additional signatures of canCast which operate on Types in general
-		// rather than only Classes. However, the logic could become complex
-		// very quickly in various subclassing cases, generic parameters
-		// resolved vs. propagated, etc.
-		final Class<?> c = Types.raw(dest);
-		return (T) Types.cast(src, c);
+		return Types.cast(src, dest);
 	}
 
 	@Override

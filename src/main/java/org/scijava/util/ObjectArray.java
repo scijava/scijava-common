@@ -32,8 +32,6 @@ package org.scijava.util;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.scijava.util.Types;
-
 /**
  * An extensible, generic array of {@code Object} elements. Note that this class
  * is a {@link PrimitiveArray} but of course Objects are not primitives.

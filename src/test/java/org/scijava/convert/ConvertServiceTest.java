@@ -35,7 +35,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -86,6 +85,7 @@ public class ConvertServiceTest {
 
 	@Before
 	public void setUp() {
+		@SuppressWarnings("resource")
 		final Context context = new Context(ConvertService.class);
 		convertService = context.getService(ConvertService.class);
 	}
@@ -154,8 +154,14 @@ public class ConvertServiceTest {
 		testIntechangeable(char[].class, CharArray.class);
 		testIntechangeable(boolean[].class, BoolArray.class);
 
-		// Test that primitive [] can not be converted to mismatched PrimitiveArray
-		assertFalse(convertService.supports(int[].class, LongArray.class));
+		// Test that primitive [] can be cross-converted to mismatched PrimitiveArray
+		assertTrue(convertService.supports(int[].class, LongArray.class));
+		final LongArray crossConverted = //
+			convertService.convert(new int[] {2, 3, 5}, LongArray.class);
+		assertEquals(3, crossConverted.size());
+		assertEquals(2L, (long) crossConverted.get(0));
+		assertEquals(3L, (long) crossConverted.get(1));
+		assertEquals(5L, (long) crossConverted.get(2));
 
 		// Test that lists can be converted to any primitive []
 		final List<Integer> list = new ArrayList<>();
@@ -219,8 +225,10 @@ public class ConvertServiceTest {
 		assertTrue(convertService.supports(HashSet.class, ArrayList.class));
 		assertTrue(convertService.supports(long.class, Date.class));
 
+		// check conversion to collection type
+		assertTrue(convertService.supports(Collection.class, List.class));
+
 		// check lack of conversion of various types w/o appropriate constructor
-		assertFalse(convertService.supports(Collection.class, List.class));
 		assertFalse(convertService.supports(int.class, Date.class));
 	}
 
@@ -334,19 +342,11 @@ public class ConvertServiceTest {
 		assertEquals("Bar", objectToHisList.get(1));
 
 		// ArrayList<String> subclass to ArrayList<Number> subclass
-		// This surprisingly works due to type erasure... dangerous stuff.
 		final NumberList hisToNumberList =
 			convertService.convert(hisList, NumberList.class);
 		assertEquals(2, hisToNumberList.size());
-		assertEquals("Foo", hisToNumberList.get(0));
-		assertEquals("Bar", hisToNumberList.get(1));
-		try {
-			final Number n0 = hisToNumberList.get(0);
-			fail("expected ClassCastException but got: " + n0);
-		}
-		catch (final ClassCastException exc) {
-			// NB: Exception expected.
-		}
+		assertNull(hisToNumberList.get(0));
+		assertNull(hisToNumberList.get(1));
 	}
 
 	/**
@@ -397,11 +397,15 @@ public class ConvertServiceTest {
 		assertEquals(123456789012.0, struct.myDoubles.get(0), 0.0);
 		assertEquals(987654321098.0, struct.myDoubles.get(1), 0.0);
 
-		// Conversion to a list of strings (with no generic parameter) fails.
+		// Conversion to a list of strings (with no generic parameter) succeeds.
 
 		setFieldValue(struct, "myStrings", longArray);
 
-		assertNull(struct.myStrings);
+		assertNotNull(struct.myStrings);
+		System.out.println(struct.myStrings);
+		assertEquals(2, struct.myStrings.size());
+		assertEquals("123456789012", struct.myStrings.get(0));
+		assertEquals("987654321098", struct.myStrings.get(1));
 	}
 
 	/**
@@ -460,7 +464,6 @@ public class ConvertServiceTest {
 	public void testBadPrimitiveArray() {
 		class Struct {
 
-			@SuppressWarnings("unused")
 			private int[] intArray;
 		}
 		final Struct struct = new Struct();
@@ -741,11 +744,8 @@ public class ConvertServiceTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	public static class HisList extends ArrayList<String> {
-		public HisList() {
-			super();
-		}
-		public HisList(final Collection<? extends String> c) {
+	public static class HerList extends ArrayList<String> {
+		public HerList(final Collection<? extends String> c) {
 			super(c);
 		}
 	}
@@ -754,8 +754,11 @@ public class ConvertServiceTest {
 	 * Helper class for testing conversion of one {@link ArrayList} subclass to
 	 * another.
 	 */
-	public static class HerList extends ArrayList<String> {
-		public HerList(final Collection<? extends String> c) {
+	public static class HisList extends ArrayList<String> {
+		public HisList() {
+			super();
+		}
+		public HisList(final Collection<? extends String> c) {
 			super(c);
 		}
 	}

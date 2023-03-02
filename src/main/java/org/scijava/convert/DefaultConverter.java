@@ -31,19 +31,21 @@ package org.scijava.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.ArrayUtils;
-import org.scijava.util.ConversionUtils;
 import org.scijava.util.Types;
 
 /**
@@ -73,6 +75,11 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 
 	@Override
 	public Object convert(final Object src, final Type dest) {
+		// special case: CharSequence -> char[]
+		// otherwise, String -> char[] ends up length 1 with first char only
+		if (src instanceof CharSequence && dest == char[].class) {
+			return ((CharSequence) src).toString().toCharArray();
+		}
 
 		// Handle array types, including generic array types.
 		final Type componentType = Types.component(dest);
@@ -81,66 +88,34 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			return convertToArray(src, Types.raw(componentType));
 		}
 
-		// Handle parameterized collection types.
-		if (dest instanceof ParameterizedType && isCollection(dest)) {
-			return convertToCollection(src, (ParameterizedType) dest);
+		// Handle collection types, either raw or parameterized.
+		Class<?> cClass = collectionClass(dest);
+		if (cClass != null) {
+			Type elementType = Types.param(dest, Collection.class, 0);
+			if (elementType == null) elementType = Object.class; // raw collection
+			final Object collection = convertToCollection(src, cClass, elementType);
+			if (collection != null) return collection;
+			// NB: If this conversion failed, it might still succeed later
+			// when looking for a wrapping constructor. So let's keep going.
+			// In particular, see ConvertServiceTest#testConvertSubclass().
 		}
 
-		// This wasn't a collection or array, so convert it as a single element.
-		return convert(src, Types.raw(dest));
-	}
+		// Ensure type is a well-behaved class, rather than a primitive type.
+		final Class<?> destClass = Types.raw(dest);
+		final Class<?> saneDest = Types.box(destClass);
 
-	@Override
-	public <T> T convert(final Object src, final Class<T> dest) {
-		// ensure type is well-behaved, rather than a primitive type
-		final Class<T> saneDest = Types.box(dest);
-
-		// Handle array types
-		if (isArray(dest)) {
-			@SuppressWarnings("unchecked")
-			T array = (T) convertToArray(src, Types.raw(Types.component(dest)));
-			return array;
-		}
+		// Object is already the requested type.
+		if (Types.isInstance(src, saneDest)) return src;
 
 		// special case for conversion from number to number
 		if (src instanceof Number) {
 			final Number number = (Number) src;
-			if (saneDest == Byte.class) {
-				final Byte result = number.byteValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
-			if (saneDest == Double.class) {
-				final Double result = number.doubleValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
-			if (saneDest == Float.class) {
-				final Float result = number.floatValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
-			if (saneDest == Integer.class) {
-				final Integer result = number.intValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
-			if (saneDest == Long.class) {
-				final Long result = number.longValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
-			if (saneDest == Short.class) {
-				final Short result = number.shortValue();
-				@SuppressWarnings("unchecked")
-				final T typedResult = (T) result;
-				return typedResult;
-			}
+			if (saneDest == Byte.class) return number.byteValue();
+			if (saneDest == Double.class) return number.doubleValue();
+			if (saneDest == Float.class) return number.floatValue();
+			if (saneDest == Integer.class) return number.intValue();
+			if (saneDest == Long.class) return number.longValue();
+			if (saneDest == Short.class) return number.shortValue();
 		}
 
 		// special cases for strings
@@ -149,44 +124,53 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			final String s = (String) src;
 			if (s.isEmpty()) {
 				// return null for empty strings
-				return Types.nullValue(dest);
+				return Types.nullValue(saneDest);
 			}
 
 			// use first character when converting to Character
 			if (saneDest == Character.class) {
-				final Character c = new Character(s.charAt(0));
-				@SuppressWarnings("unchecked")
-				final T result = (T) c;
-				return result;
+				return new Character(s.charAt(0));
 			}
 
 			// special case for conversion to enum
-			if (dest.isEnum()) {
-				final T result = ConversionUtils.convertToEnum(s, dest);
-				if (result != null) return result;
+			if (saneDest.isEnum()) {
+				try {
+					return Types.enumValue(s, saneDest);
+				}
+				catch (final IllegalArgumentException exc) {
+					// NB: No action needed.
+				}
 			}
 		}
+
 		if (saneDest == String.class) {
 			// destination type is String; use Object.toString() method
-			final String sValue = src.toString();
-			@SuppressWarnings("unchecked")
-			final T result = (T) sValue;
-			return result;
+			return src.toString();
 		}
 
 		// wrap the original object with one of the new type, using a constructor
 		try {
 			final Constructor<?> ctor = getConstructor(saneDest, src.getClass());
 			if (ctor == null) return null;
-			@SuppressWarnings("unchecked")
-			final T instance = (T) ctor.newInstance(src);
-			return instance;
+			return ctor.newInstance(src);
 		}
-		catch (final Exception exc) {
-			// TODO: Best not to catch blanket Exceptions here.
+		catch (final InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException exc)
+		{
 			// no known way to convert
-			return Types.nullValue(dest);
+			return Types.nullValue(destClass);
 		}
+	}
+
+	@Override
+	public <T> T convert(final Object src, final Class<T> dest) {
+		// NB: Invert functional flow from Converter interface:
+		// Converter: convert(Class, Type) calling convert(Class, Class)
+		// becomes: convert(Class, Class) calling convert(Class, Type)
+		final Type destType = dest;
+		@SuppressWarnings("unchecked")
+		final T result = (T) convert(src, destType);
+		return result;
 	}
 
 	@Override
@@ -219,8 +203,10 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		return Types.component(type) != null;
 	}
 
-	private boolean isCollection(final Type type) {
-		return Types.isAssignable(Types.raw(type), Collection.class);
+	private Class<?> collectionClass(final Type type) {
+		return Types.raws(type).stream() //
+			.filter(t -> Types.isAssignable(t, Collection.class)) //
+			.findFirst().orElse(null);
 	}
 
 	private Object
@@ -244,34 +230,32 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	}
 
 	private Object convertToCollection(final Object value,
-		final ParameterizedType pType)
+		final Class<?> collectionType, final Type elementType)
 	{
-		final Collection<Object> collection = createCollection(Types.raw(pType));
+		final Collection<Object> collection = createCollection(collectionType);
 		if (collection == null) return null;
 
 		// Populate the collection.
 		final Collection<?> items = ArrayUtils.toCollection(value);
-		// TODO: The following can fail; e.g. "Foo extends ArrayList<String>"
-		final Type collectionType = pType.getActualTypeArguments()[0];
 		for (final Object item : items) {
-			collection.add(convert(item, collectionType));
+			collection.add(convert(item, elementType));
 		}
 
 		return collection;
 	}
 
-	private Collection<Object> createCollection(final Class<?> type) {
-		// If we were given an interface or abstract class, and not a concrete
-		// class, we attempt to make default implementations.
-		if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
-			// We don't have a concrete class. If it's a set or a list, we use
-			// the typical default implementation. Otherwise we won't convert.
-			if (Types.isAssignable(type, List.class)) return new ArrayList<>();
-			if (Types.isAssignable(type, Set.class)) return new HashSet<>();
+	private Collection<Object> createCollection(Class<?> type) {
+		// Support conversion to common collection interface types.
+		if (type == Queue.class || type == Deque.class) type = ArrayDeque.class;
+		else if (type == Set.class) type = LinkedHashSet.class;
+		else if (type == List.class || type == Collection.class) type = ArrayList.class;
+		else if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
+			// We were given an interface or abstract class, and not a concrete
+			// class, and we don't know what default implementation to use.
 			return null;
 		}
 
-		// Got a concrete type. Instantiate it.
+		// We now have a concrete type. Instantiate it.
 		try {
 			@SuppressWarnings("unchecked")
 			final Collection<Object> c = (Collection<Object>) type.newInstance();
@@ -288,66 +272,37 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 	// -- Deprecated API --
 
 	@Override
-	@Deprecated
-	public boolean canConvert(final Class<?> src, final Type dest) {
-
-		// Handle array types, including generic array types.
-		// The logic follows from the types that ArrayUtils.toCollection
-		// can convert
-		if (isArray(dest)){
-			// toCollection handles any type of Collection
-			if (Collection.class.isAssignableFrom(src)) return true;
-			// toCollection handles any type of array
-			if (src.isArray()) return true;
-			// toCollection can wrap objects into a Singleton list,
-			// but we only want to wrap up a T if the dest type is a T[].
-			return Types.isAssignable(src, Types.component(dest));
-		}
-
-		// Handle parameterized collection types.
-		if (dest instanceof ParameterizedType && isCollection(dest) &&
-			createCollection(Types.raw(dest)) != null)
-		{
-			return true;
-		}
-		
-		return super.canConvert(src, dest);
-	}
-
-	@Override
-	@Deprecated
 	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		// OK for array and collection types.
+		if (isArray(dest)) return true;
+		Class<?> cClass = collectionClass(dest);
+		if (cClass != null && createCollection(cClass) != null) return true;
+
 		// ensure type is well-behaved, rather than a primitive type
 		final Class<?> saneDest = Types.box(dest);
 
 		// OK for numerical conversions
 		if (Types.isAssignable(Types.box(src), Number.class) && //
-			(Types.isByte(dest) || Types.isDouble(dest) || Types.isFloat(dest) ||
-				Types.isInteger(dest) || Types.isLong(dest) || Types.isShort(dest)))
+			(Types.isByte(saneDest) || Types.isDouble(saneDest) || //
+				Types.isFloat(saneDest) || Types.isInteger(saneDest) || //
+				Types.isLong(saneDest) || Types.isShort(saneDest)))
 		{
 			return true;
 		}
-		
+
 		// OK if string
 		if (saneDest == String.class) return true;
-		
+
 		if (Types.isAssignable(src, String.class)) {
 			// OK if source type is string and destination type is character
 			// (in this case, the first character of the string would be used)
 			if (saneDest == Character.class) return true;
-			
+
 			// OK if source type is string and destination type is an enum
 			if (dest.isEnum()) return true;
 		}
-		
+
 		// OK if appropriate wrapper constructor exists
-		try {
-			return getConstructor(saneDest, src) != null;
-		}
-		catch (final Exception exc) {
-			// TODO: Best not to catch blanket Exceptions here.
-			// no known way to convert
-			return false;
-		}
+		return getConstructor(saneDest, src) != null;
 	}
 }

@@ -41,7 +41,7 @@ public abstract class PrimitiveArrayUnwrapper<I, O, W extends PrimitiveArray<I, 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T convert(Object src, Class<T> dest) {
+	public <T> T convert(final Object src, final Class<T> dest) {
 		final W primitiveArray = (W) src;
 		return (T) primitiveArray.getArray();
 

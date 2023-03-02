@@ -29,11 +29,15 @@
 
 package org.scijava.convert;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
@@ -86,11 +90,11 @@ public class ArrayToStringConverterTest {
 		String sFloat = "{1.0, 2.0, 3.0}";
 		for (Object array : arrays) {
 			// Ensure our Converter can do the conversion
-			Assert.assertTrue(converter.canConvert(array, String.class));
+			assertTrue(converter.canConvert(array, String.class));
 			// Do the conversion
 			String converted = converter.convert(array, String.class);
 			// Ensure correctness
-			Assert.assertTrue(converted.equals(sInt) || converted.equals(sFloat));
+			assertTrue(converted.equals(sInt) || converted.equals(sFloat));
 		}
 	}
 
@@ -101,10 +105,10 @@ public class ArrayToStringConverterTest {
 	@Test
 	public void test2DArrayConversion() {
 		byte[][] arr = new byte[][] { new byte[] { 0, 1 }, new byte[] { 2, 3 } };
-		Assert.assertTrue(converter.canConvert(arr, String.class));
+		assertTrue(converter.canConvert(arr, String.class));
 		String actual = converter.convert(arr, String.class);
 		String expected = "{{0, 1}, {2, 3}}";
-		Assert.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -119,10 +123,10 @@ public class ArrayToStringConverterTest {
 				for (int k = 0; k < 2; k++)
 					arr[i][j][k] = (byte) (i + j + k);
 
-		Assert.assertTrue(converter.canConvert(arr, String.class));
+		assertTrue(converter.canConvert(arr, String.class));
 		String actual = converter.convert(arr, String.class);
 		String expected = "{{{0, 1}, {1, 2}}, {{1, 2}, {2, 3}}}";
-		Assert.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -132,10 +136,10 @@ public class ArrayToStringConverterTest {
 	@Test
 	public void testEmptyArrayConversion() {
 		byte[] arr = new byte[0];
-		Assert.assertTrue(converter.canConvert(arr, String.class));
+		assertTrue(converter.canConvert(arr, String.class));
 		String actual = converter.convert(arr, String.class);
 		String expected = "{}";
-		Assert.assertEquals(expected, actual);
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -153,23 +157,21 @@ public class ArrayToStringConverterTest {
 		StringToArrayConverter c2 = new StringToArrayConverter();
 		context.inject(c2);
 		byte[] actual = c2.convert(converted, byte[].class);
-		Assert.assertArrayEquals(expected, actual);
+		assertArrayEquals(expected, actual);
 	}
 
 	@Test
 	public void testNullConversion() {
-		String[] s1 = {null};
-		String[] s2 = {"null"};
-		String[] expected = new String[] {null};
 		// Do the first conversion
 		ArrayToStringConverter c1 = new ArrayToStringConverter();
 		context.inject(c1);
-		String converted = c1.convert(expected, String.class);
+		String converted = c1.convert(new String[] {null}, String.class);
 		// Try to convert back
 		StringToArrayConverter c2 = new StringToArrayConverter();
 		context.inject(c2);
 		String[] actual = c2.convert(converted, String[].class);
-		// NB: we cannot recreate the original {null} state
-		Assert.assertNull(actual);
+		assertNotNull(actual);
+		assertEquals(1, actual.length);
+		assertEquals("null", actual[0]);
 	}
 }

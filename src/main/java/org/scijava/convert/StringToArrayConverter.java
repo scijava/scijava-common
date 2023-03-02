@@ -31,10 +31,15 @@ package org.scijava.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.scijava.Priority;
+import org.scijava.parse.Item;
 import org.scijava.parse.Items;
 import org.scijava.parse.ParseService;
+import org.scijava.parsington.Token;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.util.Types;
@@ -57,14 +62,6 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 	private ParseService parseService;
 
 	@Override
-	public boolean canConvert(final Class<?> src, final Class<?> dest) {
-		if (src == null) return false;
-		final Class<?> saneSrc = Types.box(src);
-		final Class<?> saneDest = Types.box(dest);
-		return saneSrc == String.class && saneDest.isArray();
-	}
-
-	@Override
 	public boolean canConvert(final Object src, final Type dest) {
 		return canConvert(src, Types.raw(dest));
 	}
@@ -76,46 +73,39 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 		// First, ensure the base types conform
 		if (!canConvert(src.getClass(), dest)) return false;
 		// Then, ensure we can parse the string
-		Items tree;
 		try {
-			tree = parseService.parse((String) src);
+			parseService.parse((String) src, false);
 		}
 		catch (final IllegalArgumentException e) {
 			return false;
 		}
-		// We can always convert empty arrays as we don't have to create Objects
-		if (tree.size() == 0) return true;
-		// Finally, ensure that we can convert the elements of the array.
-		// NB this check is merely a heuristic. In the case of a heterogeneous
-		// array, canConvert may falsely return positive, if later elements in the
-		// string-ified array cannot be converted into Objects. We make this
-		// compromise in the interest of speed, however, as ensuring correctness
-		// would require a premature conversion of the entire array.
-		Object testSrc = tree.get(0).value();
-		Class<?> testDest = unitComponentType(dest);
-		return convertService.supports(testSrc, testDest);
+		return true;
 	}
 
 	@Override
-	public Object convert(Object src, Type dest) {
+	public boolean canConvert(final Class<?> src, final Class<?> dest) {
+		return src == String.class && dest.isArray();
+	}
+
+	@Override
+	public Object convert(final Object src, final Type dest) {
 		final Type componentType = Types.component(dest);
 		if (componentType == null) {
 			throw new IllegalArgumentException(dest + " is not an array type!");
 		}
-		try {
-			return convertToArray( //
-				parseService.parse((String) src), //
-				Types.raw(componentType));
-		}
-		catch (final IllegalArgumentException e) {
-			return null;
-		}
+		final List<?> items = parse((String) src);
+		return convertToArray(items, Types.raw(componentType));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T convert(Object src, Class<T> dest) {
-		return (T) convert(src, (Type) dest);
+	public <T> T convert(final Object src, final Class<T> dest) {
+		// NB: Invert functional flow from Converter interface:
+		// Converter: convert(Object, Type) calling convert(Object, Class)
+		// becomes: convert(Object, Class) calling convert(Object, Type)
+		final Type destType = dest;
+		@SuppressWarnings("unchecked")
+		T result = (T) convert(src, destType);
+		return result;
 	}
 
 	@Override
@@ -128,35 +118,53 @@ public class StringToArrayConverter extends AbstractConverter<String, Object> {
 		return String.class;
 	}
 
-	// -- HELPER METHODS -- //
+	// -- Helper methods --
 
 	/**
-	 * Converts {@code src} into an array of component type {@code componentType}
+	 * Converts {@code src} into an array of component type {@code componentType}.
 	 * 
 	 * @param tree the {@link String} to convert
 	 * @param componentType the component type of the output array
 	 * @return an array of {@code componentType} whose elements were created from
 	 *         {@code src}
 	 */
-	private Object convertToArray(Items tree, final Class<?> componentType) {
+	private Object convertToArray(final List<?> tree,
+		final Class<?> componentType)
+	{
 		// Create the array
 		final Object array = Array.newInstance(componentType, tree.size());
 		// Set each element of the array
 		for (int i = 0; i < tree.size(); i++) {
-			Object element = convertService.convert(tree.get(i).value(), componentType);
-			Array.set(array, i, element);
+			Object element = tree.get(i);
+			final Object converted = convertService.convert(element, componentType);
+			Array.set(array, i, converted);
 		}
 		return array;
 	}
 
-	/**
-	 * Similar to {@link Class#getComponentType()}, but handles nested array types
-	 *
-	 * @param c the {@link Class} that may be an array class
-	 * @return the <em>unit</em> component type of {@link Class} {@code c}
-	 */
-	private Class<?> unitComponentType(Class<?> c) {
-		if (!c.isArray()) return c;
-		return c.getComponentType();
+	/** Parses a string to a list, using the {@link ParseService}. */
+	private List<?> parse(final String s) {
+		try {
+			Items items = parseService.parse(s, false);
+			return (List<?>) unwrap(items);
+		}
+		catch (final IllegalArgumentException e) {
+			return null;
+		}
+	}
+
+	private Object unwrap(final Object o) {
+		if (o instanceof Collection) {
+			return ((Collection<?>) o).stream() //
+				.map(item -> unwrap(item)) //
+				.collect(Collectors.toList());
+		}
+		if (o instanceof Item) {
+			return unwrap(((Item) o).value());
+		}
+		if (o instanceof Token) {
+			return ((Token) o).getToken();
+		}
+		return o;
 	}
 }
