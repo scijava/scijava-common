@@ -31,7 +31,6 @@ package org.scijava.io;
 
 import java.io.IOException;
 
-import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
@@ -49,9 +48,7 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
 	 * location.
 	 */
-	default IOPlugin<?> getOpener(final String source) {
-		return getOpener(new FileLocation(source));
-	}
+	IOPlugin<?> getOpener(final String source) throws IOException;
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for opening data from the given
@@ -68,9 +65,7 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
 	 * location.
 	 */
-	default <D> IOPlugin<D> getSaver(final D data, final String destination) {
-		return getSaver(data, new FileLocation(destination));
-	}
+	<D> IOPlugin<D> getSaver(final D data, final String destination) throws IOException;
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
