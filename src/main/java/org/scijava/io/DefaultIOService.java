@@ -61,6 +61,24 @@ public final class DefaultIOService
 
 	@Parameter
 	private LocationService locationService;
+	
+	@Override
+	public IOPlugin<?> getOpener(final String source) throws IOException {
+		try {
+			return getOpener(locationService.resolve(source));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public <D> IOPlugin<D> getSaver(D data, String destination) throws IOException {
+		try {
+			return getSaver(data, locationService.resolve(destination));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
 
 	@Override
 	public Object open(final String source) throws IOException {
@@ -112,4 +130,5 @@ public final class DefaultIOService
 			log.error("No Saver IOPlugin found for " + data.toString() + ".");
 		}
 	}
+	
 }
