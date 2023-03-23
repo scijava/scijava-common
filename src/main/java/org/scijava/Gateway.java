@@ -40,6 +40,7 @@ import org.scijava.event.EventService;
 import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
+import org.scijava.io.location.LocationService;
 import org.scijava.log.LogService;
 import org.scijava.main.MainService;
 import org.scijava.menu.MenuService;
@@ -238,6 +239,13 @@ public interface Gateway extends RichPlugin, Disposable {
 	 */
 	IOService io();
 
+	/**
+	 * Gets this application context's {@link LocationService}.
+	 * 
+	 * @return The {@link LocationService} of this application context.
+	 */
+	LocationService location();
+	
 	/**
 	 * Gets this application context's {@link LogService}.
 	 *
