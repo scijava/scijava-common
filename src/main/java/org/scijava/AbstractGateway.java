@@ -42,6 +42,7 @@ import org.scijava.event.EventService;
 import org.scijava.input.InputService;
 import org.scijava.io.IOService;
 import org.scijava.io.RecentFileService;
+import org.scijava.io.location.LocationService;
 import org.scijava.log.LogService;
 import org.scijava.main.MainService;
 import org.scijava.menu.MenuService;
@@ -189,6 +190,11 @@ public abstract class AbstractGateway extends AbstractRichPlugin implements
 	@Override
 	public IOService io() {
 		return get(IOService.class);
+	}
+	
+	@Override
+	public LocationService location() {
+		return get(LocationService.class);
 	}
 
 	@Override
