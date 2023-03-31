@@ -44,7 +44,7 @@ import org.scijava.plugin.Plugin;
 @Plugin(type = ConsoleArgument.class)
 public class SystemPropertyArgument extends AbstractConsoleArgument {
 
-	private static final String SYS_PROP_REGEX = "-D([\\w\\._-]+)(=(.*))?";
+	private static final String SYS_PROP_REGEX = "-D([^=]+)(=(.*))?";
 	private static final Pattern SYS_PROP_PAT = Pattern.compile(SYS_PROP_REGEX);
 
 	// -- Constructor --
