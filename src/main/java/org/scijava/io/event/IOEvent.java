@@ -29,9 +29,12 @@
 
 package org.scijava.io.event;
 
+import java.net.URISyntaxException;
+
 import org.scijava.event.SciJavaEvent;
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
+import org.scijava.io.location.LocationService;
 
 /**
  * An event indicating that I/O (e.g., opening or saving) has occurred.
@@ -43,6 +46,10 @@ public abstract class IOEvent extends SciJavaEvent {
 	/** The data location (source or destination). */
 	private final Location location;
 
+	/** @deprecated use {@link #location} instead */
+	@Deprecated
+	private final String descriptor;
+
 	/** The data for which I/O took place. */
 	private final Object data;
 
@@ -51,17 +58,26 @@ public abstract class IOEvent extends SciJavaEvent {
 	 */
 	@Deprecated
 	public IOEvent(final String descriptor, final Object data) {
-		this(new FileLocation(descriptor), data);
+		this.location = null;
+		this.descriptor = descriptor;
+		this.data = data;
 	}
 
 	public IOEvent(final Location location, final Object data) {
 		this.location = location;
+		this.descriptor = null;
 		this.data = data;
 	}
 
 	/** Gets the data location (source or destination). */
 	public Location getLocation() {
-		return location;
+		if (location != null) return location;
+		try {
+			return context().service(LocationService.class).resolve(descriptor);
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 	/** Gets the data for which I/O took place. */
@@ -82,12 +98,11 @@ public abstract class IOEvent extends SciJavaEvent {
 	 */
 	@Deprecated
 	public String getDescriptor() {
-		try {
-			FileLocation fileLocation = (FileLocation) getLocation();
+		if (descriptor != null) return descriptor;
+		if (location instanceof FileLocation) {
+			final FileLocation fileLocation = (FileLocation) location;
 			return fileLocation.getFile().getAbsolutePath();
-		} catch(ClassCastException e) {
-			return getLocation().getURI().toString();
 		}
+		return location.getURI().toString();
 	}
-
 }

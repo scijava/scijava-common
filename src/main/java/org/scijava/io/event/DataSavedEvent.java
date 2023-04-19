@@ -49,7 +49,7 @@ public class DataSavedEvent extends IOEvent {
 	 */
 	@Deprecated
 	public DataSavedEvent(final String destination, final Object data) {
-		this(new FileLocation(destination), data);
+		super(destination, data);
 	}
 
 	/**
@@ -57,11 +57,6 @@ public class DataSavedEvent extends IOEvent {
 	 */
 	@Deprecated
 	public String getDestination() {
-		try {
-			FileLocation fileLocation = (FileLocation) getLocation();
-			return fileLocation.getFile().getAbsolutePath();
-		} catch(ClassCastException e) {
-			return getLocation().getURI().toString();
-		}
+		return getDescriptor();
 	}
 }

@@ -30,9 +30,11 @@
 package org.scijava.io;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
+import org.scijava.io.location.LocationService;
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
@@ -51,7 +53,12 @@ public interface TypedIOService<D> extends HandlerService<Location, IOPlugin<D>>
 	 * location.
 	 */
 	default IOPlugin<D> getOpener(final String source) {
-		return getOpener(new FileLocation(source));
+		try {
+			return getOpener(context().service(LocationService.class).resolve(source));
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 	/**
@@ -70,7 +77,12 @@ public interface TypedIOService<D> extends HandlerService<Location, IOPlugin<D>>
 	 * location.
 	 */
 	default IOPlugin<D> getSaver(final D data, final String destination) {
-		return getSaver(data, new FileLocation(destination));
+		try {
+			return getSaver(data, context().service(LocationService.class).resolve(destination));
+		}
+		catch (final URISyntaxException exc) {
+			return null;
+		}
 	}
 
 	/**

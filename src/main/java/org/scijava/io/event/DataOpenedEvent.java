@@ -49,7 +49,7 @@ public class DataOpenedEvent extends IOEvent {
 	 */
 	@Deprecated
 	public DataOpenedEvent(final String source, final Object data) {
-		this(new FileLocation(source), data);
+		super(source, data);
 	}
 
 	/**
@@ -57,12 +57,6 @@ public class DataOpenedEvent extends IOEvent {
 	 */
 	@Deprecated
 	public String getSource() {
-		try {
-			FileLocation fileLocation = (FileLocation) getLocation();
-			return fileLocation.getFile().getAbsolutePath();
-		} catch(ClassCastException e) {
-			return getLocation().getURI().toString();
-		}
+		return getDescriptor();
 	}
-
 }
