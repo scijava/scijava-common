@@ -39,6 +39,7 @@ import org.scijava.app.StatusService;
 import org.scijava.event.EventService;
 import org.scijava.log.LogService;
 import org.scijava.module.event.ModuleCanceledEvent;
+import org.scijava.module.event.ModuleErroredEvent;
 import org.scijava.module.event.ModuleExecutedEvent;
 import org.scijava.module.event.ModuleExecutingEvent;
 import org.scijava.module.event.ModuleFinishedEvent;
@@ -144,36 +145,42 @@ public class ModuleRunner extends AbstractContextual implements
 
 		final String title = module.getInfo().getTitle();
 
-		// announce start of execution process
-		if (ss != null) ss.showStatus("Running command: " + title);
-		if (es != null) es.publish(new ModuleStartedEvent(module));
+		try {
+			// announce start of execution process
+			if (ss != null) ss.showStatus("Running command: " + title);
+			if (es != null) es.publish(new ModuleStartedEvent(module));
 
-		// execute preprocessors
-		final ModulePreprocessor canceler = preProcess();
-		if (canceler != null) {
-			// module execution was canceled by preprocessor
-			final String reason = canceler.getCancelReason();
-			cancel(reason);
-			cleanupAndBroadcastCancelation(title, reason);
-			return;
+			// execute preprocessors
+			final ModulePreprocessor canceler = preProcess();
+			if (canceler != null) {
+				// module execution was canceled by preprocessor
+				final String reason = canceler.getCancelReason();
+				cancel(reason);
+				cleanupAndBroadcastCancelation(title, reason);
+				return;
+			}
+
+			// execute module
+			if (es != null) es.publish(new ModuleExecutingEvent(module));
+			module.run();
+			if (isCanceled()) {
+				// module execution was canceled by the module itself
+				cleanupAndBroadcastCancelation(title, getCancelReason());
+				return;
+			}
+			if (es != null) es.publish(new ModuleExecutedEvent(module));
+
+			// execute postprocessors
+			postProcess();
+
+			// announce completion of execution process
+			if (es != null) es.publish(new ModuleFinishedEvent(module));
+			if (ss != null) ss.showStatus("Command finished: " + title);
 		}
-
-		// execute module
-		if (es != null) es.publish(new ModuleExecutingEvent(module));
-		module.run();
-		if (isCanceled()) {
-			// module execution was canceled by the module itself
-			cleanupAndBroadcastCancelation(title, getCancelReason());
-			return;
+		catch (final Throwable t) {
+			cleanupAndBroadcastException(title, t);
+			throw t;
 		}
-		if (es != null) es.publish(new ModuleExecutedEvent(module));
-
-		// execute postprocessors
-		postProcess();
-
-		// announce completion of execution process
-		if (es != null) es.publish(new ModuleFinishedEvent(module));
-		if (ss != null) ss.showStatus("Command finished: " + title);
 	}
 
 	// -- Helper methods --
@@ -187,6 +194,16 @@ public class ModuleRunner extends AbstractContextual implements
 		if (ss != null) {
 			ss.showStatus("Command canceled: " + title);
 			if (reason != null) ss.warn(reason);
+		}
+	}
+
+	private void cleanupAndBroadcastException(final String title,
+		final Throwable t)
+	{
+		if (es != null) es.publish(new ModuleErroredEvent(module, t));
+		if (ss != null) {
+			ss.showStatus("Module errored: " + title);
+			if (t != null) ss.warn(t.getMessage());
 		}
 	}
 
