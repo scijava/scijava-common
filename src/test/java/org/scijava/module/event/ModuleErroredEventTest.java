@@ -29,8 +29,9 @@
 
 package org.scijava.module.event;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +49,7 @@ import org.scijava.module.ModuleService;
  * Tests {@link ModuleErroredEvent} behavior.
  *
  * @author Gabriel Selzer
+ * @author Curtis Rueden
  */
 public class ModuleErroredEventTest {
 
@@ -65,14 +67,14 @@ public class ModuleErroredEventTest {
 	public void testModuleErroredEvent() {
 
 		// Must be a final boolean array to be included in the below closure
-		final boolean[] caughtException = { false };
+		final Throwable[] caughtException = { null };
 
 		// Add a new EventHandler to change our state
 		final Object interestedParty = new Object() {
 
 			@EventHandler
 			void onEvent(final ModuleErroredEvent e) {
-				caughtException[0] = true;
+				caughtException[0] = e.getException();
 			}
 		};
 		es.subscribe(interestedParty);
@@ -80,7 +82,8 @@ public class ModuleErroredEventTest {
 		// Run the module, ensure we get the exception
 		assertThrows(Exception.class, //
 			() -> module.run(new TestModuleInfo(), false).get());
-		assertTrue(caughtException[0]);
+		assertNotNull(caughtException[0]);
+		assertEquals("Yay!", caughtException[0].getMessage());
 	}
 
 	static class TestModuleInfo extends AbstractModuleInfo {
