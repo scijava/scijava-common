@@ -98,6 +98,12 @@ public class Context implements Disposable, AutoCloseable {
 	private boolean strict;
 
 	/**
+	 * False if the context is currently active; true if the context
+	 * has already been disposed, or is in the process of being disposed.
+	 */
+	private boolean disposed;
+
+	/**
 	 * Creates a new SciJava application context with all available services.
 	 *
 	 * @see #Context(Collection, PluginIndex, boolean)
@@ -418,16 +424,8 @@ public class Context implements Disposable, AutoCloseable {
 
 	@Override
 	public void dispose() {
-		final EventService eventService = getService(EventService.class);
-		if (eventService != null) eventService.publish(new ContextDisposingEvent());
-
-		// NB: Dispose services in reverse order.
-		// This may or may not actually be necessary, but seems safer, since
-		// dependent services will be disposed *before* their dependencies.
-		final List<Service> services = serviceIndex.getAll();
-		for (int s = services.size() - 1; s >= 0; s--) {
-			services.get(s).dispose();
-		}
+		if (disposed) return;
+		doDispose(true);
 	}
 
 	// -- AutoCloseable methods --
@@ -578,6 +576,23 @@ public class Context implements Disposable, AutoCloseable {
 				"ClassLoader was not a URLClassLoader. Could not print classpath.");
 		}
 		return msg.toString();
+	}
+
+	private synchronized void doDispose(final boolean announce) {
+		if (disposed) return;
+		disposed = true;
+		if (announce) {
+			final EventService eventService = getService(EventService.class);
+			if (eventService != null) eventService.publish(new ContextDisposingEvent());
+		}
+
+		// NB: Dispose services in reverse order.
+		// This may or may not actually be necessary, but seems safer, since
+		// dependent services will be disposed *before* their dependencies.
+		final List<Service> services = serviceIndex.getAll();
+		for (int s = services.size() - 1; s >= 0; s--) {
+			services.get(s).dispose();
+		}
 	}
 
 	private static PluginIndex plugins(final boolean empty) {
