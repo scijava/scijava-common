@@ -173,7 +173,14 @@ public final class DefaultThreadService extends AbstractService implements
 	@Override
 	public Thread newThread(final Runnable r) {
 		final String threadName = contextThreadPrefix() + nextThread++;
-		return new Thread(r, threadName);
+		final Thread thread = new Thread(r, threadName);
+		// NB: Use daemon threads for the thread pool, so that idling threads do
+		// not prevent the JVM shutdown sequence from starting. The application
+		// context, and therefore the thread service, will try to dispose itself
+		// upon JVM shutdown, which will invoke executor.shutdown(), so there
+		// will be a chance for these threads to complete any pending work.
+		thread.setDaemon(true);
+		return thread;
 	}
 
 	// -- Helper methods --

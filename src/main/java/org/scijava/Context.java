@@ -290,6 +290,9 @@ public class Context implements Disposable, AutoCloseable {
 				new ServiceHelper(this, serviceClasses, strict);
 			serviceHelper.loadServices();
 		}
+
+		// If JVM shuts down with context still active, clean up after ourselves.
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> doDispose(false)));
 	}
 
 	// -- Context methods --
