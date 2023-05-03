@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -57,6 +58,8 @@ public final class DefaultThreadService extends AbstractService implements
 {
 
 	private static final String SCIJAVA_THREAD_PREFIX = "SciJava-";
+
+	private static final long SHUTDOWN_TIMEOUT = 5000;
 
 	private static WeakHashMap<Thread, Thread> parents =
 		new WeakHashMap<>();
@@ -159,11 +162,23 @@ public final class DefaultThreadService extends AbstractService implements
 		disposed = true;
 		if (executor != null) {
 			executor.shutdown();
+			try {
+				executor.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
+			}
+			catch (final InterruptedException exc) {
+				log.debug(exc);
+			}
 			executor = null;
 		}
 		if (queues != null) {
 			for (final ExecutorService queue : queues.values()) {
 				queue.shutdown();
+				try {
+					queue.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.MILLISECONDS);
+				}
+				catch (final InterruptedException exc) {
+					log.debug(exc);
+				}
 			}
 		}
 	}
