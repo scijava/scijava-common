@@ -202,7 +202,7 @@ public class ModuleRunner extends AbstractContextual implements
 	{
 		if (es != null) es.publish(new ModuleErroredEvent(module, t));
 		if (ss != null) {
-			ss.showStatus("Module errored: " + title);
+			ss.showStatus("Command errored: " + title);
 			if (t != null) ss.warn(t.getMessage());
 		}
 	}
