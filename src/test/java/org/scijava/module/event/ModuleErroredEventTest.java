@@ -68,13 +68,14 @@ public class ModuleErroredEventTest {
 		final boolean[] caughtException = { false };
 
 		// Add a new EventHandler to change our state
-		es.subscribe(new Object() {
+		final Object interestedParty = new Object() {
 
 			@EventHandler
 			void onEvent(final ModuleErroredEvent e) {
 				caughtException[0] = true;
 			}
-		});
+		};
+		es.subscribe(interestedParty);
 
 		// Run the module, ensure we get the exception
 		assertThrows(Exception.class, //
