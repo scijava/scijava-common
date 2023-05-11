@@ -201,10 +201,7 @@ public class ModuleRunner extends AbstractContextual implements
 		final Throwable t)
 	{
 		if (es != null) es.publish(new ModuleErroredEvent(module, t));
-		if (ss != null) {
-			ss.showStatus("Command errored: " + title);
-			if (t != null) ss.warn(t.getMessage());
-		}
+		if (log != null) log.error("Command errored: " + title, t);
 	}
 
 	private boolean isCanceled() {
