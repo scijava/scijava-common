@@ -200,8 +200,12 @@ public class ModuleRunner extends AbstractContextual implements
 	private void cleanupAndBroadcastException(final String title,
 		final Throwable t)
 	{
-		if (es != null) es.publish(new ModuleErroredEvent(module, t));
-		if (log != null) log.error("Command errored: " + title, t);
+		final ModuleErroredEvent evt = new ModuleErroredEvent(module, t);
+		if (es != null) es.publish(evt);
+		if (log != null && !evt.isConsumed()) {
+			// Nothing else handled the error, so log it.
+			log.error("Command errored: " + title, t);
+		}
 	}
 
 	private boolean isCanceled() {
