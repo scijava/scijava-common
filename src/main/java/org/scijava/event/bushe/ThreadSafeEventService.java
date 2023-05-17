@@ -38,20 +38,23 @@ import org.scijava.event.bushe.Logger.Level;
 /**
  * A thread-safe EventService implementation.
  * <h2>Multithreading</h2> 
- * <p/>
+ * <p>
  * This implementation is <b>not Swing thread-safe</b>.  If publication occurs on a thread other than the Swing
  * EventDispatchThread, subscribers will receive the event on the calling thread, and not the EDT.  Swing components
  * should use the SwingEventService instead, which is the implementation used by the EventBus.
- * <p/>
+ * </p>
+ * <p>
  * Two threads may be accessing the ThreadSafeEventService at the same time, one unsubscribing a
  * listener for topic "A" and the other publishing on topic "A".  If the unsubscribing thread gets the lock first,
  * then it is unsubscribed, end of story.  If the publisher gets the lock first, then a snapshot copy of the current
  * subscribers is made during the publication, the lock is released and the subscribers are called.  Between the time
  * the lock is released and the time that the listener is called, the unsubscribing thread can unsubscribe, resulting
  * in an unsubscribed object receiving notification of the event after it was unsubscribed (but just once).
- * <p/>
+ * </p>
+ * <p>
  * On event publication, subscribers are called in the order in which they subscribed.
- * <p/>
+ * </p>
+ * <p>
  * Events and/or topic data can be cached, but are not by default.  To cache events or topic data, call
  * {@link #setDefaultCacheSizePerClassOrTopic(int)}, {@link #setCacheSizeForEventClass(Class, int)}, or
  * {@link #setCacheSizeForTopic(String, int)}, {@link #setCacheSizeForTopic(Pattern, int)}.  Retrieve cached values
@@ -61,29 +64,33 @@ import org.scijava.event.bushe.Logger.Level;
  * Swing applications since both happen on the EDT in a single-threaded manner). In multithreaded applications, you
  * never know if your subscriber has handled an event while it was being subscribed (before the subscribe() method
  * returned) that is newer or older than the retrieved cached value (taken before or after subscribe() respectively).
- * <p/>
+ * </p>
+ * <p>
  * To deal with subscribers that take too long (a concern in Swing applications), the EventService can be made to issue
  * {@link SubscriberTimingEvent}s when subscribers exceed a certain time.  This does not interrupt subscriber processing
  * and is published after the subscriber finishes.  The service can log a warning for SubscriberTimingEvents, see the
  * constructor {@link ThreadSafeEventService (long, boolean)}.  The timing is checked for veto subscribers too.
- * <p/>
+ * </p>
  * <h2>Logging</h2> 
- * <p/>                       
+ * <p>
  * All logging goes through the {@link Logger}.  The Logger is configurable and supports multiple logging systems.
- * <p/>
+ * </p>
+ * <p>
  * Exceptions are logged by default, override {@link #handleException(String,Object,String,Object,Throwable,
  * StackTraceElement[],String)} to handleException exceptions in another way.  Each call to a subscriber is wrapped in
  * a try block to ensure one listener does not interfere with another.
- * <p/>
+ * </p>
  * <h2>Cleanup of Stale WeakReferences and Stale Annotation Proxies</h2> 
- * <p/>
+ * <p>
  * The EventService may need to clean up stale WeakReferences and ProxySubscribers created for EventBus annotations.  (Aside: EventBus 
  * Annotations are handled by the creation of proxies to the annotated objects.  Since the annotations create weak references 
  * by default, annotation proxies must held strongly by the EventService, otherwise the proxy is garbage collected.)  When 
  * a WeakReference's referent or an ProxySubscriber's proxiedObject (the annotated object) is claimed by the garbage collector, 
  * the EventService still holds onto the actual WeakReference or ProxySubscriber subscribed to the EventService (which are pretty tiny).  
- * <p/>
+ * </p>
+ * <p>
  * There are two ways that these stale WeakReferences and ProxySubscribers are cleaned up.  
+ * </p>
  * <ol>
  * <li>On every publish, subscribe and unsubscribe, every subscriber and veto subscriber to a class or topic is checked to see 
  * if it is a stale WeakReference or a stale ProxySubscriber (one whose getProxySubscriber() returns null).  If the subscriber 
@@ -95,6 +102,7 @@ import org.scijava.event.bushe.Logger.Level;
  * of the cleanup thread follows.
  * </ol>
  * <h3>The Cleanup Thread</h3>
+ * <p>
  * If a topic or class is never published to again, WeakReferences and ProxySubscribers can be left behind if they 
  * are not cleaned up.  To prevent loitering stale subscribers, the ThreadSafeEventService may periodically run through 
  * all the EventSubscribers and VetoSubscribers for all topics and classes and clean up stale proxies.  Proxies for 
@@ -103,33 +111,38 @@ import org.scijava.event.bushe.Logger.Level;
  * one caveat: If getProxiedSubscriber() returns null, even for a ProxySubscriber with a STRONG reference strength, that proxy 
  * is cleaned up as it is assumed it is stale or just wrong.  This would not occur normally in EventBus usage, but only 
  * if someone is implementing their own custom ProxySubscriber and/or AnnotationProcessor.)
- * <p/>
+ * </p>
+ * <p>
  * Cleanup is pretty rare in general.  Not only are stale subscribers cleaned up with regular usage, stale 
  * subscribers on abandoned topics and classes do not take up a lot of memory, hence, they are allowed to build up to a certain degree.
  * Cleanup does not occur until the number of WeakReferences and SubscriptionsProxy's with WeakReference strength
  * subscribed to an EventService for all the EventService's subscriptions in total exceed the <tt>cleanupStartThreshhold</tt>, 
  * which is set to <tt>CLEANUP_START_THRESHOLD_DEFAULT</tt> (500) by default.  The default is overridable in the constructor 
  * or via #setCleanupStartThreshhold(Integer).  If set to null, cleanup will never start.  
- * <p/>
+ * </p>
+ * <p>
  * Once the cleanup start threshold is exceeded, a <tt>java.util.Timer</tt> is started to clean up stale subscribers periodically 
  * in another thread.  The timer will fire every <tt>cleanupPeriodMS</tt> milliseconds, which is set to the 
  * <tt>CLEANUP_PERIOD_MS_DEFAULT<tt> (20 minutes) by default.  The default is overridable in the constructor or 
  * via #setCleanupPeriodMS(Integer).  If set to null, cleanup will not start.  This is implemented with a <tt>java.util.Timer</tt>,
  * so Timer's warnings apply - setting this too low will cause cleanups to bunch up and hog the cleanup thread.
- * <p/>
+ * </p>
+ * <p>
  * After a cleanup cycle completes, if the number of stale subscribers falls at or below the <tt>cleanupStopThreshhold</tt> 
  * cleanup stops until the <tt>cleanupStartThreshhold</tt> is exceeded again. The <tt>cleanupStopThreshhold</tt> is set 
  * to <tt>CLEANUP_STOP_THRESHOLD_DEFAULT</tt> (100) by default.  The default is overridable in the constructor or via 
  * #setCleanupStopThreshhold(Integer).  If set to null or 0, cleanup will not stop if it is ever started.  
- * <p/>
+ * </p>
+ * <p>
  * All cleanup parameters are tunable "live" and checked after each subscription and after each cleanup cycle.
  * To make cleanup never run, set cleanupStartThreshhold to Integer.MAX_VALUE and cleanupPeriodMS to null.
  * To get cleanup to run continuously, set set cleanupStartThreshhold to 0 and cleanupPeriodMS to some reasonable value,
  * perhaps 1000 (1 second) or so (not recommended, cleanup is conducted with regular usage and the cleanup thread is
  * rarely created or invoked).
- * <p/>
+ * </p>
+ * <p>
  * Cleanup is not run in a daemon thread, and thus will not stop the JVM from exiting.
- * <p/>
+ * </p>
  * 
  * @author Michael Bushe michael@bushe.com
  * @todo (param) a JMS-like selector (can be done in base classes by implements like a commons filter
@@ -557,8 +570,9 @@ public class ThreadSafeEventService implements EventService {
     * All subscribe methods call this method, including veto subscriptions.  
     * Extending classes only have to override this method to subscribe all
     * subscriber subscriptions.
-    * <p/>
+    * <p>
     * Overriding this method is only for the adventurous.  This basically gives you just enough rope to hang yourself.
+    * </p>
     *
     * @param classTopicOrPatternWrapper the topic String, event Class, or PatternWrapper to subscribe to
     * @param subscriberMap the internal map of subscribers to use (by topic or class)
@@ -1066,8 +1080,9 @@ public class ThreadSafeEventService implements EventService {
    /**
     * Adds an event to the event cache, if appropriate.  This method is called just before publication to listeners,
     * after the event passes any veto listeners.
-    * <p/>
+    * <p>
     * Using protected visibility to open the caching to other implementations.
+    * </p>
     *
     * @param event the event about to be published, null if topic is non-null
     * @param topic the topic about to be published to, null if the event is non-null
@@ -1595,13 +1610,15 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Sets the default cache size for each kind of event, default is 0 (no caching).
-    * <p/>
+    * <p>
     * If this value is set to a positive number, then when an event is published, the EventService caches the event or
     * topic payload data for later retrieval.  This allows subscribers to find out what has most recently happened
     * before they subscribed.  The cached event(s) are returned from #getLastEvent(Class), #getLastTopicData(String),
     * #getCachedEvents(Class), or #getCachedTopicData(String)
-    * <p/>
+    * </p>
+    * <p>
     * The default can be overridden on a by-event-class or by-topic basis.
+    * </p>
     *
     * @param defaultCacheSizePerClassOrTopic
     */
@@ -1620,17 +1637,20 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Set the number of events cached for a particular class of event.  By default, no events are cached.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Class hierarchy semantics are respected.  That is, if there are three events, A, X and Y, and X and Y are both
     * derived from A, then setting the cache size for A applies the cache size for all three.  Setting the cache size
     * for X applies to X and leaves the settings for A and Y in tact.  Interfaces can be passed to this method, but they
     * only take effect if the cache size of a class or it's superclasses has been set. Just like Class.getInterfaces(),
     * if multiple cache sizes are set, the interface names declared earliest in the implements clause of the eventClass
     * takes effect.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for an event is not adjusted until the next event of that class is published.
+    * </p>
     *
     * @param eventClass the class of event
     * @param cacheSize the number of published events to cache for this event
@@ -1647,9 +1667,10 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Returns the number of events cached for a particular class of event.  By default, no events are cached.
-    * <p/>
+    * <p>
     * This result is computed for a particular class from the values passed to #setCacheSizeForEventClass(Class, int),
     * and respects the class hierarchy.
+    * </p>
     *
     * @param eventClass the class of event
     *
@@ -1706,12 +1727,15 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Set the number of published data objects cached for a particular event topic.  By default, no caching is done.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Settings for exact topic names take precedence over pattern matching.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for a topic is not adjusted until the next publication on that topic.
+    * </p>
     *
     * @param topicName the topic name
     * @param cacheSize the number of published data Objects to cache for this topic
@@ -1728,13 +1752,16 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Set the number of published data objects cached for topics matching a pattern.  By default, caching is done.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Settings for exact topic names take precedence over pattern matching.  If a topic matches the cache settings for
     * more than one pattern, the cache size chosen is an undetermined one from one of the matched pattern settings.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for a topic is not adjusted until the next publication on that topic.
+    * </p>
     *
     * @param pattern the pattern matching topic names
     * @param cacheSize the number of data Objects to cache for this topic
@@ -1752,9 +1779,10 @@ public class ThreadSafeEventService implements EventService {
 
    /**
     * Returns the number of cached data objects published on a particular topic.  By default, no caching is performed.
-    * <p/>
+    * <p>
     * This result is computed for a particular topic from the values passed to #setCacheSizeForTopic(String, int) and
     * #setCacheSizeForTopic(Pattern, int).
+    * </p>
     *
     * @param topic the topic name
     *
@@ -1971,17 +1999,19 @@ public class ThreadSafeEventService implements EventService {
    /**
     * Unsubscribe a subscriber if it is a stale ProxySubscriber. Used during subscribe() and
     * in the cleanup Timer.  See the class javadoc.
-    * <p/>
+    * <p>
     * Not private since I don't claim I'm smart enough to anticipate all needs, but I
     * am smart enough to doc the rules you must follow to override this method.  Those
     * rules may change (changes will be doc'ed), override at your own risk.
-    * <p/>
+    * </p>
+    * <p>
     * Overriders MUST call iterator.remove() to unsubscribe the proxy if the subscriber is
     * a ProxySubscriber and is stale and should be cleaned up.  If the ProxySubscriber
     * is unsubscribed, then implementers MUST also call proxyUnsubscribed() on the subscriber.
     * Overriders MUST also remove the proxy from the weakProxySubscriber list by calling
     * removeStaleProxyFromList.  Method assumes caller is holding the listenerList 
     * lock (else how can you pass the iterator?).
+    * </p>
     * @param iterator current iterator
     * @param existingSubscriber the current value of the iterator
     * @return the real value of the param, or the proxied subscriber of the param if 

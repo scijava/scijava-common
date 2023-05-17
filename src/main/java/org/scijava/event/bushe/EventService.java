@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 /**
  * The core interface.  An EventService provides publish/subscribe services to a single JVM using Class-based and
  * String-based (i.e. "topic") publications and subscriptions.
- * <p/>
+ * <p>
  * In class-based pub/sub, {@link EventSubscriber}s subscribe to a type on an {@link EventService}, such
  * as the {@link org.scijava.event.bushe.EventBus}, by providing a class, interface or generic type.  The EventService
  * notifies subscribers when objects are published on the EventService with a matching type.  Full class semantics are
@@ -32,14 +32,17 @@ import java.lang.reflect.Type;
  * subscribe "exactly" using  {@link #subscribeExactly(Class, EventSubscriber)} so that they are notified only if an
  * object of the exact class is published (and will not be notified if subclasses are published, since this would not
  * be "exact")
- * <p/>
+ * </p>
+ * <p>
  * In topic-based pub/sub, an object "payload" is published on a topic name (String).  {@link EventTopicSubscriber}s subscribe
  * to either the exact name of the topic or they may subscribe using a Regular Expression that is used to match topic
  * names.
- * <p/>
+ * </p>
+ * <p>
  * See the <a href="../../../../overview-summary.html#overview_description">overview</a> for an general introduction
  * and <a href="package-summary.html">package documentation</a> for usage details and examples.
- * <p/>
+ * </p>
+ * <p>
  * A single subscriber cannot subscribe more than once to an event or topic name.  EventService implementations should
  * handle double-subscription requests by returning false on subscribe().  A single EventSubscriber can subscribe to more
  * than one event class, and a single EventTopicSubscriber can subscribe to more than one topic name or pattern. A
@@ -50,15 +53,18 @@ import java.lang.reflect.Type;
  * subclasses using subscribe() and again to a class of the same type using subscribeExactly(), this is considered two
  * different subscriptions and the subscriber will be called twice for the publication for a single event of the exact
  * type.
- * <p/>
+ * </p>
+ * <p>
  * By default the EventService only holds WeakReferences to subscribers.  If a subscriber has no references to it, then
  * it can be garbage collected.  This avoids memory leaks in exchange for the risk of accidentally adding a listener and
  * have it disappear unexpectedly.  If you want to subscribe a subscriber that will have no other reference to it, then
  * use one of the subscribeStrongly() methods, which will prevent garbage collection.
- * <p/>
+ * </p>
+ * <p>
  * Unless garbage collected, EventSubscribers will remain subscribed until they are passed to one of the unsubscribe()
  * methods with the event class or topic name to which there are subscribed.
- * <p/>
+ * </p>
+ * <p>
  * Subscribers are called in the order in which they are subscribed by default (FIFO), unless subscribers implement
  * {@link Prioritized}.  Those subscribers that implement Prioritized and return a negative priority are moved to the
  * front of the list (the more negative, the more to the front).  Those subscribers that implement Prioritized and return
@@ -71,16 +77,19 @@ import java.lang.reflect.Type;
  * the order of priority, no matter the call or the resulting mix of subscribers.  All ordering rules apply to all
  * types subscribers: class, topic, pattern, veto, etc.  For Swing users, note that FIFO is
  * the opposite of Swing, where event listeners are called in the reverse order of when they were subscribed (FILO).    
- * <p/>
+ * </p>
+ * <p>
  * Publication on a class or topic name can be vetoed by a {@link VetoEventListener}. All VetoEventListeners are checked
  * before any EventSubscribers or EventTopicSubscribers are called. This is unlike the JavaBean's
  * VetoPropertyEventListener which can leave side effects and half-propogated events. VetoEventListeners are subscribed
  * in the same manner as EventSubscribers and EventTopicSubscribers.
- * <p/>
+ * </p>
+ * <p>
  * The state of a published event can be tracked if an event or a topic's payload object implements the
  * {@link org.scijava.event.bushe.PublicationStatus} interface.  EventServices are required to set such objects'
  * {@link org.scijava.event.bushe.PublicationStatus} at the appropriate times during publication.
- * <p/>
+ * </p>
+* <p>
  * This simple example prints "Hello World"
  * <pre>
  * EventService eventService = new ThreadSafeEventService();
@@ -94,7 +103,8 @@ import java.lang.reflect.Type;
  * eventService.publish("Hello", "World");
  * System.out.println(subscriber + " Since the reference is used after it is subscribed, it doesn't get garbage collected, this is not necessary if you use subscribeStrongly()");
  * </pre>
- * <p/>
+ * </p>
+ * <p>
  * Events and/or topic data can be cached, but are not by default.  To cache events or topic data, call
  * {@link #setDefaultCacheSizePerClassOrTopic(int)}, {@link #setCacheSizeForEventClass(Class, int)}, or
  * {@link #setCacheSizeForTopic(String, int)}, {@link #setCacheSizeForTopic(Pattern, int)}.  Retrieve cached values
@@ -104,9 +114,11 @@ import java.lang.reflect.Type;
  * the EDT in a single-threaded manner). In multithreaded applications, you never know if your subscriber has handled
  * an event while it was being subscribed (before the subscribe() method returned) that is newer or older than the
  * retrieved cached value (taken before or after subscribe() respectively).
- * <p/>
+ * </p>
+ * <p>
  * There is nothing special about the term "Event," this could just as easily be called a "Message" Service, this term
  * is already taken by the JMS, which is similar, but is used across processes and networks.
+ * </p>
  *
  * @author Michael Bushe michael@bushe.com
  * @see {@link ThreadSafeEventService} for the default implementation
@@ -139,7 +151,7 @@ interface EventService {
     * trades.add(trade);
     * EventBus.publish(publishingTypeReference.getType(), trades);
     * </pre>
-    * <p>
+    * </p>
     * @param genericType the generified type of the published object.  
     * @param event The event that occurred
     */
@@ -157,20 +169,25 @@ interface EventService {
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type.  Only a <b>WeakReference</b> to
     * the subscriber is held by the EventService.
-    * <p/>
+    * </p>
+    * <p>
     * Subscribing to a class means the subscriber will be called when objects of that class are published, when
     * objects of subclasses of the class are published, when objects implementing any of the interfaces of the
     * class are published, or when generic types are published with the class' raw type.
-    * <p/>
+    * </p>
+    * <p>
     * Subscription is weak by default to avoid having to call unsubscribe(), and to avoid the memory leaks that would
     * occur if unsubscribe was not called.  The service will respect the WeakReference semantics.  In other words, if
     * the subscriber has not been garbage collected, then onEvent(Object) will be called normally.  If the hard
     * reference has been garbage collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same EventSubscriber hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
+    * <p>
     * The service will create the WeakReference on behalf of the caller.
+    * </p>
     *
     * @param eventClass the class of published objects to subscriber listen to
     * @param subscriber The subscriber that will accept the events of the event class when published.
@@ -197,7 +214,7 @@ interface EventService {
    * trades.add(trade);
    * EventBus.publish(publishingTypeReference.getType(), trades);
    * </pre>
-   * <p>
+   * </p>
    * @param type the generic type to subscribe to
    * @param subscriber the subscriber to the type
    * @return true if a new subscription is made, false if it already existed
@@ -207,16 +224,19 @@ interface EventService {
    /**
     * Subscribes an EventSubscriber to the publication of objects exactly matching a type.  Only a <b>WeakReference</b>
     * to the subscriber is held by the EventService.
-    * <p/>
+    * <p>
     * Subscription is weak by default to avoid having to call unsubscribe(), and to avoid the memory leaks that would
     * occur if unsubscribe was not called.  The service will respect the WeakReference semantics.  In other words, if
     * the subscriber has not been garbage collected, then the onEvent will be called normally.  If the hard reference
     * has been garbage collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same EventSubscriber hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
+    * <p>
     * The service will create the WeakReference on behalf of the caller.
+    * </p>
     *
     * @param eventClass the class of published objects to listen to
     * @param subscriber The subscriber that will accept the events when published.
@@ -228,15 +248,16 @@ interface EventService {
    /**
     * Subscribes an EventTopicSubscriber to the publication of a topic name.  Only a <b>WeakReference</b>
     * to the subscriber is held by the EventService.
-    * <p/>
+    * <p>
     * Subscription is weak by default to avoid having to call unsubscribe(), and to avoid the memory leaks that would
     * occur if unsubscribe was not called.  The service will respect the WeakReference semantics.  In other words, if
     * the subscriber has not been garbage collected, then the onEvent will be called normally.  If the hard reference
     * has been garbage collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same EventSubscriber hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
     *
     * @param topic the name of the topic listened to
     * @param subscriber The topic subscriber that will accept the events when published.
@@ -248,15 +269,16 @@ interface EventService {
    /**
     * Subscribes an EventSubscriber to the publication of all the topic names that match a RegEx Pattern.  Only a
     * <b>WeakReference</b> to the subscriber is held by the EventService.
-    * <p/>
+    * <p>
     * Subscription is weak by default to avoid having to call unsubscribe(), and to avoid the memory leaks that would
     * occur if unsubscribe was not called.  The service will respect the WeakReference semantics.  In other words, if
     * the subscriber has not been garbage collected, then the onEvent will be called normally.  If the hard reference
     * has been garbage collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same EventSubscriber hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
     *
     * @param topicPattern pattern that matches to the name of the topic published to
     * @param subscriber The topic subscriber that will accept the events when published.
@@ -267,11 +289,13 @@ interface EventService {
 
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type.
-    * <p/>
+    * <p>
     * The semantics are the same as {@link #subscribe(Class, EventSubscriber)}, except that the EventService holds
     * a regularly reference, not a WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * The subscriber will remain subscribed until {@link #unsubscribe(Class,EventSubscriber)}  is called.
+    * </p>
     *
     * @param eventClass the class of published objects to listen to
     * @param subscriber The subscriber that will accept the events when published.
@@ -282,11 +306,13 @@ interface EventService {
 
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type exactly.
-    * <p/>
+    * <p>
     * The semantics are the same as {@link #subscribeExactly(Class, EventSubscriber)}, except that the EventService
     * holds a regularly reference, not a WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * The subscriber will remain subscribed until {@link #unsubscribe(Class,EventSubscriber)}  is called.
+    * </p>
     *
     * @param eventClass the class of published objects to listen to
     * @param subscriber The subscriber that will accept the events when published.
@@ -297,11 +323,13 @@ interface EventService {
 
    /**
     * Subscribes a subscriber to an event topic name.
-    * <p/>
+    * <p>
     * The semantics are the same as {@link #subscribe(String, EventTopicSubscriber)}, except that the EventService
     * holds a regularly reference, not a WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * The subscriber will remain subscribed until {@link #unsubscribe(String,EventTopicSubscriber)}  is called.
+    * </p>
     *
     * @param topic the name of the topic listened to
     * @param subscriber The topic subscriber that will accept the events when published.
@@ -312,11 +340,13 @@ interface EventService {
 
    /**
     * Subscribes a subscriber to all the event topic names that match a RegEx expression.
-    * <p/>
+    * <p>
     * The semantics are the same as {@link #subscribe(java.util.regex.Pattern, EventTopicSubscriber)}, except that the
     * EventService holds a regularly reference, not a WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * The subscriber will remain subscribed until {@link #unsubscribe(String,EventTopicSubscriber)}  is called.
+    * </p>
     *
     * @param topicPattern the name of the topic listened to
     * @param subscriber The topic subscriber that will accept the events when published.
@@ -368,16 +398,19 @@ interface EventService {
    /**
     * Subscribes a VetoEventListener to publication of event matching a class.  Only a <b>WeakReference</b> to the 
     * VetoEventListener is held by the EventService.
-    * <p/>
+    * <p>
     * Use this method to avoid having to call unsubscribe(), though with care since garbage collection semantics is
     * indeterminate.  The service will respect the WeakReference semantics.  In other words, if the vetoListener has not
     * been garbage collected, then the onEvent will be called normally.  If the hard reference has been garbage
     * collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same VetoEventListener hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
+    * <p>
     * The service will create the WeakReference on behalf of the caller.
+    * </p>
     *
     * @param eventClass the class of published objects that can be vetoed
     * @param vetoListener The VetoEventListener that can determine whether an event is published.
@@ -389,16 +422,19 @@ interface EventService {
    /**
     * Subscribes a VetoEventListener to publication of an exact event class.  Only a <b>WeakReference</b> to the 
     * VetoEventListener is held by the EventService.
-    * <p/>
+    * <p>
     * Use this method to avoid having to call unsubscribe(), though with care since garbage collection semantics is
     * indeterminate.  The service will respect the WeakReference semantics.  In other words, if the vetoListener has not
     * been garbage collected, then the onEvent will be called normally.  If the hard reference has been garbage
     * collected, the service will unsubscribe it's WeakReference.
-    * <p/>
+    * </p>
+    * <p>
     * It's allowable to call unsubscribe() with the same VetoEventListener hard reference to stop a subscription
     * immediately.
-    * <p/>
+    * </p>
+    * <p>
     * The service will create the WeakReference on behalf of the caller.
+    * </p>
     *
     * @param eventClass the class of published objects that can be vetoed
     * @param vetoListener The vetoListener that can determine whether an event is published.
@@ -432,9 +468,10 @@ interface EventService {
    /**
     * Subscribes a VetoEventListener for an event class and its subclasses.  Only a <b>WeakReference</b> to the
     * VetoEventListener is held by the EventService.
-    * <p/>
+    * <p>
     * The VetoEventListener will remain subscribed until {@link #unsubscribeVetoListener(Class,VetoEventListener)} is
     * called.
+    * </p>
     *
     * @param eventClass the class of published objects to listen to
     * @param vetoListener The vetoListener that will accept the events when published.
@@ -445,9 +482,10 @@ interface EventService {
 
    /**
     * Subscribes a VetoEventListener for an event class (but not its subclasses).
-    * <p/>
+    * <p>
     * The VetoEventListener will remain subscribed until {@link #unsubscribeVetoListener(Class,VetoEventListener)} is
     * called.
+    * </p>
     *
     * @param eventClass the class of published objects to listen to
     * @param vetoListener The vetoListener that will accept the events when published.
@@ -458,9 +496,10 @@ interface EventService {
 
    /**
     * Subscribes a VetoEventListener to a topic name.
-    * <p/>
+    * <p>
     * The VetoEventListener will remain subscribed until {@link #unsubscribeVetoListener(String,VetoTopicEventListener)} is
     * called.
+    * </p>
     *
     * @param topic the name of the topic listened to
     * @param vetoListener The topic vetoListener that will accept or reject publication.
@@ -473,9 +512,10 @@ interface EventService {
 
    /**
     * Subscribes a VetoTopicEventListener to a set of topics that match a RegEx expression.
-    * <p/>
+    * <p>
     * The VetoEventListener will remain subscribed until {@link #unsubscribeVetoListener(Pattern,VetoTopicEventListener)} is
     * called.
+    * </p>
     *
     * @param topicPattern the RegEx pattern that matches the name of the topics listened to
     * @param vetoListener The topic vetoListener that will accept or reject publication.
@@ -677,13 +717,15 @@ interface EventService {
 
    /**
     * Sets the default cache size for each kind of event, default is 0 (no caching).
-    * <p/>
+    * <p>
     * If this value is set to a positive number, then when an event is published, the EventService caches the event or
     * topic payload data for later retrieval.  This allows subscribers to find out what has most recently happened
     * before they subscribed.  The cached event(s) are returned from #getLastEvent(Class), #getLastTopicData(String),
     * #getCachedEvents(Class), or #getCachedTopicData(String)
-    * <p/>
+    * </p>
+    * <p>
     * The default can be overridden on a by-event-class or by-topic basis.
+    * </p>
     *
     * @param defaultCacheSizePerClassOrTopic the cache size per event
     */
@@ -697,17 +739,20 @@ interface EventService {
 
    /**
     * Set the number of events cached for a particular class of event.  By default, no events are cached.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Class hierarchy semantics are respected.  That is, if there are three events, A, X and Y, and X and Y are both
     * derived from A, then setting the cache size for A applies the cache size for all three.  Setting the cache size
     * for X applies to X and leaves the settings for A and Y in tact.  Interfaces can be passed to this method, but they
     * only take effect if the cache size of a class or it's superclasses has been set. Just like Class.getInterfaces(),
     * if multiple cache sizes are set, the interface names declared earliest in the implements clause of the eventClass
     * takes effect.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for an event is not adjusted until the next event of that class is published.
+    * </p>
     *
     * @param eventClass the class of event
     * @param cacheSize the number of published events to cache for this event
@@ -716,9 +761,10 @@ interface EventService {
 
    /**
     * Returns the number of events cached for a particular class of event.  By default, no events are cached.
-    * <p/>
+    * <p>
     * This result is computed for a particular class from the values passed to #setCacheSizeForEventClass(Class, int),
     * and respects the class hierarchy.
+    * </p>
     *
     * @param eventClass the class of event
     *
@@ -730,12 +776,15 @@ interface EventService {
 
    /**
     * Set the number of published data objects cached for a particular event topic.  By default, no data are cached.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Exact topic names take precedence over pattern matching.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for a topic is not adjusted until the next publication on that topic.
+    * </p>
     *
     * @param topicName the topic name
     * @param cacheSize the number of published data Objects to cache for this topic
@@ -744,12 +793,15 @@ interface EventService {
 
    /**
     * Set the number of published data objects cached for a topics matching a pattern.  By default, no data are cached.
-    * <p/>
+    * <p>
     * This overrides any setting for the DefaultCacheSizePerClassOrTopic.
-    * <p/>
+    * </p>
+    * <p>
     * Exact topic names take precedence over pattern matching.
-    * <p/>
+    * </p>
+    * <p>
     * The cache for a topic is not adjusted until the next publication on that topic.
+    * </p>
     *
     * @param pattern the pattern matching topic names
     * @param cacheSize the number of data Objects to cache for this topic
@@ -758,9 +810,10 @@ interface EventService {
 
    /**
     * Returns the number of cached data objects published on a particular topic.
-    * <p/>
+    * <p>
     * This result is computed for a particular class from the values passed to #setCacheSizeForEventClass(Class, int),
     * and respects the class hierarchy.
+    * </p>
     *
     * @param topic the topic name
     *
@@ -830,9 +883,10 @@ interface EventService {
 
    /**
     * Stop a subscription for an object that is subscribed with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param eventClass class this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -842,9 +896,10 @@ interface EventService {
 
    /**
     * Stop a subscription for an object that is subscribed exactly with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param eventClass class this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -854,9 +909,10 @@ interface EventService {
 
    /**
     * Stop a subscription for an object that is subscribed to a topic with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param topic the topic this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -867,9 +923,10 @@ interface EventService {
    /**
     * When using annotations, an object may be subscribed by proxy.  This unsubscribe method will unsubscribe an object
     * that is subscribed with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param pattern the RegEx expression this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -879,9 +936,10 @@ interface EventService {
 
    /**
     * Stop a veto subscription for an object that is subscribed with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements VetoSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param eventClass class this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -891,9 +949,10 @@ interface EventService {
 
    /**
     * Stop a veto subscription for an object that is subscribed exactly with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements VetoSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param eventClass class this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -903,9 +962,10 @@ interface EventService {
 
    /**
     * Stop a veto subscription for an object that is subscribed to a topic with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param topic the topic this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy
@@ -916,9 +976,10 @@ interface EventService {
    /**
     * When using annotations, an object may be subscribed by proxy.  This unsubscribe method will unsubscribe an object
     * that is subscribed with a ProxySubscriber.
-    * <p/>
+    * <p>
     * If an object is subscribed by proxy and it implements EventSubscriber, then the normal unsubscribe methods will
     * still unsubscribe the object.
+    * </p>
     *
     * @param pattern the RegEx expression this object is subscribed to by proxy
     * @param subscribedByProxy object subscribed by proxy

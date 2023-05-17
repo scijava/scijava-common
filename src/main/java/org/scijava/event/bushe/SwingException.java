@@ -21,18 +21,21 @@ import java.io.PrintWriter;
 /**
  * Aids in troubleshooting Swing application exceptions or any exception where the caller's stack may not be the
  * exception stack (such as producer-consumer patterns that cross threads).
- * <p/>
+ * <p>
  * Swing exceptions usually occur on the Swing Event Dispatch Thread, and often occur when code puts events on the EDT.
  * This code is often in a non-EDT thread such as a thread that is receiving data from a server.  If the non-EDT threads
  * puts a call on the EDT and that EDT call causes and exception, the stack trace of the exception is lost, and it often
  * difficult or impossible to determine where the non-EDT call came from.
- * <p/>
+ * </p>
+ * <p>
  * This Exception class is used to handle exceptions that occur when events are posted on the Swing EDT or occur on
  * another thread from the Swing EDT. It includes a "swing" call stack to record from where the event occurred, and
  * overrides so that the exception and the swing calling stack print nicely to logs.
- * <p/>
+ * </p>
+ * <p>
  * The swing calling stack is different from the cause of the exception since it is gathered before the exception occurs
  * in a different stack from the cause and used after the exception in a new thread occurs.
+ * </p>
  *
  * @author Michael Bushe michael@bushe.com
  * @todo in SwingUtils, make an invokeLater() method that saves the calling stack and catches all exceptions from a
@@ -66,7 +69,6 @@ class SwingException extends Exception {
 
    /**
     * Preferred constructor.
-    * <p/>
     *
     * @param message The message of exception
     * @param cause The cause of the exception in the same call stack

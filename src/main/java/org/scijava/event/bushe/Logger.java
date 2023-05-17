@@ -7,17 +7,20 @@ import java.util.HashMap;
 
 /**
  * Central Logging class.  Shields code from Logging implementation.
- * <p/>
+ * <p>
  * The EventBus allows operation in two modes - using java.util.logging so that
  * the EventBus can be deployed in its own jar or using any logging system supported
  * by apache commons logging, which of course requires other jars.
- * <p/>
+ * </p>
+ * <p>
  * The EventBus logging uses the names of its classes as the log, primarily
  * "org.scijava.event.bushe.EventService".  This aids in debugging which subscription and publication issues.
- * <p/>
+ * </p>
+ * <p>
  * Implementation note: There are no imports in this class to make things
  * explicit.  There is also no explicit use of classes outside java.util,
  * anything else is used by reflection to avoid NoClassDefFound errors on class load.
+ * </p>
  */
 class Logger {
    private java.util.logging.Logger utilLogger;
