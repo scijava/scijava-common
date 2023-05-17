@@ -59,7 +59,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 	public DefaultEventBus(final ThreadService threadService,
 		final LogService log)
 	{
-		super(200L, false, null, null, null);
+		super(200L, null, null, null);
 		this.threadService = threadService;
 		this.log = log;
 	}

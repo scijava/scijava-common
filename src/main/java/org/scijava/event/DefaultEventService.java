@@ -263,7 +263,7 @@ public class DefaultEventService extends AbstractService implements
 	 * <p>
 	 * Recapitulates some logic from
 	 * {@code org.scijava.event.bushe.BaseProxySubscriber}, because that class
-	 * implements {@link org.scijava.event.bushe.IEventSubscriber} as a raw type,
+	 * implements {@link org.scijava.event.bushe.EventSubscriber} as a raw type,
 	 * which is incompatible with this class implementing SciJava's
 	 * {@link EventSubscriber} as a typed interface; it becomes impossible to
 	 * implement both {@code onEvent(Object)} and {@code onEvent(E)}.

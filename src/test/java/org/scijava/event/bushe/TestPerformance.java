@@ -12,12 +12,12 @@ import java.util.*;
  * For proving performance.
  */
 public class TestPerformance extends TestCase {
-    private IEventSubscriber doNothingSubscriber = new IEventSubscriber() {
+    private EventSubscriber doNothingSubscriber = new EventSubscriber() {
         public void onEvent(Object event) {
         }
     };
 
-    private IEventTopicSubscriber doNothingTopicSubscriber = new IEventTopicSubscriber() {
+    private EventTopicSubscriber doNothingTopicSubscriber = new EventTopicSubscriber() {
         public void onEvent(String topic, Object payload) {
         }
     };

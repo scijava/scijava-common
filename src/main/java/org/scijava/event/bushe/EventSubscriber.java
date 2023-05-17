@@ -1,106 +1,35 @@
+/**
+ * Copyright 2005 Bushe Enterprises, Inc., Hopkinton, MA, USA, www.bushe.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.scijava.event.bushe;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * An Annotation for subscribing to EventService Events.
- * <p>
- * This annotation simplifies much of the repetitive boilerplate used for subscribing to EventService Events.
- * <p>
- * Instead of this:
- * <pre>
- * public class MyAppController implements EventSubscriber {
- *   public MyAppController {
- *      EventBus.subscribe(AppClosingEvent.class, this);
- *   }
- *   public void onEvent(EventServiceEvent event) {
- *      AppClosingEvent appClosingEvent = (AppClosingEvent)event;
- *      //do something
- *   }
- * }
- * </pre>
- * You can do this:
- * <pre>
- * public class MyAppController {  //no interface necessary
- *   public MyAppController {
- *       AnnotationProcessor.process(this);//if not using AOP
- *   }
- *   &#64;EventSubscriber
- *   public void onAppClosingEvent(AppClosingEvent appClosingEvent) {//Use your own method name with typesafety
- *      //do something
- *   }
- * }
- * </pre>
- * <p>
- * That's pretty good, but when the controller does more, annotations are even nicer.
- * <pre>
- * public class MyAppController implements EventSubscriber {
- *   public MyAppController {
- *      EventBus.subscribe(AppStartingEvent.class, this);
- *      EventBus.subscribe(AppClosingEvent.class, this);
- *   }
- *   public void onEvent(EventServiceEvent event) {
- *      //wicked bad pattern, but we have to this
- *      //...or create multiple subscriber classes and hold instances of them fields, which is even more verbose...
- *      if (event instanceof AppStartingEvent) {
- *         onAppStartingEvent((AppStartingEvent)event);
- *      } else (event instanceof AppClosingEvent) {
- *         onAppStartingEvent((AppClosingEvent)event);
- *      }
+ * Callback interface for class-based subscribers of an {@link EventService}.
  *
- *   }
- *
- *   public void onAppStartingEvent(AppStartingEvent appStartingEvent) {
- *      //do something
- *   }
- *
- *   public void onAppClosingEvent(AppClosingEvent appClosingEvent) {
- *      //do something
- *   }
- * }
- * </pre>
- * You can do this:
- * <pre>
- * public class MyAppController {
- *   public MyAppController {
- *       AnnotationProcessor.process(this);//this line can be avoided with a compile-time tool or an Aspect
- *   }
- *   &#64;EventSubscriber(eventClass=AppStartingEvent.class)
- *   public void onAppStartingEvent(AppStartingEvent appStartingEvent) {
- *      //do something
- *   }
- *   &#64;EventSubscriber(eventClass=AppAppClosingEvent.class)
- *   public void onAppClosingEvent(AppClosingEvent appClosingEvent) {
- *      //do something
- *   }
- * }
- * </pre>
- * Brief, clear, and easy.
+ * @author Michael Bushe michael@bushe.com
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@interface EventSubscriber {
-   /** The class to subscribe to, if not specified, a subscription is created for the type of the method parameter. */
-   Class eventClass() default UseTheClassOfTheAnnotatedMethodsParameter.class;
-
-   /** Determines the order in which this subscriber is called, default is FIFO.*/
-   int priority() default 0;
-
-   /** Whether or not to subscribe to the exact class or a class hierarchy, defaults to class hierarchy (false). */
-   boolean exact() default false;
-
-   /** Whether to subscribe weakly or strongly. */
-   ReferenceStrength referenceStrength() default ReferenceStrength.WEAK;
-
-   /** The event service to subscribe to, default to the EventServiceLocator.SERVICE_NAME_EVENT_BUS. */
-   String eventServiceName() default EventServiceLocator.SERVICE_NAME_EVENT_BUS;
+public interface EventSubscriber<T> {
 
    /**
-    * Whether or not to autocreate the event service if it doesn't exist on subscription, default is true. If the
-    * service needs to be created, it must have a default constructor.
+    * Handle a published event. <p>The EventService calls this method on each publication of an object that matches the
+    * class or interface passed to one of the EventService's class-based subscribe methods, specifically, {@link
+    * EventService#subscribe(Class,EventSubscriber)} {@link EventService#subscribeExactly(Class,EventSubscriber)}
+    * {@link EventService#subscribeStrongly(Class,EventSubscriber)} and {@link EventService#subscribeExactlyStrongly(Class,
+    *EventSubscriber)}.
+    *
+    * @param event The Object that is being published.
     */
-   Class<? extends EventService> autoCreateEventServiceClass() default ThreadSafeEventService.class;
+   public void onEvent(T event);
 }

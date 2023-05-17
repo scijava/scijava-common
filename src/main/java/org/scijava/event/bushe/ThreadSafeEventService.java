@@ -181,7 +181,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** Creates a ThreadSafeEventService that does not monitor timing of handlers. */
    public ThreadSafeEventService() {
-      this(null, false, null, null, null);
+      this(null, null, null, null);
    }
 
    /**
@@ -192,21 +192,7 @@ public class ThreadSafeEventService implements EventService {
     * EventSubscriberTimingEvent will be issued.
     */
    public ThreadSafeEventService(Long timeThresholdForEventTimingEventPublication) {
-      this(timeThresholdForEventTimingEventPublication, false, null, null, null);
-   }
-
-   /**
-    * Creates a ThreadSafeEventService while providing time monitoring options.
-    *
-    * @param timeThresholdForEventTimingEventPublication the longest time a subscriber should spend handling an event,
-    * The service will publish an SubscriberTimingEvent after listener processing if the time was exceeded.  If null, no
-    * EventSubscriberTimingEvent will be issued.
-    * @param subscribeTimingEventsInternally add a subscriber to the SubscriberTimingEvent internally and call the
-    * protected subscribeTiming() method when they occur.  This logs a warning to the {@link Logger} by
-    * default.
-    */
-   public ThreadSafeEventService(Long timeThresholdForEventTimingEventPublication, boolean subscribeTimingEventsInternally) {
-      this(timeThresholdForEventTimingEventPublication, subscribeTimingEventsInternally, null, null, null);
+      this(timeThresholdForEventTimingEventPublication, null, null, null);
    }
 
    /**
@@ -219,8 +205,7 @@ public class ThreadSafeEventService implements EventService {
     */
    public ThreadSafeEventService(Integer  cleanupStartThreshold, 
            Integer cleanupStopThreshold, Long cleanupPeriodMS) {
-      this(null, false,  cleanupStartThreshold, 
-           cleanupStopThreshold, cleanupPeriodMS);
+      this(null, cleanupStartThreshold, cleanupStopThreshold, cleanupPeriodMS);
    }
 
    /**
@@ -229,31 +214,13 @@ public class ThreadSafeEventService implements EventService {
     * @param timeThresholdForEventTimingEventPublication the longest time a subscriber should spend handling an event.
     * The service will publish an SubscriberTimingEvent after listener processing if the time was exceeded.  If null, no
     * SubscriberTimingEvent will be issued.
-    * @param subscribeTimingEventsInternally add a subscriber to the SubscriberTimingEvent internally and call the
-    * protected subscribeTiming() method when they occur.  This logs a warning to the {@link Logger} by
-    * default.
     * @param cleanupStartThreshold see class javadoc.
     * @param cleanupStopThreshold see class javadoc.
     * @param cleanupPeriodMS see class javadoc.
-    *
-    * @throws IllegalArgumentException if timeThresholdForEventTimingEventPublication is null and
-    * subscribeTimingEventsInternally is true.
     */
    public ThreadSafeEventService(Long timeThresholdForEventTimingEventPublication,
-           boolean subscribeTimingEventsInternally, Integer  cleanupStartThreshold, 
-           Integer cleanupStopThreshold, Long cleanupPeriodMS) {
-      if (timeThresholdForEventTimingEventPublication == null && subscribeTimingEventsInternally) {
-         throw new IllegalArgumentException("null, true in constructor is not valid.  If you want to send timing messages for all events and subscribe them internally, pass 0, true");
-      }
+           Integer cleanupStartThreshold, Integer cleanupStopThreshold, Long cleanupPeriodMS) {
       this.timeThresholdForEventTimingEventPublication = timeThresholdForEventTimingEventPublication;
-      if (subscribeTimingEventsInternally) {
-         //Listen to timing events and log them
-         subscribeStrongly(SubscriberTimingEvent.class, new IEventSubscriber() {
-            public void onEvent(Object event) {
-               subscribeTiming((SubscriberTimingEvent) event);
-            }
-         });
-      }      
       if (cleanupStartThreshold == null) {
          this.cleanupStartThreshhold = CLEANUP_START_THRESHOLD_DEFAULT;
       } else {
@@ -332,8 +299,8 @@ public class ThreadSafeEventService implements EventService {
       }
    }
 
-   /** @see EventService#subscribe(Class,IEventSubscriber) */
-   public boolean subscribe(Class cl, IEventSubscriber eh) {
+   /** @see EventService#subscribe(Class,EventSubscriber) */
+   public boolean subscribe(Class cl, EventSubscriber eh) {
       if (cl == null) {
          throw new IllegalArgumentException("Event class must not be null");
       }
@@ -343,16 +310,16 @@ public class ThreadSafeEventService implements EventService {
       if (LOG.isLoggable(Level.DEBUG)) {
          LOG.debug("Subscribing by class, class:" + cl + ", subscriber:" + eh);
       }
-      return subscribe(cl, subscribersByEventClass, new WeakReference<IEventSubscriber>(eh));
+      return subscribe(cl, subscribersByEventClass, new WeakReference<EventSubscriber>(eh));
    }
 
-   /** @see EventService#subscribe(java.lang.reflect.Type, IEventSubscriber) */
-   public boolean subscribe(Type type, IEventSubscriber eh) {
-      return subscribe(type, subscribersByEventType, new WeakReference<IEventSubscriber>(eh));
+   /** @see EventService#subscribe(java.lang.reflect.Type, EventSubscriber) */
+   public boolean subscribe(Type type, EventSubscriber eh) {
+      return subscribe(type, subscribersByEventType, new WeakReference<EventSubscriber>(eh));
    }
 
-   /** @see EventService#subscribeExactly(Class,IEventSubscriber) */
-   public boolean subscribeExactly(Class cl, IEventSubscriber eh) {
+   /** @see EventService#subscribeExactly(Class,EventSubscriber) */
+   public boolean subscribeExactly(Class cl, EventSubscriber eh) {
       if (cl == null) {
          throw new IllegalArgumentException("Event class must not be null");
       }
@@ -362,11 +329,11 @@ public class ThreadSafeEventService implements EventService {
       if (LOG.isLoggable(Level.DEBUG)) {
          LOG.debug("Subscribing by class, class:" + cl + ", subscriber:" + eh);
       }
-      return subscribe(cl, subscribersByExactEventClass, new WeakReference<IEventSubscriber>(eh));
+      return subscribe(cl, subscribersByExactEventClass, new WeakReference<EventSubscriber>(eh));
    }
 
-   /** @see EventService#subscribe(String,IEventTopicSubscriber) */
-   public boolean subscribe(String topic, IEventTopicSubscriber eh) {
+   /** @see EventService#subscribe(String,EventTopicSubscriber) */
+   public boolean subscribe(String topic, EventTopicSubscriber eh) {
       if (topic == null) {
          throw new IllegalArgumentException("Topic must not be null");
       }
@@ -376,11 +343,11 @@ public class ThreadSafeEventService implements EventService {
       if (LOG.isLoggable(Level.DEBUG)) {
          LOG.debug("Subscribing by topic name, name:" + topic + ", subscriber:" + eh);
       }
-      return subscribe(topic, subscribersByTopic, new WeakReference<IEventTopicSubscriber>(eh));
+      return subscribe(topic, subscribersByTopic, new WeakReference<EventTopicSubscriber>(eh));
    }
 
-   /** @see EventService#subscribe(Pattern,IEventTopicSubscriber) */
-   public boolean subscribe(Pattern pat, IEventTopicSubscriber eh) {
+   /** @see EventService#subscribe(Pattern,EventTopicSubscriber) */
+   public boolean subscribe(Pattern pat, EventTopicSubscriber eh) {
       if (pat == null) {
          throw new IllegalArgumentException("Pattern must not be null");
       }
@@ -391,11 +358,11 @@ public class ThreadSafeEventService implements EventService {
          LOG.debug("Subscribing by pattern, pattern:" + pat + ", subscriber:" + eh);
       }
       PatternWrapper patternWrapper = new PatternWrapper(pat);
-      return subscribe(patternWrapper, subscribersByTopicPattern, new WeakReference<IEventTopicSubscriber>(eh));
+      return subscribe(patternWrapper, subscribersByTopicPattern, new WeakReference<EventTopicSubscriber>(eh));
    }
 
-   /** @see EventService#subscribeStrongly(Class,IEventSubscriber) */
-   public boolean subscribeStrongly(Class cl, IEventSubscriber eh) {
+   /** @see EventService#subscribeStrongly(Class,EventSubscriber) */
+   public boolean subscribeStrongly(Class cl, EventSubscriber eh) {
       if (LOG.isLoggable(Level.DEBUG)) {
          LOG.debug("Subscribing weakly by class, class:" + cl + ", subscriber:" + eh);
       }
@@ -405,8 +372,8 @@ public class ThreadSafeEventService implements EventService {
       return subscribe(cl, subscribersByEventClass, eh);
    }
 
-   /** @see EventService#subscribeExactlyStrongly(Class,IEventSubscriber) */
-   public boolean subscribeExactlyStrongly(Class cl, IEventSubscriber eh) {
+   /** @see EventService#subscribeExactlyStrongly(Class,EventSubscriber) */
+   public boolean subscribeExactlyStrongly(Class cl, EventSubscriber eh) {
       if (cl == null) {
          throw new IllegalArgumentException("Event class must not be null");
       }
@@ -419,8 +386,8 @@ public class ThreadSafeEventService implements EventService {
       return subscribe(cl, subscribersByExactEventClass, eh);
    }
 
-   /** @see EventService#subscribeStrongly(String,IEventTopicSubscriber) */
-   public boolean subscribeStrongly(String name, IEventTopicSubscriber eh) {
+   /** @see EventService#subscribeStrongly(String,EventTopicSubscriber) */
+   public boolean subscribeStrongly(String name, EventTopicSubscriber eh) {
       if (LOG.isLoggable(Level.DEBUG)) {
          LOG.debug("Subscribing weakly by topic name, name:" + name + ", subscriber:" + eh);
       }
@@ -430,8 +397,8 @@ public class ThreadSafeEventService implements EventService {
       return subscribe(name, subscribersByTopic, eh);
    }
 
-   /** @see EventService#subscribeStrongly(Pattern,IEventTopicSubscriber) */
-   public boolean subscribeStrongly(Pattern pat, IEventTopicSubscriber eh) {
+   /** @see EventService#subscribeStrongly(Pattern,EventTopicSubscriber) */
+   public boolean subscribeStrongly(Pattern pat, EventTopicSubscriber eh) {
       if (pat == null) {
          throw new IllegalArgumentException("Pattern must not be null");
       }
@@ -673,30 +640,30 @@ public class ThreadSafeEventService implements EventService {
       }
    }
 
-   /** @see EventService#unsubscribe(Class,IEventSubscriber) */
-   public boolean unsubscribe(Class cl, IEventSubscriber eh) {
+   /** @see EventService#unsubscribe(Class,EventSubscriber) */
+   public boolean unsubscribe(Class cl, EventSubscriber eh) {
       return unsubscribe(cl, subscribersByEventClass, eh);
    }
 
-   /** @see EventService#unsubscribeExactly(Class,IEventSubscriber) */
-   public boolean unsubscribeExactly(Class cl, IEventSubscriber eh) {
+   /** @see EventService#unsubscribeExactly(Class,EventSubscriber) */
+   public boolean unsubscribeExactly(Class cl, EventSubscriber eh) {
       return unsubscribe(cl, subscribersByExactEventClass, eh);
    }
 
-   /** @see EventService#unsubscribe(String,IEventTopicSubscriber) */
-   public boolean unsubscribe(String name, IEventTopicSubscriber eh) {
+   /** @see EventService#unsubscribe(String,EventTopicSubscriber) */
+   public boolean unsubscribe(String name, EventTopicSubscriber eh) {
       return unsubscribe(name, subscribersByTopic, eh);
    }
 
-   /** @see EventService#unsubscribe(String,IEventTopicSubscriber) */
-   public boolean unsubscribe(Pattern topicPattern, IEventTopicSubscriber eh) {
+   /** @see EventService#unsubscribe(String,EventTopicSubscriber) */
+   public boolean unsubscribe(Pattern topicPattern, EventTopicSubscriber eh) {
       PatternWrapper patternWrapper = new PatternWrapper(topicPattern);
       return unsubscribe(patternWrapper, subscribersByTopicPattern, eh);
    }
 
    /** @see EventService#unsubscribe(Class,Object) */
    public boolean unsubscribe(Class eventClass, Object subscribedByProxy) {
-      IEventSubscriber subscriber = (IEventSubscriber) getProxySubscriber(eventClass, subscribedByProxy);
+      EventSubscriber subscriber = (EventSubscriber) getProxySubscriber(eventClass, subscribedByProxy);
       if (subscriber == null) {
          return false;
       } else {
@@ -706,7 +673,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** @see EventService#unsubscribeExactly(Class,Object) */
    public boolean unsubscribeExactly(Class eventClass, Object subscribedByProxy) {
-      IEventSubscriber subscriber = (IEventSubscriber) getProxySubscriber(eventClass, subscribedByProxy);
+      EventSubscriber subscriber = (EventSubscriber) getProxySubscriber(eventClass, subscribedByProxy);
       if (subscriber == null) {
          return false;
       } else {
@@ -716,7 +683,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** @see EventService#unsubscribe(String,Object) */
    public boolean unsubscribe(String topic, Object subscribedByProxy) {
-      IEventTopicSubscriber subscriber = (IEventTopicSubscriber) getProxySubscriber(topic, subscribedByProxy);
+      EventTopicSubscriber subscriber = (EventTopicSubscriber) getProxySubscriber(topic, subscribedByProxy);
       if (subscriber == null) {
          return false;
       } else {
@@ -726,7 +693,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** @see EventService#unsubscribe(java.util.regex.Pattern,Object) */
    public boolean unsubscribe(Pattern pattern, Object subscribedByProxy) {
-      IEventTopicSubscriber subscriber = (IEventTopicSubscriber) getProxySubscriber(pattern, subscribedByProxy);
+      EventTopicSubscriber subscriber = (EventTopicSubscriber) getProxySubscriber(pattern, subscribedByProxy);
       if (subscriber == null) {
          return false;
       } else {
@@ -963,17 +930,15 @@ public class ThreadSafeEventService implements EventService {
          for (int i = 0; i < subscribers.size(); i++) {
             Object eh = subscribers.get(i);
             if (event != null) {
-               IEventSubscriber eventSubscriber = (IEventSubscriber) eh;
+               EventSubscriber eventSubscriber = (EventSubscriber) eh;
                long start = System.currentTimeMillis();
                try {
                   eventSubscriber.onEvent(event);
-                  checkTimeLimit(start, event, eventSubscriber, null);
                } catch (Throwable e) {
-                  checkTimeLimit(start, event, eventSubscriber, null);
                   handleException(event, e, callingStack, eventSubscriber);
                }
             } else {
-               IEventTopicSubscriber eventTopicSubscriber = (IEventTopicSubscriber) eh;
+               EventTopicSubscriber eventTopicSubscriber = (EventTopicSubscriber) eh;
                try {
                   eventTopicSubscriber.onEvent(topic, eventObj);
                } catch (Throwable e) {
@@ -1077,14 +1042,12 @@ public class ThreadSafeEventService implements EventService {
                }
                if (shouldVeto) {
                   handleVeto(vl, event, vtl, topic, eventObj);
-                  checkTimeLimit(start, event, null, vl);
                   if (LOG.isLoggable(Level.DEBUG)) {
                      LOG.debug("Publication vetoed. Event:" + event + ", Topic:" + topic + ", veto subscriber:" + vl);
                   }
                   return true;
                }
             } catch (Throwable ex) {
-               checkTimeLimit(start, event, null, vl);
                subscribeVetoException(event, topic, eventObj, ex, callingStack, vl);
             }
          }
@@ -1508,20 +1471,6 @@ public class ThreadSafeEventService implements EventService {
 	    } else assert false;
 	}         
           */
-   }
-
-   private void checkTimeLimit(long start, Object event, IEventSubscriber subscriber, VetoEventListener l) {
-      if (timeThresholdForEventTimingEventPublication == null) {
-         return;
-      }
-      long end = System.currentTimeMillis();
-      if (end - start > timeThresholdForEventTimingEventPublication.longValue()) {
-         publish(new SubscriberTimingEvent(this, new Long(start), new Long(end), timeThresholdForEventTimingEventPublication, event, subscriber, l));
-      }
-   }
-
-   protected void subscribeTiming(SubscriberTimingEvent event) {
-      LOG.log(Level.INFO, event + "");
    }
 
    /**
@@ -1989,7 +1938,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** Called during event handling exceptions, calls handleException */
    protected void onEventException(final String topic, final Object eventObj, Throwable e,
-           StackTraceElement[] callingStack, IEventTopicSubscriber eventTopicSubscriber) {
+           StackTraceElement[] callingStack, EventTopicSubscriber eventTopicSubscriber) {
       String str = "EventService topic subscriber:" + eventTopicSubscriber;
       if (eventTopicSubscriber != null) {
          str = str + ".  Subscriber class:" + eventTopicSubscriber.getClass();
@@ -1999,7 +1948,7 @@ public class ThreadSafeEventService implements EventService {
 
    /** Called during event handling exceptions, calls handleException */
    protected void handleException(final Object event, Throwable e,
-           StackTraceElement[] callingStack, IEventSubscriber eventSubscriber) {
+           StackTraceElement[] callingStack, EventSubscriber eventSubscriber) {
       String str = "EventService subscriber:" + eventSubscriber;
       if (eventSubscriber != null) {
          str = str + ".  Subscriber class:" + eventSubscriber.getClass();

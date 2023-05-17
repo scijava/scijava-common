@@ -4,7 +4,7 @@ package org.scijava.event.bushe;
  * @author Michael Bushe
  * @since Nov 19, 2005 11:00:53 PM
  */
-public class TopicSubscriberForTest implements IEventTopicSubscriber {
+public class TopicSubscriberForTest implements EventTopicSubscriber {
    private boolean throwException;
    private Long waitTime;
    private EBTestCounter testDefaultEventService;
