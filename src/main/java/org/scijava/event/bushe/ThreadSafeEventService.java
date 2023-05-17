@@ -122,8 +122,6 @@ import org.scijava.event.bushe.Logger.Level;
  * to <tt>CLEANUP_STOP_THRESHOLD_DEFAULT</tt> (100) by default.  The default is overridable in the constructor or via 
  * #setCleanupStopThreshhold(Integer).  If set to null or 0, cleanup will not stop if it is ever started.  
  * <p/>
- * Cleanup can be monitored by subscribing to the {@link CleanupEvent} class. 
- * <p/>
  * All cleanup parameters are tunable "live" and checked after each subscription and after each cleanup cycle.
  * To make cleanup never run, set cleanupStartThreshhold to Integer.MAX_VALUE and cleanupPeriodMS to null.
  * To get cleanup to run continuously, set set cleanupStartThreshhold to 0 and cleanupPeriodMS to some reasonable value,
@@ -137,7 +135,7 @@ import org.scijava.event.bushe.Logger.Level;
  * @todo (param) a JMS-like selector (can be done in base classes by implements like a commons filter
  * @see EventService for a complete description of the API
  */
-@SuppressWarnings({"unchecked", "ForLoopReplaceableByForEach"})
+@SuppressWarnings({"unchecked"})
 public class ThreadSafeEventService implements EventService {
    public static final Integer CLEANUP_START_THRESHOLD_DEFAULT = 250;
    public static final Integer CLEANUP_STOP_THRESHOLD_DEFAULT = 100;
@@ -2057,17 +2055,14 @@ public class ThreadSafeEventService implements EventService {
       @Override
       public void run() {
          synchronized(listenerLock) {
-            ThreadSafeEventService.this.publish(new CleanupEvent(CleanupEvent.Status.STARTING, weakRefPlusProxySubscriberCount, null));
             if (weakRefPlusProxySubscriberCount <= cleanupStopThreshold) {
                this.cancel();
                cleanupTimer = null;
                cleanupTimerTask = null;
                LOG.debug("Cancelled scheduled weak reference and proxy cleanup.");
-               ThreadSafeEventService.this.publish(new CleanupEvent(CleanupEvent.Status.UNDER_STOP_THRESHOLD_CLEANING_CANCELLED, weakRefPlusProxySubscriberCount, null));
                return;
             }
             LOG.debug("Starting a weak reference and proxy cleanup.");
-            ThreadSafeEventService.this.publish(new CleanupEvent(CleanupEvent.Status.OVER_STOP_THRESHOLD_CLEANING_BEGUN, weakRefPlusProxySubscriberCount, null));               
             List<Map> allSubscriberMaps = new ArrayList<Map>();
             allSubscriberMaps.add(subscribersByEventType);
             allSubscriberMaps.add(subscribersByEventClass);
@@ -2093,7 +2088,6 @@ public class ThreadSafeEventService implements EventService {
                   }
                }
             }
-            ThreadSafeEventService.this.publish(new CleanupEvent(CleanupEvent.Status.FINISHED_CLEANING, weakRefPlusProxySubscriberCount, staleCount));
          }         
       }      
    }
