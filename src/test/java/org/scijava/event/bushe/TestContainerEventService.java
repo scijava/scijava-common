@@ -50,7 +50,7 @@ public class TestContainerEventService extends TestCase {
       EventService esBar = ContainerEventServiceFinder.getEventService(barButton);
       assertEquals(esBar, es);
       assertEquals(0, subscribedEvents.size());
-      es.subscribe("FooTopic", new EventTopicSubscriber() {
+      es.subscribe("FooTopic", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -79,7 +79,7 @@ public class TestContainerEventService extends TestCase {
       EventService esBar = ContainerEventServiceFinder.getEventService(barButton);
       assertTrue(esBar != es);
       assertEquals(0, subscribedEvents.size());
-      es.subscribe("FooTopic", new EventTopicSubscriber() {
+      es.subscribe("FooTopic", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -91,7 +91,7 @@ public class TestContainerEventService extends TestCase {
 
    public void testContainerEventServiceRegistrar() {
       //Set the lastEventObject whenever the event fires on the right Container Event Service
-      EventTopicSubscriber buttonContainerTopicSubscriber = new EventTopicSubscriber() {
+      IEventTopicSubscriber buttonContainerTopicSubscriber = new IEventTopicSubscriber() {
          public void onEvent(String topic, Object data) {
             System.out.println("topic=" + topic + ", data=" + data);
             setLastEventObject(data);
@@ -104,7 +104,7 @@ public class TestContainerEventService extends TestCase {
           }
       };
       //Set the lastEventObject whenever the event fires on the right Container Event Service
-      EventSubscriber buttonContainerSubscriber = new EventSubscriber() {
+      IEventSubscriber buttonContainerSubscriber = new IEventSubscriber() {
           public void onEvent(Object data) {
              System.out.println("class=" + data);
              setLastEventObject(data);

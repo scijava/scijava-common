@@ -18,7 +18,7 @@ public class TestPublicationStates extends TestCase {
          stuffHappens.add(status);
       }
    };
-   EventSubscriber subscriber = new EventSubscriber() {
+   IEventSubscriber subscriber = new IEventSubscriber() {
       public void onEvent(Object event) {
          stuffHappens.add(this);
       }

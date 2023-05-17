@@ -11,8 +11,6 @@ import java.awt.Color;
 
 import junit.framework.TestCase;
 
-import org.scijava.event.bushe.annotation.AnnotationProcessor;
-
 /**
  * Tests the Prioritized interface va. normal FIFO order.
  */
@@ -39,7 +37,7 @@ public class TestPrioritizedSubscribers extends TestCase {
     /**
      * A subscriber that adds itself to a supplied list so that the order of calls is recorded.
      */
-    class OrderRecorderSubscriber extends OrderRecorder implements EventSubscriber {
+    class OrderRecorderSubscriber extends OrderRecorder implements IEventSubscriber {
 
         OrderRecorderSubscriber(List listToRecordTo) {
             super(listToRecordTo);
@@ -53,7 +51,7 @@ public class TestPrioritizedSubscribers extends TestCase {
     /**
      * Ditto, for topics
      */
-    class OrderRecorderTopicSubscriber extends OrderRecorder implements EventTopicSubscriber {
+    class OrderRecorderTopicSubscriber extends OrderRecorder implements IEventTopicSubscriber {
 
         OrderRecorderTopicSubscriber(List listToRecordTo) {
             super(listToRecordTo);
@@ -104,15 +102,15 @@ public class TestPrioritizedSubscribers extends TestCase {
     }
 
     public void testNormalFIFO() {
-        List<EventSubscriber> calledOrder = new ArrayList<EventSubscriber>();
-        List<EventSubscriber> originalOrder = new ArrayList<EventSubscriber>();
+        List<IEventSubscriber> calledOrder = new ArrayList<IEventSubscriber>();
+        List<IEventSubscriber> originalOrder = new ArrayList<IEventSubscriber>();
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         //mixing an inner class into the test
-        EventSubscriber inner = new EventSubscriber() {
+        IEventSubscriber inner = new IEventSubscriber() {
             public void onEvent(Object event) {
             }
         };
@@ -120,7 +118,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         //add them all
-        for (EventSubscriber eventSubscriber : originalOrder) {
+        for (IEventSubscriber eventSubscriber : originalOrder) {
             eventService.subscribe(Color.class, eventSubscriber);
         }
         eventService.publish(Color.BLUE);
@@ -129,8 +127,8 @@ public class TestPrioritizedSubscribers extends TestCase {
     }
 
     public void testNoPrioritizedWithZeroPrioritized() {
-        List<EventSubscriber> calledOrder = new ArrayList<EventSubscriber>();
-        List<EventSubscriber> originalOrder = new ArrayList<EventSubscriber>();
+        List<IEventSubscriber> calledOrder = new ArrayList<IEventSubscriber>();
+        List<IEventSubscriber> originalOrder = new ArrayList<IEventSubscriber>();
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         originalOrder.add(new PrioritizedOrderRecorderSubscriber(0, calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
@@ -149,7 +147,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         originalOrder.add(new PrioritizedOrderRecorderSubscriber(0, calledOrder));
         originalOrder.add(new OrderRecorderSubscriber(calledOrder));
         //add them all
-        for (EventSubscriber eventSubscriber : originalOrder) {
+        for (IEventSubscriber eventSubscriber : originalOrder) {
             eventService.subscribe(Color.class, eventSubscriber);
         }
         eventService.publish(Color.BLUE);
@@ -158,18 +156,18 @@ public class TestPrioritizedSubscribers extends TestCase {
     }
 
     public void testOnlyPrioritized() {
-        List<EventSubscriber> calledOrder = new ArrayList<EventSubscriber>();
-        List<EventSubscriber> originalOrder = new ArrayList<EventSubscriber>();
+        List<IEventSubscriber> calledOrder = new ArrayList<IEventSubscriber>();
+        List<IEventSubscriber> originalOrder = new ArrayList<IEventSubscriber>();
         for (int i = 0; i < 100; i++) {
             Random random = new Random();
             originalOrder.add(new PrioritizedOrderRecorderSubscriber(random.nextInt(10000) - 5000, calledOrder));
         }
-        for (EventSubscriber eventSubscriber : originalOrder) {
+        for (IEventSubscriber eventSubscriber : originalOrder) {
             eventService.subscribe(Color.class, eventSubscriber);
         }
         eventService.publish(Color.BLUE);
         int lastPriority = -5001;
-        for (EventSubscriber eventSubscriber : calledOrder) {
+        for (IEventSubscriber eventSubscriber : calledOrder) {
             int priority = ((PrioritizedOrderRecorderSubscriber) eventSubscriber).getPriority();
             assertTrue(priority >= lastPriority);
             lastPriority = priority;
@@ -178,8 +176,8 @@ public class TestPrioritizedSubscribers extends TestCase {
 
     public void testMixedOfPrioritizedNonPrioritizedAndPrioritized0() {
         Random rand = new Random();
-        List<EventSubscriber> calledOrder = new ArrayList<EventSubscriber>();
-        List<EventSubscriber> prioritized = new ArrayList<EventSubscriber>();
+        List<IEventSubscriber> calledOrder = new ArrayList<IEventSubscriber>();
+        List<IEventSubscriber> prioritized = new ArrayList<IEventSubscriber>();
         //100 negative
         for (int i = 0; i < 100; i++) {
             Random random = new Random();
@@ -192,7 +190,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         }
         Collections.shuffle(prioritized);
         //100 fifo
-        List<EventSubscriber> fifo = new ArrayList<EventSubscriber>();
+        List<IEventSubscriber> fifo = new ArrayList<IEventSubscriber>();
         for (int i = 0; i < 100; i++) {
             if (rand.nextBoolean()) {
                 fifo.add(new OrderRecorderSubscriber(calledOrder));
@@ -200,10 +198,10 @@ public class TestPrioritizedSubscribers extends TestCase {
                 fifo.add(new PrioritizedOrderRecorderSubscriber(0, calledOrder));
             }
         }
-        List<EventSubscriber> prioritizedCopy = new ArrayList(prioritized);
-        List<EventSubscriber> fifoCopy = new ArrayList(fifo);
+        List<IEventSubscriber> prioritizedCopy = new ArrayList(prioritized);
+        List<IEventSubscriber> fifoCopy = new ArrayList(fifo);
         //Subscribe all, randomizing a fifo or prioritized
-        EventSubscriber eventSubscriber;
+        IEventSubscriber eventSubscriber;
         int subscribeCount = 0;
         int prioritizedSubscribeCount = 0;
         int nonPrioritizedSubscribeCount = 0;
@@ -237,7 +235,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         assertEquals(300, calledOrder.size());
         int lastPriority = -10001;
         for (int i = 0; i < 99; i++) {
-            EventSubscriber subscriber = calledOrder.get(i);
+            IEventSubscriber subscriber = calledOrder.get(i);
             assertTrue(subscriber instanceof PrioritizedOrderRecorderSubscriber);
             PrioritizedOrderRecorderSubscriber prioritizedOrderRecorderSubscriber = (PrioritizedOrderRecorderSubscriber) subscriber;
             int priority = prioritizedOrderRecorderSubscriber.getPriority();
@@ -246,7 +244,7 @@ public class TestPrioritizedSubscribers extends TestCase {
             lastPriority = priority;
         }
         for (int i = 100; i < 199; i++) {
-            EventSubscriber subscriber = calledOrder.get(i);
+            IEventSubscriber subscriber = calledOrder.get(i);
             assertTrue(subscriber instanceof OrderRecorderSubscriber);
             if (subscriber instanceof PrioritizedOrderRecorderSubscriber) {
                 PrioritizedOrderRecorderSubscriber prioritizedOrderRecorderSubscriber = (PrioritizedOrderRecorderSubscriber) subscriber;
@@ -257,7 +255,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         }
         lastPriority = 0;
         for (int i = 200; i < 299; i++) {
-            EventSubscriber subscriber = calledOrder.get(i);
+            IEventSubscriber subscriber = calledOrder.get(i);
             assertTrue(subscriber instanceof PrioritizedOrderRecorderSubscriber);
             PrioritizedOrderRecorderSubscriber prioritizedOrderRecorderSubscriber = (PrioritizedOrderRecorderSubscriber) subscriber;
             int priority = prioritizedOrderRecorderSubscriber.getPriority();
@@ -273,13 +271,13 @@ public class TestPrioritizedSubscribers extends TestCase {
         EventServiceLocator.setEventService(EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, eventService);
         List<OrderRecorder> calledOrder = new ArrayList<OrderRecorder>();
         OrderRecorder sn100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder sn50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
             public void annotateMe(Object foo) {
                 record();
             }
@@ -287,49 +285,49 @@ public class TestPrioritizedSubscribers extends TestCase {
         PrioritizedOrderRecorderSubscriber spn30 = new PrioritizedOrderRecorderSubscriber(-30, calledOrder);
         OrderRecorderSubscriber so_1 = new OrderRecorderSubscriber(calledOrder);
         OrderRecorder s100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder sn10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s0_2 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s0_3 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s0_4 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
             public void annotateMe(Object foo) {
                 record();
             }
         };
         OrderRecorder s0_5 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventSubscriber(eventClass = Color.class, eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(Object foo) {
                 record();
             }
@@ -337,8 +335,8 @@ public class TestPrioritizedSubscribers extends TestCase {
         Object[] toAdd = {sn100, s100, so_1, spn30, s0_2, s50, s0_3, sn10, sn50, s0_4, s10, s0_5};
         List expectedResult = Arrays.asList(sn100, sn50, spn30, sn10, so_1, s0_2, s0_3, s0_4, s0_5, s10, s50, s100);
         for (Object o : toAdd) {
-            if (o instanceof EventSubscriber) {
-                eventService.subscribe(Color.class, (EventSubscriber) o);
+            if (o instanceof IEventSubscriber) {
+                eventService.subscribe(Color.class, (IEventSubscriber) o);
             } else {
                 AnnotationProcessor.process(o);
             }
@@ -358,12 +356,12 @@ public class TestPrioritizedSubscribers extends TestCase {
     public void testIssue26OneNegOthersNormal() {
         final List<Integer> calledOrder = new ArrayList<Integer>();
         //non-Prioritized FIFO subscribers
-        EventSubscriber sub1 = new EventSubscriber() {
+        IEventSubscriber sub1 = new IEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(1);
             }
         };
-        EventSubscriber sub0 = new PrioritizedEventSubscriber() {
+        IEventSubscriber sub0 = new PrioritizedEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(-1);
             }
@@ -371,7 +369,7 @@ public class TestPrioritizedSubscribers extends TestCase {
                 return -1;
             }
         };
-        EventSubscriber sub2 = new EventSubscriber() {
+        IEventSubscriber sub2 = new IEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(2);
             }
@@ -398,12 +396,12 @@ public class TestPrioritizedSubscribers extends TestCase {
     public void testOnePosOthersNormal() {
         final List<Integer> calledOrder = new ArrayList<Integer>();
         //non-Prioritized FIFO subscribers
-        EventSubscriber sub1 = new EventSubscriber() {
+        IEventSubscriber sub1 = new IEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(1);
             }
         };
-        EventSubscriber sub0 = new PrioritizedEventSubscriber() {
+        IEventSubscriber sub0 = new PrioritizedEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(11);
             }
@@ -411,7 +409,7 @@ public class TestPrioritizedSubscribers extends TestCase {
                 return 11;
             }
         };
-        EventSubscriber sub2 = new EventSubscriber() {
+        IEventSubscriber sub2 = new IEventSubscriber() {
             public void onEvent(Object event) {
                 calledOrder.add(2);
             }
@@ -434,13 +432,13 @@ public class TestPrioritizedSubscribers extends TestCase {
         EventServiceLocator.setEventService(EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, eventService);
         List<OrderRecorder> calledOrder = new ArrayList<OrderRecorder>();
         OrderRecorder sn100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder sn50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
@@ -448,49 +446,49 @@ public class TestPrioritizedSubscribers extends TestCase {
         PrioritizedOrderRecorderTopicSubscriber spn30 = new PrioritizedOrderRecorderTopicSubscriber(-30, calledOrder);
         OrderRecorderTopicSubscriber so_1 = new OrderRecorderTopicSubscriber(calledOrder);
         OrderRecorder s100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder sn10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_2 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_3 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_4 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_5 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicSubscriber(topic = "Color", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
@@ -498,8 +496,8 @@ public class TestPrioritizedSubscribers extends TestCase {
         Object[] toAdd = {sn100, s100, so_1, spn30, s0_2, s50, s0_3, sn10, sn50, s0_4, s10, s0_5};
         List expectedResult = Arrays.asList(sn100, sn50, spn30, sn10, so_1, s0_2, s0_3, s0_4, s0_5, s10, s50, s100);
         for (Object o : toAdd) {
-            if (o instanceof EventTopicSubscriber) {
-                eventService.subscribe("Color", (EventTopicSubscriber) o);
+            if (o instanceof IEventTopicSubscriber) {
+                eventService.subscribe("Color", (IEventTopicSubscriber) o);
             } else {
                 AnnotationProcessor.process(o);
             }
@@ -516,13 +514,13 @@ public class TestPrioritizedSubscribers extends TestCase {
         EventServiceLocator.setEventService(EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, eventService);
         List<OrderRecorder> calledOrder = new ArrayList<OrderRecorder>();
         OrderRecorder sn100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -100)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder sn50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -50)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -50)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
@@ -530,49 +528,49 @@ public class TestPrioritizedSubscribers extends TestCase {
         PrioritizedOrderRecorderTopicSubscriber spn30 = new PrioritizedOrderRecorderTopicSubscriber(-30, calledOrder);
         OrderRecorderTopicSubscriber so_1 = new OrderRecorderTopicSubscriber(calledOrder);
         OrderRecorder s100 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 100)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder sn10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = -10)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_2 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 0)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_3 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s50 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 50)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_4 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s10 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION, priority = 10)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
         };
         OrderRecorder s0_5 = new OrderRecorder(calledOrder) {
-            @org.scijava.event.bushe.annotation.EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
+            @EventTopicPatternSubscriber(topicPattern = "Col[a-z]+", eventServiceName = EVENT_SERVICE_TEST_PRIORITY_ANNOTATION)
             public void annotateMe(String topic, Object foo) {
                 record();
             }
@@ -582,7 +580,7 @@ public class TestPrioritizedSubscribers extends TestCase {
         for (Object o : toAdd) {
             if (o instanceof OrderRecorderTopicSubscriber) {
                 Pattern pattern = Pattern.compile("Col[a-z]+");
-                eventService.subscribe(pattern, (EventTopicSubscriber) o);
+                eventService.subscribe(pattern, (IEventTopicSubscriber) o);
             } else {
                 AnnotationProcessor.process(o);
             }

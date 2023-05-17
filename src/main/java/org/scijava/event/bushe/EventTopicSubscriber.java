@@ -1,38 +1,104 @@
-/**
- * Copyright 2005 Bushe Enterprises, Inc., Hopkinton, MA, USA, www.bushe.com
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.scijava.event.bushe;
 
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Callback interface for topic-based subscribers of an {@link EventService}.
+ * An Annotation for subscribing to EventService Topics.
+ * <p>
+ * This annotation simplifies much of the repetitive boilerplate used for subscribing to EventService Topics.
+ * <p>
+ * Instead of this:
+ * <pre>
+ * public class MyAppController implements EventTopicSubscriber {
+ *   public MyAppController {
+ *      EventBus.subscribe("AppClosing", this);
+ *   }
+ *   public void onEvent(String topic, Object data) {
+ *      JComponent source = (JComponent)data;
+ *      //do something
+ *   }
+ * }
+ * </pre>
+ * You can do this:
+ * <pre>
+ * public class MyAppController {  //no interface necessary
+ *   public MyAppController {
+ *       AnnotationProcessor.process(this);//this line can be avoided with a compile-time tool or an Aspect
+ *   }
+ *   &#64;EventTopicSubscriber{topic="AppClosingEvent"}
+ *   public void onAppClosing(String topic, Object data) {
+ *      //do something
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * That's pretty good, but when the controller does more, annotations are even nicer.
+ * <pre>
+ * public class MyAppController implements EventTopicSubscriber {
+ *   public MyAppController {
+ *      EventBus.subscribe("AppStartingEvent", this);
+ *      EventBus.subscribe("AppClosingEvent", this);
+ *   }
+ *   public void onEvent(String topic, Object data) {
+ *      //wicked bad pattern, but we have to this
+ *      //...or create multiple subscriber classes and hold instances of them fields, which is even more verbose...
+ *      if ("AppStartingEvent".equals(topic)) {
+ *         onAppStartingEvent((JComponent)data);
+ *      } else ("AppClosingEvent".equals(topic)) {
+ *         onAppClosingEvent((JComponet)data);
+ *      }
  *
- * @author Michael Bushe michael@bushe.com
+ *   }
+ *
+ *   public void onAppStartingEvent(JComponent requestor) {
+ *      //do something
+ *   }
+ *
+ *   public void onAppClosingEvent(JComponent requestor) {
+ *      //do something
+ *   }
+ * }
+ * </pre>
+ * Instead of all that, you can do this:
+ * <pre>
+ * public class MyAppController {
+ *   public MyAppController {
+ *       AnnotationProcessor.process(this);//this line can be avoided with a compile-time tool or an Aspect
+ *   }
+ *   &#64;EventTopicSubscriber{topic="AppStartingEvent"}
+ *   public void onAppStartingEvent(Object data) {
+ *      //do something
+ *   }
+ *   &#64;EventTopicSubscriber{topic="AppClosingEvent"}
+ *   public void onAppClosingEvent(Foo data) {
+ *      //do something
+ *   }
+ * }
+ * </pre>
+ * Brief, clear, and easy.
  */
-public interface EventTopicSubscriber<T> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface EventTopicSubscriber {
+   /** The topic to subscribe to */
+   String topic();
+
+   /** Whether to subscribe weakly or strongly. */
+   ReferenceStrength referenceStrength() default ReferenceStrength.WEAK;
+
+   /** The event service to subscribe to, default to the EventServiceLocator.SERVICE_NAME_EVENT_BUS. */
+   String eventServiceName() default EventServiceLocator.SERVICE_NAME_EVENT_BUS;
+
+   /** Determines the order in which this subscriber is called, default is FIFO.*/
+   int priority() default 0;
 
    /**
-    * Handle an event published on a topic.
-    * <p/>
-    * The EventService calls this method on each publication on a matching topic name passed to one of the
-    * EventService's topic-based subscribe methods, specifically, {@link EventService#subscribe(String,
-    *EventTopicSubscriber)} {@link EventService#subscribe(java.util.regex.Pattern,EventTopicSubscriber)} {@link
-    * EventService#subscribeStrongly(String,EventTopicSubscriber)} and {@link EventService#subscribeStrongly(java.util.regex.Pattern,
-    *EventTopicSubscriber)}.
-    *
-    * @param topic the name of the topic published on
-    * @param data the data object published on the topic
+    * Whether or not to autocreate the event service if it doesn't exist on subscription, default is true. If the
+    * service needs to be created, it must have a default constructor.
     */
-   public void onEvent(String topic, T data);
+   Class<? extends EventService> autoCreateEventServiceClass() default ThreadSafeEventService.class;
 }

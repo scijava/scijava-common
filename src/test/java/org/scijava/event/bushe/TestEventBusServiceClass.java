@@ -20,7 +20,7 @@ public class TestEventBusServiceClass extends TestCase {
 
    public void testConfigurableEventService() {
       try {
-         EventBus.subscribe("foo", new EventTopicSubscriber() {
+         EventBus.subscribe("foo", new IEventTopicSubscriber() {
             public void onEvent(String topic, Object data) {
             }
          });

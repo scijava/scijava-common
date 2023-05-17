@@ -15,8 +15,6 @@
  */
 package org.scijava.event.bushe;
 
-import org.scijava.event.bushe.annotation.ReferenceStrength;
-
 /**
  * An interface that can be implemented when proxies are used for subscription, not needed in normal usage.  When an
  * unsubscribe method is called on an EventService, the EventService is required to check if any of subscribed objects

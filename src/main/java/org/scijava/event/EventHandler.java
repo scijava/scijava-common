@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * handling methods and annotating each with @{@link EventHandler}.
  * <p>
  * Note to developers: This annotation serves exactly the same purpose as
- * EventBus's {@link org.scijava.event.bushe.annotation.EventSubscriber}
+ * EventBus's {@link org.scijava.event.bushe.EventSubscriber}
  * annotation, recapitulating a subset of the same functionality. We do this to
  * avoid third party code depending directly on EventBus. That is, we do not
  * wish to require SciJava developers to {@code import org.scijava.event.bushe.*}

@@ -26,8 +26,8 @@ import junit.framework.TestCase;
 
 public class TestEventBus extends TestCase {
 
-   private EventSubscriber eventSubscriber = null;
-   private EventTopicSubscriber eventTopicSubscriber;
+   private IEventSubscriber eventSubscriber = null;
+   private IEventTopicSubscriber eventTopicSubscriber;
    private EBTestCounter testCounter = new EBTestCounter();
 
    public TestEventBus(String name) {
@@ -53,20 +53,20 @@ public class TestEventBus extends TestCase {
       return createEvent().getClass();
    }
 
-   private EventSubscriber createEventSubscriber(boolean throwException) {
+   private IEventSubscriber createEventSubscriber(boolean throwException) {
       SubscriberForTest test = new SubscriberForTest(testCounter, throwException);
       return test;
    }
 
-   private EventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
+   private IEventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
       return new TopicSubscriberForTest(testCounter, throwException);
    }
 
-   private EventSubscriber getEventSubscriber() {
+   private IEventSubscriber getEventSubscriber() {
       return getEventSubscriber(true);
    }
 
-   private EventSubscriber getEventSubscriber(boolean throwException) {
+   private IEventSubscriber getEventSubscriber(boolean throwException) {
       if (eventSubscriber == null) {
          eventSubscriber = createEventSubscriber(throwException);
       }
@@ -75,7 +75,7 @@ public class TestEventBus extends TestCase {
 
    public void testSubscribe() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = EventBus.subscribe(getEventClass(), subscriber);
       assertTrue("testSubscribe(new subscriber)", actualReturn);
@@ -106,7 +106,7 @@ public class TestEventBus extends TestCase {
 
    }
    
-   public static class SwingThreadTestEventSubscriber implements EventSubscriber {
+   public static class SwingThreadTestEventSubscriber implements IEventSubscriber {
       public boolean wasOnSwingThread;
 
       public void onEvent(Object event) {
@@ -124,7 +124,7 @@ public class TestEventBus extends TestCase {
    
    public void testSubscribeWeakly() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = EventBus.subscribe(getEventClass(), subscriber);
       assertTrue("testSubscribeWeakly(new subscriber)", actualReturn);
@@ -212,7 +212,7 @@ public class TestEventBus extends TestCase {
 
    public void testVeto() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = EventBus.subscribe(getEventClass(), subscriber);
 
@@ -239,7 +239,7 @@ public class TestEventBus extends TestCase {
 
    public void testVetoException() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = EventBus.subscribe(getEventClass(), subscriber);
       assertTrue(actualReturn);
@@ -267,7 +267,7 @@ public class TestEventBus extends TestCase {
 
    public void testVetoTopic() {
       boolean actualReturn;
-      EventTopicSubscriber subscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber subscriber = createEventTopicSubscriber(false);
 
       actualReturn = EventBus.subscribeStrongly("FooTopic", subscriber);
 
@@ -298,7 +298,7 @@ public class TestEventBus extends TestCase {
 
    public void testVetoWeak() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = EventBus.subscribe(getEventClass(), subscriber);
 
@@ -333,7 +333,7 @@ public class TestEventBus extends TestCase {
 
    public void testVetoTopicWeak() {
       boolean actualReturn;
-      EventTopicSubscriber subscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber subscriber = createEventTopicSubscriber(false);
 
       actualReturn = EventBus.subscribeStrongly("FooTopic", subscriber);
 
@@ -402,7 +402,7 @@ public class TestEventBus extends TestCase {
    }
 
    public void testUnsubscribeTopic() {
-      EventTopicSubscriber eventTopicSubscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber eventTopicSubscriber = createEventTopicSubscriber(false);
       EventBus.subscribeStrongly("FooTopic", eventTopicSubscriber);
 
       boolean actualReturn;
@@ -484,7 +484,7 @@ public class TestEventBus extends TestCase {
       assertEquals("testPublish(completed)", 4, testCounter.eventsHandledCount);
       assertEquals("testPublish(exceptions)", 2, testCounter.subscribeExceptionCount);
 
-      EventSubscriber eventSubscriber = createEventSubscriber(false);
+      IEventSubscriber eventSubscriber = createEventSubscriber(false);
       EventBus.subscribe(ObjectEvent.class, eventSubscriber);
       testCounter.eventsHandledCount = 0;
       testCounter.subscribeExceptionCount = 0;
@@ -558,11 +558,11 @@ public class TestEventBus extends TestCase {
 
    //Really a compilation test
    public void testGeneric() {
-      EventBus.subscribe(String.class, new EventSubscriber<JComponent>() {
+      EventBus.subscribe(String.class, new IEventSubscriber<JComponent>() {
          public void onEvent(JComponent event) {
          }
       });
-      EventBus.subscribe("foo", new EventTopicSubscriber<JComponent>() {
+      EventBus.subscribe("foo", new IEventTopicSubscriber<JComponent>() {
          public void onEvent(String topic, JComponent data) {
          }
       });

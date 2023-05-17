@@ -29,15 +29,12 @@ import javax.swing.JComponent;
 
 import junit.framework.TestCase;
 
-import org.scijava.event.bushe.generics.DataRequestEvent;
-import org.scijava.event.bushe.generics.TypeReference;
-
 /** The DefaultEventService is NOT Swing-safe!  But it's easier to test... */
 public class TestDefaultEventService extends TestCase {
 
    private ThreadSafeEventService eventService = null;
-   private EventSubscriber eventSubscriber = null;
-   private EventTopicSubscriber eventTopicSubscriber;
+   private IEventSubscriber eventSubscriber = null;
+   private IEventTopicSubscriber eventTopicSubscriber;
    private SubscriberTimingEvent timing;
    private EBTestCounter testCounter = new EBTestCounter();
 
@@ -67,30 +64,30 @@ public class TestDefaultEventService extends TestCase {
       return createEvent().getClass();
    }
 
-   private EventSubscriber createEventSubscriber(boolean throwException) {
+   private IEventSubscriber createEventSubscriber(boolean throwException) {
       return new SubscriberForTest(testCounter, throwException);
    }
 
-   private EventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
+   private IEventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
       return new TopicSubscriberForTest(testCounter, throwException);
    }
 
-   private EventSubscriber createEventSubscriber(Long waitTime) {
+   private IEventSubscriber createEventSubscriber(Long waitTime) {
       return new SubscriberForTest(testCounter, waitTime);
    }
 
-   private EventSubscriber getEventSubscriber() {
+   private IEventSubscriber getEventSubscriber() {
       return getEventSubscriber(true);
    }
 
-   private EventSubscriber getEventSubscriber(boolean throwException) {
+   private IEventSubscriber getEventSubscriber(boolean throwException) {
       if (eventSubscriber == null) {
          eventSubscriber = createEventSubscriber(throwException);
       }
       return eventSubscriber;
    }
 
-   private EventTopicSubscriber getEventTopicSubscriber() {
+   private IEventTopicSubscriber getEventTopicSubscriber() {
       if (eventTopicSubscriber == null) {
          eventTopicSubscriber = createEventTopicSubscriber(false);
       }
@@ -98,7 +95,7 @@ public class TestDefaultEventService extends TestCase {
    }
 
    public void testTyping() {
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       Double doub = 3.14;
       Number numb = doub;
@@ -122,7 +119,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testSubscribe() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribe(getEventClass(), subscriber);
       assertTrue("testSubscribe(new subscriber)", actualReturn);
@@ -176,12 +173,12 @@ public class TestDefaultEventService extends TestCase {
       List subscribers = eventService.getSubscribers(getEventClass());
       assertEquals(3, subscribers.size());
       for (int i = 0; i < subscribers.size(); i++) {
-         EventSubscriber subscriber = (EventSubscriber) subscribers.get(i);
+         IEventSubscriber subscriber = (IEventSubscriber) subscribers.get(i);
          eventService.unsubscribe(getEventClass(), subscriber);
       }
-      eventService.subscribe(getEventClass(), (EventSubscriber) subscribers.get(1));
-      eventService.subscribe(getEventClass(), (EventSubscriber) subscribers.get(0));
-      eventService.subscribe(getEventClass(), (EventSubscriber) subscribers.get(2));
+      eventService.subscribe(getEventClass(), (IEventSubscriber) subscribers.get(1));
+      eventService.subscribe(getEventClass(), (IEventSubscriber) subscribers.get(0));
+      eventService.subscribe(getEventClass(), (IEventSubscriber) subscribers.get(2));
       eventService.publish(createEvent());
       assertTrue(subscriber3.callTime.before(subscriber2.callTime));
       assertTrue(subscriber2.callTime.before(subscriber1.callTime));
@@ -189,7 +186,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testSubscribeWeakly() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribe(getEventClass(), subscriber);
       assertTrue("testSubscribeWeakly(new subscriber)", actualReturn);
@@ -229,7 +226,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testSubscribeStrongly() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribeStrongly(getEventClass(), subscriber);
       assertTrue("testSubscribeWeakly(new subscriber)", actualReturn);
@@ -316,7 +313,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testVeto() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribe(getEventClass(), subscriber);
 
@@ -341,7 +338,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testVetoException() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribe(getEventClass(), subscriber);
 
@@ -366,7 +363,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testVetoTopic() {
       boolean actualReturn;
-      EventTopicSubscriber subscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber subscriber = createEventTopicSubscriber(false);
 
       actualReturn = eventService.subscribe("FooTopic", subscriber);
 
@@ -395,7 +392,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testVetoWeak() {
       boolean actualReturn;
-      EventSubscriber subscriber = createEventSubscriber(false);
+      IEventSubscriber subscriber = createEventSubscriber(false);
 
       actualReturn = eventService.subscribe(getEventClass(), subscriber);
 
@@ -428,7 +425,7 @@ public class TestDefaultEventService extends TestCase {
 
    public void testVetoTopicWeak() {
       boolean actualReturn;
-      EventTopicSubscriber subscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber subscriber = createEventTopicSubscriber(false);
 
       actualReturn = eventService.subscribe("FooTopic", subscriber);
 
@@ -494,7 +491,7 @@ public class TestDefaultEventService extends TestCase {
    }
 
    public void testUnsubscribeTopic() {
-      EventTopicSubscriber eventTopicSubscriber = createEventTopicSubscriber(false);
+      IEventTopicSubscriber eventTopicSubscriber = createEventTopicSubscriber(false);
       eventService.subscribe("FooTopic", eventTopicSubscriber);
 
       boolean actualReturn;
@@ -588,7 +585,7 @@ public class TestDefaultEventService extends TestCase {
    public void testTimeHandling() {
       eventService.subscribe(getEventClass(), createEventSubscriber(new Long(200L)));
       final Boolean[] wasCalled = new Boolean[1];
-      eventService.subscribe(SubscriberTimingEvent.class, new EventSubscriber() {
+      eventService.subscribe(SubscriberTimingEvent.class, new IEventSubscriber() {
          public void onEvent(Object evt) {
             wasCalled[0] = Boolean.TRUE;
          }
@@ -598,7 +595,7 @@ public class TestDefaultEventService extends TestCase {
       eventService = new ThreadSafeEventService(new Long(100), true);
       eventService.subscribe(getEventClass(), createEventSubscriber(new Long(200L)));
       final Boolean[] wasCalled2 = new Boolean[1];
-      eventService.subscribe(SubscriberTimingEvent.class, new EventSubscriber() {
+      eventService.subscribe(SubscriberTimingEvent.class, new IEventSubscriber() {
          public void onEvent(Object evt) {
             wasCalled2[0] = Boolean.TRUE;
             timing = (SubscriberTimingEvent) evt;
@@ -746,7 +743,7 @@ public class TestDefaultEventService extends TestCase {
 //      System.out.println("superclass="+superclass);
 //      System.out.println("type="+type);
 
-      eventService.subscribe(stringTypeReference.getType(), new EventSubscriber() {
+      eventService.subscribe(stringTypeReference.getType(), new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
@@ -766,12 +763,12 @@ public class TestDefaultEventService extends TestCase {
       TypeReference<DoublyParameterizedEvent<Integer, String>> integerTypeReference = new TypeReference<DoublyParameterizedEvent<Integer, String>>(){};
       TypeReference<DoublyParameterizedEvent<String, Integer>> switchTypeReference = new TypeReference<DoublyParameterizedEvent<String, Integer>>(){};
 
-      eventService.subscribe(stringTypeReference.getType(), new EventSubscriber() {
+      eventService.subscribe(stringTypeReference.getType(), new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
       });
-      eventService.subscribe(integerTypeReference.getType(), new EventSubscriber() {
+      eventService.subscribe(integerTypeReference.getType(), new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
@@ -790,7 +787,7 @@ public class TestDefaultEventService extends TestCase {
 
       TypeReference<ParameterizedEvent<? extends Container>> containerWildcardTypeRef = new TypeReference<ParameterizedEvent<? extends Container>>(){};
 
-      eventService.subscribe(containerWildcardTypeRef.getType(), new EventSubscriber() {
+      eventService.subscribe(containerWildcardTypeRef.getType(), new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
@@ -817,7 +814,7 @@ public class TestDefaultEventService extends TestCase {
       //Test super wildcard, should be opposite of above
       eventService.clearAllSubscribers();
       TypeReference<ParameterizedEvent<? super Container>> containerSuperWildcardTypeRef = new TypeReference<ParameterizedEvent<? super Container>>(){};
-      eventService.subscribe(containerSuperWildcardTypeRef.getType(), new EventSubscriber() {
+      eventService.subscribe(containerSuperWildcardTypeRef.getType(), new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
@@ -844,7 +841,7 @@ public class TestDefaultEventService extends TestCase {
       }
    }
 
-   class DoubleSubscriber implements EventTopicSubscriber, EventSubscriber {
+   class DoubleSubscriber implements IEventTopicSubscriber, IEventSubscriber {
       public int timesTopicCalled = 0;
       public int timesEventCalled = 0;
       public String lastEventString;
@@ -881,7 +878,7 @@ public class TestDefaultEventService extends TestCase {
       final int[] timesCalled = new int[1];
       DataRequestEvent<List<Integer>> request = new DataRequestEvent<List<Integer>>();
       Type type = new TypeReference<DataRequestEvent<List<Integer>>>() {}.getType();
-      eventService.subscribe(type, new EventSubscriber() {
+      eventService.subscribe(type, new IEventSubscriber() {
          public void onEvent(Object event) {
             timesCalled[0]++;
          }
@@ -919,7 +916,7 @@ public class TestDefaultEventService extends TestCase {
       assertTrue(lastEventObj == publishedEventObj);
       assertEquals(1, es.getCacheSizeForTopic("IceCream.Vanilla"));
       //subscribe and see if it still works and that the new event is cached
-      EventTopicSubscriber sub = new EventTopicSubscriber() {
+      IEventTopicSubscriber sub = new IEventTopicSubscriber() {
          public void onEvent(String topic, Object data) {
             System.out.println("Barrrr");
          }
@@ -1147,7 +1144,7 @@ public class TestDefaultEventService extends TestCase {
       assertTrue(lastAEvent == publishedEvent);
       assertEquals(1, es.getCacheSizeForEventClass(EventA.class));
       //subscribe and see if it still works and that the new event is cached
-      EventSubscriber sub = new EventSubscriber() {
+      IEventSubscriber sub = new IEventSubscriber() {
          public void onEvent(Object evt) {
             System.out.println("Fooo");
          }

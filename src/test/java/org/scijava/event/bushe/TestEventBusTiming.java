@@ -20,8 +20,8 @@ import junit.framework.TestCase;
 /** The DefaultEventService is NOT Swing-safe!  But it's easier to test... */
 public class TestEventBusTiming extends EventServiceLocatorTestCase {
 
-   private EventSubscriber eventSubscriber = null;
-   private EventTopicSubscriber eventTopicSubscriber;
+   private IEventSubscriber eventSubscriber = null;
+   private IEventTopicSubscriber eventTopicSubscriber;
    private SubscriberTimingEvent timing;
    private EBTestCounter testCounter = new EBTestCounter();
 
@@ -41,30 +41,30 @@ public class TestEventBusTiming extends EventServiceLocatorTestCase {
       return createEvent().getClass();
    }
 
-   private EventSubscriber createEventSubscriber(boolean throwException) {
+   private IEventSubscriber createEventSubscriber(boolean throwException) {
       return new SubscriberForTest(testCounter, throwException);
    }
 
-   private EventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
+   private IEventTopicSubscriber createEventTopicSubscriber(boolean throwException) {
       return new TopicSubscriberForTest(testCounter, throwException);
    }
 
-   private EventSubscriber createEventSubscriber(Long waitTime) {
+   private IEventSubscriber createEventSubscriber(Long waitTime) {
       return new SubscriberForTest(testCounter, waitTime);
    }
 
-   private EventSubscriber getEventSubscriber() {
+   private IEventSubscriber getEventSubscriber() {
       return getEventSubscriber(true);
    }
 
-   private EventSubscriber getEventSubscriber(boolean throwException) {
+   private IEventSubscriber getEventSubscriber(boolean throwException) {
       if (eventSubscriber == null) {
          eventSubscriber = createEventSubscriber(throwException);
       }
       return eventSubscriber;
    }
 
-   private EventTopicSubscriber getEventTopicSubscriber() {
+   private IEventTopicSubscriber getEventTopicSubscriber() {
       if (eventTopicSubscriber == null) {
          eventTopicSubscriber = createEventTopicSubscriber(false);
       }
@@ -74,7 +74,7 @@ public class TestEventBusTiming extends EventServiceLocatorTestCase {
    public void thisOnlyWorksSometimesNow_testTimeHandling() {
       EventBus.subscribe(getEventClass(), createEventSubscriber(new Long(200L)));
       final Boolean[] wasCalled = new Boolean[1];
-      EventBus.subscribe(SubscriberTimingEvent.class, new EventSubscriber() {
+      EventBus.subscribe(SubscriberTimingEvent.class, new IEventSubscriber() {
          public void onEvent(Object evt) {
             wasCalled[0] = Boolean.TRUE;
          }
@@ -84,7 +84,7 @@ public class TestEventBusTiming extends EventServiceLocatorTestCase {
       assertTrue(wasCalled[0] == null);
       EventBus.subscribe(getEventClass(), createEventSubscriber(new Long(200L)));
       final Boolean[] wasCalled2 = new Boolean[1];
-      EventBus.subscribe(SubscriberTimingEvent.class, new EventSubscriber() {
+      EventBus.subscribe(SubscriberTimingEvent.class, new IEventSubscriber() {
          public void onEvent(Object evt) {
             wasCalled2[0] = Boolean.TRUE;
             timing = (SubscriberTimingEvent) evt;

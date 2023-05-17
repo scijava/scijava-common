@@ -37,10 +37,10 @@ import java.awt.event.HierarchyListener;
  */
 public class ContainerEventServiceRegistrar {
    private JComponent jComp;
-   private EventSubscriber eventSubscriber;
+   private IEventSubscriber eventSubscriber;
    private VetoEventListener vetoSubscriber;
    private Class[] eventClasses;
-   private EventTopicSubscriber eventTopicSubscriber;
+   private IEventTopicSubscriber eventTopicSubscriber;
    private VetoTopicEventListener vetoTopicSubscriber;
    private String[] topics;
    private EventService containerEventService;
@@ -63,7 +63,7 @@ public class ContainerEventServiceRegistrar {
     * @param eventSubscriber the subscriber to register to the Container EventServer
     * @param eventClasses the class(es) to register for
     */
-   public ContainerEventServiceRegistrar(JComponent jComp, EventSubscriber eventSubscriber, Class... eventClasses) {
+   public ContainerEventServiceRegistrar(JComponent jComp, IEventSubscriber eventSubscriber, Class... eventClasses) {
       this(jComp, eventSubscriber, null, eventClasses, null, null, null);
    }
 
@@ -75,7 +75,7 @@ public class ContainerEventServiceRegistrar {
     * @param eventTopicSubscriber the topic subscriber to register to the Container EventServer
     * @param topics the event topic name to register for
     */
-   public ContainerEventServiceRegistrar(JComponent jComp, EventTopicSubscriber eventTopicSubscriber, String... topics) {
+   public ContainerEventServiceRegistrar(JComponent jComp, IEventTopicSubscriber eventTopicSubscriber, String... topics) {
       this(jComp, null, null, null, eventTopicSubscriber, null, topics);
    }
 
@@ -113,8 +113,8 @@ public class ContainerEventServiceRegistrar {
      * @param eventTopicSubscriber the topic subscriber to keep registered to the topic(s)
      * @param topics the event topic names to register for
      */
-    public ContainerEventServiceRegistrar(JComponent jComp, EventSubscriber eventSubscriber, Class[] eventClasses,
-            EventTopicSubscriber eventTopicSubscriber, String[] topics) {
+    public ContainerEventServiceRegistrar(JComponent jComp, IEventSubscriber eventSubscriber, Class[] eventClasses,
+            IEventTopicSubscriber eventTopicSubscriber, String[] topics) {
         this(jComp, eventSubscriber, null, eventClasses, eventTopicSubscriber, null, topics);
     }
 
@@ -130,8 +130,8 @@ public class ContainerEventServiceRegistrar {
     * @param vetoTopicSubscriber a veto subscriber for the topics
     * @param topics the event topic names to register for
     */
-   public ContainerEventServiceRegistrar(JComponent jComp, EventSubscriber eventSubscriber, VetoEventListener vetoSubscriber,
-           Class[] eventClasses, EventTopicSubscriber eventTopicSubscriber, VetoTopicEventListener vetoTopicSubscriber,
+   public ContainerEventServiceRegistrar(JComponent jComp, IEventSubscriber eventSubscriber, VetoEventListener vetoSubscriber,
+           Class[] eventClasses, IEventTopicSubscriber eventTopicSubscriber, VetoTopicEventListener vetoTopicSubscriber,
            String[] topics) {
       this.jComp = jComp;
       this.eventSubscriber = eventSubscriber;

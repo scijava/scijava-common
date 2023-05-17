@@ -51,7 +51,7 @@ public class TestEventAction extends TestCase {
    public void testEventBusTopicAction() {
       EventBusAction action = new EventBusAction();
       action.putValue(Action.ACTION_COMMAND_KEY, "FooAction");
-      EventTopicSubscriber subscriber = new EventTopicSubscriber() {
+      IEventTopicSubscriber subscriber = new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -70,7 +70,7 @@ public class TestEventAction extends TestCase {
       EventBusAction action = new EventBusAction();
       action.putValue(EventBusAction.EVENT_SERVICE_TOPIC_NAME, "FooAction");
       action.putValue(Action.ACTION_COMMAND_KEY, "BarAction");
-      EventBus.subscribeStrongly("FooAction", new EventTopicSubscriber() {
+      EventBus.subscribeStrongly("FooAction", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -87,7 +87,7 @@ public class TestEventAction extends TestCase {
       EventBusAction action = new EventBusAction();
       action.putValue("ID", "FooAction");
       action.putValue(Action.ACTION_COMMAND_KEY, "BarAction");
-      EventBus.subscribeStrongly("FooAction", new EventTopicSubscriber() {
+      EventBus.subscribeStrongly("FooAction", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -103,7 +103,7 @@ public class TestEventAction extends TestCase {
    public void testEventBusTopicActionNameWorks() {
       EventBusAction action = new EventBusAction();
       action.putValue(Action.NAME, "FooAction");
-      EventBus.subscribeStrongly("FooAction", new EventTopicSubscriber() {
+      EventBus.subscribeStrongly("FooAction", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }
@@ -122,7 +122,7 @@ public class TestEventAction extends TestCase {
             return new MyEventServiceEvent(aSource, evt);
          }
       };
-      EventBus.subscribe(MyEventServiceEvent.class, new EventSubscriber() {
+      EventBus.subscribe(MyEventServiceEvent.class, new IEventSubscriber() {
          public void onEvent(Object evt) {
             assertEquals(((EventServiceEvent) evt).getSource(), aSource);
             subscribedEvents.add(evt);
@@ -148,7 +148,7 @@ public class TestEventAction extends TestCase {
       EventService es = ContainerEventServiceFinder.getEventService(button);
       assertTrue(EventBus.getGlobalEventService() != es);
       assertEquals(0, subscribedEvents.size());
-      es.subscribe("FooAction", new EventTopicSubscriber() {
+      es.subscribe("FooAction", new IEventTopicSubscriber() {
          public void onEvent(String topic, Object evt) {
             subscribedEvents.add(evt);
          }

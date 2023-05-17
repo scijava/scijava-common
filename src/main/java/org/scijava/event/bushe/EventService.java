@@ -23,17 +23,17 @@ import java.lang.reflect.Type;
  * The core interface.  An EventService provides publish/subscribe services to a single JVM using Class-based and
  * String-based (i.e. "topic") publications and subscriptions.
  * <p/>
- * In class-based pub/sub, {@link EventSubscriber}s subscribe to a type on an {@link EventService}, such
+ * In class-based pub/sub, {@link IEventSubscriber}s subscribe to a type on an {@link EventService}, such
  * as the {@link org.scijava.event.bushe.EventBus}, by providing a class, interface or generic type.  The EventService
  * notifies subscribers when objects are published on the EventService with a matching type.  Full class semantics are
  * respected.  That is, if a subscriber subscribes to a class, the subscriber is notified if an object of
  * that class is publish or if an object of a subclass of that class is published. Likewise if a subscriber subscribes
  * to an interface, it will be notified if any object that implements that interface is published.  Subscribers can
- * subscribe "exactly" using  {@link #subscribeExactly(Class, EventSubscriber)} so that they are notified only if an
+ * subscribe "exactly" using  {@link #subscribeExactly(Class, IEventSubscriber)} so that they are notified only if an
  * object of the exact class is published (and will not be notified if subclasses are published, since this would not
  * be "exact")
  * <p/>
- * In topic-based pub/sub, an object "payload" is published on a topic name (String).  {@link EventTopicSubscriber}s subscribe
+ * In topic-based pub/sub, an object "payload" is published on a topic name (String).  {@link IEventTopicSubscriber}s subscribe
  * to either the exact name of the topic or they may subscribe using a Regular Expression that is used to match topic
  * names.
  * <p/>
@@ -112,8 +112,8 @@ import java.lang.reflect.Type;
  * @see {@link ThreadSafeEventService} for the default implementation
  * @see {@link SwingEventService} for the Swing-safe implementation
  * @see {@link EventBus} for simple access to the Swing-safe implementation
- * @see {@link org.scijava.event.bushe.annotation.EventSubscriber} for subscription annotations
- * @see {@link org.scijava.event.bushe.annotation.EventTopicSubscriber} for subscription annotations
+ * @see {@link org.scijava.event.bushe.IEventSubscriber} for subscription annotations
+ * @see {@link org.scijava.event.bushe.IEventTopicSubscriber} for subscription annotations
  */
 public interface EventService {
 
@@ -127,10 +127,10 @@ public interface EventService {
 
    /**
     * Use this method to publish generified objects to subscribers of Types, i.e. subscribers that use
-    * {@link #subscribe(Type, EventSubscriber)}, and to publish to subscribers of the non-generic type.
+    * {@link #subscribe(Type, IEventSubscriber)}, and to publish to subscribers of the non-generic type.
     * <p>
     * Due to generic type erasure, the type must be supplied by the caller.  You can get a declared object's
-    * type by using the {@link org.scijava.event.bushe.generics.TypeReference} class.  For Example:
+    * type by using the {@link org.scijava.event.bushe.TypeReference} class.  For Example:
     * <pre>
     * TypeReference&#60;List&#60;Trade&#62;&#62; subscribingTypeReference = new TypeReference&#60;List&#60;Trade&#62;&#62;(){};
     * EventBus.subscribe(subscribingTypeReference.getType(), mySubscriber);
@@ -181,14 +181,14 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribe(Class eventClass, EventSubscriber subscriber);
+   public boolean subscribe(Class eventClass, IEventSubscriber subscriber);
 
   /** 
    * Subscribe an EventSubscriber to publication of generic Types.
    * Subscribers will only be notified for publications using  {@link #publish(java.lang.reflect.Type, Object)}.
    * <p>
    * Due to generic type erasure, the type must be supplied by the publisher.  You can get a declared object's
-   * type by using the {@link org.scijava.event.bushe.generics.TypeReference} class.  For Example:
+   * type by using the {@link org.scijava.event.bushe.TypeReference} class.  For Example:
    * <pre>
    * TypeReference&#60;List&#60;Trade&#62;&#62; subscribingTypeReference = new TypeReference&#60;List&#60;Trade&#62;&#62;(){};
    * EventBus.subscribe(subscribingTypeReference.getType(), mySubscriber);
@@ -206,7 +206,7 @@ public interface EventService {
    * @param subscriber the subscriber to the type
    * @return true if a new subscription is made, false if it already existed
    */
-   public boolean subscribe(Type type, EventSubscriber subscriber);
+   public boolean subscribe(Type type, IEventSubscriber subscriber);
 
    /**
     * Subscribes an EventSubscriber to the publication of objects exactly matching a type.  Only a <b>WeakReference</b>
@@ -227,7 +227,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribeExactly(Class eventClass, EventSubscriber subscriber);
+   public boolean subscribeExactly(Class eventClass, IEventSubscriber subscriber);
 
    /**
     * Subscribes an EventTopicSubscriber to the publication of a topic name.  Only a <b>WeakReference</b>
@@ -247,7 +247,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribe(String topic, EventTopicSubscriber subscriber);
+   public boolean subscribe(String topic, IEventTopicSubscriber subscriber);
 
    /**
     * Subscribes an EventSubscriber to the publication of all the topic names that match a RegEx Pattern.  Only a
@@ -267,67 +267,67 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribe(Pattern topicPattern, EventTopicSubscriber subscriber);
+   public boolean subscribe(Pattern topicPattern, IEventTopicSubscriber subscriber);
 
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type.
     * <p/>
-    * The semantics are the same as {@link #subscribe(Class, EventSubscriber)}, except that the EventService holds
+    * The semantics are the same as {@link #subscribe(Class, IEventSubscriber)}, except that the EventService holds
     * a regularly reference, not a WeakReference.
     * <p/>
-    * The subscriber will remain subscribed until {@link #unsubscribe(Class,EventSubscriber)}  is called.
+    * The subscriber will remain subscribed until {@link #unsubscribe(Class,IEventSubscriber)}  is called.
     *
     * @param eventClass the class of published objects to listen to
     * @param subscriber The subscriber that will accept the events when published.
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribeStrongly(Class eventClass, EventSubscriber subscriber);
+   public boolean subscribeStrongly(Class eventClass, IEventSubscriber subscriber);
 
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type exactly.
     * <p/>
-    * The semantics are the same as {@link #subscribeExactly(Class, EventSubscriber)}, except that the EventService
+    * The semantics are the same as {@link #subscribeExactly(Class, IEventSubscriber)}, except that the EventService
     * holds a regularly reference, not a WeakReference.
     * <p/>
-    * The subscriber will remain subscribed until {@link #unsubscribe(Class,EventSubscriber)}  is called.
+    * The subscriber will remain subscribed until {@link #unsubscribe(Class,IEventSubscriber)}  is called.
     *
     * @param eventClass the class of published objects to listen to
     * @param subscriber The subscriber that will accept the events when published.
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribeExactlyStrongly(Class eventClass, EventSubscriber subscriber);
+   public boolean subscribeExactlyStrongly(Class eventClass, IEventSubscriber subscriber);
 
    /**
     * Subscribes a subscriber to an event topic name.
     * <p/>
-    * The semantics are the same as {@link #subscribe(String, EventTopicSubscriber)}, except that the EventService
+    * The semantics are the same as {@link #subscribe(String, IEventTopicSubscriber)}, except that the EventService
     * holds a regularly reference, not a WeakReference.
     * <p/>
-    * The subscriber will remain subscribed until {@link #unsubscribe(String,EventTopicSubscriber)}  is called.
+    * The subscriber will remain subscribed until {@link #unsubscribe(String,IEventTopicSubscriber)}  is called.
     *
     * @param topic the name of the topic listened to
     * @param subscriber The topic subscriber that will accept the events when published.
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribeStrongly(String topic, EventTopicSubscriber subscriber);
+   public boolean subscribeStrongly(String topic, IEventTopicSubscriber subscriber);
 
    /**
     * Subscribes a subscriber to all the event topic names that match a RegEx expression.
     * <p/>
-    * The semantics are the same as {@link #subscribe(java.util.regex.Pattern, EventTopicSubscriber)}, except that the
+    * The semantics are the same as {@link #subscribe(java.util.regex.Pattern, IEventTopicSubscriber)}, except that the
     * EventService holds a regularly reference, not a WeakReference.
     * <p/>
-    * The subscriber will remain subscribed until {@link #unsubscribe(String,EventTopicSubscriber)}  is called.
+    * The subscriber will remain subscribed until {@link #unsubscribe(String,IEventTopicSubscriber)}  is called.
     *
     * @param topicPattern the name of the topic listened to
     * @param subscriber The topic subscriber that will accept the events when published.
     *
     * @return true if the subscriber was subscribed successfully, false otherwise
     */
-   public boolean subscribeStrongly(Pattern topicPattern, EventTopicSubscriber subscriber);
+   public boolean subscribeStrongly(Pattern topicPattern, IEventTopicSubscriber subscriber);
 
    /**
     * Stop the subscription for a subscriber that is subscribed to a class.
@@ -337,7 +337,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed to the event, false if it wasn't
     */
-   public boolean unsubscribe(Class eventClass, EventSubscriber subscriber);
+   public boolean unsubscribe(Class eventClass, IEventSubscriber subscriber);
 
    /**
     * Stop the subscription for a subscriber that is subscribed to an exact class.
@@ -347,7 +347,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed to the event, false if it wasn't
     */
-   public boolean unsubscribeExactly(Class eventClass, EventSubscriber subscriber);
+   public boolean unsubscribeExactly(Class eventClass, IEventSubscriber subscriber);
 
    /**
     * Stop the subscription for a subscriber that is subscribed to an event topic.
@@ -357,7 +357,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed to the event, false if it wasn't
     */
-   public boolean unsubscribe(String topic, EventTopicSubscriber subscriber);
+   public boolean unsubscribe(String topic, IEventTopicSubscriber subscriber);
 
    /**
     * Stop the subscription for a subscriber that is subscribed to event topics via a Pattern.
@@ -367,7 +367,7 @@ public interface EventService {
     *
     * @return true if the subscriber was subscribed to the event, false if it wasn't
     */
-   public boolean unsubscribe(Pattern topicPattern, EventTopicSubscriber subscriber);
+   public boolean unsubscribe(Pattern topicPattern, IEventTopicSubscriber subscriber);
 
    /**
     * Subscribes a VetoEventListener to publication of event matching a class.  Only a <b>WeakReference</b> to the 
