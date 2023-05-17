@@ -1,7 +1,8 @@
 This project contains code adapted from Apache Commons Lang
 (https://commons.apache.org/proper/commons-lang/) version 3.4,
 as well as GenTyRef (https://github.com/coekie/gentyref) version 1.1.0,
-both of which are licensed under the Apache 2.0 license, as follows:
+and EventBus (https://github.com/michaelbushe/EventBus) version 1.4,
+each of which is licensed under the Apache 2.0 license, as follows:
 
                                  Apache License
                            Version 2.0, January 2004
