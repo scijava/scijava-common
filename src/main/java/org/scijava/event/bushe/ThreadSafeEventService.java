@@ -2095,7 +2095,7 @@ public class ThreadSafeEventService implements EventService {
    private void startCleanup() {
       synchronized(listenerLock) {
          if (cleanupTimer == null) {
-            cleanupTimer = new Timer();
+            cleanupTimer = new Timer(true);
          } 
          if (cleanupTimerTask == null) {
             cleanupTimerTask = new CleanupTimerTask();
