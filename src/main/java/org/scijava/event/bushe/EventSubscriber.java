@@ -82,7 +82,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface EventSubscriber {
+@interface EventSubscriber {
    /** The class to subscribe to, if not specified, a subscription is created for the type of the method parameter. */
    Class eventClass() default UseTheClassOfTheAnnotatedMethodsParameter.class;
 

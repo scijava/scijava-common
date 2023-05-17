@@ -7,7 +7,7 @@ package org.scijava.event.bushe;
  * with the corresponding PublicationStatus as the event object is processed.  The EventService is not
  * required to set the Unpublished state.
  */
-public enum PublicationStatus {
+enum PublicationStatus {
    /** Recommended default.*/
    Unpublished,
    /** Set directly after publication on an EventService.*/

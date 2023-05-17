@@ -22,7 +22,7 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public class ObjectEvent extends AbstractEventServiceEvent {
+class ObjectEvent extends AbstractEventServiceEvent {
    private Object eventObject;
 
    /**

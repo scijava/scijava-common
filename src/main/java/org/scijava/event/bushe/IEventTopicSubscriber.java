@@ -20,7 +20,7 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public interface IEventTopicSubscriber<T> {
+interface IEventTopicSubscriber<T> {
 
    /**
     * Handle an event published on a topic.

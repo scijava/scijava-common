@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface VetoSubscriber {
+@interface VetoSubscriber {
    /** The class to subscribe to, if not specified, a subscription is created for the type of the method parameter. */
    public abstract Class eventClass() default UseTheClassOfTheAnnotatedMethodsParameter.class;
 

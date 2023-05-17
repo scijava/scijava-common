@@ -40,7 +40,7 @@ import javax.swing.ImageIcon;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public abstract class EventServiceAction extends AbstractAction {
+abstract class EventServiceAction extends AbstractAction {
    public static final String EVENT_SERVICE_TOPIC_NAME = "event-service-topic";
 
    private boolean throwsExceptionOnNullEventService = true;

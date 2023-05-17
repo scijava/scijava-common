@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface VetoRuntimeTopicSubscriber {
+@interface VetoRuntimeTopicSubscriber {
     /**
      * @return name of a method (that must return a String) and whose return value will become the subscription topic.
      */

@@ -9,6 +9,6 @@ package org.scijava.event.bushe;
  * from this interface is positive, then this subscriber will be called after non-Prioritized subscribers, the more
  * positive, the later it is called.
  */
-public interface Prioritized {
+interface Prioritized {
    int getPriority();
 }

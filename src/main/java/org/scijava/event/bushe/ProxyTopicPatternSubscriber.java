@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * A Proxy Subscriber for Annotations that use topic patterns
  */
-public class ProxyTopicPatternSubscriber extends ProxyTopicSubscriber {
+class ProxyTopicPatternSubscriber extends ProxyTopicSubscriber {
    private Pattern pattern;
 
    /**

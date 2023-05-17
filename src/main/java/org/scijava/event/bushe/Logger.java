@@ -19,7 +19,7 @@ import java.util.HashMap;
  * explicit.  There is also no explicit use of classes outside java.util,
  * anything else is used by reflection to avoid NoClassDefFound errors on class load.
  */
-public class Logger {
+class Logger {
    private java.util.logging.Logger utilLogger;
    private /*Untyped to avoid java.lang.NoClassDefFoundError
    org.apache.commons.logging.Log*/ Object commonsLogger;

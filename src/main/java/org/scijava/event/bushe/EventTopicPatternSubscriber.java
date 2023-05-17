@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface EventTopicPatternSubscriber {
+@interface EventTopicPatternSubscriber {
    /** The Regular Expression to subscribe to. */
    String topicPattern();
 

@@ -11,5 +11,5 @@ package org.scijava.event.bushe;
  * Object.class cannot be used, since it is legal to subscribe to Object. hence, this class was created which documents
  * the issue and provides decent feedback when using an IDE's parameter insight.
  */
-public final class UseTheClassOfTheAnnotatedMethodsParameter {
+final class UseTheClassOfTheAnnotatedMethodsParameter {
 }

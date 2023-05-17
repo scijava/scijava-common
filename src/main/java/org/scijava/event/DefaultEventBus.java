@@ -41,11 +41,11 @@ import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
 /**
- * An {@link org.scijava.event.bushe.EventService} implementation for SciJava.
+ * An {@code org.scijava.event.bushe.EventService} implementation for SciJava.
  * <p>
  * It is called "DefaultEventBus" rather than "DefaultEventService" to avoid a
  * name clash with {@link DefaultEventService}, which is not an
- * {@link org.scijava.event.bushe.EventService} but rather a SciJava
+ * {@code org.scijava.event.bushe.EventService} but rather a SciJava
  * {@link Service} implementation.
  * </p>
  * 

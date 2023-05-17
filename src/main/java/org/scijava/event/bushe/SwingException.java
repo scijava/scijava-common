@@ -38,7 +38,7 @@ import java.io.PrintWriter;
  * @todo in SwingUtils, make an invokeLater() method that saves the calling stack and catches all exceptions from a
  * subsequent call to SwingUtilities.invokeLater(), then throws a Swing Exception so the calling stack is saved.
  */
-public class SwingException extends Exception {
+class SwingException extends Exception {
    protected StackTraceElement[] callingStackTrace;
 
    /** Default constructor */

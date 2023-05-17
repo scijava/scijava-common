@@ -42,7 +42,6 @@ import java.util.WeakHashMap;
 
 import org.scijava.Priority;
 import org.scijava.event.bushe.AbstractProxySubscriber;
-import org.scijava.event.bushe.BaseProxySubscriber;
 import org.scijava.event.bushe.ReferenceStrength;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -262,9 +261,10 @@ public class DefaultEventService extends AbstractService implements
 	/**
 	 * Helper class used by {@link #subscribe(Object)}.
 	 * <p>
-	 * Recapitulates some logic from {@link BaseProxySubscriber}, because that
-	 * class implements {@link org.scijava.event.bushe.IEventSubscriber} as a raw
-	 * type, which is incompatible with this class implementing SciJava's
+	 * Recapitulates some logic from
+	 * {@code org.scijava.event.bushe.BaseProxySubscriber}, because that class
+	 * implements {@link org.scijava.event.bushe.IEventSubscriber} as a raw type,
+	 * which is incompatible with this class implementing SciJava's
 	 * {@link EventSubscriber} as a typed interface; it becomes impossible to
 	 * implement both {@code onEvent(Object)} and {@code onEvent(E)}.
 	 * </p>

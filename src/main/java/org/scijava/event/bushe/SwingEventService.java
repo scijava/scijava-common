@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public class SwingEventService extends ThreadSafeEventService {
+class SwingEventService extends ThreadSafeEventService {
 
    /**
     * By default, the SwingEventService is constructed such that any listener that takes over 200 ms causes an

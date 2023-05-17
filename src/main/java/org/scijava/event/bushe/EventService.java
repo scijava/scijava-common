@@ -115,7 +115,7 @@ import java.lang.reflect.Type;
  * @see {@link org.scijava.event.bushe.IEventSubscriber} for subscription annotations
  * @see {@link org.scijava.event.bushe.IEventTopicSubscriber} for subscription annotations
  */
-public interface EventService {
+interface EventService {
 
    /**
     * Publishes an object so that subscribers will be notified if they subscribed to the object's class, one of its

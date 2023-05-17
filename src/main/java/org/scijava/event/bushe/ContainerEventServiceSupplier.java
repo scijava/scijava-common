@@ -37,6 +37,6 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public interface ContainerEventServiceSupplier {
+interface ContainerEventServiceSupplier {
    public EventService getContainerEventService();
 }

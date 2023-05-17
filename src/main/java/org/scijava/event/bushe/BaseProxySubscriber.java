@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /** A class is subscribed to an EventService on behalf of another object. */
-public class BaseProxySubscriber extends AbstractProxySubscriber
+class BaseProxySubscriber extends AbstractProxySubscriber
         implements org.scijava.event.bushe.IEventSubscriber, VetoEventListener {
    private Class subscriptionClass;
 

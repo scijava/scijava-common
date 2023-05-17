@@ -38,7 +38,7 @@ import javax.swing.RootPaneContainer;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public class ContainerEventServiceFinder {
+class ContainerEventServiceFinder {
    /** The client property used to put a new SwingEventService on top-level components. */
    public static final String CLIENT_PROPERTY_KEY_TOP_LEVEL_EVENT_SERVICE = "ContainerEventServiceFinder.createdService";
 

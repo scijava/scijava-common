@@ -37,7 +37,7 @@ import java.lang.reflect.Type;
  * @see SwingEventService
  * @see ThreadSafeEventService See package JavaDoc for more information
  */
-public class EventBus {
+class EventBus {
 
   /**
     * The EventBus uses a global static EventService.  This method is not necessary in usual usage, use the other static

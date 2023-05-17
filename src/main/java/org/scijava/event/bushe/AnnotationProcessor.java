@@ -36,7 +36,7 @@ import java.util.Arrays;
  * code. <li>In a Annotation Processing Tool plugin, when it becomes available. </ul> Support for these other methods
  * are not yet implemented.
  */
-public class AnnotationProcessor {
+class AnnotationProcessor {
 
    protected static final Logger LOG = Logger.getLogger(EventService.class.getName());
 

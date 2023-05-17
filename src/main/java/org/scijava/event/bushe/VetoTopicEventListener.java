@@ -5,7 +5,7 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public interface VetoTopicEventListener<T> {
+interface VetoTopicEventListener<T> {
 
    /**
     * Determine whether a topic publication should be vetoed or allowed.

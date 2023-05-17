@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RuntimeTopicPatternEventSubscriber {
+@interface RuntimeTopicPatternEventSubscriber {
     /**
      * @return name of a method (which should return a String) and whose return value will become the subscription topic.
      */

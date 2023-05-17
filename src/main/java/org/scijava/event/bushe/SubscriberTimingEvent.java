@@ -22,7 +22,7 @@ package org.scijava.event.bushe;
  * @author Michael Bushe michael@bushe.com
  * @see ThreadSafeEventService
  */
-public class SubscriberTimingEvent extends AbstractEventServiceEvent {
+class SubscriberTimingEvent extends AbstractEventServiceEvent {
    private Long start;
    private Long end;
    private Long timeLimitMilliseconds;

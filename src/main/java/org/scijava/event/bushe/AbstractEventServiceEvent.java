@@ -22,7 +22,7 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public abstract class AbstractEventServiceEvent implements EventServiceEvent, PublicationStatusTracker {
+abstract class AbstractEventServiceEvent implements EventServiceEvent, PublicationStatusTracker {
 
    private Object source = null;
    protected final Object stateLock = new Object();

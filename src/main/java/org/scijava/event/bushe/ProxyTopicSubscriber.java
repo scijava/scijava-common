@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * {@link @org.scijava.event.bushe.annotation.EventTopicSubscriber}.  Advanced EventBus
  * users could use this class in Aspect-Oriented code.  Consider using the
  * {@link AnnotationProcessor} instead, it may suit your needs and be easier.*/
-public class ProxyTopicSubscriber extends AbstractProxySubscriber
+class ProxyTopicSubscriber extends AbstractProxySubscriber
         implements org.scijava.event.bushe.IEventTopicSubscriber, VetoTopicEventListener {
    private String topic;
 

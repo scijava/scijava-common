@@ -25,7 +25,7 @@ import javax.swing.ImageIcon;
  * @author Michael Bushe michael@bushe.com
  * @see EventServiceAction
  */
-public class EventBusAction extends EventServiceAction {
+class EventBusAction extends EventServiceAction {
    public EventBusAction() {
       this(null, null);
    }

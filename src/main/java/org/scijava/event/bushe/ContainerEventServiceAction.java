@@ -39,7 +39,7 @@ import javax.swing.ImageIcon;
  * @see EventServiceAction for further documentation
  * @see ContainerEventServiceFinder on how the service is found
  */
-public class ContainerEventServiceAction extends EventServiceAction {
+class ContainerEventServiceAction extends EventServiceAction {
    public ContainerEventServiceAction() {
    }
 

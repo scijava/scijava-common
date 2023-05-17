@@ -83,7 +83,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface EventTopicSubscriber {
+@interface EventTopicSubscriber {
    /** The topic to subscribe to */
    String topic();
 

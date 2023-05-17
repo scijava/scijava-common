@@ -7,7 +7,7 @@ package org.scijava.event.bushe;
  * EventService implementations must call setEventStatus(status) on event objects and
  * payloads that implement this interface.
  */
-public interface PublicationStatusTracker {
+interface PublicationStatusTracker {
 
    /**
     * Implementations of this method must be made thread safe.

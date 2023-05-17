@@ -25,7 +25,7 @@ package org.scijava.event.bushe;
  *
  * @author Michael Bushe
  */
-public interface ProxySubscriber {
+interface ProxySubscriber {
 
    /** @return the object this proxy is subscribed on behalf of */
    public Object getProxiedSubscriber();

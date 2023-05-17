@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
  * Courtesy of Neil Gafter's blog.
  * Thanks to Curt Cox for the pointer.
  */
-public abstract class TypeReference<T> {
+abstract class TypeReference<T> {
 
  private final Type type;
  private volatile Constructor<?> constructor;

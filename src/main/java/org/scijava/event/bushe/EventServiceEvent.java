@@ -24,7 +24,7 @@ package org.scijava.event.bushe;
  * @author Michael Bushe michael@bushe.com
  * @see AbstractEventServiceEvent for a simple base class
  */
-public interface EventServiceEvent {
+interface EventServiceEvent {
    /** @return The issuer of the event. */
    Object getSource();
 }

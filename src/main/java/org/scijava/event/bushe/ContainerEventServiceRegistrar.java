@@ -35,7 +35,7 @@ import java.awt.event.HierarchyListener;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public class ContainerEventServiceRegistrar {
+class ContainerEventServiceRegistrar {
    private JComponent jComp;
    private IEventSubscriber eventSubscriber;
    private VetoEventListener vetoSubscriber;

@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface VetoTopicPatternSubscriber {
+@interface VetoTopicPatternSubscriber {
    /** The topic to subscribe to */
    public abstract String topicPattern();
 

@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @author Michael Bushe michael@bushe.com
  */
-public class EventServiceLocator {
+class EventServiceLocator {
    /** The name "EventBus" is reserved for the service that the EventBus wraps and is returned by {@link #getEventBusService}.*/
    public static final String SERVICE_NAME_EVENT_BUS = "EventBus";
    /** The name "SwingEventService" is reserved for the service that is returned by {@link #getSwingEventService}. */
