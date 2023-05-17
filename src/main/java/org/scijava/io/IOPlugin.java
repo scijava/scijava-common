@@ -32,7 +32,6 @@ package org.scijava.io;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.scijava.io.location.FileLocation;
 import org.scijava.io.location.Location;
 import org.scijava.io.location.LocationService;
 import org.scijava.plugin.HandlerPlugin;
@@ -58,7 +57,6 @@ public interface IOPlugin<D> extends HandlerPlugin<Location> {
 	Class<D> getDataType();
 
 	/** Checks whether the I/O plugin can open data from the given source. */
-	@SuppressWarnings("unused")
 	default boolean supportsOpen(final String source) {
 		try {
 			return supportsOpen(context().service(LocationService.class).resolve(source));
@@ -69,12 +67,12 @@ public interface IOPlugin<D> extends HandlerPlugin<Location> {
 	}
 
 	/** Checks whether the I/O plugin can open data from the given location. */
+	@SuppressWarnings("unused")
 	default boolean supportsOpen(final Location source) {
 		return false;
 	}
 
 	/** Checks whether the I/O plugin can save data to the given destination. */
-	@SuppressWarnings("unused")
 	default boolean supportsSave(final String destination) {
 		try {
 			return supportsSave(context().service(LocationService.class).resolve(destination));
@@ -85,6 +83,7 @@ public interface IOPlugin<D> extends HandlerPlugin<Location> {
 	}
 
 	/** Checks whether the I/O plugin can save data to the given location. */
+	@SuppressWarnings("unused")
 	default boolean supportsSave(final Location destination) {
 		return false;
 	}
@@ -108,12 +107,12 @@ public interface IOPlugin<D> extends HandlerPlugin<Location> {
 	}
 
 	/** Opens data from the given location. */
+	@SuppressWarnings("unused")
 	default D open(final Location source) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
 	/** Saves the given data to the specified destination. */
-	@SuppressWarnings("unused")
 	default void save(final D data, final String destination) throws IOException {
 		try {
 			save(data, context().service(LocationService.class).resolve(destination));
@@ -124,6 +123,7 @@ public interface IOPlugin<D> extends HandlerPlugin<Location> {
 	}
 
 	/** Saves the given data to the specified location. */
+	@SuppressWarnings("unused")
 	default void save(final D data, final Location destination) throws IOException {
 		throw new UnsupportedOperationException();
 	}

@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>scijava-common</artifactId>
-	<version>2.93.2-SNAPSHOT</version>
+	<version>2.94.0-SNAPSHOT</version>
 
 	<name>SciJava Common</name>
 	<description>SciJava Common is a shared library for SciJava software. It provides a plugin framework, with an extensible mechanism for service discovery, backed by its own annotation processor, so that plugins can be loaded dynamically. It is used by downstream projects in the SciJava ecosystem, such as ImageJ and SCIFIO.</description>
@@ -167,6 +167,7 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
 		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
+		<license.excludes>**/bushe/**</license.excludes>
 	</properties>
 
 	<dependencies>
@@ -174,13 +175,6 @@
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>parsington</artifactId>
-		</dependency>
-
-		<!-- Third-party dependencies -->
-		<dependency>
-			<groupId>org.bushe</groupId>
-			<artifactId>eventbus</artifactId>
-			<version>1.4</version>
 		</dependency>
 
 		<!-- Test scope dependencies -->
@@ -193,7 +187,7 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
-			</dependency>
+		</dependency>
 	</dependencies>
 
 	<build>

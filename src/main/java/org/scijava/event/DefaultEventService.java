@@ -40,10 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.bushe.swing.event.annotation.AbstractProxySubscriber;
-import org.bushe.swing.event.annotation.BaseProxySubscriber;
-import org.bushe.swing.event.annotation.ReferenceStrength;
 import org.scijava.Priority;
+import org.scijava.event.bushe.AbstractProxySubscriber;
+import org.scijava.event.bushe.ReferenceStrength;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -137,6 +136,11 @@ public class DefaultEventService extends AbstractService implements
 			subscribers.add(subscribe(eventClass, o, m));
 		}
 		return subscribers;
+	}
+
+	@Override
+	public void subscribe(final EventSubscriber<?> subscriber) {
+		eventBus.subscribe(subscriber.getClass(), subscriber);
 	}
 
 	@Override
@@ -262,9 +266,10 @@ public class DefaultEventService extends AbstractService implements
 	/**
 	 * Helper class used by {@link #subscribe(Object)}.
 	 * <p>
-	 * Recapitulates some logic from {@link BaseProxySubscriber}, because that
-	 * class implements {@link org.bushe.swing.event.EventSubscriber} as a raw
-	 * type, which is incompatible with this class implementing SciJava's
+	 * Recapitulates some logic from
+	 * {@code org.scijava.event.bushe.BaseProxySubscriber}, because that class
+	 * implements {@link org.scijava.event.bushe.EventSubscriber} as a raw type,
+	 * which is incompatible with this class implementing SciJava's
 	 * {@link EventSubscriber} as a typed interface; it becomes impossible to
 	 * implement both {@code onEvent(Object)} and {@code onEvent(E)}.
 	 * </p>

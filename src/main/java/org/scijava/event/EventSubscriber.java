@@ -44,7 +44,7 @@ package org.scijava.event;
  * @param <E> Type of event for which to listen
  */
 public interface EventSubscriber<E extends SciJavaEvent> extends
-	org.bushe.swing.event.EventSubscriber<E>
+	org.scijava.event.bushe.EventSubscriber<E>
 {
 
 	@Override

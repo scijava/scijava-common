@@ -40,15 +40,15 @@ import java.lang.annotation.Target;
  * handling methods and annotating each with @{@link EventHandler}.
  * <p>
  * Note to developers: This annotation serves exactly the same purpose as
- * EventBus's {@link org.bushe.swing.event.annotation.EventSubscriber}
- * annotation, recapitulating a subset of the same functionality. We do this to
- * avoid third party code depending directly on EventBus. That is, we do not
- * wish to require SciJava developers to {@code import org.bushe.swing.event.*}
- * or similar. In this way, EventBus is isolated as only a transitive dependency
- * of downstream code, rather than a direct dependency. Unfortunately, because
- * Java annotation interfaces cannot utilize inheritance, we have to
- * recapitulate the functionality rather than extend it (as we are able to do
- * with {@link EventSubscriber}).
+ * EventBus's {@code org.scijava.event.bushe.EventSubscriber} annotation,
+ * recapitulating a subset of the same functionality. We do this to avoid third
+ * party code depending directly on EventBus. That is, we do not wish to require
+ * SciJava developers to {@code import org.scijava.event.bushe.*} or similar. In
+ * this way, EventBus is isolated as only a transitive dependency of downstream
+ * code, rather than a direct dependency. Unfortunately, because Java annotation
+ * interfaces cannot utilize inheritance, we have to recapitulate the
+ * functionality rather than extend it (as we are able to do with
+ * {@link EventSubscriber}).
  * </p>
  * 
  * @author Curtis Rueden
