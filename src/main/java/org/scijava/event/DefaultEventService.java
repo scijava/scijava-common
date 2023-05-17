@@ -139,6 +139,11 @@ public class DefaultEventService extends AbstractService implements
 	}
 
 	@Override
+	public void subscribe(final EventSubscriber<?> subscriber) {
+		eventBus.subscribe(subscriber.getClass(), subscriber);
+	}
+
+	@Override
 	public void unsubscribe(final Collection<EventSubscriber<?>> subscribers) {
 		for (final EventSubscriber<?> subscriber : subscribers) {
 			unsubscribe(subscriber);

@@ -126,6 +126,24 @@ public interface EventService extends SciJavaService {
 	List<EventSubscriber<?>> subscribe(Object o);
 
 	/**
+	 * Subscribes the given {@link EventSubscriber} to its associated event class.
+	 * Its {@link EventSubscriber#onEvent} method will be called whenever an event
+	 * of the matching type is published.
+	 * <p>
+	 * <strong>Important note:</strong> The event service does <em>not</em> keep a
+	 * strong reference to the subscriber! If you use this method, you are also
+	 * responsible for keeping a reference to the subscriber, or else it is likely
+	 * to be garbage collected, and thus no longer respond to events as intended.
+	 * One simple way to force a strong reference to exist is to add it to
+	 * SciJava's {@link org.scijava.object.ObjectService} via
+	 * {@link org.scijava.object.ObjectService#addObject}.
+	 * </p>
+	 * 
+	 * @param subscriber the event subscriber to register
+	 */
+	void subscribe(EventSubscriber<?> subscriber);
+
+	/**
 	 * Removes all the given subscribers; they will no longer be notified when
 	 * events are published.
 	 */
