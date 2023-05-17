@@ -139,6 +139,7 @@ interface EventService {
     * <p>
     * Due to generic type erasure, the type must be supplied by the caller.  You can get a declared object's
     * type by using the {@link org.scijava.event.bushe.TypeReference} class.  For Example:
+    * </p>
     * <pre>
     * TypeReference&#60;List&#60;Trade&#62;&#62; subscribingTypeReference = new TypeReference&#60;List&#60;Trade&#62;&#62;(){};
     * EventBus.subscribe(subscribingTypeReference.getType(), mySubscriber);
@@ -151,7 +152,6 @@ interface EventService {
     * trades.add(trade);
     * EventBus.publish(publishingTypeReference.getType(), trades);
     * </pre>
-    * </p>
     * @param genericType the generified type of the published object.  
     * @param event The event that occurred
     */
@@ -169,7 +169,6 @@ interface EventService {
    /**
     * Subscribes an EventSubscriber to the publication of objects matching a type.  Only a <b>WeakReference</b> to
     * the subscriber is held by the EventService.
-    * </p>
     * <p>
     * Subscribing to a class means the subscriber will be called when objects of that class are published, when
     * objects of subclasses of the class are published, when objects implementing any of the interfaces of the
@@ -202,6 +201,7 @@ interface EventService {
    * <p>
    * Due to generic type erasure, the type must be supplied by the publisher.  You can get a declared object's
    * type by using the {@link org.scijava.event.bushe.TypeReference} class.  For Example:
+   * </p>
    * <pre>
    * TypeReference&#60;List&#60;Trade&#62;&#62; subscribingTypeReference = new TypeReference&#60;List&#60;Trade&#62;&#62;(){};
    * EventBus.subscribe(subscribingTypeReference.getType(), mySubscriber);
@@ -214,7 +214,6 @@ interface EventService {
    * trades.add(trade);
    * EventBus.publish(publishingTypeReference.getType(), trades);
    * </pre>
-   * </p>
    * @param type the generic type to subscribe to
    * @param subscriber the subscriber to the type
    * @return true if a new subscription is made, false if it already existed

@@ -38,8 +38,6 @@ import java.io.PrintWriter;
  * </p>
  *
  * @author Michael Bushe michael@bushe.com
- * @todo in SwingUtils, make an invokeLater() method that saves the calling stack and catches all exceptions from a
- * subsequent call to SwingUtilities.invokeLater(), then throws a Swing Exception so the calling stack is saved.
  */
 class SwingException extends Exception {
    protected StackTraceElement[] callingStackTrace;

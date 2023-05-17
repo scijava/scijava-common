@@ -65,12 +65,6 @@ import org.scijava.event.bushe.Logger.Level;
  * never know if your subscriber has handled an event while it was being subscribed (before the subscribe() method
  * returned) that is newer or older than the retrieved cached value (taken before or after subscribe() respectively).
  * </p>
- * <p>
- * To deal with subscribers that take too long (a concern in Swing applications), the EventService can be made to issue
- * {@link SubscriberTimingEvent}s when subscribers exceed a certain time.  This does not interrupt subscriber processing
- * and is published after the subscriber finishes.  The service can log a warning for SubscriberTimingEvents, see the
- * constructor {@link ThreadSafeEventService (long, boolean)}.  The timing is checked for veto subscribers too.
- * </p>
  * <h2>Logging</h2> 
  * <p>
  * All logging goes through the {@link Logger}.  The Logger is configurable and supports multiple logging systems.
@@ -123,7 +117,7 @@ import org.scijava.event.bushe.Logger.Level;
  * <p>
  * Once the cleanup start threshold is exceeded, a <tt>java.util.Timer</tt> is started to clean up stale subscribers periodically 
  * in another thread.  The timer will fire every <tt>cleanupPeriodMS</tt> milliseconds, which is set to the 
- * <tt>CLEANUP_PERIOD_MS_DEFAULT<tt> (20 minutes) by default.  The default is overridable in the constructor or 
+ * <tt>CLEANUP_PERIOD_MS_DEFAULT</tt> (20 minutes) by default.  The default is overridable in the constructor or 
  * via #setCleanupPeriodMS(Integer).  If set to null, cleanup will not start.  This is implemented with a <tt>java.util.Timer</tt>,
  * so Timer's warnings apply - setting this too low will cause cleanups to bunch up and hog the cleanup thread.
  * </p>
@@ -145,7 +139,6 @@ import org.scijava.event.bushe.Logger.Level;
  * </p>
  * 
  * @author Michael Bushe michael@bushe.com
- * @todo (param) a JMS-like selector (can be done in base classes by implements like a commons filter
  * @see EventService for a complete description of the API
  */
 @SuppressWarnings({"unchecked"})
