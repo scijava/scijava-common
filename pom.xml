@@ -167,6 +167,7 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
 		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
+		<license.excludes>**/bushe/**</license.excludes>
 	</properties>
 
 	<dependencies>
@@ -174,13 +175,6 @@
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>parsington</artifactId>
-		</dependency>
-
-		<!-- Third-party dependencies -->
-		<dependency>
-			<groupId>org.bushe</groupId>
-			<artifactId>eventbus</artifactId>
-			<version>1.4</version>
 		</dependency>
 
 		<!-- Test scope dependencies -->
@@ -193,7 +187,7 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
-			</dependency>
+		</dependency>
 	</dependencies>
 
 	<build>

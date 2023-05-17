@@ -34,18 +34,18 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bushe.swing.event.CleanupEvent;
-import org.bushe.swing.event.ThreadSafeEventService;
+import org.scijava.event.bushe.CleanupEvent;
+import org.scijava.event.bushe.ThreadSafeEventService;
 import org.scijava.log.LogService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
 
 /**
- * An {@link org.bushe.swing.event.EventService} implementation for SciJava.
+ * An {@link org.scijava.event.bushe.EventService} implementation for SciJava.
  * <p>
  * It is called "DefaultEventBus" rather than "DefaultEventService" to avoid a
  * name clash with {@link DefaultEventService}, which is not an
- * {@link org.bushe.swing.event.EventService} but rather a SciJava
+ * {@link org.scijava.event.bushe.EventService} but rather a SciJava
  * {@link Service} implementation.
  * </p>
  * 
@@ -112,7 +112,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 			getVetoEventListeners(topicName), null);
 	}
 
-	// -- org.bushe.swing.event.EventService methods --
+	// -- org.scijava.event.bushe.EventService methods --
 
 	@Override
 	public void publish(final Object event) {
