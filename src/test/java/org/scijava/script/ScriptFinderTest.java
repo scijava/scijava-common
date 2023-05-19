@@ -66,7 +66,7 @@ public class ScriptFinderTest {
 	public static void setUp() throws IOException {
 		scriptsDir = TestUtils.createTemporaryDirectory("script-finder-");
 		final String[] scriptPaths = { //
-			"ignored.foo", //
+			"script_in_base_dir.foo", //
 			"Scripts/quick.foo", //
 			"Scripts/brown.foo", //
 			"Scripts/fox.foo", //
@@ -108,6 +108,7 @@ public class ScriptFinderTest {
 			"Math > multiply", //
 			"Math > pow", //
 			"Scripts > quick", //
+			"Scripts > script in base dir", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
 			"Math > Trig > tan", //
@@ -139,10 +140,10 @@ public class ScriptFinderTest {
 			"Foo > Bar > Math > Trig > cos", //
 			"Foo > Bar > Math > divide", //
 			"Foo > Bar > Scripts > fox", //
-			"Foo > Bar > ignored", //
 			"Foo > Bar > Math > multiply", //
 			"Math > pow", //
 			"Foo > Bar > Scripts > quick", //
+			"Foo > Bar > script in base dir", //
 			"Foo > Bar > Math > Trig > sin", //
 			"Foo > Bar > Math > subtract", //
 			"Foo > Bar > Math > Trig > tan", //
@@ -177,6 +178,7 @@ public class ScriptFinderTest {
 			"Math > multiply", //
 			"Math > pow", //
 			"Plugins > quick", //
+			"Scripts > script in base dir", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
 			"Math > Trig > tan", //
