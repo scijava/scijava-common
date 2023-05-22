@@ -108,7 +108,7 @@ public class ScriptFinderTest {
 			"Math > multiply", //
 			"Math > pow", //
 			"Scripts > quick", //
-			"Scripts > script in base dir", //
+			"Plugins > Scripts > script in base dir", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
 			"Math > Trig > tan", //
@@ -178,7 +178,7 @@ public class ScriptFinderTest {
 			"Math > multiply", //
 			"Math > pow", //
 			"Plugins > quick", //
-			"Scripts > script in base dir", //
+			"Plugins > Scripts > script in base dir", //
 			"Math > Trig > sin", //
 			"Math > subtract", //
 			"Math > Trig > tan", //
