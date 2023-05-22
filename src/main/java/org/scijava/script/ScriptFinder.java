@@ -179,9 +179,10 @@ public class ScriptFinder extends AbstractContextual {
 			// friendlyPath = "File/Import/Movie File..."
 			// menuPath = File > Import > Movie File...
 
-			// Place base-level scripts in the "Scripts" submenu
+			// Place base-level scripts in the "Plugins>Scripts" submenu
 			if (menuPath.size() == 1){
-				menuPath.add(0, new MenuEntry("Scripts"));
+				menuPath.add(0, new MenuEntry("Plugins"));
+				menuPath.add(1, new MenuEntry("Scripts"));
 			}
 
 			final URL url = scriptMap.get(path);
