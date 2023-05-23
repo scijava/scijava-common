@@ -41,6 +41,7 @@ import java.util.Set;
 
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
+import org.scijava.MenuEntry;
 import org.scijava.MenuPath;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
@@ -178,8 +179,11 @@ public class ScriptFinder extends AbstractContextual {
 			// friendlyPath = "File/Import/Movie File..."
 			// menuPath = File > Import > Movie File...
 
-			// NB: Ignore base-level scripts (not nested in any menu).
-			if (menuPath.size() == 1) continue;
+			// Place base-level scripts in the "Plugins>Scripts" submenu
+			if (menuPath.size() == 1){
+				menuPath.add(0, new MenuEntry("Plugins"));
+				menuPath.add(1, new MenuEntry("Scripts"));
+			}
 
 			final URL url = scriptMap.get(path);
 
