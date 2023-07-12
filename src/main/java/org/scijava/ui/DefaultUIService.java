@@ -117,6 +117,9 @@ public final class DefaultUIService extends AbstractService implements
 	/** The default user interface to use, if one is not explicitly specified. */
 	private UserInterface defaultUI;
 
+	/** The last UI used when performing UI operations via the service. */
+	private UserInterface activeUI;
+
 	/**
 	 * When true, {@link #isHeadless()} will return true regardless of the value
 	 * of the {@code java.awt.headless} system property. When false, {@link
@@ -143,18 +146,12 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public void showUI() {
 		if (disposed) return;
-		final UserInterface ui = getDefaultUI();
-		if (ui == null) {
-			throw new IllegalStateException("No UIs available. " +
-				"Please add a component containing a UIPlugin " +
-				"(e.g., scijava-ui-swing) to your class-path.");
-		}
-		showUI(ui);
+		showUI(activeUI());
 	}
 
 	@Override
 	public void showUI(final String name) {
-		final UserInterface ui = uiMap().get(name);
+		final UserInterface ui = getUI(name);
 		if (ui == null) {
 			throw new IllegalArgumentException("No such user interface: " + name);
 		}
@@ -174,14 +171,12 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public boolean isVisible() {
-		final UserInterface ui = getDefaultUI();
-		if (ui == null) return false;
-		return ui.isVisible();
+		return activeUI().isVisible();
 	}
 
 	@Override
 	public boolean isVisible(final String name) {
-		final UserInterface ui = uiMap().get(name);
+		final UserInterface ui = getUI(name);
 		return ui != null && ui.isVisible();
 	}
 
@@ -200,7 +195,7 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public UserInterface getDefaultUI() {
 		if (!initialized) discoverUIs();
-		if (isHeadless()) return uiMap().get(HeadlessUI.NAME);
+		if (isHeadless()) return getUI(HeadlessUI.NAME);
 		if (defaultUI != null) return defaultUI;
 		return uiList().isEmpty() ? null : uiList().get(0);
 	}
@@ -244,17 +239,17 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void show(final Object o) {
-		getVisibleUI(true).show(o);
+		activeUI().show(o);
 	}
 
 	@Override
 	public void show(final String name, final Object o) {
-		getVisibleUI(true).show(name, o);
+		activeUI().show(name, o);
 	}
 
 	@Override
 	public void show(final Display<?> display) {
-		getVisibleUI(true).show(display);
+		activeUI().show(display);
 	}
 
 	@Override
@@ -309,44 +304,38 @@ public final class DefaultUIService extends AbstractService implements
 		final String title, final DialogPrompt.MessageType messageType,
 		final DialogPrompt.OptionType optionType)
 	{
-		UserInterface ui = getVisibleUI(false);
-		if (ui == null) return null;
-		final DialogPrompt dialogPrompt = ui.dialogPrompt(message, title, messageType, optionType);
+		final DialogPrompt dialogPrompt = //
+			activeUI().dialogPrompt(message, title, messageType, optionType);
 		return dialogPrompt == null ? null : dialogPrompt.prompt();
 	}
 
 	@Override
 	public File chooseFile(final File file, final String style) {
-		final UserInterface ui = getVisibleUI(true);
-		return ui == null ? null : ui.chooseFile(file, style);
+		return activeUI().chooseFile(file, style);
 	}
 
 	@Override
 	public File
 		chooseFile(final String title, final File file, final String style)
 	{
-		final UserInterface ui = getVisibleUI(true);
-		return ui == null ? null : ui.chooseFile(title, file, style);
+		return activeUI().chooseFile(title, file, style);
 	}
 
 	@Override
 	public File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
-		final UserInterface ui = getVisibleUI(true);
-		return ui == null ? null : ui.chooseFiles(parent, files, filter, style);
+		return activeUI().chooseFiles(parent, files, filter, style);
 	}
 	
 	@Override
 	public List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
-		final UserInterface ui = getVisibleUI(true);
-		return ui == null ? null : ui.chooseFiles(parent, fileList, filter, style);
+		return activeUI().chooseFiles(parent, fileList, filter, style);
 	}
 
 	@Override
 	public void showContextMenu(final String menuRoot, final Display<?> display,
 		final int x, final int y)
 	{
-		final UserInterface ui = getVisibleUI(true);
-		if (ui != null) ui.showContextMenu(menuRoot, display, x, y);
+		activeUI().showContextMenu(menuRoot, display, x, y);
 	}
 
 	@Override
@@ -542,20 +531,16 @@ public final class DefaultUIService extends AbstractService implements
 		return appService.getApp().getTitle();
 	}
 
-	private UserInterface getVisibleUI(final boolean forceShow) {
-		// finds the first (highest priority) VISIBLE UserInterface
-		// if none are visible, then we show default UI if the caller indicated so.
-		UserInterface defaultUI = getDefaultUI();
-		if (defaultUI == null) return null;
-		if (defaultUI.isVisible()) return defaultUI;
-		else if(getVisibleUIs().size() > 0) {
-			return getVisibleUIs().get(0);
-		}
+	/** Gets the UI to use when performing UI operations via the service. */
+	private UserInterface activeUI() {
+		// If a particular UI is already active and still visible, use that one.
+		if (activeUI != null && activeUI.isVisible()) return activeUI;
 
-		if (forceShow) {
-			showUI(defaultUI);
-			return defaultUI;
-		}
-		return null;
+		// If a UI is visible, use it.
+		final List<UserInterface> visibleUIs = getVisibleUIs();
+		if (visibleUIs.size() > 0) return activeUI = visibleUIs.get(0);
+
+		// No UI is visible, so use the default one.
+		return activeUI = getDefaultUI();
 	}
 }
