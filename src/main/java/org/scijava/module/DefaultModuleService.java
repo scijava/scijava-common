@@ -74,7 +74,7 @@ public class DefaultModuleService extends AbstractService implements
 	ModuleService
 {
 
-	@Parameter
+	@Parameter(required = false)
 	private LogService log;
 
 	@Parameter
@@ -170,7 +170,7 @@ public class DefaultModuleService extends AbstractService implements
 			return module;
 		}
 		catch (final ModuleException exc) {
-			log.error("Cannot create module: " + info.getDelegateClassName(), exc);
+			if (log != null) log.error("Cannot create module: " + info.getDelegateClassName(), exc);
 		}
 		return null;
 	}
@@ -251,10 +251,10 @@ public class DefaultModuleService extends AbstractService implements
 			return future.get();
 		}
 		catch (final InterruptedException e) {
-			log.error("Module execution interrupted", e);
+			if (log != null) log.error("Module execution interrupted", e);
 		}
 		catch (final ExecutionException e) {
-			log.error("Error during module execution", e);
+			if (log != null) log.error("Error during module execution", e);
 		}
 		return null;
 	}
@@ -392,8 +392,10 @@ public class DefaultModuleService extends AbstractService implements
 		}
 		if (objects.size() > 1) {
 			// there are multiple instances; it's not clear which one to use
-			log.warn("Ignoring multiple candidate module instances for class: " +
-				type.getName());
+			if (log != null) {
+				log.warn("Ignoring multiple candidate module instances for class: " +
+					type.getName());
+			}
 			return null;
 		}
 		// found exactly one instance; return it!
@@ -416,7 +418,7 @@ public class DefaultModuleService extends AbstractService implements
 			final Map<?, ?> valueMap = (Map<?, ?>) values[0];
 			for (final Object key : valueMap.keySet()) {
 				if (!(key instanceof String)) {
-					log.error("Invalid input name: " + key);
+					if (log != null) log.error("Invalid input name: " + key);
 					continue;
 				}
 				final String name = (String) key;
@@ -427,7 +429,7 @@ public class DefaultModuleService extends AbstractService implements
 		}
 
 		if (values.length % 2 != 0) {
-			log.error("Ignoring extraneous argument: " + values[values.length - 1]);
+			if (log != null) log.error("Ignoring extraneous argument: " + values[values.length - 1]);
 		}
 
 		// loop over list of key/value pairs
@@ -436,7 +438,7 @@ public class DefaultModuleService extends AbstractService implements
 			final Object key = values[2 * i];
 			final Object value = values[2 * i + 1];
 			if (!(key instanceof String)) {
-				log.error("Invalid input name: " + key);
+				if (log != null) log.error("Invalid input name: " + key);
 				continue;
 			}
 			final String name = (String) key;
@@ -459,7 +461,7 @@ public class DefaultModuleService extends AbstractService implements
 			if (input == null) {
 				// inputs whose name starts with a dot are implicitly known by convention
 				if (!name.startsWith(".")) {
-					log.warn("Unmatched input: " + name);
+					if (log != null) log.warn("Unmatched input: " + name);
 				}
 				converted = value;
 			}
@@ -467,8 +469,10 @@ public class DefaultModuleService extends AbstractService implements
 				final Class<?> type = input.getType();
 				converted = convertService.convert(value, type);
 				if (value != null && converted == null) {
-					log.error("For input " + name + ": incompatible object " +
-						value.getClass().getName() + " for type " + type.getName());
+					if (log != null) {
+						log.error("For input " + name + ": incompatible object " +
+							value.getClass().getName() + " for type " + type.getName());
+					}
 					continue;
 				}
 			}
