@@ -497,8 +497,10 @@ public class ScriptREPL {
 			for (int c = 0; c < columns.length; c++) {
 				final String s = s(columns[c].get(i));
 				sb.append(s);
-				for (int p = s.length(); p < widths[c] + pad; p++) {
-					sb.append(' ');
+				if (c < columns.length - 1) {
+					for (int p = s.length(); p < widths[c] + pad; p++) {
+						sb.append(' ');
+					}
 				}
 			}
 			println(sb.toString());
