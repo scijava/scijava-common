@@ -75,6 +75,7 @@ public class ModuleErroredEventTest {
 			@EventHandler
 			void onEvent(final ModuleErroredEvent e) {
 				caughtException[0] = e.getException();
+				e.consume(); // Prevent exception from being emitted to stderr.
 			}
 		};
 		es.subscribe(interestedParty);
