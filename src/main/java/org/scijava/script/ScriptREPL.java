@@ -30,6 +30,7 @@
 package org.scijava.script;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,6 +39,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.script.Bindings;
 import javax.script.ScriptException;
@@ -67,9 +70,9 @@ public class ScriptREPL {
 	@Parameter(required = false)
 	private PluginService pluginService;
 
-	private final PrintStream out;
+	private final Consumer<String> out;
 
-	private String languagePreference = null;
+	private String languagePreference;
 
 	/** List of interpreter-friendly script languages. */
 	private List<ScriptLanguage> languages;
@@ -84,19 +87,26 @@ public class ScriptREPL {
 		this(context, System.out);
 	}
 
-	public ScriptREPL(final Context context, final OutputStream out) {
-		context.inject(this);
-		this.out = out instanceof PrintStream ?
-			(PrintStream) out : new PrintStream(out);
-	}
-
 	public ScriptREPL(final Context context, final String language) {
 		this(context, language, System.out);
 	}
 
-	public ScriptREPL(final Context context, final String language, final OutputStream out) {
-		this(context, out);
+	public ScriptREPL(final Context context, final OutputStream out) {
+		this(context, null, out);
+	}
+
+	public ScriptREPL(final Context context, final String language,
+		final OutputStream out)
+	{
+		this(context, language, outputStreamConsumer(out));
+	}
+
+	public ScriptREPL(final Context context, final String language,
+		final Consumer<String> out)
+	{
+		context.inject(this);
 		languagePreference = language;
+		this.out = out;
 	}
 
 	/**
@@ -132,11 +142,39 @@ public class ScriptREPL {
 	 * @param in Input stream from which commands are read.
 	 */
 	public void loop(final InputStream in) throws IOException {
-		initialize();
 		final BufferedReader bin = new BufferedReader(new InputStreamReader(in));
+		try {
+			loop(() -> {
+				try {
+					return bin.readLine();
+				}
+				catch (final IOException exc) {
+					throw new RuntimeException(exc);
+				}
+			});
+		}
+		catch (final RuntimeException exc) {
+			// NB: This convolution lets us throw IOException from inside a
+			// Supplier.get implementation, by wrapping in a RuntimeException.
+			// We then unwrap it again and throw it here, where we said we would.
+			final Throwable cause = exc.getCause();
+			if (cause instanceof IOException) throw (IOException) cause;
+			else throw exc;
+		}
+	}
+
+	/**
+	 * Starts a Read-Eval-Print-Loop from the given source, returning when
+	 * the loop terminates.
+	 *
+	 * @param in Source from which commands are read.
+	 */
+	public void loop(final Supplier<?> in) {
+		initialize();
 		while (true) {
 			prompt();
-			final String line = bin.readLine();
+			final Object input = in.get();
+			final String line = input == null ? null : input.toString();
 			if (line == null) break;
 			if (!evaluate(line)) return;
 		}
@@ -157,54 +195,40 @@ public class ScriptREPL {
 	 */
 	public void initialize(final boolean verbose) {
 		if (verbose) {
-			out.println("Welcome to the SciJava REPL!");
-			out.println();
+			println("Welcome to the SciJava REPL!");
+			println();
 			help();
 		}
 		final List<ScriptLanguage> langs = getInterpretedLanguages();
 		if (verbose) {
 			if (langs.isEmpty()) {
-				out.println("--------------------------------------------------------------");
-				out.println("Uh oh! There are no SciJava script languages available!");
-				out.println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
-				out.println("--------------------------------------------------------------");
-				out.println();
+				println("--------------------------------------------------------------");
+				println("Uh oh! There are no SciJava script languages available!");
+				println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
+				println("--------------------------------------------------------------");
+				println();
 				return;
 			}
-			out.println("Have fun!");
-			out.println();
-
-			if(languagePreference != null) {
-			    selectPreferredLanguage(langs);
-			} else {
-				lang(langs.get(0).getLanguageName());
-			}
+			println("Have fun!");
+			println();
 		}
-		else if (!langs.isEmpty()) {
-			if(languagePreference != null) {
-				selectPreferredLanguage(langs);
-			} else {
-				lang(langs.get(0));
-			}
+		if (!langs.isEmpty()) {
+			if (languagePreference != null) selectPreferredLanguage(langs);
+			else lang(langs.get(0));
 		}
-
 		populateBindings(interpreter.getBindings());
 	}
 
 	private void selectPreferredLanguage(List<ScriptLanguage> langs) {
-		final ScriptLanguage preference = langs
-				.stream().filter(lang -> languagePreference.equals(lang.getLanguageName()))
-				.findAny().orElse(null);
-		if(preference != null) {
-			lang(preference);
-		} else {
-			lang(langs.get(0).getLanguageName());
-		}
+		final ScriptLanguage preference = langs.stream()
+				.filter(lang -> languagePreference.equals(lang.getLanguageName()))
+				.findFirst().orElse(langs.get(0));
+		lang(preference);
 	}
 
 	/** Outputs the prompt. */
 	public void prompt() {
-		out.print(interpreter == null || interpreter.isReady() ? "> " : "\\ ");
+		print(interpreter == null || interpreter.isReady() ? "> " : "\\ ");
 	}
 
 	/**
@@ -230,22 +254,22 @@ public class ScriptREPL {
 				// pass the input to the current interpreter for evaluation
 				final Object result = interpreter.interpret(line);
 				if (result != ScriptInterpreter.MORE_INPUT_PENDING) {
-					out.println(s(result));
+					println(s(result));
 				}
 			}
 		}
 		catch (final ScriptException exc) {
 			// NB: Something went wrong interpreting the line of code.
 			// Let's just display the error message, unless we are in debug mode.
-			if (debug) exc.printStackTrace(out);
+			if (debug) printStackTrace(exc);
 			else {
 				final String msg = exc.getMessage();
-				out.println(msg == null ? exc.getClass().getName() : msg);
+				println(msg == null ? exc.getClass().getName() : msg);
 			}
 		}
 		catch (final Throwable exc) {
 			// NB: Something unusual went wrong. Dump the whole exception always.
-			exc.printStackTrace(out);
+			printStackTrace(exc);
 		}
 		return true;
 	}
@@ -254,17 +278,17 @@ public class ScriptREPL {
 
 	/** Prints a usage guide. */
 	public void help() {
-		out.println("Available built-in commands:");
-		out.println();
-		out.println("  :help           | this handy list of commands");
-		out.println("  :vars           | dump a list of variables");
-		out.println("  :lang <name>    | switch the active language");
-		out.println("  :langs          | list available languages");
-		out.println("  :debug          | toggle full stack traces");
-		out.println("  :quit           | exit the REPL");
-		out.println();
-		out.println("Or type a statement to evaluate it with the active language.");
-		out.println();
+		println("Available built-in commands:");
+		println();
+		println("  :help           | this handy list of commands");
+		println("  :vars           | dump a list of variables");
+		println("  :lang <name>    | switch the active language");
+		println("  :langs          | list available languages");
+		println("  :debug          | toggle full stack traces");
+		println("  :quit           | exit the REPL");
+		println();
+		println("Or type a statement to evaluate it with the active language.");
+		println();
 	}
 
 	/** Lists variables in the script context. */
@@ -294,11 +318,11 @@ public class ScriptREPL {
 		// create the new interpreter
 		final ScriptLanguage language = scriptService.getLanguageByName(langName);
 		if (language == null) {
-			out.println("No such language: " + langName);
+			println("No such language: " + langName);
 			return;
 		}
 		lang(language);
-		out.println("language -> " + interpreter.getLanguage().getLanguageName());
+		println("language -> " + interpreter.getLanguage().getLanguageName());
 	}
 
 	/**
@@ -316,7 +340,7 @@ public class ScriptREPL {
 			copyBindings(interpreter, newInterpreter);
 		}
 		catch (final Throwable t) {
-			t.printStackTrace(out);
+			printStackTrace(t);
 		}
 		interpreter = newInterpreter;
 	}
@@ -335,7 +359,7 @@ public class ScriptREPL {
 
 	public void debug() {
 		debug = !debug;
-		out.println("debug mode -> " + debug);
+		println("debug mode -> " + debug);
 	}
 
 	// -- Main method --
@@ -417,7 +441,7 @@ public class ScriptREPL {
 				gateways.add(gateway);
 			}
 			catch (final Throwable t) {
-				t.printStackTrace(out);
+				printStackTrace(t);
 			}
 		}
 		return gateways;
@@ -442,6 +466,17 @@ public class ScriptREPL {
 		return "[" + decoded.getClass().getName() + "]";
 	}
 
+	private static final String NL = System.getProperty("line.separator");
+	private void print(String s) { out.accept(s); }
+	private void println() { print(NL); }
+	private void println(final String s) { print(s + NL); }
+
+	private void printStackTrace(final Throwable t) {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		t.printStackTrace(new PrintStream(baos));
+		println(baos.toString());
+	}
+
 	private void printColumns(final List<?>... columns) {
 		final int pad = 2;
 
@@ -456,16 +491,24 @@ public class ScriptREPL {
 		}
 
 		// output the columns
+		final StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < columns[0].size(); i++) {
+			sb.setLength(0);
 			for (int c = 0; c < columns.length; c++) {
 				final String s = s(columns[c].get(i));
-				out.print(s);
+				sb.append(s);
 				for (int p = s.length(); p < widths[c] + pad; p++) {
-					out.print(' ');
+					sb.append(' ');
 				}
 			}
-			out.println();
+			println(sb.toString());
 		}
+	}
+
+	private static Consumer<String> outputStreamConsumer(final OutputStream out) {
+		final PrintStream ps = out instanceof PrintStream ?
+			(PrintStream) out : new PrintStream(out);
+		return s -> { ps.print(s); ps.flush(); };
 	}
 
 	private static String lowerCamelCase(final String s) {
@@ -481,5 +524,4 @@ public class ScriptREPL {
 	private static String s(final Object o) {
 		return o == null ? NULL : o.toString();
 	}
-
 }
