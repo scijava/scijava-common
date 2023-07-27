@@ -72,7 +72,13 @@ public class TaskEventTest {
         for (int i=0;i<nTasks;i++) {
             createTask(taskService, "Task_"+i, 100, 10, 100);
         }
-        Thread.sleep(5000);
+        // Wait up to a few seconds for all tasks to complete.
+        long start = System.currentTimeMillis();
+        long maxWaitTime = 5000;
+        while (System.currentTimeMillis() - start < maxWaitTime) {
+          if (eventListener.tasks.isEmpty()) break; // done!
+          Thread.sleep(10);
+        }
         assertEquals(0, eventListener.getLeftOvers().size());
     }
 
