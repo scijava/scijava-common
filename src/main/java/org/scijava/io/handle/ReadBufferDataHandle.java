@@ -44,7 +44,7 @@ import org.scijava.io.location.Location;
  * Read-only buffered {@link DataHandle}. It buffers the underlying handle into
  * a fixed number of pages, swapping them out when necessary.
  */
-public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
+public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrderHandle<L> {
 
 	private static final int DEFAULT_PAGE_SIZE = 10_000;
 	private static final int DEFAULT_NUM_PAGES = 10;
@@ -67,7 +67,7 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 	 * @param handle
 	 *            the handle to wrap
 	 */
-	public ReadBufferDataHandle(final DataHandle<Location> handle) {
+	public ReadBufferDataHandle(final DataHandle<L> handle) {
 		this(handle, DEFAULT_PAGE_SIZE);
 	}
 
@@ -80,7 +80,7 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 	 * @param pageSize
 	 *            the size of the used pages
 	 */
-	public ReadBufferDataHandle(final DataHandle<Location> handle, final int pageSize) {
+	public ReadBufferDataHandle(final DataHandle<L> handle, final int pageSize) {
 		this(handle, pageSize, DEFAULT_NUM_PAGES);
 	}
 
@@ -94,7 +94,7 @@ public class ReadBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 	 * @param numPages
 	 *            the number of pages to use
 	 */
-	public ReadBufferDataHandle(final DataHandle<Location> handle, final int pageSize, final int numPages) {
+	public ReadBufferDataHandle(final DataHandle<L> handle, final int pageSize, final int numPages) {
 		super(handle);
 		this.pageSize = pageSize;
 
