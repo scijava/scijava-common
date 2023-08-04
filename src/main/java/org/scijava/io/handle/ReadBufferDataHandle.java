@@ -55,6 +55,12 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	private final LRUReplacementStrategy replacementStrategy;
 	private final Map<Integer, Integer> pageToSlot;
 
+	/**
+	 * Cached length value, for performance. When reading data, length is not
+	 * expected to change, but querying it (e.g. via native filesystem access)
+	 * can be slow, and we need to query the length frequently.
+	 */
+	private long length = -1;
 	private long offset = 0l;
 	private byte[] currentPage;
 	private int currentPageID = -1;
@@ -188,6 +194,12 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	@Override
 	public void seek(final long pos) throws IOException {
 		this.offset = pos;
+	}
+
+	@Override
+	public long length() throws IOException {
+		if (length < 0) length = super.length();
+		return length;
 	}
 
 	@Override
