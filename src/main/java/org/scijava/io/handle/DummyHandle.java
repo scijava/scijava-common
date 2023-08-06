@@ -48,6 +48,14 @@ public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 	private long offset;
 	private long length;
 
+	// -- Constructors --
+
+	public DummyHandle() { }
+
+	public DummyHandle(final DummyLocation location) {
+		set(location);
+	}
+
 	// -- DataHandle methods --
 
 	@Override

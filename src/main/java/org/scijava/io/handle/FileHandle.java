@@ -58,6 +58,14 @@ public class FileHandle extends AbstractDataHandle<FileLocation> {
 	/** True iff the {@link #close()} has already been called. */
 	private boolean closed;
 
+	// -- Constructors --
+
+	public FileHandle() { }
+
+	public FileHandle(final FileLocation location) {
+		set(location);
+	}
+
 	// -- FileHandle methods --
 
 	/**

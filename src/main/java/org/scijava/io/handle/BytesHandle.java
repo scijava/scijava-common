@@ -48,6 +48,14 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	private long offset = 0;
 
+	// -- Constructors --
+
+	public BytesHandle() { }
+
+	public BytesHandle(final BytesLocation location) {
+		set(location);
+	}
+
 	// -- DataHandle methods --
 
 	@Override
