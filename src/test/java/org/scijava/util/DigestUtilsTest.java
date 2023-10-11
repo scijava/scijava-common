@@ -41,11 +41,11 @@ import org.junit.Test;
  */
 public class DigestUtilsTest {
 
-	private static final byte[] CAFEBABE_SHA1 = { 20, 101, -38, -47, 38, -45, 43,
-		-9, -86, 93, 59, -107, -91, -57, -61, 49, -51, -1, 52, -33 };
+	private static final byte[] COFFEE_SHA1 = { -71, 2, 27, -126, -23, -70, -89,
+		35, -65, -15, -108, 66, 72, 113, 29, -32, -12, -42, -49, 6 };
 
-	private static final byte[] CAFEBABE_MD5 = { 45, 27, -67, -30, -84, -84, 10,
-		-3, 7, 100, 109, -104, 21, 79, 64, 46 };
+	private static final byte[] COFFEE_MD5 = { -39, -98, 9, -40, -39, 44, 31,
+		-62, 23, 9, 38, 101, 85, -57, 121, -110 };
 
 	private static final byte[] HELLO_WORLD_SHA1 = { 123, 80, 44, 58, 31, 72,
 		-56, 96, -102, -30, 18, -51, -5, 99, -99, -18, 57, 103, 63, 94 };
@@ -53,14 +53,14 @@ public class DigestUtilsTest {
 	private static final String HELLO_WORLD_SHA1_HEX =
 		"7b502c3a1f48c8609ae212cdfb639dee39673f5e";
 
-	private static final String CAFEBABE_SHA1_HEX =
-		"1465dad126d32bf7aa5d3b95a5c7c331cdff34df";
+	private static final String COFFEE_SHA1_HEX =
+		"b9021b82e9baa723bff1944248711de0f4d6cf06";
 
 	private static final String HELLO_WORLD_SHA1_BASE64 =
 		"e1AsOh9IyGCa4hLN+2Od7jlnP14=";
 
-	private static final String CAFEBABE_SHA1_BASE64 =
-		"FGXa0SbTK/eqXTuVpcfDMc3/NN8=";
+	private static final String COFFEE_SHA1_BASE64 =
+		"uQIbgum6pyO/8ZRCSHEd4PTWzwY=";
 
 	/** Tests {@link DigestUtils#bytes(String)}. */
 	@Test
@@ -75,15 +75,15 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#bytes(int)}. */
 	@Test
 	public void testBytesInt() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
-		final byte[] expected = { -54, -2, -70, -66 };
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
+		final byte[] expected = { 0, -64, -1, -18 };
 		assertArrayEquals(expected, bytes);
 	}
 
 	/** Tests {@link DigestUtils#hex(byte[])}. */
 	@Test
 	public void testHex() {
-		assertEquals("cafebabe", DigestUtils.hex(DigestUtils.bytes(0xcafebabe)));
+		assertEquals("00c0ffee", DigestUtils.hex(DigestUtils.bytes(0xc0ffee)));
 		assertEquals("deadbeef", DigestUtils.hex(DigestUtils.bytes(0xdeadbeef)));
 		assertEquals("00000000", DigestUtils.hex(DigestUtils.bytes(0x00000000)));
 		assertEquals("ffffffff", DigestUtils.hex(DigestUtils.bytes(0xffffffff)));
@@ -92,7 +92,7 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#base64(byte[])}. */
 	@Test
 	public void testBase64() {
-		assertEquals("yv66vg==", DigestUtils.base64(DigestUtils.bytes(0xcafebabe)));
+		assertEquals("AMD/7g==", DigestUtils.base64(DigestUtils.bytes(0xc0ffee)));
 		assertEquals("3q2+7w==", DigestUtils.base64(DigestUtils.bytes(0xdeadbeef)));
 		assertEquals("AAAAAA==", DigestUtils.base64(DigestUtils.bytes(0x00000000)));
 		assertEquals("/////w==", DigestUtils.base64(DigestUtils.bytes(0xffffffff)));
@@ -118,23 +118,23 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#sha1(byte[])}. */
 	@Test
 	public void testSHA1() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
 		final byte[] sha1 = DigestUtils.sha1(bytes);
-		assertArrayEquals(CAFEBABE_SHA1, sha1);
+		assertArrayEquals(COFFEE_SHA1, sha1);
 	}
 
 	/** Tests {@link DigestUtils#md5(byte[])}. */
 	@Test
 	public void testMD5() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
 		final byte[] md5 = DigestUtils.md5(bytes);
-		assertArrayEquals(CAFEBABE_MD5, md5);
+		assertArrayEquals(COFFEE_MD5, md5);
 	}
 
 	/** Tests {@link DigestUtils#digest(String, byte[])}. */
 	@Test
 	public void testDigest() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
 
 		final byte[] sha1 = DigestUtils.digest("SHA-1", bytes);
 		final byte[] expectedSHA1 = DigestUtils.sha1(bytes);
@@ -155,9 +155,9 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#best(byte[])}. */
 	@Test
 	public void testBestBytes() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
 		final byte[] best = DigestUtils.best(bytes);
-		assertArrayEquals(CAFEBABE_SHA1, best);
+		assertArrayEquals(COFFEE_SHA1, best);
 	}
 
 	/** Tests {@link DigestUtils#bestHex(String)}. */
@@ -169,8 +169,8 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#hex(byte[])}. */
 	@Test
 	public void testBestHexBytes() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
-		assertEquals(CAFEBABE_SHA1_HEX, DigestUtils.bestHex(bytes));
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
+		assertEquals(COFFEE_SHA1_HEX, DigestUtils.bestHex(bytes));
 	}
 
 	/** Tests {@link DigestUtils#bestBase64(String)}. */
@@ -182,8 +182,8 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#bestBase64(byte[])}. */
 	@Test
 	public void testBestBase64Bytes() {
-		final byte[] bytes = DigestUtils.bytes(0xcafebabe);
-		assertEquals(CAFEBABE_SHA1_BASE64, DigestUtils.bestBase64(bytes));
+		final byte[] bytes = DigestUtils.bytes(0xc0ffee);
+		assertEquals(COFFEE_SHA1_BASE64, DigestUtils.bestBase64(bytes));
 	}
 
 }

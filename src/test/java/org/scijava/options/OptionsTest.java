@@ -94,14 +94,14 @@ public class OptionsTest {
 			assertEquals(0, fooOptions.getBar());
 
 			// verify that we can set bar to a desired value at all
-			fooOptions.setBar(0xcafebabe);
-			assertEquals(0xcafebabe, fooOptions.getBar());
+			fooOptions.setBar(0xc0ffee);
+			assertEquals(0xc0ffee, fooOptions.getBar());
 
 			// verify that save and load work as expected in the same context
 			fooOptions.save();
 			fooOptions.setBar(0xdeadbeef);
 			fooOptions.load();
-			assertEquals(0xcafebabe, fooOptions.getBar());
+			assertEquals(0xc0ffee, fooOptions.getBar());
 
 			// throw away the 1st context
 			optionsService.getContext().dispose();
@@ -112,7 +112,7 @@ public class OptionsTest {
 			final FooOptions fooOptions = optionsService.getOptions(FooOptions.class);
 
 			// verify that persisted values are loaded correctly in a new context
-			assertEquals(0xcafebabe, fooOptions.getBar());
+			assertEquals(0xc0ffee, fooOptions.getBar());
 
 			// clean up for next time
 			fooOptions.reset(); // FIXME: If this test fails, reset will not happen!
