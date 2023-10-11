@@ -780,8 +780,10 @@ public final class Types {
 	}
 
 	/**
-	 * Converts the given string value to an enumeration constant of the specified
-	 * type.
+	 * Converts the given string <em>value</em> to an enumeration constant of the
+	 * specified type. For example, {@code enumValue("APPLE", Fruit.class)}
+	 * returns {@code Fruit.APPLE} if such a value is among those of the
+	 * requested enum class.
 	 *
 	 * @param name The value to convert.
 	 * @param dest The type of the enumeration constant.
@@ -796,6 +798,60 @@ public final class Types {
 		@SuppressWarnings("unchecked")
 		final T typedResult = (T) result;
 		return typedResult;
+	}
+
+	/**
+	 * Converts the given string <em>label</em> to an enumeration constant of the
+	 * specified type. An enum label is the string returned by the enum constant's
+	 * {@link Object#toString()} method. For example,
+	 * {@code enumFromLabel("Apple", Fruit.class)} returns {@code Fruit.APPLE} if
+	 * {@code Fruit.APPLE.toString()} is implemented to return {@code "Apple"}.
+	 *
+	 * @param label The {@code toString()} result of the desired enum value.
+	 * @param dest The type of the enumeration constant.
+	 * @return The matching enumeration constant.
+	 * @throws IllegalArgumentException if the type is not an enumeration type, or
+	 *           has no constant with the given label.
+	 */
+	public static <T> T enumFromLabel(final String label, final Class<T> dest) {
+		final T[] values = dest.getEnumConstants();
+		if (values == null) throw iae("Not an enum type: " + name(dest));
+		for (T value : values) {
+			if (Objects.equals(label, value.toString())) return value;
+		}
+		throw iae("Enum class " + dest.getName() + " has no such label: " + label);
+	}
+
+	/**
+	 * Converts the given string value or label to an enumeration constant of the
+	 * specified type.
+	 * <p>
+	 * If the string matches one of the enum values directly, that value will be
+	 * returned via {@link #enumValue(String, Class)}. Otherwise, the result of
+	 * {@link #enumFromLabel} is returned.
+	 * </p>
+	 *
+	 * @param s The name or label of the desired enum value.
+	 * @param dest The type of the enumeration constant.
+	 * @return The matching enumeration constant.
+	 * @throws IllegalArgumentException if the type is not an enumeration type,
+	 *           or has no such constant with the given name nor label.
+	 */
+	public static <T> T enumFromString(final String s, final Class<T> dest) {
+		if (!dest.isEnum()) throw iae("Not an enum type: " + name(dest));
+		try {
+			return enumValue(s, dest);
+		}
+		catch (final IllegalArgumentException exc) {
+			// NB: No action needed.
+		}
+		try {
+			return enumFromLabel(s, dest);
+		}
+		catch (final IllegalArgumentException exc) {
+			// NB: No action needed.
+		}
+		throw iae("Enum class " + dest.getName() + " has no such value nor label: " + s);
 	}
 
 	/**

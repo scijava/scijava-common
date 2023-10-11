@@ -135,7 +135,7 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			// special case for conversion to enum
 			if (saneDest.isEnum()) {
 				try {
-					return Types.enumValue(s, saneDest);
+					return Types.enumFromString(s, saneDest);
 				}
 				catch (final IllegalArgumentException exc) {
 					// NB: No action needed.

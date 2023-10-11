@@ -593,13 +593,45 @@ public class TypesTest {
 	/** Tests {@link Types#enumValue(String, Class)} for invalid value. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testEnumValueNoConstant() {
-		Types.enumValue("NONE", Words.class);
+		Types.enumValue("OMG", Words.class);
 	}
 
 	/** Tests {@link Types#enumValue(String, Class)} for non-enum class. */
 	@Test(expected = IllegalArgumentException.class)
 	public void testEnumValueNonEnum() {
 		Types.enumValue("HOOYAH", String.class);
+	}
+
+	/** Tests {@link Types#enumFromLabel(String, Class)}. */
+	@Test
+	public void testEnumFromLabel() {
+		final Words foo = Types.enumFromLabel("Foo", Words.class);
+		assertSame(Words.FOO, foo);
+		final Words bar = Types.enumFromLabel("Bar", Words.class);
+		assertSame(Words.BAR, bar);
+		final Words fubar = Types.enumFromLabel("OMG", Words.class);
+		assertSame(Words.FUBAR, fubar);
+	}
+
+	/** Tests {@link Types#enumFromString(String, Class)}. */
+	@Test
+	public void testEnumFromString() {
+		{
+			final Words foo = Types.enumFromString("FOO", Words.class);
+			assertSame(Words.FOO, foo);
+			final Words bar = Types.enumFromString("BAR", Words.class);
+			assertSame(Words.BAR, bar);
+			final Words fubar = Types.enumFromString("FUBAR", Words.class);
+			assertSame(Words.FUBAR, fubar);
+		}
+		{
+			final Words foo = Types.enumFromString("Foo", Words.class);
+			assertSame(Words.FOO, foo);
+			final Words bar = Types.enumFromString("Bar", Words.class);
+			assertSame(Words.BAR, bar);
+			final Words fubar = Types.enumFromString("OMG", Words.class);
+			assertSame(Words.FUBAR, fubar);
+		}
 	}
 
 	/** Tests {@link Types#parameterize(Class, Map)}. */
@@ -644,7 +676,18 @@ public class TypesTest {
 
 	/** Enumeration for testing conversion to enum types. */
 	public static enum Words {
-		FOO, BAR, FUBAR
+		FOO("Foo"), BAR("Bar"), FUBAR("OMG");
+
+		private final String label;
+
+		private Words(final String label) {
+			this.label = label;
+		}
+
+		@Override
+		public String toString() {
+			return label;
+		}
 	}
 
 	private interface TestTypes<T extends Number> {
