@@ -128,13 +128,10 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	}
 
 	/** Asks the object service and convert service for valid choices */
-	@SuppressWarnings("unchecked")
-	private List<?> getObjects(final Class<?> type) {
-		@SuppressWarnings("rawtypes")
-		Set compatibleInputs =
-				new HashSet(convertService.getCompatibleInputs(type));
+	private List<Object> getObjects(final Class<?> type) {
+		Set<Object> compatibleInputs =
+				new HashSet<>(convertService.getCompatibleInputs(type));
 		compatibleInputs.addAll(objectService.getObjects(type));
 		return new ArrayList<>(compatibleInputs);
 	}
-
 }

@@ -29,7 +29,6 @@
 
 package org.scijava.widget;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -156,6 +155,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 		// Pass the value through the convertService
 		convertedInput = convertService.convert(value, item.getType());
+		if (convertedInput == null) convertedInput = value;
 
 		// If we get a different (converted) value back, cache it weakly.
 		if (convertedInput != value) {
@@ -219,17 +219,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	}
 
 	@Override
-	public String[] getChoices() {
-		final List<?> choicesList = item.getChoices();
-		if (choicesList == null) return null;
-		final String[] choices = new String[choicesList.size()];
-		for (int i = 0; i < choices.length; i++) {
-			choices[i] = objectService.getName(choicesList.get(i));
-		}
-		return choices;
-	}
-
-	@Override
 	public String getText() {
 		final Object value = getValue();
 		if (value == null) return "";
@@ -289,11 +278,10 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	/**
 	 * For multiple choice widgets, ensures the value is a valid choice.
 	 * 
-	 * @see #getChoices()
 	 * @see ChoiceWidget
 	 */
 	private Object ensureValidChoice(final Object value) {
-		return ensureValid(value, Arrays.asList(getChoices()));
+		return ensureValid(value, getItem().getChoices());
 	}
 
 	/**
