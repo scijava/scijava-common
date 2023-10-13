@@ -40,12 +40,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.ws.Service;
-
 import org.scijava.Context;
 
 /**
- * Combines {@link Service} information from all JAR files on the classpath.
+ * Combines {@code Service} information from all JAR files on the classpath.
  * 
  * @author Johannes Schindelin
  * @author Mark Hiner
