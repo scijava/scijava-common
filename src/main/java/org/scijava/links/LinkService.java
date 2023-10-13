@@ -32,7 +32,6 @@ import org.scijava.log.Logger;
 import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
-import java.awt.*;
 import java.net.URI;
 import java.util.Optional;
 
@@ -66,18 +65,6 @@ public interface LinkService extends HandlerService<URI, LinkHandler>,
     @Override
     default Class<LinkHandler> getPluginType() {
         return LinkHandler.class;
-    }
-
-    // -- Service methods --
-
-    @Override
-    default void initialize() {
-        HandlerService.super.initialize();
-        // Register URI handler with the desktop system, if possible.
-        if (!Desktop.isDesktopSupported()) return;
-        final Desktop desktop = Desktop.getDesktop();
-        if (!desktop.isSupported(Desktop.Action.APP_OPEN_URI)) return;
-        desktop.setOpenURIHandler(event -> handle(event.getURI()));
     }
 
     // -- Typed methods --

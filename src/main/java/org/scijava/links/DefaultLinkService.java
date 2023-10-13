@@ -28,10 +28,13 @@
  */
 package org.scijava.links;
 
+import org.scijava.event.ContextCreatedEvent;
+import org.scijava.event.EventHandler;
 import org.scijava.plugin.AbstractHandlerService;
 import org.scijava.plugin.Plugin;
 import org.scijava.service.Service;
 
+import java.awt.Desktop;
 import java.net.URI;
 
 /**
@@ -41,5 +44,14 @@ import java.net.URI;
  */
 @Plugin(type = Service.class)
 public class DefaultLinkService extends AbstractHandlerService<URI, LinkHandler> implements LinkService {
-    // NB: No implementation needed.
+
+	@EventHandler
+	private void onEvent(final ContextCreatedEvent evt) {
+		// Register URI handler with the desktop system, if possible.
+		if (!Desktop.isDesktopSupported()) return;
+		final Desktop desktop = Desktop.getDesktop();
+		if (!desktop.isSupported(Desktop.Action.APP_OPEN_URI)) return;
+		desktop.setOpenURIHandler(event -> handle(event.getURI()));
+	}
+
 }
