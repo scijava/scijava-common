@@ -42,6 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.scijava.event.ContextCreatedEvent;
+import org.scijava.event.EventHandler;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.PluginIndex;
 import org.scijava.plugin.PluginInfo;
@@ -147,6 +149,14 @@ public class ContextCreationTest {
 			final Service sjs = sciJava.getService(c);
 			if (sjs == null) fail("Not a SciJavaService? " + s.getClass().getName());
 		}
+	}
+
+	/** Tests that {@link ContextCreatedEvent} is published as expected. */
+	@Test
+	public void testContextCreatedEvent() {
+		assertEquals(0, ServiceNoticingContextCreated.created);
+		final Context context = new Context(ServiceNoticingContextCreated.class);
+		assertEquals(1, ServiceNoticingContextCreated.created);
 	}
 
 	/**
@@ -440,6 +450,18 @@ public class ContextCreationTest {
 	}
 
 	// -- Helper classes --
+
+	/** A service that notices when {@link ContextCreatedEvent} is published. */
+	public static class ServiceNoticingContextCreated extends AbstractService {
+
+		public static int created = 0;
+
+		@EventHandler
+		public void onEvent(final ContextCreatedEvent evt) {
+			created++;
+		}
+
+	}
 
 	/** A service which requires a {@link BarService}. */
 	public static class FooService extends AbstractService {

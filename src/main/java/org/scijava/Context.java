@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.scijava.event.ContextCreatedEvent;
 import org.scijava.event.ContextDisposingEvent;
 import org.scijava.event.EventHandler;
 import org.scijava.event.EventService;
@@ -293,6 +294,10 @@ public class Context implements Disposable, AutoCloseable {
 
 		// If JVM shuts down with context still active, clean up after ourselves.
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> doDispose(false)));
+
+		// Publish an event to indicate that context initialization is complete.
+		final EventService eventService = getService(EventService.class);
+		if (eventService != null) eventService.publish(new ContextCreatedEvent());
 	}
 
 	// -- Context methods --
