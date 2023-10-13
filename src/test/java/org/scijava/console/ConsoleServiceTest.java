@@ -83,9 +83,12 @@ public class ConsoleServiceTest {
 	 */
 	@Test
 	public void testInfiniteLoopAvoidance() {
-		assertFalse(consoleService.getInstance(BrokenArgument.class).argsHandled);
+		final BrokenArgument broken = //
+			consoleService.getInstance(BrokenArgument.class);
+		assertNotNull(broken);
+		assertFalse(broken.argsHandled);
 		consoleService.processArgs("--broken");
-		assertTrue(consoleService.getInstance(BrokenArgument.class).argsHandled);
+		assertTrue(broken.argsHandled);
 	}
 
 	/**
