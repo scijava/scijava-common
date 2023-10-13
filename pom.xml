@@ -163,6 +163,7 @@
 
 	<properties>
 		<package-name>org.scijava</package-name>
+		<scijava.jvm.version>11</scijava.jvm.version>
 
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
