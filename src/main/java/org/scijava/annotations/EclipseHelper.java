@@ -31,9 +31,13 @@ package org.scijava.annotations;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.Attributes.Name;
@@ -100,8 +104,8 @@ public class EclipseHelper extends DirectoryIndexer {
 	static Set<URL> indexed = new HashSet<>();
 	private boolean bannerShown;
 
-	private static boolean debug =
-		"debug".equals(System.getProperty("scijava.log.level"));
+	private static boolean debug = true;
+		//"debug".equals(System.getProperty("scijava.log.level"));
 	private boolean autoDetectEclipse = true;
 
 	private static void debug(final String message) {
@@ -125,10 +129,8 @@ public class EclipseHelper extends DirectoryIndexer {
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
 		debug("Checking class loader: " + loader);
-		if (loader == null ||
-			!(loader instanceof URLClassLoader))
-		{
-			debug("Not an URLClassLoader: " + loader);
+		if (loader == null) {
+			debug("Null ClassLoader!");
 			return;
 		}
 		EclipseHelper helper = new EclipseHelper();
@@ -136,7 +138,7 @@ public class EclipseHelper extends DirectoryIndexer {
 			helper.autoDetectEclipse = false;
 		}
 		boolean first = true;
-		for (final URL url : ((URLClassLoader) loader).getURLs()) {
+		for (final URL url : getURLs(loader)) {
 			debug("Checking URL: " + url);
 			if (helper.autoDetectEclipse && first) {
 				if (!"file".equals(url.getProtocol()) ||
@@ -280,6 +282,31 @@ public class EclipseHelper extends DirectoryIndexer {
 			}
 		}
 		return true;
+	}
+
+	private static URL[] getURLs(final ClassLoader classLoader) {
+		// -- Java 8 --
+		if (classLoader instanceof URLClassLoader) {
+			return ((URLClassLoader) classLoader).getURLs();
+		}
+
+		// -- Java 11+ --
+		try {
+			// URLClassPath ucp = classLoader.ucp;
+			final Field ucpField = classLoader.getClass().getDeclaredField("ucp");
+			ucpField.setAccessible(true);
+			final Object ucp = ucpField.get(classLoader);
+
+			// return ucp.getURLs();
+			final Method getURLs = ucp.getClass().getDeclaredMethod("getURLs");
+			return (URL[]) getURLs.invoke(ucp);
+		}
+		catch (final NoSuchMethodException | IllegalAccessException |
+			InvocationTargetException | NoSuchFieldException e)
+		{
+			e.printStackTrace();
+			return new URL[0];
+		}
 	}
 
 	/**

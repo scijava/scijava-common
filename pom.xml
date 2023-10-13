@@ -219,7 +219,15 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>index-main-classes</id>
 						<phase>process-classes</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>index-test-classes</id>
+						<phase>process-test-classes</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
