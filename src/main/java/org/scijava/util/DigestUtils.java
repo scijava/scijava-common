@@ -32,8 +32,7 @@ package org.scijava.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 /**
  * Utility class for computing cryptographic hashes.
@@ -98,7 +97,7 @@ public final class DigestUtils {
 
 	/** Converts the given byte array to a base64 string. */
 	public static String base64(final byte[] bytes) {
-		return DatatypeConverter.printBase64Binary(bytes);
+		return new String(Base64.getEncoder().encode(bytes));
 	}
 
 	/**
