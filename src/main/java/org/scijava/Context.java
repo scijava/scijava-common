@@ -33,10 +33,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.scijava.event.ContextCreatedEvent;
 import org.scijava.event.ContextDisposingEvent;
@@ -72,6 +75,14 @@ public class Context implements Disposable, AutoCloseable {
 	 * situation.
 	 */
 	public static final String STRICT_PROPERTY = "scijava.context.strict";
+
+	/** Set of currently active (not disposed) application contexts. */
+	private static final Map<Context, Boolean> CONTEXTS =
+		new ConcurrentHashMap<>(); // NB: ConcurrentHashMap disallows nulls.
+
+	// -- Static fields --
+
+	private static Thread shutdownThread = null;
 
 	// -- Fields --
 
@@ -293,7 +304,20 @@ public class Context implements Disposable, AutoCloseable {
 		}
 
 		// If JVM shuts down with context still active, clean up after ourselves.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> doDispose(false)));
+		if (shutdownThread == null) {
+			synchronized (Context.class) {
+				if (shutdownThread == null) {
+					shutdownThread = new Thread(() -> {
+						final List<Context> contexts = new ArrayList<>(CONTEXTS.keySet());
+						for (final Context context : contexts) {
+							context.doDispose(false);
+						}
+					});
+					Runtime.getRuntime().addShutdownHook(shutdownThread);
+				}
+			}
+		}
+		CONTEXTS.put(this, true);
 
 		// Publish an event to indicate that context initialization is complete.
 		final EventService eventService = getService(EventService.class);
@@ -432,7 +456,6 @@ public class Context implements Disposable, AutoCloseable {
 
 	@Override
 	public void dispose() {
-		if (disposed) return;
 		doDispose(true);
 	}
 
@@ -589,6 +612,7 @@ public class Context implements Disposable, AutoCloseable {
 	private synchronized void doDispose(final boolean announce) {
 		if (disposed) return;
 		disposed = true;
+		CONTEXTS.remove(this);
 		if (announce) {
 			final EventService eventService = getService(EventService.class);
 			if (eventService != null) eventService.publish(new ContextDisposingEvent());
