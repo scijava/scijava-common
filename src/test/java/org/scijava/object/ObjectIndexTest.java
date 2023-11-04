@@ -36,6 +36,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -209,15 +210,25 @@ public class ObjectIndexTest {
 		objectIndex.add(new Integer(5));
 		objectIndex.add(new Float(2.5f));
 		objectIndex.add(new Integer(3));
-		final String[] expected =
-			{ "java.io.Serializable: {5, 2.5, 3}",
-				"java.lang.Comparable: {5, 2.5, 3}", "java.lang.Float: {2.5}",
-				"java.lang.Integer: {5, 3}", "java.lang.Number: {5, 2.5, 3}",
-				"java.lang.Object: {5, 2.5, 3}",
-				"org.scijava.object.ObjectIndex$All: {5, 2.5, 3}" };
+
+		final List<String> expected = new ArrayList<>();
+		expected.addAll(Arrays.asList(
+			"java.io.Serializable: {5, 2.5, 3}",
+			"java.lang.Comparable: {5, 2.5, 3}", "java.lang.Float: {2.5}",
+			"java.lang.Integer: {5, 3}", "java.lang.Number: {5, 2.5, 3}",
+			"java.lang.Object: {5, 2.5, 3}"
+		));
+		final String[] javaVersion = System.getProperty("java.version").split("\\.");
+		final int majorVersion = Integer.parseInt(javaVersion[0]);
+		if (majorVersion >= 12) {
+			expected.add("java.lang.constant.Constable: {5, 2.5, 3}");
+			expected.add("java.lang.constant.ConstantDesc: {5, 2.5, 3}");
+		}
+		expected.add("org.scijava.object.ObjectIndex$All: {5, 2.5, 3}");
+
 		final String[] actual =
 			objectIndex.toString().split(System.getProperty("line.separator"));
-		assertArrayEquals(expected, actual);
+		assertArrayEquals(expected.toArray(), actual);
 	}
 
 }
