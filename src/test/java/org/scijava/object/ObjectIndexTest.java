@@ -214,8 +214,10 @@ public class ObjectIndexTest {
 		final List<String> expected = new ArrayList<>();
 		expected.addAll(Arrays.asList(
 			"java.io.Serializable: {5, 2.5, 3}",
-			"java.lang.Comparable: {5, 2.5, 3}", "java.lang.Float: {2.5}",
-			"java.lang.Integer: {5, 3}", "java.lang.Number: {5, 2.5, 3}",
+			"java.lang.Comparable: {5, 2.5, 3}",
+			"java.lang.Float: {2.5}",
+			"java.lang.Integer: {5, 3}",
+			"java.lang.Number: {5, 2.5, 3}",
 			"java.lang.Object: {5, 2.5, 3}"
 		));
 		final String[] javaVersion = System.getProperty("java.version").split("\\.");
