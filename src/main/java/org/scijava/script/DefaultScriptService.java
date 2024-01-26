@@ -385,7 +385,10 @@ public class DefaultScriptService extends
 	}
 
 	private Class<?>[] pluginClasses(final Class<? extends SciJavaPlugin> type) {
-		return pluginService.getPluginsOfType(type).stream().map(info -> {
+		return pluginService.getPluginsOfType(type).stream() //
+			.filter(info -> !info.is("noAlias")) //
+			.map(info ->
+		{
 			try {
 				return info.loadClass();
 			}
