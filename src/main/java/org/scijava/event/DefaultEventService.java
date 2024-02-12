@@ -140,7 +140,7 @@ public class DefaultEventService extends AbstractService implements
 
 	@Override
 	public void subscribe(final EventSubscriber<?> subscriber) {
-		eventBus.subscribe(subscriber.getClass(), subscriber);
+		eventBus.subscribe(subscriber.getEventClass(), subscriber);
 	}
 
 	@Override
