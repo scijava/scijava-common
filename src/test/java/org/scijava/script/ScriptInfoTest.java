@@ -266,18 +266,18 @@ public class ScriptInfoTest {
 
 		final ModuleItem<?> log = info.getInput("log");
 		assertItem("log", LogService.class, null, ItemIO.INPUT, false, true, null,
-			null, null, null, null, null, null, null, noChoices, log);
+			null, null, null, null, null, null, null, null, noChoices, log);
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, " slidEr,", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
+			true, null, " slidEr,", null, 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
 		assertTrue("Case-insensitive trimmed style", WidgetStyle.isStyle(sliderValue, "slider"));
 
 		final ModuleItem<?> animal = info.getInput("animal");
 		final List<String> animalChoices = //
 			Arrays.asList("quick brown fox", "lazy dog");
 		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
-			null, null, null, null, null, null, null, null, animalChoices, animal);
+			null, null, null, null, null, null, null, null, null, animalChoices, animal);
 		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
 		final ModuleItem<?> notAutoFilled = info.getInput("notAutoFilled");
@@ -288,7 +288,7 @@ public class ScriptInfoTest {
 
 		final ModuleItem<?> buffer = info.getOutput("buffer");
 		assertItem("buffer", StringBuilder.class, null, ItemIO.BOTH, true, true,
-			null, null, null, null, null, null, null, null, noChoices, buffer);
+			null, null, null, null, null, null, null, null, null, noChoices, buffer);
 
 		int inputCount = 0;
 		final ModuleItem<?>[] inputs = { log, sliderValue, animal, notAutoFilled, msg, buffer };
@@ -367,7 +367,7 @@ public class ScriptInfoTest {
 	private void assertItem(final String name, final Class<?> type,
 		final String label, final ItemIO ioType, final boolean required,
 		final boolean persist, final String persistKey, final String style,
-		final Object value, final Object min, final Object max,
+		final String group, final Object value, final Object min, final Object max,
 		final Object softMin, final Object softMax, final Number stepSize,
 		final List<?> choices, final ModuleItem<?> item)
 	{
@@ -379,6 +379,7 @@ public class ScriptInfoTest {
 		assertEquals(persist, item.isPersisted());
 		assertEquals(persistKey, item.getPersistKey());
 		assertEquals(style, item.getWidgetStyle());
+		assertEquals(group, item.getWidgetGroup());
 		assertEquals(value, item.getDefaultValue());
 		assertEquals(min, item.getMinimumValue());
 		assertEquals(max, item.getMaximumValue());
