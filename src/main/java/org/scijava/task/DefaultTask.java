@@ -39,9 +39,9 @@ import org.scijava.thread.ThreadService;
  * Default implementation of {@link Task}. Throughout the task (or job),
  * {@link Task#setProgressValue(long)} can be called to inform
  * how the job is progressing.
- *
+ * <p>
  * Asynchronous case:
- * - A job (runnable) is sent for execution to the linked {@link ThreadService}.
+ * A job (runnable) is sent for execution to the linked {@link ThreadService}.
  * It reports status updates via the linked {@link EventService}.
  * A {@link org.scijava.task.event.TaskEvent} is sent before the job
  * is started and when finished.
@@ -50,9 +50,10 @@ import org.scijava.thread.ThreadService;
  * by calling {@link Future#cancel(boolean)}.
  * This default behaviour can be supplemented by an additional
  * custom callback which can be set in {@link Task#setCancelCallBack(Runnable)}.
- *
+ * </p>
+ * <p>
  * Synchronous case:
- * - A job that reports its status in between calls of {@link Task#start()},
+ * A job that reports its status in between calls of {@link Task#start()},
  * and {@link Task#finish()}. It also reports its status via
  * the linked {@link EventService}.
  * Start and finish calls allow publishing proper {@link org.scijava.task.event.TaskEvent}
@@ -60,8 +61,10 @@ import org.scijava.thread.ThreadService;
  * Upon cancellation of a synchronous task, it is the responsibility
  * of the synchronous task to handle its own cancellation through
  * a custom callback which can be set via {@link Task#setCancelCallBack(Runnable)}.
+ * </p>
  *
- * @author Curtis Rueden, Nicolas Chiaruttini
+ * @author Curtis Rueden
+ * @author Nicolas Chiaruttini
  */
 public class DefaultTask implements Task {
 
