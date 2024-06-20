@@ -119,8 +119,8 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		}
 
 		if (item.isRequired()) {
-			throw new ModuleException("A " + type.getSimpleName() +
-				" is required but none exist.");
+			throw new ModuleException("This operation requires " + objectService.getHumanFriendlyName(type)
+					+ " of type '" + type.getSimpleName() + "', but none was found.");
 		}
 
 		// item is not required; we can skip it
