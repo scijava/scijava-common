@@ -134,6 +134,11 @@
 			<url>https://imagej.net/people/jaywarrick</url>
 			<properties><id>jaywarrick</id></properties>
 		</contributor>
+		<contributor>
+			<name>Christian Tischer</name>
+			<url>https://imagej.net/people/tischi</url>
+			<properties><id>tischi</id></properties>
+		</contributor>
 	</contributors>
 
 	<mailingLists>

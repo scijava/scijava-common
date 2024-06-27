@@ -163,6 +163,7 @@ public interface UserInterface extends RichPlugin, Disposable {
 		// TODO use a utility class for style handling, e.g. StyleUtils.isStyle(style, ...)
 		if (style == null) title = "Choose a file";
 		else if (style.toLowerCase().contains(FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
+		else if (style.toLowerCase().contains(FileWidget.FILE_AND_DIRECTORY_STYLE )) title = "Choose a file or directory";
 		else if (style.toLowerCase().contains(FileWidget.OPEN_STYLE)) title = "Open";
 		else if (style.toLowerCase().contains(FileWidget.SAVE_STYLE)) title = "Save";
 		else title = "Choose a file";
@@ -180,6 +181,7 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 *          <li>{@link FileWidget#OPEN_STYLE}</li>
 	 *          <li>{@link FileWidget#SAVE_STYLE}</li>
 	 *          <li>{@link FileWidget#DIRECTORY_STYLE}</li>
+	 *          <li>{@link FileWidget#FILE_AND_DIRECTORY_STYLE}</li>
 	 *          </ul>
 	 * @return The {@link File} chosen by the user, or null if prompt is not
 	 *         available
