@@ -41,6 +41,7 @@ import org.scijava.plugin.RichPlugin;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.viewer.DisplayWindow;
 import org.scijava.widget.FileWidget;
+import org.scijava.widget.WidgetStyle;
 
 /**
  * An end-user SciJava application user interface.
@@ -160,12 +161,11 @@ public interface UserInterface extends RichPlugin, Disposable {
 	default File chooseFile(final File file, final String style) {
 		final String title;
 		// style can be a string with multiple comma-separated keywords
-		// TODO use a utility class for style handling, e.g. StyleUtils.isStyle(style, ...)
 		if (style == null) title = "Choose a file";
-		else if (style.toLowerCase().contains(FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
-		else if (style.toLowerCase().contains(FileWidget.FILE_AND_DIRECTORY_STYLE )) title = "Choose a file or directory";
-		else if (style.toLowerCase().contains(FileWidget.OPEN_STYLE)) title = "Open";
-		else if (style.toLowerCase().contains(FileWidget.SAVE_STYLE)) title = "Save";
+		else if (WidgetStyle.isStyle(style, FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
+		else if (WidgetStyle.isStyle(style, FileWidget.FILE_AND_DIRECTORY_STYLE)) title = "Choose a file or directory";
+		else if (WidgetStyle.isStyle(style, FileWidget.OPEN_STYLE)) title = "Open";
+		else if (WidgetStyle.isStyle(style, FileWidget.SAVE_STYLE)) title = "Save";
 		else title = "Choose a file";
 
 		return chooseFile(title, file, style);
