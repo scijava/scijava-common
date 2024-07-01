@@ -59,4 +59,11 @@ public interface FileWidget<U> extends InputWidget<File, U> {
 	 */
 	String DIRECTORY_STYLE = "directory";
 
+	/**
+	 * Widget style for directory chooser dialogs.
+	 *
+	 * @see org.scijava.plugin.Parameter#style()
+	 */
+	String FILE_AND_DIRECTORY_STYLE = "both";
+
 }
