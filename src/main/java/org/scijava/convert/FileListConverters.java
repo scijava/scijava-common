@@ -82,6 +82,8 @@ public class FileListConverters {
 			final String[] tokens = StringUtils.splitUnquoted((String) src, ",");
 			final List<File> fileList = new ArrayList<>();
 			for (final String filePath : tokens) {
+				if ( filePath.isEmpty() )
+					continue;
 				fileList.add(new File(filePath.replaceAll("^\"|\"$", "")));
 			}
 			return (T) fileList.toArray(new File[fileList.size()]);

@@ -69,6 +69,7 @@ public class FileListConverterTest {
 				conv.convert(path, File[].class)[0]);
 		assertEquals("Wrong file name", new File("C:\\temp"),
 				conv.convert(path, File[].class)[1]);
+		assertEquals( 0, conv.convert( "", File[].class ).length );
 	}
 
 	@Test
