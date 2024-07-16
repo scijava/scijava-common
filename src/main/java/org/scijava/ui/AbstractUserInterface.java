@@ -79,6 +79,7 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 
 	@Override
 	public void show() {
+		if (visible) return;
 		createUI();
 		visible = true;
 	}
