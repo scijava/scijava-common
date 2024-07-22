@@ -162,26 +162,13 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public void showUI(final UserInterface ui) {
 		log.debug("Launching user interface: " + ui.getClass().getName());
-		Runnable showUI = () -> {
+		runOnCorrectThread(ui, () -> {
 			ui.show();
 			// NB: Also show all the current displays.
 			for (final Display<?> display : displayService.getDisplays()) {
 				ui.show(display);
 			}
-		};
-
-		// Dispatch on EDT if necessary
-		if (ui.requiresEDT()) {
-			try {
-				threadService.invoke(showUI);
-			}
-			catch (InterruptedException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		else {
-			showUI.run();
-		}
+		});
 		eventService.publish(new UIShownEvent(ui));
 	}
 
@@ -255,17 +242,20 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public void show(final Object o) {
-		activeUI().show(o);
+		final UserInterface ui = activeUI();
+		runOnCorrectThread(ui, () -> ui.show(o));
 	}
 
 	@Override
 	public void show(final String name, final Object o) {
-		activeUI().show(name, o);
+		final UserInterface ui = activeUI();
+		runOnCorrectThread(ui, () -> ui.show(name, o));
 	}
 
 	@Override
 	public void show(final Display<?> display) {
-		activeUI().show(display);
+		final UserInterface ui = activeUI();
+		runOnCorrectThread(ui, () -> ui.show(display));
 	}
 
 	@Override
@@ -320,38 +310,64 @@ public final class DefaultUIService extends AbstractService implements
 		final String title, final DialogPrompt.MessageType messageType,
 		final DialogPrompt.OptionType optionType)
 	{
-		final DialogPrompt dialogPrompt = //
-			activeUI().dialogPrompt(message, title, messageType, optionType);
-		return dialogPrompt == null ? null : dialogPrompt.prompt();
+		final UserInterface ui = activeUI();
+		DialogPrompt.Result[] result = new DialogPrompt.Result[1];
+		runOnCorrectThread(ui, () -> {
+			final DialogPrompt dialogPrompt = //
+				ui.dialogPrompt(message, title, messageType, optionType);
+			result[0] = dialogPrompt == null ? null : dialogPrompt.prompt();
+		});
+		return result[0];
 	}
 
 	@Override
 	public File chooseFile(final File file, final String style) {
-		return activeUI().chooseFile(file, style);
+		final UserInterface ui = activeUI();
+		final File[] result = new File[1];
+		runOnCorrectThread(ui, () -> {
+			result[0] = ui.chooseFile(file, style);
+		});
+		return result[0];
 	}
 
 	@Override
 	public File
 		chooseFile(final String title, final File file, final String style)
 	{
-		return activeUI().chooseFile(title, file, style);
+		final UserInterface ui = activeUI();
+		final File[] result = new File[1];
+		runOnCorrectThread(ui, () -> {
+			result[0] = ui.chooseFile(title, file, style);
+		});
+		return result[0];
 	}
 
 	@Override
 	public File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
-		return activeUI().chooseFiles(parent, files, filter, style);
+		final UserInterface ui = activeUI();
+		final File[][] result = new File[1][];
+		runOnCorrectThread(ui, () -> {
+			result[0] = ui.chooseFiles(parent, files, filter, style);
+		});
+		return result[0];
 	}
 	
 	@Override
 	public List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
-		return activeUI().chooseFiles(parent, fileList, filter, style);
+		final UserInterface ui = activeUI();
+		final List<?>[] result = new List<?>[1];
+		runOnCorrectThread(ui, () -> {
+			result[0] = ui.chooseFiles(parent, fileList, filter, style);
+		});
+		return (List<File>) result[0];
 	}
 
 	@Override
 	public void showContextMenu(final String menuRoot, final Display<?> display,
 		final int x, final int y)
 	{
-		activeUI().showContextMenu(menuRoot, display, x, y);
+		final UserInterface ui = activeUI();
+		runOnCorrectThread(ui, () -> ui.showContextMenu(menuRoot, display, x, y));
 	}
 
 	@Override
@@ -558,5 +574,20 @@ public final class DefaultUIService extends AbstractService implements
 
 		// No UI is visible, so use the default one.
 		return activeUI = getDefaultUI();
+	}
+
+	private void runOnCorrectThread(final UserInterface ui, final Runnable r) {
+		// Dispatch on EDT if necessary
+		if (ui.requiresEDT()) {
+			try {
+				threadService.invoke(r);
+			}
+			catch (InterruptedException | InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		else {
+			r.run();
+		}
 	}
 }
