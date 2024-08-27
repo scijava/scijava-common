@@ -30,6 +30,7 @@
 package org.scijava.io.location;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -43,6 +44,7 @@ import org.scijava.Context;
  * Tests {@link LocationService}.
  * 
  * @author Gabriel Einsdorf
+ * @author Curtis Rueden
  */
 public class LocationServiceTest {
 
@@ -58,6 +60,23 @@ public class LocationServiceTest {
 		assertEquals(uri, res.resolve(uri).getURI());
 		assertEquals(uri, loc.resolve(uri).getURI());
 		assertEquals(uri, loc.resolve(uri.toString()).getURI());
+	}
+
+	@Test
+	public void testResolveWindowsPath() throws URISyntaxException {
+		final Context ctx = new Context(LocationService.class);
+		final LocationService loc = ctx.getService(LocationService.class);
+
+		String pSlash = "C:/Windows/FilePath/image.tif";
+		final Location locSlash = loc.resolve(pSlash);
+		assertTrue(locSlash instanceof FileLocation);
+
+		String pBackslash = pSlash.replace('/', '\\');
+		final Location locBackslash = loc.resolve(pBackslash);
+		assertTrue(locBackslash instanceof FileLocation);
+
+		final Location locSlashURI = loc.resolve(new URI(pSlash));
+		assertNull(locSlashURI);
 	}
 
 	@Test
