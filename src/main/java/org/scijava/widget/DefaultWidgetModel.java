@@ -30,9 +30,7 @@
 package org.scijava.widget;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.WeakHashMap;
 
 import org.scijava.AbstractContextual;
 import org.scijava.Context;
@@ -60,7 +58,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	private final Module module;
 	private final ModuleItem<?> item;
 	private final List<?> objectPool;
-	private final Map<Object, Object> convertedObjects;
 
 	@Parameter
 	private ThreadService threadService;
@@ -87,7 +84,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		this.module = module;
 		this.item = item;
 		this.objectPool = objectPool;
-		convertedObjects = new WeakHashMap<>();
 
 		if (item.getValue(module) == null) {
 			// assign the item's default value as the current value
@@ -142,27 +138,9 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	@Override
 	public void setValue(final Object value) {
-		final String name = item.getName();
 		if (Objects.equals(item.getValue(module), value)) return; // no change
 
-		// Check if a converted value is present
-		Object convertedInput = convertedObjects.get(value);
-		if (convertedInput != null &&
-			Objects.equals(item.getValue(module), convertedInput))
-		{
-			return; // no change
-		}
-
-		// Pass the value through the convertService
-		convertedInput = convertService.convert(value, item.getType());
-		if (convertedInput == null) convertedInput = value;
-
-		// If we get a different (converted) value back, cache it weakly.
-		if (convertedInput != value) {
-			convertedObjects.put(value, convertedInput);
-		}
-
-		module.setInput(name, convertedInput);
+		module.setInput(item.getName(), value);
 
 		if (initialized) {
 			threadService.queue(() -> {
@@ -309,11 +287,6 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	private Object ensureValid(final Object value, final List<?> list) {
 		for (final Object o : list) {
 			if (o.equals(value)) return value; // value is valid
-			// check if value was converted and cached
-			final Object convertedValue = convertedObjects.get(o);
-			if (convertedValue != null && value.equals(convertedValue)) {
-				return convertedValue;
-			}
 		}
 
 		// value is not valid; override with the first item on the list instead

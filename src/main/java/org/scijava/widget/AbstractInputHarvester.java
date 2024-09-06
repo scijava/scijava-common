@@ -30,9 +30,10 @@
 package org.scijava.widget;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
@@ -129,9 +130,13 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 	/** Asks the object service and convert service for valid choices */
 	private List<Object> getObjects(final Class<?> type) {
-		Set<Object> compatibleInputs =
-				new HashSet<>(convertService.getCompatibleInputs(type));
-		compatibleInputs.addAll(objectService.getObjects(type));
-		return new ArrayList<>(compatibleInputs);
+		// Here we compare with object service's items and de-duplicate
+		Collection<Object> compatibleInputs = convertService.getCompatibleInputs(type);
+		// NB: we aggressively convert here to avoid listing duplicate items
+		// that would effectively resolve to the same object
+		Set<Object> objects = compatibleInputs.stream()
+				.map(o -> convertService.convert(o, type)).collect(Collectors.toSet());
+		objects.addAll(objectService.getObjects(type));
+		return new ArrayList<>(objects);
 	}
 }
