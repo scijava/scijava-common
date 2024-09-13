@@ -30,9 +30,10 @@
 package org.scijava.widget;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.scijava.AbstractContextual;
 import org.scijava.convert.ConvertService;
@@ -129,9 +130,24 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 
 	/** Asks the object service and convert service for valid choices */
 	private List<Object> getObjects(final Class<?> type) {
-		Set<Object> compatibleInputs =
-				new HashSet<>(convertService.getCompatibleInputs(type));
-		compatibleInputs.addAll(objectService.getObjects(type));
-		return new ArrayList<>(compatibleInputs);
+		// Start with the known, unconverted objects of the desired type
+		List<Object> objects = new ArrayList<>(objectService.getObjects(type));
+
+		// Get all the known objects that can be converted to the destination type
+		Collection<Object> compatibleInputs = convertService.getCompatibleInputs(type);
+
+		// HACK: Add each convertible object that doesn't share a name with any other object
+		// Our goal here is to de-duplicate by avoiding similar inputs that could be converted
+		// to the same effective output (e.g. an ImageDisplay and a Dataset that map to the same
+		// ImgPlus)
+		Set<String> knownNames = objects.stream().map(Object::toString).collect(Collectors.toSet());
+		for (Object o : compatibleInputs) {
+			final String s = o.toString();
+			if (!knownNames.contains(s)) {
+				objects.add(o);
+				knownNames.add(s);
+			}
+		}
+		return objects;
 	}
 }
