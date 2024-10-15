@@ -230,9 +230,8 @@ public class ShadowMenu extends AbstractContextual implements
 			if (isLeaf()) iconPath = DEFAULT_ICON_PATH;
 			else return null;
 		}
-		final String className = moduleInfo.getDelegateClassName();
 		try {
-			final Class<?> c = Types.load(className, false);
+			final Class<?> c = moduleInfo.loadDelegateClass();
 			final URL iconURL = c.getResource(iconPath);
 			if (iconURL == null) {
 				if (log != null) log.error("Could not load icon: " + iconPath);
@@ -240,7 +239,8 @@ public class ShadowMenu extends AbstractContextual implements
 			return iconURL;
 		}
 		catch (final IllegalArgumentException exc) {
-			final String message = "Could not load icon for class: " + className;
+			final String message = "Could not load icon for class: " +
+				moduleInfo.getDelegateClassName();
 			if (log.isDebug()) log.debug(message, exc);
 			else log.error(message);
 			return null;
