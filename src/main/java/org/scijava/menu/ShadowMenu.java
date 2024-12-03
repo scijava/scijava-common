@@ -238,6 +238,13 @@ public class ShadowMenu extends AbstractContextual implements
 			}
 			return iconURL;
 		}
+		catch (final ClassNotFoundException exc) {
+			final String message = "Failed to load class: " +
+					moduleInfo.getDelegateClassName();
+			if (log.isDebug()) log.debug(message, exc);
+			else log.error(message);
+			return null;
+		}
 		catch (final IllegalArgumentException exc) {
 			final String message = "Could not load icon for class: " +
 				moduleInfo.getDelegateClassName();
