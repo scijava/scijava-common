@@ -98,6 +98,10 @@ public interface ObjectService extends SciJavaService {
 		eventService().publish(new ObjectsRemovedEvent(obj));
 	}
 
+	String getHumanFriendlyName(Class<?> c);
+
+	void addHumanFriendlyName(Class<?> c, String name);
+
 	// -- Deprecated methods --
 
 	/** @deprecated Use {@link #eventService()} instead. */
