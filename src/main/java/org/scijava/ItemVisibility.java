@@ -61,6 +61,14 @@ public enum ItemVisibility {
 	 * intended as a message to the user (e.g., in the input harvester panel)
 	 * rather than an actual parameter to the module execution.
 	 */
-	MESSAGE
-
+	MESSAGE,
+	
+	/**
+	 * Indicates that the item's value defines the name of a widget group
+	 * (e.g., in the input harvester panel) rather than an actual parameter 
+	 * to the module execution. Widget groups organize related input widgets. 
+	 * Group members are added to a group by providing a group parameter annotation 
+	 * having the common group name.
+	 */
+	GROUP
 }

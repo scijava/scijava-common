@@ -277,6 +277,8 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		else if (is(k, "softMin")) item.setSoftMinimum(as(v, item.getType()));
 		else if (is(k, "stepSize")) item.setStepSize(as(v, double.class));
 		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
+		else if (is(k, "group")) item.setWidgetGroup(as(v, String.class));
+		else if (is(k, "expanded")) item.setExpanded(as(v, boolean.class));
 		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
 		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
 		else item.set(k, v.toString());
