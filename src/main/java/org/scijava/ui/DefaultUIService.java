@@ -162,25 +162,10 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public void showUI(final UserInterface ui) {
 		log.debug("Launching user interface: " + ui.getClass().getName());
-		Runnable showUI = () -> {
-			ui.show();
-			// NB: Also show all the current displays.
-			for (final Display<?> display : displayService.getDisplays()) {
-				ui.show(display);
-			}
-		};
-
-		// Dispatch on EDT if necessary
-		if (ui.requiresEDT()) {
-			try {
-				threadService.invoke(showUI);
-			}
-			catch (InterruptedException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		else {
-			showUI.run();
+		ui.show();
+		// NB: Also show all the current displays.
+		for (final Display<?> display : displayService.getDisplays()) {
+			ui.show(display);
 		}
 		eventService.publish(new UIShownEvent(ui));
 	}

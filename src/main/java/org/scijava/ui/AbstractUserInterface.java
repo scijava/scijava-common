@@ -29,6 +29,7 @@
 
 package org.scijava.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.scijava.display.Display;
@@ -79,9 +80,11 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 
 	@Override
 	public void show() {
-		if (visible) return;
-		createUI();
-		visible = true;
+		runOnDispatchThreadIfNeeded(() -> {
+			if (visible) return;
+			createUI();
+			visible = true;
+		});
 	}
 
 	@Override
@@ -112,32 +115,29 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 			return;
 		}
 
-		final List<PluginInfo<DisplayViewer<?>>> viewers =
-			uiService.getViewerPlugins();
+		runOnDispatchThreadIfNeeded(() -> {
+			final List<PluginInfo<DisplayViewer<?>>> viewers =
+				uiService.getViewerPlugins();
 
-		DisplayViewer<?> displayViewer = null;
-		for (final PluginInfo<DisplayViewer<?>> info : viewers) {
-			// check that viewer can actually handle the given display
-			final DisplayViewer<?> viewer = pluginService.createInstance(info);
-			if (viewer == null) continue;
-			if (!viewer.canView(display)) continue;
-			if (!viewer.isCompatible(this)) continue;
-			displayViewer = viewer;
-			break; // found a suitable viewer; we are done
-		}
-		if (displayViewer == null) {
-			log.warn("For UI '" + getClass().getName() +
-				"': no suitable viewer for display: " + display);
-			return;
-		}
-
-		final DisplayViewer<?> finalViewer = displayViewer;
-		threadService.queue(new Runnable() {
-			@Override
-			public void run() {
-				uiService.addDisplayViewer(finalViewer);
-				finalViewer.view(AbstractUserInterface.this, display);
+			DisplayViewer<?> displayViewer = null;
+			for (final PluginInfo<DisplayViewer<?>> info : viewers) {
+				// check that viewer can actually handle the given display
+				final DisplayViewer<?> viewer = pluginService.createInstance(info);
+				if (viewer == null) continue;
+				if (!viewer.canView(display)) continue;
+				if (!viewer.isCompatible(this)) continue;
+				displayViewer = viewer;
+				break; // found a suitable viewer; we are done
 			}
+			if (displayViewer == null) {
+				log.warn("For UI '" + getClass().getName() +
+					"': no suitable viewer for display: " + display);
+				return;
+			}
+
+			final DisplayViewer<?> finalViewer = displayViewer;
+			uiService.addDisplayViewer(finalViewer);
+			finalViewer.view(AbstractUserInterface.this, display);
 		});
 	}
 
@@ -169,5 +169,22 @@ public abstract class AbstractUserInterface extends AbstractRichPlugin
 	 */
 	protected void createUI() {
 		restoreLocation();
+	}
+
+	// -- Helper methods --
+
+	private void runOnDispatchThreadIfNeeded(Runnable r) {
+		if (requiresEDT()) {
+			try {
+				// Note: Blocks until execution is complete!
+				threadService.invoke(r);
+			}
+			catch (InterruptedException | InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		else {
+			r.run();
+		}
 	}
 }
