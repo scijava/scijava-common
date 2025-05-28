@@ -146,8 +146,8 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 			// Conflicting value; behavior depends on mode.
 			if (gently) {
 				// Do not overwrite the previous value.
-				if (log != null && log.isWarn()) {
-					log.warn(overwriteMessage(false, type, key, value, existing));
+				if (log != null && log.isDebug()) {
+					log.debug(overwriteMessage(false, type, key, value, existing));
 				}
 				return false;
 			}
