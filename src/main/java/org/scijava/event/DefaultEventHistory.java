@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.service.Service;
 
 /**
  * Default service for keeping a history of SciJava events.
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
@@ -53,8 +53,7 @@ public class DefaultEventHistory extends AbstractService implements
 	/** Event details that have been recorded. */
 	private ArrayList<EventDetails> history = new ArrayList<>();
 
-	private ArrayList<EventHistoryListener> listeners =
-		new ArrayList<>();
+	private ArrayList<EventHistoryListener> listeners = new ArrayList<>();
 
 	private boolean active;
 
@@ -86,8 +85,8 @@ public class DefaultEventHistory extends AbstractService implements
 				// skip filtered event type
 				continue;
 			}
-			final boolean bold =
-				highlighted != null && highlighted.contains(eventType);
+			final boolean bold = highlighted != null && highlighted.contains(
+				eventType);
 			sb.append(details.toHTML(bold));
 		}
 		return sb.toString();

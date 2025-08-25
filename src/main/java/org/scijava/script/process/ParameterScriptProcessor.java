@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -97,7 +97,7 @@ import org.scijava.script.ScriptService;
  * Parameters will be parsed and filled just like @{@link Parameter}-annotated
  * fields in {@link Command}s.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = ScriptProcessor.class)
@@ -140,8 +140,10 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 			// NB: Check if line contains an '@' with no prior alphameric
 			// characters. This assumes that only non-alphanumeric characters can
 			// be used as comment line markers.
-			// NB: In addition, to allow for commented-out new-style parameters, we exclude
-			// lines that have the new-style #@ preceded by non-alphanumeric characters.
+			// NB: In addition, to allow for commented-out new-style parameters, we
+			// exclude
+			// lines that have the new-style #@ preceded by non-alphanumeric
+			// characters.
 			if (line.matches("^[^\\w]*[^\\w#]@.*")) {
 				final int at = line.indexOf('@');
 				return process(line, line.substring(at + 1));
@@ -175,8 +177,8 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		final int rParen = param.lastIndexOf(")");
 		if (rParen < lParen) return false;
 		if (lParen < 0) return parseParam(param, parseAttrs("()"));
-		final String cutParam =
-			param.substring(0, lParen) + param.substring(rParen + 1);
+		final String cutParam = param.substring(0, lParen) + param.substring(
+			rParen + 1);
 		final String attrs = param.substring(lParen + 1, rParen);
 		return parseParam(cutParam, parseAttrs(attrs));
 	}
@@ -238,8 +240,8 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	private <T> void addItem(final String name, final Class<T> type,
 		final Map<String, Object> attrs, final boolean explicit)
 	{
-		final DefaultMutableModuleItem<T> item =
-			new DefaultMutableModuleItem<>(info, name, type);
+		final DefaultMutableModuleItem<T> item = new DefaultMutableModuleItem<>(
+			info, name, type);
 		for (final String key : attrs.keySet()) {
 			final Object value = attrs.get(key);
 			assignAttribute(item, key, value);
@@ -277,7 +279,8 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 		else if (is(k, "softMin")) item.setSoftMinimum(as(v, item.getType()));
 		else if (is(k, "stepSize")) item.setStepSize(as(v, double.class));
 		else if (is(k, "style")) item.setWidgetStyle(as(v, String.class));
-		else if (is(k, "visibility")) item.setVisibility(as(v, ItemVisibility.class));
+		else if (is(k, "visibility")) item.setVisibility(as(v,
+			ItemVisibility.class));
 		else if (is(k, "value")) item.setDefaultValue(as(v, item.getType()));
 		else item.set(k, v.toString());
 	}

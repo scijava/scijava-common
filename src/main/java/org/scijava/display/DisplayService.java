@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for service that tracks available {@link Display}s.
- * 
+ *
  * @author Barry DeZonia
  * @author Curtis Rueden
  * @author Grant Harris
@@ -68,7 +68,7 @@ public interface DisplayService extends SciJavaService {
 
 	/**
 	 * Set the active display.
-	 * 
+	 *
 	 * @param display
 	 */
 	void setActiveDisplay(Display<?> display);
@@ -84,7 +84,7 @@ public interface DisplayService extends SciJavaService {
 
 	/**
 	 * Gets the display plugin of the given class name, or null if none.
-	 * 
+	 *
 	 * @throws ClassCastException if the plugin found is not a display plugin.
 	 */
 	PluginInfo<Display<?>> getDisplayPlugin(String className);
@@ -113,7 +113,7 @@ public interface DisplayService extends SciJavaService {
 
 	/**
 	 * Checks whether the given name is already taken by an existing display.
-	 * 
+	 *
 	 * @param name The name to check.
 	 * @return true if the name is available, false if already taken.
 	 */
@@ -131,7 +131,7 @@ public interface DisplayService extends SciJavaService {
 	 * To create a {@link Display} without publishing an event, see
 	 * {@link #createDisplayQuietly}.
 	 * </p>
-	 * 
+	 *
 	 * @param o The object for which a display should be created. The object is
 	 *          then added to the display.
 	 * @return Newly created {@code Display<?>} containing the given object. The
@@ -156,7 +156,7 @@ public interface DisplayService extends SciJavaService {
 	 * To create a {@link Display} without publishing an event, see
 	 * {@link #createDisplayQuietly}.
 	 * </p>
-	 * 
+	 *
 	 * @param name The name to be assigned to the display.
 	 * @param o The object for which a display should be created. The object is
 	 *          then added to the display.
@@ -174,7 +174,7 @@ public interface DisplayService extends SciJavaService {
 	 * Creates a display for the given object, without publishing a
 	 * {@link DisplayCreatedEvent}. Hence, the display will not be automatically
 	 * shown or tracked.
-	 * 
+	 *
 	 * @param o The object for which a display should be created. The object is
 	 *          then added to the display.
 	 * @return Newly created {@code Display<?>} containing the given object. The

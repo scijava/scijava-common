@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import java.util.Map.Entry;
  * at once (i.e., with {@link #addAll(Collection)}), the items are appended and
  * the list is then resorted (O(n log n) time for all items).
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class SortedObjectIndex<E extends Comparable<? super E>> extends
@@ -142,7 +142,7 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 				final List<E> list = retrieveList(clazz);
 				List<E> list2 = map.get(clazz);
 				if (list2 == null) {
-					list2 = list.size() == 0 ? (List<E>)list : new ArrayList<>();
+					list2 = list.size() == 0 ? (List<E>) list : new ArrayList<>();
 					map.put(clazz, list2);
 				}
 				list2.add(e);
@@ -166,7 +166,8 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 		}
 		int index1 = into.size() - 1;
 		int index2 = sorted.size() - 1;
-		for (int i = 0; i < count; i++) into.add(null);
+		for (int i = 0; i < count; i++)
+			into.add(null);
 		int writeIndex = into.size() - 1;
 		E e1 = into.get(index1);
 		E e2 = sorted.get(index2);
@@ -175,7 +176,8 @@ public class SortedObjectIndex<E extends Comparable<? super E>> extends
 				into.set(writeIndex--, e2);
 				if (--index2 < 0) break;
 				e2 = sorted.get(index2);
-			} else {
+			}
+			else {
 				into.set(writeIndex--, e1);
 				if (--index1 < 0) break;
 				e1 = into.get(index1);

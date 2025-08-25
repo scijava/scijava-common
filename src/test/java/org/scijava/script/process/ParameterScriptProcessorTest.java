@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.script.process;
 
 import static org.junit.Assert.*;
@@ -55,24 +56,28 @@ public class ParameterScriptProcessorTest {
 	@Test
 	public void testScriptParameterParsing() {
 		String script = "" + //
-				"% @String legacyStyleParameter\n" +
-				"% #@ String commentedHeaderParameter\n" +
-				"% ############## Some Comment ###########\n" +
-				"#@ String implicitInputParameter\n" +
-				"#@input String explicitInputParameter\n" +
-				"\n" +
-				"% @String legacyStyleBodyParameter\n" +
-				"% #@ String commentedBodyParameter\n" +
-				"\n" +
-				"#@output implicitlyTypedOutputParameter\n" +
-				"#@output String explicitlyTypedOutputParameter\n";
-		final ScriptInfo info = new ScriptInfo(context, ".bsizes", new StringReader(script));
-		assertEquals("legacyStyleParameter", info.getInput("legacyStyleParameter").getName());
-		assertEquals("implicitInputParameter", info.getInput("implicitInputParameter").getName());
-		assertEquals("explicitInputParameter", info.getInput("explicitInputParameter").getName());
+			"% @String legacyStyleParameter\n" +
+			"% #@ String commentedHeaderParameter\n" +
+			"% ############## Some Comment ###########\n" +
+			"#@ String implicitInputParameter\n" +
+			"#@input String explicitInputParameter\n" + "\n" +
+			"% @String legacyStyleBodyParameter\n" +
+			"% #@ String commentedBodyParameter\n" + "\n" +
+			"#@output implicitlyTypedOutputParameter\n" +
+			"#@output String explicitlyTypedOutputParameter\n";
+		final ScriptInfo info = new ScriptInfo(context, ".bsizes", new StringReader(
+			script));
+		assertEquals("legacyStyleParameter", info.getInput("legacyStyleParameter")
+			.getName());
+		assertEquals("implicitInputParameter", info.getInput(
+			"implicitInputParameter").getName());
+		assertEquals("explicitInputParameter", info.getInput(
+			"explicitInputParameter").getName());
 
-		assertEquals("implicitlyTypedOutputParameter", info.getOutput("implicitlyTypedOutputParameter").getName());
-		assertEquals("explicitlyTypedOutputParameter", info.getOutput("explicitlyTypedOutputParameter").getName());
+		assertEquals("implicitlyTypedOutputParameter", info.getOutput(
+			"implicitlyTypedOutputParameter").getName());
+		assertEquals("explicitlyTypedOutputParameter", info.getOutput(
+			"explicitlyTypedOutputParameter").getName());
 
 		assertNull(info.getInput("commentedHeaderParameter"));
 		assertNull(info.getInput("legacyStyleBodyParameter"));

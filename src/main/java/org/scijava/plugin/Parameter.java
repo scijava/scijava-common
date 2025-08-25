@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,7 +42,7 @@ import org.scijava.module.Module;
  * An annotation for indicating a field is an input or output parameter. This
  * annotation is a useful way for plugins to declare their inputs and outputs
  * simply.
- * 
+ *
  * @author Johannes Schindelin
  * @author Grant Harris
  * @author Curtis Rueden
@@ -85,7 +85,8 @@ public @interface Parameter {
 	 * <li>NORMAL: parameter is included in the history for purposes of data
 	 * provenance, and included as a parameter when recording scripts.</li>
 	 * <li>TRANSIENT: parameter is excluded from the history for the purposes of
-	 * data provenance, but still included as a parameter when recording scripts.</li>
+	 * data provenance, but still included as a parameter when recording
+	 * scripts.</li>
 	 * <li>INVISIBLE: parameter is excluded from the history for the purposes of
 	 * data provenance, and also excluded as a parameter when recording scripts.
 	 * This option should only be used for parameters with no effect on the final
@@ -117,7 +118,7 @@ public @interface Parameter {
 	/**
 	 * Defines a function that is called to validate the parameter value after it
 	 * is marked as resolved.
-	 * 
+	 *
 	 * @see Module#resolveInput(String)
 	 */
 	String validater() default "";

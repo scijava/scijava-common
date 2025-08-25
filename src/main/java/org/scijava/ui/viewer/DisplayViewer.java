@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import org.scijava.ui.UserInterface;
  * merely by implementing this interface, it is encouraged to instead extend
  * {@link AbstractDisplayViewer}, for convenience.
  * </p>
- * 
+ *
  * @author Lee Kamentsky
  * @author Curtis Rueden
  * @see Plugin
@@ -73,7 +73,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 	 * {@link #view(DisplayWindow, Display)}. Viewers needing to customize details
 	 * of the {@link DisplayWindow} creation can do so via this method.
 	 * </p>
-	 * 
+	 *
 	 * @param ui The user interface with which the viewer will be associated.
 	 * @param d the model for the display to show.
 	 */
@@ -87,7 +87,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 
 	/**
 	 * Begins viewing the given display.
-	 * 
+	 *
 	 * @param w The frame / window that will contain the GUI elements
 	 * @param d the model for the display to show.
 	 */
@@ -101,7 +101,7 @@ public interface DisplayViewer<T> extends RichPlugin, Disposable {
 
 	/**
 	 * Installs the display panel.
-	 * 
+	 *
 	 * @param panel the panel used to host the gui
 	 */
 	void setPanel(DisplayPanel panel);

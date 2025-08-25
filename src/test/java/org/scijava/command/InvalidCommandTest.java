@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,7 +47,7 @@ import org.scijava.plugin.Plugin;
 /**
  * Test commands for verifying that invalid module parameters are dealt with
  * using proper error handling.
- * 
+ *
  * @author Curtis Rueden
  */
 public class InvalidCommandTest {
@@ -69,7 +69,7 @@ public class InvalidCommandTest {
 		final List<ValidityProblem> problems = info.getProblems();
 		assertNotNull(problems);
 		assertEquals(0, problems.size());
-		
+
 		final Number stepSize = info.getInput("x").getStepSize();
 		assertNotNull(stepSize);
 		assertEquals(10, stepSize.intValue());
@@ -89,12 +89,12 @@ public class InvalidCommandTest {
 		assertEquals("Delegate class is abstract", p0);
 
 		final String p1 = problems.get(1).getMessage();
-		assertEquals("Invalid duplicate parameter: private int "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.x", p1);
+		assertEquals("Invalid duplicate parameter: private int " +
+			"org.scijava.command.InvalidCommandTest$InvalidCommand.x", p1);
 
 		final String p2 = problems.get(2).getMessage();
-		assertEquals("Invalid final parameter: private final float "
-			+ "org.scijava.command.InvalidCommandTest$InvalidCommand.y", p2);
+		assertEquals("Invalid final parameter: private final float " +
+			"org.scijava.command.InvalidCommandTest$InvalidCommand.y", p2);
 	}
 
 	// -- Helper classes --

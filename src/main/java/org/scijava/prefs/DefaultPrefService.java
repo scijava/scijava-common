@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -84,8 +84,8 @@ public class DefaultPrefService extends AbstractPrefService {
 	}
 
 	@Override
-	public int
-		getInt(final Class<?> c, final String name, final int defaultValue)
+	public int getInt(final Class<?> c, final String name,
+		final int defaultValue)
 	{
 		return prefs(c).getInt(name, defaultValue);
 	}
@@ -227,8 +227,8 @@ public class DefaultPrefService extends AbstractPrefService {
 
 	@Deprecated
 	@Override
-	public Map<String, String>
-		getMap(final String absolutePath, final String key)
+	public Map<String, String> getMap(final String absolutePath,
+		final String key)
 	{
 		return prefs(absolutePath).node(key).getMap();
 	}
@@ -334,7 +334,6 @@ public class DefaultPrefService extends AbstractPrefService {
 			}
 		}
 
-
 		public List<String> getList() {
 			final List<String> list = new ArrayList<>();
 			for (int index = 0; index < Integer.MAX_VALUE; index++) {
@@ -347,9 +346,11 @@ public class DefaultPrefService extends AbstractPrefService {
 
 		public Iterable<String> getIterable() {
 			return new Iterable<String>() {
+
 				@Override
 				public Iterator<String> iterator() {
 					return new Iterator<String>() {
+
 						private String value;
 						private int index;
 						{

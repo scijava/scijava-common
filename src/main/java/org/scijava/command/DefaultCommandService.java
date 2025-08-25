@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -55,7 +55,7 @@ import org.scijava.util.ListUtils;
  * Default service for working with {@link Command}s. Available commands are
  * obtained from the plugin service. Loading of the actual command classes can
  * be deferred until a particular command's first execution.
- * 
+ *
  * @author Curtis Rueden
  * @see Command
  */
@@ -132,17 +132,16 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	public <C extends Command> List<CommandInfo> getCommandsOfClass(
 		final Class<C> commandClass)
 	{
-		final List<PluginInfo<Command>> plugins =
-			pluginService.getPluginsOfClass(commandClass, Command.class);
+		final List<PluginInfo<Command>> plugins = pluginService.getPluginsOfClass(
+			commandClass, Command.class);
 		final List<CommandInfo> commands = getCommands(plugins);
 		return commands;
 	}
 
 	@Override
-	public List<CommandInfo> getCommandsOfClass(final String className)
-	{
-		final List<PluginInfo<SciJavaPlugin>> plugins =
-			pluginService.getPluginsOfClass(className);
+	public List<CommandInfo> getCommandsOfClass(final String className) {
+		final List<PluginInfo<SciJavaPlugin>> plugins = pluginService
+			.getPluginsOfClass(className);
 		final List<CommandInfo> commands = getCommandsUnknown(downcast(plugins));
 		return commands;
 	}
@@ -206,8 +205,8 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 		commandMap = new HashMap<>();
 
 		// inform the module service of available commands
-		final List<PluginInfo<Command>> plugins =
-			pluginService.getPluginsOfType(Command.class);
+		final List<PluginInfo<Command>> plugins = pluginService.getPluginsOfType(
+			Command.class);
 		addCommands(plugins);
 	}
 
@@ -220,8 +219,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 
 	@EventHandler
 	protected void onEvent(final PluginsAddedEvent event) {
-		final ArrayList<PluginInfo<Command>> commands =
-			new ArrayList<>();
+		final ArrayList<PluginInfo<Command>> commands = new ArrayList<>();
 		findCommandPlugins(event.getItems(), commands);
 		addCommands(commands);
 	}
@@ -239,8 +237,8 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 	}
 
 	/**
-	 * Gets a {@link CommandInfo} for the given class, creating a new one if
-	 * none are registered with the service.
+	 * Gets a {@link CommandInfo} for the given class, creating a new one if none
+	 * are registered with the service.
 	 */
 	private <C extends Command> CommandInfo getOrCreate(
 		final Class<C> commandClass)
@@ -297,7 +295,7 @@ public class DefaultCommandService extends AbstractPTService<Command> implements
 
 	/**
 	 * Transfers command plugins from the source list to the destination list.
-	 * 
+	 *
 	 * @param srcList The list to scan for matching plugins.
 	 * @param destList The list to which matching plugins are added.
 	 */

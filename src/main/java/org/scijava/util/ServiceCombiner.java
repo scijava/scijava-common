@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ import org.scijava.Context;
 
 /**
  * Combines {@code Service} information from all JAR files on the classpath.
- * 
+ *
  * @author Johannes Schindelin
  * @author Mark Hiner
  */
@@ -55,10 +55,9 @@ public class ServiceCombiner implements Combiner {
 	@Override
 	public void combine(final File outputDirectory) throws IOException {
 
-		final Map<String, StringBuilder> files =
-			new HashMap<>();
-		final Enumeration<URL> directories =
-			Context.getClassLoader().getResources(SERVICES_PREFIX);
+		final Map<String, StringBuilder> files = new HashMap<>();
+		final Enumeration<URL> directories = Context.getClassLoader().getResources(
+			SERVICES_PREFIX);
 
 		// Iterate over all the service files
 		while (directories.hasMoreElements()) {
@@ -67,16 +66,16 @@ public class ServiceCombiner implements Combiner {
 				if (urlString.endsWith("/")) {
 					continue;
 				}
-				final String fileName =
-					urlString.substring(urlString.lastIndexOf('/') + 1);
+				final String fileName = urlString.substring(urlString.lastIndexOf('/') +
+					1);
 				StringBuilder builder = files.get(fileName);
 				if (builder == null) {
 					builder = new StringBuilder();
 					// Create a base entry for a service type
 					files.put(fileName, builder);
 				}
-				final InputStreamReader reader =
-					new InputStreamReader(url.openStream());
+				final InputStreamReader reader = new InputStreamReader(url
+					.openStream());
 				final BufferedReader buffered = new BufferedReader(reader);
 				for (;;) {
 					final String line = buffered.readLine();
@@ -97,8 +96,8 @@ public class ServiceCombiner implements Combiner {
 		final File servicesDirectory = new File(outputDirectory, SERVICES_PREFIX);
 		servicesDirectory.mkdirs();
 		for (final Entry<String, StringBuilder> entry : files.entrySet()) {
-			final FileWriter writer =
-				new FileWriter(new File(servicesDirectory, entry.getKey()));
+			final FileWriter writer = new FileWriter(new File(servicesDirectory, entry
+				.getKey()));
 			writer.write(entry.getValue().toString());
 			writer.close();
 		}

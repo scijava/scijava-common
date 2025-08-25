@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,7 +33,7 @@ import java.util.Objects;
 
 /**
  * Miscellaneous utility methods. Every project needs a class like this, right?
- * 
+ *
  * @author Curtis Rueden
  */
 public final class MiscUtils {
@@ -48,7 +48,7 @@ public final class MiscUtils {
 	 * By convention, nulls are considered less than non-nulls (and will hence
 	 * will appear first on sorted lists).
 	 * </p>
-	 * 
+	 *
 	 * @param o1 The first object to compare.
 	 * @param o2 The second object to compare.
 	 * @return The result of {@code o1.compareTo(o2)} unless one or both of them
@@ -63,7 +63,7 @@ public final class MiscUtils {
 
 	/**
 	 * Compares two comparable objects, even if one or both of them are null.
-	 * 
+	 *
 	 * @param o1 The first object to compare.
 	 * @param o2 The second object to compare.
 	 * @param heavyNulls If true, nulls will be treated as greater than non-nulls,

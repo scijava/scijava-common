@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Abstract superclass for {@link PrimitiveArray}-based tests.
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
@@ -46,12 +46,12 @@ public abstract class PrimitiveArrayTest {
 		final Object e2 = array.get(2);
 		final Object e3 = array.get(3);
 		final Object eN = array.get(size - 1);
-		
+
 		array.insert(size, 3);
 		assertEquals(size + 3, array.size());
 		assertEquals(e0, array.get(0));
 		assertEquals(eN, array.get(size - 1));
-		
+
 		array.insert(3, 7);
 		assertEquals(size + 10, array.size());
 		assertEquals(e0, array.get(0));
@@ -75,7 +75,7 @@ public abstract class PrimitiveArrayTest {
 		for (int i = 0; i < a.length - 2; i++) {
 			assertEquals("@" + i, a[i], array.get(i));
 		}
-		
+
 		array.delete(0, 2);
 		assertEquals(a.length - 4, array.size());
 		for (int i = 0; i < a.length - 4; i++) {

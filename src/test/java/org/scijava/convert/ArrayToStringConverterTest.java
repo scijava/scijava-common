@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.parse.ParseService;
 
 /**
  * Tests {@link ArrayToStringConverter}.
- * 
+ *
  * @author Gabriel Selzer
  */
 public class ArrayToStringConverterTest {
@@ -148,7 +148,7 @@ public class ArrayToStringConverterTest {
 	 */
 	@Test
 	public void testCyclicConversion() {
-		byte[] expected = new byte[] {1, 2, 3};
+		byte[] expected = new byte[] { 1, 2, 3 };
 		// Do the first conversion
 		ArrayToStringConverter c1 = new ArrayToStringConverter();
 		context.inject(c1);
@@ -165,7 +165,7 @@ public class ArrayToStringConverterTest {
 		// Do the first conversion
 		ArrayToStringConverter c1 = new ArrayToStringConverter();
 		context.inject(c1);
-		String converted = c1.convert(new String[] {null}, String.class);
+		String converted = c1.convert(new String[] { null }, String.class);
 		// Try to convert back
 		StringToArrayConverter c2 = new StringToArrayConverter();
 		context.inject(c2);

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.ItemVisibility;
 
 /**
  * A ModuleItem represents metadata about one input or output of a module.
- * 
+ *
  * @author Aivar Grislis
  * @author Curtis Rueden
  */
@@ -58,7 +58,7 @@ public interface ModuleItem<T> extends BasicDetails {
 	 * {@link #getType()}, but some module inputs or outputs may be backed by a
 	 * generic type such as {@code List<String>} or {@code Iterable<Integer>}.
 	 * </p>
-	 * 
+	 *
 	 * @see Field#getGenericType()
 	 */
 	Type getGenericType();
@@ -116,7 +116,7 @@ public interface ModuleItem<T> extends BasicDetails {
 
 	/**
 	 * Invokes this item's initializer function, if any, on the given module.
-	 * 
+	 *
 	 * @see #getInitializer()
 	 */
 	void initialize(Module module) throws MethodCallException;
@@ -126,7 +126,7 @@ public interface ModuleItem<T> extends BasicDetails {
 
 	/**
 	 * Invokes this item's validation function, if any, on the given module.
-	 * 
+	 *
 	 * @see #getValidater()
 	 */
 	void validate(Module module) throws MethodCallException;
@@ -143,7 +143,7 @@ public interface ModuleItem<T> extends BasicDetails {
 
 	/**
 	 * Invokes this item's callback function, if any, on the given module.
-	 * 
+	 *
 	 * @see #getCallback()
 	 */
 	void callback(Module module) throws MethodCallException;

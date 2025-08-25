@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Helper class for working with XML documents.
- * 
+ *
  * @author Curtis Rueden
  */
 public class XML {
@@ -76,19 +76,19 @@ public class XML {
 	/** XPath evaluation mechanism. */
 	private final XPath xpath;
 
-	private final boolean debug =
-			"debug".equals(System.getProperty("scijava.log.level"));
+	private final boolean debug = "debug".equals(System.getProperty(
+		"scijava.log.level"));
 
 	/** Parses XML from the given file. */
-	public XML(final File file) throws ParserConfigurationException,
-		SAXException, IOException
+	public XML(final File file) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		this(file.getAbsolutePath(), loadXML(file));
 	}
 
 	/** Parses XML from the given URL. */
-	public XML(final URL url) throws ParserConfigurationException,
-		SAXException, IOException
+	public XML(final URL url) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		this(url.getPath(), loadXML(url));
 	}
@@ -101,8 +101,8 @@ public class XML {
 	}
 
 	/** Parses XML from the given string. */
-	public XML(final String s) throws ParserConfigurationException,
-		SAXException, IOException
+	public XML(final String s) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		this(null, loadXML(s));
 	}
@@ -119,7 +119,7 @@ public class XML {
 
 		// Protect against class skew: some projects find it funny to ship outdated
 		// xalan, causing problems due to incompatible xalan/xerces combinations.
-		// 
+		//
 		// We work around that by letting the XPathFactory try with the current
 		// context class loader, and fall back onto its parent until it succeeds
 		// (because the XPathFactory will ask the context class loader to find the
@@ -141,7 +141,8 @@ public class XML {
 						// make sure that the current xalan/xerces pair can evaluate
 						// expressions (i.e. *not* throw NoSuchMethodErrors).
 						xp.evaluate("//dummy", doc);
-					} catch (Throwable t) {
+					}
+					catch (Throwable t) {
 						if (debug) {
 							System.err.println("There was a problem with " + xp.getClass() +
 								" in " + Types.location(xp.getClass()) + ":");
@@ -242,7 +243,7 @@ public class XML {
 	public static ArrayList<Element> elements(final NodeList nodes) {
 		final ArrayList<Element> elements = new ArrayList<>();
 		if (nodes != null) {
-			for (int i=0; i<nodes.getLength(); i++) {
+			for (int i = 0; i < nodes.getLength(); i++) {
 				final Node node = nodes.item(i);
 				if (node instanceof Element) elements.add((Element) node);
 			}
@@ -251,8 +252,8 @@ public class XML {
 	}
 
 	/** Gets the given element's specified child elements. */
-	public static ArrayList<Element>
-		elements(final Element el, final String child)
+	public static ArrayList<Element> elements(final Element el,
+		final String child)
 	{
 		return elements(el.getElementsByTagName(child));
 	}

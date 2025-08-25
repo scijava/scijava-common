@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -98,8 +98,8 @@ public class UIServiceTest {
 		}
 		else {
 			// This environment is not headless! We can test more things.
-			assertSame("UIService default UI override failed",
-				mockUI, uiService.getDefaultUI());
+			assertSame("UIService default UI override failed", mockUI, uiService
+				.getDefaultUI());
 
 			// This environment isn't headless now;
 			// let's test overriding it to be so.
@@ -111,8 +111,8 @@ public class UIServiceTest {
 			// Now we put it back!
 			uiService.setHeadless(false);
 			assertFalse(uiService.isHeadless());
-			assertSame("UIService default UI override was not restored",
-				mockUI, uiService.getDefaultUI());
+			assertSame("UIService default UI override was not restored", mockUI,
+				uiService.getDefaultUI());
 		}
 	}
 

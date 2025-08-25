@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,11 +39,12 @@ import java.net.URISyntaxException;
 
 /**
  * Abstract base class for typed {@link IOPlugin}s.
- * 
+ *
  * @author Curtis Rueden
  * @author Deborah Schmidt
  */
-public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<Location, IOPlugin<D>> implements TypedIOService<D>
+public abstract class AbstractTypedIOService<D> extends
+	AbstractHandlerService<Location, IOPlugin<D>> implements TypedIOService<D>
 {
 
 	@Parameter
@@ -56,7 +57,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public D open(String source) throws IOException {
 		try {
 			return open(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -68,7 +70,7 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 			Class<D> ignored = (Class<D>) opener.getDataType();
 			return (D) opener.open(source);
 		}
-		catch(ClassCastException e) {
+		catch (ClassCastException e) {
 			throw new UnsupportedOperationException("No compatible opener found.");
 		}
 	}
@@ -77,7 +79,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public void save(D data, String destination) throws IOException {
 		try {
 			save(data, locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -97,7 +100,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public boolean canOpen(String source) {
 		try {
 			return canOpen(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}
@@ -109,7 +113,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 		try {
 			Class<D> ignored = (Class<D>) (opener.getDataType());
 			return true;
-		} catch(ClassCastException e) {
+		}
+		catch (ClassCastException e) {
 			return false;
 		}
 	}
@@ -118,7 +123,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public boolean canSave(D data, String source) {
 		try {
 			return canSave(data, locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,7 +43,7 @@ import org.scijava.widget.FileWidget;
 
 /**
  * Interface for service that handles user interfaces.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface UIService extends SciJavaService {
@@ -59,7 +59,7 @@ public interface UIService extends SciJavaService {
 	 * Note that a UI added explicitly via this method will never be considered
 	 * the default UI unless {@link #setDefaultUI(UserInterface)} is also called.
 	 * </p>
-	 * 
+	 *
 	 * @param ui The UI to add.
 	 */
 	void addUI(UserInterface ui);
@@ -70,7 +70,7 @@ public interface UIService extends SciJavaService {
 	 * Note that a UI added explicitly via this method will never be considered
 	 * the default UI unless {@link #setDefaultUI(UserInterface)} is also called.
 	 * </p>
-	 * 
+	 *
 	 * @param name The nickname for the UI.
 	 * @param ui The UI to add.
 	 */
@@ -78,7 +78,7 @@ public interface UIService extends SciJavaService {
 
 	/**
 	 * Displays the UI for the default user interface.
-	 * 
+	 *
 	 * @see #getDefaultUI()
 	 * @see #setDefaultUI(UserInterface)
 	 */
@@ -92,7 +92,7 @@ public interface UIService extends SciJavaService {
 
 	/**
 	 * Gets whether the default UI is visible.
-	 * 
+	 *
 	 * @see #getDefaultUI()
 	 * @see #setDefaultUI(UserInterface)
 	 */
@@ -122,9 +122,9 @@ public interface UIService extends SciJavaService {
 	/**
 	 * Gets whether the UI is running in headless mode (no UI).
 	 * <p>
-	 * More precisely: returns true when {@code java.awt.headless} system
-	 * property is set, and/or {@link java.awt.GraphicsEnvironment#isHeadless()}
-	 * returns true, and/or {@link #setHeadless(boolean)} was called with {@code
+	 * More precisely: returns true when {@code java.awt.headless} system property
+	 * is set, and/or {@link java.awt.GraphicsEnvironment#isHeadless()} returns
+	 * true, and/or {@link #setHeadless(boolean)} was called with {@code
 	 * true} to force headless behavior in an otherwise headful environment.
 	 * </p>
 	 */
@@ -132,7 +132,7 @@ public interface UIService extends SciJavaService {
 
 	/**
 	 * Gets the default user interface.
-	 * 
+	 *
 	 * @see #showUI()
 	 * @see #isVisible()
 	 */
@@ -140,7 +140,7 @@ public interface UIService extends SciJavaService {
 
 	/**
 	 * Sets the default user interface.
-	 * 
+	 *
 	 * @see #showUI()
 	 */
 	void setDefaultUI(UserInterface ui);
@@ -177,7 +177,7 @@ public interface UIService extends SciJavaService {
 	/**
 	 * Creates a {@link Display} for the given object, and shows it using an
 	 * appropriate UI widget of the default user interface.
-	 * 
+	 *
 	 * @param name The name to use when displaying the object.
 	 * @param o The object to be displayed.
 	 */
@@ -194,7 +194,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @return The choice selected by the user when dismissing the dialog.
 	 */
@@ -205,7 +205,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param messageType The type of message. This typically is rendered as an
 	 *          icon next to the message. For example,
@@ -221,7 +221,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param messageType The type of message. This typically is rendered as an
 	 *          icon next to the message. For example,
@@ -239,7 +239,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param title The title of the dialog.
 	 * @return The choice selected by the user when dismissing the dialog.
@@ -251,7 +251,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param title The title of the dialog.
 	 * @param messageType The type of message. This typically is rendered as an
@@ -268,7 +268,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param message The message in the dialog itself.
 	 * @param title The title of the dialog.
 	 * @param messageType The type of message. This typically is rendered as an
@@ -287,7 +287,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param file The initial value displayed in the file chooser prompt.
 	 * @param style The style of chooser to use:
 	 *          <ul>
@@ -303,7 +303,7 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param title Title to use in the file chooser dialog.
 	 * @param file The initial value displayed in the file chooser prompt.
 	 * @param style The style of chooser to use:
@@ -320,22 +320,24 @@ public interface UIService extends SciJavaService {
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param files The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict the choice of files
 	 */
-	File[] chooseFiles(File parent, File[] files, FileFilter filter, String style);
+	File[] chooseFiles(File parent, File[] files, FileFilter filter,
+		String style);
 
 	/**
 	 * Prompts the user to select one or multiple files.
 	 * <p>
 	 * The prompt is displayed in the default user interface.
 	 * </p>
-	 * 
+	 *
 	 * @param fileList The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict the choice of files
 	 */
-	List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style);
+	List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter,
+		String style);
 
 	/**
 	 * Displays a popup context menu for the given display at the specified
@@ -348,7 +350,7 @@ public interface UIService extends SciJavaService {
 
 	/**
 	 * Gets the status message associated with the given event.
-	 * 
+	 *
 	 * @see StatusService#getStatusMessage(String, StatusEvent)
 	 */
 	String getStatusMessage(StatusEvent statusEvent);

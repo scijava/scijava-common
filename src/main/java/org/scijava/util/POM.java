@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Helper class for working with Maven POMs.
- * 
+ *
  * @author Curtis Rueden
  */
 public class POM extends XML implements Comparable<POM>, Versioned {
@@ -54,8 +54,8 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	private String version;
 
 	/** Parses a POM from the given file. */
-	public POM(final File file) throws ParserConfigurationException,
-		SAXException, IOException
+	public POM(final File file) throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		super(file);
 	}
@@ -217,7 +217,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 
 	/**
 	 * Gets the Maven POM associated with the given class.
-	 * 
+	 *
 	 * @param c The class to use as a base when searching for a pom.xml.
 	 * @return {@link POM} object representing the discovered POM, or null if no
 	 *         POM could be found.
@@ -228,7 +228,7 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 
 	/**
 	 * Gets the Maven POM associated with the given class.
-	 * 
+	 *
 	 * @param c The class to use as a base when searching for a pom.xml.
 	 * @param groupId The Maven groupId of the desired POM.
 	 * @param artifactId The Maven artifactId of the desired POM.
@@ -240,8 +240,8 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	{
 		try {
 			final URL location = Types.location(c);
-			if (!location.getProtocol().equals("file") ||
-				location.toString().endsWith(".jar"))
+			if (!location.getProtocol().equals("file") || location.toString()
+				.endsWith(".jar"))
 			{
 				// look for pom.xml in JAR's META-INF/maven subdirectory
 				if (groupId == null || artifactId == null) {
@@ -256,10 +256,10 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 				}
 				else {
 					// known groupId and artifactId; grab it directly
-					final String pomPath =
-						"META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-					final URL pomURL =
-						new URL("jar:" + location.toString() + "!/" + pomPath);
+					final String pomPath = "META-INF/maven/" + groupId + "/" +
+						artifactId + "/pom.xml";
+					final URL pomURL = new URL("jar:" + location.toString() + "!/" +
+						pomPath);
 					return new POM(pomURL);
 				}
 			}
@@ -334,13 +334,13 @@ public class POM extends XML implements Comparable<POM>, Versioned {
 	 * <li>There is one exception: if two version strings are identical except
 	 * that one has a suffix beginning with a dash ({@code -}), the version with
 	 * suffix will be considered <em>less than</em> the one without a suffix. The
-	 * reason for this is to accommodate the <a
-	 * href="https://semver.org/">SemVer</a> versioning scheme's usage of
+	 * reason for this is to accommodate the
+	 * <a href="https://semver.org/">SemVer</a> versioning scheme's usage of
 	 * "prerelease" version suffixes. For example, {@code 2.0.0} will compare
 	 * greater than {@code 2.0.0-beta-1}, whereas {@code 2.0.0} will compare less
 	 * than {@code 2.0.0.1}.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return a negative integer, zero, or a positive integer as the first
 	 *         argument is less than, equal to, or greater than the second.
 	 * @see Comparator#compare(Object, Object)

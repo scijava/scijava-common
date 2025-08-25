@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.Context;
 
 /**
  * Tests {@link PluginIndex}.
- * 
+ *
  * @author Curtis Rueden
  */
 public class PluginIndexTest {
@@ -56,20 +56,20 @@ public class PluginIndexTest {
 		final PluginIndex pluginIndex = context.getPluginIndex();
 
 		// add a plugin to the index
-		final PluginInfo<SciJavaPlugin> testPlugin =
-			new PluginInfo<>(FooBar.class.getName(), SciJavaPlugin.class);
+		final PluginInfo<SciJavaPlugin> testPlugin = new PluginInfo<>(FooBar.class
+			.getName(), SciJavaPlugin.class);
 		pluginIndex.add(testPlugin);
 
 		// retrieve the plugin from the index, by class
 		final PluginService pluginService = context.getService(PluginService.class);
-		final List<PluginInfo<SciJavaPlugin>> plugins =
-			pluginService.getPluginsOfClass(FooBar.class);
+		final List<PluginInfo<SciJavaPlugin>> plugins = pluginService
+			.getPluginsOfClass(FooBar.class);
 
 		assertEquals(1, plugins.size());
 		assertSame(testPlugin, plugins.get(0));
 
-		final PluginInfo<SciJavaPlugin> plugin =
-			pluginService.getPlugin(FooBar.class);
+		final PluginInfo<SciJavaPlugin> plugin = pluginService.getPlugin(
+			FooBar.class);
 		assertSame(testPlugin, plugin);
 
 		context.dispose();
@@ -88,14 +88,14 @@ public class PluginIndexTest {
 
 		// add a fake plugin to the index
 		final String fakeClass = "foo.bar.FooBar";
-		final PluginInfo<SciJavaPlugin> testPlugin =
-			new PluginInfo<>(fakeClass, SciJavaPlugin.class);
+		final PluginInfo<SciJavaPlugin> testPlugin = new PluginInfo<>(fakeClass,
+			SciJavaPlugin.class);
 		pluginIndex.add(testPlugin);
 
 		// retrieve the fake plugin from the index, by class name
 		final PluginService pluginService = context.getService(PluginService.class);
-		final List<PluginInfo<SciJavaPlugin>> plugins =
-			pluginService.getPluginsOfClass(fakeClass);
+		final List<PluginInfo<SciJavaPlugin>> plugins = pluginService
+			.getPluginsOfClass(fakeClass);
 
 		assertEquals(1, plugins.size());
 		assertSame(testPlugin, plugins.get(0));

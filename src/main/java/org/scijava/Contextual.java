@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,7 +34,7 @@ import org.scijava.service.Service;
 
 /**
  * An object that belongs to a SciJava application context.
- * 
+ *
  * @author Lee Kamentsky
  * @author Curtis Rueden
  */
@@ -42,7 +42,7 @@ public interface Contextual {
 
 	/**
 	 * Gets the application context to which the object belongs.
-	 * 
+	 *
 	 * @see #getContext()
 	 * @throws NullContextException if the context has not yet been set via
 	 *           {@link #setContext(Context)}.
@@ -52,7 +52,7 @@ public interface Contextual {
 	/**
 	 * Gets the application context to which the object belongs, or null if
 	 * {@link #setContext(Context)} has not yet been called on this object.
-	 * 
+	 *
 	 * @see #context()
 	 */
 	Context getContext();
@@ -65,7 +65,7 @@ public interface Contextual {
 	 * objects do not support later alteration of the context, and will throw
 	 * {@link IllegalStateException} if this method is invoked again.
 	 * </p>
-	 * 
+	 *
 	 * @see Context#inject(Object)
 	 * @throws IllegalStateException If the object already has a context.
 	 * @throws IllegalArgumentException If the object has a required
@@ -75,6 +75,5 @@ public interface Contextual {
 	default void setContext(final Context context) {
 		context.inject(this);
 	}
-
 
 }

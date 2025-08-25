@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -57,17 +57,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * This program mirrors a given website.
  * <p>
- * Its primary purpose is to provide the code necessary to keep <a
- * href="https://mirror.imagej.net/">ImageJ Mirror</a> up-to-date.
+ * Its primary purpose is to provide the code necessary to keep
+ * <a href="https://mirror.imagej.net/">ImageJ Mirror</a> up-to-date.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class MirrorWebsite {
+
 	public final static int THREAD_COUNT = 20;
 	public final static long DELAY_IN_MICROSECONDS = 0;
 	private String baseURL;
-	private String basePath; // the local directory for file:// baseURL, otherwise null
+	private String basePath; // the local directory for file:// baseURL, otherwise
+														// null
 	private File localDirectory;
 	private Map<String, String> linkMap = new HashMap<>();
 	private Set<String> missingLinks = new LinkedHashSet<>();
@@ -78,7 +80,8 @@ public class MirrorWebsite {
 	private long delay;
 
 	public MirrorWebsite(final String baseURL, final File localDirectory,
-			final int threadCount, final long delay) {
+		final int threadCount, final long delay)
+	{
 		this.baseURL = baseURL + (baseURL.endsWith("/") ? "" : "/");
 		this.basePath = baseURL.startsWith("file:") ? baseURL.substring(5) : null;
 		this.localDirectory = localDirectory;
@@ -88,8 +91,8 @@ public class MirrorWebsite {
 
 	public void run() throws InterruptedException {
 		synchronized (this) {
-			if (jobs != null)
-				throw new RuntimeException("Mirroring already in progress!");
+			if (jobs != null) throw new RuntimeException(
+				"Mirroring already in progress!");
 
 			executorService = Executors.newFixedThreadPool(threadCount);
 			done = new TreeSet<>();
@@ -109,7 +112,8 @@ public class MirrorWebsite {
 		}
 		try {
 			executorService.execute(job);
-		} catch (Throwable t) {
+		}
+		catch (Throwable t) {
 			t.printStackTrace();
 			done.add(path);
 		}
@@ -119,14 +123,14 @@ public class MirrorWebsite {
 		URLConnection connection = null;
 		try {
 			connection = new URL(url).openConnection();
-		} catch (FileNotFoundException e) {
-			if (url.endsWith("/index.html"))
-				connection = new URL(url.substring(0, url.length() - 10)).openConnection();
-			else
-				throw e;
+		}
+		catch (FileNotFoundException e) {
+			if (url.endsWith("/index.html")) connection = new URL(url.substring(0, url
+				.length() - 10)).openConnection();
+			else throw e;
 		}
 		if (connection instanceof HttpURLConnection)
-			((HttpURLConnection)connection).setRequestMethod("HEAD");
+			((HttpURLConnection) connection).setRequestMethod("HEAD");
 		connection.setUseCaches(false);
 		long lastModified = connection.getLastModified();
 		connection.getInputStream().close();
@@ -137,20 +141,18 @@ public class MirrorWebsite {
 	private long upToDate(String path) throws IOException {
 		long remote = getRemoteTimestamp(baseURL + path);
 		File file = new File(localDirectory, path);
-		if (!file.exists())
-			return remote;
+		if (!file.exists()) return remote;
 		long local = file.lastModified();
 		return remote < 0 || local == remote ? 0 : remote;
 	}
 
 	private String getValue(String html, int startOffset) {
 		int offset = startOffset;
-		while (offset < html.length() &&
-				(html.charAt(offset) == '\n' || html.charAt(offset) == '\r' || html.charAt(offset) == ' '))
+		while (offset < html.length() && (html.charAt(offset) == '\n' || html
+			.charAt(offset) == '\r' || html.charAt(offset) == ' '))
 			offset++;
 
-		if (offset + 1 >= html.length())
-			return "";
+		if (offset + 1 >= html.length()) return "";
 
 		char delim = ' ', delim2 = '>';
 		char c = html.charAt(offset);
@@ -160,20 +162,20 @@ public class MirrorWebsite {
 		}
 
 		for (int end = offset; end < html.length(); end++)
-			if (html.charAt(end) == delim || html.charAt(end) == delim2)
-				return html.substring(offset, end);
+			if (html.charAt(end) == delim || html.charAt(end) == delim2) return html
+				.substring(offset, end);
 		return html.substring(offset);
 	}
 
-	private void addLinkRelation(List<String> result, String sourceURL, String url) {
+	private void addLinkRelation(List<String> result, String sourceURL,
+		String url)
+	{
 		String normalized = normalizeURL(url);
-		if (normalized == null)
-			return;
+		if (normalized == null) return;
 		result.add(normalized);
-		synchronized(linkMap) {
+		synchronized (linkMap) {
 			String previous = linkMap.get(normalized);
-			if (previous == null)
-				linkMap.put(normalized, sourceURL);
+			if (previous == null) linkMap.put(normalized, sourceURL);
 			else if ((" " + previous + " ").indexOf(" " + sourceURL + " ") < 0)
 				linkMap.put(normalized, previous + " " + sourceURL);
 		}
@@ -185,45 +187,41 @@ public class MirrorWebsite {
 		int offset = -1;
 		for (;;) {
 			int newOffset = -1;
-			for (String pattern : new String[] { " href=", " src=", " HREF=", " SRC=" }) {
+			for (String pattern : new String[] { " href=", " src=", " HREF=",
+				" SRC=" })
+			{
 				int tmp = html.indexOf(pattern, offset + 1);
-				if (tmp >= 0 && (newOffset < 0 || newOffset > tmp))
-					newOffset = tmp + pattern.length();
+				if (tmp >= 0 && (newOffset < 0 || newOffset > tmp)) newOffset = tmp +
+					pattern.length();
 			}
-			if (newOffset < 0)
-				break;
+			if (newOffset < 0) break;
 			offset = newOffset;
 
 			String value = getValue(html, offset);
 			offset += value.length();
 
-			if (value.startsWith("mailto:") || value.startsWith("MAILTO:"))
-				continue;
+			if (value.startsWith("mailto:") || value.startsWith("MAILTO:")) continue;
 
 			for (char c : new char[] { '#', '?', ';' }) {
 				int hash = value.indexOf(c);
-				if (hash >= 0)
-					value = value.substring(0, hash);
+				if (hash >= 0) value = value.substring(0, hash);
 			}
 
-			if (value.endsWith("/"))
-				value += "index.html";
+			if (value.endsWith("/")) value += "index.html";
 			if (value.startsWith("/")) {
 				int colon = baseURL.indexOf("://");
 				int slash = baseURL.indexOf('/', colon + 3);
 				value = baseURL.substring(0, slash) + value;
 			}
 			else if (value.indexOf("://") < 0) {
-				if (!value.equals(""))
-					addLinkRelation(result, path, relativePath + value);
-				if (offset < 0)
-					break;
+				if (!value.equals("")) addLinkRelation(result, path, relativePath +
+					value);
+				if (offset < 0) break;
 				continue;
 			}
-			if (value.startsWith(baseURL))
-				addLinkRelation(result, path, value.substring(baseURL.length()));
-			if (offset < 0)
-				break;
+			if (value.startsWith(baseURL)) addLinkRelation(result, path, value
+				.substring(baseURL.length()));
+			if (offset < 0) break;
 		}
 
 		return result;
@@ -234,20 +232,18 @@ public class MirrorWebsite {
 		return lower.endsWith(".htm") || lower.endsWith(".html");
 	}
 
-	private static void copyStream(InputStream in, StringBuffer string, OutputStream out) throws IOException {
+	private static void copyStream(InputStream in, StringBuffer string,
+		OutputStream out) throws IOException
+	{
 		byte[] buffer = new byte[65536];
 		for (;;) {
 			int count = in.read(buffer);
-			if (count < 0)
-				break;
-			if (string != null)
-				string.append(new String(buffer, 0, count));
-			if (out != null)
-				out.write(buffer, 0, count);
+			if (count < 0) break;
+			if (string != null) string.append(new String(buffer, 0, count));
+			if (out != null) out.write(buffer, 0, count);
 		}
 		in.close();
-		if (out != null)
-			out.close();
+		if (out != null) out.close();
 	}
 
 	private List<String> ensureUptodate(String path) throws IOException {
@@ -256,13 +252,16 @@ public class MirrorWebsite {
 		File file = new File(localDirectory, path);
 
 		// special-case local case: file:/.../ does not list the directory contents
-		if (basePath != null && ("/" + path).endsWith("/index.html") && !new File(basePath + path).exists()) {
+		if (basePath != null && ("/" + path).endsWith("/index.html") && !new File(
+			basePath + path).exists())
+		{
 			final String directory = path.substring(0, path.length() - 10);
 			final File[] list = new File(basePath + directory).listFiles();
 			if (list == null) return Collections.emptyList();
 			final List<String> result = new ArrayList<>();
 			for (final File item : list) {
-				if (item.isDirectory()) result.add(directory + item.getName() + "/index.html");
+				if (item.isDirectory()) result.add(directory + item.getName() +
+					"/index.html");
 				else result.add(directory + item.getName());
 			}
 			return result;
@@ -272,14 +271,13 @@ public class MirrorWebsite {
 		try {
 			remoteLastModified = upToDate(path);
 			if (remoteLastModified == 0) {
-				if (!isHTML(path))
-					return Collections.emptyList();
+				if (!isHTML(path)) return Collections.emptyList();
 				copyStream(new FileInputStream(file), string, null);
 				return getLinks(relativePath, path, string.toString());
 			}
-		} catch (FileNotFoundException e) {
-			if (!path.endsWith("/index.html"))
-				throw e;
+		}
+		catch (FileNotFoundException e) {
+			if (!path.endsWith("/index.html")) throw e;
 			remoteLastModified = -1;
 		}
 
@@ -291,10 +289,9 @@ public class MirrorWebsite {
 			throw new MalformedURLException(baseURL + path);
 		}
 		catch (FileNotFoundException e) {
-			if (path.endsWith("/index.html"))
-				in = new URL(baseURL + path.substring(0, path.length() - 10)).openStream();
-			else
-				throw e;
+			if (path.endsWith("/index.html")) in = new URL(baseURL + path.substring(0,
+				path.length() - 10)).openStream();
+			else throw e;
 		}
 		System.err.println("Downloading " + path);
 		File tmp = new File(localDirectory, path + ".download.tmp");
@@ -302,35 +299,30 @@ public class MirrorWebsite {
 		FileOutputStream out = new FileOutputStream(tmp);
 		if (isHTML(path)) {
 			copyStream(in, string, null);
-			String rewritten = string.toString()
-				.replaceAll("http://rsb.info.nih.gov",
-					"http://imagej.nih.gov");
+			String rewritten = string.toString().replaceAll("http://rsb.info.nih.gov",
+				"http://imagej.nih.gov");
 			String replacement = "", path2 = path;
 			for (;;) {
 				path2 = path2.substring(0, path2.lastIndexOf('/') + 1);
 				rewritten = rewritten.replaceAll(baseURL + path2, replacement);
 				// special-case rewriting from a local mirror
 				if (basePath != null) {
-					rewritten = rewritten.replaceAll("http://imagej.nih.gov/ij/" + path2, replacement);
+					rewritten = rewritten.replaceAll("http://imagej.nih.gov/ij/" + path2,
+						replacement);
 				}
-				if (path2.equals(""))
-					break;
+				if (path2.equals("")) break;
 				// strip trailing slash
 				path2 = path2.substring(0, path2.length() - 1);
 				replacement = "../" + replacement;
 			}
-			copyStream(new ByteArrayInputStream(rewritten.getBytes()),
-				null, out);
+			copyStream(new ByteArrayInputStream(rewritten.getBytes()), null, out);
 		}
-		else
-			copyStream(in, null, out);
+		else copyStream(in, null, out);
 
 		tmp.renameTo(file);
-		if (remoteLastModified >= 0)
-			file.setLastModified(remoteLastModified);
+		if (remoteLastModified >= 0) file.setLastModified(remoteLastModified);
 
-		if (!isHTML(path))
-			return Collections.emptyList();
+		if (!isHTML(path)) return Collections.emptyList();
 		return getLinks(relativePath, path, string.toString());
 	}
 
@@ -343,17 +335,13 @@ public class MirrorWebsite {
 				continue;
 			}
 			int dotdot = path.indexOf("/../");
-			if (dotdot < 0)
-				break;
-			if (dotdot == 0)
-				return null;
+			if (dotdot < 0) break;
+			if (dotdot == 0) return null;
 			int slash = path.lastIndexOf(dotdot - 1);
-			if (slash < 0)
-				return null;
+			if (slash < 0) return null;
 			path = path.substring(0, slash) + path.substring(dotdot + 3);
 		}
-		if (path.startsWith("../"))
-			throw new RuntimeException("ignore");
+		if (path.startsWith("../")) throw new RuntimeException("ignore");
 		return path;
 	}
 
@@ -362,11 +350,13 @@ public class MirrorWebsite {
 		System.err.println("Found broken links:");
 		for (final String path : missingLinks) {
 			final String source = linkMap.get(path);
-			System.err.println(path + (source == null ? "" : " (linked from " + source + ")"));
+			System.err.println(path + (source == null ? "" : " (linked from " +
+				source + ")"));
 		}
 	}
 
 	private class MirrorJob implements Runnable {
+
 		private String path;
 
 		public MirrorJob(String path) {
@@ -376,17 +366,20 @@ public class MirrorWebsite {
 		@Override
 		public void run() {
 			try {
-				System.err.println("Looking at " + path + " (" + (1 + done.size()) + "/" + jobs.size() + ")");
-				for (String path2 : ensureUptodate(path)) try {
-					mirror(path2);
-				}
-				catch (Throwable e) {
-					System.err.println("" + e);
-				}
+				System.err.println("Looking at " + path + " (" + (1 + done.size()) +
+					"/" + jobs.size() + ")");
+				for (String path2 : ensureUptodate(path))
+					try {
+						mirror(path2);
+					}
+					catch (Throwable e) {
+						System.err.println("" + e);
+					}
 			}
 			catch (FileNotFoundException e) {
 				String source = linkMap.get(path);
-				System.err.println("" + e + (source == null ? "" : " (linked from " + source + ")"));
+				System.err.println("" + e + (source == null ? "" : " (linked from " +
+					source + ")"));
 				missingLinks.add(path);
 			}
 			catch (Throwable e) {
@@ -395,7 +388,8 @@ public class MirrorWebsite {
 			}
 			if (delay > 0) try {
 				Thread.sleep(delay);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				// ignore
 			}
 			synchronized (MirrorWebsite.this) {
@@ -416,7 +410,8 @@ public class MirrorWebsite {
 		System.err.println("--threads <n>");
 		System.err.println("\tuse <n> threads (default: " + THREAD_COUNT + ")");
 		System.err.println("--delay <microseconds>");
-		System.err.println("\twait after each request (default: " + DELAY_IN_MICROSECONDS + ")");
+		System.err.println("\twait after each request (default: " +
+			DELAY_IN_MICROSECONDS + ")");
 		System.exit(1);
 	}
 
@@ -427,31 +422,25 @@ public class MirrorWebsite {
 		// option parsing
 		int i = 0;
 		while (i < args.length) {
-			if (!args[i].startsWith("--"))
-				break;
+			if (!args[i].startsWith("--")) break;
 			final String option = args[i++];
-			if (option.equals("--"))
-				break;
+			if (option.equals("--")) break;
 			// no-arg options
-			if (option.equals("--help"))
-				usage();
+			if (option.equals("--help")) usage();
 			// one-arg options
 			if (i + 1 >= args.length) {
 				System.err.println("Missing argument: " + option);
 				usage();
 			}
 			final String arg = args[i++];
-			if (option.equals("--threads"))
-				threadCount = Integer.parseInt(arg);
-			else if (option.equals("--delay"))
-				delay = Long.parseLong(arg);
+			if (option.equals("--threads")) threadCount = Integer.parseInt(arg);
+			else if (option.equals("--delay")) delay = Long.parseLong(arg);
 			else {
 				System.err.println("Unknown option: " + option);
 				usage();
 			}
 		}
-		if (args.length - i != 2)
-			usage();
+		if (args.length - i != 2) usage();
 
 		// now the fun starts
 		final File directory = new File(args[i + 1]);
@@ -462,7 +451,8 @@ public class MirrorWebsite {
 		try {
 			System.err.println("Mirroring " + args[i] + " to " + directory);
 			new MirrorWebsite(args[i], directory, threadCount, delay).run();
-		} catch (Throwable t) {
+		}
+		catch (Throwable t) {
 			t.printStackTrace();
 			System.exit(1);
 		}

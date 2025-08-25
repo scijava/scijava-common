@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import java.util.Locale;
 /**
  * Caches details of a particular {@link SciJavaEvent}, without saving the event
  * itself (since doing so could leave dangling references).
- * 
+ *
  * @author Curtis Rueden
  */
 public class EventDetails {
@@ -93,8 +93,8 @@ public class EventDetails {
 	// -- Helper methods --
 
 	private String timestampAsString() {
-		final SimpleDateFormat formatter =
-			new SimpleDateFormat("hh:mm:ss.SS", Locale.getDefault());
+		final SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss.SS",
+			Locale.getDefault());
 		final String dateStr = formatter.format(timestamp);
 		return dateStr;
 	}

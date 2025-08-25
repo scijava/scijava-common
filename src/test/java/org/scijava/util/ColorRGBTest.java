@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link ColorRGB}.
- * 
+ *
  * @author Lee Kamentsky
  */
 public class ColorRGBTest {
@@ -84,8 +84,8 @@ public class ColorRGBTest {
 
 	@Test
 	public void testGetARGB() {
-		assertEquals(255 * 256 * 256 * 256 + 256 * 256 + 2 * 256 + 3,
-			new ColorRGB(1, 2, 3).getARGB());
+		assertEquals(255 * 256 * 256 * 256 + 256 * 256 + 2 * 256 + 3, new ColorRGB(
+			1, 2, 3).getARGB());
 	}
 
 	@Test

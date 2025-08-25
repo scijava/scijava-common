@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,12 +50,8 @@ public class StringUtilsTest {
 	public void testSplitUnquoted() {
 		// See https://stackoverflow.com/a/1757107/1919049
 		final String line = "foo,bar,c;qual=\"baz,blurb\",d;junk=\"quux,syzygy\"";
-		final String[] expected = {
-			"foo",
-			"bar",
-			"c;qual=\"baz,blurb\"",
-			"d;junk=\"quux,syzygy\""
-		};
+		final String[] expected = { "foo", "bar", "c;qual=\"baz,blurb\"",
+			"d;junk=\"quux,syzygy\"" };
 		final String[] actual = StringUtils.splitUnquoted(line, ",");
 		assertArrayEquals(expected, actual);
 	}
@@ -124,7 +120,8 @@ public class StringUtilsTest {
 
 		assertEquals(newLength, padded.length());
 		final String padding = padded.substring(padded.length() - 5);
-		assertTrue(padding.chars().allMatch(c -> c == StringUtils.DEFAULT_PAD_CHAR));
+		assertTrue(padding.chars().allMatch(
+			c -> c == StringUtils.DEFAULT_PAD_CHAR));
 		assertEquals(s, padded.substring(0, padded.length() - 5));
 	}
 
@@ -181,7 +178,8 @@ public class StringUtilsTest {
 
 		assertEquals(newLength, padded.length());
 		final String padding = padded.substring(0, 5);
-		assertTrue(padding.chars().allMatch(c -> c == StringUtils.DEFAULT_PAD_CHAR));
+		assertTrue(padding.chars().allMatch(
+			c -> c == StringUtils.DEFAULT_PAD_CHAR));
 		assertEquals(s, padded.substring(5, padded.length()));
 	}
 }

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,7 +37,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for high-level data I/O: opening and saving data.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface IOService extends HandlerService<Location, IOPlugin<?>>,
@@ -65,7 +65,8 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
 	 * location.
 	 */
-	<D> IOPlugin<D> getSaver(final D data, final String destination) throws IOException;
+	<D> IOPlugin<D> getSaver(final D data, final String destination)
+		throws IOException;
 
 	/**
 	 * Gets the most appropriate {@link IOPlugin} for saving data to the given
@@ -136,7 +137,7 @@ public interface IOService extends HandlerService<Location, IOPlugin<?>>,
 	 * The saver to use is automatically determined based on available
 	 * {@link IOPlugin}s; see {@link #getSaver(Object, Location)}.
 	 * </p>
-	 * 
+	 *
 	 * @param data The data to be saved to the destination.
 	 * @param destination The destination location to which data should be saved.
 	 * @throws IOException if something goes wrong saving the data.

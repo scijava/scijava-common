@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.util.Bytes;
 /**
  * A <em>data handle</em> is a plugin which provides both streaming and random
  * access to bytes at a {@link Location} (e.g., files or arrays).
- * 
+ *
  * @author Curtis Rueden
  * @see DataHandleInputStream
  * @see DataHandleOutputStream
@@ -55,7 +55,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 {
 
 	public enum ByteOrder {
-		LITTLE_ENDIAN, BIG_ENDIAN
+			LITTLE_ENDIAN, BIG_ENDIAN
 	}
 
 	/** Default block size to use when searching through the stream. */
@@ -72,7 +72,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Tests whether this handle's location actually exists at the source.
-	 * 
+	 *
 	 * @return True if the location exists; false if not.
 	 * @throws IOException If something goes wrong with the existence check.
 	 */
@@ -80,7 +80,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Gets the last modified timestamp of the location.
-	 * 
+	 *
 	 * @return The last modified timestamp, or null if the handle does not support
 	 *         this feature or if the location does not exist.
 	 * @throws IOException If something goes wrong with the last modified check.
@@ -104,7 +104,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * the checksum is still the same, the contents are highly likely to be
 	 * unchanged.
 	 * </p>
-	 * 
+	 *
 	 * @return The checksum, or null if the handle does not support this feature.
 	 * @throws IOException If something goes wrong when accessing the checksum.
 	 */
@@ -123,22 +123,22 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Returns the length of the data in bytes.
-	 * 
+	 *
 	 * @return The length, or -1 if the length is unknown.
 	 */
 	long length() throws IOException;
 
 	/**
 	 * Sets the new length of the handle.
-	 * 
+	 *
 	 * @param length New length.
 	 * @throws IOException If there is an error changing the handle's length.
 	 */
 	void setLength(long length) throws IOException;
 
 	/**
-	 * Gets the number of bytes which can be read from, or written to, the
-	 * data handle, bounded by the specified number of bytes.
+	 * Gets the number of bytes which can be read from, or written to, the data
+	 * handle, bounded by the specified number of bytes.
 	 * <p>
 	 * In the case of reading, attempting to read the returned number of bytes is
 	 * guaranteed not to throw {@link EOFException}. However, be aware that the
@@ -158,8 +158,8 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	 * </p>
 	 *
 	 * @param count Desired number of bytes to read/write.
-	 * @return The actual number of bytes which could be read/written,
-	 *         which might be less than the requested value.
+	 * @return The actual number of bytes which could be read/written, which might
+	 *         be less than the requested value.
 	 * @throws IOException If something goes wrong with the check.
 	 */
 	default long available(final long count) throws IOException {
@@ -169,7 +169,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Ensures that the handle has sufficient bytes available to read.
-	 * 
+	 *
 	 * @param count Number of bytes to read.
 	 * @see #available(long)
 	 * @throws EOFException If there are insufficient bytes available.
@@ -184,7 +184,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	/**
 	 * Ensures that the handle has the correct length to be written to, and
 	 * extends it as required.
-	 * 
+	 *
 	 * @param count Number of bytes to write.
 	 * @return {@code true} if the handle's length was sufficient, or
 	 *         {@code false} if the handle's length required an extension.
@@ -268,7 +268,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads a string ending with one of the characters in the given string.
-	 * 
+	 *
 	 * @see #findString(String...)
 	 */
 	default String readString(final String lastChars) throws IOException {
@@ -282,7 +282,7 @@ public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 
 	/**
 	 * Reads a string ending with one of the given terminating substrings.
-	 * 
+	 *
 	 * @param terminators The strings for which to search.
 	 * @return The string from the initial position through the end of the
 	 *         terminating sequence, or through the end of the stream if no

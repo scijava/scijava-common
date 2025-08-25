@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -169,9 +169,7 @@ public class DefaultConsoleService extends
 	 * identical references, not per-element object equality.
 	 * </p>
 	 */
-	private boolean sameElements(final List<String> l1,
-		final List<String> l2)
-	{
+	private boolean sameElements(final List<String> l1, final List<String> l2) {
 		if (l1.size() != l2.size()) return false;
 		for (int i = 0; i < l1.size(); i++) {
 			if (l1.get(i) != l2.get(i)) return false;
@@ -219,8 +217,8 @@ public class DefaultConsoleService extends
 		private void publish(final ThreadContext relevance, final String output) {
 			final Context context = getContext();
 			final boolean contextual = relevance == ThreadContext.SAME;
-			final OutputEvent event =
-				new OutputEvent(context, source, output, contextual);
+			final OutputEvent event = new OutputEvent(context, source, output,
+				contextual);
 			notifyListeners(event);
 		}
 	}

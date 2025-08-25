@@ -1,3 +1,4 @@
+
 package org.scijava.event.bushe;
 
 /**
@@ -5,6 +6,7 @@ package org.scijava.event.bushe;
  * @since Nov 19, 2005 11:12:35 PM
  */
 public class EBTestCounter {
-   public int eventsHandledCount;
-   public int subscribeExceptionCount;
+
+	public int eventsHandledCount;
+	public int subscribeExceptionCount;
 }

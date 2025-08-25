@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -55,7 +55,7 @@ import org.scijava.thread.ThreadService;
  * add callback methods to affected inputs, for reacting to a change in the
  * active display.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public abstract class InteractiveCommand extends DynamicCommand implements
@@ -74,12 +74,14 @@ public abstract class InteractiveCommand extends DynamicCommand implements
 	@Parameter
 	private LogService log;
 
-	/** List of names of inputs to keep in sync when the active display changes. */
+	/**
+	 * List of names of inputs to keep in sync when the active display changes.
+	 */
 	private final String[] listenerNames;
 
 	/**
 	 * Creates a new interactive command.
-	 * 
+	 *
 	 * @param listenerNames The list of names of inputs to keep in sync when the
 	 *          active display changes. Each input must be a {@link Display}.
 	 */

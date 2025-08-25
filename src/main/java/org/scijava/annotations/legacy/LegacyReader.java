@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -49,7 +49,7 @@ import java.util.TreeMap;
  * current class path library is incompatible with the one used to serialize the
  * data.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class LegacyReader {
@@ -74,8 +74,8 @@ public class LegacyReader {
 		this.in = new BufferedInputStream(in);
 		short signature = (short) read16();
 		if (signature != STREAM_MAGIC) {
-			throw new IOException("Unrecognized signature: 0x" +
-				Integer.toHexString(signature));
+			throw new IOException("Unrecognized signature: 0x" + Integer.toHexString(
+				signature));
 		}
 		int version = read16();
 		if (version != STREAM_VERSION) {
@@ -122,16 +122,16 @@ public class LegacyReader {
 			return newClassDesc();
 		}
 		else {
-			throw new UnsupportedOperationException("Unexpected token: 0x" +
-				Integer.toHexString(c));
+			throw new UnsupportedOperationException("Unexpected token: 0x" + Integer
+				.toHexString(c));
 		}
 	}
 
 	private void expectToken(int token) throws IOException {
 		int c = read8();
 		if (c != token) {
-			throw new UnsupportedOperationException("Unexpected token: 0x" +
-				Integer.toHexString(c));
+			throw new UnsupportedOperationException("Unexpected token: 0x" + Integer
+				.toHexString(c));
 		}
 	}
 
@@ -224,8 +224,8 @@ public class LegacyReader {
 			superClassDesc = references.get(handle);
 		}
 		else if (c != TC_NULL) {
-			throw new UnsupportedOperationException("Unexpected token: 0x" +
-				Integer.toHexString(c));
+			throw new UnsupportedOperationException("Unexpected token: 0x" + Integer
+				.toHexString(c));
 		}
 
 		return result;
@@ -324,12 +324,12 @@ public class LegacyReader {
 
 		private final Class<?> clazz;
 
-		public BoxedPrimitiveClassDesc(final Class<?> clazz, final String simpleName)
+		public BoxedPrimitiveClassDesc(final Class<?> clazz,
+			final String simpleName)
 		{
 			super(toSimpleName(clazz), "value", simpleName);
-			this.clazz =
-				clazz == Double.class || clazz == Float.class ? Double.class
-					: clazz == Boolean.class ? Boolean.class : Long.class;
+			this.clazz = clazz == Double.class || clazz == Float.class ? Double.class
+				: clazz == Boolean.class ? Boolean.class : Long.class;
 		}
 
 		@Override
@@ -354,8 +354,7 @@ public class LegacyReader {
 		return "L" + clazz.getName().replace('.', '/') + ";";
 	}
 
-	private final Map<String, ClassDesc> classDescs =
-		new HashMap<>();
+	private final Map<String, ClassDesc> classDescs = new HashMap<>();
 
 	{
 		new ClassDesc("B") {
@@ -467,7 +466,8 @@ public class LegacyReader {
 
 			// implements serialVersionUID 8683452581122892189L
 			@Override
-			public Object readExtra(final Map<String, Object> map) throws IOException
+			public Object readExtra(final Map<String, Object> map)
+				throws IOException
 			{
 				int size = (int) (long) (Long) map.get("size");
 
@@ -489,7 +489,8 @@ public class LegacyReader {
 		{
 
 			@Override
-			public Object readExtra(final Map<String, Object> map) throws IOException
+			public Object readExtra(final Map<String, Object> map)
+				throws IOException
 			{
 				map.put("class", map.get("className"));
 				return map;
@@ -500,17 +501,19 @@ public class LegacyReader {
 		{
 
 			@Override
-			public Object readExtra(final Map<String, Object> map) throws IOException
+			public Object readExtra(final Map<String, Object> map)
+				throws IOException
 			{
 				return map.get("values");
 			}
 		};
-		new NonPrimitiveClassDesc("Lnet/java/sezpoz/impl/SerEnumConst;",
-			"enumName", "Ljava/lang/String;", "constName", "Ljava/lang/String;")
+		new NonPrimitiveClassDesc("Lnet/java/sezpoz/impl/SerEnumConst;", "enumName",
+			"Ljava/lang/String;", "constName", "Ljava/lang/String;")
 		{
 
 			@Override
-			public Object readExtra(final Map<String, Object> map) throws IOException
+			public Object readExtra(final Map<String, Object> map)
+				throws IOException
 			{
 				map.put("enum", map.get("enumName"));
 				map.put("value", map.get("constName"));
@@ -522,7 +525,8 @@ public class LegacyReader {
 		{
 
 			@Override
-			public Object readExtra(final Map<String, Object> map) throws IOException
+			public Object readExtra(final Map<String, Object> map)
+				throws IOException
 			{
 				return map.get("name");
 			}

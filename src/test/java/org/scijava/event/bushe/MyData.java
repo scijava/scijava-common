@@ -1,3 +1,4 @@
+
 package org.scijava.event.bushe;
 
 /**
@@ -5,13 +6,14 @@ package org.scijava.event.bushe;
  * https://eventbus.dev.java.net/servlets/ProjectForumMessageView?messageID=30702&forumID=1834
  */
 public class MyData {
-    private String classification = "foo";
 
-    public String getClassification() {
-        return classification;
-    }
+	private String classification = "foo";
 
-    public void setClassification(String classification) {
-        this.classification = classification;
-    }
+	public String getClassification() {
+		return classification;
+	}
+
+	public void setClassification(String classification) {
+		this.classification = classification;
+	}
 }

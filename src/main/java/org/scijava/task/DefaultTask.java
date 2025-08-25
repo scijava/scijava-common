@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.task;
 
 import java.util.concurrent.ExecutionException;
@@ -37,30 +38,28 @@ import org.scijava.thread.ThreadService;
 
 /**
  * Default implementation of {@link Task}. Throughout the task (or job),
- * {@link Task#setProgressValue(long)} can be called to inform
- * how the job is progressing.
+ * {@link Task#setProgressValue(long)} can be called to inform how the job is
+ * progressing.
  * <p>
- * Asynchronous case:
- * A job (runnable) is sent for execution to the linked {@link ThreadService}.
- * It reports status updates via the linked {@link EventService}.
- * A {@link org.scijava.task.event.TaskEvent} is sent before the job
- * is started and when finished.
- * In the asynchronous case, upon task cancellation ({@link Task#cancel(String)} call),
- * the runnable associated to the ThreadService is attempted to be stopped
- * by calling {@link Future#cancel(boolean)}.
- * This default behaviour can be supplemented by an additional
- * custom callback which can be set in {@link Task#setCancelCallBack(Runnable)}.
+ * Asynchronous case: A job (runnable) is sent for execution to the linked
+ * {@link ThreadService}. It reports status updates via the linked
+ * {@link EventService}. A {@link org.scijava.task.event.TaskEvent} is sent
+ * before the job is started and when finished. In the asynchronous case, upon
+ * task cancellation ({@link Task#cancel(String)} call), the runnable associated
+ * to the ThreadService is attempted to be stopped by calling
+ * {@link Future#cancel(boolean)}. This default behaviour can be supplemented by
+ * an additional custom callback which can be set in
+ * {@link Task#setCancelCallBack(Runnable)}.
  * </p>
  * <p>
- * Synchronous case:
- * A job that reports its status in between calls of {@link Task#start()},
- * and {@link Task#finish()}. It also reports its status via
- * the linked {@link EventService}.
- * Start and finish calls allow publishing proper {@link org.scijava.task.event.TaskEvent}
- * to subscribers (with the EventService).
- * Upon cancellation of a synchronous task, it is the responsibility
- * of the synchronous task to handle its own cancellation through
- * a custom callback which can be set via {@link Task#setCancelCallBack(Runnable)}.
+ * Synchronous case: A job that reports its status in between calls of
+ * {@link Task#start()}, and {@link Task#finish()}. It also reports its status
+ * via the linked {@link EventService}. Start and finish calls allow publishing
+ * proper {@link org.scijava.task.event.TaskEvent} to subscribers (with the
+ * EventService). Upon cancellation of a synchronous task, it is the
+ * responsibility of the synchronous task to handle its own cancellation through
+ * a custom callback which can be set via
+ * {@link Task#setCancelCallBack(Runnable)}.
  * </p>
  *
  * @author Curtis Rueden

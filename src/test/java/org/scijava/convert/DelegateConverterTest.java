@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.convert;
 
 import static org.junit.Assert.assertSame;
@@ -37,8 +38,8 @@ import org.junit.Test;
 import org.scijava.Context;
 import org.scijava.plugin.Plugin;
 
-
 public class DelegateConverterTest {
+
 	private Context context;
 
 	@Before
@@ -55,13 +56,13 @@ public class DelegateConverterTest {
 	@Test
 	public void testDelegateConverters() {
 		ConvertService convertService = context.getService(ConvertService.class);
-		
+
 		// Test conversion from AType to BType
 		AType a = new AType();
 		assertTrue(convertService.supports(a, BType.class));
 		BType b = convertService.convert(a, BType.class);
 		assertSame(BType.class, b.getClass());
-		
+
 		// Test conversion from BType to CType
 		assertTrue(convertService.supports(b, CType.class));
 		CType c = convertService.convert(b, CType.class);
@@ -85,7 +86,7 @@ public class DelegateConverterTest {
 		// empty class
 	}
 
-	@Plugin(type=Converter.class)
+	@Plugin(type = Converter.class)
 	public static class ABConverter extends AbstractConverter<AType, BType> {
 
 		@SuppressWarnings("unchecked")
@@ -102,10 +103,10 @@ public class DelegateConverterTest {
 		@Override
 		public Class<AType> getInputType() {
 			return AType.class;
-		}		
+		}
 	}
 
-	@Plugin(type=Converter.class)
+	@Plugin(type = Converter.class)
 	public static class BCConverter extends AbstractConverter<BType, CType> {
 
 		@SuppressWarnings("unchecked")
@@ -122,11 +123,13 @@ public class DelegateConverterTest {
 		@Override
 		public Class<BType> getInputType() {
 			return BType.class;
-		}		
+		}
 	}
 
-	@Plugin(type=Converter.class)
-	public static class DelegateConverter extends AbstractDelegateConverter<AType, BType, CType> {
+	@Plugin(type = Converter.class)
+	public static class DelegateConverter extends
+		AbstractDelegateConverter<AType, BType, CType>
+	{
 
 		@Override
 		public Class<CType> getOutputType() {

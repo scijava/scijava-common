@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.Context;
 
 /**
  * Unit tests for core {@link Display} classes.
- * 
+ *
  * @author Curtis Rueden
  */
 public class DisplayTest {
@@ -47,8 +47,8 @@ public class DisplayTest {
 	@Test
 	public void testCreate() {
 		final Context context = new Context(DisplayService.class);
-		final DisplayService displayService =
-			context.getService(DisplayService.class);
+		final DisplayService displayService = context.getService(
+			DisplayService.class);
 		final String name = "Create";
 		// TODO: Reenable once DefaultDisplay is discoverable again.
 //		final Double value = 12.34;
@@ -73,15 +73,15 @@ public class DisplayTest {
 	@Test
 	public void testAddRemove() {
 		final Context context = new Context(DisplayService.class);
-		final DisplayService displayService =
-			context.getService(DisplayService.class);
+		final DisplayService displayService = context.getService(
+			DisplayService.class);
 		final String name = "AddRemove";
 		// TODO: Reenable once DefaultDisplay is discoverable again.
 //		final Object[] values = { 12.34, 890, 0, 93.73f };
 		final Object[] values = { "quick", "brown", "fox", "jumps" };
 		@SuppressWarnings("unchecked")
-		final Display<Object> display =
-			(Display<Object>) displayService.createDisplay(name, values[0]);
+		final Display<Object> display = (Display<Object>) displayService
+			.createDisplay(name, values[0]);
 		assertNotNull(display);
 
 		for (int i = 1; i < values.length; i++) {
@@ -112,8 +112,8 @@ public class DisplayTest {
 	@Test
 	public void testText() {
 		final Context context = new Context(DisplayService.class);
-		final DisplayService displayService =
-			context.getService(DisplayService.class);
+		final DisplayService displayService = context.getService(
+			DisplayService.class);
 		final String name = "Text";
 		final String value = "Hello";
 		final Display<?> d = displayService.createDisplay(name, value);

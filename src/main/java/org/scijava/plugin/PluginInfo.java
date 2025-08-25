@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -57,7 +57,7 @@ import org.scijava.util.VersionUtils;
  * very quickly build a complex structure containing all available plugins
  * without waiting for the Java class loader.
  * </p>
- * 
+ *
  * @param <PT> The <em>type</em> of plugin described by this metadata. See
  *          {@link SciJavaPlugin} for a list of common plugin types.
  * @author Curtis Rueden
@@ -85,7 +85,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Creates a new plugin metadata object.
-	 * 
+	 *
 	 * @param className The name of the class, which must implement
 	 *          {@link SciJavaPlugin}.
 	 * @param pluginType The <em>type</em> of plugin described by this metadata.
@@ -97,7 +97,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Creates a new plugin metadata object.
-	 * 
+	 *
 	 * @param className The name of the class, which must implement
 	 *          {@link SciJavaPlugin}.
 	 * @param pluginType The <em>type</em> of plugin described by this metadata.
@@ -113,7 +113,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Creates a new plugin metadata object.
-	 * 
+	 *
 	 * @param className The name of the class, which must implement
 	 *          {@link SciJavaPlugin}.
 	 * @param pluginType The <em>type</em> of plugin described by this metadata.
@@ -132,7 +132,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Creates a new plugin metadata object.
-	 * 
+	 *
 	 * @param pluginClass The plugin class, which must implement
 	 *          {@link SciJavaPlugin}.
 	 * @param pluginType The <em>type</em> of plugin described by this metadata.
@@ -146,7 +146,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Creates a new plugin metadata object.
-	 * 
+	 *
 	 * @param pluginClass The plugin class, which must implement
 	 *          {@link SciJavaPlugin}.
 	 * @param pluginType The <em>type</em> of plugin described by this metadata.
@@ -204,7 +204,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	/**
 	 * Obtains the {@link Class} of the item objects, if that class has already
 	 * been loaded.
-	 * 
+	 *
 	 * @return The {@link Class}, or null if it has not yet been loaded by
 	 *         {@link #loadClass}.
 	 */
@@ -214,6 +214,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Sets the <em>type</em> of plugin described by the metadata.
+	 *
 	 * @see SciJavaPlugin for a list of common plugin types.
 	 */
 	public void setPluginType(final Class<PT> pluginType) {
@@ -222,6 +223,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Gets the <em>type</em> of plugin described by the metadata.
+	 *
 	 * @see SciJavaPlugin for a list of common plugin types.
 	 */
 	public Class<PT> getPluginType() {
@@ -235,7 +237,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 
 	/**
 	 * Gets the URL corresponding to the icon resource path.
-	 * 
+	 *
 	 * @see #getIconPath()
 	 */
 	public URL getIconURL() throws InstantiableException {
@@ -247,7 +249,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	/**
 	 * Injects the metadata into the given object. Note that this is only possible
 	 * if the given object implements the {@link HasPluginInfo} interface.
-	 * 
+	 *
 	 * @param o The object to which the metadata should be assigned.
 	 * @return true If the metadata was successfully injected.
 	 */
@@ -351,7 +353,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * Finds a {@link PluginInfo} of the given plugin class in the specified
 	 * {@link PluginIndex}. <em>Note that to avoid loading plugin classes, class
 	 * identity is determined by class name equality only.</em>
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin whose
 	 *          {@link PluginInfo} is desired.
 	 * @param pluginIndex The {@link PluginIndex} to search for a matching
@@ -369,7 +371,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * Finds a {@link PluginInfo} of the given plugin class and plugin type in the
 	 * specified {@link PluginIndex}. <em>Note that to avoid loading plugin
 	 * classes, class identity is determined by class name equality only.</em>
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin whose
 	 *          {@link PluginInfo} is desired.
 	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.
@@ -388,7 +390,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * Finds a {@link PluginInfo} of the given plugin class in the specified list
 	 * of plugins. <em>Note that to avoid loading plugin classes, class identity
 	 * is determined by class name equality only.</em>
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin whose
 	 *          {@link PluginInfo} is desired.
 	 * @param plugins The list of plugins to search for a match.
@@ -409,7 +411,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * Creates a {@link PluginInfo} for the given plugin class. The class must be
 	 * a concrete class annotated with the @{@link Plugin} annotation, from which
 	 * the plugin type will be inferred.
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin for which a new
 	 *          {@link PluginInfo} is desired.
 	 * @return A newly created {@link PluginInfo} for the given plugin class.
@@ -429,7 +431,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	/**
 	 * Creates a {@link PluginInfo} for the given plugin class of the specified
 	 * plugin type.
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin for which a new
 	 *          {@link PluginInfo} is desired.
 	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.
@@ -446,7 +448,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * exists in the specified {@link PluginIndex}, it is retrieved (see
 	 * {@link #get(Class, PluginIndex)}); otherwise, a new one is created (see
 	 * {@link #create(Class)}) but not added to the index.
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin whose
 	 *          {@link PluginInfo} is desired.
 	 * @param pluginIndex The {@link PluginIndex} to search for a matching
@@ -467,7 +469,7 @@ public class PluginInfo<PT extends SciJavaPlugin> extends AbstractUIDetails
 	 * exists in the specified {@link PluginIndex}, it is retrieved (see
 	 * {@link #get(Class, PluginIndex)}); otherwise, a new one is created (see
 	 * {@link #create(Class)}) but not added to the index.
-	 * 
+	 *
 	 * @param pluginClass The concrete class of the plugin whose
 	 *          {@link PluginInfo} is desired.
 	 * @param pluginType The type of the plugin; see {@link #getPluginType()}.

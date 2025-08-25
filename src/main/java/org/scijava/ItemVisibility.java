@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,36 +31,36 @@ package org.scijava;
 
 /**
  * Defines the "visibility" of a parameter.
- * 
+ *
  * @author Curtis Rueden
  */
 public enum ItemVisibility {
 
-	/**
-	 * Item is included in the history for purposes of data provenance, and
-	 * included as a parameter when recording scripts.
-	 */
-	NORMAL,
+		/**
+		 * Item is included in the history for purposes of data provenance, and
+		 * included as a parameter when recording scripts.
+		 */
+		NORMAL,
 
-	/**
-	 * Item is excluded from the history for the purposes of data provenance, but
-	 * still included as a parameter when recording scripts.
-	 */
-	TRANSIENT,
+		/**
+		 * Item is excluded from the history for the purposes of data provenance,
+		 * but still included as a parameter when recording scripts.
+		 */
+		TRANSIENT,
 
-	/**
-	 * Item is excluded from the history for the purposes of data provenance, and
-	 * also excluded as a parameter when recording scripts. This option should
-	 * only be used for items with no effect on the final output, such as a
-	 * "verbose" flag.
-	 */
-	INVISIBLE,
+		/**
+		 * Item is excluded from the history for the purposes of data provenance,
+		 * and also excluded as a parameter when recording scripts. This option
+		 * should only be used for items with no effect on the final output, such as
+		 * a "verbose" flag.
+		 */
+		INVISIBLE,
 
-	/**
-	 * As {@link #INVISIBLE}, and further indicating that the item's value is
-	 * intended as a message to the user (e.g., in the input harvester panel)
-	 * rather than an actual parameter to the module execution.
-	 */
-	MESSAGE
+		/**
+		 * As {@link #INVISIBLE}, and further indicating that the item's value is
+		 * intended as a message to the user (e.g., in the input harvester panel)
+		 * rather than an actual parameter to the module execution.
+		 */
+		MESSAGE
 
 }

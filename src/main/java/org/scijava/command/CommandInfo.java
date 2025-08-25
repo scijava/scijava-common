@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -64,7 +64,7 @@ import org.scijava.util.Types;
  * implements {@link ModuleInfo}, allowing it to describe and instantiate the
  * command in {@link Module} form.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  * @author Grant Harris
@@ -91,16 +91,13 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 	private boolean paramsParsed;
 
 	/** List of problems detected when parsing command parameters. */
-	private final List<ValidityProblem> problems =
-		new ArrayList<>();
+	private final List<ValidityProblem> problems = new ArrayList<>();
 
 	/** Table of inputs, keyed on name. */
-	private final Map<String, ModuleItem<?>> inputMap =
-		new HashMap<>();
+	private final Map<String, ModuleItem<?>> inputMap = new HashMap<>();
 
 	/** Table of outputs, keyed on name. */
-	private final Map<String, ModuleItem<?>> outputMap =
-		new HashMap<>();
+	private final Map<String, ModuleItem<?>> outputMap = new HashMap<>();
 
 	/** Ordered list of input items. */
 	private final List<ModuleItem<?>> inputList = new ArrayList<>();
@@ -112,7 +109,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/**
 	 * Creates a new command metadata object.
-	 * 
+	 *
 	 * @param className The name of the class, which must implement
 	 *          {@link Command}.
 	 */
@@ -122,7 +119,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/**
 	 * Creates a new command metadata object.
-	 * 
+	 *
 	 * @param className The name of the class, which must implement
 	 *          {@link Command}.
 	 * @param annotation The @{@link Plugin} annotation to associate with this
@@ -134,7 +131,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/**
 	 * Creates a new command metadata object.
-	 * 
+	 *
 	 * @param commandClass The plugin class, which must implement {@link Command}.
 	 */
 	public CommandInfo(final Class<? extends Command> commandClass) {
@@ -143,7 +140,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 
 	/**
 	 * Creates a new command metadata object.
-	 * 
+	 *
 	 * @param commandClass The plugin class, which must implement {@link Command}.
 	 * @param annotation The @{@link Plugin} annotation to associate with this
 	 *          metadata object.
@@ -157,7 +154,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 	/**
 	 * Creates a new command metadata object describing the same command as the
 	 * given {@link PluginInfo}.
-	 * 
+	 *
 	 * @param info The plugin metadata to wrap.
 	 */
 	public CommandInfo(final PluginInfo<Command> info) {
@@ -403,8 +400,8 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			boolean first = true;
 			for (final String name : pre.keySet()) {
 				final Object value = pre.get(name);
-				final String sValue =
-					value == null ? "" : value.toString().replaceAll("[^\\w]", "_");
+				final String sValue = value == null ? "" : value.toString().replaceAll(
+					"[^\\w]", "_");
 				if (first) {
 					sb.append(", ");
 					first = false;
@@ -441,8 +438,8 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			problems.add(new ValidityProblem("Delegate class is abstract"));
 		}
 
-		final List<Field> fields =
-			ClassUtils.getAnnotatedFields(type, Parameter.class);
+		final List<Field> fields = ClassUtils.getAnnotatedFields(type,
+			Parameter.class);
 
 		for (final Field f : fields) {
 			f.setAccessible(true); // expose private fields
@@ -461,8 +458,9 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			}
 
 			final String name = f.getName();
-			if ((inputMap.containsKey(name) || outputMap.containsKey(name))
-					&& !Service.class.isAssignableFrom(f.getType())) {
+			if ((inputMap.containsKey(name) || outputMap.containsKey(name)) &&
+				!Service.class.isAssignableFrom(f.getType()))
+			{
 				// NB: Shadowed parameters are bad because they are ambiguous.
 				final String error = "Invalid duplicate parameter: " + f;
 				problems.add(new ValidityProblem(error));
@@ -486,8 +484,7 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			final boolean isPreset = presets.containsKey(name);
 
 			// add item to the relevant list (inputs or outputs)
-			final CommandModuleItem<Object> item =
-				new CommandModuleItem<>(this, f);
+			final CommandModuleItem<Object> item = new CommandModuleItem<>(this, f);
 			if (item.isInput()) {
 				inputMap.put(name, item);
 				if (!isPreset) inputList.add(item);
@@ -510,8 +507,8 @@ public class CommandInfo extends PluginInfo<Command> implements ModuleInfo {
 			return loadClass();
 		}
 		catch (final InstantiableException e) {
-			final String error =
-				"Could not initialize command class: " + getClassName();
+			final String error = "Could not initialize command class: " +
+				getClassName();
 			problems.add(new ValidityProblem(error, e));
 		}
 		return null;

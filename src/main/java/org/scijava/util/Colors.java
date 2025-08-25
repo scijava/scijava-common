@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.util.Map;
  * Predefined {@link ColorRGB} objects and related utility methods. These colors
  * match <a href="http://www.w3schools.com/cssref/css_colornames.asp">those
  * defined in CSS</a>.
- * 
+ *
  * @author Lee Kamentsky
  * @author Curtis Rueden
  */
@@ -194,8 +194,7 @@ public final class Colors {
 	public static final ColorRGB YELLOW = new ColorRGB(255, 255, 0);
 	public static final ColorRGB YELLOWGREEN = new ColorRGB(154, 205, 50);
 
-	private static final Map<String, ColorRGB> COLORS =
-		new HashMap<>();
+	private static final Map<String, ColorRGB> COLORS = new HashMap<>();
 
 	static {
 		for (final Field f : Colors.class.getDeclaredFields()) {

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,7 +47,7 @@ import org.scijava.thread.ThreadService;
  * {@code org.scijava.event.bushe.EventService} but rather a SciJava
  * {@link Service} implementation.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class DefaultEventBus extends ThreadSafeEventService {
@@ -132,8 +132,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 
 	@Override
 	protected void publish(final Object event, final String topic,
-		final Object eventObj,
-		@SuppressWarnings("rawtypes") final List subscribers,
+		final Object eventObj, @SuppressWarnings("rawtypes") final List subscribers,
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{
@@ -144,8 +143,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 	// -- Helper methods --
 
 	private void publishNow(final Object event, final String topic,
-		final Object eventObj,
-		@SuppressWarnings("rawtypes") final List subscribers,
+		final Object eventObj, @SuppressWarnings("rawtypes") final List subscribers,
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{
@@ -171,8 +169,7 @@ public class DefaultEventBus extends ThreadSafeEventService {
 	}
 
 	private void publishLater(final Object event, final String topic,
-		final Object eventObj,
-		@SuppressWarnings("rawtypes") final List subscribers,
+		final Object eventObj, @SuppressWarnings("rawtypes") final List subscribers,
 		@SuppressWarnings("rawtypes") final List vetoSubscribers,
 		final StackTraceElement[] callingStack)
 	{

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -55,7 +55,7 @@ import org.scijava.thread.ThreadService;
 
 /**
  * Tests {@link Context} creation with {@link Service} dependencies.
- * 
+ *
  * @author Curtis Rueden
  */
 public class ContextCreationTest {
@@ -84,48 +84,47 @@ public class ContextCreationTest {
 	 */
 	@Test
 	public void testFull() {
-		final Class<?>[] expected =
-			{ org.scijava.event.DefaultEventService.class,
-				org.scijava.app.DefaultAppService.class,
-				org.scijava.app.DefaultStatusService.class,
-				org.scijava.command.DefaultCommandService.class,
-				org.scijava.console.DefaultConsoleService.class,
-				org.scijava.convert.DefaultConvertService.class,
-				org.scijava.display.DefaultDisplayService.class,
-				org.scijava.download.DefaultDownloadService.class,
-				org.scijava.event.DefaultEventHistory.class,
-				org.scijava.input.DefaultInputService.class,
-				org.scijava.io.DefaultIOService.class,
-				org.scijava.io.DefaultRecentFileService.class,
-				org.scijava.io.handle.DefaultDataHandleService.class,
-				org.scijava.io.location.DefaultLocationService.class,
-				org.scijava.io.nio.DefaultNIOService.class,
-				org.scijava.main.DefaultMainService.class,
-				org.scijava.menu.DefaultMenuService.class,
-				org.scijava.module.DefaultModuleService.class,
-				org.scijava.object.DefaultObjectService.class,
-				org.scijava.options.DefaultOptionsService.class,
-				org.scijava.parse.DefaultParseService.class,
-				org.scijava.platform.DefaultPlatformService.class,
-				org.scijava.plugin.DefaultPluginService.class,
-				org.scijava.prefs.DefaultPrefService.class,
-				org.scijava.run.DefaultRunService.class,
-				org.scijava.script.DefaultScriptHeaderService.class,
-				org.scijava.script.DefaultScriptService.class,
-				org.scijava.script.process.DefaultScriptProcessorService.class,
-				org.scijava.startup.DefaultStartupService.class,
-				org.scijava.task.DefaultTaskService.class,
-				org.scijava.text.DefaultTextService.class,
-				org.scijava.text.io.DefaultTextIOService.class,
-				org.scijava.thread.DefaultThreadService.class,
-				org.scijava.tool.DefaultToolService.class,
-				org.scijava.ui.DefaultUIService.class,
-				org.scijava.ui.dnd.DefaultDragAndDropService.class,
-				org.scijava.welcome.DefaultWelcomeService.class,
-				org.scijava.widget.DefaultWidgetService.class,
-				org.scijava.log.StderrLogService.class,
-				org.scijava.platform.DefaultAppEventService.class,
-				org.scijava.cache.DefaultCacheService.class};
+		final Class<?>[] expected = { org.scijava.event.DefaultEventService.class,
+			org.scijava.app.DefaultAppService.class,
+			org.scijava.app.DefaultStatusService.class,
+			org.scijava.command.DefaultCommandService.class,
+			org.scijava.console.DefaultConsoleService.class,
+			org.scijava.convert.DefaultConvertService.class,
+			org.scijava.display.DefaultDisplayService.class,
+			org.scijava.download.DefaultDownloadService.class,
+			org.scijava.event.DefaultEventHistory.class,
+			org.scijava.input.DefaultInputService.class,
+			org.scijava.io.DefaultIOService.class,
+			org.scijava.io.DefaultRecentFileService.class,
+			org.scijava.io.handle.DefaultDataHandleService.class,
+			org.scijava.io.location.DefaultLocationService.class,
+			org.scijava.io.nio.DefaultNIOService.class,
+			org.scijava.main.DefaultMainService.class,
+			org.scijava.menu.DefaultMenuService.class,
+			org.scijava.module.DefaultModuleService.class,
+			org.scijava.object.DefaultObjectService.class,
+			org.scijava.options.DefaultOptionsService.class,
+			org.scijava.parse.DefaultParseService.class,
+			org.scijava.platform.DefaultPlatformService.class,
+			org.scijava.plugin.DefaultPluginService.class,
+			org.scijava.prefs.DefaultPrefService.class,
+			org.scijava.run.DefaultRunService.class,
+			org.scijava.script.DefaultScriptHeaderService.class,
+			org.scijava.script.DefaultScriptService.class,
+			org.scijava.script.process.DefaultScriptProcessorService.class,
+			org.scijava.startup.DefaultStartupService.class,
+			org.scijava.task.DefaultTaskService.class,
+			org.scijava.text.DefaultTextService.class,
+			org.scijava.text.io.DefaultTextIOService.class,
+			org.scijava.thread.DefaultThreadService.class,
+			org.scijava.tool.DefaultToolService.class,
+			org.scijava.ui.DefaultUIService.class,
+			org.scijava.ui.dnd.DefaultDragAndDropService.class,
+			org.scijava.welcome.DefaultWelcomeService.class,
+			org.scijava.widget.DefaultWidgetService.class,
+			org.scijava.log.StderrLogService.class,
+			org.scijava.platform.DefaultAppEventService.class,
+			org.scijava.cache.DefaultCacheService.class };
 
 		final Context context = new Context();
 		verifyServiceOrder(expected, context);
@@ -194,8 +193,8 @@ public class ContextCreationTest {
 			fail("Expected IllegalArgumentException");
 		}
 		catch (final IllegalArgumentException exc) {
-			final String expectedMessage =
-				"No compatible service: " + MissingService.class.getName();
+			final String expectedMessage = "No compatible service: " +
+				MissingService.class.getName();
 			assertEquals(expectedMessage, exc.getMessage());
 		}
 	}
@@ -212,11 +211,11 @@ public class ContextCreationTest {
 			fail("Expected IllegalArgumentException");
 		}
 		catch (final IllegalArgumentException exc) {
-			final String expectedMessage =
-				"Invalid service: " + ServiceRequiringMissingService.class.getName();
+			final String expectedMessage = "Invalid service: " +
+				ServiceRequiringMissingService.class.getName();
 			assertEquals(expectedMessage, exc.getMessage());
-			final String expectedCause =
-				"No compatible service: " + MissingService.class.getName();
+			final String expectedCause = "No compatible service: " +
+				MissingService.class.getName();
 			assertEquals(expectedCause, exc.getCause().getMessage());
 		}
 	}
@@ -238,12 +237,11 @@ public class ContextCreationTest {
 			fail("Expected IllegalArgumentException");
 		}
 		catch (final IllegalArgumentException exc) {
-			final String expectedMessage =
-				"Invalid service: " +
-					ServiceRequiringOptionalMissingService.class.getName();
+			final String expectedMessage = "Invalid service: " +
+				ServiceRequiringOptionalMissingService.class.getName();
 			assertEquals(expectedMessage, exc.getMessage());
-			final String expectedCause =
-				"No compatible service: " + OptionalMissingService.class.getName();
+			final String expectedCause = "No compatible service: " +
+				OptionalMissingService.class.getName();
 			assertEquals(expectedCause, exc.getCause().getMessage());
 		}
 	}
@@ -255,8 +253,8 @@ public class ContextCreationTest {
 	 */
 	@Test
 	public void testNonStrictMissingDirect() {
-		final List<Class<? extends Service>> serviceClasses =
-			Context.serviceClassList(MissingService.class);
+		final List<Class<? extends Service>> serviceClasses = Context
+			.serviceClassList(MissingService.class);
 		final Context context = new Context(serviceClasses, false);
 		assertEquals(0, context.getServiceIndex().size());
 	}
@@ -269,8 +267,8 @@ public class ContextCreationTest {
 	 */
 	@Test
 	public void testNonStrictMissingTransitive() {
-		final List<Class<? extends Service>> serviceClasses =
-			Context.serviceClassList(MissingService.class);
+		final List<Class<? extends Service>> serviceClasses = Context
+			.serviceClassList(MissingService.class);
 		final Context context = new Context(serviceClasses, false);
 		assertEquals(0, context.getServiceIndex().size());
 	}
@@ -288,8 +286,8 @@ public class ContextCreationTest {
 	 */
 	@Test
 	public void testNonStrictOptionalMissingTransitive() {
-		final List<Class<? extends Service>> serviceClasses =
-			Context.serviceClassList(ServiceRequiringOptionalMissingService.class);
+		final List<Class<? extends Service>> serviceClasses = Context
+			.serviceClassList(ServiceRequiringOptionalMissingService.class);
 		final Context context = new Context(serviceClasses, false);
 		final List<Service> services = context.getServiceIndex().getAll();
 		assertEquals(1, services.size());
@@ -359,8 +357,8 @@ public class ContextCreationTest {
 		// Add another service, that is not indexed under Service.class
 		index.add(new PluginInfo<>(ThreadService.class.getName(),
 			SciJavaPlugin.class));
-		final Context c =
-			new Context(pluginIndex(BaseImpl.class, ExtensionImpl.class));
+		final Context c = new Context(pluginIndex(BaseImpl.class,
+			ExtensionImpl.class));
 		assertEquals(2, c.getServiceIndex().size());
 	}
 
@@ -378,8 +376,8 @@ public class ContextCreationTest {
 	public void testOptionalMissingDirect() {
 		final Context context = new Context(OptionalMissingService.class);
 
-		final OptionalMissingService optionalMissingService =
-			context.getService(OptionalMissingService.class);
+		final OptionalMissingService optionalMissingService = context.getService(
+			OptionalMissingService.class);
 		assertNull(optionalMissingService);
 
 		// verify that there are *no* services in the context
@@ -397,13 +395,13 @@ public class ContextCreationTest {
 		final Context context = new Context(ServiceWantingMissingService.class);
 		assertEquals(1, context.getServiceIndex().size());
 
-		final ServiceWantingMissingService serviceWantingMissingService =
-			context.getService(ServiceWantingMissingService.class);
+		final ServiceWantingMissingService serviceWantingMissingService = context
+			.getService(ServiceWantingMissingService.class);
 		assertNotNull(serviceWantingMissingService);
 		assertNull(serviceWantingMissingService.missingService);
 
-		final MissingService missingService =
-			context.getService(MissingService.class);
+		final MissingService missingService = context.getService(
+			MissingService.class);
 		assertNull(missingService);
 
 		// verify that the *only* service is ServiceWantingMissing

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.plugin.RichPlugin;
  * implementing this interface, it is encouraged to instead extend
  * {@link AbstractDisplay}, for convenience.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Grant Harris
  * @see Plugin
@@ -56,7 +56,7 @@ public interface Display<T> extends List<T>, RichPlugin, Named {
 	/**
 	 * Tests whether the display is capable of visualizing objects of the given
 	 * class.
-	 * 
+	 *
 	 * @param c The class to check for visualization capabilities.
 	 * @return True if the display can handle certain objects of the given class;
 	 *         false if it cannot visualize any objects of that class.
@@ -75,7 +75,7 @@ public interface Display<T> extends List<T>, RichPlugin, Named {
 	 * This method is essentially the same as {@link #add} except that it accepts
 	 * any {@link Object} regardless of type.
 	 * </p>
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the object cannot be displayed (i.e.,
 	 *           if {@link #canDisplay(Object)} returns false).
 	 */

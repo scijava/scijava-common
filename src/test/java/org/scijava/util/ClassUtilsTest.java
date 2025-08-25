@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,7 +47,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link ClassUtils}.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -58,13 +58,13 @@ public class ClassUtilsTest {
 		final File tmpDir = createTemporaryDirectory("class-utils-test-");
 		final String path = getClass().getName().replace('.', '/') + ".class";
 		final File classFile = new File(tmpDir, path);
-		assertTrue(classFile.getParentFile().exists() ||
-			classFile.getParentFile().mkdirs());
-		copy(getClass().getResource("/" + path).openStream(),
-			new FileOutputStream(classFile), true);
+		assertTrue(classFile.getParentFile().exists() || classFile.getParentFile()
+			.mkdirs());
+		copy(getClass().getResource("/" + path).openStream(), new FileOutputStream(
+			classFile), true);
 
-		final ClassLoader classLoader =
-			new URLClassLoader(new URL[] { tmpDir.toURI().toURL() }, null);
+		final ClassLoader classLoader = new URLClassLoader(new URL[] { tmpDir
+			.toURI().toURL() }, null);
 		final URL location = ClassUtils.getLocation(getClass().getName(),
 			classLoader);
 		assertEquals(tmpDir, FileUtils.urlToFile(location));
@@ -80,9 +80,10 @@ public class ClassUtilsTest {
 		out.putNextEntry(new ZipEntry(path));
 		copy(getClass().getResource("/" + path).openStream(), out, true);
 
-		final ClassLoader classLoader =
-			new URLClassLoader(new URL[] { jar.toURI().toURL() }, null);
-		final URL location = ClassUtils.getLocation(getClass().getName(), classLoader);
+		final ClassLoader classLoader = new URLClassLoader(new URL[] { jar.toURI()
+			.toURL() }, null);
+		final URL location = ClassUtils.getLocation(getClass().getName(),
+			classLoader);
 		assertEquals(jar, FileUtils.urlToFile(location));
 		jar.deleteOnExit();
 	}
@@ -91,7 +92,7 @@ public class ClassUtilsTest {
 
 	/**
 	 * Copies bytes from an {@link InputStream} to an {@link OutputStream}.
-	 * 
+	 *
 	 * @param in the source
 	 * @param out the sink
 	 * @param closeOut whether to close the sink after we're done

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,7 +46,7 @@ import org.junit.Test;
 
 /**
  * Verifies that the {@link EclipseHelper} does its job correctly.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class EclipseHelperTest {
@@ -57,9 +57,8 @@ public class EclipseHelperTest {
 		copyClasses(dir, Complex.class, Simple.class);
 		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
 		assertFalse(jsonDir.exists());
-		final URLClassLoader loader =
-			new URLClassLoader(new URL[] { dir.toURI().toURL() }, getClass()
-				.getClassLoader().getParent());
+		final URLClassLoader loader = new URLClassLoader(new URL[] { dir.toURI()
+			.toURL() }, getClass().getClassLoader().getParent());
 		EclipseHelper.indexed.clear();
 		EclipseHelper.updateAnnotationIndex(loader);
 		assertFalse(jsonDir.exists());
@@ -68,31 +67,32 @@ public class EclipseHelperTest {
 	@Test
 	public void testIndexing() throws Exception {
 		final File dir = createTemporaryDirectory("eclipse-test-");
-		copyClasses(dir, Complex.class, Simple.class, Fruit.class,
-			AnnotatedA.class, AnnotatedB.class, AnnotatedC.class, AnnotatedD.class);
+		copyClasses(dir, Complex.class, Simple.class, Fruit.class, AnnotatedA.class,
+			AnnotatedB.class, AnnotatedC.class, AnnotatedD.class);
 		final File jsonDir = new File(dir, Index.INDEX_PREFIX);
-		for (final Class<?> clazz : new Class<?>[] { Complex.class, Simple.class })
+		for (final Class<?> clazz : new Class<?>[] { Complex.class,
+			Simple.class })
 		{
 			assertFalse(new File(jsonDir, clazz.getName()).exists());
 		}
-		final URLClassLoader loader =
-			new URLClassLoader(new URL[] { dir.toURI().toURL() }, getClass()
-				.getClassLoader().getParent())
-			{
+		final URLClassLoader loader = new URLClassLoader(new URL[] { dir.toURI()
+			.toURL() }, getClass().getClassLoader().getParent())
+		{
 
-				@Override
-				public Class<?> loadClass(final String className)
-					throws ClassNotFoundException
-				{
-					if (className.equals(Indexable.class.getName())) {
-						return Indexable.class;
-					}
-					return super.loadClass(className);
+			@Override
+			public Class<?> loadClass(final String className)
+				throws ClassNotFoundException
+			{
+				if (className.equals(Indexable.class.getName())) {
+					return Indexable.class;
 				}
-			};
+				return super.loadClass(className);
+			}
+		};
 		EclipseHelper.indexed.clear();
 		EclipseHelper.updateAnnotationIndex(loader);
-		for (final Class<?> clazz : new Class<?>[] { Complex.class, Simple.class })
+		for (final Class<?> clazz : new Class<?>[] { Complex.class,
+			Simple.class })
 		{
 			assertTrue(new File(jsonDir, clazz.getName()).exists());
 		}
@@ -125,8 +125,8 @@ public class EclipseHelperTest {
 		final byte[] buffer = new byte[16384];
 		for (final Class<?> clazz : classes) {
 			final String classPath = DirectoryIndexerTest.getResourcePath(clazz);
-			final InputStream in =
-				getClass().getResource("/" + classPath).openStream();
+			final InputStream in = getClass().getResource("/" + classPath)
+				.openStream();
 			final File outFile = new File(dir, classPath);
 			final File parent = outFile.getParentFile();
 			assertTrue(parent.isDirectory() || parent.mkdirs());

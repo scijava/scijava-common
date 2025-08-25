@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * Useful methods for debugging programs.
- * 
+ *
  * @author Curtis Rueden
  */
 public final class DebugUtils {
@@ -98,12 +98,11 @@ public final class DebugUtils {
 	public static String getStackDump() {
 		final StringBuilder sb = new StringBuilder();
 
-		final Map<Thread, StackTraceElement[]> stackTraces =
-			Thread.getAllStackTraces();
+		final Map<Thread, StackTraceElement[]> stackTraces = Thread
+			.getAllStackTraces();
 
 		// sort list of threads by name
-		final ArrayList<Thread> threads =
-			new ArrayList<>(stackTraces.keySet());
+		final ArrayList<Thread> threads = new ArrayList<>(stackTraces.keySet());
 		Collections.sort(threads, (t1, t2) -> t1.getName().compareTo(t2.getName()));
 
 		for (final Thread t : threads) {
@@ -140,8 +139,8 @@ public final class DebugUtils {
 	 * will fail if the main thread has terminated before this method is called.
 	 */
 	public static String getMainClassName() {
-		final Map<Thread, StackTraceElement[]> traceMap =
-			Thread.getAllStackTraces();
+		final Map<Thread, StackTraceElement[]> traceMap = Thread
+			.getAllStackTraces();
 		for (final Thread thread : traceMap.keySet()) {
 			if (!"main".equals(thread.getName())) continue;
 			final StackTraceElement[] trace = traceMap.get(thread);

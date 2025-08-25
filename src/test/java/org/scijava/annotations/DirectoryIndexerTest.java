@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -56,7 +56,7 @@ import org.junit.Test;
 
 /**
  * Tests the {@link DirectoryIndexer}.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class DirectoryIndexerTest {
@@ -69,8 +69,8 @@ public class DirectoryIndexerTest {
 		String path = url.getFile();
 		assumeTrue(path.indexOf(':') < 0);
 		assertTrue(path.endsWith("/" + suffix));
-		final File directory =
-			new File(path.substring(0, path.length() - suffix.length()));
+		final File directory = new File(path.substring(0, path.length() - suffix
+			.length()));
 
 		// delete all the test annotations
 		final File jsonDirectory = new File(directory, Index.INDEX_PREFIX);
@@ -87,18 +87,20 @@ public class DirectoryIndexerTest {
 		assertTrue(directory.exists());
 
 		// read the index
-		final Map<String, IndexItem<Complex>> map =
-			readIndex(Complex.class, DirectoryIndexerTest.class.getClassLoader());
+		final Map<String, IndexItem<Complex>> map = readIndex(Complex.class,
+			DirectoryIndexerTest.class.getClassLoader());
 
 		testDefaultAnnotations(map);
 
-		// verify that default values are not written to the serialized annotation index
+		// verify that default values are not written to the serialized annotation
+		// index
 		final File complex = new File(jsonDirectory, Complex.class.getName());
 		final BufferedReader reader = new BufferedReader(new FileReader(complex));
 		for (;;) {
 			final String line = reader.readLine();
 			if (line == null) break;
-			assertTrue("Contains default value 'Q' for char0: " + line, line.indexOf('Q') < 0);
+			assertTrue("Contains default value 'Q' for char0: " + line, line.indexOf(
+				'Q') < 0);
 		}
 		reader.close();
 	}
@@ -106,16 +108,13 @@ public class DirectoryIndexerTest {
 	@Test
 	public void testRepeatedClassPathElements() throws Exception {
 		final String suffix = getResourcePath(AnnotatedA.class);
-		final String classURL =
-			getClass().getResource("/" + suffix).toString();
-		final URL classPathURL = new URL(classURL.substring(0,
-			classURL.length() - suffix.length()));
-		final ClassLoader loader = new URLClassLoader(new URL[] {
-			classPathURL, classPathURL
-		});
+		final String classURL = getClass().getResource("/" + suffix).toString();
+		final URL classPathURL = new URL(classURL.substring(0, classURL.length() -
+			suffix.length()));
+		final ClassLoader loader = new URLClassLoader(new URL[] { classPathURL,
+			classPathURL });
 		final Set<String> seen = new HashSet<>();
-		for (final IndexItem<Simple> item :
-				Index.load(Simple.class, loader)) {
+		for (final IndexItem<Simple> item : Index.load(Simple.class, loader)) {
 			final String name = item.className();
 			assertFalse(seen.contains(name));
 			seen.add(name);
@@ -123,8 +122,8 @@ public class DirectoryIndexerTest {
 		assertEquals(3, seen.size());
 	}
 
-	public static void
-		testDefaultAnnotations(Map<String, IndexItem<Complex>> map)
+	public static void testDefaultAnnotations(
+		Map<String, IndexItem<Complex>> map)
 	{
 		assertEquals(4, map.size());
 		Complex a = map.get(AnnotatedA.class.getName()).annotation();

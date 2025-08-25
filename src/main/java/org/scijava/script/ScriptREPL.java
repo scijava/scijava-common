@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -138,7 +138,7 @@ public class ScriptREPL {
 	/**
 	 * Starts a Read-Eval-Print-Loop from the given input stream, returning when
 	 * the loop terminates.
-	 * 
+	 *
 	 * @param in Input stream from which commands are read.
 	 */
 	public void loop(final InputStream in) throws IOException {
@@ -164,8 +164,8 @@ public class ScriptREPL {
 	}
 
 	/**
-	 * Starts a Read-Eval-Print-Loop from the given source, returning when
-	 * the loop terminates.
+	 * Starts a Read-Eval-Print-Loop from the given source, returning when the
+	 * loop terminates.
 	 *
 	 * @param in Source from which commands are read.
 	 */
@@ -190,7 +190,7 @@ public class ScriptREPL {
 
 	/**
 	 * Sets up the initial language and variables of the REPL.
-	 * 
+	 *
 	 * @param verbose Whether to output an initial greeting.
 	 */
 	public void initialize(final boolean verbose) {
@@ -202,10 +202,13 @@ public class ScriptREPL {
 		final List<ScriptLanguage> langs = getInterpretedLanguages();
 		if (verbose) {
 			if (langs.isEmpty()) {
-				println("--------------------------------------------------------------");
+				println(
+					"--------------------------------------------------------------");
 				println("Uh oh! There are no SciJava script languages available!");
-				println("Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
-				println("--------------------------------------------------------------");
+				println(
+					"Are any on your classpath? E.g.: org.scijava:scripting-groovy?");
+				println(
+					"--------------------------------------------------------------");
 				println();
 				return;
 			}
@@ -220,9 +223,9 @@ public class ScriptREPL {
 	}
 
 	private void selectPreferredLanguage(List<ScriptLanguage> langs) {
-		final ScriptLanguage preference = langs.stream()
-				.filter(lang -> languagePreference.equals(lang.getLanguageName()))
-				.findFirst().orElse(langs.get(0));
+		final ScriptLanguage preference = langs.stream().filter(
+			lang -> languagePreference.equals(lang.getLanguageName())).findFirst()
+			.orElse(langs.get(0));
 		lang(preference);
 	}
 
@@ -234,7 +237,7 @@ public class ScriptREPL {
 	/**
 	 * Evaluates the line, including handling of special colon-prefixed REPL
 	 * commands.
-	 * 
+	 *
 	 * @param line The line to evaluate.
 	 * @return False iff the REPL should exit.
 	 */
@@ -309,7 +312,7 @@ public class ScriptREPL {
 	/**
 	 * Creates a new {@link ScriptInterpreter} to interpret statements, preserving
 	 * existing variables from the previous interpreter.
-	 * 
+	 *
 	 * @param langName The script language of the new interpreter.
 	 * @throws IllegalArgumentException if the requested language is not
 	 *           available.
@@ -328,12 +331,12 @@ public class ScriptREPL {
 	/**
 	 * Creates a new {@link ScriptInterpreter} to interpret statements, preserving
 	 * existing variables from the previous interpreter.
-	 * 
+	 *
 	 * @param language The script language of the new interpreter.
 	 */
 	public void lang(final ScriptLanguage language) {
-		final ScriptInterpreter newInterpreter =
-			new DefaultScriptInterpreter(language);
+		final ScriptInterpreter newInterpreter = new DefaultScriptInterpreter(
+			language);
 
 		// preserve state of the previous interpreter
 		try {
@@ -371,10 +374,11 @@ public class ScriptREPL {
 		// see if we have a preferred language
 		// and create the script interpreter
 		final ScriptREPL scriptCLI;
-		if(args.length > 0) {
+		if (args.length > 0) {
 			final String preference = args[0];
 			scriptCLI = new ScriptREPL(context, preference);
-		} else {
+		}
+		else {
 			scriptCLI = new ScriptREPL(context);
 		}
 
@@ -431,12 +435,12 @@ public class ScriptREPL {
 		// be changed to prefer a single-argument constructor that accepts a
 		// Context, before trying the noargs constructor?
 		// In the meantime, we do it manually here.
-		final List<PluginInfo<Gateway>> infos =
-			pluginService.getPluginsOfType(Gateway.class);
+		final List<PluginInfo<Gateway>> infos = pluginService.getPluginsOfType(
+			Gateway.class);
 		for (final PluginInfo<Gateway> info : infos) {
 			try {
-				final Constructor<? extends Gateway> ctor =
-					info.loadClass().getConstructor(Context.class);
+				final Constructor<? extends Gateway> ctor = info.loadClass()
+					.getConstructor(Context.class);
 				final Gateway gateway = ctor.newInstance(context);
 				gateways.add(gateway);
 			}
@@ -454,8 +458,8 @@ public class ScriptREPL {
 		if (pluginName != null && !pluginName.isEmpty()) return pluginName;
 		// No name was given; synthesize one from the class name.
 		final String serviceName = service.getClass().getSimpleName();
-		final String shortName = lowerCamelCase(
-			serviceName.replaceAll("^(Default)?(.*)Service$", "$2"));
+		final String shortName = lowerCamelCase(serviceName.replaceAll(
+			"^(Default)?(.*)Service$", "$2"));
 		return shortName;
 	}
 
@@ -467,9 +471,18 @@ public class ScriptREPL {
 	}
 
 	private static final String NL = System.getProperty("line.separator");
-	private void print(String s) { out.accept(s); }
-	private void println() { print(NL); }
-	private void println(final String s) { print(s + NL); }
+
+	private void print(String s) {
+		out.accept(s);
+	}
+
+	private void println() {
+		print(NL);
+	}
+
+	private void println(final String s) {
+		print(s + NL);
+	}
 
 	private void printStackTrace(final Throwable t) {
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -508,14 +521,17 @@ public class ScriptREPL {
 	}
 
 	private static Consumer<String> outputStreamConsumer(final OutputStream out) {
-		final PrintStream ps = out instanceof PrintStream ?
-			(PrintStream) out : new PrintStream(out);
-		return s -> { ps.print(s); ps.flush(); };
+		final PrintStream ps = out instanceof PrintStream ? (PrintStream) out
+			: new PrintStream(out);
+		return s -> {
+			ps.print(s);
+			ps.flush();
+		};
 	}
 
 	private static String lowerCamelCase(final String s) {
 		final StringBuilder sb = new StringBuilder(s);
-		for (int i=0; i<sb.length(); i++) {
+		for (int i = 0; i < sb.length(); i++) {
 			final char c = sb.charAt(i);
 			if (c >= 'A' && c <= 'Z') sb.setCharAt(i, (char) (c - 'A' + 'a'));
 			else break;

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,7 +34,7 @@ import org.scijava.display.Display;
 /**
  * An event indicating a display has updated; e.g., an object has been added or
  * removed.
- * 
+ *
  * @author Grant Harris
  * @author Lee Kamentsky
  */
@@ -46,17 +46,17 @@ public class DisplayUpdatedEvent extends DisplayEvent {
 	 */
 	public enum DisplayUpdateLevel {
 
-		/**
-		 * The data has changed, but the extents and decorations have not.<br>
-		 * An example: changing the intensity of a single pixel.
-		 */
-		UPDATE,
+			/**
+			 * The data has changed, but the extents and decorations have not.<br>
+			 * An example: changing the intensity of a single pixel.
+			 */
+			UPDATE,
 
-		/**
-		 * The extents and decorations have changed.<br>
-		 * An example: stretching an image so it's height changes.
-		 */
-		REBUILD
+			/**
+			 * The extents and decorations have changed.<br>
+			 * An example: stretching an image so it's height changes.
+			 */
+			REBUILD
 
 	}
 

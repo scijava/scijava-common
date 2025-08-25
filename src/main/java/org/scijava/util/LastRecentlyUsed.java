@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,10 +39,11 @@ import java.util.Set;
 
 /**
  * A simple container for {@code N} last-recently-used items.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class LastRecentlyUsed<T> implements Collection<T> {
+
 	private final Object[] entries;
 	private final Map<T, Integer> map;
 	/**
@@ -73,9 +74,11 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	/**
 	 * Given the index of an entry, returns the index of the next newer entry.
-	 * 
-	 * @param index the index of the current entry, or -1 to wrap around to the oldest entry.
-	 * @return the index of the next newer entry, or -1 when there is no such entry.
+	 *
+	 * @param index the index of the current entry, or -1 to wrap around to the
+	 *          oldest entry.
+	 * @return the index of the next newer entry, or -1 when there is no such
+	 *         entry.
 	 */
 	public int next(int index) {
 		return index < 0 ? bottom - 1 : next[index] - 1;
@@ -83,9 +86,11 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	/**
 	 * Given the index of an entry, returns the index of the next older entry.
-	 * 
-	 * @param index the index of the current entry, or -1 to wrap around to the newest entry.
-	 * @return the index of the next older entry, or -1 when there is no such entry.
+	 *
+	 * @param index the index of the current entry, or -1 to wrap around to the
+	 *          newest entry.
+	 * @return the index of the next older entry, or -1 when there is no such
+	 *         entry.
 	 */
 	public int previous(int index) {
 		return index < 0 ? top - 1 : previous[index] - 1;
@@ -93,7 +98,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	/**
 	 * Returns the entry for the given index.
-	 * 
+	 *
 	 * @param index the index of the entry
 	 * @return the entry
 	 */
@@ -104,7 +109,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	/**
 	 * Looks up the index for a given entry.
-	 * 
+	 *
 	 * @param value the value of the entry to find
 	 * @return the corresponding index, or {@code -1} if the entry was not found
 	 */
@@ -115,7 +120,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	/**
 	 * Add a new newest entry.
-	 * 
+	 *
 	 * @param value the value of the entry
 	 * @return whether the entry was added
 	 */
@@ -130,7 +135,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 	 * This method helps recreating {@link LastRecentlyUsed} instances given the
 	 * entries in the order newest first, oldest last.
 	 * </p>
-	 * 
+	 *
 	 * @param value the value of the entry to add
 	 */
 	public void addToEnd(final T value) {
@@ -205,7 +210,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 	@Override
 	public boolean retainAll(Collection<?> values) {
-		for (int index = top - 1; index >= 0; ) {
+		for (int index = top - 1; index >= 0;) {
 			final int prev = previous[index] - 1;
 			if (!values.contains(get(index))) {
 				remove(index);
@@ -223,8 +228,8 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 	@Override
 	public Object[] toArray() {
 		final Object[] result = new Object[size()];
-		for (int i = 0, index = top - 1; index >= 0; i++, index =
-			previous[index] - 1)
+		for (int i = 0, index = top - 1; index >= 0; i++, index = previous[index] -
+			1)
 		{
 			result[i] = get(index);
 		}
@@ -237,25 +242,25 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 		final int size = size();
 		if (array.length >= size) {
 			for (int i = 0, index = top - 1; index >= 0; i++, index =
-					previous[index] - 1)
-				{
-					array[i] = (S) get(index);
-				}
-			return array;
-		}
-		final S[] result =
-			(S[]) Array.newInstance(array.getClass().getComponentType(), size);
-		for (int i = 0, index = top - 1; index >= 0; i++, index =
 				previous[index] - 1)
 			{
-				result[i] = (S) get(index);
+				array[i] = (S) get(index);
 			}
-			return result;
+			return array;
+		}
+		final S[] result = (S[]) Array.newInstance(array.getClass()
+			.getComponentType(), size);
+		for (int i = 0, index = top - 1; index >= 0; i++, index = previous[index] -
+			1)
+		{
+			result[i] = (S) get(index);
+		}
+		return result;
 	}
 
 	/**
 	 * Returns an {@link Iterator}.
-	 * 
+	 *
 	 * @return the iterator
 	 */
 	@Override
@@ -279,7 +284,8 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 
 			@Override
 			public void remove() {
-				LastRecentlyUsed.this.remove(position == 0 ? top - 1 : next[position] - 1);
+				LastRecentlyUsed.this.remove(position == 0 ? top - 1 : next[position] -
+					1);
 			}
 
 		};
@@ -288,7 +294,7 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 	// -- private methods
 
 	private void remove(int position) {
-		assert(entries[position] != null);
+		assert (entries[position] != null);
 		map.remove(entries[position]);
 		entries[position] = null;
 		if (next[position] == 0) {
@@ -320,16 +326,17 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 		else {
 			insert = value.hashCode() % entries.length;
 			if (insert < 0) insert += entries.length;
-			while (insert < entries.length && entries[insert] != null) insert++;
+			while (insert < entries.length && entries[insert] != null)
+				insert++;
 		}
 		add(insert, value, addAtEnd);
 		return existing == null;
 	}
 
 	private void add(int position, T value, boolean atEnd) {
-		assert(next[position] == 0);
-		assert(previous[position] == 0);
-		assert(entries[position] == null);
+		assert (next[position] == 0);
+		assert (previous[position] == 0);
+		assert (entries[position] == null);
 
 		map.put(value, position);
 		entries[position] = value;
@@ -352,41 +359,41 @@ public class LastRecentlyUsed<T> implements Collection<T> {
 	// For testing
 	protected void assertConsistency() {
 		if (top == 0) {
-			assert(bottom == 0);
-			assert(map.size() == 0);
+			assert (bottom == 0);
+			assert (map.size() == 0);
 			for (int i = 0; i < entries.length; i++) {
-				assert(entries[i] == null);
-				assert(next[i] == 0);
-				assert(previous[i] == 0);
+				assert (entries[i] == null);
+				assert (next[i] == 0);
+				assert (previous[i] == 0);
 			}
 			return;
 		}
-		assert(bottom != 0);
+		assert (bottom != 0);
 		final Set<Integer> indices = new HashSet<>(map.values());
-		assert(indices.size() == map.size());
+		assert (indices.size() == map.size());
 		for (int i = 0; i < entries.length; i++) {
 			if (indices.contains(i)) {
-				assert(entries[i] != null);
-				assert(map.get(entries[i]) == i);
+				assert (entries[i] != null);
+				assert (map.get(entries[i]) == i);
 				if (i == top - 1 || top == bottom) {
-					assert(next[i] == 0);
+					assert (next[i] == 0);
 				}
 				else {
-					assert(next[i] > 0);
-					assert(previous[next[i] - 1] == i + 1);
+					assert (next[i] > 0);
+					assert (previous[next[i] - 1] == i + 1);
 				}
 				if (i == bottom - 1 || top == bottom) {
-					assert(previous[i] == 0);
+					assert (previous[i] == 0);
 				}
 				else {
-					assert(previous[i] > 0);
-					assert(next[previous[i] - 1] == i + 1);
+					assert (previous[i] > 0);
+					assert (next[previous[i] - 1] == i + 1);
 				}
 			}
 			else {
-				assert(entries[i] == null);
-				assert(next[i] == 0);
-				assert(previous[i] == 0);
+				assert (entries[i] == null);
+				assert (next[i] == 0);
+				assert (previous[i] == 0);
 			}
 		}
 	}

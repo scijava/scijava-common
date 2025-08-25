@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -65,7 +65,7 @@ public class ScriptCLI {
 		"\n" + //
 		"For script-args, give space-separated key=value pairs,\n" + //
 		"while will be passed in as SciJava script arguments.";
-	
+
 	public static void main(String... args) throws Exception {
 		final Map<String, Object> inputs = new HashMap<>();
 		File file = null;
@@ -75,7 +75,7 @@ public class ScriptCLI {
 		boolean parsingOptions = true;
 		try (final Context context = new Context()) {
 			// Parse command-line arguments.
-			if (args.length == 0) args = new String[] {"-h"};
+			if (args.length == 0) args = new String[] { "-h" };
 			for (int i = 0; i < args.length; i++) {
 				if (parsingOptions) {
 					// Parse options and filename.
@@ -95,7 +95,9 @@ public class ScriptCLI {
 					else if (args[i].equals("-o") || args[i].equals("--print-outputs")) {
 						printOutputs = true;
 					}
-					else if (args[i].equals("-r") || args[i].equals("--print-return-value")) {
+					else if (args[i].equals("-r") || args[i].equals(
+						"--print-return-value"))
+					{
 						printReturnValue = true;
 					}
 					else if (args[i].equals("-")) {

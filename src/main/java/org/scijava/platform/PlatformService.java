@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,7 +43,7 @@ import org.scijava.service.SciJavaService;
 /**
  * Interface for service that handles platform-specific deployment issues. A
  * "platform" can be an operating system, CPU architecture, or version of Java.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface PlatformService extends SingletonService<Platform>,
@@ -70,7 +70,7 @@ public interface PlatformService extends SingletonService<Platform>,
 
 	/**
 	 * Executes a native program and waits for it to return.
-	 * 
+	 *
 	 * @return the exit code of the execution.
 	 */
 	int exec(String... args) throws IOException;
@@ -79,7 +79,7 @@ public interface PlatformService extends SingletonService<Platform>,
 	 * Informs the active platform handlers of a UI's newly created application
 	 * menu structure. Each active platform handler may choose to do something
 	 * platform-specific with the menus.
-	 * 
+	 *
 	 * @param menus The UI's newly created menu structure
 	 * @return true iff the menus should not be added to the UI as normal because
 	 *         a platform handler did something platform-specific with them

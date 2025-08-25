@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,7 +33,7 @@ import java.util.Collection;
 
 /**
  * An extensible array of {@code char} elements.
- * 
+ *
  * @author Mark Hiner
  * @author Johannes Schindelin
  * @author Curtis Rueden
@@ -52,7 +52,7 @@ public class CharArray extends AbstractPrimitiveArray<char[], Character> {
 
 	/**
 	 * Constructs an extensible array of chars, backed by a fixed-size array.
-	 * 
+	 *
 	 * @param size the initial size
 	 */
 	public CharArray(final int size) {
@@ -62,7 +62,7 @@ public class CharArray extends AbstractPrimitiveArray<char[], Character> {
 	/**
 	 * Constructs an extensible array of chars, backed by the given fixed-size
 	 * array.
-	 * 
+	 *
 	 * @param array the array to wrap
 	 */
 	public CharArray(final char[] array) {
@@ -196,7 +196,8 @@ public class CharArray extends AbstractPrimitiveArray<char[], Character> {
 
 	// NB: Overridden for performance.
 	@Override
-	public boolean addAll(final int index, final Collection<? extends Character> c)
+	public boolean addAll(final int index,
+		final Collection<? extends Character> c)
 	{
 		if (c.size() == 0) return false;
 		insert(index, c.size());

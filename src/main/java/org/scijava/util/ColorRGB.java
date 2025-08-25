@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * <p>
  * It exists mainly to avoid AWT references to {@link java.awt.Color}.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Lee Kamentsky
  * @author Barry DeZonia
@@ -109,14 +109,14 @@ public class ColorRGB implements Serializable {
 	}
 
 	/**
-	 * Convert this ColorRGB to a string in the format specified by <a
-	 * href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3 - W3C
+	 * Convert this ColorRGB to a string in the format specified by
+	 * <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3 - W3C
 	 * Recommendation 07 June 2011</a>.
 	 * <p>
 	 * We preferentially encode using one of the colors in the table and fall back
 	 * to the hex encoding.
 	 * </p>
-	 * 
+	 *
 	 * @return HTML-encoded string
 	 */
 	public String toHTMLColor() {
@@ -154,10 +154,10 @@ public class ColorRGB implements Serializable {
 	// -- Static methods --
 
 	/**
-	 * Convert a string in the format specified by <a
-	 * href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3 - W3C
+	 * Convert a string in the format specified by
+	 * <a href="http://www.w3.org/TR/css3-color/">CSS Color Module Level 3 - W3C
 	 * Recommendation 07 June 2011</a> to a {@link ColorRGB} object.
-	 * 
+	 *
 	 * @param color The color string to convert.
 	 * @return The resultant color object.
 	 */
@@ -173,10 +173,9 @@ public class ColorRGB implements Serializable {
 		if (color.startsWith("#")) {
 			final String hexColor;
 			if (color.length() == 4) {
-				hexColor =
-					new String(new char[] { color.charAt(0), color.charAt(1),
-						color.charAt(1), color.charAt(2), color.charAt(2),
-						color.charAt(3), color.charAt(3) });
+				hexColor = new String(new char[] { color.charAt(0), color.charAt(1),
+					color.charAt(1), color.charAt(2), color.charAt(2), color.charAt(3),
+					color.charAt(3) });
 			}
 			else hexColor = color;
 			final int red = Integer.parseInt(hexColor.substring(1, 3), 16);
@@ -215,12 +214,12 @@ public class ColorRGB implements Serializable {
 	 * and returns {@code r}, {@code g}, and {@code b} in the set [0, 255].
 	 * </p>
 	 * <p>
-	 * Conversion formula adapted from Wikipedia's <a
-	 * href="http://en.wikipedia.org/wiki/HSL_and_HSV">HSL and HSV article</a> and
-	 * Michael Jackson's <a href="http://bit.ly/9L2qln">blog post on additive
+	 * Conversion formula adapted from Wikipedia's
+	 * <a href="http://en.wikipedia.org/wiki/HSL_and_HSV">HSL and HSV article</a>
+	 * and Michael Jackson's <a href="http://bit.ly/9L2qln">blog post on additive
 	 * color model conversion algorithms</a>.
 	 * </p>
-	 * 
+	 *
 	 * @param h The hue
 	 * @param s The saturation
 	 * @param v The value

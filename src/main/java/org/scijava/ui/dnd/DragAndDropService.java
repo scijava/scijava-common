@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,7 +37,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for service that handles drag and drop events.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface DragAndDropService extends
@@ -48,7 +48,7 @@ public interface DragAndDropService extends
 	 * Checks whether the given {@link DragAndDropData} can be dropped onto the
 	 * specified display. A (data, display) pair is deemed compatible if a
 	 * compatible handler exists for them.
-	 * 
+	 *
 	 * @see DragAndDropHandler
 	 */
 	default boolean supports(final DragAndDropData data,
@@ -61,7 +61,7 @@ public interface DragAndDropService extends
 	 * Checks whether the given object can be dropped onto the specified display.
 	 * An (object, display) pair is deemed compatible if a compatible handler
 	 * exists for them.
-	 * 
+	 *
 	 * @see DragAndDropHandler
 	 */
 	default boolean supports(final Object object, final Display<?> display) {
@@ -71,7 +71,7 @@ public interface DragAndDropService extends
 	/**
 	 * Performs a drag-and-drop operation in the given display with the specified
 	 * {@link DragAndDropData}, using the first available compatible handler.
-	 * 
+	 *
 	 * @see DragAndDropHandler
 	 * @return true if the drop operation was successful
 	 * @throws IllegalArgumentException if the display and/or data object are
@@ -86,7 +86,7 @@ public interface DragAndDropService extends
 	/**
 	 * Performs a drag-and-drop operation in the given display with the specified
 	 * data object, using the first available compatible handler.
-	 * 
+	 *
 	 * @see DragAndDropHandler
 	 * @return true if the drop operation was successful
 	 * @throws IllegalArgumentException if the display and/or data object are
@@ -101,7 +101,7 @@ public interface DragAndDropService extends
 	/**
 	 * Gets the drag-and-drop handler which will be used to handle the given
 	 * {@link DragAndDropData} dragged onto the specified display.
-	 * 
+	 *
 	 * @return The first compatible drag-and-drop handler, or null if none
 	 *         available.
 	 */
@@ -117,7 +117,7 @@ public interface DragAndDropService extends
 	/**
 	 * Gets the drag-and-drop handler which will be used to handle the given
 	 * object dragged onto the specified display.
-	 * 
+	 *
 	 * @return The first compatible drag-and-drop handler, or null if none
 	 *         available.
 	 */
@@ -144,7 +144,7 @@ public interface DragAndDropService extends
 	// -- PTService methods --
 
 	@Override
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	default Class<DragAndDropHandler<Object>> getPluginType() {
 		return (Class) DragAndDropHandler.class;
 	}

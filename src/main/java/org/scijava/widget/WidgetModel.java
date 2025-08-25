@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,7 +38,7 @@ import org.scijava.module.ModuleItem;
 
 /**
  * The backing data model for a particular {@link InputWidget}.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface WidgetModel extends Contextual {
@@ -61,7 +61,7 @@ public interface WidgetModel extends Contextual {
 	 * values, but rather provides a list of possibilities in cases where the
 	 * realm of values is not defined by the type in some other way.
 	 * </p>
-	 * 
+	 *
 	 * @see ObjectWidget
 	 */
 	List<?> getObjectPool();
@@ -99,21 +99,21 @@ public interface WidgetModel extends Contextual {
 
 	/**
 	 * Gets the minimum value for the module input.
-	 * 
+	 *
 	 * @return The minimum value, or null if the type is unbounded.
 	 */
 	Number getMin();
 
 	/**
 	 * Gets the maximum value for the module input.
-	 * 
+	 *
 	 * @return The maximum value, or null if the type is unbounded.
 	 */
 	Number getMax();
 
 	/**
 	 * Gets the "soft" minimum value for the module input.
-	 * 
+	 *
 	 * @return The "soft" minimum value, or {@link #getMin()} if none.
 	 * @see ModuleItem#getSoftMinimum()
 	 */
@@ -121,7 +121,7 @@ public interface WidgetModel extends Contextual {
 
 	/**
 	 * Gets the "soft" maximum value for the module input.
-	 * 
+	 *
 	 * @return The "soft" maximum value, or {@link #getMax()} if none.
 	 * @see ModuleItem#getSoftMaximum()
 	 */
@@ -129,14 +129,14 @@ public interface WidgetModel extends Contextual {
 
 	/**
 	 * Gets the step size between values for the module input.
-	 * 
+	 *
 	 * @return The step size, or 1 by default.
 	 */
 	Number getStepSize();
 
 	/**
 	 * Gets the multiple choice list for the module input.
-	 * 
+	 *
 	 * @return The available choices, or an empty list if not multiple choice.
 	 * @see ChoiceWidget
 	 */
@@ -144,7 +144,7 @@ public interface WidgetModel extends Contextual {
 
 	/**
 	 * Gets the input's value rendered as a string.
-	 * 
+	 *
 	 * @return String representation of the input value, or the empty string if
 	 *         the value is null or the null character ('\0').
 	 */
@@ -152,7 +152,7 @@ public interface WidgetModel extends Contextual {
 
 	/**
 	 * Gets whether the input is a message.
-	 * 
+	 *
 	 * @see ItemVisibility#MESSAGE
 	 */
 	boolean isMessage();

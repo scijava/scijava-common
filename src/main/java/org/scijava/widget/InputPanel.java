@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,7 +32,7 @@ package org.scijava.widget;
 /**
  * Flexible panel-building interface, for use with UIs that prompt for input
  * values of various types.
- * 
+ *
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
@@ -54,7 +54,7 @@ public interface InputPanel<P, W> extends UIComponent<P> {
 
 	/**
 	 * Returns the value of the given widget's input.
-	 * 
+	 *
 	 * @param name unique name identifying this field
 	 */
 	Object getValue(String name);
@@ -73,7 +73,7 @@ public interface InputPanel<P, W> extends UIComponent<P> {
 
 	/** Gets the type of the UI component housing the panel's widgets. */
 	Class<W> getWidgetComponentType();
-	
+
 	/** Gets the widget with the provided name. */
 	InputWidget<?, W> getWidget(String name);
 

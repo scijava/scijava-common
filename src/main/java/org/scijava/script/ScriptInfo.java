@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -59,7 +59,7 @@ import org.scijava.util.FileUtils;
 
 /**
  * Metadata about a script.
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
@@ -97,7 +97,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
-	 * 
+	 *
 	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param file The script file.
@@ -108,7 +108,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/**
 	 * Creates a script metadata object which describes the given script file.
-	 * 
+	 *
 	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param path Path to the script file.
@@ -119,7 +119,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/**
 	 * Creates a script metadata object which describes a script at the given URL.
-	 * 
+	 *
 	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param url URL which references the script.
@@ -130,13 +130,14 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	public ScriptInfo(final Context context, final URL url, final String path)
 		throws IOException
 	{
-		this(context, url, path, new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+		this(context, url, path, new InputStreamReader(url.openStream(),
+			StandardCharsets.UTF_8));
 	}
 
 	/**
 	 * Creates a script metadata object which describes a script provided by the
 	 * given {@link Reader}.
-	 * 
+	 *
 	 * @param context The SciJava application context to use when populating
 	 *          service inputs.
 	 * @param path Pseudo-path to the script file. This file does not actually
@@ -220,7 +221,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/**
 	 * Gets the script contents <em>after</em> script processing.
-	 * 
+	 *
 	 * @return The processed script.
 	 * @see ScriptProcessorService#process
 	 */
@@ -265,7 +266,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 	/**
 	 * Gets the list of routines which should be invoked each time the script is
 	 * about to execute.
-	 * 
+	 *
 	 * @return Reference to the mutable list of {@link Runnable} objects which the
 	 *         {@link ScriptModule} will run prior to executing the script itself.
 	 */
@@ -278,7 +279,7 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 
 	/**
 	 * Performs script processing. In particular, parses the script parameters.
-	 * 
+	 *
 	 * @see ParameterScriptProcessor
 	 * @see ScriptProcessorService#process
 	 */
@@ -385,8 +386,8 @@ public class ScriptInfo extends AbstractModuleInfo implements Contextual {
 			log.error(exc);
 		}
 		final Date lastModified = FileUtils.getModifiedTime(file);
-		final String datestamp =
-			new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(lastModified);
+		final String datestamp = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(
+			lastModified);
 		return datestamp;
 	}
 

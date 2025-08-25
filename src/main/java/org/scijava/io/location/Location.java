@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,14 +37,14 @@ import org.scijava.io.handle.DataHandle;
  * A <em>location</em> is a data descriptor, such as a file on disk, a remote
  * URL, or a database connection.
  * <p>
- * Analogous to a <a
- * href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
+ * Analogous to a
+ * <a href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">uniform
  * resource identifier</a> ({@link URI}), a location identifies <em>where</em>
  * the data resides, without necessarily specifying <em>how</em> to access that
  * data. The {@link DataHandle} interface defines a plugin that knows how to
  * read and/or write bytes for a particular kind of location.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Gabriel Einsdorf
  */
@@ -78,7 +78,7 @@ public interface Location {
 	 * {@code Location} will assign some non-default name. But in cases where that
 	 * does not occur, this value can be useful to detect the situation.
 	 * </p>
-	 * 
+	 *
 	 * @return The default name string.
 	 */
 	default String defaultName() {

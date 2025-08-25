@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.util.Collection;
  * When sizing down, elements at the end of the list are removed in one
  * operation. When sizing up, null elements are appended to the list.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @param <E> The type of data stored in the list.
  */
@@ -87,7 +87,8 @@ public class SizableArrayList<E> extends ArrayList<E> implements Sizable {
 			final boolean hackSuccessful = hackSize(size);
 			if (!hackSuccessful) {
 				// explicitly increase the size by adding nulls
-				while (size() < size) add(null);
+				while (size() < size)
+					add(null);
 			}
 		}
 	}

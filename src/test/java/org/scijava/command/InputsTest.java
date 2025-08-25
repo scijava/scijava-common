@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -74,11 +74,14 @@ public class InputsTest {
 	/** Tests single input, no configuration. */
 	@Test
 	public void testSingleInput() {
-		setExpected(new HashMap<String, Object>() {{
-			put("sigma", 3.9f);
-		}});
+		setExpected(new HashMap<String, Object>() {
+
+			{
+				put("sigma", 3.9f);
+			}
+		});
 		Inputs inputs = new Inputs(context);
-		inputs.getInfo().setName("testSingleInput");//TEMP
+		inputs.getInfo().setName("testSingleInput");// TEMP
 		addTempInput(inputs, "sigma", Float.class);
 		float sigma = (Float) inputs.harvest().get("sigma");
 		assertEquals(3.9f, sigma, 0);
@@ -87,12 +90,15 @@ public class InputsTest {
 	/** Tests two inputs, no configuration. */
 	@Test
 	public void testTwoInputs() {
-		setExpected(new HashMap<String, Object>() {{
-			put("name", "Chuckles");
-			put("age", 37);
-		}});
+		setExpected(new HashMap<String, Object>() {
+
+			{
+				put("name", "Chuckles");
+				put("age", 37);
+			}
+		});
 		Inputs inputs = new Inputs(context);
-		inputs.getInfo().setName("testTwoInputs");//TEMP
+		inputs.getInfo().setName("testTwoInputs");// TEMP
 		addTempInput(inputs, "name", String.class);
 		addTempInput(inputs, "age", Integer.class);
 		Map<String, Object> values = inputs.harvest();
@@ -105,12 +111,15 @@ public class InputsTest {
 	/** Tests inputs with configuration. */
 	@Test
 	public void testWithConfiguration() {
-		setExpected(new HashMap<String, Object>() {{
-			put("word", "brown");
-			put("opacity", 0.8);
-		}});
+		setExpected(new HashMap<String, Object>() {
+
+			{
+				put("word", "brown");
+				put("opacity", 0.8);
+			}
+		});
 		Inputs inputs = new Inputs(context);
-		inputs.getInfo().setName("testWithConfiguration");//TEMP
+		inputs.getInfo().setName("testWithConfiguration");// TEMP
 		MutableModuleItem<String> wordInput = addTempInput(inputs, "word",
 			String.class);
 		wordInput.setLabel("Favorite word");
@@ -133,14 +142,17 @@ public class InputsTest {
 		final PluginInfo<PreprocessorPlugin> info =
 			new PluginInfo<PreprocessorPlugin>(MockInputHarvester.class,
 				PreprocessorPlugin.class)
-		{
-			@Override
-			public PreprocessorPlugin createInstance() throws InstantiableException {
-				final PreprocessorPlugin pp = super.createInstance();
-				((MockInputHarvester) pp).setExpected(expected);
-				return pp;
-			}
-		};
+			{
+
+				@Override
+				public PreprocessorPlugin createInstance()
+					throws InstantiableException
+			{
+					final PreprocessorPlugin pp = super.createInstance();
+					((MockInputHarvester) pp).setExpected(expected);
+					return pp;
+				}
+			};
 		info.setPriority(InputHarvester.PRIORITY);
 		context.service(PluginService.class).addPlugin(info);
 	}
@@ -158,7 +170,9 @@ public class InputsTest {
 	}
 
 	public static class MockInputHarvester extends AbstractPreprocessorPlugin {
+
 		private Map<String, Object> expected;
+
 		public void setExpected(final Map<String, Object> expected) {
 			this.expected = expected;
 		}

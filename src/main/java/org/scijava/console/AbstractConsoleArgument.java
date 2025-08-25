@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,6 +43,7 @@ import org.scijava.plugin.AbstractHandlerPlugin;
 public abstract class AbstractConsoleArgument extends
 	AbstractHandlerPlugin<LinkedList<String>> implements ConsoleArgument
 {
+
 	private int numArgs;
 	private Set<String> flags;
 
@@ -53,11 +54,14 @@ public abstract class AbstractConsoleArgument extends
 	public AbstractConsoleArgument(final String... flags) {
 		this(1, flags);
 	}
-	
-	public AbstractConsoleArgument(final int requiredArgs, final String... flags) {
+
+	public AbstractConsoleArgument(final int requiredArgs,
+		final String... flags)
+	{
 		numArgs = requiredArgs;
 		this.flags = new HashSet<>();
-		for (final String s : flags) this.flags.add(s);
+		for (final String s : flags)
+			this.flags.add(s);
 	}
 
 	// -- Typed methods --
@@ -85,8 +89,8 @@ public abstract class AbstractConsoleArgument extends
 	 * If the next argument is an appropriate parameter to a
 	 * {@link ConsoleArgument}, retrieves it; otherwise, returns null.
 	 *
-	 * @return The first argument of the given list, if it does not
-	 *         start with a {@code '-'} character; or null otherwise.
+	 * @return The first argument of the given list, if it does not start with a
+	 *         {@code '-'} character; or null otherwise.
 	 */
 	protected String getParam(final LinkedList<String> args) {
 		if (args.isEmpty()) return null;

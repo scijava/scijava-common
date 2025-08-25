@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Tests the {@link TestUtils}.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class TestUtilsTest {
@@ -54,12 +54,12 @@ public class TestUtilsTest {
 		final File tmp2 = TestUtils.createTemporaryDirectory("test-utils-test-");
 		assertTrue(!tmp1.getAbsolutePath().equals(tmp2.getAbsolutePath()));
 
-		final File tmp3 =
-			TestUtils.createTemporaryDirectory("test-utils-test-", getClass());
+		final File tmp3 = TestUtils.createTemporaryDirectory("test-utils-test-",
+			getClass());
 		assertTrue("Not in target/: " + tmp3.getAbsolutePath(), tmp3
 			.getAbsolutePath().replace('\\', '/').contains("/target/"));
-		final File tmp4 =
-			TestUtils.createTemporaryDirectory("test-utils-test-", getClass());
+		final File tmp4 = TestUtils.createTemporaryDirectory("test-utils-test-",
+			getClass());
 		assertTrue(!tmp3.getAbsolutePath().equals(tmp4.getAbsolutePath()));
 
 	}
@@ -71,7 +71,8 @@ public class TestUtilsTest {
 			final File tmp = TestUtils.createTemporaryDirectory("same-");
 			assertTrue(tmp != null);
 			final String[] list = tmp.list();
-			assertTrue("Not null: " + Arrays.toString(list), list == null || list.length == 0);
+			assertTrue("Not null: " + Arrays.toString(list), list == null ||
+				list.length == 0);
 			out[i] = new FileOutputStream(new File(tmp, "hello" + i + ".txt"));
 		}
 		for (final FileOutputStream stream : out) {

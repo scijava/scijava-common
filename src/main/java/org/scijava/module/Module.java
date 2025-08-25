@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import org.scijava.widget.InputHarvester;
  * while the corresponding {@link ModuleInfo} represents metadata about that
  * module, particularly its input and output names and types.
  * </p>
- * 
+ *
  * @author Aivar Grislis
  * @author Curtis Rueden
  */
@@ -59,7 +59,7 @@ public interface Module extends Runnable {
 	 * preview is a quick approximation of the results that would be obtained by
 	 * actually executing the module with {@link #run()}. Not all modules support
 	 * previews.
-	 * 
+	 *
 	 * @see ModuleInfo#canPreview()
 	 */
 	void preview();
@@ -68,7 +68,7 @@ public interface Module extends Runnable {
 	 * Performs necessary cleanup in response to cancellation of the module
 	 * execution. This is useful in conjunction with {@link #preview()} to undo
 	 * any changes made as a result of the preview.
-	 * 
+	 *
 	 * @see ModuleInfo#canCancel()
 	 */
 	void cancel();
@@ -80,7 +80,7 @@ public interface Module extends Runnable {
 	 * by each individual {@link ModuleItem} initializer method (i.e.,
 	 * {@link ModuleItem#initialize(Module)}).
 	 * </p>
-	 * 
+	 *
 	 * @see ModuleInfo#getInitializer()
 	 * @see ModuleItem#initialize(Module)
 	 */
@@ -130,14 +130,14 @@ public interface Module extends Runnable {
 
 	/**
 	 * Gets the resolution status of the input with the given name.
-	 * 
+	 *
 	 * @see #resolveInput(String)
 	 */
 	boolean isInputResolved(String name);
 
 	/**
 	 * Gets the resolution status of the output with the given name.
-	 * 
+	 *
 	 * @see #resolveOutput(String)
 	 */
 	boolean isOutputResolved(String name);
@@ -166,14 +166,14 @@ public interface Module extends Runnable {
 
 	/**
 	 * Marks the input with the given name as unresolved.
-	 * 
+	 *
 	 * @see #resolveInput(String)
 	 */
 	void unresolveInput(String name);
 
 	/**
 	 * Marks the output with the given name as unresolved.
-	 * 
+	 *
 	 * @see #resolveOutput(String)
 	 */
 	void unresolveOutput(String name);

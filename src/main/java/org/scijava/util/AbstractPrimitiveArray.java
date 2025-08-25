@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import java.util.AbstractList;
  * frequent re-allocation, by default, the fixed-size array will be expanded by
  * 50% when running out of space.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  * @param <ArrayType> Type of the primitive array; e.g., {@code double[]}.
@@ -68,7 +68,7 @@ public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 	/**
 	 * Constructs an extensible array of primitive type elements, backed by a
 	 * fixed-size array.
-	 * 
+	 *
 	 * @param type the class of the primitive type
 	 */
 	public AbstractPrimitiveArray(final Class<BaseType> type) {
@@ -78,7 +78,7 @@ public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 	/**
 	 * Constructs an extensible array of primitive type elements, backed by a
 	 * fixed-size array.
-	 * 
+	 *
 	 * @param type the class of the primitive type
 	 * @param size the initial size
 	 */
@@ -91,7 +91,7 @@ public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 	/**
 	 * Constructs an extensible array of primitive type elements, backed by the
 	 * given fixed-size array.
-	 * 
+	 *
 	 * @param array the array to wrap
 	 * @param type the class of the primitive type
 	 */
@@ -152,7 +152,7 @@ public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 
 	/**
 	 * Shifts the array to insert space at a specified index.
-	 * 
+	 *
 	 * @param index the index where the space should be inserted
 	 * @param count the number of values to insert
 	 */
@@ -178,7 +178,7 @@ public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 
 	/**
 	 * Shifts the array to delete space starting at a specified index.
-	 * 
+	 *
 	 * @param index the index where the space should be deleted
 	 * @param count the number of values to delete
 	 */

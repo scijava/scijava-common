@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Tests methods of {@link POM}.
- * 
+ *
  * @author Curtis Rueden
  */
 public class POMTest {
@@ -82,8 +82,8 @@ public class POMTest {
 	}
 
 	@Test
-	public void testAccessors() throws ParserConfigurationException,
-		SAXException, IOException
+	public void testAccessors() throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		final POM pom = new POM(new File("pom.xml"));
 		assertEquals("org.scijava", pom.getParentGroupId());
@@ -120,8 +120,8 @@ public class POMTest {
 	}
 
 	@Test
-	public void testCdata() throws ParserConfigurationException,
-		SAXException, IOException
+	public void testCdata() throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		final POM pom = new POM(new File("pom.xml"));
 		assertEquals("repo", pom.cdata("//project/licenses/license/distribution"));
@@ -130,12 +130,12 @@ public class POMTest {
 	}
 
 	@Test
-	public void testElements() throws ParserConfigurationException,
-		SAXException, IOException
+	public void testElements() throws ParserConfigurationException, SAXException,
+		IOException
 	{
 		final POM pom = new POM(new File("pom.xml"));
-		final ArrayList<Element> developers =
-			pom.elements("//project/developers/developer");
+		final ArrayList<Element> developers = pom.elements(
+			"//project/developers/developer");
 		assertEquals(1, developers.size());
 		assertEquals("ctrueden", XML.cdata(developers.get(0), "id"));
 	}

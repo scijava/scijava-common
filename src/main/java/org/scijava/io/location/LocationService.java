@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.service.SciJavaService;
 /**
  * A service that allows resolving of URIs to Locations, using
  * {@link LocationResolver} plugins for translation.
- * 
+ *
  * @author Gabriel Einsdorf
  */
 public interface LocationService extends HandlerService<URI, LocationResolver>,
@@ -55,16 +55,18 @@ public interface LocationService extends HandlerService<URI, LocationResolver>,
 	 * @throws URISyntaxException if the URI is malformed
 	 */
 	default Location resolve(final String uriString) throws URISyntaxException {
-	    try {
-	        Location loc = resolve(new URI(uriString));
-	        if (loc != null) return loc;
-	    }
-	    catch (final URISyntaxException exc) {
-	        // In general, filenames are not valid URI strings.
-	        // Particularly on Windows, there are backslashes, which are invalid in URIs.
-	        // So we explicitly turn this string into a file if an error happens above.
-	    }
-	    return resolve(new File(uriString).toURI());
+		try {
+			Location loc = resolve(new URI(uriString));
+			if (loc != null) return loc;
+		}
+		catch (final URISyntaxException exc) {
+			// In general, filenames are not valid URI strings.
+			// Particularly on Windows, there are backslashes, which are invalid in
+			// URIs.
+			// So we explicitly turn this string into a file if an error happens
+			// above.
+		}
+		return resolve(new File(uriString).toURI());
 	}
 
 	/**

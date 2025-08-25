@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.ValidityProblem;
 
 /**
  * A reference to a {@link Method}, which can be invoked at will.
- * 
+ *
  * @author Curtis Rueden
  */
 public class MethodRef implements Validated {
@@ -48,8 +48,7 @@ public class MethodRef implements Validated {
 	private final String label;
 
 	/** List of problems when initializing the method reference. */
-	private final List<ValidityProblem> problems =
-		new ArrayList<>();
+	private final List<ValidityProblem> problems = new ArrayList<>();
 
 	public MethodRef(final Class<?> clazz, final String methodName,
 		final Class<?>... params)
@@ -91,8 +90,8 @@ public class MethodRef implements Validated {
 				break;
 			}
 		}
-		final String problem =
-			"Method not found: " + clazz.getName() + "#" + methodName;
+		final String problem = "Method not found: " + clazz.getName() + "#" +
+			methodName;
 		problems.add(new ValidityProblem(problem));
 		return null;
 	}

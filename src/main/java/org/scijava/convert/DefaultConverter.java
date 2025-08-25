@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -62,8 +62,7 @@ import org.scijava.util.Types;
  * <li>String to Character</li>
  * <li>String to Enum</li>
  * <li>Objects where the destination Class has a constructor which takes that
- * Object
- * </li>
+ * Object</li>
  * </ul>
  *
  * @author Mark Hiner
@@ -209,8 +208,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 			.findFirst().orElse(null);
 	}
 
-	private Object
-		convertToArray(final Object value, final Class<?> componentType)
+	private Object convertToArray(final Object value,
+		final Class<?> componentType)
 	{
 		// First we make sure the value is a collection. This provides the simplest
 		// interface for iterating over all the elements. We use SciJava's
@@ -248,7 +247,8 @@ public class DefaultConverter extends AbstractConverter<Object, Object> {
 		// Support conversion to common collection interface types.
 		if (type == Queue.class || type == Deque.class) type = ArrayDeque.class;
 		else if (type == Set.class) type = LinkedHashSet.class;
-		else if (type == List.class || type == Collection.class) type = ArrayList.class;
+		else if (type == List.class || type == Collection.class) type =
+			ArrayList.class;
 		else if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
 			// We were given an interface or abstract class, and not a concrete
 			// class, and we don't know what default implementation to use.

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,7 +29,6 @@
 
 package org.scijava.event;
 
-
 import java.util.Collection;
 import java.util.List;
 
@@ -37,7 +36,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for the event handling service.
- * 
+ *
  * @author Curtis Rueden
  * @author Grant Harris
  */
@@ -91,7 +90,8 @@ public interface EventService extends SciJavaService {
 	 * <li>A third party that subscribes to both
 	 * {@link org.scijava.module.event.ModulesUpdatedEvent} and
 	 * {@link org.scijava.menu.event.MenusUpdatedEvent} will receive the former
-	 * first, since it was already queued by the time the latter was published.</li>
+	 * first, since it was already queued by the time the latter was
+	 * published.</li>
 	 * </ol>
 	 */
 	<E extends SciJavaEvent> void publishLater(E e);
@@ -115,7 +115,7 @@ public interface EventService extends SciJavaService {
 	 * call {@link org.scijava.Context#inject(Object)}, instead of subscribing to
 	 * the event service explicitly.
 	 * </p>
-	 * 
+	 *
 	 * @param o the event handler object containing the {@link EventHandler}
 	 *          annotated methods
 	 * @return The list of newly created {@link EventSubscriber}s, weakly
@@ -138,7 +138,7 @@ public interface EventService extends SciJavaService {
 	 * SciJava's {@link org.scijava.object.ObjectService} via
 	 * {@link org.scijava.object.ObjectService#addObject}.
 	 * </p>
-	 * 
+	 *
 	 * @param subscriber the event subscriber to register
 	 */
 	void subscribe(EventSubscriber<?> subscriber);

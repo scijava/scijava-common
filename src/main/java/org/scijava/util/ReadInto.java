@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,7 +42,7 @@ import java.io.PrintStream;
  * Its intended use is to catch the output and error streams of {@link Process}
  * instances.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class ReadInto extends Thread {
@@ -54,7 +54,7 @@ public class ReadInto extends Thread {
 
 	/**
 	 * Construct a ReadInto thread and start it right away.
-	 * 
+	 *
 	 * @param in the stream to read
 	 * @param out the stream to print to; if it is null, the {@link #toString()}
 	 *          method will have the output instead
@@ -65,16 +65,19 @@ public class ReadInto extends Thread {
 
 	/**
 	 * Construct a ReadInto thread and start it right away.
-	 * 
+	 *
 	 * @param in the stream to read
 	 * @param out the stream to print to; if it is null, the {@link #toString()}
 	 *          method will have the output instead
 	 */
-	public ReadInto(final InputStream in, final PrintStream out, final boolean closeOnEOF) {
+	public ReadInto(final InputStream in, final PrintStream out,
+		final boolean closeOnEOF)
+	{
 		reader = new BufferedReader(new InputStreamReader(in));
 		this.out = out;
 		this.closeOnEOF = closeOnEOF;
-		if (out == null && closeOnEOF) throw new IllegalArgumentException("Cannot close null output");
+		if (out == null && closeOnEOF) throw new IllegalArgumentException(
+			"Cannot close null output");
 		start();
 	}
 
@@ -112,7 +115,8 @@ public class ReadInto extends Thread {
 	public void interrupt() {
 		try {
 			done();
-		} catch (IOException e) { /* just stop */ }
+		}
+		catch (IOException e) { /* just stop */ }
 		super.interrupt();
 	}
 

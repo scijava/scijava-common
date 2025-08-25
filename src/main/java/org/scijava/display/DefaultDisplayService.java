@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,7 +51,7 @@ import org.scijava.service.Service;
 
 /**
  * Default service for working with {@link Display}s.
- * 
+ *
  * @author Barry DeZonia
  * @author Curtis Rueden
  * @author Grant Harris
@@ -77,8 +77,7 @@ public final class DefaultDisplayService extends AbstractService implements
 
 	// -- instance variables --
 
-	private final LinkedList<Display<?>> displayList =
-		new LinkedList<>();
+	private final LinkedList<Display<?>> displayList = new LinkedList<>();
 
 	// -- DisplayService methods --
 
@@ -107,14 +106,15 @@ public final class DefaultDisplayService extends AbstractService implements
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <D extends Display<?>> D getActiveDisplay(final Class<D> displayClass)
+	public <D extends Display<?>> D getActiveDisplay(
+		final Class<D> displayClass)
 	{
 		for (final Display<?> disp : displayList) {
 			if (displayClass.isAssignableFrom(disp.getClass())) return (D) disp;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void setActiveDisplay(final Display<?> display) {
 		if (display != null) {
@@ -137,8 +137,8 @@ public final class DefaultDisplayService extends AbstractService implements
 		final Class<D> pluginClass)
 	{
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		final PluginInfo<Display<?>> displayPlugin =
-			(PluginInfo) pluginService.getPlugin(pluginClass, Display.class);
+		final PluginInfo<Display<?>> displayPlugin = (PluginInfo) pluginService
+			.getPlugin(pluginClass, Display.class);
 		return displayPlugin;
 	}
 
@@ -164,8 +164,7 @@ public final class DefaultDisplayService extends AbstractService implements
 	}
 
 	@Override
-	public <D extends Display<?>> List<D> getDisplaysOfType(final Class<D> type)
-	{
+	public <D extends Display<?>> List<D> getDisplaysOfType(final Class<D> type) {
 		return objectService.getObjects(type);
 	}
 

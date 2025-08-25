@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,27 +35,22 @@ import org.scijava.Cancelable;
 import org.scijava.Named;
 
 /**
- * A self-aware job which reports its status and progress as it runs.
- *
- * There are two ways to use a Task object:
- * - A job can be run asynchronously by using {@link Task#run(Runnable)}, and
- * can report its progression from within the Runnable.
- *
- * - A {@link Task} object can simply be used to report in a synchronous manner
- * the progression of a piece of code. In the case of synchronous reporting,
- * the job is considered started when {@link Task#start()} is called and
- * finished when {@link Task#finish()} is called. A finished job can be finished
- * either because it is done or because it has been cancelled.
- *
- * A cancel callback can be set with {@link Task#setCancelCallBack(Runnable)}.
- * The runnable argument will be executed in the case of an external event
- * requesting a cancellation of the task - typically, if a user clicks
- * a cancel button on the GUI, task.cancel("User cancellation requested") will
- * be called. As a result, the task implementors should run the callback.
- * This callback can be used to make the task aware that a cancellation
- * has been requested, and should proceed to stop its execution.
- *
- * See also {@link TaskService}, {@link DefaultTask}
+ * A self-aware job which reports its status and progress as it runs. There are
+ * two ways to use a Task object: - A job can be run asynchronously by using
+ * {@link Task#run(Runnable)}, and can report its progression from within the
+ * Runnable. - A {@link Task} object can simply be used to report in a
+ * synchronous manner the progression of a piece of code. In the case of
+ * synchronous reporting, the job is considered started when
+ * {@link Task#start()} is called and finished when {@link Task#finish()} is
+ * called. A finished job can be finished either because it is done or because
+ * it has been cancelled. A cancel callback can be set with
+ * {@link Task#setCancelCallBack(Runnable)}. The runnable argument will be
+ * executed in the case of an external event requesting a cancellation of the
+ * task - typically, if a user clicks a cancel button on the GUI,
+ * task.cancel("User cancellation requested") will be called. As a result, the
+ * task implementors should run the callback. This callback can be used to make
+ * the task aware that a cancellation has been requested, and should proceed to
+ * stop its execution. See also {@link TaskService}, {@link DefaultTask}
  *
  * @author Curtis Rueden, Nicolas Chiaruttini
  */

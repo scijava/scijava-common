@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,7 +51,7 @@ import org.scijava.util.VersionUtils;
  * {@code name} starts with a dot (e.g. {@code .helloWorld}), no warning is
  * issued about an unmatched input.
  * </p>
- * 
+ *
  * @author Aivar Grislis
  * @author Curtis Rueden
  */
@@ -64,7 +64,7 @@ public interface ModuleInfo extends UIDetails, Validated, Identifiable,
 
 	/**
 	 * Gets the input item with the given name and type.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the given type is incompatible with the
 	 *           named input item
 	 */
@@ -75,7 +75,7 @@ public interface ModuleInfo extends UIDetails, Validated, Identifiable,
 
 	/**
 	 * Gets the output item with the given name and type.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the given type is incompatible with the
 	 *           named output item
 	 */
@@ -111,7 +111,7 @@ public interface ModuleInfo extends UIDetails, Validated, Identifiable,
 	 * Loads the class containing the module's actual implementation. The name of
 	 * the loaded class will match the value returned by
 	 * {@link #getDelegateClassName()}.
-	 * 
+	 *
 	 * @see org.scijava.Instantiable#loadClass()
 	 */
 	Class<?> loadDelegateClass() throws ClassNotFoundException;

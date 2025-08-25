@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -91,17 +91,18 @@ import org.scijava.util.FileUtils;
  * nevertheless, updating the timestamp to reflect that we indexed the
  * annotations.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class EclipseHelper extends DirectoryIndexer {
 
-	private static final String FORCE_ANNOTATION_INDEX_PROPERTY = "force.annotation.index";
+	private static final String FORCE_ANNOTATION_INDEX_PROPERTY =
+		"force.annotation.index";
 	static Set<URL> indexed = new HashSet<>();
 	private boolean bannerShown;
 
-	private static boolean debug =
-		"debug".equals(System.getProperty("scijava.log.level"));
+	private static boolean debug = "debug".equals(System.getProperty(
+		"scijava.log.level"));
 	private boolean autoDetectEclipse = true;
 
 	private static void debug(final String message) {
@@ -120,14 +121,12 @@ public class EclipseHelper extends DirectoryIndexer {
 	 * first class path element (or for tests, the first two), and only if it is a
 	 * local directory.
 	 * </p>
-	 * 
+	 *
 	 * @param loader the class loader whose class path to inspect
 	 */
 	public static void updateAnnotationIndex(final ClassLoader loader) {
 		debug("Checking class loader: " + loader);
-		if (loader == null ||
-			!(loader instanceof URLClassLoader))
-		{
+		if (loader == null || !(loader instanceof URLClassLoader)) {
 			debug("Not an URLClassLoader: " + loader);
 			return;
 		}
@@ -139,8 +138,8 @@ public class EclipseHelper extends DirectoryIndexer {
 		for (final URL url : ((URLClassLoader) loader).getURLs()) {
 			debug("Checking URL: " + url);
 			if (helper.autoDetectEclipse && first) {
-				if (!"file".equals(url.getProtocol()) ||
-					(!url.getPath().endsWith("/") && !url.getPath().contains("surefire")))
+				if (!"file".equals(url.getProtocol()) || (!url.getPath().endsWith(
+					"/") && !url.getPath().contains("surefire")))
 				{
 					debug("Not Eclipse because first entry is: " + url);
 					return;
@@ -186,12 +185,14 @@ public class EclipseHelper extends DirectoryIndexer {
 			 * but crucially also the target/classes/ and target/test-classes/
 			 * directories which may need to be indexed.
 			 */
-			if (!autoDetectEclipse || url.toString().matches(".*/target/surefire/surefirebooter[0-9]*\\.jar")) try {
+			if (!autoDetectEclipse || url.toString().matches(
+				".*/target/surefire/surefirebooter[0-9]*\\.jar")) try
+			{
 				final JarFile jar = new JarFile(file);
 				Manifest manifest = jar.getManifest();
 				if (manifest != null) {
-					final String classPath =
-						manifest.getMainAttributes().getValue(Name.CLASS_PATH);
+					final String classPath = manifest.getMainAttributes().getValue(
+						Name.CLASS_PATH);
 					if (classPath != null) {
 						for (final String element : classPath.split(" +"))
 							try {
@@ -218,8 +219,8 @@ public class EclipseHelper extends DirectoryIndexer {
 	private void index(File directory, ClassLoader loader) {
 		debug("Directory: " + directory);
 		if (!directory.canWrite() || upToDate(directory) || isIJ1(directory)) {
-			debug("can write: " + directory.canWrite() + ", up-to-date: " +
-				upToDate(directory) + ", : is IJ1: " + isIJ1(directory));
+			debug("can write: " + directory.canWrite() + ", up-to-date: " + upToDate(
+				directory) + ", : is IJ1: " + isIJ1(directory));
 			return;
 		}
 		final File jsonDirectory = new File(directory, Index.INDEX_PREFIX);

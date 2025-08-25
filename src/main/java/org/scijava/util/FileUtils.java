@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -59,7 +59,7 @@ import org.scijava.Context;
 
 /**
  * Useful methods for working with file paths.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  * @author Grant Harris
@@ -83,7 +83,7 @@ public final class FileUtils {
 	/**
 	 * Gets the absolute path to the given file, with the directory separator
 	 * standardized to forward slash, like most platforms use.
-	 * 
+	 *
 	 * @param file The file whose path will be obtained and standardized.
 	 * @return The file's standardized absolute path.
 	 */
@@ -97,7 +97,7 @@ public final class FileUtils {
 	 * Gets a standardized path based on the given one, with the directory
 	 * separator standardized from the specific separator to forward slash, like
 	 * most platforms use.
-	 * 
+	 *
 	 * @param path The path to standardize.
 	 * @param separator The directory separator to be standardized.
 	 * @return The standardized path.
@@ -109,7 +109,7 @@ public final class FileUtils {
 
 	/**
 	 * Extracts the file extension from a file.
-	 * 
+	 *
 	 * @param file the file object
 	 * @return the file extension (excluding the dot), or the empty string when
 	 *         the file name does not contain dots
@@ -123,7 +123,7 @@ public final class FileUtils {
 
 	/**
 	 * Extracts the file extension from a file path.
-	 * 
+	 *
 	 * @param path the path to the file (relative or absolute)
 	 * @return the file extension (excluding the dot), or the empty string when
 	 *         the file name does not contain dots
@@ -142,7 +142,7 @@ public final class FileUtils {
 
 	/**
 	 * Reads the contents of the given file into a new byte array.
-	 * 
+	 *
 	 * @see DigestUtils#string(byte[]) To convert a byte array to a string.
 	 * @throws IOException If the file cannot be read.
 	 */
@@ -162,7 +162,7 @@ public final class FileUtils {
 
 	/**
 	 * Writes the given byte array to the specified file.
-	 * 
+	 *
 	 * @see DigestUtils#bytes(String) To convert a string to a byte array.
 	 * @throws IOException If the file cannot be written.
 	 */
@@ -182,7 +182,7 @@ public final class FileUtils {
 
 	/**
 	 * Lists all versions of a given (possibly versioned) file name.
-	 * 
+	 *
 	 * @param directory the directory to scan
 	 * @param filename the file name to use
 	 * @return the list of matches
@@ -204,7 +204,7 @@ public final class FileUtils {
 				if (!name.startsWith(baseName)) return false;
 				final Matcher matcher2 = VERSION_PATTERN.matcher(name);
 				return matcher2.matches() && baseName.equals(matcher2.group(1)) &&
-						equals(classifier, matcher2.group(6));
+					equals(classifier, matcher2.group(6));
 			}
 
 			private boolean equals(final String a, final String b) {
@@ -222,7 +222,7 @@ public final class FileUtils {
 	 * This method is similar to calling {@code new File(url.toURI())} except that
 	 * it also handles "jar:file:" URLs, returning the path to the JAR file.
 	 * </p>
-	 * 
+	 *
 	 * @param url The URL to convert.
 	 * @return A file path suitable for use with e.g. {@link FileInputStream}
 	 * @throws IllegalArgumentException if the URL does not correspond to a file.
@@ -233,7 +233,7 @@ public final class FileUtils {
 
 	/**
 	 * Converts the given URL string to its corresponding {@link File}.
-	 * 
+	 *
 	 * @param url The URL to convert.
 	 * @return A file path suitable for use with e.g. {@link FileInputStream}
 	 * @throws IllegalArgumentException if the URL does not correspond to a file.
@@ -267,7 +267,7 @@ public final class FileUtils {
 
 	/**
 	 * Shortens the path to a maximum of 4 path elements.
-	 * 
+	 *
 	 * @param path the path to the file (relative or absolute)
 	 * @return shortened path
 	 */
@@ -278,7 +278,7 @@ public final class FileUtils {
 	/**
 	 * Shortens the path based on the given maximum number of path elements. E.g.,
 	 * "C:/1/2/test.txt" returns "C:/1/.../test.txt" if threshold is 1.
-	 * 
+	 *
 	 * @param path the path to the file (relative or absolute)
 	 * @param threshold the number of directories to keep unshortened
 	 * @return shortened path
@@ -323,8 +323,8 @@ public final class FileUtils {
 				}
 			}
 			else {
-				final boolean isUNC =
-					path.substring(0, 2).equals(SHORTENER_BACKSLASH_REGEX);
+				final boolean isUNC = path.substring(0, 2).equals(
+					SHORTENER_BACKSLASH_REGEX);
 				if (isUNC) {
 					sb.append(SHORTENER_BACKSLASH).append(SHORTENER_BACKSLASH);
 				}
@@ -348,7 +348,7 @@ public final class FileUtils {
 	/**
 	 * Compacts a path into a given number of characters. The result is similar to
 	 * the Win32 API PathCompactPathExA.
-	 * 
+	 *
 	 * @param path the path to the file (relative or absolute)
 	 * @param limit the number of characters to which the path should be limited
 	 * @return shortened path
@@ -408,7 +408,7 @@ public final class FileUtils {
 	 * It is the caller's responsibility to make sure that the directory is
 	 * deleted; see {@link #deleteRecursively(File)}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix The prefix string to be used in generating the file's name;
 	 *          see {@link File#createTempFile(String, String, File)}
 	 * @return An abstract pathname denoting a newly-created empty directory
@@ -432,7 +432,7 @@ public final class FileUtils {
 	 * It is the caller's responsibility to make sure that the directory is
 	 * deleted; see {@link #deleteRecursively(File)}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix The prefix string to be used in generating the file's name;
 	 *          see {@link File#createTempFile(String, String, File)}
 	 * @param suffix The suffix string to be used in generating the file's name;
@@ -458,7 +458,7 @@ public final class FileUtils {
 	 * It is the caller's responsibility to make sure that the directory is
 	 * deleted; see {@link #deleteRecursively(File)}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix The prefix string to be used in generating the file's name;
 	 *          see {@link File#createTempFile(String, String, File)}
 	 * @param suffix The suffix string to be used in generating the file's name;
@@ -487,7 +487,7 @@ public final class FileUtils {
 
 	/**
 	 * Deletes a directory recursively.
-	 * 
+	 *
 	 * @param directory The directory to delete.
 	 * @return whether it succeeded (see also {@link File#delete()})
 	 */
@@ -510,7 +510,7 @@ public final class FileUtils {
 	 * Recursively lists the contents of the referenced directory. Directories are
 	 * excluded from the result. Supported protocols include {@code file} and
 	 * {@code jar}.
-	 * 
+	 *
 	 * @param directory The directory whose contents should be listed.
 	 * @return A collection of {@link URL}s representing the directory's contents.
 	 * @see #listContents(URL, boolean, boolean)
@@ -522,7 +522,7 @@ public final class FileUtils {
 	/**
 	 * Lists all contents of the referenced directory. Supported protocols include
 	 * {@code file} and {@code jar}.
-	 * 
+	 *
 	 * @param directory The directory whose contents should be listed.
 	 * @param recurse Whether to list contents recursively, as opposed to only the
 	 *          directory's direct contents.
@@ -540,7 +540,7 @@ public final class FileUtils {
 	 * Recursively adds contents from the referenced directory to an existing
 	 * collection. Directories are excluded from the result. Supported protocols
 	 * include {@code file} and {@code jar}.
-	 * 
+	 *
 	 * @param result The collection to which contents should be added.
 	 * @param directory The directory whose contents should be listed.
 	 * @return A collection of {@link URL}s representing the directory's contents.
@@ -555,7 +555,7 @@ public final class FileUtils {
 	/**
 	 * Add contents from the referenced directory to an existing collection.
 	 * Supported protocols include {@code file} and {@code jar}.
-	 * 
+	 *
 	 * @param result The collection to which contents should be added.
 	 * @param directory The directory whose contents should be listed.
 	 * @param recurse Whether to append contents recursively, as opposed to only
@@ -596,13 +596,14 @@ public final class FileUtils {
 				final String prefix = url.substring(bang + 2);
 				final String baseURL = url.substring(0, bang + 2);
 
-				final JarURLConnection connection =
-					(JarURLConnection) new URL(baseURL).openConnection();
+				final JarURLConnection connection = (JarURLConnection) new URL(baseURL)
+					.openConnection();
 				try (final JarFile jar = connection.getJarFile()) {
 					for (final JarEntry entry : new IteratorPlus<>(jar.entries())) {
-						final String urlEncoded =
-							new URI(null, null, entry.getName(), null).toString();
-						if (urlEncoded.length() > prefix.length() && // omit directory itself
+						final String urlEncoded = new URI(null, null, entry.getName(), null)
+							.toString();
+						if (urlEncoded.length() > prefix.length() && // omit directory
+																													// itself
 							urlEncoded.startsWith(prefix))
 						{
 							if (filesOnly && urlEncoded.endsWith("/")) {
@@ -722,17 +723,11 @@ public final class FileUtils {
 
 	/** Helper method of {@link #buildVersionPattern()}. */
 	private static String classifiers() {
-		final String[] classifiers = {
-			"swing",
-			"swt",
-			"shaded",
-			"sources",
-			"javadoc",
-			"natives?-?\\w*",
+		final String[] classifiers = { "swing", "swt", "shaded", "sources",
+			"javadoc", "natives?-?\\w*",
 			"(natives-)?(android|linux|macosx|macos|solaris|windows)-" +
 				"(aarch64|amd64|arm64|armv6hf|armv6|arm|" +
-				"i386|i486|i586|i686|universal|x86[_-]32|x86[_-]64|x86)",
-		};
+				"i386|i486|i586|i686|universal|x86[_-]32|x86[_-]64|x86)", };
 		final StringBuilder sb = new StringBuilder("(");
 		for (final String classifier : classifiers) {
 			if (sb.length() > 1) sb.append("|");
@@ -785,7 +780,7 @@ public final class FileUtils {
 
 	/**
 	 * Returns the {@link Matcher} object dissecting a versioned file name.
-	 * 
+	 *
 	 * @param filename the file name
 	 * @return the {@link Matcher} object
 	 * @deprecated see {@link #stripFilenameVersion(String)}

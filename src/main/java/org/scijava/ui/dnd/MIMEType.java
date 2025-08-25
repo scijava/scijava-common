@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * there is no public MIME type class in core Java excluding AWT, which we could
  * use cross-environment in e.g. Android.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class MIMEType {
@@ -64,7 +64,7 @@ public class MIMEType {
 
 	/**
 	 * Constructs a new MIME type object from the given MIME type string.
-	 * 
+	 *
 	 * @param mimeType The MIME type string, which may optionally include a list
 	 *          of semicolon-separated parameters.
 	 */
@@ -74,7 +74,7 @@ public class MIMEType {
 
 	/**
 	 * Constructs a new MIME type object from the given MIME type string.
-	 * 
+	 *
 	 * @param mimeType The MIME type string, which may optionally include a list
 	 *          of semicolon-separated parameters.
 	 * @param javaType The associated Java class of the MIME type. If non-null, a

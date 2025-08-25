@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,10 +46,11 @@ import org.scijava.util.FileUtils;
 
 /**
  * Combines annotation indexes from all JAR files on the classpath.
- * 
+ *
  * @author Curtis Rueden
  */
-public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
+public class AnnotationCombiner extends AbstractIndexWriter implements
+	Combiner
 {
 
 	private static final String PREFIX = "META-INF/json/";
@@ -74,8 +75,8 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 			@SuppressWarnings("unchecked")
 			final Class<? extends Annotation> annotation =
 				(Class<? extends Annotation>) loader.loadClass(annotationName);
-			for (IndexItem<? extends Annotation> item : Index
-				.load(annotation, loader))
+			for (IndexItem<? extends Annotation> item : Index.load(annotation,
+				loader))
 			{
 				add(adapt(item.annotation()), annotationName, item.className());
 			}
@@ -89,8 +90,8 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 		final HashSet<String> files = new HashSet<>();
 
 		for (final String prefix : new String[] { PREFIX, LEGACY_PREFIX }) {
-			final Enumeration<URL> directories =
-				Context.getClassLoader().getResources(prefix);
+			final Enumeration<URL> directories = Context.getClassLoader()
+				.getResources(prefix);
 			while (directories.hasMoreElements()) {
 				final URL url = directories.nextElement();
 				for (final URL annotationIndexURL : FileUtils.listContents(url)) {
@@ -99,8 +100,8 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 						continue;
 					}
 					final int length = string.length();
-					add(files, PREFIX +
-						string.substring(string.lastIndexOf('/', length - 1) + 1, length));
+					add(files, PREFIX + string.substring(string.lastIndexOf('/', length -
+						1) + 1, length));
 				}
 			}
 		}
@@ -151,8 +152,9 @@ public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 	}
 
 	// -- Main method --
-	
+
 	public static void main(final String[] args) throws Exception {
-		new AnnotationCombiner().combine(args.length > 0 ? new File(args[0]) : null);
+		new AnnotationCombiner().combine(args.length > 0 ? new File(args[0])
+			: null);
 	}
 }

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ import java.util.TreeMap;
  * An analyzer to parse {@code &#x40;Plugin} annotations inside a {@code .class}
  * file without loading the class. The idea is to inspect the classfile to parse
  * the annotation attributes.
- * 
+ *
  * @author Johannes Schindelin
  */
 class ByteCodeAnalyzer {
@@ -101,12 +101,12 @@ class ByteCodeAnalyzer {
 		final int offset = poolOffsets[index - 1];
 		if (getU1(offset) != 6) throw new RuntimeException("Constant " + index +
 			" does not refer to a double");
-		return Double.longBitsToDouble((getU4(offset + 1) << 32) |
-			getU4(offset + 5));
+		return Double.longBitsToDouble((getU4(offset + 1) << 32) | getU4(offset +
+			5));
 	}
 
-	// See https://en.wikipedia.org/wiki/Java_class_file#The_constant_pool for the 
-	// meaning of the offsets behind these numbers 
+	// See https://en.wikipedia.org/wiki/Java_class_file#The_constant_pool for the
+	// meaning of the offsets behind these numbers
 	private void getConstantPoolOffsets() {
 		final int poolCount = getU2(8) - 1;
 		poolOffsets = new int[poolCount];
@@ -116,8 +116,8 @@ class ByteCodeAnalyzer {
 			final int tag = getU1(offset);
 			if (tag == 7 || tag == 8 || tag == 16) offset += 3;
 			else if (tag == 15) offset += 4;
-			else if (tag == 3 || tag == 4 || tag == 9 || tag == 10 
-					|| tag == 11 || tag == 12 || tag == 18) offset += 5;
+			else if (tag == 3 || tag == 4 || tag == 9 || tag == 10 || tag == 11 ||
+				tag == 12 || tag == 18) offset += 5;
 			else if (tag == 5 || tag == 6) {
 				poolOffsets[++i] = offset;
 				offset += 9;
@@ -177,8 +177,8 @@ class ByteCodeAnalyzer {
 	private Attribute[] getAttributes(final int offset) {
 		final Attribute[] result = new Attribute[getU2(offset)];
 		for (int i = 0; i < result.length; i++)
-			result[i] =
-				new Attribute(i == 0 ? offset + 2 : result[i - 1].attributeEndOffset);
+			result[i] = new Attribute(i == 0 ? offset + 2 : result[i -
+				1].attributeEndOffset);
 		return result;
 	}
 
@@ -201,19 +201,17 @@ class ByteCodeAnalyzer {
 	}
 
 	private Map<String, Map<String, Object>> getAnnotations() {
-		final Map<String, Map<String, Object>> annotations =
-			new TreeMap<>();
+		final Map<String, Map<String, Object>> annotations = new TreeMap<>();
 		for (final Attribute attr : attributes) {
 			if ("RuntimeVisibleAnnotations".equals(attr.getName())) {
 				final byte[] buf = attr.attribute;
 				int count = getU2(buf, 0);
 				int offset = 2;
 				for (int i = 0; i < count; i++) {
-					final String className =
-						raw2className(getStringConstant(getU2(buf, offset)));
+					final String className = raw2className(getStringConstant(getU2(buf,
+						offset)));
 					offset += 2;
-					final Map<String, Object> values =
-						new TreeMap<>();
+					final Map<String, Object> values = new TreeMap<>();
 					annotations.put(className, values);
 					offset = parseAnnotationValues(buf, offset, values);
 				}
@@ -249,18 +247,16 @@ class ByteCodeAnalyzer {
 				offset += 2;
 				break;
 			case 'C':
-				value =
-					Character.valueOf((char) getIntegerConstant(getU2(buf, offset)));
+				value = Character.valueOf((char) getIntegerConstant(getU2(buf,
+					offset)));
 				offset += 2;
 				break;
 			case 'S':
-				value =
-					Short.valueOf((short) getIntegerConstant(getU2(buf, offset)));
+				value = Short.valueOf((short) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'I':
-				value =
-					Integer.valueOf((int) getIntegerConstant(getU2(buf, offset)));
+				value = Integer.valueOf((int) getIntegerConstant(getU2(buf, offset)));
 				offset += 2;
 				break;
 			case 'J':
@@ -294,8 +290,7 @@ class ByteCodeAnalyzer {
 				break;
 			}
 			case 'e': {
-				final Map<String, Object> enumValue =
-					new TreeMap<>();
+				final Map<String, Object> enumValue = new TreeMap<>();
 				enumValue.put("enum", raw2className(getStringConstant(getU2(buf,
 					offset))));
 				offset += 2;

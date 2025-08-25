@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,24 +38,24 @@ import org.scijava.widget.AbstractInputWidget;
 import org.scijava.widget.InputWidget;
 
 /**
- * Abstract superclass of {@link InputWidget} implementations that
- * belong to a specific UI.
+ * Abstract superclass of {@link InputWidget} implementations that belong to a
+ * specific UI.
  * <p>
- * {@link #refreshWidget()} implementation determines if this widget
- * needs to be refreshed on the EDT, and invokes it as needed if so.
+ * {@link #refreshWidget()} implementation determines if this widget needs to be
+ * refreshed on the EDT, and invokes it as needed if so.
  * </p>
  * <p>
- * Subclasses should implement {@link #doRefresh()} as they would
- * have {@link #refreshWidget()}. A common abstract superclass 
- * for each UserInterface type should be sufficient for 
- * {@link #ui()}, which can delegate to {@link #ui(String)} with
- * the appropriate UI name.
+ * Subclasses should implement {@link #doRefresh()} as they would have
+ * {@link #refreshWidget()}. A common abstract superclass for each UserInterface
+ * type should be sufficient for {@link #ui()}, which can delegate to
+ * {@link #ui(String)} with the appropriate UI name.
  * </p>
- * 
+ *
  * @author Mark Hiner
- * 
  */
-public abstract class AbstractUIInputWidget<T, W> extends AbstractInputWidget<T, W> {
+public abstract class AbstractUIInputWidget<T, W> extends
+	AbstractInputWidget<T, W>
+{
 
 	// -- Fields --
 
@@ -69,12 +69,12 @@ public abstract class AbstractUIInputWidget<T, W> extends AbstractInputWidget<T,
 	private LogService log;
 
 	// -- InputWidget methods --
-	
+
 	@Override
 	public void refreshWidget() {
 
-	  // If this widget requires the EDT, ensure its refresh action takes place
-	  // on the EDT.
+		// If this widget requires the EDT, ensure its refresh action takes place
+		// on the EDT.
 		if (ui().requiresEDT()) {
 			try {
 				threadService.invoke(() -> doRefresh());
@@ -92,23 +92,23 @@ public abstract class AbstractUIInputWidget<T, W> extends AbstractInputWidget<T,
 	}
 
 	// -- AbstractUIInputWidget methods --
-	
+
 	/**
 	 * Performs the intended {@link #refreshWidget()} operation.
 	 */
 	protected abstract void doRefresh();
-	
+
 	/**
-	 * @return The {@link UserInterface} instance associated
-	 * with this InputWidget.
+	 * @return The {@link UserInterface} instance associated with this
+	 *         InputWidget.
 	 */
 	protected abstract UserInterface ui();
-	
+
 	/**
 	 * @return the UserInterface matching the provided String
 	 */
 	protected UserInterface ui(String uiName) {
-		
+
 		return uiService.getUI(uiName);
 	}
-} 
+}

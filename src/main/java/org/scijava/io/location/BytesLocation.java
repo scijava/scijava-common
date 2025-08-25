@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,8 +46,7 @@ public class BytesLocation extends AbstractLocation {
 	private final String name;
 
 	/**
-	 * Creates a {@link BytesLocation} backed by the specified
-	 * {@link ByteBank}.
+	 * Creates a {@link BytesLocation} backed by the specified {@link ByteBank}.
 	 *
 	 * @param bytes the {@link ByteBank} that will back this {@link Location}
 	 */
@@ -88,8 +87,8 @@ public class BytesLocation extends AbstractLocation {
 	}
 
 	/**
-	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
-	 * that wraps the specified {@link ByteArray}.
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} that
+	 * wraps the specified {@link ByteArray}.
 	 */
 	public BytesLocation(final ByteArray bytes) {
 		this(bytes, null);
@@ -107,8 +106,8 @@ public class BytesLocation extends AbstractLocation {
 	}
 
 	/**
-	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank}
-	 * which wraps the specified array.
+	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} which
+	 * wraps the specified array.
 	 *
 	 * @param bytes the array to wrap
 	 */
@@ -131,7 +130,7 @@ public class BytesLocation extends AbstractLocation {
 	/**
 	 * Creates a {@link BytesLocation} backed by a {@link ByteArrayByteBank} with
 	 * the specified initial capacity and the provided data.
-	 * 
+	 *
 	 * @param bytes the bytes to copy into the new {@link BytesLocation}
 	 * @param offset the offset in the bytes array to start copying from
 	 * @param length the number of bytes to copy, starting from the offset

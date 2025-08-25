@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,7 +37,7 @@ import java.util.Arrays;
 
 /**
  * Useful methods for working with processes.
- * 
+ *
  * @author Johannes Schindelin
  */
 public final class ProcessUtils {
@@ -49,7 +49,7 @@ public final class ProcessUtils {
 	/**
 	 * Executes a program. This is a convenience method mainly to be able to catch
 	 * the output of programs as shell scripts can do by wrapping calls in $(...).
-	 * 
+	 *
 	 * @param workingDirectory the directory in which to execute the program
 	 * @param err the {@link PrintStream} to print the program's error stream to;
 	 *          if null is passed, the error goes straight to Nirvana (not the
@@ -63,8 +63,8 @@ public final class ProcessUtils {
 	 * @throws RuntimeException if interrupted or the program failed to execute
 	 *           successfully.
 	 */
-	public static String exec(final File workingDirectory,
-		final PrintStream err, final PrintStream out, final String... args)
+	public static String exec(final File workingDirectory, final PrintStream err,
+		final PrintStream out, final String... args)
 	{
 		return exec(workingDirectory, null, err, out, args);
 	}
@@ -72,9 +72,10 @@ public final class ProcessUtils {
 	/**
 	 * Executes a program. This is a convenience method mainly to be able to catch
 	 * the output of programs as shell scripts can do by wrapping calls in $(...).
-	 * 
+	 *
 	 * @param workingDirectory the directory in which to execute the program
-	 * @param in the {@link InputStream} which gets fed to the program as standard input;
+	 * @param in the {@link InputStream} which gets fed to the program as standard
+	 *          input;
 	 * @param err the {@link PrintStream} to print the program's error stream to;
 	 *          if null is passed, the error goes straight to Nirvana (not the
 	 *          band, though).
@@ -87,19 +88,19 @@ public final class ProcessUtils {
 	 * @throws RuntimeException if interrupted or the program failed to execute
 	 *           successfully.
 	 */
-	public static String exec(final File workingDirectory,
-		final InputStream in, final PrintStream err, final PrintStream out,
-		final String... args)
+	public static String exec(final File workingDirectory, final InputStream in,
+		final PrintStream err, final PrintStream out, final String... args)
 	{
 		try {
-			final Process process =
-				Runtime.getRuntime().exec(args, null, workingDirectory);
+			final Process process = Runtime.getRuntime().exec(args, null,
+				workingDirectory);
 
 			final ReadInto inThread;
 			if (in == null) {
 				inThread = null;
 				process.getOutputStream().close();
-			} else {
+			}
+			else {
 				final PrintStream print = new PrintStream(process.getOutputStream());
 				inThread = new ReadInto(in, print, true);
 			}
@@ -126,8 +127,8 @@ public final class ProcessUtils {
 				throw new RuntimeException(e);
 			}
 			if (process.exitValue() != 0) {
-				throw new RuntimeException("exit status " + process.exitValue() +
-					": " + Arrays.toString(args) + "\n" + err);
+				throw new RuntimeException("exit status " + process.exitValue() + ": " +
+					Arrays.toString(args) + "\n" + err);
 			}
 			return outThread.toString();
 		}

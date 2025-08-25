@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import org.scijava.util.PlatformUtils;
 /**
  * A keyboard shortcut, consisting of a {@link KeyCode} plus
  * {@link InputModifiers}.
- * 
+ *
  * @author Curtis Rueden
  * @author Barry DeZonia
  */
@@ -92,14 +92,14 @@ public class Accelerator {
 	/**
 	 * Creates an accelerator from the given string representation. The string
 	 * must have the following syntax:
-	 * 
+	 *
 	 * <pre>
 	 * 	    &lt;modifiers&gt;* &lt;keyCode&gt;
-	 * 
+	 *
 	 * 	    modifiers := alt | altGraph | control | meta | shift
 	 * 	    keyCode := {@link KeyCode} field (e.g., COMMA or UP)
 	 * </pre>
-	 * 
+	 *
 	 * For convenience:
 	 * <ul>
 	 * <li>"control" may be shortened to "ctrl"</li>
@@ -114,7 +114,7 @@ public class Accelerator {
 	 * <li>"alt shift X"</li>
 	 * <li>"^C"</li>
 	 * </ul>
-	 * 
+	 *
 	 * @see javax.swing.KeyStroke#getKeyStroke(String) for the syntax from which
 	 *      this one is derived.
 	 * @see KeyCode for the complete list of special character codes.
@@ -133,13 +133,13 @@ public class Accelerator {
 		boolean ctrl = false, meta = false, shift = false;
 		for (int i = 0; i < components.length - 1; i++) {
 			if (components[i].equalsIgnoreCase("alt")) alt = true;
-			else if (components[i].equalsIgnoreCase("altGr") ||
-				components[i].equalsIgnoreCase("altGraph"))
+			else if (components[i].equalsIgnoreCase("altGr") || components[i]
+				.equalsIgnoreCase("altGraph"))
 			{
 				altGr = true;
 			}
-			else if (components[i].equalsIgnoreCase("control") ||
-				components[i].equalsIgnoreCase("ctrl"))
+			else if (components[i].equalsIgnoreCase("control") || components[i]
+				.equalsIgnoreCase("ctrl"))
 			{
 				ctrl = true;
 			}
@@ -147,8 +147,8 @@ public class Accelerator {
 			else if (components[i].equalsIgnoreCase("shift")) shift = true;
 		}
 
-		final InputModifiers modifiers =
-			new InputModifiers(alt, altGr, ctrl, meta, shift, false, false, false);
+		final InputModifiers modifiers = new InputModifiers(alt, altGr, ctrl, meta,
+			shift, false, false, false);
 
 		// upper case the key code
 		final String code = components[components.length - 1].toUpperCase();

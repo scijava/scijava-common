@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,13 +39,14 @@ import org.scijava.plugin.HandlerService;
 import org.scijava.service.SciJavaService;
 
 /**
- * Interface for high-level data I/O: opening and saving data of a specific type.
+ * Interface for high-level data I/O: opening and saving data of a specific
+ * type.
  *
  * @author Curtis Rueden
  * @author Deborah Schmidt
  */
-public interface TypedIOService<D> extends HandlerService<Location, IOPlugin<D>>,
-		SciJavaService
+public interface TypedIOService<D> extends
+	HandlerService<Location, IOPlugin<D>>, SciJavaService
 {
 
 	/**
@@ -54,7 +55,8 @@ public interface TypedIOService<D> extends HandlerService<Location, IOPlugin<D>>
 	 */
 	default IOPlugin<D> getOpener(final String source) {
 		try {
-			return getOpener(context().service(LocationService.class).resolve(source));
+			return getOpener(context().service(LocationService.class).resolve(
+				source));
 		}
 		catch (final URISyntaxException exc) {
 			return null;
@@ -78,7 +80,8 @@ public interface TypedIOService<D> extends HandlerService<Location, IOPlugin<D>>
 	 */
 	default IOPlugin<D> getSaver(final D data, final String destination) {
 		try {
-			return getSaver(data, context().service(LocationService.class).resolve(destination));
+			return getSaver(data, context().service(LocationService.class).resolve(
+				destination));
 		}
 		catch (final URISyntaxException exc) {
 			return null;

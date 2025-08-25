@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,7 +37,7 @@ import org.scijava.service.SciJavaService;
 /**
  * Interface for service that tracks the current status of input devices
  * (keyboard and mouse in particular).
- * 
+ *
  * @author Barry DeZonia
  * @author Curtis Rueden
  */
@@ -63,7 +63,7 @@ public interface InputService extends SciJavaService {
 
 	/**
 	 * Gets the display associated with the last observed mouse cursor.
-	 * 
+	 *
 	 * @return The display in question, or null if the display has been deleted,
 	 *         or the mouse cursor is outside all known displays, or no mouse
 	 *         events have ever been observed.
@@ -73,7 +73,7 @@ public interface InputService extends SciJavaService {
 	/**
 	 * Gets the last observed X coordinate of the mouse cursor, relative to a
 	 * specific display.
-	 * 
+	 *
 	 * @see #getDisplay()
 	 */
 	int getX();
@@ -81,14 +81,14 @@ public interface InputService extends SciJavaService {
 	/**
 	 * Gets the last observed Y coordinate of the mouse cursor, relative to a
 	 * specific display.
-	 * 
+	 *
 	 * @see #getDisplay()
 	 */
 	int getY();
 
 	/**
 	 * Gets whether the given mouse button is currently pressed.
-	 * 
+	 *
 	 * @param button One of:
 	 *          <ul>
 	 *          <li>{@link MsButtonEvent#LEFT_BUTTON}</li>

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,10 +34,9 @@ import java.math.BigInteger;
 
 import org.scijava.util.Types;
 
-
 /**
  * Useful methods for working with {@link Number} objects.
- * 
+ *
  * @author Curtis Rueden
  * @author Barry DeZonia
  */
@@ -58,10 +57,10 @@ public final class NumberUtils {
 
 	public static BigDecimal asBigDecimal(final Number n) {
 		// Using .doubleValue on a long or BigInteger would cause loss of accuracy
-		if(BigInteger.class.isInstance(n)){
+		if (BigInteger.class.isInstance(n)) {
 			return new BigDecimal((BigInteger) n);
 		}
-		else if(Long.class.isInstance(n)){
+		else if (Long.class.isInstance(n)) {
 			return new BigDecimal(n.longValue());
 		}
 		return new BigDecimal(n.doubleValue());

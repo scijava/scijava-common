@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import java.util.Map;
  * That will be the time when we can index the annotations, even if Eclipse
  * decided not to run any annotation processor.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class DirectoryIndexer extends AbstractIndexWriter {
@@ -56,9 +56,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 	public void index(final File directory) throws IOException {
 		try {
 			@SuppressWarnings("deprecation")
-			final URLClassLoader loader =
-				new URLClassLoader(new URL[] { directory.toURL() }, Thread
-					.currentThread().getContextClassLoader());
+			final URLClassLoader loader = new URLClassLoader(new URL[] { directory
+				.toURL() }, Thread.currentThread().getContextClassLoader());
 			discoverAnnotations(directory, "", loader);
 		}
 		catch (MalformedURLException e) {
@@ -84,8 +83,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 				if (!fileName.endsWith(".class")) {
 					continue;
 				}
-				final String className =
-					classNamePrefix + fileName.substring(0, fileName.length() - 6);
+				final String className = classNamePrefix + fileName.substring(0,
+					fileName.length() - 6);
 				try {
 					for (final Map.Entry<String, Map<String, Object>> entry : ByteCodeAnalyzer
 						.getAnnotations(file).entrySet())
@@ -123,7 +122,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 		add(adapt(annotation), annotation.annotationType().getName(), className);
 	}
 
-	private static <A extends Annotation> boolean isIndexable(final A annotation)
+	private static <A extends Annotation> boolean isIndexable(
+		final A annotation)
 	{
 		return isIndexable(annotation.annotationType());
 	}
@@ -137,8 +137,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 
 			@Override
 			public InputStream openInput(String annotationName) throws IOException {
-				final File file =
-					new File(directory, Index.INDEX_PREFIX + annotationName);
+				final File file = new File(directory, Index.INDEX_PREFIX +
+					annotationName);
 				if (file.exists()) {
 					return new FileInputStream(file);
 				}
@@ -147,8 +147,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 
 			@Override
 			public OutputStream openOutput(String annotationName) throws IOException {
-				final File file =
-					new File(directory, Index.INDEX_PREFIX + annotationName);
+				final File file = new File(directory, Index.INDEX_PREFIX +
+					annotationName);
 				final File dir = file.getParentFile();
 				if (dir != null && !dir.isDirectory() && !dir.mkdirs()) {
 					throw new IOException("Could not make directory " + dir);
@@ -172,8 +172,8 @@ public class DirectoryIndexer extends AbstractIndexWriter {
 			}
 		};
 
-		final File[] possiblyObsoletes =
-			new File(directory, Index.INDEX_PREFIX).listFiles();
+		final File[] possiblyObsoletes = new File(directory, Index.INDEX_PREFIX)
+			.listFiles();
 		if (possiblyObsoletes != null) {
 			for (final File candidate : possiblyObsoletes) {
 				if (candidate.isFile()) {

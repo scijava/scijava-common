@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -55,7 +55,7 @@ import org.scijava.util.FileUtils;
  * include the {@code scripts} and {@code plugins/Scripts} folders off the
  * SciJava application's base directory.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -73,7 +73,7 @@ public class ScriptFinder extends AbstractContextual {
 
 	/**
 	 * Creates a new script finder.
-	 * 
+	 *
 	 * @param context The SciJava application context housing needed services.
 	 */
 	public ScriptFinder(final Context context) {
@@ -82,7 +82,7 @@ public class ScriptFinder extends AbstractContextual {
 
 	/**
 	 * Creates a new script finder.
-	 * 
+	 *
 	 * @param context The SciJava application context housing needed services.
 	 * @param pathPrefix the path prefix beneath which to scan classpath
 	 *          resources, or null to skip classpath scanning.
@@ -96,7 +96,7 @@ public class ScriptFinder extends AbstractContextual {
 
 	/**
 	 * Discovers the scripts.
-	 * 
+	 *
 	 * @param scripts The collection to which the discovered scripts are added.
 	 */
 	public void findScripts(final List<ScriptInfo> scripts) {
@@ -120,7 +120,9 @@ public class ScriptFinder extends AbstractContextual {
 	// -- Helper methods --
 
 	/** Scans classpath resources for scripts (e.g., inside JAR files). */
-	private int scanResources(final List<ScriptInfo> scripts, final Set<URL> urls) {
+	private int scanResources(final List<ScriptInfo> scripts,
+		final Set<URL> urls)
+	{
 		if (pathPrefix == null) return 0;
 
 		// NB: We leave the baseDirectory argument null, because scripts on disk
@@ -180,7 +182,7 @@ public class ScriptFinder extends AbstractContextual {
 			// menuPath = File > Import > Movie File...
 
 			// Place base-level scripts in the "Plugins>Scripts" submenu
-			if (menuPath.size() == 1){
+			if (menuPath.size() == 1) {
 				menuPath.add(0, new MenuEntry("Plugins"));
 				menuPath.add(1, new MenuEntry("Scripts"));
 			}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -53,7 +53,7 @@ import javax.lang.model.element.AnnotationValue;
  * describe the class which was annotated together with the specific annotation
  * fields.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public abstract class AbstractIndexWriter {
@@ -94,8 +94,8 @@ public abstract class AbstractIndexWriter {
 		for (Entry<String, Map<String, Object>> entry : map.entrySet()) {
 			final String annotationName = entry.getKey();
 			merge(annotationName, factory);
-			final PrintStream out =
-				new PrintStream(factory.openOutput(annotationName));
+			final PrintStream out = new PrintStream(factory.openOutput(
+				annotationName));
 			for (Object o : entry.getValue().values()) {
 				writeObject(out, adapt(o));
 			}
@@ -110,7 +110,7 @@ public abstract class AbstractIndexWriter {
 	 * This method is used to read previously-indexed annotations and reconcile
 	 * them with the newly-generated ones just.
 	 * </p>
-	 * 
+	 *
 	 * @param annotationName the name of the annotation for which the index
 	 *          contains the annotated classes
 	 * @param factory the factory to generate input and output streams given an
@@ -136,8 +136,8 @@ public abstract class AbstractIndexWriter {
 		int changedCount = m.size();
 		boolean hasObsoletes = false;
 
-		final IndexReader reader =
-			new IndexReader(in, annotationName + " from " + in);
+		final IndexReader reader = new IndexReader(in, annotationName + " from " +
+			in);
 		try {
 			for (;;) {
 				@SuppressWarnings("unchecked")

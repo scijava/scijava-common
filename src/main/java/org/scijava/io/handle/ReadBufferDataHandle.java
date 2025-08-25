@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,9 @@ import org.scijava.io.location.Location;
  * Read-only buffered {@link DataHandle}. It buffers the underlying handle into
  * a fixed number of pages, swapping them out when necessary.
  */
-public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrderHandle<L> {
+public class ReadBufferDataHandle<L extends Location> extends
+	AbstractHigherOrderHandle<L>
+{
 
 	private static final int DEFAULT_PAGE_SIZE = 10_000;
 	private static final int DEFAULT_NUM_PAGES = 10;
@@ -57,8 +59,8 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 
 	/**
 	 * Cached length value, for performance. When reading data, length is not
-	 * expected to change, but querying it (e.g. via native filesystem access)
-	 * can be slow, and we need to query the length frequently.
+	 * expected to change, but querying it (e.g. via native filesystem access) can
+	 * be slow, and we need to query the length frequently.
 	 */
 	private long length = -1;
 	private long offset = 0l;
@@ -66,25 +68,22 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	private int currentPageID = -1;
 
 	/**
-	 * Creates a {@link ReadBufferDataHandle} wrapping the provided handle using the
-	 * default values for the size of the pages ({@value #DEFAULT_PAGE_SIZE} byte)
-	 * and number of pages ({@link #DEFAULT_NUM_PAGES}).
+	 * Creates a {@link ReadBufferDataHandle} wrapping the provided handle using
+	 * the default values for the size of the pages ({@value #DEFAULT_PAGE_SIZE}
+	 * byte) and number of pages ({@link #DEFAULT_NUM_PAGES}).
 	 *
-	 * @param handle
-	 *            the handle to wrap
+	 * @param handle the handle to wrap
 	 */
 	public ReadBufferDataHandle(final DataHandle<L> handle) {
 		this(handle, DEFAULT_PAGE_SIZE);
 	}
 
 	/**
-	 * Creates a {@link ReadBufferDataHandle} wrapping the provided handle using the
-	 * default value for the number of pages ({@link #DEFAULT_NUM_PAGES}).
+	 * Creates a {@link ReadBufferDataHandle} wrapping the provided handle using
+	 * the default value for the number of pages ({@link #DEFAULT_NUM_PAGES}).
 	 *
-	 * @param handle
-	 *            the handle to wrap
-	 * @param pageSize
-	 *            the size of the used pages
+	 * @param handle the handle to wrap
+	 * @param pageSize the size of the used pages
 	 */
 	public ReadBufferDataHandle(final DataHandle<L> handle, final int pageSize) {
 		this(handle, pageSize, DEFAULT_NUM_PAGES);
@@ -93,14 +92,13 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	/**
 	 * Creates a {@link ReadBufferDataHandle} wrapping the provided handle.
 	 *
-	 * @param handle
-	 *            the handle to wrap
-	 * @param pageSize
-	 *            the size of the used pages
-	 * @param numPages
-	 *            the number of pages to use
+	 * @param handle the handle to wrap
+	 * @param pageSize the size of the used pages
+	 * @param numPages the number of pages to use
 	 */
-	public ReadBufferDataHandle(final DataHandle<L> handle, final int pageSize, final int numPages) {
+	public ReadBufferDataHandle(final DataHandle<L> handle, final int pageSize,
+		final int numPages)
+	{
 		super(handle);
 		this.pageSize = pageSize;
 
@@ -124,10 +122,10 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	private void ensureBuffered(final long globalOffset) throws IOException {
 		ensureOpen();
 		final int pageID = (int) (globalOffset / pageSize);
-		if (pageID == currentPageID)
-			return;
+		if (pageID == currentPageID) return;
 
-		final int slotID = pageToSlot.computeIfAbsent(pageID, replacementStrategy::pickVictim);
+		final int slotID = pageToSlot.computeIfAbsent(pageID,
+			replacementStrategy::pickVictim);
 		final int inSlotID = slotToPage[slotID];
 
 		if (inSlotID != pageID) { // desired page is not buffered
@@ -138,7 +136,8 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 
 			// read the page
 			currentPage = readPage(pageID, slotID);
-		} else {
+		}
+		else {
 			currentPage = pages.get(slotID);
 		}
 		replacementStrategy.accessed(slotID);
@@ -149,15 +148,14 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	 * Reads the page with the id <code>pageID</code> into the slot with the id
 	 * <code>slotID</code>.
 	 *
-	 * @param pageID
-	 *            the id of the page to read
-	 * @param slotID
-	 *            the id of the slot to read the page into
+	 * @param pageID the id of the page to read
+	 * @param slotID the id of the slot to read the page into
 	 * @return the read page
-	 * @throws IOException
-	 *             if the reading fails
+	 * @throws IOException if the reading fails
 	 */
-	private byte[] readPage(final int pageID, final int slotID) throws IOException {
+	private byte[] readPage(final int pageID, final int slotID)
+		throws IOException
+	{
 		replacementStrategy.accessed(slotID);
 		byte[] page = pages.get(slotID);
 		if (page == null) {
@@ -267,7 +265,9 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 	}
 
 	@Override
-	public void write(final byte[] b, final int off, final int len) throws IOException {
+	public void write(final byte[] b, final int off, final int len)
+		throws IOException
+	{
 		throw DataHandles.readOnlyException();
 	}
 
@@ -285,10 +285,10 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 		private final Deque<Integer> queue;
 
 		/**
-		 * Creates a {@link LRUReplacementStrategy} with the specified number of slots.
+		 * Creates a {@link LRUReplacementStrategy} with the specified number of
+		 * slots.
 		 *
-		 * @param numSlots
-		 *            the number of slots to use
+		 * @param numSlots the number of slots to use
 		 */
 		public LRUReplacementStrategy(final int numSlots) {
 			queue = new ArrayDeque<>(numSlots);
@@ -300,11 +300,10 @@ public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrde
 		}
 
 		/**
-		 * Notifies this strategy that a slot has been accessed, pushing it to the end
-		 * of the queue.
+		 * Notifies this strategy that a slot has been accessed, pushing it to the
+		 * end of the queue.
 		 *
-		 * @param slotID
-		 *            the id of the slot that has been accessed
+		 * @param slotID the id of the slot that has been accessed
 		 */
 		public void accessed(final int slotID) {
 			// put accessed element to the end of the queue

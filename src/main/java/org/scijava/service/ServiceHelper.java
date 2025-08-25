@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,7 +50,7 @@ import org.scijava.util.ClassUtils;
 
 /**
  * Helper class for discovering and instantiating available services.
- * 
+ *
  * @author Curtis Rueden
  */
 public class ServiceHelper extends AbstractContextual {
@@ -78,7 +78,7 @@ public class ServiceHelper extends AbstractContextual {
 
 	/**
 	 * Creates a new service helper for discovering and instantiating services.
-	 * 
+	 *
 	 * @param context The application context for which services should be
 	 *          instantiated.
 	 */
@@ -88,7 +88,7 @@ public class ServiceHelper extends AbstractContextual {
 
 	/**
 	 * Creates a new service helper for discovering and instantiating services.
-	 * 
+	 *
 	 * @param context The application context to which services should be added.
 	 * @param serviceClasses The service classes to instantiate.
 	 */
@@ -100,7 +100,7 @@ public class ServiceHelper extends AbstractContextual {
 
 	/**
 	 * Creates a new service helper for discovering and instantiating services.
-	 * 
+	 *
 	 * @param context The application context to which services should be added.
 	 * @param serviceClasses The service classes to instantiate.
 	 * @param strict Whether service loading will fail fast when there is an error
@@ -152,7 +152,7 @@ public class ServiceHelper extends AbstractContextual {
 	 * priority services will go unused in many cases, it is critical that service
 	 * loading (initialization) is as lightweight as possible.
 	 * </p>
-	 * 
+	 *
 	 * @throws IllegalArgumentException if one of the requested services is
 	 *           required (i.e., not marked {@link Optional}) but cannot be
 	 *           filled.
@@ -181,7 +181,7 @@ public class ServiceHelper extends AbstractContextual {
 	/**
 	 * Obtains a service compatible with the given class, instantiating it (and
 	 * registering it in the index) if necessary.
-	 * 
+	 *
 	 * @return an existing compatible service if one is already registered; or
 	 *         else a newly created instance of the service with highest priority;
 	 *         or null if no suitable service can be created
@@ -194,7 +194,7 @@ public class ServiceHelper extends AbstractContextual {
 
 	/**
 	 * Instantiates a service of the given class, registering it in the index.
-	 * 
+	 *
 	 * @return the newly created service, or null if the given class cannot be
 	 *         instantiated
 	 */
@@ -207,7 +207,7 @@ public class ServiceHelper extends AbstractContextual {
 	/**
 	 * Obtains a service compatible with the given class, instantiating it (and
 	 * registering it in the index) if necessary.
-	 * 
+	 *
 	 * @return an existing compatible service if one is already registered; or
 	 *         else a newly created instance of the service with highest priority;
 	 *         or null if no suitable service can be created
@@ -248,10 +248,9 @@ public class ServiceHelper extends AbstractContextual {
 
 	/**
 	 * Instantiates a service of the given class, registering it in the index.
-	 * 
+	 *
 	 * @return the newly created service, or null if the given class cannot be
 	 *         instantiated
-	 * 
 	 * @throws IllegalArgumentException if there is an error creating the service
 	 *           and the {@code required} flag is {@code true}
 	 */
@@ -311,8 +310,8 @@ public class ServiceHelper extends AbstractContextual {
 		boolean eventServiceRequired = true;
 
 		// populate service parameters
-		final List<Field> fields =
-			ClassUtils.getAnnotatedFields(c, Parameter.class);
+		final List<Field> fields = ClassUtils.getAnnotatedFields(c,
+			Parameter.class);
 		for (final Field f : fields) {
 			f.setAccessible(true); // expose private fields
 
@@ -323,8 +322,8 @@ public class ServiceHelper extends AbstractContextual {
 				continue;
 			}
 			if (!Service.class.isAssignableFrom(type)) {
-				final String error = "Invalid parameter: " +
-					f.getDeclaringClass().getName() + "#" + f.getName();
+				final String error = "Invalid parameter: " + f.getDeclaringClass()
+					.getName() + "#" + f.getName();
 				if (strict) throw new IllegalArgumentException(error);
 				log.error(error);
 				continue;
@@ -360,8 +359,8 @@ public class ServiceHelper extends AbstractContextual {
 		final List<Class<? extends Service>> serviceList)
 	{
 		// ask the plugin index for the (sorted) list of available services
-		final List<PluginInfo<Service>> services =
-			context().getPluginIndex().getPlugins(Service.class);
+		final List<PluginInfo<Service>> services = context().getPluginIndex()
+			.getPlugins(Service.class);
 
 		for (final PluginInfo<Service> info : services) {
 			try {

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -61,7 +61,8 @@ public class LoggerPreprocessorTest {
 		context.service(LogService.class).addLogListener(listener);
 
 		commandService.run(CommandWithLogger.class, true).get();
-		assertTrue(listener.hasLogged(m -> m.source().path().contains(CommandWithLogger.class.getSimpleName())));
+		assertTrue(listener.hasLogged(m -> m.source().path().contains(
+			CommandWithLogger.class.getSimpleName())));
 	}
 
 	/** Tests redirection of a command's log output. */
@@ -95,7 +96,9 @@ public class LoggerPreprocessorTest {
 	}
 
 	@Test
-	public void testLoggerNameByAnnotation() throws ExecutionException, InterruptedException {
+	public void testLoggerNameByAnnotation() throws ExecutionException,
+		InterruptedException
+	{
 		final Context context = new Context(CommandService.class);
 		final CommandService commandService = context.service(CommandService.class);
 		commandService.run(CommandWithNamedLogger.class, true).get();

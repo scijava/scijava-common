@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,58 +31,58 @@ package org.scijava.input;
 
 /**
  * A UI-independent enumeration of mouse cursors.
- * 
+ *
  * @author Grant Harris
  * @author Curtis Rueden
  */
 public enum MouseCursor {
 
-	/** Default pointer. */
-	DEFAULT,
+		/** Default pointer. */
+		DEFAULT,
 
-	/** No cursor (invisible). */
-	OFF,
+		/** No cursor (invisible). */
+		OFF,
 
-	/** Custom cursor. */
-	CUSTOM,
+		/** Custom cursor. */
+		CUSTOM,
 
-	/** A crosshair cursor. */
-	CROSSHAIR,
+		/** A crosshair cursor. */
+		CROSSHAIR,
 
-	/** A hand-shaped cursor. */
-	HAND,
+		/** A hand-shaped cursor. */
+		HAND,
 
-	/** Four-way arrow cursor. */
-	MOVE,
+		/** Four-way arrow cursor. */
+		MOVE,
 
-	/** Vertical bar cursor, for text selection. */
-	TEXT,
+		/** Vertical bar cursor, for text selection. */
+		TEXT,
 
-	/** Hourglass cursor. */
-	WAIT,
+		/** Hourglass cursor. */
+		WAIT,
 
-	/** Cursor for resizing an edge northward. */
-	N_RESIZE,
+		/** Cursor for resizing an edge northward. */
+		N_RESIZE,
 
-	/** Cursor for resizing an edge southward. */
-	S_RESIZE,
+		/** Cursor for resizing an edge southward. */
+		S_RESIZE,
 
-	/** Cursor for resizing an edge westward. */
-	W_RESIZE,
+		/** Cursor for resizing an edge westward. */
+		W_RESIZE,
 
-	/** Cursor for resizing an edge eastward. */
-	E_RESIZE,
+		/** Cursor for resizing an edge eastward. */
+		E_RESIZE,
 
-	/** Cursor for resizing an edge northwest. */
-	NW_RESIZE,
+		/** Cursor for resizing an edge northwest. */
+		NW_RESIZE,
 
-	/** Cursor for resizing an edge northeast. */
-	NE_RESIZE,
+		/** Cursor for resizing an edge northeast. */
+		NE_RESIZE,
 
-	/** Cursor for resizing an edge southwest. */
-	SW_RESIZE,
+		/** Cursor for resizing an edge southwest. */
+		SW_RESIZE,
 
-	/** Cursor for resizing an edge southeast. */
-	SE_RESIZE
+		/** Cursor for resizing an edge southeast. */
+		SE_RESIZE
 
 }

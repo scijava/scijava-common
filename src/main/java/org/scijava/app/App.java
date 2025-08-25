@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,7 +47,7 @@ import org.scijava.util.POM;
  * implementing this interface, it is encouraged to instead extend
  * {@link AbstractApp}, for convenience.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see Plugin
  * @see AppService
@@ -58,7 +58,6 @@ public interface App extends RichPlugin, SingletonPlugin {
 	default String getTitle() {
 		return getInfo().getName();
 	}
-
 
 	/** The Maven {@code groupId} of the application. */
 	String getGroupId();
@@ -79,7 +78,7 @@ public interface App extends RichPlugin, SingletonPlugin {
 
 	/**
 	 * Gets a string with information about the application.
-	 * 
+	 *
 	 * @param mem If true, memory usage information is included.
 	 */
 	default String getInfo(final boolean mem) {
@@ -118,8 +117,8 @@ public interface App extends RichPlugin, SingletonPlugin {
 	}
 
 	/**
-	 * Displays information about the application. Typically this action
-	 * takes the form as About dialog in the UI, and/or a message on the console.
+	 * Displays information about the application. Typically this action takes the
+	 * form as About dialog in the UI, and/or a message on the console.
 	 */
 	void about();
 
@@ -147,7 +146,7 @@ public interface App extends RichPlugin, SingletonPlugin {
 	 * SciJava conforms to the <a href="https://semver.org/">Semantic
 	 * Versioning</a> specification.
 	 * </p>
-	 * 
+	 *
 	 * @return The application version, in {@code major.minor.micro} format.
 	 */
 	@Override

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * Abstract superclass of UI-specific {@link InputPanel} implementations.
- * 
+ *
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
@@ -42,8 +42,7 @@ import java.util.Map;
 public abstract class AbstractInputPanel<P, W> implements InputPanel<P, W> {
 
 	/** Table of widgets. */
-	protected Map<String, InputWidget<?, W>> widgets =
-		new HashMap<>();
+	protected Map<String, InputWidget<?, W>> widgets = new HashMap<>();
 
 	// -- InputPanel methods --
 
@@ -51,7 +50,7 @@ public abstract class AbstractInputPanel<P, W> implements InputPanel<P, W> {
 	public void addWidget(final InputWidget<?, W> widget) {
 		widgets.put(widget.get().getItem().getName(), widget);
 	}
-	
+
 	@Override
 	public InputWidget<?, W> getWidget(final String name) {
 		return widgets.get(name);

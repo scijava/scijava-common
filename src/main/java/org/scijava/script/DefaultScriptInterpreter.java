@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.script;
 
 import java.lang.reflect.Method;
@@ -48,7 +49,7 @@ import org.scijava.util.LastRecentlyUsed;
  * Credit to Jason Sachs for the multi-line evaluation (see
  * <a href="https://stackoverflow.com/a/5598207">his post on StackOverflow</a>).
  * </p>
- *  
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -81,7 +82,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 
 	/**
 	 * Creates a new script interpreter for the given script language.
-	 * 
+	 *
 	 * @param language {@link ScriptLanguage} of the interpreter
 	 */
 	public DefaultScriptInterpreter(final ScriptLanguage language) {
@@ -91,7 +92,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	/**
 	 * Creates a new script interpreter for the given script language, using the
 	 * specified script engine.
-	 * 
+	 *
 	 * @param language {@link ScriptLanguage} of the interpreter
 	 * @param engine {@link ScriptEngine} to use, or null for the specified
 	 *          language's default engine
@@ -102,8 +103,8 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		language.getContext().inject(this);
 		this.language = language;
 		this.engine = engine == null ? language.getScriptEngine() : engine;
-		history = prefs == null ? null :
-			new History(prefs, this.engine.getClass().getName());
+		history = prefs == null ? null : new History(prefs, this.engine.getClass()
+			.getName());
 		readHistory();
 		buffer = new StringBuilder();
 		reset();
@@ -363,7 +364,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 	}
 
 	// -- Helper classes --
-	
+
 	/** Container for a script language's interpreter history. */
 	private static class History {
 
@@ -375,14 +376,14 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 
 		private final PrefService prefs;
 		private final String name;
-		private final LastRecentlyUsed<String> entries =
-			new LastRecentlyUsed<>(MAX_ENTRIES);
+		private final LastRecentlyUsed<String> entries = new LastRecentlyUsed<>(
+			MAX_ENTRIES);
 		private String currentCommand = "";
 		private int position = -1;
 
 		/**
 		 * Constructs a history object for a given scripting language.
-		 * 
+		 *
 		 * @param name the name of the scripting language
 		 */
 		public History(final PrefService prefs, final String name) {
@@ -402,7 +403,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 
 		/**
 		 * Persist the history.
-		 * 
+		 *
 		 * @see PrefService
 		 */
 		public void write() {
@@ -411,7 +412,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 
 		/**
 		 * Adds the most recently issued command.
-		 * 
+		 *
 		 * @param command the most recent command to add to the history
 		 */
 		public void add(final String command) {
@@ -434,7 +435,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		 * This method wraps around, i.e. it returns {@code null} when there is no
 		 * more-recent command in the history.
 		 * </p>
-		 * 
+		 *
 		 * @return the next command
 		 */
 		public String next() {
@@ -448,7 +449,7 @@ public class DefaultScriptInterpreter implements ScriptInterpreter {
 		 * This method wraps around, i.e. it returns {@code null} when there is no
 		 * less-recent command in the history.
 		 * </p>
-		 * 
+		 *
 		 * @return the previous command
 		 */
 		public String previous() {

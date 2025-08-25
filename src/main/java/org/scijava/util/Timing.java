@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import java.util.Map.Entry;
  * <p>
  * Use this class as following:
  * </p>
- * 
+ *
  * <pre>
  * private static Timing timing = new Timing();
  * ...
@@ -63,10 +63,11 @@ import java.util.Map.Entry;
  * &nbsp;timing.report("Operations");
  * }
  * </pre>
- * 
+ *
  * @author Johannes Schindelin
  */
 public class Timing {
+
 	private long total = 0, start = System.nanoTime(), tick = start;
 	private List<Entry<Long, String>> list = new ArrayList<>();
 
@@ -75,7 +76,8 @@ public class Timing {
 	}
 
 	public void addTiming(final Object message) {
-		addTiming(System.nanoTime() - tick, message == null ? getCaller() : message);
+		addTiming(System.nanoTime() - tick, message == null ? getCaller()
+			: message);
 		tick = System.nanoTime();
 	}
 
@@ -91,7 +93,8 @@ public class Timing {
 
 			@Override
 			public String getValue() {
-				return message.toString() + ": " + ((now - start - duration) / 1e6) + " - " + ((now - start) / 1e6);
+				return message.toString() + ": " + ((now - start - duration) / 1e6) +
+					" - " + ((now - start) / 1e6);
 			}
 
 			@Override
@@ -107,29 +110,29 @@ public class Timing {
 		Collections.sort(list, new Comparator<Entry<Long, String>>() {
 
 			@Override
-			public int compare(Entry<Long, String> o1,
-					Entry<Long, String> o2) {
+			public int compare(Entry<Long, String> o1, Entry<Long, String> o2) {
 				return Double.compare(o1.getKey(), o2.getKey());
 			}
 		});
-		for (final Entry<?,?> e: list) {
-			System.err.printf("% 5.3f ms %s\n", ((Long)e.getKey()) / 1e6, e.getValue());
+		for (final Entry<?, ?> e : list) {
+			System.err.printf("% 5.3f ms %s\n", ((Long) e.getKey()) / 1e6, e
+				.getValue());
 		}
 		System.err.println("Total time: " + total + " = " + (total / 1e9) + " sec");
 
 	}
 
 	private static String getCaller() {
-		final StackTraceElement[] trace =
-			Thread.currentThread().getStackTrace();
+		final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 		int i = 1;
-		while (i + 1 < trace.length &&
-				Timing.class.getName().equals(trace[i].getClassName())) {
+		while (i + 1 < trace.length && Timing.class.getName().equals(trace[i]
+			.getClassName()))
+		{
 			i++;
 		}
-		return i >= trace.length ? "?" : trace[i].getClassName() + "."
-				+ trace[i].getMethodName() + "(" + trace[i].getFileName() + ":"
-				+ trace[i].getLineNumber() + ")";
+		return i >= trace.length ? "?" : trace[i].getClassName() + "." + trace[i]
+			.getMethodName() + "(" + trace[i].getFileName() + ":" + trace[i]
+				.getLineNumber() + ")";
 	}
 
 	public static Timing start(boolean condition) {

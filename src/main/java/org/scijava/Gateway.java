@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -75,10 +75,12 @@ import org.scijava.widget.WidgetService;
  * Let's say we have a {@code Kraken} service and a {@code Cow} service. Using
  * the {@code Context} directly, the code would look like:
  * </p>
+ *
  * <pre>
  * Context context = new Context();
  * context.getService(Cow.class).feedToKraken();
- * context.getService(Kraken.class).burp();</pre>
+ * context.getService(Kraken.class).burp();
+ * </pre>
  * <p>
  * To perform these actions, you have to know <em>a priori</em> to ask for a
  * {@code Cow} and a {@code Kraken}; i.e., your IDE's code completion will not
@@ -89,16 +91,26 @@ import org.scijava.widget.WidgetService;
  * But if we create a {@code Gateway} class called {@code Animals} with the
  * following signatures:
  * </p>
+ *
  * <pre>
- * public Cow cow() { return get(Cow.class); }
- * public Kraken kraken() { return get(Kraken.class); }</pre>
+ *
+ * public Cow cow() {
+ * 	return get(Cow.class);
+ * }
+ *
+ * public Kraken kraken() {
+ * 	return get(Kraken.class);
+ * }
+ * </pre>
  * <p>
  * We can now access our services through the new {@code Animals} gateway:
  * </p>
+ *
  * <pre>
  * Animals animals = new Animals();
  * animals.cow().feedToKraken();
- * animals.kraken().burp();</pre>
+ * animals.kraken().burp();
+ * </pre>
  * <p>
  * This provides succinct yet explicit access to the {@code Cow} and
  * {@code Kraken} services; it is a simple two-layer access to functionality,
@@ -113,7 +125,7 @@ import org.scijava.widget.WidgetService;
  * implementing this interface, it is encouraged to instead extend
  * {@link AbstractGateway}, for convenience.
  * </p>
- * 
+ *
  * @see Context
  * @author Mark Hiner
  * @author Curtis Rueden
@@ -133,7 +145,7 @@ public interface Gateway extends RichPlugin, Disposable {
 	 * <li>In some circumstances (e.g., when running headless), dispose the
 	 * context after launch operations are complete.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param args The arguments to pass to the application.
 	 */
 	void launch(String... args);
@@ -147,7 +159,7 @@ public interface Gateway extends RichPlugin, Disposable {
 	/**
 	 * Returns an implementation of the requested {@link Service}, if it exists in
 	 * the underlying {@link Context}.
-	 * 
+	 *
 	 * @param serviceClass the requested {@link Service}
 	 * @return The singleton instance of the given class
 	 * @throws NullContextException if the application context is not set.
@@ -158,7 +170,7 @@ public interface Gateway extends RichPlugin, Disposable {
 	/**
 	 * Returns an implementation of the {@link Service} with the given class name,
 	 * if it exists in the underlying {@link Context}.
-	 * 
+	 *
 	 * @param serviceClassName name of the requested {@link Service}
 	 * @return The singleton instance of the requested {@link Service}
 	 * @throws NullContextException if the application context is not set.
@@ -241,11 +253,11 @@ public interface Gateway extends RichPlugin, Disposable {
 
 	/**
 	 * Gets this application context's {@link LocationService}.
-	 * 
+	 *
 	 * @return The {@link LocationService} of this application context.
 	 */
 	LocationService location();
-	
+
 	/**
 	 * Gets this application context's {@link LogService}.
 	 *

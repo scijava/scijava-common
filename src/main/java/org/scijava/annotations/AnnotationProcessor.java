@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -70,7 +70,7 @@ import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
 
 /**
  * The annotation processor for use with Java 8 and earlier.
- * 
+ *
  * @author Johannes Schindelin
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -100,8 +100,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 				processingEnv.getMessager().printMessage(Kind.ERROR, out.toString());
 			}
 			catch (final IOException e2) {
-				processingEnv.getMessager().printMessage(Kind.ERROR,
-					e2.getMessage() + " while printing " + e.getMessage());
+				processingEnv.getMessager().printMessage(Kind.ERROR, e2.getMessage() +
+					" while printing " + e.getMessage());
 			}
 		}
 		return false;
@@ -127,26 +127,25 @@ public class AnnotationProcessor extends AbstractProcessor {
 					originatingElements.put(annotationName, originating);
 				}
 
-				for (final Element annotated : roundEnv
-					.getElementsAnnotatedWith(element))
+				for (final Element annotated : roundEnv.getElementsAnnotatedWith(
+					element))
 				{
 					switch (annotated.getKind()) {
 						case ANNOTATION_TYPE:
 						case CLASS:
 						case ENUM:
 						case INTERFACE:
-							final String className =
-								utils.getBinaryName((TypeElement) annotated).toString();
-							final Map<String, Object> values =
-								adapt(annotated.getAnnotationMirrors(), element.asType());
+							final String className = utils.getBinaryName(
+								(TypeElement) annotated).toString();
+							final Map<String, Object> values = adapt(annotated
+								.getAnnotationMirrors(), element.asType());
 							super.add(values, annotationName, className);
 							originating.add(annotated);
 							break;
 						default:
-							processingEnv.getMessager().printMessage(
-								Kind.ERROR,
-								"Cannot handle annotated element of kind " +
-									annotated.getKind());
+							processingEnv.getMessager().printMessage(Kind.ERROR,
+								"Cannot handle annotated element of kind " + annotated
+									.getKind());
 					}
 				}
 			}
@@ -197,9 +196,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 			else if (o instanceof VariableElement) {
 				final VariableElement element = (VariableElement) o;
 				final Map<String, Object> result = new TreeMap<>();
-				final String enumName =
-					utils.getBinaryName((TypeElement) element.getEnclosingElement())
-						.toString();
+				final String enumName = utils.getBinaryName((TypeElement) element
+					.getEnclosingElement()).toString();
 				final String valueName = element.getSimpleName().toString();
 				result.put("enum", enumName);
 				result.put("value", valueName);
@@ -211,12 +209,11 @@ public class AnnotationProcessor extends AbstractProcessor {
 		}
 
 		private AnnotationMirror getMirror(final TypeElement element) {
-			for (final AnnotationMirror candidate : utils
-				.getAllAnnotationMirrors(element))
+			for (final AnnotationMirror candidate : utils.getAllAnnotationMirrors(
+				element))
 			{
-				final Name binaryName =
-					utils.getBinaryName((TypeElement) candidate.getAnnotationType()
-						.asElement());
+				final Name binaryName = utils.getBinaryName((TypeElement) candidate
+					.getAnnotationType().asElement());
 				if (binaryName.contentEquals(Indexable.class.getName())) {
 					return candidate;
 				}
@@ -243,9 +240,9 @@ public class AnnotationProcessor extends AbstractProcessor {
 		{
 			final List<Element> originating = originatingElements.get(annotationName);
 			final String path = Index.INDEX_PREFIX + annotationName;
-			final FileObject fileObject =
-				filer.createResource(StandardLocation.CLASS_OUTPUT, "", path,
-					originating.toArray(new Element[originating.size()]));
+			final FileObject fileObject = filer.createResource(
+				StandardLocation.CLASS_OUTPUT, "", path, originating.toArray(
+					new Element[originating.size()]));
 
 			// Verify that the generated file is in the META-INF/json/ subdirectory;
 			// Despite our asking for it explicitly, the DefaultFileManager will
@@ -255,9 +252,8 @@ public class AnnotationProcessor extends AbstractProcessor {
 			if (uri != null && uri.endsWith("/" + path)) {
 				return fileObject.openOutputStream();
 			}
-			final String prefix =
-				uri == null ? "" : uri.substring(0, uri.length() -
-					annotationName.length());
+			final String prefix = uri == null ? "" : uri.substring(0, uri.length() -
+				annotationName.length());
 			final File file = new File(prefix + path);
 			final File parent = file.getParentFile();
 			if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {

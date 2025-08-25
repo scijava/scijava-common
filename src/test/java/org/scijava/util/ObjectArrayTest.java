@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link ObjectArray}.
- * 
+ *
  * @author Mark Hiner
  * @author Curtis Rueden
  * @author Johannes Schindelin
@@ -60,8 +60,7 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	@Test
 	public void testConstructorSize() {
 		final int size = 24;
-		final ObjectArray<Integer> array =
-			new ObjectArray<>(Integer.class, size);
+		final ObjectArray<Integer> array = new ObjectArray<>(Integer.class, size);
 		assertEquals(size, array.size());
 		assertEquals(size, array.copyArray().length);
 	}
@@ -365,12 +364,12 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 		list.add(1);
 		assertFalse(array.containsAll(list));
 
-		final ObjectArray<Integer> yes =
-			new ObjectArray<>(new Integer[] { 3, 8, 21 });
+		final ObjectArray<Integer> yes = new ObjectArray<>(new Integer[] { 3, 8,
+			21 });
 		assertTrue(array.containsAll(yes));
 
-		final ObjectArray<Integer> no =
-			new ObjectArray<>(new Integer[] { 5, 13, 1 });
+		final ObjectArray<Integer> no = new ObjectArray<>(new Integer[] { 5, 13,
+			1 });
 		assertFalse(array.containsAll(no));
 	}
 
@@ -399,8 +398,8 @@ public class ObjectArrayTest extends PrimitiveArrayTest {
 	public void testRemoveAll() {
 		final Integer[] raw = { 3, 5, 8, 13, 21 };
 		final ObjectArray<Integer> array = new ObjectArray<>(raw.clone());
-		final ObjectArray<Integer> toRemove =
-			new ObjectArray<>(new Integer[] { 3, 8, 21 });
+		final ObjectArray<Integer> toRemove = new ObjectArray<>(new Integer[] { 3,
+			8, 21 });
 		assertEquals(raw.length, array.size());
 		array.removeAll(toRemove);
 		assertEquals(raw.length - 3, array.size());

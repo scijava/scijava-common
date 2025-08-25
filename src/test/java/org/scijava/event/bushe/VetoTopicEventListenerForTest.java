@@ -1,3 +1,4 @@
+
 package org.scijava.event.bushe;
 
 /**
@@ -5,20 +6,21 @@ package org.scijava.event.bushe;
  * @since Nov 19, 2005 11:00:42 PM
  */
 public class VetoTopicEventListenerForTest implements VetoTopicEventListener {
-   private boolean throwException;
 
-   public VetoTopicEventListenerForTest() {
-      this(false);
-   }
+	private boolean throwException;
 
-   VetoTopicEventListenerForTest(boolean throwException) {
-      this.throwException = throwException;
-   }
+	public VetoTopicEventListenerForTest() {
+		this(false);
+	}
 
-   public boolean shouldVeto(String topic, Object data) {
-      if (throwException) {
-         throw new IllegalArgumentException("veto ex");
-      }
-      return true;
-   }
+	VetoTopicEventListenerForTest(boolean throwException) {
+		this.throwException = throwException;
+	}
+
+	public boolean shouldVeto(String topic, Object data) {
+		if (throwException) {
+			throw new IllegalArgumentException("veto ex");
+		}
+		return true;
+	}
 }

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import java.util.Base64;
 
 /**
  * Utility class for computing cryptographic hashes.
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
@@ -77,12 +77,8 @@ public final class DigestUtils {
 
 	/** Converts the given integer into a byte array. */
 	public static byte[] bytes(final int i) {
-		return new byte[] {
-			(byte) (0xff & (i >>> 24)),
-			(byte) (0xff & (i >>> 16)),
-			(byte) (0xff & (i >>> 8)),
-			(byte) (0xff & i),
-		};
+		return new byte[] { (byte) (0xff & (i >>> 24)), (byte) (0xff & (i >>> 16)),
+			(byte) (0xff & (i >>> 8)), (byte) (0xff & i), };
 	}
 
 	/** Converts the given byte array to a hexidecimal string. */
@@ -102,7 +98,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the Java hash code of the given string, as a byte array.
-	 * 
+	 *
 	 * @see String#hashCode()
 	 */
 	public static byte[] hash(final String s) {
@@ -111,7 +107,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the hash code of the given byte array, as a byte array.
-	 * 
+	 *
 	 * @see String#hashCode()
 	 * @see #string(byte[])
 	 */
@@ -137,7 +133,7 @@ public final class DigestUtils {
 	/**
 	 * Gets the given byte array's hash value according to the specified
 	 * algorithm.
-	 * 
+	 *
 	 * @param algorithm The algorithm to use when generating the hash value.
 	 * @param bytes The byte array for which to compute the hash value.
 	 * @return The computed hash value, or null if the digest algorithm is not
@@ -158,7 +154,7 @@ public final class DigestUtils {
 	/**
 	 * Gets the given string's best available hash. Tries SHA-1 first, then MD5,
 	 * then Java hash code.
-	 * 
+	 *
 	 * @see #bytes(String)
 	 * @see #sha1(byte[])
 	 * @see #md5(byte[])
@@ -175,7 +171,7 @@ public final class DigestUtils {
 	/**
 	 * Gets the given byte array's best available hash. Tries SHA-1 first, then
 	 * MD5, then Java hash code.
-	 * 
+	 *
 	 * @see #sha1(byte[])
 	 * @see #md5(byte[])
 	 * @see #hash(byte[])
@@ -189,7 +185,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the hex string of the given string's best available hash.
-	 * 
+	 *
 	 * @see #best(String)
 	 * @see #hex(byte[])
 	 */
@@ -199,7 +195,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the hex string of the given byte array's best available hash.
-	 * 
+	 *
 	 * @see #best(byte[])
 	 * @see #hex(byte[])
 	 */
@@ -209,7 +205,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the base64 string of the given string's best available hash.
-	 * 
+	 *
 	 * @see #best(String)
 	 * @see #base64(byte[])
 	 */
@@ -219,7 +215,7 @@ public final class DigestUtils {
 
 	/**
 	 * Gets the base64 string of the given byte array's best available hash.
-	 * 
+	 *
 	 * @see #best(byte[])
 	 * @see #base64(byte[])
 	 */

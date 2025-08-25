@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@ import javax.script.ScriptException;
 
 /**
  * The contract for script interpreters.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -60,7 +60,7 @@ public interface ScriptInterpreter {
 
 	/**
 	 * Obtains the next/previous command in the command history.
-	 * 
+	 *
 	 * @param currentCommand the current command (will be stored in the history)
 	 * @param forward if true, the next history entry is returned (more recent),
 	 *          if false, the previous one
@@ -70,7 +70,7 @@ public interface ScriptInterpreter {
 
 	/**
 	 * Evaluates a command.
-	 * 
+	 *
 	 * @param command the command to evaluate
 	 * @return result of the evaluation
 	 * @throws ScriptException
@@ -80,7 +80,7 @@ public interface ScriptInterpreter {
 	/**
 	 * Interprets the given line of code, which might be part of a multi-line
 	 * statement.
-	 * 
+	 *
 	 * @param line line of code to interpret
 	 * @return value of the line, or {@link #MORE_INPUT_PENDING} if there is still
 	 *         pending input
@@ -92,7 +92,7 @@ public interface ScriptInterpreter {
 	 * Clears the buffer of not-yet-evaluated lines of code, accumulated from
 	 * previous calls to {@link #interpret}. In other words: start over with a new
 	 * (potentially multi-line) statement, discarding the current partial one.
-	 * 
+	 *
 	 * @see #interpret
 	 */
 	void reset();
@@ -104,7 +104,7 @@ public interface ScriptInterpreter {
 
 	/**
 	 * Returns the associated {@link ScriptEngine}.
-	 * 
+	 *
 	 * @return the script engine
 	 */
 	ScriptEngine getEngine();

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.log;
 
 import org.junit.Test;
@@ -54,11 +55,16 @@ public class LogServiceTest {
 
 	@Test
 	public void testCompleteLogMethod() {
-		testCompleteLogMethod("ERROR", (logService, msg, t) -> logService.error(msg, t));
-		testCompleteLogMethod("WARN", (logService, msg, t) -> logService.warn(msg, t));
-		testCompleteLogMethod("INFO", (logService, msg, t) -> logService.info(msg, t));
-		testCompleteLogMethod("DEBUG", (logService, msg, t) -> logService.debug(msg, t));
-		testCompleteLogMethod("TRACE", (logService, msg, t) -> logService.trace(msg, t));
+		testCompleteLogMethod("ERROR", (logService, msg, t) -> logService.error(msg,
+			t));
+		testCompleteLogMethod("WARN", (logService, msg, t) -> logService.warn(msg,
+			t));
+		testCompleteLogMethod("INFO", (logService, msg, t) -> logService.info(msg,
+			t));
+		testCompleteLogMethod("DEBUG", (logService, msg, t) -> logService.debug(msg,
+			t));
+		testCompleteLogMethod("TRACE", (logService, msg, t) -> logService.trace(msg,
+			t));
 	}
 
 	@Test
@@ -79,20 +85,30 @@ public class LogServiceTest {
 		testExceptionLogMethod("TRACE", (logService, t) -> logService.trace(t));
 	}
 
-	private void testCompleteLogMethod(String prefix, LogMethodCall logMethodCall) {
+	private void testCompleteLogMethod(String prefix,
+		LogMethodCall logMethodCall)
+	{
 		testLogMethod(prefix, logMethodCall, true, true);
 	}
 
-	private void testMessageLogMethod(String prefix, BiConsumer<LogService, Object> call) {
-		testLogMethod(prefix, (log, text, exception) -> call.accept(log, text), true, false);
+	private void testMessageLogMethod(String prefix,
+		BiConsumer<LogService, Object> call)
+	{
+		testLogMethod(prefix, (log, text, exception) -> call.accept(log, text),
+			true, false);
 	}
 
-	private void testExceptionLogMethod(String prefix, BiConsumer<LogService, Throwable> call) {
-		testLogMethod(prefix, (log, text, exception) -> call.accept(log, exception), false, true);
+	private void testExceptionLogMethod(String prefix,
+		BiConsumer<LogService, Throwable> call)
+	{
+		testLogMethod(prefix, (log, text, exception) -> call.accept(log, exception),
+			false, true);
 
 	}
 
-	private void testLogMethod(String prefix, LogMethodCall logMethodCall, boolean testMessage, boolean testException) {
+	private void testLogMethod(String prefix, LogMethodCall logMethodCall,
+		boolean testMessage, boolean testException)
+	{
 		// setup
 		TestableLogService logService = new TestableLogService();
 		logService.setLevel(LogLevel.TRACE);
@@ -101,12 +117,11 @@ public class LogServiceTest {
 		// process
 		logMethodCall.run(logService, text, exception);
 		// test
-		if(testMessage) {
+		if (testMessage) {
 			assertTrue(logService.message().contains(prefix));
 			assertTrue(logService.message().contains(text));
 		}
-		if(testException)
-			assertEquals(exception, logService.exception());
+		if (testException) assertEquals(exception, logService.exception());
 	}
 
 	@Test
@@ -161,6 +176,7 @@ public class LogServiceTest {
 	}
 
 	static class Dummy {
+
 		public static int getLevel(LogService log) {
 			return log.getLevel();
 		}
@@ -178,8 +194,10 @@ public class LogServiceTest {
 	@Test
 	public void testClassLogLevelViaProperties() {
 		Properties properties = new Properties();
-		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + Dummy.class.getName(), LogLevel.prefix(LogLevel.ERROR));
-		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + this.getClass().getName(), LogLevel.prefix(LogLevel.TRACE));
+		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + Dummy.class
+			.getName(), LogLevel.prefix(LogLevel.ERROR));
+		properties.setProperty(LogService.LOG_LEVEL_PROPERTY + ":" + this.getClass()
+			.getName(), LogLevel.prefix(LogLevel.TRACE));
 		final LogService log = new TestableLogService(properties);
 		log.setLevel(LogLevel.DEBUG);
 		int level = Dummy.getLevel(log);
@@ -198,8 +216,10 @@ public class LogServiceTest {
 	@Test
 	public void testSubLoggerLogLevelViaProperties() {
 		Properties properties = new Properties();
-		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":Hello:World", LogLevel.prefix(LogLevel.ERROR));
-		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":foo:bar", LogLevel.prefix(LogLevel.TRACE));
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY +
+			":Hello:World", LogLevel.prefix(LogLevel.ERROR));
+		properties.setProperty(LogService.LOG_LEVEL_BY_SOURCE_PROPERTY + ":foo:bar",
+			LogLevel.prefix(LogLevel.TRACE));
 		final LogService log = new TestableLogService(properties);
 		Logger sub = log.subLogger("foo").subLogger("bar");
 		assertEquals(LogLevel.TRACE, sub.getLevel());
@@ -255,6 +275,7 @@ public class LogServiceTest {
 	}
 
 	private interface LogMethodCall {
+
 		void run(LogService logService, Object text, Throwable exception);
 	}
 

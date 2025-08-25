@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.Context;
 
 /**
  * Tests the {@link ThreadService}.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class ThreadServiceTest {
@@ -66,7 +66,8 @@ public class ThreadServiceTest {
 
 	/** Tests {@link ThreadService#run(Callable)}. */
 	@Test
-	public void testRunCallable() throws InterruptedException, ExecutionException
+	public void testRunCallable() throws InterruptedException,
+		ExecutionException
 	{
 		final Thread result = threadService.run(new Callable<Thread>() {
 
@@ -80,7 +81,8 @@ public class ThreadServiceTest {
 
 	/** Tests {@link ThreadService#run(Runnable)}. */
 	@Test
-	public void testRunRunnable() throws InterruptedException, ExecutionException
+	public void testRunRunnable() throws InterruptedException,
+		ExecutionException
 	{
 		final Thread[] results = new Thread[1];
 		threadService.run(new Runnable() {

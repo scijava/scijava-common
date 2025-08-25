@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ import org.scijava.object.ObjectService;
  * more general layer in a type hierarchy intended to ease creation of services
  * that fit its pattern.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @param <PT> Plugin type of the plugins being managed.
  * @see PTService
@@ -69,7 +69,7 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 
 	/**
 	 * Filters the given list of instances by this service's inclusion criteria.
-	 * 
+	 *
 	 * @param list the initial list of instances
 	 * @return the filtered list of instances
 	 */
@@ -82,8 +82,8 @@ public interface SingletonService<PT extends SingletonPlugin> extends
 	@Override
 	default <P extends PT> P create(final Class<P> pluginClass) {
 		throw new UnsupportedOperationException(
-			"Cannot create singleton plugin instance. "
-				+ "Use getInstance(Class) instead.");
+			"Cannot create singleton plugin instance. " +
+				"Use getInstance(Class) instead.");
 	}
 
 	// -- Service methods --

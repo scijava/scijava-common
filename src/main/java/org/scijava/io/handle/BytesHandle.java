@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,7 +50,7 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	// -- Constructors --
 
-	public BytesHandle() { }
+	public BytesHandle() {}
 
 	public BytesHandle(final BytesLocation location) {
 		set(location);
@@ -92,11 +92,11 @@ public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	@Override
 	public int read(final byte[] b, final int off, int len) throws IOException {
-		if(len == 0) return 0;
+		if (len == 0) return 0;
 		if (offset + len > length()) {
 			len = (int) (length() - offset);
 		}
-		if(len == 0) { // EOF
+		if (len == 0) { // EOF
 			return -1;
 		}
 		bytes().getBytes(offset, b, off, len);

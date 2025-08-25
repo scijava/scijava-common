@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -69,7 +69,7 @@ import org.scijava.widget.WidgetStyle;
 
 /**
  * Tests {@link ScriptInfo}.
- * 
+ *
  * @author Curtis Rueden
  * @author Mark Hiner
  */
@@ -141,12 +141,10 @@ public class ScriptInfoTest {
 			"###########\n" + //
 			"# Outputs #\n" + //
 			"###########\n" + //
-			"#@output String blackHoles\n" +
-			"#@output String revelations\n" +
-			"\n" + //
+			"#@output String blackHoles\n" + "#@output String revelations\n" + "\n" + //
 			"THE END!\n";
-		final ScriptModule scriptModule =
-			scriptService.run("newStyle.bsizes", script, true).get();
+		final ScriptModule scriptModule = scriptService.run("newStyle.bsizes",
+			script, true).get();
 
 		final String expectedProcessed = script.replaceAll("#@.*", "");
 		final String actualProcessed = scriptModule.getInfo().getProcessedScript();
@@ -170,8 +168,8 @@ public class ScriptInfoTest {
 		final String script = "" + //
 			"% @LogService log\n" + //
 			"% @int value\n";
-		final ScriptModule scriptModule =
-			scriptService.run("include-return-value.bsizes", script, true).get();
+		final ScriptModule scriptModule = scriptService.run(
+			"include-return-value.bsizes", script, true).get();
 
 		final Map<String, Object> outputs = scriptModule.getOutputs();
 		assertEquals(1, outputs.size());
@@ -187,8 +185,8 @@ public class ScriptInfoTest {
 		final String script = "" + //
 			"% @LogService log\n" + //
 			"% @OUTPUT int value\n";
-		final ScriptModule scriptModule =
-			scriptService.run("exclude-return-value.bsizes", script, true).get();
+		final ScriptModule scriptModule = scriptService.run(
+			"exclude-return-value.bsizes", script, true).get();
 
 		final Map<String, Object> outputs = scriptModule.getOutputs();
 		assertEquals(1, outputs.size());
@@ -206,8 +204,8 @@ public class ScriptInfoTest {
 			"% @LogService log\n" + //
 			"% @OUTPUT Integer output" + //
 			"% kraken@blah.net\n";
-		final ScriptModule scriptModule =
-			scriptService.run("hello.bsizes", script, true).get();
+		final ScriptModule scriptModule = scriptService.run("hello.bsizes", script,
+			true).get();
 
 		final Object output = scriptModule.getReturnValue();
 
@@ -259,8 +257,8 @@ public class ScriptInfoTest {
 			"#@ String (visibility=MESSAGE) msg\n" + //
 			"#@BOTH java.lang.StringBuilder buffer";
 
-		final ScriptInfo info =
-			new ScriptInfo(context, "params.bsizes", new StringReader(script));
+		final ScriptInfo info = new ScriptInfo(context, "params.bsizes",
+			new StringReader(script));
 
 		final List<?> noChoices = Collections.emptyList();
 
@@ -270,14 +268,16 @@ public class ScriptInfoTest {
 
 		final ModuleItem<?> sliderValue = info.getInput("sliderValue");
 		assertItem("sliderValue", int.class, "Slider Value", ItemIO.INPUT, true,
-			true, null, " slidEr,", 11, null, null, 5, 15, 3.0, noChoices, sliderValue);
-		assertTrue("Case-insensitive trimmed style", WidgetStyle.isStyle(sliderValue, "slider"));
+			true, null, " slidEr,", 11, null, null, 5, 15, 3.0, noChoices,
+			sliderValue);
+		assertTrue("Case-insensitive trimmed style", WidgetStyle.isStyle(
+			sliderValue, "slider"));
 
 		final ModuleItem<?> animal = info.getInput("animal");
 		final List<String> animalChoices = //
 			Arrays.asList("quick brown fox", "lazy dog");
-		assertItem("animal", String.class, null, ItemIO.INPUT, true, false,
-			null, null, null, null, null, null, null, null, animalChoices, animal);
+		assertItem("animal", String.class, null, ItemIO.INPUT, true, false, null,
+			null, null, null, null, null, null, null, animalChoices, animal);
 		assertEquals(animal.get("family"), "Carnivora"); // test custom attribute
 
 		final ModuleItem<?> notAutoFilled = info.getInput("notAutoFilled");
@@ -291,7 +291,8 @@ public class ScriptInfoTest {
 			null, null, null, null, null, null, null, null, noChoices, buffer);
 
 		int inputCount = 0;
-		final ModuleItem<?>[] inputs = { log, sliderValue, animal, notAutoFilled, msg, buffer };
+		final ModuleItem<?>[] inputs = { log, sliderValue, animal, notAutoFilled,
+			msg, buffer };
 		for (final ModuleItem<?> inItem : info.inputs()) {
 			assertSame(inputs[inputCount++], inItem);
 		}
@@ -316,12 +317,11 @@ public class ScriptInfoTest {
 			", priority = \"extremely-high\"" + //
 			", headless = true" + //
 			", foo = \"bar\"" + //
-			")\n" +
-			"WOOT\n";
+			")\n" + "WOOT\n";
 
 		ScriptInfo info = null;
-		info =
-			new ScriptInfo(context, "scriptHeader.bsizes", new StringReader(script));
+		info = new ScriptInfo(context, "scriptHeader.bsizes", new StringReader(
+			script));
 		info.inputs(); // HACK: Force lazy initialization.
 
 		assertEquals("my_script", info.getName());
@@ -347,12 +347,13 @@ public class ScriptInfoTest {
 			"% @LogService log\n" + //
 			"% @OUTPUT Integer output";
 
-		final ScriptInfo info =
-			new ScriptInfo(context, "hello.bsizes", new StringReader(script));
+		final ScriptInfo info = new ScriptInfo(context, "hello.bsizes",
+			new StringReader(script));
 		final BufferedReader reader1 = info.getReader();
 		final BufferedReader reader2 = info.getReader();
 
-		assertEquals("Readers are not independent.", reader1.read(), reader2.read());
+		assertEquals("Readers are not independent.", reader1.read(), reader2
+			.read());
 	}
 
 	// -- Helper methods --

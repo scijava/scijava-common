@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -88,8 +88,7 @@ public class ConversionUtils {
 		new org.scijava.convert.NumberConverters.ShortToIntegerConverter(),
 		new org.scijava.convert.NumberConverters.ShortToLongConverter(),
 		new org.scijava.convert.StringToNumberConverter(),
-		new org.scijava.convert.DefaultConverter()
-	);
+		new org.scijava.convert.DefaultConverter());
 
 	private ConversionUtils() {
 		// prevent instantiation of utility class
@@ -172,7 +171,7 @@ public class ConversionUtils {
 	@Deprecated
 	public static <T> T convertToEnum(final String src, final Class<T> dest) {
 		try {
-			return Types.enumValue(src,  dest);
+			return Types.enumValue(src, dest);
 		}
 		catch (final IllegalArgumentException exc) {
 			return null;
@@ -253,6 +252,7 @@ public class ConversionUtils {
 	 * @return The {@link Converter} to use for handling the given request.
 	 */
 	private static Converter<?, ?> handler(final ConversionRequest data) {
-		return converters.stream().filter(c -> c.supports(data)).findFirst().orElse(null);
+		return converters.stream().filter(c -> c.supports(data)).findFirst().orElse(
+			null);
 	}
 }

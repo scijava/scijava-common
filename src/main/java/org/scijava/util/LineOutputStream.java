@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.io.OutputStream;
  * other methods in {@link OutputStream} are overridden in this class already to
  * buffer lines until they are complete and then flush them.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 public abstract class LineOutputStream extends OutputStream {
@@ -49,7 +49,7 @@ public abstract class LineOutputStream extends OutputStream {
 
 	/**
 	 * This method is all that needs to be implemented.
-	 * 
+	 *
 	 * @param line the line to print
 	 */
 	public abstract void println(String line) throws IOException;
@@ -57,7 +57,7 @@ public abstract class LineOutputStream extends OutputStream {
 	/**
 	 * Adds a single byte to the current line buffer, or {@link #flush()} the
 	 * current line if it is a new-line character.
-	 * 
+	 *
 	 * @param b the byte to write
 	 */
 	@Override
@@ -70,7 +70,7 @@ public abstract class LineOutputStream extends OutputStream {
 	/**
 	 * Adds bytes to the current line buffer. Whenever a new-line character is
 	 * encountered, {@link #flush()} the current line buffer.
-	 * 
+	 *
 	 * @param buf the bytes to write
 	 */
 	@Override
@@ -81,13 +81,15 @@ public abstract class LineOutputStream extends OutputStream {
 	/**
 	 * Adds bytes to the current line buffer. Whenever a new-line character is
 	 * encountered, {@link #flush()} the current line buffer.
-	 * 
+	 *
 	 * @param buf the bytes to write
 	 * @param offset the offset into the buffer
 	 * @param length how many bytes to add
 	 */
 	@Override
-	public synchronized void write(final byte[] buf, int offset, int length) throws IOException {
+	public synchronized void write(final byte[] buf, int offset, int length)
+		throws IOException
+	{
 		int eol = length;
 		while (eol > 0) {
 			if (buf[eol - 1] == '\n') break;
@@ -128,7 +130,7 @@ public abstract class LineOutputStream extends OutputStream {
 
 	/**
 	 * Increases the size of the line buffer if necessary.
-	 * 
+	 *
 	 * @param length the required minimal length
 	 */
 	protected synchronized void ensure(final int length) {

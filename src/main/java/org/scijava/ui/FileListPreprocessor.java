@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.ui;
 
 import java.io.File;
@@ -38,7 +39,8 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.widget.InputHarvester;
 
-@Plugin(type = PreprocessorPlugin.class, priority = InputHarvester.PRIORITY + 1.0)
+@Plugin(type = PreprocessorPlugin.class, priority = InputHarvester.PRIORITY +
+	1.0)
 public class FileListPreprocessor extends AbstractPreprocessorPlugin {
 
 	@Parameter(required = false)
@@ -55,7 +57,8 @@ public class FileListPreprocessor extends AbstractPreprocessorPlugin {
 		// show file chooser dialog box
 		// TODO decide how to create filter from style attributes
 		// TODO retrieve parent folder??
-		final File[] result = uiService.chooseFiles(null, files, null, fileInput.getWidgetStyle());
+		final File[] result = uiService.chooseFiles(null, files, null, fileInput
+			.getWidgetStyle());
 		if (result == null) {
 			cancel("");
 			return;

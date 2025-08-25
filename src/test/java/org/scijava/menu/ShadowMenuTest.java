@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,7 +46,7 @@ import org.scijava.module.ModuleInfo;
 
 /**
  * Tests {@link ShadowMenu}.
- * 
+ *
  * @author Curtis Rueden
  */
 public class ShadowMenuTest {
@@ -120,8 +120,8 @@ public class ShadowMenuTest {
 		assertEquals(eFileNew, aFileNew2);
 
 		final ShadowMenu eFileNewImage = eFileNew.getChildren().get(0);
-		final ShadowMenu aFileNewImage1 =
-			root.getMenu(new MenuPath("File>New>Image"));
+		final ShadowMenu aFileNewImage1 = root.getMenu(new MenuPath(
+			"File>New>Image"));
 		assertEquals(eFileNewImage, aFileNewImage1);
 		final ShadowMenu aFileNewImage2 = aFile.getMenu(new MenuPath("New>Image"));
 		assertEquals(eFileNewImage, aFileNewImage2);
@@ -177,8 +177,7 @@ public class ShadowMenuTest {
 		checkNode(fileExit, "Exit", 1, 1, 0);
 
 		final ShadowMenu fileNew = fileChildren.get(1);
-		final List<ShadowMenu> fileNewChildren =
-			checkNode(fileNew, "New", 2, 1, 2);
+		final List<ShadowMenu> fileNewChildren = checkNode(fileNew, "New", 2, 1, 2);
 
 		final ShadowMenu fileNewImage = fileNewChildren.get(0);
 		checkNode(fileNewImage, "Image", 1, 2, 0);

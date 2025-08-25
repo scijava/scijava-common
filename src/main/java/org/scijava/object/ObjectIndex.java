@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -68,7 +68,7 @@ import org.scijava.util.ClassUtils;
  * added to the index more than once, in which case it will appear on compatible
  * type lists multiple times.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class ObjectIndex<E> implements Collection<E> {
@@ -77,14 +77,12 @@ public class ObjectIndex<E> implements Collection<E> {
 	 * "Them as counts counts moren them as dont count." <br>
 	 * &mdash;Russell Hoban, <em>Riddley Walker</em>
 	 */
-	protected final Map<Class<?>, List<E>> hoard =
-		new ConcurrentHashMap<>();
+	protected final Map<Class<?>, List<E>> hoard = new ConcurrentHashMap<>();
 
 	private final Class<E> baseClass;
 
 	/** List of objects to add later as needed (i.e., lazily). */
-	private final List<LazyObjects<? extends E>> pending =
-		new LinkedList<>();
+	private final List<LazyObjects<? extends E>> pending = new LinkedList<>();
 
 	public ObjectIndex(final Class<E> baseClass) {
 		this.baseClass = baseClass;
@@ -99,7 +97,7 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	/**
 	 * Gets a list of <em>all</em> registered objects.
-	 * 
+	 *
 	 * @return Read-only list of all registered objects, or an empty list if none
 	 *         (this method never returns null).
 	 */
@@ -121,9 +119,9 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	/**
 	 * Gets a list of registered objects compatible with the given type.
-	 * 
-	 * @return New list of registered objects of the given type, or an empty
-	 *         list if no such objects exist (this method never returns null).
+	 *
+	 * @return New list of registered objects of the given type, or an empty list
+	 *         if no such objects exist (this method never returns null).
 	 */
 	public List<E> get(final Class<?> type) {
 		// lazily register any pending objects
@@ -282,8 +280,7 @@ public class ObjectIndex<E> implements Collection<E> {
 		return remove(o, getType(e), batch);
 	}
 
-	private Map<Class<?>, List<E>[]> type2Lists =
-		new HashMap<>();
+	private Map<Class<?>, List<E>[]> type2Lists = new HashMap<>();
 
 	protected synchronized List<E>[] retrieveListsForType(final Class<?> type) {
 		final List<E>[] lists = type2Lists.get(type);
@@ -295,8 +292,8 @@ public class ObjectIndex<E> implements Collection<E> {
 		}
 		// convert list of lists to array of lists
 		@SuppressWarnings("rawtypes")
-		final List[] arrayOfRawLists =
-			listOfLists.toArray(new List[listOfLists.size()]);
+		final List[] arrayOfRawLists = listOfLists.toArray(new List[listOfLists
+			.size()]);
 		@SuppressWarnings({ "unchecked" })
 		final List<E>[] arrayOfLists = arrayOfRawLists;
 		type2Lists.put(type, arrayOfLists);
@@ -309,7 +306,7 @@ public class ObjectIndex<E> implements Collection<E> {
 	protected boolean add(final E o, final Class<?> type, final boolean batch) {
 		boolean result = false;
 		for (final List<?> list : retrieveListsForType(type)) {
-			if (addToList(o, (List<E>)list, batch)) result = true;
+			if (addToList(o, (List<E>) list, batch)) result = true;
 		}
 		return result;
 	}
@@ -339,14 +336,13 @@ public class ObjectIndex<E> implements Collection<E> {
 
 	// -- Helper methods --
 
-	private static Map<Class<?>, Class<?>[]> typeMap =
-		new HashMap<>();
+	private static Map<Class<?>, Class<?>[]> typeMap = new HashMap<>();
 
 	/** Gets a new set containing the type and all its supertypes. */
 	protected static synchronized Class<?>[] getTypes(final Class<?> type) {
 		Class<?>[] types = typeMap.get(type);
 		if (types != null) return types;
-		final Set<Class<?>>set = new LinkedHashSet<>();
+		final Set<Class<?>> set = new LinkedHashSet<>();
 		set.add(All.class); // NB: Always include the "All" class.
 		getTypes(type, set);
 		types = set.toArray(new Class[set.size()]);

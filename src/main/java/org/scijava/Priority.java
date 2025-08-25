@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,7 @@ package org.scijava;
 
 /**
  * Constants for specifying an item's priority.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  * @see org.scijava.Prioritized#getPriority()
@@ -74,10 +74,11 @@ public final class Priority {
 	/** Priority for items that very strongly prefer to be sorted late. */
 	public static final double EXTREMELY_LOW = -1000000;
 
-	/** Priority for items that must be sorted last.
+	/**
+	 * Priority for items that must be sorted last.
 	 * <p>
-	 * Note that it <em>is</em> still possible to prioritize something later
-	 * than this value (e.g., for testing purposes), although doing so strongly
+	 * Note that it <em>is</em> still possible to prioritize something later than
+	 * this value (e.g., for testing purposes), although doing so strongly
 	 * discouraged in production.
 	 * </p>
 	 */
@@ -94,17 +95,17 @@ public final class Priority {
 	 * impose logic beyond that of this method, for breaking ties, if a total
 	 * ordering consistent with equals is always required.
 	 * </p>
-	 * 
+	 *
 	 * @return -1 if {@code p1}'s priority is higher than {@code p2}'s, 1 if
 	 *         {@code p2}'s priority is higher than {@code p1}'s, or 0 if they
 	 *         have the same priority.
 	 * @see org.scijava.util.ClassUtils#compare(Class, Class)
 	 */
 	public static int compare(final Prioritized p1, final Prioritized p2) {
-		final double priority1 =
-			p1 == null ? Double.NEGATIVE_INFINITY : p1.getPriority();
-		final double priority2 =
-			p2 == null ? Double.NEGATIVE_INFINITY : p2.getPriority();
+		final double priority1 = p1 == null ? Double.NEGATIVE_INFINITY : p1
+			.getPriority();
+		final double priority2 = p2 == null ? Double.NEGATIVE_INFINITY : p2
+			.getPriority();
 		if (priority1 == priority2) return 0;
 		// NB: We invert the ordering here, so that large values come first,
 		// rather than the typical natural ordering of smaller values first.
@@ -115,7 +116,7 @@ public final class Priority {
 	 * Injects the specified priority into the given object. Note that this is
 	 * only possible if the given object implements the {@link Prioritized}
 	 * interface.
-	 * 
+	 *
 	 * @param o The object to which the priority should be assigned.
 	 * @return true If the priority was successfully injected.
 	 */

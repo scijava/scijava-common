@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,7 +35,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for service that tracks the application's menu structure.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface MenuService extends SciJavaService {
@@ -47,7 +47,7 @@ public interface MenuService extends SciJavaService {
 
 	/**
 	 * Gets the root node of a menu structure.
-	 * 
+	 *
 	 * @param menuRoot the root of the desired menu structure (see
 	 *          {@link ModuleInfo#getMenuRoot()}).
 	 */
@@ -55,7 +55,7 @@ public interface MenuService extends SciJavaService {
 
 	/**
 	 * Populates a UI-specific application menu structure.
-	 * 
+	 *
 	 * @param creator the {@link MenuCreator} to use to populate the menus.
 	 * @param menu the destination menu structure to populate.
 	 */
@@ -65,14 +65,14 @@ public interface MenuService extends SciJavaService {
 
 	/**
 	 * Populates a UI-specific menu structure.
-	 * 
+	 *
 	 * @param menuRoot the root of the menu structure to generate (see
 	 *          {@link ModuleInfo#getMenuRoot()}).
 	 * @param creator the {@link MenuCreator} to use to populate the menus.
 	 * @param menu the destination menu structure to populate.
 	 */
-	default <T> T createMenus(final String menuRoot,
-		final MenuCreator<T> creator, final T menu)
+	default <T> T createMenus(final String menuRoot, final MenuCreator<T> creator,
+		final T menu)
 	{
 		creator.createMenus(getMenu(menuRoot), menu);
 		return menu;

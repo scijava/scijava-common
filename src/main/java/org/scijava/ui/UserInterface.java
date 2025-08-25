@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -162,8 +162,10 @@ public interface UserInterface extends RichPlugin, Disposable {
 		final String title;
 		// style can be a string with multiple comma-separated keywords
 		if (style == null) title = "Choose a file";
-		else if (WidgetStyle.isStyle(style, FileWidget.DIRECTORY_STYLE)) title = "Choose a directory";
-		else if (WidgetStyle.isStyle(style, FileWidget.FILE_AND_DIRECTORY_STYLE)) title = "Choose a file or directory";
+		else if (WidgetStyle.isStyle(style, FileWidget.DIRECTORY_STYLE)) title =
+			"Choose a directory";
+		else if (WidgetStyle.isStyle(style, FileWidget.FILE_AND_DIRECTORY_STYLE))
+			title = "Choose a file or directory";
 		else if (WidgetStyle.isStyle(style, FileWidget.OPEN_STYLE)) title = "Open";
 		else if (WidgetStyle.isStyle(style, FileWidget.SAVE_STYLE)) title = "Save";
 		else title = "Choose a file";
@@ -196,11 +198,14 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 * @param parent Parent folder for file selection
 	 * @param files The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
-	 * @param style File selection style (files, directories, or both) and optional filters
-	 * @return The selected {@link File}s chosen by the user, or null if the
-	 *         user cancels the prompt.
+	 * @param style File selection style (files, directories, or both) and
+	 *          optional filters
+	 * @return The selected {@link File}s chosen by the user, or null if the user
+	 *         cancels the prompt.
 	 */
-	default File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
+	default File[] chooseFiles(File parent, File[] files, FileFilter filter,
+		String style)
+	{
 		throw new UnsupportedOperationException();
 	}
 
@@ -210,11 +215,14 @@ public interface UserInterface extends RichPlugin, Disposable {
 	 * @param parent Parent folder for file selection
 	 * @param fileList The initial value displayed in the file chooser prompt.
 	 * @param filter A filter allowing to restrict file choice.
-	 * @param style File selection style (files, directories, or both) and optional filters
-	 * @return The selected {@link File}s chosen by the user, or null if the
-	 *         user cancels the prompt.
+	 * @param style File selection style (files, directories, or both) and
+	 *          optional filters
+	 * @return The selected {@link File}s chosen by the user, or null if the user
+	 *         cancels the prompt.
 	 */
-	default List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
+	default List<File> chooseFiles(File parent, List<File> fileList,
+		FileFilter filter, String style)
+	{
 		final File[] initialFiles = fileList.toArray(new File[fileList.size()]);
 		final File[] chosenFiles = chooseFiles(parent, initialFiles, filter, style);
 		return chosenFiles == null ? null : Arrays.asList(chosenFiles);

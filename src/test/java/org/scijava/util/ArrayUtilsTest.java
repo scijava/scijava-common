@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -99,8 +99,8 @@ public class ArrayUtilsTest {
 		// test edge cases near Long.MAX_VALUE
 		assertSafeMultiply64Pass(9223372036854775806L, Long.MAX_VALUE / 6, 2, 3);
 		assertSafeMultiply64Fail(
-			"Array size too large: 1537228672809129302 x 2 x 3",
-			Long.MAX_VALUE / 6 + 1, 2, 3);
+			"Array size too large: 1537228672809129302 x 2 x 3", Long.MAX_VALUE / 6 +
+				1, 2, 3);
 		assertSafeMultiply64Pass(9223372033963249500L, 3037000499L, 3037000500L);
 		assertSafeMultiply64Fail("Array size too large: 3037000500 x 3037000500",
 			3037000500L, 3037000500L);
@@ -110,8 +110,8 @@ public class ArrayUtilsTest {
 
 	// -- Helper methods --
 
-	private void
-		assertSafeMultiply32Pass(final int expected, final long... sizes)
+	private void assertSafeMultiply32Pass(final int expected,
+		final long... sizes)
 	{
 		assertEquals(expected, ArrayUtils.safeMultiply32(sizes));
 	}

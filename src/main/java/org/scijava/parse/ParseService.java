@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ public interface ParseService extends SciJavaService {
 	 * Some data elements might be {@code key=value} pairs, while others might be
 	 * raw values (i.e., no equals sign).
 	 * </p>
-	 * 
+	 *
 	 * @param arg The string to parse.
 	 * @return A parsed list of {@link Item}s.
 	 * @throws IllegalArgumentException If the string does not conform to expected
@@ -60,7 +60,7 @@ public interface ParseService extends SciJavaService {
 	 * Some data elements might be {@code key=value} pairs, while others might be
 	 * raw values (i.e., no equals sign).
 	 * </p>
-	 * 
+	 *
 	 * @param arg The string to parse.
 	 * @param strict Whether to fail fast when encountering an unassigned variable
 	 *          token.

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.util.List;
  * because it uses boxing and unboxing to store the elements, leading to a large
  * memory footprint as well as performance penalties.
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  * @param <ArrayType> Type of the primitive array; e.g., {@code double[]}.
@@ -51,14 +51,14 @@ public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 
 	/**
 	 * Gets the fixed-size array backing this instance.
-	 * 
+	 *
 	 * @return the backing array
 	 */
 	ArrayType getArray();
 
 	/**
 	 * Sets the fixed-size array backing this instance.
-	 * 
+	 *
 	 * @param array the new backing array
 	 */
 	void setArray(ArrayType array);
@@ -80,7 +80,7 @@ public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 	 * <p>
 	 * The returned array is guaranteed to have {@link #size()} elements.
 	 * </p>
-	 * 
+	 *
 	 * @return the fixed-size array
 	 */
 	ArrayType copyArray();
@@ -94,14 +94,14 @@ public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 	 * After calling this method, the internal array will have at least
 	 * {@code minCapacity} elements.
 	 * </p>
-	 * 
+	 *
 	 * @param minCapacity the minimum capacity
 	 */
 	void ensureCapacity(int minCapacity);
 
 	/**
 	 * Shifts the array to insert space at a specified index.
-	 * 
+	 *
 	 * @param index the index where the space should be inserted
 	 * @param count the number of values to insert
 	 */
@@ -109,7 +109,7 @@ public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 
 	/**
 	 * Shifts the array to delete space starting at a specified index.
-	 * 
+	 *
 	 * @param index the index where the space should be deleted
 	 * @param count the number of values to delete
 	 */

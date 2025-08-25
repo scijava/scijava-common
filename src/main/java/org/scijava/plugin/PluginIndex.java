@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -55,14 +55,14 @@ import org.scijava.object.SortedObjectIndex;
  * class would need to be loaded, which SciJava makes an effort not to do until
  * the plugin is actually needed for the first time.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 
 	/**
 	 * The plugin finder which will be used to discover plugins.
-	 * 
+	 *
 	 * @see #discover()
 	 */
 	private final PluginFinder pluginFinder;
@@ -77,7 +77,7 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	public PluginIndex() {
 		this(new DefaultPluginFinder());
 	}
- 
+
 	/**
 	 * Constructs a new plugin index which uses the given {@link PluginFinder} to
 	 * discover plugins.
@@ -119,9 +119,11 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	 * <p>
 	 * This method is more specific than {@link #get(Class)} since that method
 	 * returns only a {@code List<PluginInfo<?>>}, whereas this one is guaranteed
-	 * to return a {@code List<PluginInfo<P>>}.
+	 * to return a {@code List<PluginInfo
+	 * <P>
+	 * >}.
 	 * </p>
-	 * 
+	 *
 	 * @return Read-only list of registered objects of the given type, or an empty
 	 *         list if no such objects exist (this method never returns null).
 	 */
@@ -138,7 +140,7 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 
 	/**
 	 * Overrides the type by which the entries are indexed.
-	 * 
+	 *
 	 * @see PluginInfo#getPluginType()
 	 */
 	@Override
@@ -154,7 +156,7 @@ public class PluginIndex extends SortedObjectIndex<PluginInfo<?>> {
 	 * object's actual type hierarchy is not used for classification, but rather
 	 * the object is classified according to {@link PluginInfo#getPluginType()}.
 	 * </p>
-	 * 
+	 *
 	 * @see PluginInfo#getPluginType()
 	 */
 	@Override

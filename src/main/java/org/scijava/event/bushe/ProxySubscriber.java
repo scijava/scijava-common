@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.scijava.event.bushe;
 
 /**
- * An interface that can be implemented when proxies are used for subscription, not needed in normal usage.  When an
- * unsubscribe method is called on an EventService, the EventService is required to check if any of subscribed objects
- * are ProxySubscribers and if the object to be unsubscribed is the ProxySubscriber's proxiedSubscriber. If so, the
- * EventService proxy is unsubscribed and the ProxySubscriber's proxyUnsubscribed() method is called to allow the proxy
- * to perform any cleanup if necessary.  ProxySubscribers should set their references to their proxied objects to null
- * for strong subscriptions to allow garbage collection.
+ * An interface that can be implemented when proxies are used for subscription,
+ * not needed in normal usage. When an unsubscribe method is called on an
+ * EventService, the EventService is required to check if any of subscribed
+ * objects are ProxySubscribers and if the object to be unsubscribed is the
+ * ProxySubscriber's proxiedSubscriber. If so, the EventService proxy is
+ * unsubscribed and the ProxySubscriber's proxyUnsubscribed() method is called
+ * to allow the proxy to perform any cleanup if necessary. ProxySubscribers
+ * should set their references to their proxied objects to null for strong
+ * subscriptions to allow garbage collection.
  *
  * @author Michael Bushe
  */
 interface ProxySubscriber {
 
-   /** @return the object this proxy is subscribed on behalf of */
-   public Object getProxiedSubscriber();
+	/** @return the object this proxy is subscribed on behalf of */
+	public Object getProxiedSubscriber();
 
-   /**
-    * Called by EventServices to inform the proxy that it is unsubscribed.  The ProxySubscriber should null the
-    * reference to it's proxied subscriber
-    */
-   public void proxyUnsubscribed();
+	/**
+	 * Called by EventServices to inform the proxy that it is unsubscribed. The
+	 * ProxySubscriber should null the reference to it's proxied subscriber
+	 */
+	public void proxyUnsubscribed();
 
-   /**
-    * @return the reference strength from this proxy to the proxied subscriber
-    */
-   public ReferenceStrength getReferenceStrength();  
+	/**
+	 * @return the reference strength from this proxy to the proxied subscriber
+	 */
+	public ReferenceStrength getReferenceStrength();
 }

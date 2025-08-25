@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,11 +44,11 @@ public class DigestUtilsTest {
 	private static final byte[] COFFEE_SHA1 = { -71, 2, 27, -126, -23, -70, -89,
 		35, -65, -15, -108, 66, 72, 113, 29, -32, -12, -42, -49, 6 };
 
-	private static final byte[] COFFEE_MD5 = { -39, -98, 9, -40, -39, 44, 31,
-		-62, 23, 9, 38, 101, 85, -57, 121, -110 };
+	private static final byte[] COFFEE_MD5 = { -39, -98, 9, -40, -39, 44, 31, -62,
+		23, 9, 38, 101, 85, -57, 121, -110 };
 
-	private static final byte[] HELLO_WORLD_SHA1 = { 123, 80, 44, 58, 31, 72,
-		-56, 96, -102, -30, 18, -51, -5, 99, -99, -18, 57, 103, 63, 94 };
+	private static final byte[] HELLO_WORLD_SHA1 = { 123, 80, 44, 58, 31, 72, -56,
+		96, -102, -30, 18, -51, -5, 99, -99, -18, 57, 103, 63, 94 };
 
 	private static final String HELLO_WORLD_SHA1_HEX =
 		"7b502c3a1f48c8609ae212cdfb639dee39673f5e";
@@ -67,8 +67,8 @@ public class DigestUtilsTest {
 	public void testBytesString() {
 		final String s = "Hello world";
 		final byte[] bytes = DigestUtils.bytes(s);
-		final byte[] expected =
-			{ 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 };
+		final byte[] expected = { 72, 101, 108, 108, 111, 32, 119, 111, 114, 108,
+			100 };
 		assertArrayEquals(expected, bytes);
 	}
 
@@ -176,7 +176,8 @@ public class DigestUtilsTest {
 	/** Tests {@link DigestUtils#bestBase64(String)}. */
 	@Test
 	public void testBestBase64String() {
-		assertEquals(HELLO_WORLD_SHA1_BASE64, DigestUtils.bestBase64("Hello world"));
+		assertEquals(HELLO_WORLD_SHA1_BASE64, DigestUtils.bestBase64(
+			"Hello world"));
 	}
 
 	/** Tests {@link DigestUtils#bestBase64(byte[])}. */

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.service.SciJavaService;
  * extensible to additional levels as needed. It provides methods for logging
  * messages, exception stack traces and combinations of the two.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @author Matthias Arzt
  */
@@ -56,7 +56,7 @@ public interface LogService extends SciJavaService, Logger {
 	/**
 	 * For messages that are logged directly to the LogService. The log level can
 	 * be set depending on the class that makes the log.
-	 * 
+	 *
 	 * @param classOrPackageName If this is the name of a class. Messages logged
 	 *          directly by this class are logged, if the message's level is less
 	 *          or equal to the given level. If this is a package, the same holds

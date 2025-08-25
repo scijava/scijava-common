@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,15 +44,14 @@ import org.junit.Test;
 
 /**
  * Tests {@link ObjectIndex}.
- * 
+ *
  * @author Curtis Rueden
  */
 public class ObjectIndexTest {
 
 	@Test
 	public void testGetAll() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
@@ -68,8 +67,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testGet() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
@@ -89,8 +87,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testIsEmpty() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		assertTrue(objectIndex.isEmpty());
 		final Object o1 = new Integer(5);
 		objectIndex.add(o1);
@@ -101,8 +98,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testContains() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		assertFalse(objectIndex.contains(o1));
 		objectIndex.add(o1);
@@ -113,10 +109,9 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testIterator() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
-		final Object[] objects =
-			{ new Integer(5), new Float(2.5f), new Integer(3) };
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
+		final Object[] objects = { new Integer(5), new Float(2.5f), new Integer(
+			3) };
 		for (final Object o : objects)
 			objectIndex.add(o);
 		final Iterator<Object> iter = objectIndex.iterator();
@@ -130,10 +125,9 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testToArray() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
-		final Object[] objects =
-			{ new Integer(5), new Float(2.5f), new Integer(3) };
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
+		final Object[] objects = { new Integer(5), new Float(2.5f), new Integer(
+			3) };
 		for (final Object o : objects)
 			objectIndex.add(o);
 		final Object[] result = objectIndex.toArray();
@@ -142,8 +136,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testContainsAll() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		assertTrue(objectIndex.containsAll(new ArrayList<>()));
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
@@ -161,8 +154,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testAddAll() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		final ArrayList<Object> objects = new ArrayList<>();
 		objects.add(new Integer(5));
 		objects.add(new Float(2.5f));
@@ -174,8 +166,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testRemoveAll() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		final Object o1 = new Integer(5);
 		final Object o2 = new Float(2.5f);
 		final Object o3 = new Integer(3);
@@ -193,8 +184,7 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testClear() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		objectIndex.clear();
 		assertTrue(objectIndex.isEmpty());
 		objectIndex.add(new Integer(5));
@@ -205,22 +195,18 @@ public class ObjectIndexTest {
 
 	@Test
 	public void testToString() {
-		final ObjectIndex<Object> objectIndex =
-			new ObjectIndex<>(Object.class);
+		final ObjectIndex<Object> objectIndex = new ObjectIndex<>(Object.class);
 		objectIndex.add(new Integer(5));
 		objectIndex.add(new Float(2.5f));
 		objectIndex.add(new Integer(3));
 
 		final List<String> expected = new ArrayList<>();
-		expected.addAll(Arrays.asList(
-			"java.io.Serializable: {5, 2.5, 3}",
-			"java.lang.Comparable: {5, 2.5, 3}",
-			"java.lang.Float: {2.5}",
-			"java.lang.Integer: {5, 3}",
-			"java.lang.Number: {5, 2.5, 3}",
-			"java.lang.Object: {5, 2.5, 3}"
-		));
-		final String[] javaVersion = System.getProperty("java.version").split("\\.");
+		expected.addAll(Arrays.asList("java.io.Serializable: {5, 2.5, 3}",
+			"java.lang.Comparable: {5, 2.5, 3}", "java.lang.Float: {2.5}",
+			"java.lang.Integer: {5, 3}", "java.lang.Number: {5, 2.5, 3}",
+			"java.lang.Object: {5, 2.5, 3}"));
+		final String[] javaVersion = System.getProperty("java.version").split(
+			"\\.");
 		final int majorVersion = Integer.parseInt(javaVersion[0]);
 		if (majorVersion >= 12) {
 			expected.add("java.lang.constant.Constable: {5, 2.5, 3}");
@@ -228,8 +214,8 @@ public class ObjectIndexTest {
 		}
 		expected.add("org.scijava.object.ObjectIndex$All: {5, 2.5, 3}");
 
-		final String[] actual =
-			objectIndex.toString().split(System.getProperty("line.separator"));
+		final String[] actual = objectIndex.toString().split(System.getProperty(
+			"line.separator"));
 		assertArrayEquals(expected.toArray(), actual);
 	}
 

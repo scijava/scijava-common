@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -53,7 +53,7 @@ import org.scijava.util.ClassUtils;
 
 /**
  * Default service for publishing and subscribing to SciJava events.
- * 
+ *
  * @author Curtis Rueden
  * @author Grant Harris
  */
@@ -110,8 +110,8 @@ public class DefaultEventService extends AbstractService implements
 
 	@Override
 	public List<EventSubscriber<?>> subscribe(final Object o) {
-		final List<Method> eventHandlers =
-			ClassUtils.getAnnotatedMethods(o.getClass(), EventHandler.class);
+		final List<Method> eventHandlers = ClassUtils.getAnnotatedMethods(o
+			.getClass(), EventHandler.class);
 		if (eventHandlers.isEmpty()) return Collections.emptyList();
 
 		final ArrayList<EventSubscriber<?>> subscribers = new ArrayList<>();
@@ -216,7 +216,8 @@ public class DefaultEventService extends AbstractService implements
 		if (eventClass == null) {
 			final Class<?>[] c = m.getParameterTypes();
 			if (c == null || c.length != 1) return null; // wrong number of args
-			if (!SciJavaEvent.class.isAssignableFrom(c[0])) return null; // wrong class
+			if (!SciJavaEvent.class.isAssignableFrom(c[0])) return null; // wrong
+																																		// class
 
 			// Cache the eventClass
 			eventClass = c[0];
@@ -225,7 +226,7 @@ public class DefaultEventService extends AbstractService implements
 
 		@SuppressWarnings("unchecked")
 		final Class<? extends SciJavaEvent> typedClass =
-		(Class<? extends SciJavaEvent>) eventClass;
+			(Class<? extends SciJavaEvent>) eventClass;
 
 		return typedClass;
 	}
@@ -233,7 +234,7 @@ public class DefaultEventService extends AbstractService implements
 	// -- Event handlers garbage collection preventer --
 
 	private WeakHashMap<Object, List<ProxySubscriber<?>>> keepEm =
-			new WeakHashMap<>();
+		new WeakHashMap<>();
 
 	/**
 	 * Prevents {@link ProxySubscriber} instances from being garbage collected
@@ -248,11 +249,14 @@ public class DefaultEventService extends AbstractService implements
 	 * that there is a non-GC'able reference to each {@link ProxySubscriber} as
 	 * long as there is a reference to the containing event handler object.
 	 * </p>
-	 * 
+	 *
 	 * @param o the object containing {@link EventHandler}-annotated methods
-	 * @param subscriber a {@link ProxySubscriber} for a particular {@link EventHandler}
+	 * @param subscriber a {@link ProxySubscriber} for a particular
+	 *          {@link EventHandler}
 	 */
-	private synchronized void keepIt(final Object o, final ProxySubscriber<?> subscriber) {
+	private synchronized void keepIt(final Object o,
+		final ProxySubscriber<?> subscriber)
+	{
 		List<ProxySubscriber<?>> list = keepEm.get(o);
 		if (list == null) {
 			list = new ArrayList<>();
@@ -292,7 +296,7 @@ public class DefaultEventService extends AbstractService implements
 		/**
 		 * Handles the event publication by pushing it to the real subscriber's
 		 * subscription method.
-		 * 
+		 *
 		 * @param event The event to publish.
 		 */
 		@Override
@@ -303,14 +307,14 @@ public class DefaultEventService extends AbstractService implements
 				getSubscriptionMethod().invoke(obj, event);
 			}
 			catch (final IllegalAccessException exc) {
-				log.error("Exception during event handling:\n\t[Event] " +
-					event.getClass().getName() + ":" + event + "\n\t[Subscriber] " +
+				log.error("Exception during event handling:\n\t[Event] " + event
+					.getClass().getName() + ":" + event + "\n\t[Subscriber] " +
 					getProxiedSubscriber() + "\n\t[Method] " + getSubscriptionMethod(),
 					exc);
 			}
 			catch (final InvocationTargetException exc) {
-				log.error("Exception during event handling:\n\t[Event] " +
-					event.getClass().getName() + event + "\n\t[Subscriber] " +
+				log.error("Exception during event handling:\n\t[Event] " + event
+					.getClass().getName() + event + "\n\t[Subscriber] " +
 					getProxiedSubscriber() + "\n\t[Method] " + getSubscriptionMethod(),
 					exc.getCause());
 			}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,12 +45,12 @@ import org.scijava.service.Service;
 
 /**
  * Default implementation of {@link IOService}.
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
-public final class DefaultIOService
-	extends AbstractHandlerService<Location, IOPlugin<?>> implements IOService
+public final class DefaultIOService extends
+	AbstractHandlerService<Location, IOPlugin<?>> implements IOService
 {
 
 	@Parameter
@@ -61,21 +61,25 @@ public final class DefaultIOService
 
 	@Parameter
 	private LocationService locationService;
-	
+
 	@Override
 	public IOPlugin<?> getOpener(final String source) throws IOException {
 		try {
 			return getOpener(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	public <D> IOPlugin<D> getSaver(D data, String destination) throws IOException {
+	public <D> IOPlugin<D> getSaver(D data, String destination)
+		throws IOException
+	{
 		try {
 			return getSaver(data, locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -84,18 +88,20 @@ public final class DefaultIOService
 	public Object open(final String source) throws IOException {
 		try {
 			return open(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
 	public void save(final Object data, final String destination)
-			throws IOException
+		throws IOException
 	{
 		try {
 			save(data, locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -126,9 +132,10 @@ public final class DefaultIOService
 		if (saver != null) {
 			saver.save(data, destination);
 			eventService.publish(new DataSavedEvent(destination, data));
-		} else {
+		}
+		else {
 			log.error("No Saver IOPlugin found for " + data.toString() + ".");
 		}
 	}
-	
+
 }

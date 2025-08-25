@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -52,7 +52,7 @@ import org.scijava.plugin.Plugin;
 
 /**
  * Basic tests for the {@link ScriptService}.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -85,9 +85,8 @@ public class ScriptEngineTest {
 
 	@Test
 	public void testScriptModuleValue() throws Exception {
-		final ScriptModule module =
-			scriptService.run("test.rot13", ScriptModule.class.getName(), false,
-				(Map<String, Object>) null).get();
+		final ScriptModule module = scriptService.run("test.rot13",
+			ScriptModule.class.getName(), false, (Map<String, Object>) null).get();
 		final ScriptModule scriptModule = Rot13Engine.latestModule;
 		assertEquals(module, scriptModule);
 		assertNotNull(scriptModule);
@@ -168,19 +167,24 @@ public class ScriptEngineTest {
 					}
 					if (c >= 'A' && c <= 'Z') {
 						c = 'Z' - c + 'A';
-					} else if (c >= 'a' && c <= 'z') {
+					}
+					else if (c >= 'a' && c <= 'z') {
 						c = 'z' - c + 'a';
 					}
 					builder.append((char) c);
 				}
-			} catch (final IOException e) {
+			}
+			catch (final IOException e) {
 				throw new ScriptException(e);
 			}
 			return builder.toString();
 		}
 	}
 
-	private static class Rot13Bindings extends HashMap<String, Object> implements Bindings {
+	private static class Rot13Bindings extends HashMap<String, Object> implements
+		Bindings
+	{
+
 		private static final long serialVersionUID = 1L;
 	}
 }

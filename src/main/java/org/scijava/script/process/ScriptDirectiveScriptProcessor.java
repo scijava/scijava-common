@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ import org.scijava.plugin.Plugin;
  * <p>
  * The syntax is:
  * </p>
- * 
+ *
  * <pre>
  * #@script(key1=value1, key2=value2, ...)
  * </pre>
@@ -90,10 +90,10 @@ import org.scijava.plugin.Plugin;
  * <li>{@code #@script(headless = true)}</li>
  * <li>{@code #@script(menuPath = "Image > Import > Text...")}</li>
  * </ul>
- * 
+ *
  * @author Curtis Rueden
  */
-@Plugin(type = ScriptProcessor.class, priority=Priority.HIGH)
+@Plugin(type = ScriptProcessor.class, priority = Priority.HIGH)
 public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 
 	public ScriptDirectiveScriptProcessor() {
@@ -102,7 +102,7 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 
 	@Parameter
 	private LogService log;
-	
+
 	@Parameter
 	private ModuleService moduleService;
 

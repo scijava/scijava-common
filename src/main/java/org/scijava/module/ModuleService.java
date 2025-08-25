@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -57,14 +57,14 @@ import org.scijava.service.SciJavaService;
  * methods.
  * </p>
  * <p>
- * A <em>module</em> is distinct from a <em>plugin</em> in that plugins extend
- * a program's functionality in some way, taking many forms, whereas modules
- * are always runnable code with typed inputs and outputs. There is a
- * particular type of plugin called a {@link org.scijava.command.Command} which
- * is also a module, but many plugins (e.g., {@link org.scijava.tool.Tool}s and
+ * A <em>module</em> is distinct from a <em>plugin</em> in that plugins extend a
+ * program's functionality in some way, taking many forms, whereas modules are
+ * always runnable code with typed inputs and outputs. There is a particular
+ * type of plugin called a {@link org.scijava.command.Command} which is also a
+ * module, but many plugins (e.g., {@link org.scijava.tool.Tool}s and
  * {@link org.scijava.display.Display}s) are not modules.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see Module
  * @see org.scijava.plugin.PluginService
@@ -91,7 +91,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Gets the module with the given identifier string.
-	 * 
+	 *
 	 * @param id The identifier string corresponding to the desired module.
 	 * @return The {@link Identifiable} module with the given identifier.
 	 */
@@ -99,7 +99,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Gets the module for a given keyboard shortcut.
-	 * 
+	 *
 	 * @param acc the accelerator for which to search.
 	 * @return the module info for the corresponding module, or null.
 	 */
@@ -122,7 +122,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param info The module to instantiate and run.
 	 * @param process If true, executes the module with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -141,7 +141,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param info The module to instantiate and run.
 	 * @param process If true, executes the module with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -159,7 +159,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param info The module to instantiate and run.
 	 * @param pre List of preprocessing steps to perform.
 	 * @param post List of postprocessing steps to perform.
@@ -177,7 +177,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param info The module to instantiate and run.
 	 * @param pre List of preprocessing steps to perform.
 	 * @param post List of postprocessing steps to perform.
@@ -193,7 +193,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param module The module to run.
 	 * @param process If true, executes the module with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -212,7 +212,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param module The module to run.
 	 * @param process If true, executes the module with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -230,7 +230,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param module The module to run.
 	 * @param pre List of preprocessing steps to perform.
 	 * @param post List of postprocessing steps to perform.
@@ -249,7 +249,7 @@ public interface ModuleService extends SciJavaService {
 
 	/**
 	 * Executes the given module.
-	 * 
+	 *
 	 * @param module The module to run.
 	 * @param pre List of preprocessing steps to perform.
 	 * @param post List of postprocessing steps to perform.

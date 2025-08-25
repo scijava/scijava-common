@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -58,7 +58,7 @@ import org.scijava.plugin.Parameter;
  * easier to invoke in a variety of ways, such as with the
  * {@link java.util.concurrent} package.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class ModuleRunner extends AbstractContextual implements
@@ -92,7 +92,7 @@ public class ModuleRunner extends AbstractContextual implements
 
 	/**
 	 * Feeds the module through the {@link ModulePreprocessor}s.
-	 * 
+	 *
 	 * @return The preprocessor that canceled the execution, or null if all
 	 *         preprocessors completed successfully.
 	 */
@@ -213,8 +213,8 @@ public class ModuleRunner extends AbstractContextual implements
 	}
 
 	private String getCancelReason() {
-		return module instanceof Cancelable ?
-			((Cancelable) module).getCancelReason() : null;
+		return module instanceof Cancelable ? ((Cancelable) module)
+			.getCancelReason() : null;
 	}
 
 	private void cancel(final String reason) {

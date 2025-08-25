@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -68,7 +68,7 @@ import org.scijava.ui.viewer.DisplayViewer;
 
 /**
  * Default service for handling SciJava user interfaces.
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
@@ -123,8 +123,9 @@ public final class DefaultUIService extends AbstractService implements
 
 	/**
 	 * When true, {@link #isHeadless()} will return true regardless of the value
-	 * of the {@code java.awt.headless} system property. When false, {@link
-	 * #isHeadless()} matches the global JVM headless state defined by {@code
+	 * of the {@code java.awt.headless} system property. When false,
+	 * {@link #isHeadless()} matches the global JVM headless state defined by
+	 * {@code
 	 * java.awt.headless}.
 	 */
 	private boolean forceHeadless;
@@ -203,8 +204,7 @@ public final class DefaultUIService extends AbstractService implements
 
 	@Override
 	public boolean isHeadless() {
-		return forceHeadless ||
-			Boolean.getBoolean("java.awt.headless") ||
+		return forceHeadless || Boolean.getBoolean("java.awt.headless") ||
 			GraphicsEnvironment.isHeadless();
 	}
 
@@ -248,8 +248,8 @@ public final class DefaultUIService extends AbstractService implements
 	@Override
 	public List<PluginInfo<DisplayViewer<?>>> getViewerPlugins() {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		final List<PluginInfo<DisplayViewer<?>>> viewers =
-			(List) pluginService.getPluginsOfType(DisplayViewer.class);
+		final List<PluginInfo<DisplayViewer<?>>> viewers = (List) pluginService
+			.getPluginsOfType(DisplayViewer.class);
 		return viewers;
 	}
 
@@ -287,7 +287,8 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@Override
-	public Result showDialog(final String message, final MessageType messageType)
+	public Result showDialog(final String message,
+		final MessageType messageType)
 	{
 		return showDialog(message, getTitle(), messageType);
 	}
@@ -300,8 +301,8 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@Override
-	public DialogPrompt.Result
-		showDialog(final String message, final String title)
+	public DialogPrompt.Result showDialog(final String message,
+		final String title)
 	{
 		return showDialog(message, title,
 			DialogPrompt.MessageType.INFORMATION_MESSAGE);
@@ -331,19 +332,23 @@ public final class DefaultUIService extends AbstractService implements
 	}
 
 	@Override
-	public File
-		chooseFile(final String title, final File file, final String style)
+	public File chooseFile(final String title, final File file,
+		final String style)
 	{
 		return activeUI().chooseFile(title, file, style);
 	}
 
 	@Override
-	public File[] chooseFiles(File parent, File[] files, FileFilter filter, String style) {
+	public File[] chooseFiles(File parent, File[] files, FileFilter filter,
+		String style)
+	{
 		return activeUI().chooseFiles(parent, files, filter, style);
 	}
-	
+
 	@Override
-	public List<File> chooseFiles(File parent, List<File> fileList, FileFilter filter, String style) {
+	public List<File> chooseFiles(File parent, List<File> fileList,
+		FileFilter filter, String style)
+	{
 		return activeUI().chooseFiles(parent, fileList, filter, style);
 	}
 
@@ -439,8 +444,8 @@ public final class DefaultUIService extends AbstractService implements
 			public void run() {
 				final Display<?> activeDisplay = displayService.getActiveDisplay();
 				if (activeDisplay != null) {
-					final DisplayViewer<?> displayViewer =
-						getDisplayViewer(activeDisplay);
+					final DisplayViewer<?> displayViewer = getDisplayViewer(
+						activeDisplay);
 					if (displayViewer != null) displayViewer.onDisplayActivatedEvent(e);
 				}
 				activationInvocationPending = false;
@@ -512,8 +517,8 @@ public final class DefaultUIService extends AbstractService implements
 		uiList = new ArrayList<>();
 		uiMap = new HashMap<>();
 
-		final List<PluginInfo<UserInterface>> infos =
-			pluginService.getPluginsOfType(UserInterface.class);
+		final List<PluginInfo<UserInterface>> infos = pluginService
+			.getPluginsOfType(UserInterface.class);
 		for (final PluginInfo<UserInterface> info : infos) {
 			// instantiate user interface
 			final UserInterface ui = pluginService.createInstance(info);

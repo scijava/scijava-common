@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,7 +34,7 @@ import org.scijava.service.SciJavaService;
 
 /**
  * Interface for the status notification service.
- * 
+ *
  * @author Curtis Rueden
  */
 public interface StatusService extends SciJavaService {
@@ -51,7 +51,7 @@ public interface StatusService extends SciJavaService {
 	/**
 	 * Updates the status message and progress bar, optionally flagging the status
 	 * notification as a warning.
-	 * 
+	 *
 	 * @param progress New progress value
 	 * @param maximum New progress maximum
 	 * @param message New status message
@@ -69,7 +69,7 @@ public interface StatusService extends SciJavaService {
 	 * Gets the status message of the given event. In the case of the empty string
 	 * (""), an alternative default string will be returned instead using the
 	 * application version of the given application.
-	 * 
+	 *
 	 * @see StatusEvent#getStatusMessage()
 	 * @see App#getInfo(boolean)
 	 */

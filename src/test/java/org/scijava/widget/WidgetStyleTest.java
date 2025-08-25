@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.widget;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -53,20 +54,22 @@ public class WidgetStyleTest {
 	@RunWith(Parameterized.class)
 	public static class TestIsStyle {
 
-		static String[] styleStrings = { "foo, bar, someThing", " FOO, BAR, SOMEthing ", "foo  ", "  bar",
-				"trash, sOmEtHiNg", null };
+		static String[] styleStrings = { "foo, bar, someThing",
+			" FOO, BAR, SOMEthing ", "foo  ", "  bar", "trash, sOmEtHiNg", null };
 
 		static String[] stylesToTest = { "foo", "bar", "someThing", null };
 
 		static boolean[][] stylesToHave = { // foo, bar, someThing
-				new boolean[] { true, true, true, false }, new boolean[] { true, true, true, false },
-				new boolean[] { true, false, false, false }, new boolean[] { false, true, false, false },
-				new boolean[] { false, false, true, false }, new boolean[] { false, false, false, true } };
+			new boolean[] { true, true, true, false }, new boolean[] { true, true,
+				true, false }, new boolean[] { true, false, false, false },
+			new boolean[] { false, true, false, false }, new boolean[] { false, false,
+				true, false }, new boolean[] { false, false, false, true } };
 
 		@Parameters(name = "{0}")
 		public static List<Object[]> params() {
-			return IntStream.range(0, styleStrings.length)
-					.mapToObj(i -> new Object[] { styleStrings[i], stylesToHave[i] }).collect(Collectors.toList());
+			return IntStream.range(0, styleStrings.length).mapToObj(
+				i -> new Object[] { styleStrings[i], stylesToHave[i] }).collect(
+					Collectors.toList());
 		}
 
 		@Parameter
@@ -78,18 +81,21 @@ public class WidgetStyleTest {
 		@Test
 		public void testSimpleStyles() {
 			for (int i = 0; i < stylesToTest.length; i++) {
-				assertEquals("style: " + stylesToTest[i], targetStyles[i],
-						WidgetStyle.isStyle(styleString, stylesToTest[i]));
+				assertEquals("style: " + stylesToTest[i], targetStyles[i], WidgetStyle
+					.isStyle(styleString, stylesToTest[i]));
 			}
 		}
 	}
 
 	public static class TestStyleModifiers {
+
 		@Test
 		public void testStyleModifiers() {
 			String style = "open, extensions:tiff/tif/jpeg/jpg";
-			Set<String> extensions = new HashSet<>(Arrays.asList(WidgetStyle.getStyleModifiers(style, "extensions")));
-			Set<String> expected = new HashSet<>(Arrays.asList("tiff", "jpg", "jpeg", "tif"));
+			Set<String> extensions = new HashSet<>(Arrays.asList(WidgetStyle
+				.getStyleModifiers(style, "extensions")));
+			Set<String> expected = new HashSet<>(Arrays.asList("tiff", "jpg", "jpeg",
+				"tif"));
 			assertEquals(expected, extensions);
 		}
 	}

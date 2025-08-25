@@ -1,3 +1,4 @@
+
 package org.scijava.event.bushe;
 
 /**
@@ -6,6 +7,5 @@ package org.scijava.event.bushe;
  * @author Michael Bushe
  */
 public enum ReferenceStrength {
-   WEAK,
-   STRONG
+		WEAK, STRONG
 }

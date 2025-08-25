@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ public interface BrowsableLocation extends Location {
 
 	/**
 	 * Obtains a location pointing to the parent directory of this one.
-	 * 
+	 *
 	 * @return the parent location of this one, or <code>null</code> if this
 	 *         location has no parent.
 	 * @throws IOException if something goes wrong obtaining the parent.
@@ -55,7 +55,7 @@ public interface BrowsableLocation extends Location {
 	 * Obtains a collection of locations for whom this location is the parent.
 	 * Note that this will only succeed if calls to {@link #isDirectory()} on this
 	 * location return <code>true</code>.
-	 * 
+	 *
 	 * @return A set containing the children of this location, or
 	 *         {@link Collections#EMPTY_SET} if this location has no children.
 	 * @throws IOException if something goes wrong obtaining the children.
@@ -65,8 +65,8 @@ public interface BrowsableLocation extends Location {
 	Set<BrowsableLocation> children() throws IOException;
 
 	/**
-	 * Obtains a location relative to this one, which will be configured
-	 * like the current location, but point to a the file specified by the
+	 * Obtains a location relative to this one, which will be configured like the
+	 * current location, but point to a the file specified by the
 	 * <code>path</code> parameter.
 	 *
 	 * @param path the relative path of the desired location.
@@ -80,7 +80,7 @@ public interface BrowsableLocation extends Location {
 	 * children. It is recommended to use this method before calling
 	 * {@link #child(String)} or {@link #children()}, to ensure those calls
 	 * succeed.
-	 * 
+	 *
 	 * @return True iff the location represents a directory.
 	 */
 	boolean isDirectory();

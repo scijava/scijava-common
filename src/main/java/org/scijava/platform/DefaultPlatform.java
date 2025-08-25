@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,7 +37,7 @@ import org.scijava.plugin.Plugin;
 
 /**
  * A platform implementation for default handling of platform issues.
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  */
@@ -49,8 +49,8 @@ public class DefaultPlatform extends AbstractPlatform {
 	/**
 	 * Falls back to calling known browsers.
 	 * <p>
-	 * Based on <a
-	 * href="http://www.centerkey.com/java/browser/">BareBonesBrowserLaunch</a>.
+	 * Based on <a href=
+	 * "http://www.centerkey.com/java/browser/">BareBonesBrowserLaunch</a>.
 	 * </p>
 	 * <p>
 	 * The utility 'xdg-open' launches the URL in the user's preferred browser,
@@ -59,9 +59,8 @@ public class DefaultPlatform extends AbstractPlatform {
 	 */
 	@Override
 	public void open(final URL url) throws IOException {
-		final String[] browsers =
-			{ "xdg-open", "netscape", "firefox", "konqueror", "mozilla", "opera",
-				"epiphany", "lynx" };
+		final String[] browsers = { "xdg-open", "netscape", "firefox", "konqueror",
+			"mozilla", "opera", "epiphany", "lynx" };
 		for (final String browser : browsers) {
 			try {
 				final int exitCode = getPlatformService().exec(browser, url.toString());

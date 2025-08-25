@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ import java.util.Collection;
  * also contains improved performance implementations of many {@link Collection}
  * methods.
  * </p>
- * 
+ *
  * @author Mark Hiner
  * @author Johannes Schindelin
  * @author Curtis Rueden
@@ -66,7 +66,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 
 	/**
 	 * Constructs an extensible array of objects, backed by a fixed-size array.
-	 * 
+	 *
 	 * @param size the initial size
 	 */
 	public ObjectArray(Class<E> arrayType, final int size) {
@@ -77,7 +77,7 @@ public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 	/**
 	 * Constructs an extensible array of objects, backed by the given fixed-size
 	 * array.
-	 * 
+	 *
 	 * @param array the array to wrap
 	 */
 	@SuppressWarnings("unchecked")

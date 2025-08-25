@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import org.scijava.util.Types;
 /**
  * Tests converter plugins that convert from primitive numeric types to other
  * primitive numeric types.
- * 
+ *
  * @author Alison Walter
  */
 public abstract class AbstractNumberConverterTests {
@@ -94,9 +94,8 @@ public abstract class AbstractNumberConverterTests {
 	@Test
 	public void incorrectInputType() {
 		final Number input = getInvalidInput();
-		final String message =
-			"Expected input of type " + srcType.getSimpleName() + ", but got " +
-				input.getClass().getSimpleName();
+		final String message = "Expected input of type " + srcType.getSimpleName() +
+			", but got " + input.getClass().getSimpleName();
 		iae(message, input, destType);
 	}
 
@@ -107,9 +106,8 @@ public abstract class AbstractNumberConverterTests {
 	public void incorrectOutputType() {
 		final Class<?> output = getInvalidOutput();
 		final Number src = getSrc();
-		final String message =
-			"Expected output class of " + destType.getSimpleName() + ", but got " +
-				output.getSimpleName();
+		final String message = "Expected output class of " + destType
+			.getSimpleName() + ", but got " + output.getSimpleName();
 		iae(message, src, output);
 	}
 
@@ -117,8 +115,8 @@ public abstract class AbstractNumberConverterTests {
 	public ExpectedException exception = ExpectedException.none();
 
 	// helper methods
-	protected void
-		iae(final String message, final Number src, final Class<?> dest)
+	protected void iae(final String message, final Number src,
+		final Class<?> dest)
 	{
 		exception(IllegalArgumentException.class, message, src, dest);
 	}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ import org.scijava.plugin.WrapperPlugin;
  * implementing this interface, it is encouraged to instead extend
  * {@link AbstractInputWidget}, for convenience.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @param <T> The input type of the widget.
  * @param <W> The type of UI component housing the widget.
@@ -70,7 +70,7 @@ public interface InputWidget<T, W> extends WrapperPlugin<WidgetModel>,
 	 * Returns true iff the widget should be labeled with the parameter label.
 	 * Most widgets are labeled this way, though some may not be; e.g.,
 	 * {@link MessageWidget}s.
-	 * 
+	 *
 	 * @see WidgetModel#getWidgetLabel()
 	 */
 	default boolean isLabeled() {

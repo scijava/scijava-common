@@ -13,116 +13,136 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.scijava.event.bushe;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * Aids in troubleshooting Swing application exceptions or any exception where the caller's stack may not be the
- * exception stack (such as producer-consumer patterns that cross threads).
+ * Aids in troubleshooting Swing application exceptions or any exception where
+ * the caller's stack may not be the exception stack (such as producer-consumer
+ * patterns that cross threads).
  * <p>
- * Swing exceptions usually occur on the Swing Event Dispatch Thread, and often occur when code puts events on the EDT.
- * This code is often in a non-EDT thread such as a thread that is receiving data from a server.  If the non-EDT threads
- * puts a call on the EDT and that EDT call causes and exception, the stack trace of the exception is lost, and it often
- * difficult or impossible to determine where the non-EDT call came from.
+ * Swing exceptions usually occur on the Swing Event Dispatch Thread, and often
+ * occur when code puts events on the EDT. This code is often in a non-EDT
+ * thread such as a thread that is receiving data from a server. If the non-EDT
+ * threads puts a call on the EDT and that EDT call causes and exception, the
+ * stack trace of the exception is lost, and it often difficult or impossible to
+ * determine where the non-EDT call came from.
  * </p>
  * <p>
- * This Exception class is used to handle exceptions that occur when events are posted on the Swing EDT or occur on
- * another thread from the Swing EDT. It includes a "swing" call stack to record from where the event occurred, and
- * overrides so that the exception and the swing calling stack print nicely to logs.
+ * This Exception class is used to handle exceptions that occur when events are
+ * posted on the Swing EDT or occur on another thread from the Swing EDT. It
+ * includes a "swing" call stack to record from where the event occurred, and
+ * overrides so that the exception and the swing calling stack print nicely to
+ * logs.
  * </p>
  * <p>
- * The swing calling stack is different from the cause of the exception since it is gathered before the exception occurs
- * in a different stack from the cause and used after the exception in a new thread occurs.
+ * The swing calling stack is different from the cause of the exception since it
+ * is gathered before the exception occurs in a different stack from the cause
+ * and used after the exception in a new thread occurs.
  * </p>
  *
  * @author Michael Bushe michael@bushe.com
  */
 class SwingException extends Exception {
-   protected StackTraceElement[] callingStackTrace;
 
-   /** Default constructor */
-   public SwingException() {
-      super();
-   }
+	protected StackTraceElement[] callingStackTrace;
 
-   /**
-    * Constructor for compatibility with Exception. Use ClientException(String, Throwable, StackTraceElement[])
-    * instead
-    */
-   public SwingException(String message) {
-      super(message);
-   }
+	/** Default constructor */
+	public SwingException() {
+		super();
+	}
 
-   /** Constructor for compatibility with Exception Use ClientException(String, Throwable, StackTraceElement[]) instead */
-   public SwingException(Throwable cause) {
-      super(cause);
-   }
+	/**
+	 * Constructor for compatibility with Exception. Use ClientException(String,
+	 * Throwable, StackTraceElement[]) instead
+	 */
+	public SwingException(String message) {
+		super(message);
+	}
 
-   /** Constructor for compatibility with Exception Use ClientException(String, Throwable, StackTraceElement[]) instead */
-   public SwingException(String message, Throwable cause) {
-      super(message, cause);
-   }
+	/**
+	 * Constructor for compatibility with Exception Use ClientException(String,
+	 * Throwable, StackTraceElement[]) instead
+	 */
+	public SwingException(Throwable cause) {
+		super(cause);
+	}
 
-   /**
-    * Preferred constructor.
-    *
-    * @param message The message of exception
-    * @param cause The cause of the exception in the same call stack
-    * @param callingStack the stack trace that the client used to call the exception to occur.
-    */
-   public SwingException(String message, Throwable cause, StackTraceElement[] callingStack) {
-      super(message, cause);
-      setCallingStack(callingStack);
-   }
+	/**
+	 * Constructor for compatibility with Exception Use ClientException(String,
+	 * Throwable, StackTraceElement[]) instead
+	 */
+	public SwingException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-   /**
-    * Swing exceptions often have two stacks - one thread causes the posting of an action on another thread - usually
-    * the Swing EDT thread.  The other is the stack of the actual thread the exception occurred on, the exception occurs
-    * after the post.
-    *
-    * @param swingCallingStack the stack trace that the client used to cause the exception to occur.
-    */
-   public void setCallingStack(StackTraceElement[] swingCallingStack) {
-      this.callingStackTrace = swingCallingStack;
-   }
+	/**
+	 * Preferred constructor.
+	 *
+	 * @param message The message of exception
+	 * @param cause The cause of the exception in the same call stack
+	 * @param callingStack the stack trace that the client used to call the
+	 *          exception to occur.
+	 */
+	public SwingException(String message, Throwable cause,
+		StackTraceElement[] callingStack)
+	{
+		super(message, cause);
+		setCallingStack(callingStack);
+	}
 
-   /**
-    * Client exceptions often have two stacks - one thread causes the posting of an action on another thread - usually
-    * the Swing EDT thread.  The other is the stack of the actual thread the exception occurred on.
-    *
-    * @return the stack trace that the client used to cause the exception to occur.
-    */
-   public StackTraceElement[] getCallingStack() {
-      return callingStackTrace;
-   }
+	/**
+	 * Swing exceptions often have two stacks - one thread causes the posting of
+	 * an action on another thread - usually the Swing EDT thread. The other is
+	 * the stack of the actual thread the exception occurred on, the exception
+	 * occurs after the post.
+	 *
+	 * @param swingCallingStack the stack trace that the client used to cause the
+	 *          exception to occur.
+	 */
+	public void setCallingStack(StackTraceElement[] swingCallingStack) {
+		this.callingStackTrace = swingCallingStack;
+	}
 
-   /**
-    * Calls printWriter(ps, true)
-    *
-    * @param ps the print stream
-    */
-   public void printStackTrace(PrintStream ps) {
-      PrintWriter pw = new PrintWriter(ps, true);
-      printStackTrace(pw);
-   }
+	/**
+	 * Client exceptions often have two stacks - one thread causes the posting of
+	 * an action on another thread - usually the Swing EDT thread. The other is
+	 * the stack of the actual thread the exception occurred on.
+	 *
+	 * @return the stack trace that the client used to cause the exception to
+	 *         occur.
+	 */
+	public StackTraceElement[] getCallingStack() {
+		return callingStackTrace;
+	}
 
-   /**
-    * Prints the calling stack and the exception stack trace.
-    *
-    * @param pw
-    */
-   public void printStackTrace(PrintWriter pw) {
-      pw.println(this);
-      if (callingStackTrace != null) {
-         pw.println("Calling stack:");
-         for (int i = 0; i < callingStackTrace.length; i++) {
-            pw.println("\tat " + callingStackTrace[i]);
-         }
-         pw.println("Stack after call:");
-      }
-      super.printStackTrace(pw);
-   }
+	/**
+	 * Calls printWriter(ps, true)
+	 *
+	 * @param ps the print stream
+	 */
+	public void printStackTrace(PrintStream ps) {
+		PrintWriter pw = new PrintWriter(ps, true);
+		printStackTrace(pw);
+	}
+
+	/**
+	 * Prints the calling stack and the exception stack trace.
+	 *
+	 * @param pw
+	 */
+	public void printStackTrace(PrintWriter pw) {
+		pw.println(this);
+		if (callingStackTrace != null) {
+			pw.println("Calling stack:");
+			for (int i = 0; i < callingStackTrace.length; i++) {
+				pw.println("\tat " + callingStackTrace[i]);
+			}
+			pw.println("Stack after call:");
+		}
+		super.printStackTrace(pw);
+	}
 }
-

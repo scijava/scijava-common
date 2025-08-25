@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,7 @@ package org.scijava;
 
 /**
  * An interface declaring the ability to create objects.
- * 
+ *
  * @param <T> The type of objects that can be created.
  * @author Curtis Rueden
  */
@@ -50,7 +50,7 @@ public interface Instantiable<T> {
 	 * Note that this class may not be precisely {@code T.class} but instead a
 	 * subclass thereof.
 	 * </p>
-	 * 
+	 *
 	 * @see org.scijava.plugin.PluginInfo for an example of an
 	 *      {@code Instantiable} type that typically instantiates objects of a
 	 *      subtype of {@code T} rather than {@code T} itself.

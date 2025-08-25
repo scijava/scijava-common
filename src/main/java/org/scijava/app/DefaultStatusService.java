@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,7 +38,7 @@ import org.scijava.service.Service;
 
 /**
  * Default service for status notifications.
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Service.class)
@@ -96,17 +96,15 @@ public class DefaultStatusService extends AbstractService implements
 		if (!"".equals(message)) return message;
 		return appService.getApp(appName).getInfo(false);
 	}
-	
+
 	/**
-	 * Publish the status event to the event service.
-	 * The default behavior is to publish status asynchronously.
-	 * You can change this behavior by overriding this method
-	 * in a derived class.
-	 * 
+	 * Publish the status event to the event service. The default behavior is to
+	 * publish status asynchronously. You can change this behavior by overriding
+	 * this method in a derived class.
+	 *
 	 * @param statusEvent the event to send to status listeners.
 	 */
-	protected void publish(final StatusEvent statusEvent)
-	{
+	protected void publish(final StatusEvent statusEvent) {
 		eventService.publishLater(statusEvent);
 	}
 

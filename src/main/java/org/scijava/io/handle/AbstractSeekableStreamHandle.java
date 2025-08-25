@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -77,7 +77,7 @@ public abstract class AbstractSeekableStreamHandle<L extends Location> extends
 	/**
 	 * Recreates the internal input stream available through {@link #in()}, so
 	 * that it starts from the specified position.
-	 * 
+	 *
 	 * @param pos
 	 * @throws IOException
 	 */
@@ -86,7 +86,7 @@ public abstract class AbstractSeekableStreamHandle<L extends Location> extends
 	/**
 	 * In some implementations of this class, the ability to recreate the stream
 	 * depends on external factors (e.g. server support). This influences a
-	 * 
+	 *
 	 * @return if recreate is actually possible.
 	 * @throws IOException
 	 */

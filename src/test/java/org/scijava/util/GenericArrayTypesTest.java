@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package org.scijava.util;
 
 import static org.junit.Assert.assertEquals;
@@ -45,12 +46,16 @@ public class GenericArrayTypesTest {
 	@Test
 	public void testArrayFields() throws NoSuchFieldException, SecurityException {
 		Field rawField = Types.field(ClassWithFields.class, "rawListArray");
-		Field genericWildcardField = Types.field(ClassWithFields.class, "wildcardListArray");
-		Field genericTypedField = Types.field(ClassWithFields.class, "integerListArray");
+		Field genericWildcardField = Types.field(ClassWithFields.class,
+			"wildcardListArray");
+		Field genericTypedField = Types.field(ClassWithFields.class,
+			"integerListArray");
 
 		Type rawFieldType = Types.fieldType(rawField, ClassWithFields.class);
-		Type genericWildcardFieldType = Types.fieldType(genericWildcardField, ClassWithFields.class);
-		Type genericTypedFieldType = Types.fieldType(genericTypedField, ClassWithFields.class);
+		Type genericWildcardFieldType = Types.fieldType(genericWildcardField,
+			ClassWithFields.class);
+		Type genericTypedFieldType = Types.fieldType(genericTypedField,
+			ClassWithFields.class);
 
 		// raw type
 		assertFalse(rawFieldType instanceof GenericArrayType);
@@ -61,7 +66,8 @@ public class GenericArrayTypesTest {
 		assertTrue(genericTypedFieldType instanceof GenericArrayType);
 
 		assertEquals(rawField.getGenericType(), rawFieldType);
-		assertEquals(genericWildcardField.getGenericType(), genericWildcardFieldType);
+		assertEquals(genericWildcardField.getGenericType(),
+			genericWildcardFieldType);
 		assertEquals(genericTypedField.getGenericType(), genericTypedFieldType);
 
 		assertSame(List[].class, Types.raw(rawFieldType));
@@ -71,6 +77,7 @@ public class GenericArrayTypesTest {
 
 	@SuppressWarnings({ "rawtypes", "unused" })
 	private static class ClassWithFields {
+
 		public List[] rawListArray;
 		public List<?>[] wildcardListArray;
 		public List<Integer>[] integerListArray;

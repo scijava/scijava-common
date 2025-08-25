@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@link String}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @return The value of the key as a {@link String}, or null if the key is not
@@ -56,7 +56,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@link String}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -66,7 +66,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code boolean}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -76,7 +76,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code double}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -86,7 +86,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code float}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -96,7 +96,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as an {@code int}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -106,7 +106,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code long}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @param defaultValue The value to return if the key is not present.
@@ -116,7 +116,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code Map}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @return The value of the key as an {@code Map}, or null if the key is not
@@ -126,7 +126,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Gets a persisted key as a {@code List}.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to retrieve.
 	 * @return The value of the key as an {@code List}, or null if the key is not
@@ -136,7 +136,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -147,7 +147,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -157,7 +157,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -167,7 +167,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -177,7 +177,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -187,7 +187,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -197,7 +197,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -207,7 +207,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Saves a key/value pair in persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key/value pair is associated.
 	 * @param name The key where the value should be stored.
 	 * @param value The value to store.
@@ -217,7 +217,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Deletes a key from persistent storage.
-	 * 
+	 *
 	 * @param c The class with which the key is associated.
 	 * @param name The key to remove.
 	 */
@@ -225,6 +225,7 @@ public interface PrefService extends SciJavaService {
 
 	/**
 	 * Deletes all of the given {@link Class}'s keys from persistent storage.
+	 *
 	 * @param c The class whose keys should be removed.
 	 */
 	void clear(Class<?> c);

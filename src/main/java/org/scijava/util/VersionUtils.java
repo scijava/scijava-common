@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -91,8 +91,8 @@ public class VersionUtils {
 	 * @param artifactId - Maven artifact ID containing class
 	 * @return Version of specified {@link Class} or null if not found.
 	 */
-	public static String getVersionFromPOM(final Class<?> c,
-		final String groupId, final String artifactId)
+	public static String getVersionFromPOM(final Class<?> c, final String groupId,
+		final String artifactId)
 	{
 		final POM pom = POM.getPOM(c, groupId, artifactId);
 		return pom == null ? null : pom.getVersion();
@@ -113,16 +113,16 @@ public class VersionUtils {
 
 	/**
 	 * Compares two version strings.
+	 *
 	 * @param v1 The first version string.
 	 * @param v2 The second version string.
-	 * @return a negative integer, zero, or a positive integer as the
-	 *         first argument is less than, equal to, or greater than the
-	 *         second.
+	 * @return a negative integer, zero, or a positive integer as the first
+	 *         argument is less than, equal to, or greater than the second.
 	 */
 	public static int compare(final String v1, final String v2) {
 		final String[] t1 = splitDots(v1), t2 = splitDots(v2);
 		final int count = Math.min(t1.length, t2.length);
-		for (int t=0; t<count; t++) {
+		for (int t = 0; t < count; t++) {
 			final int c = compareToken(t1[t], t2[t]);
 			if (c != 0) return c;
 		}
@@ -167,7 +167,7 @@ public class VersionUtils {
 	/** Gets the subsequent index to all the given string's leading digits. */
 	private static int digitIndex(final String s) {
 		int index = 0;
-		for (int i=0; i<s.length(); i++) {
+		for (int i = 0; i < s.length(); i++) {
 			final char ch = s.charAt(index);
 			if (ch < '0' || ch > '9') break;
 			index++;

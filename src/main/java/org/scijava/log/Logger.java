@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ import static org.scijava.log.LogLevel.WARN;
  * It provides methods for logging messages, exception stack traces and
  * combinations of the two.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see LogLevel
  * @see LogService
@@ -135,7 +135,7 @@ public interface Logger {
 
 	/**
 	 * Logs a message.
-	 * 
+	 *
 	 * @param level The level at which the message will be logged. If the current
 	 *          level (given by {@link #getLevel()} is below this one, no logging
 	 *          is performed.
@@ -147,7 +147,7 @@ public interface Logger {
 
 	/**
 	 * Logs an exception.
-	 * 
+	 *
 	 * @param level The level at which the exception will be logged. If the
 	 *          current level (given by {@link #getLevel()} is below this one, no
 	 *          logging is performed.

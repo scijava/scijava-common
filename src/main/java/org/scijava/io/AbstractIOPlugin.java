@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.net.URISyntaxException;
 
 /**
  * Abstract base class for {@link IOPlugin}s.
- * 
+ *
  * @author Curtis Rueden
  */
 public abstract class AbstractIOPlugin<D> extends
@@ -53,7 +53,8 @@ public abstract class AbstractIOPlugin<D> extends
 	public boolean supportsOpen(final String source) {
 		try {
 			return supportsOpen(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}
@@ -62,7 +63,8 @@ public abstract class AbstractIOPlugin<D> extends
 	public boolean supportsSave(final String destination) {
 		try {
 			return supportsSave(locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}
@@ -71,7 +73,8 @@ public abstract class AbstractIOPlugin<D> extends
 	public void save(final D data, final String destination) throws IOException {
 		try {
 			save(data, locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -80,7 +83,8 @@ public abstract class AbstractIOPlugin<D> extends
 	public D open(final String destination) throws IOException {
 		try {
 			return open(locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}

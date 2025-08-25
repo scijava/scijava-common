@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
 
 /**
  * Deprecated class.
- * 
+ *
  * @author Johannes Schindelin
  */
 @Deprecated
@@ -72,7 +72,7 @@ public final class CheckSezpoz {
 	 * contrast to Maven, Eclipse usually does not build .jar files, though, so we
 	 * can have a very quick check at startup if the annotation processor was not
 	 * run correctly and undo the damage.
-	 * 
+	 *
 	 * @param checkJars whether to inspect .jar components of the CLASSPATH
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
@@ -86,7 +86,7 @@ public final class CheckSezpoz {
 
 	/**
 	 * Checks the annotations of a CLASSPATH component.
-	 * 
+	 *
 	 * @param file the CLASSPATH component (.jar file or directory)
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
@@ -95,13 +95,14 @@ public final class CheckSezpoz {
 	@Deprecated
 	public static boolean check(final File file) throws IOException {
 		System.err.println("Warning: Deprecated CheckSezpoz class was called!");
-		EclipseHelper.updateAnnotationIndex(new URLClassLoader(new URL[] { file.toURI().toURL() }));
+		EclipseHelper.updateAnnotationIndex(new URLClassLoader(new URL[] { file
+			.toURI().toURL() }));
 		return false;
 	}
 
 	/**
 	 * Checks the annotations of a directory in the CLASSPATH.
-	 * 
+	 *
 	 * @param classes the CLASSPATH component directory
 	 * @return false, when the annotation processor had to be run
 	 * @throws IOException
@@ -119,7 +120,7 @@ public final class CheckSezpoz {
 	 * their corresponding {@code .java} files, or whether there are
 	 * {@code .class} files that were generated since last time we checked.
 	 * </p>
-	 * 
+	 *
 	 * @param classes the {@code classes/} directory where Maven puts the
 	 *          {@code .class} files
 	 * @param source the {@code src/main/java/} directory where Maven expects the
@@ -140,7 +141,7 @@ public final class CheckSezpoz {
 	 * This method is broken at the moment since there is no good way to verify
 	 * that SezPoz ran before the {@code .jar} file was packaged.
 	 * </p>
-	 * 
+	 *
 	 * @param file the {@code .jar} file
 	 * @see EclipseHelper
 	 */
@@ -152,7 +153,7 @@ public final class CheckSezpoz {
 	/**
 	 * Runs SezPoz on the sources, writing the annotations into the classes'
 	 * {@code META-INF/annotations/} directory.
-	 * 
+	 *
 	 * @param classes the output directory
 	 * @param sources the directory containing the source files
 	 * @return whether anything in {@code META-INF/annotations/*} changed
@@ -162,14 +163,15 @@ public final class CheckSezpoz {
 	public static boolean fix(final File classes, final File sources) {
 		try {
 			return check(classes);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	/**
 	 * Writes out a DOM as {@code .xml} file.
-	 * 
+	 *
 	 * @param xml the DOM
 	 * @param file the file to write
 	 * @throws TransformerException

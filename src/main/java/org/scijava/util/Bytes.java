@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -86,9 +86,8 @@ public final class Bytes {
 		if (bytes.length - off < len) len = bytes.length - off;
 		short total = 0;
 		for (int i = 0, ndx = off; i < len; i++, ndx++) {
-			total |=
-				(bytes[ndx] < 0 ? 256 + bytes[ndx] : (int) bytes[ndx]) << ((little ? i
-					: len - i - 1) * 8);
+			total |= (bytes[ndx] < 0 ? 256 + bytes[ndx]
+				: (int) bytes[ndx]) << ((little ? i : len - i - 1) * 8);
 		}
 		return total;
 	}
@@ -162,9 +161,8 @@ public final class Bytes {
 		if (bytes.length - off < len) len = bytes.length - off;
 		int total = 0;
 		for (int i = 0, ndx = off; i < len; i++, ndx++) {
-			total |=
-				(bytes[ndx] < 0 ? 256 + bytes[ndx] : (int) bytes[ndx]) << ((little ? i
-					: len - i - 1) * 8);
+			total |= (bytes[ndx] < 0 ? 256 + bytes[ndx]
+				: (int) bytes[ndx]) << ((little ? i : len - i - 1) * 8);
 		}
 		return total;
 	}
@@ -264,8 +262,8 @@ public final class Bytes {
 	 * bytes available, the MSBs are all assumed to be zero (regardless of
 	 * endianness).
 	 */
-	public static float toFloat(final short[] bytes, final int off,
-		final int len, final boolean little)
+	public static float toFloat(final short[] bytes, final int off, final int len,
+		final boolean little)
 	{
 		return Float.intBitsToFloat(toInt(bytes, off, len, little));
 	}
@@ -302,9 +300,8 @@ public final class Bytes {
 		if (bytes.length - off < len) len = bytes.length - off;
 		long total = 0;
 		for (int i = 0, ndx = off; i < len; i++, ndx++) {
-			total |=
-				(bytes[ndx] < 0 ? 256L + bytes[ndx] : (long) bytes[ndx]) << ((little
-					? i : len - i - 1) * 8);
+			total |= (bytes[ndx] < 0 ? 256L + bytes[ndx]
+				: (long) bytes[ndx]) << ((little ? i : len - i - 1) * 8);
 		}
 		return total;
 	}
@@ -460,7 +457,9 @@ public final class Bytes {
 		return v;
 	}
 
-	/** Translates the {@code double} value into an array of eight {@code byte}s. */
+	/**
+	 * Translates the {@code double} value into an array of eight {@code byte}s.
+	 */
 	public static byte[] fromDouble(final double value, final boolean little) {
 		final byte[] v = new byte[8];
 		unpack(Double.doubleToLongBits(value), v, 0, 8, little);
@@ -519,7 +518,8 @@ public final class Bytes {
 	 * Translates an array of {@code double} values into an array of {@code byte}
 	 * values.
 	 */
-	public static byte[] fromDoubles(final double[] values, final boolean little)
+	public static byte[] fromDoubles(final double[] values,
+		final boolean little)
 	{
 		final byte[] v = new byte[values.length * 8];
 		for (int i = 0; i < values.length; i++) {

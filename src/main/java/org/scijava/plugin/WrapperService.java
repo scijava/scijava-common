@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,7 +43,7 @@ package org.scijava.plugin;
  * more general layer in a type hierarchy intended to ease creation of services
  * that fit its pattern.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @param <DT> Base data type
  * @param <PT> Plugin type
@@ -56,7 +56,7 @@ public interface WrapperService<DT, PT extends WrapperPlugin<DT>> extends
 
 	/**
 	 * Creates a new plugin instance wrapping the given associated data object.
-	 * 
+	 *
 	 * @return An appropriate plugin instance, or null if the data is not
 	 *         compatible with any available plugin.
 	 */
@@ -71,8 +71,8 @@ public interface WrapperService<DT, PT extends WrapperPlugin<DT>> extends
 	@Override
 	default void initialize() {
 		if (log() != null) {
-			log().debug("Found " + getPlugins().size() + " " +
-				getPluginType().getSimpleName() + " plugins.");
+			log().debug("Found " + getPlugins().size() + " " + getPluginType()
+				.getSimpleName() + " plugins.");
 		}
 	}
 

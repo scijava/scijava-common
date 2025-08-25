@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,8 +37,8 @@ import java.util.Iterator;
  * {@link Enumeration}, {@link Iterator} or {@link Iterable} object can be
  * provided to the constructor, and the resultant {@code IteratorPlus} will
  * provide all three access mechanisms. In the case of {@link #iterator()} it
- * simply returns {@code this}, for more convenient usage with <a
- * href="http://docs.oracle.com/javase/1.5.0/docs/guide/language/foreach.html"
+ * simply returns {@code this}, for more convenient usage with <a href=
+ * "http://docs.oracle.com/javase/1.5.0/docs/guide/language/foreach.html"
  * >for-each loops</a>. Note, however, that because of this fact, multiple calls
  * to {#iterator()} will produce the same {@link Iterator} every time (in fact,
  * the {@link IteratorPlus} object itself).
@@ -54,7 +54,7 @@ import java.util.Iterator;
  * <p>
  * The same technique works with {@link Iterator}.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class IteratorPlus<E> implements Enumeration<E>, Iterator<E>,

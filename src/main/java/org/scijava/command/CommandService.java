@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -54,7 +54,7 @@ import org.scijava.service.SciJavaService;
  * It asks the {@link PluginService} for available commands, then takes care of
  * registering them with the {@link ModuleService}.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see SciJavaPlugin
  * @see ModuleService
@@ -124,7 +124,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * then a default one is created and then executed. This default command is
 	 * <em>not</em> registered with the service for subsequent usage.
 	 * </p>
-	 * 
+	 *
 	 * @param className Class name of the command to execute.
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -140,8 +140,8 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<CommandModule>
-		run(String className, boolean process, Object... inputs);
+	Future<CommandModule> run(String className, boolean process,
+		Object... inputs);
 
 	/**
 	 * Executes the first command of the given class name.
@@ -150,7 +150,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * then a default one is created and then executed. This default command is
 	 * <em>not</em> registered with the service for subsequent usage.
 	 * </p>
-	 * 
+	 *
 	 * @param className Class name of the command to execute.
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -174,7 +174,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * default one is created and then executed. This default command is
 	 * <em>not</em> registered with the service for subsequent usage.
 	 * </p>
-	 * 
+	 *
 	 * @param <C> Class of the command to execute.
 	 * @param commandClass Class object of the command to execute.
 	 * @param process If true, executes the command with pre- and postprocessing
@@ -201,7 +201,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * default one is created and then executed. This default command is
 	 * <em>not</em> registered with the service for subsequent usage.
 	 * </p>
-	 * 
+	 *
 	 * @param <C> Class of the command to execute.
 	 * @param commandClass Class object of the command to execute.
 	 * @param process If true, executes the command with pre- and postprocessing
@@ -221,7 +221,7 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 
 	/**
 	 * Executes the given command.
-	 * 
+	 *
 	 * @param info The command to instantiate and run.
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and
@@ -237,12 +237,12 @@ public interface CommandService extends PTService<Command>, SciJavaService {
 	 * @return {@link Future} of the module instance being executed. Calling
 	 *         {@link Future#get()} will block until execution is complete.
 	 */
-	Future<CommandModule>
-		run(CommandInfo info, boolean process, Object... inputs);
+	Future<CommandModule> run(CommandInfo info, boolean process,
+		Object... inputs);
 
 	/**
 	 * Executes the given command.
-	 * 
+	 *
 	 * @param info The command to instantiate and run.
 	 * @param process If true, executes the command with pre- and postprocessing
 	 *          steps from all available {@link PreprocessorPlugin}s and

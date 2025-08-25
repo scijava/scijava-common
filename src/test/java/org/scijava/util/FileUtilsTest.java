@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -53,7 +53,7 @@ import org.junit.Test;
 
 /**
  * Tests {@link FileUtils}.
- * 
+ *
  * @author Curtis Rueden
  * @author Johannes Schindelin
  * @author Grant Harris
@@ -89,7 +89,8 @@ public class FileUtilsTest {
 		final String jqpublic;
 		if (PlatformUtils.isWindows()) {
 			jqpublic = "C:/Users/jqpublic/";
-		} else {
+		}
+		else {
 			jqpublic = "/Users/jqpublic/";
 		}
 
@@ -102,8 +103,8 @@ public class FileUtilsTest {
 		assertEqualsPath(filePath, fileFile.getPath());
 
 		// verify that file path with spaces works
-		final File spaceFileOriginal =
-			new File(jqpublic.replace("jqpublic", "Spaceman Spiff") + "stun/Blaster.class");
+		final File spaceFileOriginal = new File(jqpublic.replace("jqpublic",
+			"Spaceman Spiff") + "stun/Blaster.class");
 		final URL spaceURL = spaceFileOriginal.toURI().toURL();
 		final File spaceFileResult = FileUtils.urlToFile(spaceURL);
 		assertEqualsPath(spaceFileOriginal.getPath(), spaceFileResult.getPath());
@@ -113,11 +114,12 @@ public class FileUtilsTest {
 		final String alphaHi = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		final String numbers = "1234567890";
 		final String special = "_~!@#$%^&*()+`-=";
-		final File specialFileOriginal = new File(jqpublic.replace("jqpublic", alphaLo) +
-			alphaHi + "/" + numbers + "/" + special + "/foo/Bar.class");
+		final File specialFileOriginal = new File(jqpublic.replace("jqpublic",
+			alphaLo) + alphaHi + "/" + numbers + "/" + special + "/foo/Bar.class");
 		final URL specialURL = specialFileOriginal.toURI().toURL();
 		final File specialFileResult = FileUtils.urlToFile(specialURL);
-		assertEqualsPath(specialFileOriginal.getPath(), specialFileResult.getPath());
+		assertEqualsPath(specialFileOriginal.getPath(), specialFileResult
+			.getPath());
 
 		// verify that 'jar:' URL works
 		final String jarPath = "/Users/jqpublic/foo/fubar.jar";
@@ -139,42 +141,40 @@ public class FileUtilsTest {
 
 	@Test
 	public void testShortenPath() {
-		assertEquals("C:\\Documents and Settings\\"
-			+ "All Users\\Application Data\\Apple Computer\\...\\SC Info.txt",
-			FileUtils.shortenPath("C:\\Documents and Settings\\All Users"
-				+ "\\Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt"));
-		assertEquals("C:\\Documents and Settings\\All Users\\Application Data\\"
-			+ "Apple Computer\\iTunes\\...\\SC Info.txt", FileUtils.shortenPath(
-			"C:\\Documents and Settings\\All Users\\"
-				+ "Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt", 5));
+		assertEquals("C:\\Documents and Settings\\" +
+			"All Users\\Application Data\\Apple Computer\\...\\SC Info.txt", FileUtils
+				.shortenPath("C:\\Documents and Settings\\All Users" +
+					"\\Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt"));
+		assertEquals("C:\\Documents and Settings\\All Users\\Application Data\\" +
+			"Apple Computer\\iTunes\\...\\SC Info.txt", FileUtils.shortenPath(
+				"C:\\Documents and Settings\\All Users\\" +
+					"Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt", 5));
 		assertEquals("C:\\temp", FileUtils.shortenPath("C:\\temp"));
-		assertEquals("C:\\1\\2\\3\\4\\...\\test.txt", FileUtils
-			.shortenPath("C:\\1\\2\\3\\4\\5\\test.txt"));
+		assertEquals("C:\\1\\2\\3\\4\\...\\test.txt", FileUtils.shortenPath(
+			"C:\\1\\2\\3\\4\\5\\test.txt"));
 		assertEquals("C:/1/2/test.txt", FileUtils.shortenPath("C:/1/2/test.txt"));
-		assertEquals("C:/1/2/3/4/.../test.txt", FileUtils
-			.shortenPath("C:/1/2/3/4/5/test.txt"));
-		assertEquals("\\\\server\\p1\\p2\\p3\\p4\\...\\p6", FileUtils
-			.shortenPath("\\\\server\\p1\\p2\\p3\\p4\\p5\\p6"));
-		assertEquals("\\\\server\\p1\\p2\\p3", FileUtils
-			.shortenPath("\\\\server\\p1\\p2\\p3"));
+		assertEquals("C:/1/2/3/4/.../test.txt", FileUtils.shortenPath(
+			"C:/1/2/3/4/5/test.txt"));
+		assertEquals("\\\\server\\p1\\p2\\p3\\p4\\...\\p6", FileUtils.shortenPath(
+			"\\\\server\\p1\\p2\\p3\\p4\\p5\\p6"));
+		assertEquals("\\\\server\\p1\\p2\\p3", FileUtils.shortenPath(
+			"\\\\server\\p1\\p2\\p3"));
 		assertEquals("https://www.rgagnon.com/p1/p2/p3/.../pb.html", FileUtils
 			.shortenPath("https://www.rgagnon.com/p1/p2/p3/p4/p5/pb.html"));
 	}
 
 	@Test
 	public void testLimitPath() {
-		assertEquals("C:\\Doc...SC Info.txt",
-			FileUtils
-				.limitPath("C:\\Documents and Settings\\All Users\\"
-					+ "Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt",
-					20));
+		assertEquals("C:\\Doc...SC Info.txt", FileUtils.limitPath(
+			"C:\\Documents and Settings\\All Users\\" +
+				"Application Data\\Apple Computer\\iTunes\\SC Info\\SC Info.txt", 20));
 		assertEquals("C:\\temp", FileUtils.limitPath("C:\\temp", 20));
 		assertEquals("C:\\1\\2\\3\\...test.txt", FileUtils.limitPath(
 			"C:\\1\\2\\3\\4\\5\\test.txt", 20));
 		assertEquals("...testfile.txt", FileUtils.limitPath("C:/1/2/testfile.txt",
 			15));
-		assertEquals("C:/1...test.txt", FileUtils.limitPath(
-			"C:/1/2/3/4/5/test.txt", 15));
+		assertEquals("C:/1...test.txt", FileUtils.limitPath("C:/1/2/3/4/5/test.txt",
+			15));
 		assertEquals("\\\\server\\p1\\p2\\...p6", FileUtils.limitPath(
 			"\\\\server\\p1\\p2\\p3\\p4\\p5\\p6", 20));
 		assertEquals("https://www...pb.html", FileUtils.limitPath(
@@ -192,10 +192,12 @@ public class FileUtilsTest {
 			i++;
 		}
 		try {
-			Collection<URL> urls = FileUtils.listContents(nonExisting.toURI().toURL());
+			Collection<URL> urls = FileUtils.listContents(nonExisting.toURI()
+				.toURL());
 			assertNotNull(urls);
 			assertEquals(0, urls.size());
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 
@@ -231,7 +233,8 @@ public class FileUtilsTest {
 			jarOut.write("jumps over the lazy dog".getBytes());
 			jarOut.closeEntry();
 			jarOut.close();
-		} finally {
+		}
+		finally {
 			out.close();
 		}
 
@@ -252,8 +255,8 @@ public class FileUtilsTest {
 		// check listContents: recursive including directories
 		final Collection<URL> setTF = FileUtils.listContents(url, true, false);
 		final URL[] listTF = setTF.toArray(new URL[setTF.size()]);
-		assertArrayEquals(
-			new URL[] { subSubURL, helloURL, rockURL, foxURL, dogURL }, listTF);
+		assertArrayEquals(new URL[] { subSubURL, helloURL, rockURL, foxURL,
+			dogURL }, listTF);
 
 		// check listContents: non-recursive without directories
 		final Collection<URL> setFT = FileUtils.listContents(url, false, true);
@@ -272,49 +275,80 @@ public class FileUtilsTest {
 	private static void assertEqualsPath(final String a, final String b) {
 		if (PlatformUtils.isWindows()) {
 			assertEquals(a.replace('\\', '/'), b.replace('\\', '/'));
-		} else {
+		}
+		else {
 			assertEquals(a, b);
 		}
 	}
 
 	@Test
 	public void testStripVersionFromFilename() {
-		assertEquals("jars/bio-formats.jar", FileUtils.stripFilenameVersion("jars/bio-formats-4.4-imagej-2.0.0-beta1.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/ij-data-2.0.0.1-beta1.jar"), FileUtils.stripFilenameVersion("jars/ij-data-2.0.0.1-SNAPSHOT.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/ij-1.44.jar"), FileUtils.stripFilenameVersion("jars/ij-1.46b.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils.stripFilenameVersion("jars/javassist-3.9.0.GA.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils.stripFilenameVersion("jars/javassist-3.16.1-GA.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/bsh.jar"), FileUtils.stripFilenameVersion("jars/bsh-2.0b4.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/mpicbg.jar"), FileUtils.stripFilenameVersion("jars/mpicbg-20111128.jar"));
-		assertEquals(FileUtils.stripFilenameVersion("jars/miglayout-swing.jar"), FileUtils.stripFilenameVersion("jars/miglayout-3.7.3.1-swing.jar"));
+		assertEquals("jars/bio-formats.jar", FileUtils.stripFilenameVersion(
+			"jars/bio-formats-4.4-imagej-2.0.0-beta1.jar"));
+		assertEquals(FileUtils.stripFilenameVersion(
+			"jars/ij-data-2.0.0.1-beta1.jar"), FileUtils.stripFilenameVersion(
+				"jars/ij-data-2.0.0.1-SNAPSHOT.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/ij-1.44.jar"), FileUtils
+			.stripFilenameVersion("jars/ij-1.46b.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils
+			.stripFilenameVersion("jars/javassist-3.9.0.GA.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/javassist.jar"), FileUtils
+			.stripFilenameVersion("jars/javassist-3.16.1-GA.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/bsh.jar"), FileUtils
+			.stripFilenameVersion("jars/bsh-2.0b4.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/mpicbg.jar"), FileUtils
+			.stripFilenameVersion("jars/mpicbg-20111128.jar"));
+		assertEquals(FileUtils.stripFilenameVersion("jars/miglayout-swing.jar"),
+			FileUtils.stripFilenameVersion("jars/miglayout-3.7.3.1-swing.jar"));
 
 		// Test that native binary .jars don't clash with their partner hook .jar
-		assertEquals("jars/ffmpeg-windows-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86.jar"));
-		assertEquals("jars/ffmpeg-windows-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86_64.jar"));
-		assertEquals("jars/ffmpeg-macosx-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-macosx-x86_64.jar"));
-		assertEquals("jars/ffmpeg-linux-x86_64.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-linux-x86_64.jar"));
-		assertEquals("jars/ffmpeg-linux-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-linux-x86.jar"));
-		assertEquals("jars/ffmpeg-android-x86.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-x86.jar"));
-		assertEquals("jars/ffmpeg-android-arm.jar", FileUtils.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-android-arm.jar"));
+		assertEquals("jars/ffmpeg-windows-x86.jar", FileUtils.stripFilenameVersion(
+			"jars/ffmpeg-2.6.1-0.11-windows-x86.jar"));
+		assertEquals("jars/ffmpeg-windows-x86_64.jar", FileUtils
+			.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-windows-x86_64.jar"));
+		assertEquals("jars/ffmpeg-macosx-x86_64.jar", FileUtils
+			.stripFilenameVersion("jars/ffmpeg-2.6.1-0.11-macosx-x86_64.jar"));
+		assertEquals("jars/ffmpeg-linux-x86_64.jar", FileUtils.stripFilenameVersion(
+			"jars/ffmpeg-2.6.1-0.11-linux-x86_64.jar"));
+		assertEquals("jars/ffmpeg-linux-x86.jar", FileUtils.stripFilenameVersion(
+			"jars/ffmpeg-2.6.1-0.11-linux-x86.jar"));
+		assertEquals("jars/ffmpeg-android-x86.jar", FileUtils.stripFilenameVersion(
+			"jars/ffmpeg-2.6.1-0.11-android-x86.jar"));
+		assertEquals("jars/ffmpeg-android-arm.jar", FileUtils.stripFilenameVersion(
+			"jars/ffmpeg-2.6.1-0.11-android-arm.jar"));
 
 		// Test the jogamp style of native binary .jars
-		assertEquals("jars/jogl-all-natives-android-aarch64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-aarch64.jar"));
-		assertEquals("jars/jogl-all-natives-android-armv6.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-armv6.jar"));
-		assertEquals("jars/jogl-all-natives-linux-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-amd64.jar"));
-		assertEquals("jars/jogl-all-natives-linux-armv6.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6.jar"));
-		assertEquals("jars/jogl-all-natives-linux-armv6hf.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6hf.jar"));
-		assertEquals("jars/jogl-all-natives-linux-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-i586.jar"));
-		assertEquals("jars/jogl-all-natives-macosx-universal.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-macosx-universal.jar"));
-		assertEquals("jars/jogl-all-natives-solaris-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-amd64.jar"));
-		assertEquals("jars/jogl-all-natives-solaris-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-i586.jar"));
-		assertEquals("jars/jogl-all-natives-windows-amd64.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-amd64.jar"));
-		assertEquals("jars/jogl-all-natives-windows-i586.jar", FileUtils.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-i586.jar"));
+		assertEquals("jars/jogl-all-natives-android-aarch64.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-aarch64.jar"));
+		assertEquals("jars/jogl-all-natives-android-armv6.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-android-armv6.jar"));
+		assertEquals("jars/jogl-all-natives-linux-amd64.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-linux-armv6.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6.jar"));
+		assertEquals("jars/jogl-all-natives-linux-armv6hf.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-armv6hf.jar"));
+		assertEquals("jars/jogl-all-natives-linux-i586.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-linux-i586.jar"));
+		assertEquals("jars/jogl-all-natives-macosx-universal.jar", FileUtils
+			.stripFilenameVersion(
+				"jars/jogl-all-2.3.0-natives-macosx-universal.jar"));
+		assertEquals("jars/jogl-all-natives-solaris-amd64.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-solaris-i586.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-solaris-i586.jar"));
+		assertEquals("jars/jogl-all-natives-windows-amd64.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-amd64.jar"));
+		assertEquals("jars/jogl-all-natives-windows-i586.jar", FileUtils
+			.stripFilenameVersion("jars/jogl-all-2.3.0-natives-windows-i586.jar"));
 
 		// Test jinput style of native binary .jars
-		assertEquals("jars/jinput-natives-all.jar", FileUtils.stripFilenameVersion("jars/jinput-2.0.9-natives-all.jar"));
+		assertEquals("jars/jinput-natives-all.jar", FileUtils.stripFilenameVersion(
+			"jars/jinput-2.0.9-natives-all.jar"));
 
 		// Test that native-lib-loader is not misrecognized as a native classifier
-		assertEquals("jars/native-lib-loader.jar", FileUtils.stripFilenameVersion("jars/native-lib-loader-2.3.2.jar"));
+		assertEquals("jars/native-lib-loader.jar", FileUtils.stripFilenameVersion(
+			"jars/native-lib-loader-2.3.2.jar"));
 	}
 
 	@Test
@@ -327,8 +361,8 @@ public class FileUtilsTest {
 			writeEmptyFile(new File(tmp, withClassifier));
 			writeEmptyFile(new File(tmp, withoutClassifier));
 
-			assertArrayEquals(new File[] { new File(tmp, withClassifier) },
-				FileUtils.getAllVersions(tmp, withClassifier));
+			assertArrayEquals(new File[] { new File(tmp, withClassifier) }, FileUtils
+				.getAllVersions(tmp, withClassifier));
 			assertArrayEquals(new File[] { new File(tmp, withoutClassifier) },
 				FileUtils.getAllVersions(tmp, withoutClassifier));
 		}
@@ -337,7 +371,9 @@ public class FileUtilsTest {
 		}
 	}
 
-	private static void writeEmptyFile(final File file) throws FileNotFoundException, IOException {
+	private static void writeEmptyFile(final File file)
+		throws FileNotFoundException, IOException
+	{
 		final OutputStream out = new FileOutputStream(file);
 		out.flush();
 		out.close();

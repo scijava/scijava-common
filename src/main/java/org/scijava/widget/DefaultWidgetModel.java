@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,10 +51,12 @@ import org.scijava.util.Types;
 
 /**
  * The backing data model for a particular {@link InputWidget}.
- * 
+ *
  * @author Curtis Rueden
  */
-public class DefaultWidgetModel extends AbstractContextual implements WidgetModel {
+public class DefaultWidgetModel extends AbstractContextual implements
+	WidgetModel
+{
 
 	private final InputPanel<?, ?> inputPanel;
 	private final Module module;
@@ -79,8 +81,9 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	private boolean initialized;
 
-	public DefaultWidgetModel(final Context context, final InputPanel<?, ?> inputPanel,
-		final Module module, final ModuleItem<?> item, final List<?> objectPool)
+	public DefaultWidgetModel(final Context context,
+		final InputPanel<?, ?> inputPanel, final Module module,
+		final ModuleItem<?> item, final List<?> objectPool)
 	{
 		setContext(context);
 		this.inputPanel = inputPanel;
@@ -147,8 +150,8 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 		// Check if a converted value is present
 		Object convertedInput = convertedObjects.get(value);
-		if (convertedInput != null &&
-			Objects.equals(item.getValue(module), convertedInput))
+		if (convertedInput != null && Objects.equals(item.getValue(module),
+			convertedInput))
 		{
 			return; // no change
 		}
@@ -288,7 +291,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	/**
 	 * For multiple choice widgets, ensures the value is a valid choice.
-	 * 
+	 *
 	 * @see ChoiceWidget
 	 */
 	private Object ensureValidChoice(final Object value) {
@@ -297,7 +300,7 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	/**
 	 * For object widgets, ensures the value is a valid object.
-	 * 
+	 *
 	 * @see #getObjectPool()
 	 * @see ObjectWidget
 	 */

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,11 +45,11 @@ public final class CallingClassUtils {
 	}
 
 	/**
-	 * Inspects the stack trace to return the name of the class that calls
-	 * this method, but ignores every class annotated with @IgnoreAsCallingClass.
+	 * Inspects the stack trace to return the name of the class that calls this
+	 * method, but ignores every class annotated with @IgnoreAsCallingClass.
 	 * <p>
-	 * If every class on the stack trace is annotated, then the class at the
-	 * root of the stack trace is returned.
+	 * If every class on the stack trace is annotated, then the class at the root
+	 * of the stack trace is returned.
 	 */
 	public static String getCallingClassName() {
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -62,7 +62,7 @@ public final class CallingClassUtils {
 
 	private static boolean hasIgnoreAsCallingClassAnnotation(String className) {
 		try {
-			Class< ? > clazz = Context.getClassLoader().loadClass(className);
+			Class<?> clazz = Context.getClassLoader().loadClass(className);
 			return clazz.isAnnotationPresent(IgnoreAsCallingClass.class);
 		}
 		catch (ClassNotFoundException ignore) {
@@ -71,14 +71,12 @@ public final class CallingClassUtils {
 	}
 
 	/**
-	 * @deprecated Use {@link #getCallingClassName()} instead.
-	 *
-	 * Warning: This method throws a IllegalStateException as soon as it comes
-	 * across a class that can't be loaded with the default class loader.
-	 *
-	 * Inspects the stack trace to return the class that calls this method, but
-	 * ignores every class annotated with @IgnoreAsCallingClass.
-	 *
+	 * @deprecated Use {@link #getCallingClassName()} instead. Warning: This
+	 *             method throws a IllegalStateException as soon as it comes
+	 *             across a class that can't be loaded with the default class
+	 *             loader. Inspects the stack trace to return the class that calls
+	 *             this method, but ignores every class annotated
+	 *             with @IgnoreAsCallingClass.
 	 * @throws IllegalStateException if every method on the stack, is in a class
 	 *           annotated with @IgnoreAsCallingClass.
 	 */

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import org.scijava.annotations.legacy.LegacyReader;
  * <p>
  * Example: an annotation {@code @Simple(string1 = "World")} to the
  * {@code Annotated} class would be serialized as
- * 
+ *
  * <pre>
  * {
  *     "class":"Annotated",
@@ -54,9 +54,8 @@ import org.scijava.annotations.legacy.LegacyReader;
  *     }
  * }
  * </pre>
- * 
  * </p>
- * 
+ *
  * @author Johannes Schindelin
  */
 class IndexReader {
@@ -69,15 +68,15 @@ class IndexReader {
 	}
 
 	IndexReader(final InputStream in, final String isName) {
-		this.in =
-			in instanceof PushbackInputStream ? (PushbackInputStream) in
-				: new PushbackInputStream(new BufferedInputStream(in));
+		this.in = in instanceof PushbackInputStream ? (PushbackInputStream) in
+			: new PushbackInputStream(new BufferedInputStream(in));
 		this.originalISName = isName;
 	}
 
 	public Object next() throws IOException {
 		int c = in.read();
-		while (Character.isWhitespace(c)) c = in.read();
+		while (Character.isWhitespace(c))
+			c = in.read();
 		if (c < 0) {
 			return null;
 		}
@@ -159,8 +158,8 @@ class IndexReader {
 		if (c == '"') {
 			return readString();
 		}
-		throw new IOException("Unexpected char: '" + (char) c + "'"+
-				((originalISName.length()>0) ? " from "+originalISName : ""));
+		throw new IOException("Unexpected char: '" + (char) c + "'" +
+			((originalISName.length() > 0) ? " from " + originalISName : ""));
 	}
 
 	public void close() throws IOException {
@@ -183,9 +182,8 @@ class IndexReader {
 		if (c == '\\') {
 			c = in.read();
 			if (c == 'u') {
-				String hex =
-					"" + ((char) in.read()) + ((char) in.read()) + ((char) in.read()) +
-						((char) in.read());
+				String hex = "" + ((char) in.read()) + ((char) in.read()) + ((char) in
+					.read()) + ((char) in.read());
 				c = Integer.parseInt(hex, 16);
 			}
 			else if (c != '\\' && c != '"') {
@@ -198,7 +196,8 @@ class IndexReader {
 	private void expect(char expect) throws IOException {
 		int c = in.read();
 		if (c != expect) {
-			throw new IOException("Expected '" + expect + "', got '" + (char) c + "'");
+			throw new IOException("Expected '" + expect + "', got '" + (char) c +
+				"'");
 		}
 	}
 
@@ -211,7 +210,8 @@ class IndexReader {
 			return 1;
 		}
 		throw new IOException("Expected '" + a + "' or '" + b + "', got '" +
-			(char) c + "'"+((originalISName.length()>0) ? " from "+originalISName : ""));
+			(char) c + "'" + ((originalISName.length() > 0) ? " from " +
+				originalISName : ""));
 	}
 
 	private void expect(String match) throws IOException {
@@ -222,7 +222,7 @@ class IndexReader {
 
 	private IndexReader() {
 		this.in = null;
-		this.originalISName="";
+		this.originalISName = "";
 	}
 
 	static IndexReader getLegacyReader(final InputStream in) throws IOException {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.scijava.event.bushe;
 
 /**
@@ -22,18 +23,19 @@ package org.scijava.event.bushe;
  */
 interface EventTopicSubscriber<T> {
 
-   /**
-    * Handle an event published on a topic.
-    * <p>
-    * The EventService calls this method on each publication on a matching topic name passed to one of the
-    * EventService's topic-based subscribe methods, specifically, {@link EventService#subscribe(String,
-    *EventTopicSubscriber)} {@link EventService#subscribe(java.util.regex.Pattern,EventTopicSubscriber)} {@link
-    * EventService#subscribeStrongly(String,EventTopicSubscriber)} and {@link EventService#subscribeStrongly(java.util.regex.Pattern,
-    *EventTopicSubscriber)}.
-    * </p>
-    *
-    * @param topic the name of the topic published on
-    * @param data the data object published on the topic
-    */
-   public void onEvent(String topic, T data);
+	/**
+	 * Handle an event published on a topic.
+	 * <p>
+	 * The EventService calls this method on each publication on a matching topic
+	 * name passed to one of the EventService's topic-based subscribe methods,
+	 * specifically, {@link EventService#subscribe(String, EventTopicSubscriber)}
+	 * {@link EventService#subscribe(java.util.regex.Pattern,EventTopicSubscriber)}
+	 * {@link EventService#subscribeStrongly(String,EventTopicSubscriber)} and
+	 * {@link EventService#subscribeStrongly(java.util.regex.Pattern, EventTopicSubscriber)}.
+	 * </p>
+	 *
+	 * @param topic the name of the topic published on
+	 * @param data the data object published on the topic
+	 */
+	public void onEvent(String topic, T data);
 }

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -72,7 +72,7 @@ import org.scijava.util.Types;
  * corresponding {@link ModuleInfo}, and executing that module when
  * {@link #run()} is called.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @see MenuCreator
  * @see MenuPath
@@ -186,8 +186,7 @@ public class ShadowMenu extends AbstractContextual implements
 	/** Gets this node's children, sorted by weight. */
 	public List<ShadowMenu> getChildren() {
 		// copy the children table into an ordered list
-		final List<ShadowMenu> childList =
-			new ArrayList<>(children.values());
+		final List<ShadowMenu> childList = new ArrayList<>(children.values());
 		// sort the list by weight then alphabetically
 		Collections.sort(childList);
 		return childList;
@@ -220,7 +219,7 @@ public class ShadowMenu extends AbstractContextual implements
 
 	/**
 	 * Gets the URL of the icon associated with this node's {@link MenuEntry}.
-	 * 
+	 *
 	 * @see org.scijava.plugin.PluginInfo#getIconURL()
 	 */
 	public URL getIconURL() {
@@ -239,15 +238,15 @@ public class ShadowMenu extends AbstractContextual implements
 			return iconURL;
 		}
 		catch (final ClassNotFoundException exc) {
-			final String message = "Failed to load class: " +
-					moduleInfo.getDelegateClassName();
+			final String message = "Failed to load class: " + moduleInfo
+				.getDelegateClassName();
 			if (log.isDebug()) log.debug(message, exc);
 			else log.error(message);
 			return null;
 		}
 		catch (final IllegalArgumentException exc) {
-			final String message = "Could not load icon for class: " +
-				moduleInfo.getDelegateClassName();
+			final String message = "Could not load icon for class: " + moduleInfo
+				.getDelegateClassName();
 			if (log.isDebug()) log.debug(message, exc);
 			else log.error(message);
 			return null;
@@ -257,7 +256,7 @@ public class ShadowMenu extends AbstractContextual implements
 	/**
 	 * Updates the menu structure to reflect changes in the given module. Does
 	 * nothing unless the module is already in the menu structure.
-	 * 
+	 *
 	 * @return true if the module was successfully updated
 	 */
 	public boolean update(final ModuleInfo module) {
@@ -273,7 +272,7 @@ public class ShadowMenu extends AbstractContextual implements
 	 * Updates the menu structure to reflect changes in the given modules. Does
 	 * nothing unless at least one of the modules is already in the menu
 	 * structure.
-	 * 
+	 *
 	 * @return true if at least one module was successfully updated
 	 */
 	public boolean updateAll(final Collection<? extends ModuleInfo> c) {
@@ -315,7 +314,7 @@ public class ShadowMenu extends AbstractContextual implements
 		// if weights are equal, sort alphabetically
 		final String n1 = menuEntry.getName();
 		final String n2 = c.menuEntry.getName();
-		return MiscUtils.compare(n1,  n2);
+		return MiscUtils.compare(n1, n2);
 	}
 
 	@Override
@@ -497,7 +496,8 @@ public class ShadowMenu extends AbstractContextual implements
 	// -- Helper methods --
 
 	private ShadowMenu addInternal(final ModuleInfo o) {
-		if (o.getMenuPath() == null || o.getMenuPath().isEmpty()) return null; // no menu
+		if (o.getMenuPath() == null || o.getMenuPath().isEmpty()) return null; // no
+																																						// menu
 		return addChild(o, 0);
 	}
 
@@ -536,8 +536,8 @@ public class ShadowMenu extends AbstractContextual implements
 		if (existingChild == null) {
 			// create new child and add to table
 			final String menuName = entry.getName();
-			final ShadowMenu newChild =
-				new ShadowMenu(getContext(), info, depth, this);
+			final ShadowMenu newChild = new ShadowMenu(getContext(), info, depth,
+				this);
 			children.put(menuName, newChild);
 			child = newChild;
 		}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -72,8 +72,8 @@ public final class Prefs {
 		return service().get(name, defaultValue);
 	}
 
-	public static boolean
-		getBoolean(final String name, final boolean defaultValue)
+	public static boolean getBoolean(final String name,
+		final boolean defaultValue)
 	{
 		return service().getBoolean(name, defaultValue);
 	}
@@ -160,8 +160,8 @@ public final class Prefs {
 		return service().getLong(c, name, defaultValue);
 	}
 
-	public static void
-		put(final Class<?> c, final String name, final String value)
+	public static void put(final Class<?> c, final String name,
+		final String value)
 	{
 		service().put(c, name, value);
 	}
@@ -172,14 +172,14 @@ public final class Prefs {
 		service().put(c, name, value);
 	}
 
-	public static void
-		put(final Class<?> c, final String name, final double value)
+	public static void put(final Class<?> c, final String name,
+		final double value)
 	{
 		service().put(c, name, value);
 	}
 
-	public static void
-		put(final Class<?> c, final String name, final float value)
+	public static void put(final Class<?> c, final String name,
+		final float value)
 	{
 		service().put(c, name, value);
 	}
@@ -188,7 +188,8 @@ public final class Prefs {
 		service().put(c, name, value);
 	}
 
-	public static void put(final Class<?> c, final String name, final long value)
+	public static void put(final Class<?> c, final String name,
+		final long value)
 	{
 		service().put(c, name, value);
 	}

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * Allows access to individual annotations.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class IndexItem<A extends Annotation> {
@@ -60,7 +60,7 @@ public class IndexItem<A extends Annotation> {
 
 	/**
 	 * Obtains the annotation values.
-	 * 
+	 *
 	 * @return the annotation values
 	 */
 	public A annotation() {
@@ -69,7 +69,7 @@ public class IndexItem<A extends Annotation> {
 
 	/**
 	 * Returns the name of the annotated class.
-	 * 
+	 *
 	 * @return the name of the annotated class.
 	 */
 	public String className() {
@@ -82,12 +82,13 @@ public class IndexItem<A extends Annotation> {
 		final Map<Object, Object> map)
 	{
 		return (A) Proxy.newProxyInstance(loader, new Class<?>[] { annotation },
-			new InvocationHandler() {
+			new InvocationHandler()
+			{
 
 				@Override
 				public Object invoke(Object proxy, Method method, Object[] args)
 					throws Throwable
-				{
+			{
 					if (map.containsKey(method)) {
 						return map.get(method);
 					}
@@ -100,32 +101,32 @@ public class IndexItem<A extends Annotation> {
 							value = adapt(value, loader, expectedType, className);
 						}
 					}
-					else if (name.equals("toString") &&
-						(args == null || args.length == 0))
-					{
-						value = "@" + annotation.getName() + map;
-					}
-					else if (name.equals("annotationType") &&
-						(args == null || args.length == 0))
-					{
-						value = annotation;
-					}
-					else if (name.equals("hashCode") &&
-						(args == null || args.length == 0))
-					{
-						return annotation.hashCode() ^ map.hashCode();
-					}
+					else if (name.equals("toString") && (args == null ||
+						args.length == 0))
+			{
+				value = "@" + annotation.getName() + map;
+			}
+					else if (name.equals("annotationType") && (args == null ||
+						args.length == 0))
+			{
+				value = annotation;
+			}
+					else if (name.equals("hashCode") && (args == null ||
+						args.length == 0))
+			{
+				return annotation.hashCode() ^ map.hashCode();
+			}
 					else if (name.equals("equals") && args != null && args.length == 1) {
-						if (!(args[0] instanceof Annotation) ||
-							((Annotation) args[0]).annotationType() != annotation)
-						{
+						if (!(args[0] instanceof Annotation) || ((Annotation) args[0])
+							.annotationType() != annotation)
+			{
 							return false;
 						}
 						for (Method method2 : annotation.getMethods()) {
 							if (method2.getDeclaringClass() == annotation) {
-								if (!invoke(proxy, method2, new Object[0]).equals(
-									method2.invoke(args[0])))
-								{
+								if (!invoke(proxy, method2, new Object[0]).equals(method2
+									.invoke(args[0])))
+			{
 									return false;
 								}
 							}
@@ -230,11 +231,10 @@ public class IndexItem<A extends Annotation> {
 		final Class<?> expectedType, final String className, final Throwable cause)
 	{
 		final String oType = o == null ? "<null>" : o.getClass().getName();
-		final String eType =
-			expectedType == null ? "<null>" : expectedType.getName();
-		final ClassCastException cce =
-			new ClassCastException(className + ": cannot cast object of type " +
-				oType + " to " + eType);
+		final String eType = expectedType == null ? "<null>" : expectedType
+			.getName();
+		final ClassCastException cce = new ClassCastException(className +
+			": cannot cast object of type " + oType + " to " + eType);
 		if (cause != null) cce.initCause(cause);
 		return cce;
 	}

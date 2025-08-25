@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +39,7 @@ import org.scijava.service.Service;
  * Main entry point into SciJava. This class enables working with SciJava
  * services in a simple way, while retaining extensibility (i.e., access to
  * third-party services).
- * 
+ *
  * @author Curtis Rueden
  */
 @Plugin(type = Gateway.class, name = "sj")
@@ -54,7 +54,7 @@ public class SciJava extends AbstractGateway {
 
 	/**
 	 * Creates a new Scijava application context.
-	 * 
+	 *
 	 * @param empty If true, the context will be empty; otherwise, it will be
 	 *          initialized with all available services.
 	 */
@@ -79,7 +79,7 @@ public class SciJava extends AbstractGateway {
 	 * To avoid this, we have opted to use raw types and suppress the relevant
 	 * warning here instead.
 	 * </p>
-	 * 
+	 *
 	 * @param serviceClasses A list of types that implement the {@link Service}
 	 *          interface (e.g., {@code LogService.class}).
 	 * @throws ClassCastException If any of the given arguments do not implement
@@ -93,7 +93,7 @@ public class SciJava extends AbstractGateway {
 	/**
 	 * Creates a new SciJava application context with the specified services (and
 	 * any required service dependencies).
-	 * 
+	 *
 	 * @param serviceClasses A collection of types that implement the
 	 *          {@link Service} interface (e.g., {@code LogService.class}).
 	 */
@@ -104,7 +104,7 @@ public class SciJava extends AbstractGateway {
 	/**
 	 * Creates a new SciJava application context which wraps the given existing
 	 * SciJava context.
-	 * 
+	 *
 	 * @see Context
 	 */
 	public SciJava(final Context context) {

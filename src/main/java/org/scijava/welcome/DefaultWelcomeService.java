@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,7 +51,7 @@ import org.scijava.welcome.event.WelcomeEvent;
 
 /**
  * Default service for displaying the welcome greeting.
- * 
+ *
  * @author Curtis Rueden
  * @author Mark Hiner
  */
@@ -101,7 +101,8 @@ public class DefaultWelcomeService extends AbstractService implements
 			if (welcomeFile.exists()) {
 				final String welcomeText = textService.asHTML(welcomeFile);
 				final String checksum = DigestUtils.bestHex(welcomeText);
-				final String previousChecksum = prefService.get(getClass(), CHECKSUM_PREFS_KEY);
+				final String previousChecksum = prefService.get(getClass(),
+					CHECKSUM_PREFS_KEY);
 				if (!force && checksum.equals(previousChecksum)) return;
 				prefService.put(getClass(), CHECKSUM_PREFS_KEY, checksum);
 				displayService.createDisplay(welcomeText);

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import org.scijava.input.KeyCode;
  * It is named {@code KyEvent} rather than {@code KeyEvent} to avoid name
  * clashes with the {@link java.awt.event.KeyEvent} hierarchy.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public abstract class KyEvent extends InputEvent {
@@ -66,7 +66,7 @@ public abstract class KyEvent extends InputEvent {
 
 	/**
 	 * Converts the key event into a corresponding accelerator.
-	 * 
+	 *
 	 * @return an accelerator matching the key code and modifiers of the event.
 	 */
 	public Accelerator getAccelerator() {
@@ -77,8 +77,8 @@ public abstract class KyEvent extends InputEvent {
 
 	@Override
 	public String toString() {
-		return super.toString() + "\n\tcharacter = '" + character +
-			"'\n\tcode = " + code + "\n\taccelerator = " + getAccelerator();
+		return super.toString() + "\n\tcharacter = '" + character + "'\n\tcode = " +
+			code + "\n\taccelerator = " + getAccelerator();
 	}
 
 }

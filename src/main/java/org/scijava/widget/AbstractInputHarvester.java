@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,7 +50,7 @@ import org.scijava.plugin.Parameter;
  * An input harvester obtains a module's unresolved input parameter values from
  * the user. Parameters are collected using an {@link InputPanel} dialog box.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
@@ -104,8 +104,8 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		if (resolved) return null; // skip resolved inputs
 
 		final Class<T> type = item.getType();
-		final WidgetModel model =
-			widgetService.createModel(inputPanel, module, item, getObjects(type));
+		final WidgetModel model = widgetService.createModel(inputPanel, module,
+			item, getObjects(type));
 
 		final Class<W> widgetType = inputPanel.getWidgetComponentType();
 		final InputWidget<?, ?> widget = widgetService.create(model);
@@ -134,13 +134,18 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		List<Object> objects = new ArrayList<>(objectService.getObjects(type));
 
 		// Get all the known objects that can be converted to the destination type
-		Collection<Object> compatibleInputs = convertService.getCompatibleInputs(type);
+		Collection<Object> compatibleInputs = convertService.getCompatibleInputs(
+			type);
 
-		// HACK: Add each convertible object that doesn't share a name with any other object
-		// Our goal here is to de-duplicate by avoiding similar inputs that could be converted
-		// to the same effective output (e.g. an ImageDisplay and a Dataset that map to the same
+		// HACK: Add each convertible object that doesn't share a name with any
+		// other object
+		// Our goal here is to de-duplicate by avoiding similar inputs that could be
+		// converted
+		// to the same effective output (e.g. an ImageDisplay and a Dataset that map
+		// to the same
 		// ImgPlus)
-		Set<String> knownNames = objects.stream().map(Object::toString).collect(Collectors.toSet());
+		Set<String> knownNames = objects.stream().map(Object::toString).collect(
+			Collectors.toSet());
 		for (Object o : compatibleInputs) {
 			final String s = o.toString();
 			if (!knownNames.contains(s)) {

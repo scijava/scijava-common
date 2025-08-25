@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,15 +43,16 @@ import org.scijava.service.event.ServicesLoadedEvent;
 
 /**
  * Verifies that the SciJava event service works as expected.
- * 
+ *
  * @author Johannes Schindelin
  */
 public class EventServiceTest {
+
 	@Test
 	public void testWeakEventHandlers() {
 		// verify that the garbage collector collects weak references
-		final WeakReference<MyEventHandler> reference =
-				new WeakReference<>(new MyEventHandler());
+		final WeakReference<MyEventHandler> reference = new WeakReference<>(
+			new MyEventHandler());
 		gc();
 		assertNull(reference.get());
 
@@ -84,8 +85,8 @@ public class EventServiceTest {
 	public void testEventHandlerDependencies() throws InterruptedException {
 		final Context context = new Context(ServiceNeedingAnEventService.class);
 		final EventService eventService = context.getService(EventService.class);
-		final ServiceNeedingAnEventService snaeService =
-			context.getService(ServiceNeedingAnEventService.class);
+		final ServiceNeedingAnEventService snaeService = context.getService(
+			ServiceNeedingAnEventService.class);
 		assertNotNull(eventService);
 		// NB: ServicesLoadedEvent is published asynchronously.
 		synchronized (snaeService) {
@@ -96,19 +97,22 @@ public class EventServiceTest {
 
 	private static void gc() {
 		System.gc();
-		// for some reason, some systems need extra encouragement to collect their garbage
+		// for some reason, some systems need extra encouragement to collect their
+		// garbage
 		System.gc();
 	}
 
 	private int counter = 0;
 
 	private class MyEvent extends SciJavaEvent {
+
 		public void inc() {
 			counter++;
 		}
 	}
 
 	public static class MyEventHandler {
+
 		@EventHandler
 		public void onEvent(final MyEvent e) {
 			e.inc();

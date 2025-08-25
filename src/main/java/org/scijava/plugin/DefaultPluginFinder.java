@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,10 +42,10 @@ import org.scijava.annotations.IndexItem;
 /**
  * Default SciJava plugin discovery mechanism.
  * <p>
- * It works by scanning the classpath for {@link Plugin} annotations
- * previously indexed by scijava-common itself.
+ * It works by scanning the classpath for {@link Plugin} annotations previously
+ * indexed by scijava-common itself.
  * </p>
- * 
+ *
  * @author Curtis Rueden
  */
 public class DefaultPluginFinder implements PluginFinder {
@@ -72,13 +72,11 @@ public class DefaultPluginFinder implements PluginFinder {
 	public HashMap<String, Throwable> findPlugins(
 		final List<PluginInfo<?>> plugins)
 	{
-		final HashMap<String, Throwable> exceptions =
-			new HashMap<>();
+		final HashMap<String, Throwable> exceptions = new HashMap<>();
 
 		// load the annotation indexes
 		final ClassLoader classLoader = getClassLoader();
-		final Index<Plugin> annotationIndex =
-			Index.load(Plugin.class, classLoader);
+		final Index<Plugin> annotationIndex = Index.load(Plugin.class, classLoader);
 
 		// create a PluginInfo object for each item in the index
 		for (final IndexItem<Plugin> item : annotationIndex) {
@@ -97,15 +95,15 @@ public class DefaultPluginFinder implements PluginFinder {
 
 	// -- Helper methods --
 
-	private PluginInfo<SciJavaPlugin> createInfo(
-		final IndexItem<Plugin> item, final ClassLoader classLoader)
+	private PluginInfo<SciJavaPlugin> createInfo(final IndexItem<Plugin> item,
+		final ClassLoader classLoader)
 	{
 		final String className = item.className();
 		final Plugin plugin = item.annotation();
 
 		@SuppressWarnings("unchecked")
-		final Class<SciJavaPlugin> pluginType =
-			(Class<SciJavaPlugin>) plugin.type();
+		final Class<SciJavaPlugin> pluginType = (Class<SciJavaPlugin>) plugin
+			.type();
 
 		return new PluginInfo<>(className, pluginType, plugin, classLoader);
 	}
@@ -118,6 +116,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	// -- Helper classes --
 
 	private interface PluginBlocklist {
+
 		boolean contains(String className);
 	}
 
@@ -130,6 +129,7 @@ public class DefaultPluginFinder implements PluginFinder {
 	 * </p>
 	 */
 	private class SysPropBlocklist implements PluginBlocklist {
+
 		private final List<Pattern> patterns;
 
 		public SysPropBlocklist() {

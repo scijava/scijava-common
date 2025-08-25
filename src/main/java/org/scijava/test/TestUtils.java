@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,7 +40,7 @@ import org.scijava.util.Types;
 
 /**
  * A bunch of helpful functions for unit tests.
- * 
+ *
  * @author Johannes Schindelin
  * @author Curtis Rueden
  */
@@ -49,7 +49,7 @@ public class TestUtils {
 	/**
 	 * Creates an empty file at the given path, creating intermediate directories
 	 * as necessary.
-	 * 
+	 *
 	 * @param parent The parent directory of the relative path.
 	 * @param path The forward-slash-separated path to create.
 	 * @return a {@link File} pointing at the newly created empty path.
@@ -60,7 +60,7 @@ public class TestUtils {
 	{
 		File file = parent;
 		final String[] elements = path.split("/");
-		for (int i=0; i<elements.length; i++) {
+		for (int i = 0; i < elements.length; i++) {
 			file = new File(file, elements[i]);
 			if (i == elements.length - 1) file.createNewFile();
 			else file.mkdir();
@@ -75,14 +75,17 @@ public class TestUtils {
 	 * created in the {@code target/} directory corresponding to the calling class
 	 * instead of {@code /tmp/}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix the prefix for the directory's name
 	 * @return the reference to the newly-created temporary directory
 	 * @throws IOException
 	 */
-	public static File createTemporaryDirectory(final String prefix) throws IOException {
+	public static File createTemporaryDirectory(final String prefix)
+		throws IOException
+	{
 		final Map.Entry<Class<?>, String> calling = getCallingCodeLocation(null);
-		return createTemporaryDirectory(prefix, calling.getKey(), calling.getValue());
+		return createTemporaryDirectory(prefix, calling.getKey(), calling
+			.getValue());
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class TestUtils {
 	 * created in the corresponding {@code target/} directory instead of
 	 * {@code /tmp/}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix the prefix for the directory's name
 	 * @param forClass the class for context (to determine whether there's a
 	 *          {@code target/} directory)
@@ -102,7 +105,8 @@ public class TestUtils {
 	public static File createTemporaryDirectory(final String prefix,
 		final Class<?> forClass) throws IOException
 	{
-		return createTemporaryDirectory(prefix, forClass, "" + temporaryDirectoryCounter++);
+		return createTemporaryDirectory(prefix, forClass, "" +
+			temporaryDirectoryCounter++);
 	}
 
 	private static int temporaryDirectoryCounter = 1;
@@ -114,7 +118,7 @@ public class TestUtils {
 	 * created in the corresponding {@code target/} directory instead of
 	 * {@code /tmp/}.
 	 * </p>
-	 * 
+	 *
 	 * @param prefix the prefix for the directory's name
 	 * @param forClass the class for context (to determine whether there's a
 	 *          {@code target/} directory)
@@ -133,11 +137,13 @@ public class TestUtils {
 			throw new IllegalArgumentException("Invalid directory: " + directory);
 		}
 		final String path = directory.getPath();
-		if (path == null) throw new IllegalArgumentException("Directory has null path");
+		if (path == null) throw new IllegalArgumentException(
+			"Directory has null path");
 		final File baseDirectory;
 		if (path.endsWith("/target/test-classes/")) {
 			baseDirectory = new File(path).getParentFile();
-		} else {
+		}
+		else {
 			baseDirectory = new File(path);
 		}
 
@@ -153,7 +159,8 @@ public class TestUtils {
 		else if (file.exists() && !file.delete()) {
 			throw new IOException("Could not remove " + file);
 		}
-		if (!file.mkdir()) throw new IOException("Could not make directory " + file);
+		if (!file.mkdir()) throw new IOException("Could not make directory " +
+			file);
 		return file;
 	}
 
@@ -165,7 +172,7 @@ public class TestUtils {
 	 * the location of the caller's class would end in
 	 * {@code target/test-classes/}).
 	 * </p>
-	 * 
+	 *
 	 * @param excluding the class to exclude (or null)
 	 * @return the class of the caller
 	 */
@@ -174,48 +181,56 @@ public class TestUtils {
 	}
 
 	/**
-	 * Returns the class and the method/line number of the caller (excluding the specified class).
+	 * Returns the class and the method/line number of the caller (excluding the
+	 * specified class).
 	 * <p>
 	 * Sometimes it is convenient to determine the caller's context, e.g. to
 	 * determine whether running in a maven-surefire-plugin context (in which case
 	 * the location of the caller's class would end in
 	 * {@code target/test-classes/}).
 	 * </p>
-	 * 
+	 *
 	 * @param excluding the class to exclude (or null)
 	 * @return the class of the caller and the method and line number
 	 */
-	public static Map.Entry<Class<?>, String> getCallingCodeLocation(final Class<?> excluding) {
+	public static Map.Entry<Class<?>, String> getCallingCodeLocation(
+		final Class<?> excluding)
+	{
 		final String thisClassName = TestUtils.class.getName();
-		final String thisClassName2 = excluding == null ? null : excluding.getName();
+		final String thisClassName2 = excluding == null ? null : excluding
+			.getName();
 		final Thread currentThread = Thread.currentThread();
 		for (final StackTraceElement element : currentThread.getStackTrace()) {
 			final String thatClassName = element.getClassName();
 			if (thatClassName == null || thatClassName.equals(thisClassName) ||
-				thatClassName.equals(thisClassName2) ||
-				thatClassName.endsWith("TestUtils") ||
-				thatClassName.startsWith("java.lang.")) {
+				thatClassName.equals(thisClassName2) || thatClassName.endsWith(
+					"TestUtils") || thatClassName.startsWith("java.lang."))
+			{
 				continue;
 			}
 			final ClassLoader loader = currentThread.getContextClassLoader();
 			final Class<?> clazz;
 			try {
 				clazz = loader.loadClass(element.getClassName());
-				final URL url = clazz.getResource("/" + clazz.getName().replace('.', '/') + ".class");
+				final URL url = clazz.getResource("/" + clazz.getName().replace('.',
+					'/') + ".class");
 				if (url == null || !"file".equals(url.getProtocol())) {
-					// the calling code location must be unpacked; Maven artifacts in $HOME/.m2/ are excluded
+					// the calling code location must be unpacked; Maven artifacts in
+					// $HOME/.m2/ are excluded
 					continue;
 				}
 			}
 			catch (ClassNotFoundException e) {
-				throw new UnsupportedOperationException("Could not load " +
-					element.getClassName() + " with the current context class loader (" +
+				throw new UnsupportedOperationException("Could not load " + element
+					.getClassName() + " with the current context class loader (" +
 					loader + ")!");
 			}
-			final String suffix = element.getMethodName() + "-L" + element.getLineNumber();
+			final String suffix = element.getMethodName() + "-L" + element
+				.getLineNumber();
 			return new AbstractMap.SimpleEntry<>(clazz, suffix);
 		}
-		throw new UnsupportedOperationException("No calling class outside " + thisClassName + " found!");
+		throw new UnsupportedOperationException("No calling class outside " +
+			thisClassName + " found!");
 	}
 
 }

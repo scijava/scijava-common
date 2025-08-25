@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -50,7 +50,7 @@ import org.scijava.parse.ParseService;
 
 /**
  * Tests {@link ModuleService}.
- * 
+ *
  * @author Curtis Rueden
  */
 public class ModuleServiceTest {
@@ -59,7 +59,8 @@ public class ModuleServiceTest {
 
 	@Before
 	public void setUp() {
-		final Context context = new Context(ModuleService.class, ParseService.class);
+		final Context context = new Context(ModuleService.class,
+			ParseService.class);
 		moduleService = context.service(ModuleService.class);
 	}
 
@@ -142,24 +143,24 @@ public class ModuleServiceTest {
 		final Module module = info.createModule();
 
 		// verify single string input is detected
-		final ModuleItem<String> singleString =
-			moduleService.getSingleInput(module, String.class);
+		final ModuleItem<String> singleString = moduleService.getSingleInput(module,
+			String.class);
 		assertSame(info.getInput("string"), singleString);
 
 		// check that non-autofilled inputs are not detected
-		final ModuleItem<Float> singleFloat =
-			moduleService.getSingleInput(module, Float.class);
+		final ModuleItem<Float> singleFloat = moduleService.getSingleInput(module,
+			Float.class);
 		assertNull(singleFloat);
 
 		// verify that multiple inputs of the same type are not detected
-		final ModuleItem<Integer> singleInteger =
-			moduleService.getSingleInput(module, Integer.class);
+		final ModuleItem<Integer> singleInteger = moduleService.getSingleInput(
+			module, Integer.class);
 		assertNull(singleInteger);
 
 		// verify that single input is detected if there are
 		// non-autofilled inputs of the same kind too
-		final ModuleItem<Double> singleDouble =
-			moduleService.getSingleInput(module, Double.class);
+		final ModuleItem<Double> singleDouble = moduleService.getSingleInput(module,
+			Double.class);
 		assertSame(info.getInput("double2"), singleDouble);
 	}
 

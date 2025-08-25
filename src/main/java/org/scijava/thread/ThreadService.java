@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,23 +46,23 @@ import org.scijava.service.SciJavaService;
 public interface ThreadService extends SciJavaService, ThreadFactory {
 
 	public enum ThreadContext {
-		/**
-		 * The thread was spawned by this thread service; i.e., it belongs to the
-		 * same {@link Context}.
-		 */
-		SAME,
+			/**
+			 * The thread was spawned by this thread service; i.e., it belongs to the
+			 * same {@link Context}.
+			 */
+			SAME,
 
-		/**
-		 * The thread was spawned by a SciJava thread service, but not this one;
-		 * i.e., it belongs to a different {@link Context}.
-		 */
-		OTHER,
+			/**
+			 * The thread was spawned by a SciJava thread service, but not this one;
+			 * i.e., it belongs to a different {@link Context}.
+			 */
+			OTHER,
 
-		/**
-		 * The thread was not spawned via a SciJava thread service, and its
-		 * {@link Context} is unknown or inapplicable.
-		 */
-		NONE
+			/**
+			 * The thread was not spawned via a SciJava thread service, and its
+			 * {@link Context} is unknown or inapplicable.
+			 */
+			NONE
 	}
 
 	/**
@@ -92,7 +92,7 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 
 	/**
 	 * Gets the {@link ExecutorService} object used when {@link #run} is called.
-	 * 
+	 *
 	 * @return the {@link ExecutorService}, or null if an {@link ExecutorService}
 	 *         is not used in this {@link ThreadService} implementation.
 	 */
@@ -100,7 +100,7 @@ public interface ThreadService extends SciJavaService, ThreadFactory {
 
 	/**
 	 * Sets the {@link ExecutorService} object used when {@link #run} is called.
-	 * 
+	 *
 	 * @param executor The {@link ExecutorService} for this {@link ThreadService}
 	 *          to use internally for {@link #run} calls.
 	 * @throws UnsupportedOperationException if this {@link ThreadService} does

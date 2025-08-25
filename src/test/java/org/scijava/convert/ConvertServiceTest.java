@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -75,7 +75,7 @@ import org.scijava.util.Types;
 
 /**
  * Tests {@link ConvertService}.
- * 
+ *
  * @author Mark Hiner
  * @author Curtis Rueden
  */
@@ -98,32 +98,44 @@ public class ConvertServiceTest {
 	@Test
 	public void testNull() {
 		// Test convertService.supports for null parameters
-		assertTrue(convertService.supports((Object)null, Object.class));
-		assertTrue(convertService.supports((Class<Object>)null, Object.class));
-		assertTrue(convertService.supports(Object.class, (Class<Object>)null));
-		assertTrue(convertService.supports(Object.class, (Type)null));
-		assertTrue(convertService.supports(new Object(), (Class<Object>)null));
-		assertTrue(convertService.supports(new Object(), (Type)null));
-		assertTrue(convertService.supports(new ConversionRequest((Object)null, Object.class)));
-		assertTrue(convertService.supports(new ConversionRequest((Class<Object>)null, Object.class)));
-		assertTrue(convertService.supports(new ConversionRequest(Object.class, (Class<Object>)null)));
-		assertTrue(convertService.supports(new ConversionRequest(Object.class, (Type)null)));
-		assertTrue(convertService.supports(new ConversionRequest(new Object(), (Class<Object>)null)));
-		assertTrue(convertService.supports(new ConversionRequest(new Object(), (Type)null)));
+		assertTrue(convertService.supports((Object) null, Object.class));
+		assertTrue(convertService.supports((Class<Object>) null, Object.class));
+		assertTrue(convertService.supports(Object.class, (Class<Object>) null));
+		assertTrue(convertService.supports(Object.class, (Type) null));
+		assertTrue(convertService.supports(new Object(), (Class<Object>) null));
+		assertTrue(convertService.supports(new Object(), (Type) null));
+		assertTrue(convertService.supports(new ConversionRequest((Object) null,
+			Object.class)));
+		assertTrue(convertService.supports(new ConversionRequest(
+			(Class<Object>) null, Object.class)));
+		assertTrue(convertService.supports(new ConversionRequest(Object.class,
+			(Class<Object>) null)));
+		assertTrue(convertService.supports(new ConversionRequest(Object.class,
+			(Type) null)));
+		assertTrue(convertService.supports(new ConversionRequest(new Object(),
+			(Class<Object>) null)));
+		assertTrue(convertService.supports(new ConversionRequest(new Object(),
+			(Type) null)));
 
 		// Test convertService.convert for null parameters
-		assertNull(convertService.convert((Object)null, Object.class));
-		assertNull(convertService.convert((Class<Object>)null, Object.class));
-		assertNull(convertService.convert(Object.class, (Class<Object>)null));
-		assertNull(convertService.convert(Object.class, (Type)null));
-		assertNull(convertService.convert(new Object(), (Class<Object>)null));
-		assertNull(convertService.convert(new Object(), (Type)null));
-		assertNull(convertService.convert(new ConversionRequest((Object)null, Object.class)));
-		assertNull(convertService.convert(new ConversionRequest((Class<Object>)null, Object.class)));
-		assertNull(convertService.convert(new ConversionRequest(Object.class, (Class<Object>)null)));
-		assertNull(convertService.convert(new ConversionRequest(Object.class, (Type)null)));
-		assertNull(convertService.convert(new ConversionRequest(new Object(), (Class<Object>)null)));
-		assertNull(convertService.convert(new ConversionRequest(new Object(), (Type)null)));
+		assertNull(convertService.convert((Object) null, Object.class));
+		assertNull(convertService.convert((Class<Object>) null, Object.class));
+		assertNull(convertService.convert(Object.class, (Class<Object>) null));
+		assertNull(convertService.convert(Object.class, (Type) null));
+		assertNull(convertService.convert(new Object(), (Class<Object>) null));
+		assertNull(convertService.convert(new Object(), (Type) null));
+		assertNull(convertService.convert(new ConversionRequest((Object) null,
+			Object.class)));
+		assertNull(convertService.convert(new ConversionRequest(
+			(Class<Object>) null, Object.class)));
+		assertNull(convertService.convert(new ConversionRequest(Object.class,
+			(Class<Object>) null)));
+		assertNull(convertService.convert(new ConversionRequest(Object.class,
+			(Type) null)));
+		assertNull(convertService.convert(new ConversionRequest(new Object(),
+			(Class<Object>) null)));
+		assertNull(convertService.convert(new ConversionRequest(new Object(),
+			(Type) null)));
 	}
 
 	/**
@@ -134,7 +146,7 @@ public class ConvertServiceTest {
 		assertTrue(1d == convertService.convert(1, double.class));
 		assertTrue(1d == convertService.convert(1l, double.class));
 		assertTrue(1d == convertService.convert(1.0f, double.class));
-		assertTrue(1d == convertService.convert((short)1, double.class));
+		assertTrue(1d == convertService.convert((short) 1, double.class));
 		assertTrue(1d == convertService.convert(1.0, double.class));
 	}
 
@@ -154,10 +166,11 @@ public class ConvertServiceTest {
 		testIntechangeable(char[].class, CharArray.class);
 		testIntechangeable(boolean[].class, BoolArray.class);
 
-		// Test that primitive [] can be cross-converted to mismatched PrimitiveArray
+		// Test that primitive [] can be cross-converted to mismatched
+		// PrimitiveArray
 		assertTrue(convertService.supports(int[].class, LongArray.class));
 		final LongArray crossConverted = //
-			convertService.convert(new int[] {2, 3, 5}, LongArray.class);
+			convertService.convert(new int[] { 2, 3, 5 }, LongArray.class);
 		assertEquals(3, crossConverted.size());
 		assertEquals(2L, (long) crossConverted.get(0));
 		assertEquals(3L, (long) crossConverted.get(1));
@@ -165,7 +178,8 @@ public class ConvertServiceTest {
 
 		// Test that lists can be converted to any primitive []
 		final List<Integer> list = new ArrayList<>();
-		for (int i=0; i<100; i++) list.add((int) (10000 * Math.random()));
+		for (int i = 0; i < 100; i++)
+			list.add((int) (10000 * Math.random()));
 
 		assertTrue(convertService.supports(list, int[].class));
 		assertTrue(convertService.supports(list, long[].class));
@@ -178,14 +192,15 @@ public class ConvertServiceTest {
 		// Verify PrimitiveArray conversion
 		final int[] primitives = convertService.convert(list, int[].class);
 
-		final IntArray intArray = convertService.convert(primitives, IntArray.class);
+		final IntArray intArray = convertService.convert(primitives,
+			IntArray.class);
 
 		// Should just unwrap the IntArray
 		assertTrue(primitives == convertService.convert(intArray, int[].class));
 
 		// Verify all our lists are the same
 
-		for (int i=0; i<list.size(); i++) {
+		for (int i = 0; i < list.size(); i++) {
 			assertTrue(list.get(i) == primitives[i]);
 			assertTrue(list.get(i) == intArray.getValue(i));
 		}
@@ -241,8 +256,8 @@ public class ConvertServiceTest {
 
 		// check "conversion" (i.e., casting) to interface
 		final ArrayList<?> arrayList = new ArrayList<>();
-		final Collection<?> arrayListToCollection =
-			convertService.convert(arrayList, Collection.class);
+		final Collection<?> arrayListToCollection = convertService.convert(
+			arrayList, Collection.class);
 		assertSame(arrayList, arrayListToCollection);
 
 		// check conversion to enum values (testConvertToEnum is more thorough)
@@ -258,8 +273,8 @@ public class ConvertServiceTest {
 
 		// check conversion of numeric primitives: float to double
 		final float f = 6.2f;
-		final double floatToDouble =
-			convertService.convert(float.class, double.class);
+		final double floatToDouble = convertService.convert(float.class,
+			double.class);
 		assertEquals(f, floatToDouble, 0.0);
 
 		// boxing works
@@ -288,8 +303,8 @@ public class ConvertServiceTest {
 		set.add("Foo");
 		set.add("Bar");
 		@SuppressWarnings("unchecked")
-		final ArrayList<String> setToArrayList =
-			convertService.convert(set, ArrayList.class);
+		final ArrayList<String> setToArrayList = convertService.convert(set,
+			ArrayList.class);
 		assertEquals(2, setToArrayList.size());
 		Collections.sort(setToArrayList);
 		assertEquals("Bar", setToArrayList.get(0));
@@ -328,22 +343,22 @@ public class ConvertServiceTest {
 		assertEquals("Bar", herList.get(1));
 
 		// ArrayList<String> subclass to ArrayList<Object> subclass
-		final ObjectList objectList =
-			convertService.convert(hisList, ObjectList.class);
+		final ObjectList objectList = convertService.convert(hisList,
+			ObjectList.class);
 		assertEquals(2, objectList.size());
 		assertEquals("Foo", objectList.get(0));
 		assertEquals("Bar", objectList.get(1));
 
 		// ArrayList<Object> subclass to ArrayList<String> subclass
-		final HisList objectToHisList =
-			convertService.convert(objectList, HisList.class);
+		final HisList objectToHisList = convertService.convert(objectList,
+			HisList.class);
 		assertEquals(2, objectToHisList.size());
 		assertEquals("Foo", objectToHisList.get(0));
 		assertEquals("Bar", objectToHisList.get(1));
 
 		// ArrayList<String> subclass to ArrayList<Number> subclass
-		final NumberList hisToNumberList =
-			convertService.convert(hisList, NumberList.class);
+		final NumberList hisToNumberList = convertService.convert(hisList,
+			NumberList.class);
 		assertEquals(2, hisToNumberList.size());
 		assertNull(hisToNumberList.get(0));
 		assertNull(hisToNumberList.get(1));
@@ -356,6 +371,7 @@ public class ConvertServiceTest {
 	@Test
 	public void testConvertTypeCasting() {
 		class Struct {
+
 			private INumberList iNumberList;
 			private List<String> list;
 		}
@@ -537,11 +553,11 @@ public class ConvertServiceTest {
 	@Test
 	public void testLegitimateSingletonInt() {
 		class Struct {
-			
+
 			private IntWrapper intWrapper;
 		}
 		final Struct struct = new Struct();
-		
+
 		setFieldValue(struct, "intWrapper", Integer.valueOf(12));
 		assertNotNull(struct.intWrapper);
 	}
@@ -579,15 +595,15 @@ public class ConvertServiceTest {
 	}
 
 	/**
-	 * Test that a {@link Converter} with the appropriate {@link
-	 * Converter#populateInputCandidates(Collection)} implementation will populate
-	 * candidate input lists with objects it can convert to a requested output
-	 * type.
+	 * Test that a {@link Converter} with the appropriate
+	 * {@link Converter#populateInputCandidates(Collection)} implementation will
+	 * populate candidate input lists with objects it can convert to a requested
+	 * output type.
 	 */
 	@Test
 	public void testGetCompatibleInputs() {
-		final List<Object> compatibleInputs =
-			new ArrayList<>(convertService.getCompatibleInputs(HisList.class));
+		final List<Object> compatibleInputs = new ArrayList<>(convertService
+			.getCompatibleInputs(HisList.class));
 
 		assertEquals(4, compatibleInputs.size());
 		assertEquals(StringHisListConverter.S1, compatibleInputs.get(0));
@@ -745,6 +761,7 @@ public class ConvertServiceTest {
 	 * another.
 	 */
 	public static class HerList extends ArrayList<String> {
+
 		public HerList(final Collection<? extends String> c) {
 			super(c);
 		}
@@ -755,9 +772,11 @@ public class ConvertServiceTest {
 	 * another.
 	 */
 	public static class HisList extends ArrayList<String> {
+
 		public HisList() {
 			super();
 		}
+
 		public HisList(final Collection<? extends String> c) {
 			super(c);
 		}
@@ -768,6 +787,7 @@ public class ConvertServiceTest {
 	 * another.
 	 */
 	public static class ObjectList extends ArrayList<Object> {
+
 		public ObjectList(final Collection<? extends Object> c) {
 			super(c);
 		}
@@ -780,17 +800,19 @@ public class ConvertServiceTest {
 	public static class NumberList extends ArrayList<Number> implements
 		INumberList
 	{
+
 		public NumberList() {
 			super();
 		}
+
 		public NumberList(final Collection<? extends Number> c) {
 			super(c);
 		}
 	}
 
 	/**
-	 * Helper interface for testing conversion of an {@link ArrayList} subclass
-	 * to one of its implementing interfaces.
+	 * Helper interface for testing conversion of an {@link ArrayList} subclass to
+	 * one of its implementing interfaces.
 	 */
 	private static interface INumberList extends List<Number> {
 		// NB: No implementation needed.
@@ -801,7 +823,7 @@ public class ConvertServiceTest {
 	 * constructors, auto-unboxing should work as expected.
 	 */
 	public static class IntWrapper {
-		
+
 		@SuppressWarnings("unused")
 		public IntWrapper(final int gonnaWrapThisInt) {
 			// nothing to do
@@ -846,7 +868,7 @@ public class ConvertServiceTest {
 
 	/** Enumeration for testing conversion to enum types. */
 	public static enum Words {
-		FOO, BAR, FUBAR
+			FOO, BAR, FUBAR
 	}
 
 	/**

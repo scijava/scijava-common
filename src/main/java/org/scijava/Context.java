@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -110,8 +110,8 @@ public class Context implements Disposable, AutoCloseable {
 	private boolean strict;
 
 	/**
-	 * False if the context is currently active; true if the context
-	 * has already been disposed, or is in the process of being disposed.
+	 * False if the context is currently active; true if the context has already
+	 * been disposed, or is in the process of being disposed.
 	 */
 	private boolean disposed;
 
@@ -270,8 +270,8 @@ public class Context implements Disposable, AutoCloseable {
 	 * NB: Instiantiation of a Context has an implied requirement of a
 	 * corresponding call to {@link Context#dispose()} at the end of the SciJava
 	 * applicaton's lifecycle. This cleans up any remaining resources and allows
-	 * the JVM to exit gracefully. This is called automatically when constructed as
-	 * an {@link AutoCloseable}.
+	 * the JVM to exit gracefully. This is called automatically when constructed
+	 * as an {@link AutoCloseable}.
 	 * </p>
 	 *
 	 * @param serviceClasses A collection of types that implement the
@@ -442,7 +442,7 @@ public class Context implements Disposable, AutoCloseable {
 	 * values would not, without needing to hardcode type comparison checks
 	 * against the {@link Service} and {@link Context} types.
 	 * </p>
-	 * 
+	 *
 	 * @param type The type of the @{@link Parameter}-annotated field.
 	 * @return True iff a member field of the given type would have its value
 	 *         assigned.
@@ -483,7 +483,7 @@ public class Context implements Disposable, AutoCloseable {
 	/**
 	 * Gets the class loader to use. This will be the current thread's context
 	 * class loader if non-null; otherwise it will be the system class loader.
-	 * 
+	 *
 	 * @see Thread#getContextClassLoader()
 	 * @see ClassLoader#getSystemClassLoader()
 	 */
@@ -615,7 +615,8 @@ public class Context implements Disposable, AutoCloseable {
 		CONTEXTS.remove(this);
 		if (announce) {
 			final EventService eventService = getService(EventService.class);
-			if (eventService != null) eventService.publish(new ContextDisposingEvent());
+			if (eventService != null) eventService.publish(
+				new ContextDisposingEvent());
 		}
 
 		// NB: Dispose services in reverse order.

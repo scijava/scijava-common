@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -64,7 +64,7 @@ import org.scijava.util.Types;
 
 /**
  * Default service for keeping track of and executing available modules.
- * 
+ *
  * @author Curtis Rueden
  * @see Module
  * @see ModuleInfo
@@ -170,7 +170,8 @@ public class DefaultModuleService extends AbstractService implements
 			return module;
 		}
 		catch (final ModuleException exc) {
-			if (log != null) log.error("Cannot create module: " + info.getDelegateClassName(), exc);
+			if (log != null) log.error("Cannot create module: " + info
+				.getDelegateClassName(), exc);
 		}
 		return null;
 	}
@@ -209,15 +210,15 @@ public class DefaultModuleService extends AbstractService implements
 	}
 
 	@Override
-	public <M extends Module> Future<M> run(final M module,
-		final boolean process, final Object... inputs)
+	public <M extends Module> Future<M> run(final M module, final boolean process,
+		final Object... inputs)
 	{
 		return run(module, pre(process), post(process), inputs);
 	}
 
 	@Override
-	public <M extends Module> Future<M> run(final M module,
-		final boolean process, final Map<String, Object> inputMap)
+	public <M extends Module> Future<M> run(final M module, final boolean process,
+		final Map<String, Object> inputMap)
 	{
 		return run(module, pre(process), post(process), inputMap);
 	}
@@ -237,8 +238,8 @@ public class DefaultModuleService extends AbstractService implements
 		final Map<String, Object> inputMap)
 	{
 		assignInputs(module, inputMap);
-		final ModuleRunner runner =
-			new ModuleRunner(getContext(), module, pre, post);
+		final ModuleRunner runner = new ModuleRunner(getContext(), module, pre,
+			post);
 		@SuppressWarnings("unchecked")
 		final Callable<M> callable = (Callable<M>) runner;
 		final Future<M> future = threadService.run(callable);
@@ -274,12 +275,16 @@ public class DefaultModuleService extends AbstractService implements
 	}
 
 	@Override
-	public ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types) {
+	public ModuleItem<?> getSingleInput(Module module,
+		Collection<Class<?>> types)
+	{
 		return getSingleItem(module, types, module.getInfo().inputs());
 	}
 
 	@Override
-	public ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types) {
+	public ModuleItem<?> getSingleOutput(Module module,
+		Collection<Class<?>> types)
+	{
 		return getSingleItem(module, types, module.getInfo().outputs());
 	}
 
@@ -295,7 +300,8 @@ public class DefaultModuleService extends AbstractService implements
 			return;
 		}
 
-		final String sValue = value == null ? "" : convertService.convert(value, String.class);
+		final String sValue = value == null ? "" : convertService.convert(value,
+			String.class);
 
 		// do not persist if object cannot be converted back from a string
 		if (!convertService.supports(sValue, item.getType())) return;
@@ -315,7 +321,7 @@ public class DefaultModuleService extends AbstractService implements
 
 		return convertService.convert(sValue, item.getType());
 	}
-	
+
 	@Override
 	public <T> T getDefaultValue(final ModuleItem<T> item) {
 		final T defaultValue = item.getDefaultValue();
@@ -429,7 +435,8 @@ public class DefaultModuleService extends AbstractService implements
 		}
 
 		if (values.length % 2 != 0) {
-			if (log != null) log.error("Ignoring extraneous argument: " + values[values.length - 1]);
+			if (log != null) log.error("Ignoring extraneous argument: " +
+				values[values.length - 1]);
 		}
 
 		// loop over list of key/value pairs
@@ -459,7 +466,8 @@ public class DefaultModuleService extends AbstractService implements
 			final Object value = inputMap.get(name);
 			final Object converted;
 			if (input == null) {
-				// inputs whose name starts with a dot are implicitly known by convention
+				// inputs whose name starts with a dot are implicitly known by
+				// convention
 				if (!name.startsWith(".")) {
 					if (log != null) log.warn("Unmatched input: " + name);
 				}
@@ -470,8 +478,8 @@ public class DefaultModuleService extends AbstractService implements
 				converted = convertService.convert(value, type);
 				if (value != null && converted == null) {
 					if (log != null) {
-						log.error("For input " + name + ": incompatible object " +
-							value.getClass().getName() + " for type " + type.getName());
+						log.error("For input " + name + ": incompatible object " + value
+							.getClass().getName() + " for type " + type.getName());
 					}
 					continue;
 				}
@@ -552,8 +560,8 @@ public class DefaultModuleService extends AbstractService implements
 		item.setValue(module, value);
 	}
 
-	private <T> T getBestValue(final Object prefValue,
-		final Object defaultValue, final Class<T> type)
+	private <T> T getBestValue(final Object prefValue, final Object defaultValue,
+		final Class<T> type)
 	{
 		if (prefValue != null) return convertService.convert(prefValue, type);
 		if (defaultValue != null) {

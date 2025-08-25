@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -133,8 +133,8 @@ public interface ConvertService extends
 	}
 
 	/**
-	 * @return A collection of instances that could be converted to the
-	 *         specified class.
+	 * @return A collection of instances that could be converted to the specified
+	 *         class.
 	 */
 	default Collection<Object> getCompatibleInputs(final Class<?> dest) {
 		final Set<Object> objects = new LinkedHashSet<>();
@@ -167,7 +167,9 @@ public interface ConvertService extends
 	 * @return A collection of all classes that could potentially be converted
 	 *         <b>from</b> the specified class.
 	 */
-	default Collection<Class<?>> getCompatibleOutputClasses(final Class<?> source) {
+	default Collection<Class<?>> getCompatibleOutputClasses(
+		final Class<?> source)
+	{
 		final Set<Class<?>> compatibleClasses = new HashSet<>();
 
 		for (final Converter<?, ?> converter : getInstances()) {
