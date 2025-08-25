@@ -39,7 +39,6 @@ import javax.script.ScriptEngineFactory;
 
 import org.scijava.log.LogService;
 import org.scijava.util.FileUtils;
-import org.scijava.util.Types;
 
 /**
  * Data structure for managing registered scripting languages.
@@ -51,16 +50,11 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Map<String, ScriptLanguage> byExtension = new HashMap<>();
+	private final Map<String, List<ScriptLanguage>> byExtension = new HashMap<>();
 
-	private final Map<String, ScriptLanguage> byName = new HashMap<>();
+	private final Map<String, List<ScriptLanguage>> byName = new HashMap<>();
 
 	private final LogService log;
-
-	@Deprecated
-	public ScriptLanguageIndex() {
-		this(null);
-	}
 
 	/**
 	 * Instantiates an index of the available script languages.
@@ -71,21 +65,26 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 		this.log = log;
 	}
 
-	public boolean add(final ScriptEngineFactory factory, final boolean gently) {
+	/**
+	 * @deprecated Gently flag is no longer respected. Use
+	 *             {@link #add(ScriptLanguage)}.
+	 */
+	@Deprecated
+	boolean add(final ScriptEngineFactory factory, final boolean gently) {
 		boolean result = false;
 
 		final ScriptLanguage language = wrap(factory);
 
 		// add language names
-		result |= put("name", byName, language.getLanguageName(), language, gently);
+		result |= put(byName, language.getLanguageName(), language, gently);
 		for (final String name : language.getNames()) {
-			result |= put("name", byName, name, language, gently);
+			result |= put(byName, name, language, gently);
 		}
 
 		// add file extensions
 		for (final String extension : language.getExtensions()) {
 			if ("".equals(extension)) continue;
-			result |= put("extension", byExtension, extension, language, gently);
+			result |= put(byExtension, extension, language, gently);
 		}
 
 		result |= super.add(language);
@@ -93,11 +92,21 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 	}
 
 	public ScriptLanguage getByExtension(final String extension) {
-		return byExtension.get(extension);
+		List<ScriptLanguage> langs = byExtension.get(extension);
+		if (langs == null) return null;
+		for (ScriptLanguage lang : langs) {
+			if (lang.isActive()) return lang;
+		}
+		return null;
 	}
 
 	public ScriptLanguage getByName(final String name) {
-		return byName.get(name);
+		List<ScriptLanguage> langs = byName.get(name);
+		if (langs == null) return null;
+		for (ScriptLanguage lang : langs) {
+			if (lang.isActive()) return lang;
+		}
+		return null;
 	}
 
 	public String[] getFileExtensions(final ScriptLanguage language) {
@@ -126,59 +135,20 @@ public class ScriptLanguageIndex extends ArrayList<ScriptLanguage> {
 
 	// -- Helper methods --
 
-	private boolean put(final String type, final Map<String, ScriptLanguage> map,
+	private boolean put(final Map<String, List<ScriptLanguage>> map,
 		final String key, final ScriptLanguage value, final boolean gently)
 	{
-		final ScriptLanguage existing = map.get(key);
-
-		if (existing == value) {
-			// Duplicate key/value pair; do not overwrite.
-			if (log != null && log.isDebug()) {
-				// In debug mode, warn about the duplicate (since it is atypical).
-				log.debug(overwriteMessage(false, type, key, value, existing));
-			}
-			return false;
+		List<ScriptLanguage> list = map.get(key);
+		if (list == null) {
+			list = new ArrayList<>();
+			map.put(key, list);
 		}
-
-		if (existing != null) {
-			// Conflicting value; behavior depends on mode.
-			if (gently) {
-				// Do not overwrite the previous value.
-				if (log != null && log.isDebug()) {
-					log.debug(overwriteMessage(false, type, key, value, existing));
-				}
-				return false;
-			}
-			if (log != null && log.isDebug()) {
-				// In debug mode, warn about overwriting.
-				log.debug(overwriteMessage(true, type, key, value, existing));
-			}
-		}
-
-		map.put(key, value);
-		return true;
+		return list.add(value);
 	}
 
 	/** Helper method of {@link #add(ScriptEngineFactory, boolean)}. */
 	private ScriptLanguage wrap(final ScriptEngineFactory factory) {
 		if (factory instanceof ScriptLanguage) return (ScriptLanguage) factory;
 		return new AdaptedScriptLanguage(factory);
-	}
-
-	/** Helper method of {@link #put}. */
-	private String overwriteMessage(final boolean overwrite, final String type,
-		final String key, final ScriptLanguage proposed,
-		final ScriptLanguage existing)
-	{
-		return (overwrite ? "Overwriting " : "Not overwriting ") + //
-			type + " '" + key + "':\n" + //
-			"\tproposed = " + details(proposed) + "\n" + "\texisting = " + details(
-				existing);
-	}
-
-	/** Helper method of {@link #overwriteMessage}. */
-	private String details(final ScriptLanguage language) {
-		final Class<?> c = language.getClass();
-		return c.getName() + " [" + Types.location(c);
 	}
 }

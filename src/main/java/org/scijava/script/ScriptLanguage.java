@@ -76,6 +76,16 @@ public interface ScriptLanguage extends ScriptEngineFactory, RichPlugin,
 	}
 
 	/**
+	 * Flag for complex languages that need to limit execution to a specific
+	 * context.
+	 *
+	 * @return true if this language is available for selection
+	 */
+	default boolean isActive() {
+		return true;
+	}
+
+	/**
 	 * Performs any necessary conversion of an encoded object retrieved from the
 	 * language's script engine.
 	 *
