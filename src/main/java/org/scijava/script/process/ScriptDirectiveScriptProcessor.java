@@ -38,6 +38,8 @@ import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.script.ScriptLanguage;
+import org.scijava.script.ScriptService;
 
 /**
  * A {@link ScriptProcessor} which parses the {@code #@script} directive.
@@ -97,7 +99,7 @@ import org.scijava.plugin.Plugin;
 public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 
 	public ScriptDirectiveScriptProcessor() {
-		super(directive -> "script".equals(directive));
+		super("script"::equals);
 	}
 
 	@Parameter
@@ -105,6 +107,9 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 	
 	@Parameter
 	private ModuleService moduleService;
+
+	@Parameter
+	private ScriptService scriptService;
 
 	// -- Internal DirectiveScriptProcessor methods --
 
@@ -125,6 +130,10 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 		if (is(k, "name")) info().setName(as(v, String.class));
 		else if (is(k, "label")) info().setLabel(as(v, String.class));
 		else if (is(k, "description")) info().setDescription(as(v, String.class));
+		else if (is(k, "language")) {
+			ScriptLanguage lang = parseScriptLanguage(v.toString());
+			if (lang != null) info().setLanguage(lang);
+		}
 		else if (is(k, "menuPath")) {
 			info().setMenuPath(new MenuPath(as(v, String.class)));
 		}
@@ -160,5 +169,13 @@ public class ScriptDirectiveScriptProcessor extends DirectiveScriptProcessor {
 		if (lString.matches("extremely[ _-]?low")) return Priority.EXTREMELY_LOW;
 		if (lString.matches("last")) return Priority.LAST;
 		return null;
+	}
+
+	private ScriptLanguage parseScriptLanguage(final Object v) {
+		final String langHint = v.toString();
+		ScriptLanguage lang = scriptService.getLanguageByName(langHint);
+		if (lang == null) lang = scriptService.getLanguageByExtension(langHint);
+		if (lang == null) log.warn("Unknown script language: " + langHint);
+		return lang;
 	}
 }
