@@ -30,6 +30,7 @@
 package org.scijava.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -120,8 +121,15 @@ public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 		}
 
 		if (item.isRequired()) {
-			throw new ModuleException("A " + type.getSimpleName() +
-				" is required but none exist.");
+			final List<String> vowelSoundPrefixes = Arrays.asList(
+				"a", "e", "i", "o", "u", "honor", "honour", "hour", "xml"
+			);
+			final String typeName = type.getSimpleName();
+			final String article = vowelSoundPrefixes.stream().anyMatch(
+				prefix -> typeName.toLowerCase().startsWith(prefix)
+			) ? "An" : "A";
+			throw new ModuleException(article + " " + typeName +
+				" is required but none is available.");
 		}
 
 		// item is not required; we can skip it
