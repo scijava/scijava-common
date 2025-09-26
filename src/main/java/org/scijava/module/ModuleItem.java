@@ -153,6 +153,15 @@ public interface ModuleItem<T> extends BasicDetails {
 	 * interface.
 	 */
 	String getWidgetStyle();
+	
+	/**
+	 * Gets the name of the group the widget belongs to so it can be displayed within
+	 * the group.
+	 */
+	String getWidgetGroup();
+	
+	/** Returns the state of the widget group, expanded and visible or not expanded and hidden. */
+	boolean isExpanded();
 
 	/** Gets the default value. */
 	T getDefaultValue();
