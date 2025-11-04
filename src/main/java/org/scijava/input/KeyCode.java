@@ -633,6 +633,87 @@ public enum KeyCode {
 	}
 
 	/**
+	 * Gets the KeyCode corresponding to the given character,
+	 * or {@link #UNDEFINED} if no such code.
+	 */
+	public static KeyCode get(final char c) {
+		switch (c) {
+			case '\n': case '\r': return ENTER;
+			case '\b': return BACK_SPACE;
+			case '\t': return TAB;
+			case 0x1b: return ESCAPE;
+			case ' ': return SPACE;
+			case ',': return COMMA;
+			case '-': return MINUS;
+			case '.': return PERIOD;
+			case '/': return SLASH;
+			case '0': return NUM0;
+			case '1': return NUM1;
+			case '2': return NUM2;
+			case '3': return NUM3;
+			case '4': return NUM4;
+			case '5': return NUM5;
+			case '6': return NUM6;
+			case '7': return NUM7;
+			case '8': return NUM8;
+			case '9': return NUM9;
+			case ';': return SEMICOLON;
+			case '=': return EQUALS;
+			case 'a': case 'A': return A;
+			case 'b': case 'B': return B;
+			case 'c': case 'C': return C;
+			case 'd': case 'D': return D;
+			case 'e': case 'E': return E;
+			case 'f': case 'F': return F;
+			case 'g': case 'G': return G;
+			case 'h': case 'H': return H;
+			case 'i': case 'I': return I;
+			case 'j': case 'J': return J;
+			case 'k': case 'K': return K;
+			case 'l': case 'L': return L;
+			case 'm': case 'M': return M;
+			case 'n': case 'N': return N;
+			case 'o': case 'O': return O;
+			case 'p': case 'P': return P;
+			case 'q': case 'Q': return Q;
+			case 'r': case 'R': return R;
+			case 's': case 'S': return S;
+			case 't': case 'T': return T;
+			case 'u': case 'U': return U;
+			case 'v': case 'V': return V;
+			case 'w': case 'W': return W;
+			case 'x': case 'X': return X;
+			case 'y': case 'Y': return Y;
+			case 'z': case 'Z': return Z;
+			case '[': return OPEN_BRACKET;
+			case '\\': return BACK_SLASH;
+			case ']': return CLOSE_BRACKET;
+			case '`': return BACK_QUOTE;
+			case '\'': return QUOTE;
+			case '&': return AMPERSAND;
+			case '*': return ASTERISK;
+			case '"': return QUOTEDBL;
+			case '<': return LESS;
+			case '>': return GREATER;
+			case '{': return BRACELEFT;
+			case '}': return BRACERIGHT;
+			case '@': return AT;
+			case ':': return COLON;
+			case '^': return CIRCUMFLEX;
+			case '$': return DOLLAR;
+			case '€': return EURO_SIGN;
+			case '!': return EXCLAMATION_MARK;
+			case 161: return INVERTED_EXCLAMATION_MARK;
+			case '(': return LEFT_PARENTHESIS;
+			case '#': return NUMBER_SIGN;
+			case '+': return PLUS;
+			case ')': return RIGHT_PARENTHESIS;
+			case '_': return UNDERSCORE;
+		}
+		return UNDEFINED;
+	}
+
+	/**
 	 * Gets the KeyCode with the given name, or {@link #UNDEFINED} if no such
 	 * code.
 	 */
