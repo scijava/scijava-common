@@ -81,6 +81,11 @@ public class KeyCodeTest {
 		assertEquals(KeyCode.A, KeyCode.get("A"));
 		assertEquals(KeyCode.Z, KeyCode.get("Z"));
 
+		// The next ones should fall back to get(char).
+		assertEquals(KeyCode.NUM0, KeyCode.get("0"));
+		assertEquals(KeyCode.A, KeyCode.get("a"));
+		assertEquals(KeyCode.Z, KeyCode.get("z"));
+
 		assertEquals(KeyCode.UNDEFINED, KeyCode.get("UNDEFINED"));
 		assertEquals(KeyCode.UNDEFINED, KeyCode.get(""));
 		assertEquals(KeyCode.UNDEFINED, KeyCode.get("aa"));

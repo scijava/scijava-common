@@ -719,8 +719,10 @@ public enum KeyCode {
 	 */
 	public static KeyCode get(final String name) {
 		final KeyCode keyCode = NAMES.get(name);
-		if (keyCode == null) return UNDEFINED;
-		return keyCode;
+		if (keyCode != null) return keyCode;
+		// Not a code name, but maybe a direct character value?
+		if (name.length() == 1) return KeyCode.get(name.charAt(0));
+		return UNDEFINED;
 	}
 
 }
