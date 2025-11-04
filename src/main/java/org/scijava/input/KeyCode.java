@@ -52,7 +52,7 @@ public enum KeyCode {
 	CANCEL(0x03),
 
 	/** Clear. */
-	CLEAR(0x0C),
+	CLEAR(0x0c),
 
 	/** Shift (left or right). */
 	SHIFT(0x10),
@@ -70,7 +70,7 @@ public enum KeyCode {
 	CAPS_LOCK(0x14),
 
 	/** Escape. */
-	ESCAPE(0x1B),
+	ESCAPE(0x1b),
 
 	/** Space (' '). */
 	SPACE(0x20),
@@ -100,16 +100,16 @@ public enum KeyCode {
 	DOWN(0x28),
 
 	/** Comma (','). */
-	COMMA(0x2C),
+	COMMA(0x2c),
 
 	/** Minus ('-'). */
-	MINUS(0x2D),
+	MINUS(0x2d),
 
 	/** Period ('.'). */
-	PERIOD(0x2E),
+	PERIOD(0x2e),
 
 	/** Forward slash ('/'). */
-	SLASH(0x2F),
+	SLASH(0x2f),
 
 	/** Zero ('0', non-numpad). */
 	NUM0(0x30),
@@ -142,10 +142,10 @@ public enum KeyCode {
 	NUM9(0x39),
 
 	/** Semicolon (';'). */
-	SEMICOLON(0x3B),
+	SEMICOLON(0x3b),
 
 	/** Equals ('='). */
-	EQUALS(0x3D),
+	EQUALS(0x3d),
 
 	/** The letter A. */
 	A(0x41),
@@ -175,22 +175,22 @@ public enum KeyCode {
 	I(0x49),
 
 	/** The letter J. */
-	J(0x4A),
+	J(0x4a),
 
 	/** The letter K. */
-	K(0x4B),
+	K(0x4b),
 
 	/** The letter L. */
-	L(0x4C),
+	L(0x4c),
 
 	/** The letter M. */
-	M(0x4D),
+	M(0x4d),
 
 	/** The letter N. */
-	N(0x4E),
+	N(0x4e),
 
 	/** The letter O. */
-	O(0x4F),
+	O(0x4f),
 
 	/** The letter P. */
 	P(0x50),
@@ -223,16 +223,16 @@ public enum KeyCode {
 	Y(0x59),
 
 	/** The letter Z. */
-	Z(0x5A),
+	Z(0x5a),
 
 	/** Left bracket ('['). */
-	OPEN_BRACKET(0x5B),
+	OPEN_BRACKET(0x5b),
 
 	/** Backslash ('\\'). */
-	BACK_SLASH(0x5C),
+	BACK_SLASH(0x5c),
 
 	/** Right bracket (']'). */
-	CLOSE_BRACKET(0x5D),
+	CLOSE_BRACKET(0x5d),
 
 	/** Zero ('0') on numeric keypad. */
 	NUMPAD_0(0x60),
@@ -265,24 +265,24 @@ public enum KeyCode {
 	NUMPAD_9(0x69),
 
 	/** Asterisk ('*') on numeric keypad. */
-	NUMPAD_ASTERISK(0x6A),
+	NUMPAD_ASTERISK(0x6a),
 
 	/** Plus ('+') on numeric keypad. */
-	NUMPAD_PLUS(0x6B),
+	NUMPAD_PLUS(0x6b),
 
-	NUMPAD_SEPARATOR(0x6C),
+	NUMPAD_SEPARATOR(0x6c),
 
 	/** Minus ('-') on numeric keypad. */
-	NUMPAD_MINUS(0x6D),
+	NUMPAD_MINUS(0x6d),
 
 	/** Period ('.') on numeric keypad. */
-	NUMPAD_PERIOD(0x6E),
+	NUMPAD_PERIOD(0x6e),
 
 	/** Slash ('/') on numeric keypad. */
-	NUMPAD_SLASH(0x6F),
+	NUMPAD_SLASH(0x6f),
 
 	/** Delete (non-numpad). */
-	DELETE(0x7F),
+	DELETE(0x7f),
 
 	/** Num Lock. */
 	NUM_LOCK(0x90),
@@ -321,76 +321,76 @@ public enum KeyCode {
 	F10(0x79),
 
 	/** F11. */
-	F11(0x7A),
+	F11(0x7a),
 
 	/** F12. */
-	F12(0x7B),
+	F12(0x7b),
 
 	/** F13. */
-	F13(0xF000),
+	F13(0xf000),
 
 	/** F14. */
-	F14(0xF001),
+	F14(0xf001),
 
 	/** F15. */
-	F15(0xF002),
+	F15(0xf002),
 
 	/** F16. */
-	F16(0xF003),
+	F16(0xf003),
 
 	/** F17. */
-	F17(0xF004),
+	F17(0xf004),
 
 	/** F18 */
-	F18(0xF005),
+	F18(0xf005),
 
 	/** F19. */
-	F19(0xF006),
+	F19(0xf006),
 
 	/** F20. */
-	F20(0xF007),
+	F20(0xf007),
 
 	/** F21. */
-	F21(0xF008),
+	F21(0xf008),
 
 	/** F22. */
-	F22(0xF009),
+	F22(0xf009),
 
 	/** F23. */
-	F23(0xF00A),
+	F23(0xf00a),
 
 	/** F24. */
-	F24(0xF00B),
+	F24(0xf00b),
 
 	/** Print Screen. */
-	PRINTSCREEN(0x9A),
+	PRINTSCREEN(0x9a),
 
 	/** Insert. */
-	INSERT(0x9B),
+	INSERT(0x9b),
 
 	/** Help. */
-	HELP(0x9C),
+	HELP(0x9c),
 
 	/** Meta. */
-	META(0x9D),
+	META(0x9d),
 
 	/** Backquote ('`'). */
-	BACK_QUOTE(0xC0),
+	BACK_QUOTE(0xc0),
 
 	/** Single quote ('\''). */
-	QUOTE(0xDE),
+	QUOTE(0xde),
 
 	/** Up arrow on numeric keypad. */
-	KP_UP(0xE0),
+	KP_UP(0xe0),
 
 	/** Down arrow on numeric keypad. */
-	KP_DOWN(0xE1),
+	KP_DOWN(0xe1),
 
 	/** Left arrow on numeric keypad. */
-	KP_LEFT(0xE2),
+	KP_LEFT(0xe2),
 
 	/** Right arrow on numeric keypad. */
-	KP_RIGHT(0xE3),
+	KP_RIGHT(0xe3),
 
 	/** TODO. */
 	DEAD_GRAVE(0x80),
@@ -492,51 +492,51 @@ public enum KeyCode {
 	PLUS(0x0209),
 
 	/** Right parenthesis (')'). */
-	RIGHT_PARENTHESIS(0x020A),
+	RIGHT_PARENTHESIS(0x020a),
 
 	/** Underscore ('_'). */
-	UNDERSCORE(0x020B),
+	UNDERSCORE(0x020b),
 
 	/** Windows key (both left and right). */
-	WINDOWS(0x020C),
+	WINDOWS(0x020c),
 
 	/** Windows Context Menu key. */
-	CONTEXT_MENU(0x020D),
+	CONTEXT_MENU(0x020d),
 
 	FINAL(0x0018),
 
 	/** Convert function key. */
-	CONVERT(0x001C),
+	CONVERT(0x001c),
 
 	/** Don't Convert function key. */
-	NONCONVERT(0x001D),
+	NONCONVERT(0x001d),
 
 	/** Accept or Commit function key. */
-	ACCEPT(0x001E),
+	ACCEPT(0x001e),
 
-	MODECHANGE(0x001F),
+	MODECHANGE(0x001f),
 
 	KANA(0x0015),
 
 	KANJI(0x0019),
 
 	/** Alphanumeric function key. */
-	ALPHANUMERIC(0x00F0),
+	ALPHANUMERIC(0x00f0),
 
 	/** Katakana function key. */
-	KATAKANA(0x00F1),
+	KATAKANA(0x00f1),
 
 	/** Hiragana function key. */
-	HIRAGANA(0x00F2),
+	HIRAGANA(0x00f2),
 
 	/** Full-Width Characters function key. */
-	FULL_WIDTH(0x00F3),
+	FULL_WIDTH(0x00f3),
 
 	/** Half-Width Characters function key. */
-	HALF_WIDTH(0x00F4),
+	HALF_WIDTH(0x00f4),
 
 	/** Roman Characters function key. */
-	ROMAN_CHARACTERS(0x00F5),
+	ROMAN_CHARACTERS(0x00f5),
 
 	/** All Candidates function key. */
 	ALL_CANDIDATES(0x0100),
@@ -563,37 +563,37 @@ public enum KeyCode {
 	INPUT_METHOD_ON_OFF(0x0107),
 
 	/** Cut (Sun keyboard). */
-	CUT(0xFFD1),
+	CUT(0xffd1),
 
 	/** Copy (Sun keyboard). */
-	COPY(0xFFCD),
+	COPY(0xffcd),
 
 	/** Paste (Sun keyboard). */
-	PASTE(0xFFCF),
+	PASTE(0xffcf),
 
 	/** Undo (Sun keyboard). */
-	UNDO(0xFFCB),
+	UNDO(0xffcb),
 
 	/** Again (Sun keyboard). */
-	AGAIN(0xFFC9),
+	AGAIN(0xffc9),
 
 	/** Find (Sun keyboard). */
-	FIND(0xFFD0),
+	FIND(0xffd0),
 
 	/** Props (Sun keyboard). */
-	PROPS(0xFFCA),
+	PROPS(0xffca),
 
 	/** Stop (Sun keyboard). */
-	STOP(0xFFC8),
+	STOP(0xffc8),
 
 	/** Compose function key. */
-	COMPOSE(0xFF20),
+	COMPOSE(0xff20),
 
 	/** AltGraph function key. */
-	ALT_GRAPH(0xFF7E),
+	ALT_GRAPH(0xff7e),
 
 	/** Begin key. */
-	BEGIN(0xFF58),
+	BEGIN(0xff58),
 
 	/** Unknown code. */
 	UNDEFINED(0x0);
