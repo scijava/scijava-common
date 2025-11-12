@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.scijava.Priority;
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 /**
@@ -43,6 +45,9 @@ import org.scijava.plugin.Plugin;
  */
 @Plugin(type = Platform.class, name = "Default", priority = Priority.VERY_LOW)
 public class DefaultPlatform extends AbstractPlatform {
+
+	@Parameter(required = false)
+	private LogService log;
 
 	// -- PlatformHandler methods --
 
@@ -66,9 +71,14 @@ public class DefaultPlatform extends AbstractPlatform {
 			try {
 				final int exitCode = getPlatformService().exec(browser, url.toString());
 				if (exitCode == 0) return;
+				else if (log != null) {
+					log.debug("Command '" + browser +
+						"' failed with exit code " + exitCode);
+				}
 			}
 			catch (final IOException e) {
 				// browser executable was invalid; try the next one
+				if (log != null) log.debug("Command '" + browser + "' failed", e);
 			}
 		}
 		throw new IOException("Could not open " + url);
