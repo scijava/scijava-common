@@ -37,7 +37,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.names.NameProviderTest.ThirdPartyObject;
+import org.scijava.names.NameProviderTest.ThirdPartyObjectNameProvider;
+import org.scijava.names.NameProvider;
+import org.scijava.names.NameService;
 import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.PluginService;
 import org.scijava.plugin.SciJavaPlugin;
 
 public class ObjectServiceTest {
@@ -47,7 +52,7 @@ public class ObjectServiceTest {
 
 	@Before
 	public void setUp() {
-		context = new Context(ObjectService.class);
+		context = new Context(ObjectService.class, NameService.class, PluginService.class);
 		objectService = context.getService(ObjectService.class);
 	}
 
@@ -64,6 +69,8 @@ public class ObjectServiceTest {
 		Object obj3 = new Double(0.3);
 		PluginInfo<SciJavaPlugin> obj4 = PluginInfo.create(TestPlugin.class, SciJavaPlugin.class);
 		obj4.setName("TestPlugin name");
+		String name5 = "Third-party object";
+		ThirdPartyObject obj5 = new ThirdPartyObject(name5);
 
 		objectService.addObject(obj1, name1);
 		assertEquals("Name of object 1", name1, objectService.getName(obj1));
@@ -74,6 +81,10 @@ public class ObjectServiceTest {
 		objectService.addObject(obj4);
 		assertNotNull(objectService.getName(obj4));
 		assertEquals("Name of object 4", obj4.getName(), objectService.getName(obj4));
+		assertNotNull(objectService.getName(obj5));
+		assertEquals("Name of object 5 before adding NameProvider", obj5.getClass().getName() + "@" + Integer.toHexString(obj5.hashCode()), objectService.getName(obj5));
+		context.service(PluginService.class).addPlugin(PluginInfo.create(ThirdPartyObjectNameProvider.class, NameProvider.class));
+		assertEquals("Name of object 5 after adding NameProvider", obj5.someNonStandardMethod(), objectService.getName(obj5));
 
 		assertTrue("Object 1 registered", objectService.getObjects(Object.class).contains(obj1));
 		assertTrue("Object 2 registered", objectService.getObjects(Object.class).contains(obj2));
