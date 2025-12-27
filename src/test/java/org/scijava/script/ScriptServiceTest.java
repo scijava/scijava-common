@@ -40,8 +40,11 @@ import java.util.List;
 
 import javax.script.ScriptException;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.script.ScriptInfoTest.BindingSizes;
 import org.scijava.util.AppUtils;
 import org.scijava.util.ColorRGB;
 import org.scijava.util.ColorRGBA;
@@ -52,6 +55,20 @@ import org.scijava.util.ColorRGBA;
  * @author Curtis Rueden
  */
 public class ScriptServiceTest {
+
+	private Context context;
+	private ScriptService scriptService;
+
+	@Before
+	public void setUp() {
+		context = new Context(ScriptService.class);
+		scriptService = context.service(ScriptService.class);
+	}
+	
+	@After
+	public void tearDown() {
+		context.dispose();
+	}
 
 	/**
 	 * Tests that the "scijava.scripts.path" system property is handled correctly.
@@ -65,9 +82,6 @@ public class ScriptServiceTest {
 		final String dir2 = root + "to" + slash + "the" + slash + "moon";
 		System.setProperty("scijava.scripts.path", dir1 + sep + dir2);
 
-		final Context context = new Context(ScriptService.class);
-		final ScriptService scriptService = context.service(ScriptService.class);
-
 		final List<File> scriptDirs = scriptService.getScriptDirectories();
 		assertEquals(3, scriptDirs.size());
 
@@ -80,9 +94,6 @@ public class ScriptServiceTest {
 
 	@Test
 	public void testBuiltInAliases() throws ScriptException {
-		final Context ctx = new Context(ScriptService.class);
-		final ScriptService ss = ctx.service(ScriptService.class);
-
 		final Class<?>[] builtIns = { boolean.class, byte.class, char.class,
 			double.class, float.class, int.class, long.class, short.class,
 			Boolean.class, Byte.class, Character.class, Double.class, Float.class,
@@ -91,39 +102,44 @@ public class ScriptServiceTest {
 			String.class };
 
 		for (final Class<?> builtIn : builtIns) {
-			final Class<?> c = ss.lookupClass(builtIn.getSimpleName());
+			final Class<?> c = scriptService.lookupClass(builtIn.getSimpleName());
 			assertSame(builtIn, c);
 		}
-
-		ctx.dispose();
 	}
 
 	@Test
 	public void testArrayAliases() throws ScriptException {
-		final Context ctx = new Context(ScriptService.class);
-		final ScriptService ss = ctx.service(ScriptService.class);
-
-		final Class<?> pInt2D = ss.lookupClass("int[][]");
+		final Class<?> pInt2D = scriptService.lookupClass("int[][]");
 		assertSame(int[][].class, pInt2D);
-		final Class<?> pInt1D = ss.lookupClass("int[]");
+		final Class<?> pInt1D = scriptService.lookupClass("int[]");
 		assertSame(int[].class, pInt1D);
-		final Class<?> pInt = ss.lookupClass("int");
+		final Class<?> pInt = scriptService.lookupClass("int");
 		assertSame(int.class, pInt);
 
-		final Class<?> oInt2D = ss.lookupClass("Integer[][]");
+		final Class<?> oInt2D = scriptService.lookupClass("Integer[][]");
 		assertSame(Integer[][].class, oInt2D);
-		final Class<?> oInt1D = ss.lookupClass("Integer[]");
+		final Class<?> oInt1D = scriptService.lookupClass("Integer[]");
 		assertSame(Integer[].class, oInt1D);
-		final Class<?> oInt = ss.lookupClass("Integer");
+		final Class<?> oInt = scriptService.lookupClass("Integer");
 		assertSame(Integer.class, oInt);
 
-		final Class<?> str2D = ss.lookupClass("String[][]");
+		final Class<?> str2D = scriptService.lookupClass("String[][]");
 		assertSame(String[][].class, str2D);
-		final Class<?> str1D = ss.lookupClass("String[]");
+		final Class<?> str1D = scriptService.lookupClass("String[]");
 		assertSame(String[].class, str1D);
-		final Class<?> str = ss.lookupClass("String");
+		final Class<?> str = scriptService.lookupClass("String");
 		assertSame(String.class, str);
+	}
 
-		ctx.dispose();
+	@Test
+	public void testGetScript() {
+		String script = "#@ String name\n" + 
+				"#@output String greeting\n" + 
+				"greeting = \"Hello, \" + name + \"!\"";
+		// see ScriptInfoTest for the .bsizes ScriptLanguage used here
+		ScriptInfo scriptInfo = scriptService.getScript(".bsizes", script);
+		assertEquals(BindingSizes.class, scriptInfo.getLanguage().getClass());
+		assertEquals("name", scriptInfo.inputs().iterator().next().getName());
+		assertEquals("greeting", scriptInfo.outputs().iterator().next().getName());
 	}
 }
