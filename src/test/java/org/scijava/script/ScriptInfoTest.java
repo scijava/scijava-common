@@ -31,6 +31,8 @@ package org.scijava.script;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -335,6 +337,35 @@ public class ScriptInfoTest {
 		assertEquals(Priority.EXTREMELY_HIGH, info.getPriority(), 0.0);
 		assertTrue(info.canRunHeadless());
 		assertEquals("bar", info.get("foo"));
+	}
+
+	/** Tests the {@code language} key of the {@code #@script} directive. */
+	@Test
+	public void testScriptDirectiveLanguage() {
+		// Use a .txt extension so language is NOT auto-inferred from the path.
+		// Confirm it starts out null (no language for .txt).
+		final String scriptByName = "#@script(language=\"BindingSizes\")\nWOOT\n";
+		final ScriptInfo infoByName =
+			new ScriptInfo(context, "test.txt", new StringReader(scriptByName));
+		assertNull(infoByName.getLanguage()); // no language yet
+		infoByName.inputs(); // trigger parsing
+		assertNotNull(infoByName.getLanguage());
+		assertTrue(infoByName.getLanguage().getNames().contains("BindingSizes"));
+
+		// Also confirm lookup by file extension works.
+		final String scriptByExt = "#@script(language=\"bsizes\")\nWOOT\n";
+		final ScriptInfo infoByExt =
+			new ScriptInfo(context, "test.txt", new StringReader(scriptByExt));
+		infoByExt.inputs();
+		assertNotNull(infoByExt.getLanguage());
+		assertTrue(infoByExt.getLanguage().getExtensions().contains("bsizes"));
+
+		// Unknown language name should leave language unset (null for .txt path).
+		final String scriptBogus = "#@script(language=\"no-such-language\")\nWOOT\n";
+		final ScriptInfo infoBogus =
+			new ScriptInfo(context, "test.txt", new StringReader(scriptBogus));
+		infoBogus.inputs();
+		assertNull(infoBogus.getLanguage());
 	}
 
 	/**
