@@ -160,8 +160,13 @@ public abstract class AbstractModule implements Module {
 				item.validate(this);
 			}
 			catch (final MethodCallException exc) {
-				// NB: Hacky, but avoids changing the API signature.
-				throw new RuntimeException(exc);
+				// NB: resolveInput cannot declare checked exceptions, so we wrap.
+				// Prefer the cause's message (the user-facing validation error) when
+				// available; otherwise fall back to the MethodCallException's message.
+				final Throwable cause = exc.getCause();
+				final String message = (cause != null && cause.getMessage() != null &&
+					!cause.getMessage().isEmpty()) ? cause.getMessage() : exc.getMessage();
+				throw new RuntimeException(message, exc);
 			}
 		}
 		resolvedInputs.add(name);

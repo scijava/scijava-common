@@ -79,6 +79,8 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 
 	private boolean initialized;
 
+	private String validationMessage;
+
 	public DefaultWidgetModel(final Context context, final InputPanel<?, ?> inputPanel,
 		final Module module, final ModuleItem<?> item, final List<?> objectPool)
 	{
@@ -167,6 +169,11 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 		if (initialized) {
 			threadService.queue(() -> {
 				callback();
+				// Revalidate all inputs: changing one value may affect others' validity.
+				for (final ModuleItem<?> anyItem : module.getInfo().inputs()) {
+					final InputWidget<?, ?> w = inputPanel.getWidget(anyItem.getName());
+					if (w != null) w.get().updateValidation();
+				}
 				inputPanel.refresh(); // must be on AWT thread?
 				module.preview();
 			});
@@ -282,6 +289,16 @@ public class DefaultWidgetModel extends AbstractContextual implements WidgetMode
 	@Override
 	public boolean isInitialized() {
 		return initialized;
+	}
+
+	@Override
+	public String getValidationMessage() {
+		return validationMessage;
+	}
+
+	@Override
+	public void updateValidation() {
+		validationMessage = item.validateMessage(module);
 	}
 
 	// -- Helper methods --

@@ -210,7 +210,12 @@ public abstract class AbstractModuleItem<T> extends AbstractBasicDetails
 		if (validaterRef == null) {
 			validaterRef = new MethodRef(delegateObject.getClass(), getValidater());
 		}
-		validaterRef.execute(module.getDelegateObject());
+		final Object result = validaterRef.executeWithResult(module.getDelegateObject());
+		// If the validater returns a non-empty String, treat it as an error message.
+		if (result instanceof String) {
+			final String message = (String) result;
+			if (!message.isEmpty()) throw new MethodCallException(message);
+		}
 	}
 
 	@Override

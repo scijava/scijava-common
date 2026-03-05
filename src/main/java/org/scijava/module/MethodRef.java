@@ -62,9 +62,15 @@ public class MethodRef implements Validated {
 	public void execute(final Object obj, final Object... args)
 		throws MethodCallException
 	{
-		if (method == null) return;
+		executeWithResult(obj, args);
+	}
+
+	public Object executeWithResult(final Object obj, final Object... args)
+		throws MethodCallException
+	{
+		if (method == null) return null;
 		try {
-			method.invoke(obj, args);
+			return method.invoke(obj, args);
 		}
 		catch (final Exception exc) {
 			// NB: Several types of exceptions; simpler to handle them all the same.

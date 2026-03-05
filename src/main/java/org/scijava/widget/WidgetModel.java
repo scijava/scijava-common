@@ -188,6 +188,27 @@ public interface WidgetModel extends Contextual {
 	boolean isType(Class<?> type);
 
 	/**
+	 * Gets the current validation error message for this widget.
+	 *
+	 * @return the error message from the most recent validation run, or
+	 *         {@code null} if the last validation passed or no validation has
+	 *         been run yet.
+	 * @see org.scijava.module.ModuleItem#validateMessage(org.scijava.module.Module)
+	 */
+	String getValidationMessage();
+
+	/**
+	 * Re-runs this item's validation and updates the stored validation message.
+	 * <p>
+	 * This should be called on all widgets whenever any parameter value changes,
+	 * since a change to one parameter may affect the validity of others.
+	 * </p>
+	 *
+	 * @see #getValidationMessage()
+	 */
+	void updateValidation();
+
+	/**
 	 * Toggles the widget's initialization state. An initialized widget can be
 	 * assumed to be an active part of a container {@link InputPanel}.
 	 */

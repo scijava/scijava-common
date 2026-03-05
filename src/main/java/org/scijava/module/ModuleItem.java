@@ -126,10 +126,51 @@ public interface ModuleItem<T> extends BasicDetails {
 
 	/**
 	 * Invokes this item's validation function, if any, on the given module.
-	 * 
+	 * <p>
+	 * The validation function may signal failure either by throwing an exception
+	 * or by returning a non-empty {@link String} error message.
+	 * </p>
+	 *
+	 * @throws MethodCallException if validation fails or the method cannot be
+	 *           invoked. When the validater returns a non-empty String, a
+	 *           {@link MethodCallException} is thrown with that string as its
+	 *           message.
 	 * @see #getValidater()
+	 * @see #validateMessage(Module)
 	 */
 	void validate(Module module) throws MethodCallException;
+
+	/**
+	 * Validates this item's value in the given module, returning any error
+	 * message rather than throwing.
+	 * <p>
+	 * The validation function may signal failure either by throwing an exception
+	 * or by returning a non-empty {@link String} error message. This method
+	 * catches both cases and returns the error message as a string, or
+	 * {@code null} if the value is valid.
+	 * </p>
+	 *
+	 * @return an error message if the value is invalid, or {@code null} if valid.
+	 * @see #getValidater()
+	 * @see #validate(Module)
+	 */
+	default String validateMessage(final Module module) {
+		try {
+			validate(module);
+			return null;
+		}
+		catch (final MethodCallException exc) {
+			// Unwrap to find the most informative message.
+			final Throwable cause = exc.getCause();
+			if (cause != null && cause.getMessage() != null &&
+				!cause.getMessage().isEmpty())
+			{
+				return cause.getMessage();
+			}
+			final String msg = exc.getMessage();
+			return msg != null && !msg.isEmpty() ? msg : exc.toString();
+		}
+	}
 
 	/**
 	 * Gets the function that is called whenever this item changes.
