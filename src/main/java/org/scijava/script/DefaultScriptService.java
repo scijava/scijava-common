@@ -30,6 +30,7 @@
 package org.scijava.script;
 
 import java.io.File;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -157,6 +158,11 @@ public class DefaultScriptService extends
 	@Override
 	public ScriptInfo getScript(final File scriptFile) {
 		return getOrCreate(scriptFile);
+	}
+
+	@Override
+	public ScriptInfo getScript(final String path, final String script) {
+		return new ScriptInfo(getContext(), path, new StringReader(script));
 	}
 
 	@Override
