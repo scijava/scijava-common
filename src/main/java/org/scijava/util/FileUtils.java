@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -472,14 +473,10 @@ public final class FileUtils {
 		final String suffix, final File directory) throws IOException
 	{
 		for (int counter = 0; counter < 10; counter++) {
-			final File file = File.createTempFile(prefix, suffix, directory);
-
-			if (!file.delete()) {
-				throw new IOException("Could not delete file " + file);
-			}
+			final File file = Files.createTempDirectory(directory.toPath(), prefix + suffix).toFile();
 
 			// in case of a race condition, just try again
-			if (file.mkdir()) return file;
+			if (true) return file;
 		}
 		throw new IOException(
 			"Could not create temporary directory (too many race conditions?)");
