@@ -30,10 +30,8 @@
 package org.scijava.io.handle;
 
 import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.UTFDataFormatException;
 
 import org.scijava.io.location.Location;
 import org.scijava.task.Task;
@@ -45,8 +43,6 @@ import org.scijava.task.Task;
  * @author Gabriel Einsdorf
  */
 public final class DataHandles {
-
-	private static Method utfMethod;
 
 	private DataHandles() {
 		// Prevent instantiation of utility class.
@@ -74,40 +70,38 @@ public final class DataHandles {
 	public static int writeUTF(final String str, final DataOutput out)
 		throws IOException
 	{
-		// HACK: Strangely, DataOutputStream.writeUTF(String, DataOutput)
-		// has package-private access. We work around it via reflection.
-		try {
-			return (Integer) utfMethod().invoke(null, str, out);
+		// Encode string as modified UTF-8 per java.io.DataOutput specification.
+		final int strlen = str.length();
+		int utflen = 0;
+		for (int i = 0; i < strlen; i++) {
+			final char c = str.charAt(i);
+			if (c >= '\u0001' && c <= '\u007F') utflen += 1;
+			else if (c <= '\u07FF') utflen += 2;
+			else utflen += 3;
 		}
-		catch (final IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException exc)
-		{
-			throw new IllegalStateException(
-				"Cannot invoke DataOutputStream.writeUTF(String, DataOutput)", exc);
+		if (utflen > 65535) throw new UTFDataFormatException(
+			"encoded string too long: " + utflen + " bytes");
+		final byte[] bytes = new byte[utflen + 2];
+		bytes[0] = (byte) ((utflen >>> 8) & 0xFF);
+		bytes[1] = (byte) (utflen & 0xFF);
+		int pos = 2;
+		for (int i = 0; i < strlen; i++) {
+			final char c = str.charAt(i);
+			if (c >= '\u0001' && c <= '\u007F') {
+				bytes[pos++] = (byte) c;
+			}
+			else if (c <= '\u07FF') {
+				bytes[pos++] = (byte) (0xC0 | ((c >> 6) & 0x1F));
+				bytes[pos++] = (byte) (0x80 | (c & 0x3F));
+			}
+			else {
+				bytes[pos++] = (byte) (0xE0 | ((c >> 12) & 0x0F));
+				bytes[pos++] = (byte) (0x80 | ((c >> 6) & 0x3F));
+				bytes[pos++] = (byte) (0x80 | (c & 0x3F));
+			}
 		}
-	}
-
-	// -- Helper methods --
-
-	/** Gets the {@link #utfMethod} field, initializing if needed. */
-	private static Method utfMethod() {
-		if (utfMethod == null) initUTFMethod();
-		return utfMethod;
-	}
-
-	/** Initializes the {@link #utfMethod} field. */
-	private static synchronized void initUTFMethod() {
-		if (utfMethod != null) return;
-		try {
-			final Method m = DataOutputStream.class.getDeclaredMethod("writeUTF",
-				String.class, DataOutput.class);
-			m.setAccessible(true);
-			utfMethod = m;
-		}
-		catch (final NoSuchMethodException | SecurityException exc) {
-			throw new IllegalStateException(
-				"No usable DataOutputStream.writeUTF(String, DataOutput)", exc);
-		}
+		out.write(bytes);
+		return utflen + 2;
 	}
 	
 	protected static IOException readOnlyException() {
