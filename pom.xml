@@ -223,10 +223,21 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>index-annotations</id>
 						<phase>process-classes</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>index-test-annotations</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<classpathScope>test</classpathScope>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>
