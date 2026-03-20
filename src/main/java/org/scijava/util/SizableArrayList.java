@@ -29,9 +29,9 @@
 
 package org.scijava.util;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * An {@link ArrayList} whose size can be adjusted more efficiently.
@@ -84,42 +84,8 @@ public class SizableArrayList<E> extends ArrayList<E> implements Sizable {
 		else {
 			// need to add some elements
 			ensureCapacity(size);
-			final boolean hackSuccessful = hackSize(size);
-			if (!hackSuccessful) {
-				// explicitly increase the size by adding nulls
-				while (size() < size) add(null);
-			}
+			addAll(Collections.nCopies(size - oldSize, null));
 		}
-	}
-
-	// -- Helper methods --
-
-	private boolean hackSize(final int size) {
-		// HACK: Override the size field directly.
-		final int oldSize;
-		try {
-			final Field sizeField = ArrayList.class.getDeclaredField("size");
-			sizeField.setAccessible(true);
-			oldSize = (Integer) sizeField.get(this);
-			sizeField.set(this, size);
-
-			// NB: Check that it worked. In the case of Java 1.7.0_45, it is possible
-			// for the capacity to not *actually* be ensured, in which case
-			// subsequently attempting to get the (size - 1)th value results in
-			// ArrayIndexOutOfBoundsException. So let's be safe and verify it here.
-			try {
-				get(size - 1);
-			}
-			catch (final Exception exc) {
-				// NB: Restore the previous size, then fail.
-				sizeField.set(this, oldSize);
-				return false;
-			}
-		}
-		catch (final Exception exc) {
-			return false;
-		}
-		return true;
 	}
 
 }
