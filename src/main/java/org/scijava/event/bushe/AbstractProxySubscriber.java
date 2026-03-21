@@ -1,9 +1,9 @@
 package org.scijava.event.bushe;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Common base class for EventService Proxies.
@@ -104,18 +104,26 @@ public abstract class AbstractProxySubscriber implements ProxySubscriber, Priori
          AccessibleObject[] accessibleMethod = {subscriptionMethod};
          try {
             AccessibleObject.setAccessible(accessibleMethod, true);
-            Object returnValue = subscriptionMethod.invoke(obj, args);
-            return Boolean.valueOf(returnValue+"");
          } catch (SecurityException ex) {
+            // SecurityManager (Java 8 and earlier) denied setAccessible
             accessibleTriedAndFailed = true;
-         } catch (InvocationTargetException e1) {
-            throw new RuntimeException(message, e);
-         } catch (IllegalAccessException e1) {
-            throw new RuntimeException(message, e);
+         } catch (RuntimeException ex) {
+            // InaccessibleObjectException (Java 9+) or similar denied setAccessible
+            accessibleTriedAndFailed = true;
+         }
+         if (!accessibleTriedAndFailed) {
+            try {
+               Object returnValue = subscriptionMethod.invoke(obj, args);
+               return Boolean.valueOf(returnValue+"");
+            } catch (InvocationTargetException e1) {
+               throw new RuntimeException(message, e);
+            } catch (IllegalAccessException e1) {
+               throw new RuntimeException(message, e);
+            }
          }
       }
       if (accessibleTriedAndFailed) {
-         message = message + ".  An attempt was made to make the method accessible, but the SecurityManager denied the attempt.";
+         message = message + ".  An attempt was made to make the method accessible, but access was denied.";
       }
       throw new RuntimeException(message, e);
    }

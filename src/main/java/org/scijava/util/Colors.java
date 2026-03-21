@@ -115,8 +115,7 @@ public final class Colors {
 	public static final ColorRGB LIGHTBLUE = new ColorRGB(173, 216, 230);
 	public static final ColorRGB LIGHTCORAL = new ColorRGB(240, 128, 128);
 	public static final ColorRGB LIGHTCYAN = new ColorRGB(224, 255, 255);
-	public static final ColorRGB LIGHTGOLDENRODYELLOW = new ColorRGB(250, 250,
-		210);
+	public static final ColorRGB LIGHTGOLDENRODYELLOW = new ColorRGB(250, 250, 210);
 	public static final ColorRGB LIGHTGRAY = new ColorRGB(211, 211, 211);
 	public static final ColorRGB LIGHTGREEN = new ColorRGB(144, 238, 144);
 	public static final ColorRGB LIGHTGREY = LIGHTGRAY;
@@ -194,19 +193,15 @@ public final class Colors {
 	public static final ColorRGB YELLOW = new ColorRGB(255, 255, 0);
 	public static final ColorRGB YELLOWGREEN = new ColorRGB(154, 205, 50);
 
-	private static final Map<String, ColorRGB> COLORS =
-		new HashMap<>();
+	private static final Map<String, ColorRGB> COLORS = new HashMap<>();
 
 	static {
-		for (final Field f : Colors.class.getDeclaredFields()) {
+		for (final Field f : Colors.class.getFields()) {
 			final Object value;
 			try {
 				value = f.get(null);
 			}
-			catch (final IllegalArgumentException e) {
-				continue;
-			}
-			catch (final IllegalAccessException e) {
+			catch (final IllegalAccessException | IllegalArgumentException e) {
 				continue;
 			}
 			if (!(value instanceof ColorRGB)) continue; // not a color
