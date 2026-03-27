@@ -34,6 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -247,6 +248,49 @@ public class SingletonServiceTest {
 			.size());
 		assertEquals("Wrong number of plugins in independent service:", 1, dss2
 			.getInstances().size());
+	}
+
+	/**
+	 * Tests that a {@link SingletonPlugin} with an {@code @Parameter} for its
+	 * managing {@link SingletonService} has that parameter successfully injected.
+	 * This is a circular reference scenario: the service instantiates plugins
+	 * during initialization, and those plugins in turn require the service itself
+	 * to be injected. Historically SciJava Common had trouble with this pattern.
+	 */
+	@Test
+	public void testSingletonPluginInjectsManagingService() {
+		final Context ctx = new Context(PluginService.class, FooService.class);
+		try {
+			final FooService fooService = ctx.getService(FooService.class);
+
+			final List<FooPlugin> instances = fooService.getInstances();
+			assertEquals(1, instances.size());
+
+			final FooPlugin fooPlugin = instances.get(0);
+			assertNotNull("FooService was not injected into FooPlugin",
+				fooPlugin.fooService);
+			assertSame(fooService, fooPlugin.fooService);
+		}
+		finally {
+			ctx.dispose();
+		}
+	}
+
+	@Plugin(type = FooPlugin.class)
+	public static class FooPlugin extends AbstractRichPlugin implements
+		SingletonPlugin
+	{
+
+		@Parameter
+		FooService fooService;
+	}
+
+	public static class FooService extends AbstractSingletonService<FooPlugin> {
+
+		@Override
+		public Class<FooPlugin> getPluginType() {
+			return FooPlugin.class;
+		}
 	}
 
 	@Plugin(type = DummyPlugin.class)
