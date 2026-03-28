@@ -61,6 +61,10 @@ public interface MutableModuleItem<T> extends ModuleItem<T> {
 	void setCallback(String callback);
 
 	void setWidgetStyle(String widgetStyle);
+	
+	void setWidgetGroup(String widgetGroup);
+	
+	void setExpanded(boolean expanded);
 
 	void setDefaultValue(T defaultValue);
 
