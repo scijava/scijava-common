@@ -158,23 +158,6 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 		return outputList;
 	}
 
-	// -- Helper methods --
-
-	private <T> ModuleItem<T> castItem(final ModuleItem<?> item,
-		final Class<T> type)
-	{
-		final Class<?> itemType = item.getType();
-		// if (!type.isAssignableFrom(itemType)) {
-		final Class<?> saneItemType = Types.box(itemType);
-		if (!Types.isAssignable(type, saneItemType)) {
-			throw new IllegalArgumentException("Type " + type.getName() +
-				" is incompatible with item of type " + itemType.getName());
-		}
-		@SuppressWarnings("unchecked")
-		final ModuleItem<T> typedItem = (ModuleItem<T>) item;
-		return typedItem;
-	}
-
 	// -- Helper methods - lazy initialization --
 
 	/** Initializes data structures and parses parameters. */
@@ -191,4 +174,20 @@ public abstract class AbstractModuleInfo extends AbstractUIDetails implements
 		initialized = true;
 	}
 
+	// -- Helper methods --
+
+	private <T> ModuleItem<T> castItem(final ModuleItem<?> item,
+		final Class<T> type)
+	{
+		final Class<?> itemType = item.getType();
+		// if (!type.isAssignableFrom(itemType)) {
+		final Class<?> saneItemType = Types.box(itemType);
+		if (!Types.isAssignable(type, saneItemType)) {
+			throw new IllegalArgumentException("Type " + type.getName() +
+				" is incompatible with item of type " + itemType.getName());
+		}
+		@SuppressWarnings("unchecked")
+		final ModuleItem<T> typedItem = (ModuleItem<T>) item;
+		return typedItem;
+	}
 }
