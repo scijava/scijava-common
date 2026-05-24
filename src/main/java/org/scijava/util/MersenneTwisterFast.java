@@ -521,8 +521,8 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
 
 
 
-    /** This generates a coin flip with a probability <tt>probability</tt>
-        of returning true, else returning false.  <tt>probability</tt> must
+    /** This generates a coin flip with a probability <code>probability</code>
+        of returning true, else returning false.  <code>probability</code> must
         be between 0.0 and 1.0, inclusive.   Not as precise a random real
         event as nextBoolean(double), but twice as fast. To explicitly
         use this, remember you may need to cast to float first. */
@@ -567,8 +567,8 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
         }
 
 
-    /** This generates a coin flip with a probability <tt>probability</tt>
-        of returning true, else returning false.  <tt>probability</tt> must
+    /** This generates a coin flip with a probability <code>probability</code>
+        of returning true, else returning false.  <code>probability</code> must
         be between 0.0 and 1.0, inclusive. */
 
     public final boolean nextBoolean(final double probability)
@@ -928,7 +928,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
 
     /** Returns a double in the range from 0.0 to 1.0, possibly inclusive of 0.0 and 1.0 themselves.  Thus:
 
-        <table border=0 summary="Table">
+        <table><caption>Table</caption>
         <tr><th>Expression</th><th>Interval</th></tr>
         <tr><td>nextDouble(false, false)</td><td>(0.0, 1.0)</td></tr>
         <tr><td>nextDouble(true, false)</td><td>[0.0, 1.0)</td></tr>
@@ -1141,7 +1141,7 @@ public strictfp class MersenneTwisterFast implements Serializable, Cloneable
 
     /** Returns a float in the range from 0.0f to 1.0f, possibly inclusive of 0.0f and 1.0f themselves.  Thus:
 
-        <table border=0 summary="Table">
+        <table><caption>Table</caption>
         <tr><th>Expression</th><th>Interval</th></tr>
         <tr><td>nextFloat(false, false)</td><td>(0.0f, 1.0f)</td></tr>
         <tr><td>nextFloat(true, false)</td><td>[0.0f, 1.0f)</td></tr>

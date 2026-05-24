@@ -3257,8 +3257,8 @@ public final class Types {
 		/**
 		 * Returns a type representing the class, with all type parameters the
 		 * unbound wildcard ("?"). For example,
-		 * <tt>addWildcardParameters(Map.class)</tt> returns a type representing
-		 * <tt>Map&lt;?,?&gt;</tt>.
+		 * <code>addWildcardParameters(Map.class)</code> returns a type representing
+		 * <code>Map&lt;?,?&gt;</code>.
 		 * 
 		 * @return
 		 *         <ul>
@@ -3288,27 +3288,27 @@ public final class Types {
 		}
 
 		/**
-		 * Finds the most specific supertype of <tt>type</tt> whose erasure is
-		 * <tt>searchClass</tt>. In other words, returns a type representing the
-		 * class <tt>searchClass</tt> plus its exact type parameters in
-		 * <tt>type</tt>.
+		 * Finds the most specific supertype of <code>type</code> whose erasure is
+		 * <code>searchClass</code>. In other words, returns a type representing the
+		 * class <code>searchClass</code> plus its exact type parameters in
+		 * <code>type</code>.
 		 * <ul>
 		 * <li>Returns an instance of {@link ParameterizedType} if
-		 * <tt>searchClass</tt> is a real class or interface and <tt>type</tt> has
+		 * <code>searchClass</code> is a real class or interface and <code>type</code> has
 		 * parameters for it</li>
 		 * <li>Returns an instance of {@link GenericArrayType} if
-		 * <tt>searchClass</tt> is an array type, and <tt>type</tt> has type
+		 * <code>searchClass</code> is an array type, and <code>type</code> has type
 		 * parameters for it</li>
-		 * <li>Returns an instance of {@link Class} if <tt>type</tt> is a raw type,
-		 * or has no type parameters for <tt>searchClass</tt></li>
-		 * <li>Returns null if <tt>searchClass</tt> is not a superclass of type.
+		 * <li>Returns an instance of {@link Class} if <code>type</code> is a raw type,
+		 * or has no type parameters for <code>searchClass</code></li>
+		 * <li>Returns null if <code>searchClass</code> is not a superclass of type.
 		 * </li>
 		 * </ul>
 		 * <p>
 		 * For example, with
-		 * <tt>class StringList implements List&lt;String&gt;</tt>,
-		 * <tt>getExactSuperType(StringList.class, Collection.class)</tt> returns a
-		 * {@link ParameterizedType} representing <tt>Collection&lt;String&gt;</tt>.
+		 * <code>class StringList implements List&lt;String&gt;</code>,
+		 * <code>getExactSuperType(StringList.class, Collection.class)</code> returns a
+		 * {@link ParameterizedType} representing <code>Collection&lt;String&gt;</code>.
 		 * </p>
 		 */
 		public static Type getExactSuperType(final Type type,
@@ -3337,9 +3337,9 @@ public final class Types {
 		/**
 		 * Gets the type parameter for a given type that is the value for a given
 		 * type variable. For example, with
-		 * <tt>class StringList implements List&lt;String&gt;</tt>,
-		 * <tt>getTypeParameter(StringList.class, Collection.class.getTypeParameters()[0])</tt>
-		 * returns <tt>String</tt>.
+		 * <code>class StringList implements List&lt;String&gt;</code>,
+		 * <code>getTypeParameter(StringList.class, Collection.class.getTypeParameters()[0])</code>
+		 * returns <code>String</code>.
 		 * 
 		 * @param type The type to inspect.
 		 * @param variable The type variable to find the value for.
@@ -3569,9 +3569,9 @@ public final class Types {
 
 		/**
 		 * Returns the exact return type of the given method in the given type. This
-		 * may be different from <tt>m.getGenericReturnType()</tt> when the method
-		 * was declared in a superclass, or <tt>type</tt> has a type parameter that
-		 * is used in the return type, or <tt>type</tt> is a raw type.
+		 * may be different from <code>m.getGenericReturnType()</code> when the method
+		 * was declared in a superclass, or <code>type</code> has a type parameter that
+		 * is used in the return type, or <code>type</code> is a raw type.
 		 */
 		public static Type getExactReturnType(final Method m, final Type type) {
 			final Type returnType = m.getGenericReturnType();
@@ -3587,9 +3587,9 @@ public final class Types {
 
 		/**
 		 * Returns the exact type of the given field in the given type. This may be
-		 * different from <tt>f.getGenericType()</tt> when the field was declared in
-		 * a superclass, or <tt>type</tt> has a type parameter that is used in the
-		 * type of the field, or <tt>type</tt> is a raw type.
+		 * different from <code>f.getGenericType()</code> when the field was declared in
+		 * a superclass, or <code>type</code> has a type parameter that is used in the
+		 * type of the field, or <code>type</code> is a raw type.
 		 */
 		public static Type getExactFieldType(final Field f, final Type type) {
 			final Type returnType = f.getGenericType();
@@ -3605,9 +3605,9 @@ public final class Types {
 
 		/**
 		 * Returns the exact parameter types of the given method in the given type.
-		 * This may be different from <tt>m.getGenericParameterTypes()</tt> when the
-		 * method was declared in a superclass, or <tt>type</tt> has a type
-		 * parameter that is used in one of the parameters, or <tt>type</tt> is a
+		 * This may be different from <code>m.getGenericParameterTypes()</code> when the
+		 * method was declared in a superclass, or <code>type</code> has a type
+		 * parameter that is used in one of the parameters, or <code>type</code> is a
 		 * raw type.
 		 */
 		public static Type[] getExactParameterTypes(final Method m,
@@ -3666,14 +3666,14 @@ public final class Types {
 		/**
 		 * Returns list of classes and interfaces that are supertypes of the given
 		 * type. For example given this class:
-		 * <tt>class Foo&lt;A extends Number & Iterable&lt;A&gt;, B extends A&gt;</tt>
+		 * <code>class Foo&lt;A extends Number & Iterable&lt;A&gt;, B extends A&gt;</code>
 		 * <br>
-		 * calling this method on type parameters <tt>B</tt>
-		 * (<tt>Foo.class.getTypeParameters()[1]</tt>) returns a list containing
-		 * <tt>Number</tt> and <tt>Iterable</tt>.
+		 * calling this method on type parameters <code>B</code>
+		 * (<code>Foo.class.getTypeParameters()[1]</code>) returns a list containing
+		 * <code>Number</code> and <code>Iterable</code>.
 		 * <p>
 		 * This is mostly useful if you get a type from one of the other methods in
-		 * <tt>GenericTypeReflector</tt>, but you don't want to deal with all the
+		 * <code>GenericTypeReflector</code>, but you don't want to deal with all the
 		 * different sorts of types, and you are only really interested in concrete
 		 * classes and interfaces.
 		 * </p>
@@ -3719,17 +3719,17 @@ public final class Types {
 	private interface CaptureType extends Type {
 
 		/**
-		 * Returns an array of <tt>Type</tt> objects representing the upper bound(s)
+		 * Returns an array of <code>Type</code> objects representing the upper bound(s)
 		 * of this capture. This includes both the upper bound of a
-		 * <tt>? extends</tt> wildcard, and the bounds declared with the type
+		 * <code>? extends</code> wildcard, and the bounds declared with the type
 		 * variable. References to other (or the same) type variables in bounds
 		 * coming from the type variable are replaced by their matching capture.
 		 */
 		Type[] getUpperBounds();
 
 		/**
-		 * Returns an array of <tt>Type</tt> objects representing the lower bound(s)
-		 * of this type variable. This is the bound of a <tt>? super</tt> wildcard.
+		 * Returns an array of <code>Type</code> objects representing the lower bound(s)
+		 * of this type variable. This is the bound of a <code>? super</code> wildcard.
 		 * This normally contains only one or no types; it is an array for
 		 * consistency with {@link WildcardType#getLowerBounds()}.
 		 */

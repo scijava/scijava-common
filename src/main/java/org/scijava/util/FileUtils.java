@@ -465,7 +465,7 @@ public final class FileUtils {
 	 *          see {@link File#createTempFile(String, String, File)}
 	 * @param directory The directory in which the file is to be created, or null
 	 *          if the default temporary-file directory is to be used
-	 * @return: An abstract pathname denoting a newly-created empty directory
+	 * @return An abstract pathname denoting a newly-created empty directory
 	 * @throws IOException
 	 */
 	public static File createTemporaryDirectory(final String prefix,

@@ -110,21 +110,21 @@ import org.scijava.event.bushe.Logger.Level;
  * Cleanup is pretty rare in general.  Not only are stale subscribers cleaned up with regular usage, stale 
  * subscribers on abandoned topics and classes do not take up a lot of memory, hence, they are allowed to build up to a certain degree.
  * Cleanup does not occur until the number of WeakReferences and SubscriptionsProxy's with WeakReference strength
- * subscribed to an EventService for all the EventService's subscriptions in total exceed the <tt>cleanupStartThreshhold</tt>, 
- * which is set to <tt>CLEANUP_START_THRESHOLD_DEFAULT</tt> (500) by default.  The default is overridable in the constructor 
+ * subscribed to an EventService for all the EventService's subscriptions in total exceed the <code>cleanupStartThreshhold</code>, 
+ * which is set to <code>CLEANUP_START_THRESHOLD_DEFAULT</code> (500) by default.  The default is overridable in the constructor 
  * or via #setCleanupStartThreshhold(Integer).  If set to null, cleanup will never start.  
  * </p>
  * <p>
- * Once the cleanup start threshold is exceeded, a <tt>java.util.Timer</tt> is started to clean up stale subscribers periodically 
- * in another thread.  The timer will fire every <tt>cleanupPeriodMS</tt> milliseconds, which is set to the 
- * <tt>CLEANUP_PERIOD_MS_DEFAULT</tt> (20 minutes) by default.  The default is overridable in the constructor or 
- * via #setCleanupPeriodMS(Integer).  If set to null, cleanup will not start.  This is implemented with a <tt>java.util.Timer</tt>,
+ * Once the cleanup start threshold is exceeded, a <code>java.util.Timer</code> is started to clean up stale subscribers periodically 
+ * in another thread.  The timer will fire every <code>cleanupPeriodMS</code> milliseconds, which is set to the 
+ * <code>CLEANUP_PERIOD_MS_DEFAULT</code> (20 minutes) by default.  The default is overridable in the constructor or 
+ * via #setCleanupPeriodMS(Integer).  If set to null, cleanup will not start.  This is implemented with a <code>java.util.Timer</code>,
  * so Timer's warnings apply - setting this too low will cause cleanups to bunch up and hog the cleanup thread.
  * </p>
  * <p>
- * After a cleanup cycle completes, if the number of stale subscribers falls at or below the <tt>cleanupStopThreshhold</tt> 
- * cleanup stops until the <tt>cleanupStartThreshhold</tt> is exceeded again. The <tt>cleanupStopThreshhold</tt> is set 
- * to <tt>CLEANUP_STOP_THRESHOLD_DEFAULT</tt> (100) by default.  The default is overridable in the constructor or via 
+ * After a cleanup cycle completes, if the number of stale subscribers falls at or below the <code>cleanupStopThreshhold</code> 
+ * cleanup stops until the <code>cleanupStartThreshhold</code> is exceeded again. The <code>cleanupStopThreshhold</code> is set 
+ * to <code>CLEANUP_STOP_THRESHOLD_DEFAULT</code> (100) by default.  The default is overridable in the constructor or via 
  * #setCleanupStopThreshhold(Integer).  If set to null or 0, cleanup will not stop if it is ever started.  
  * </p>
  * <p>
