@@ -50,7 +50,7 @@ import org.scijava.service.SciJavaService;
  * A <em>command</em> is a particular type of plugin that is also a
  * {@link Module}; i.e., it is {@link Runnable}, with typed inputs and outputs.
  * <p>
- * The command service keeps a master index of all commands known to the system.
+ * The command service keeps a central index of all commands known to the system.
  * It asks the {@link PluginService} for available commands, then takes care of
  * registering them with the {@link ModuleService}.
  * </p>

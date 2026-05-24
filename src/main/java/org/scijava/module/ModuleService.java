@@ -47,7 +47,7 @@ import org.scijava.service.SciJavaService;
 /**
  * Interface for service that tracks and executes available modules.
  * <p>
- * The module service keeps a master index of all modules known to the system.
+ * The module service keeps a central index of all modules known to the system.
  * At heart, a module is a {@link Runnable} piece of code, but with explicit
  * typed input and output parameters.
  * </p>

@@ -44,7 +44,7 @@ import org.scijava.service.SciJavaService;
 /**
  * Interface for service that keeps track of available plugins.
  * <p>
- * The plugin service keeps a master index of all plugins known to the system.
+ * The plugin service keeps a central index of all plugins known to the system.
  * At heart, a plugin is a piece of functionality that extends a program's
  * capabilities. Plugins take many forms; see {@link SciJavaPlugin} for details.
  * </p>
