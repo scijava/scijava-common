@@ -56,7 +56,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public D open(String source) throws IOException {
 		try {
 			return open(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -77,7 +78,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public void save(D data, String destination) throws IOException {
 		try {
 			save(data, locationService.resolve(destination));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -97,7 +99,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public boolean canOpen(String source) {
 		try {
 			return canOpen(locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}
@@ -109,7 +112,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 		try {
 			Class<D> ignored = (Class<D>) (opener.getDataType());
 			return true;
-		} catch(ClassCastException e) {
+		}
+		catch(ClassCastException e) {
 			return false;
 		}
 	}
@@ -118,7 +122,8 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	public boolean canSave(D data, String source) {
 		try {
 			return canSave(data, locationService.resolve(source));
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			return false;
 		}
 	}
