@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>43.0.0</version>
+		<version>44.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -168,6 +168,8 @@
 
 	<properties>
 		<package-name>org.scijava</package-name>
+		<scijava.jvm.version>8</scijava.jvm.version>
+		<scijava.jvm.test.version>11</scijava.jvm.test.version>
 
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.projectName>SciJava Common shared library for SciJava software.</license.projectName>
