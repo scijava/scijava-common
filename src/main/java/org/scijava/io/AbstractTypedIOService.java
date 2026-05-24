@@ -65,12 +65,15 @@ public abstract class AbstractTypedIOService<D> extends AbstractHandlerService<L
 	@Override
 	public D open(Location source) throws IOException {
 		IOPlugin<?> opener = ioService().getOpener(source);
+		if (opener == null) {
+			throw new UnsupportedOperationException("No compatible opener found.");
+		}
 		try {
-			Class<D> ignored = (Class<D>) opener.getDataType();
 			return (D) opener.open(source);
 		}
-		catch(ClassCastException e) {
-			throw new UnsupportedOperationException("No compatible opener found.");
+		catch (ClassCastException e) {
+			throw new UnsupportedOperationException(
+				"Opened data does not conform to requested type.", e);
 		}
 	}
 
