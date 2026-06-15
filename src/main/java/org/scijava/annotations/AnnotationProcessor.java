@@ -50,7 +50,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -69,15 +68,37 @@ import javax.tools.StandardLocation;
 import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
 
 /**
- * The annotation processor for use with Java 8 and earlier.
+ * An annotation processor for indexing {@link Indexable} annotations at
+ * compile time. The design is inspired by
+ * <a href="https://github.com/jglick/sezpoz">Sezpoz</a>, a compile-time
+ * indexing library by Jesse Glick.
+ * <p>
+ * For each annotated class, this processor writes a JSON record of the
+ * annotation's attributes into {@code META-INF/json/} under a file named after
+ * the annotation type. At runtime, the index can be read to discover annotated
+ * classes and inspect their annotation values without loading (and therefore
+ * initializing) those classes — avoiding the cost and side-effects of a full
+ * classpath scan.
+ * </p>
+ * <p>
+ * For example, SciJava Common's {@link org.scijava.plugin.Plugin} annotation
+ * enables the {@link org.scijava.Context} application container to discover
+ * and prepare the application including all its plugins without needing to
+ * load all of those plugins in advance. Rather, they can be loaded upon first
+ * use in each appropriate context, greatly reducing application startup cost.
+ * </p>
  * 
  * @author Johannes Schindelin
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("*")
 public class AnnotationProcessor extends AbstractProcessor {
 
 	private RoundEnvironment roundEnv;
+
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
 
 	@Override
 	public boolean process(final Set<? extends TypeElement> elements,
