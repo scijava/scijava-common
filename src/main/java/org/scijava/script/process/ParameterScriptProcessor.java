@@ -41,6 +41,7 @@ import org.scijava.ItemVisibility;
 import org.scijava.command.Command;
 import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
+import org.scijava.log.Logger;
 import org.scijava.module.DefaultMutableModuleItem;
 import org.scijava.parse.ParseService;
 import org.scijava.plugin.Parameter;
@@ -115,8 +116,20 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 	@Parameter
 	private LogService log;
 
+	private Logger logger;
+
 	private ScriptInfo info;
 	private boolean header;
+
+	/**
+	 * Sets the logger used to report invalid parameters, instead of the
+	 * {@link LogService}. Useful when parsing speculatively, such as for code
+	 * completion, where half-typed parameters are expected and not worth a
+	 * warning.
+	 */
+	public void setLogger(final Logger logger) {
+		this.logger = logger;
+	}
 
 	// -- ScriptProcessor methods --
 
@@ -164,9 +177,13 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 
 	// -- Helper methods --
 
+	private Logger log() {
+		return logger == null ? log : logger;
+	}
+
 	private String process(final String line, final String param) {
 		if (parseParam(param)) return "";
-		log.warn("Ignoring invalid parameter: " + param);
+		log().warn("Ignoring invalid parameter: " + param);
 		return line;
 	}
 
@@ -213,7 +230,7 @@ public class ParameterScriptProcessor implements ScriptProcessor {
 			addItem(varName, type, attrs, true);
 		}
 		catch (final ScriptException exc) {
-			log.warn("Invalid class: " + typeName, exc);
+			log().warn("Invalid class: " + typeName, exc);
 			return false;
 		}
 
