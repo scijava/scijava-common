@@ -272,26 +272,66 @@ public interface ModuleService extends SciJavaService {
 	 * given type, returning the relevant {@link ModuleItem} if found, or null if
 	 * not exactly one unresolved fillable input of that type.
 	 */
-	<T> ModuleItem<T> getSingleInput(Module module, Class<T> type);
+	default <T> ModuleItem<T> getSingleInput(Module module, Class<T> type) {
+		return getSingleInput(module, type, false);
+	}
+
+	/**
+	 * Checks the given module for a solitary unresolved fillable input of the
+	 * given type, returning the relevant {@link ModuleItem} if found, or null if
+	 * not exactly one unresolved fillable input.
+	 * 
+	 * If {@code acrossTpyes} is true, all inputs independent of type are taken
+	 * into account when checking for singularity of the unresolved input. 
+	 */
+	<T> ModuleItem<T> getSingleInput(Module module, Class<T> type, boolean acrossTypes);
 
 	/**
 	 * Checks the given module for a solitary unresolved output of the given type,
 	 * returning the relevant {@link ModuleItem} if found, or null if not exactly
 	 * one unresolved output of that type.
 	 */
-	<T> ModuleItem<T> getSingleOutput(Module module, Class<T> type);
+	default <T> ModuleItem<T> getSingleOutput(Module module, Class<T> type) {
+		return getSingleOutput(module, type, false);
+	}
+
+	/**
+	 * Checks the given module for a solitary unresolved output of the given type,
+	 * returning the relevant {@link ModuleItem} if found, or null if not exactly
+	 * one unresolved output.
+	 * 
+	 * If {@code acrossTpyes} is true, all outputs independent of type are taken
+	 * into account when checking for singularity of the unresolved output. 
+	 */
+	<T> ModuleItem<T> getSingleOutput(Module module, Class<T> type, boolean acrossTypes);
 
 	/**
 	 * As {@link #getSingleInput(Module, Class)} but will match with a set of
 	 * potential classes, at the cost of generic parameter safety.
 	 */
-	ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types);
+	default ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types) {
+		return getSingleInput(module, types, false);
+	}
+
+	/**
+	 * As {@link #getSingleInput(Module, Class, boolean)} but will match with a set of
+	 * potential classes, at the cost of generic parameter safety.
+	 */
+	ModuleItem<?> getSingleInput(Module module, Collection<Class<?>> types, boolean acrossTypes);
 
 	/**
 	 * As {@link #getSingleOutput(Module, Class)} but will match with a set of
 	 * potential classes, at the cost of generic parameter safety.
 	 */
-	ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types);
+	default ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types) {
+		return getSingleOutput(module, types, false);
+	}
+
+	/**
+	 * As {@link #getSingleOutput(Module, Class, boolean)} but will match with a set of
+	 * potential classes, at the cost of generic parameter safety.
+	 */
+	ModuleItem<?> getSingleOutput(Module module, Collection<Class<?>> types, boolean acrossTypes);
 
 	/**
 	 * Registers the given value for the given {@link ModuleItem} using the
