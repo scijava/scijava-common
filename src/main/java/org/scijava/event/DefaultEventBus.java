@@ -150,6 +150,22 @@ public class DefaultEventBus extends ThreadSafeEventService {
 		final StackTraceElement[] callingStack)
 	{
 		if (subscribers == null || subscribers.isEmpty()) return;
+
+		// queue JavaFX threads to avoid native Cocoa thread deadlocks on macOS
+		final String threadName = Thread.currentThread().getName();
+		if (threadName != null && threadName.startsWith("JavaFX Application Thread")) {
+			threadService.queue(new Runnable() {
+				@Override
+				public void run() {
+					log.debug("publish(" + event + "," + topic + "," + eventObj +
+						"), called from JavaFX Thread:" + Arrays.toString(callingStack));
+					DefaultEventBus.super.publish(event, topic, eventObj, subscribers,
+						vetoSubscribers, callingStack);
+				}
+			});
+			return;
+		}
+
 		try {
 			threadService.invoke(new Runnable() {
 
