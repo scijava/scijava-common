@@ -80,6 +80,13 @@ public interface WidgetModel extends Contextual {
 	 * {@code style.equals(getItem().getWidgetStyle())}.
 	 */
 	boolean isStyle(String style);
+	
+	/**
+	 * Gets group that the widget belongs to.
+	 * 
+	 * @return Group that the widget belongs to.
+	 */
+	String getGroup();
 
 	/**
 	 * Gets the current value of the module input.
