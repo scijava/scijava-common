@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.scijava.Named;
 import org.scijava.event.EventService;
+import org.scijava.names.NameService;
 import org.scijava.object.event.ObjectsAddedEvent;
 import org.scijava.object.event.ObjectsRemovedEvent;
 import org.scijava.service.SciJavaService;
@@ -72,10 +73,15 @@ public interface ObjectService extends SciJavaService {
 		if (obj == null) throw new NullPointerException();
 		final String name = getIndex().getName(obj);
 		if (name != null) return name;
+		// Instances of Named
 		if (obj instanceof Named) {
 			final String n = ((Named) obj).getName();
 			if (n != null) return n;
 		}
+		// Objects for which a NameProvider exists
+		final String name2 = context().service(NameService.class).getName(obj);
+		if (name2 != null) return name2;
+		// Fallback
 		final String s = obj.toString();
 		if (s != null) return s;
 		return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
