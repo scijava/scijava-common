@@ -63,11 +63,6 @@ import org.scijava.util.ClassUtils;
  * added to the index more than once, in which case it will appear on relevant
  * type lists multiple times.
  * </p>
- * <p>
- * Note that similar to {@link List}, it is possible for the same object to be
- * added to the index more than once, in which case it will appear on compatible
- * type lists multiple times.
- * </p>
  * 
  * @author Curtis Rueden
  */
