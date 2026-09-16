@@ -44,7 +44,10 @@ import org.scijava.Versioned;
  * Helper class for working with JAR manifests.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.meta.Manifest} (scijava-meta) instead.
  */
+@Deprecated
 public class Manifest implements Versioned {
 
 	/** The JAR manifest backing this object. */

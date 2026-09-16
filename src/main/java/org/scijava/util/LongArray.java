@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.LongArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class LongArray extends AbstractPrimitiveArray<long[], Long> {
 
 	/** The backing array. */

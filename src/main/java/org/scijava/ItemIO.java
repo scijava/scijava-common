@@ -42,7 +42,10 @@ package org.scijava;
  * </ul>
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.struct.ItemIO} (scijava-struct) instead.
  */
+@Deprecated
 public enum ItemIO {
 	INPUT, OUTPUT, BOTH
 }

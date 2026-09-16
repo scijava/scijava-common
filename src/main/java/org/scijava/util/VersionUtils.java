@@ -35,7 +35,10 @@ package org.scijava.util;
  *
  * @author Curtis Rueden
  * @author Mark Hiner
+ *
+ * @deprecated Use {@code org.scijava.meta.Versions} (scijava-meta) instead.
  */
+@Deprecated
 public class VersionUtils {
 
 	/**

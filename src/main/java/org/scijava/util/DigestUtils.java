@@ -39,7 +39,12 @@ import java.util.Base64;
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.common3.Digests} (scijava-common3)
+ *             instead, whose {@code digest} throws for an unknown algorithm
+ *             rather than returning null.
  */
+@Deprecated
 public final class DigestUtils {
 
 	private final static char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7',

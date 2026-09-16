@@ -36,7 +36,11 @@ package org.scijava;
  * @author Curtis Rueden
  * @see org.scijava.Prioritized#getPriority()
  * @see org.scijava.plugin.Plugin#priority()
+ *
+ * @deprecated Use {@code org.scijava.priority.Priority} (scijava-priority)
+ *             instead.
  */
+@Deprecated
 public final class Priority {
 
 	private Priority() {

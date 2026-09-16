@@ -63,7 +63,15 @@ import org.scijava.Context;
  * @author Johannes Schindelin
  * @author Curtis Rueden
  * @author Grant Harris
+ *
+ * @deprecated Largely superseded. The filename logic is
+ *             {@code org.scijava.common3.FilePaths} and the URL methods are
+ *             {@code org.scijava.common3.URLs} (both scijava-common3); for
+ *             reading, writing, temporary directories and modification times,
+ *             use {@link java.nio.file.Files}. Method-by-method details:
+ *             https://github.com/scijava/scijava/blob/main/docs/migration.md
  */
+@Deprecated
 public final class FileUtils {
 
 	public static final int DEFAULT_SHORTENER_THRESHOLD = 4;

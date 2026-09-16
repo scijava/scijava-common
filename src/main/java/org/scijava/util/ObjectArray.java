@@ -48,7 +48,11 @@ import java.util.Collection;
  * @author Mark Hiner
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.ObjectArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class ObjectArray<E> extends AbstractPrimitiveArray<E[], E> {
 
 	/** The backing array. */

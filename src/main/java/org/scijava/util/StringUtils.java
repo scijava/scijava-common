@@ -69,7 +69,12 @@ import java.util.regex.Pattern;
  * @author Chris Allan
  * @author Melissa Linkert
  * @author Richard Domander (Royal Veterinary College, London)
+ *
+ * @deprecated Use {@code org.scijava.common3.Strings} (scijava-common3)
+ *             instead, which carries the padding, {@code isNullOrEmpty} and
+ *             {@code splitUnquoted} methods; the rest have no replacement.
  */
+@Deprecated
 public final class StringUtils {
 
 	public static final char DEFAULT_PAD_CHAR = ' ';

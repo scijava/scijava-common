@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.ShortArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class ShortArray extends AbstractPrimitiveArray<short[], Short> {
 
 	/** The backing array. */

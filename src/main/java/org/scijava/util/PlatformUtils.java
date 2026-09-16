@@ -34,7 +34,11 @@ package org.scijava.util;
  * 
  * @author Curtis Rueden
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.common3.Platforms} (scijava-common3)
+ *             instead.
  */
+@Deprecated
 public final class PlatformUtils {
 
 	private PlatformUtils() {

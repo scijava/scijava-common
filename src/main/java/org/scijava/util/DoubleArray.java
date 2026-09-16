@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.DoubleArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class DoubleArray extends AbstractPrimitiveArray<double[], Double> {
 
 	/** The backing array. */

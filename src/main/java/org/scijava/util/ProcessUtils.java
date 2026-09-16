@@ -39,7 +39,11 @@ import java.util.Arrays;
  * Useful methods for working with processes.
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.common3.Processes} (scijava-common3)
+ *             instead.
  */
+@Deprecated
 public final class ProcessUtils {
 
 	private ProcessUtils() {

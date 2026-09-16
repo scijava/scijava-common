@@ -102,7 +102,14 @@ import org.scijava.Context;
  *
  * @author Curtis Rueden
  * @author Gabe Selzer
+ *
+ * @deprecated Use {@code org.scijava.common3.Types} (scijava-common3) instead.
+ *             It is not a drop-in superset: the class-oriented methods moved
+ *             to {@code org.scijava.common3.Classes}, and a few have no
+ *             replacement; see
+ *             https://github.com/scijava/scijava/blob/main/docs/migration.md
  */
+@Deprecated
 public final class Types {
 
 	private Types() {

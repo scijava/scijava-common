@@ -68,7 +68,14 @@ import java.util.List;
  * @author Curtis Rueden
  * @author Melissa Linkert
  * @author Chris Allan
+ *
+ * @deprecated Only the {@code safeMultiply} methods have a replacement, in
+ *             {@code org.scijava.common3.Numbers} (scijava-common3). For
+ *             {@code contains} and {@code indexOf}, use
+ *             {@link java.util.Arrays#asList} on object arrays, or a loop or
+ *             stream on primitive arrays.
  */
+@Deprecated
 public final class ArrayUtils {
 
 	private ArrayUtils() {

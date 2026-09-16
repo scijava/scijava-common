@@ -35,7 +35,11 @@ import org.scijava.util.VersionUtils;
  * An object that knows its version.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.spi.Versioned} (scijava-spi) instead,
+ *             whose method is {@code version()}.
  */
+@Deprecated
 public interface Versioned {
 
 	/** Gets the version of the object. */

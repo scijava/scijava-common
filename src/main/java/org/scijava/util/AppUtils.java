@@ -41,7 +41,10 @@ import org.scijava.util.Types;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.common3.Apps} (scijava-common3) instead.
  */
+@Deprecated
 public final class AppUtils {
 
 	private static final Class<?> mainClass;

@@ -33,7 +33,11 @@ package org.scijava;
  * An object that knows how to clean up after itself.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.spi.Disposable} (scijava-spi) instead,
+ *             whose {@code dispose()} is abstract rather than a no-op default.
  */
+@Deprecated
 public interface Disposable {
 
 	/**

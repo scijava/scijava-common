@@ -45,7 +45,11 @@ import java.util.AbstractList;
  * @author Curtis Rueden
  * @param <ArrayType> Type of the primitive array; e.g., {@code double[]}.
  * @param <BaseType> Boxed type of the array element; e.g., {@code Double}.
+ *
+ * @deprecated Use {@code org.scijava.collections.AbstractPrimitiveArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public abstract class AbstractPrimitiveArray<ArrayType, BaseType> extends
 	AbstractList<BaseType> implements PrimitiveArray<ArrayType, BaseType>
 {

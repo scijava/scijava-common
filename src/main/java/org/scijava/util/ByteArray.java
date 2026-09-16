@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.ByteArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class ByteArray extends AbstractPrimitiveArray<byte[], Byte> {
 
 	/** The backing array. */

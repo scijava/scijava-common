@@ -37,7 +37,11 @@ import java.util.Collection;
  * @author Mark Hiner
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.BoolArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class BoolArray extends AbstractPrimitiveArray<boolean[], Boolean> {
 
 	/** The backing array. */

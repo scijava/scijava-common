@@ -64,7 +64,10 @@ import org.xml.sax.SAXException;
  * Helper class for working with XML documents.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.meta.XML} (scijava-meta) instead.
  */
+@Deprecated
 public class XML {
 
 	/** Path to the XML document (e.g., a file or URL). */

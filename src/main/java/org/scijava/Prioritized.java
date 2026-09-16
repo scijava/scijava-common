@@ -35,7 +35,11 @@ import org.scijava.util.ClassUtils;
  * An object that can be sorted according to priority.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.priority.Prioritized} (scijava-priority)
+ *             instead.
  */
+@Deprecated
 public interface Prioritized extends Comparable<Prioritized> {
 
 	/**

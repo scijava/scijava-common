@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.IntArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class IntArray extends AbstractPrimitiveArray<int[], Integer> {
 
 	/** The backing array. */

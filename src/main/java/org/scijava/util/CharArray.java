@@ -37,7 +37,11 @@ import java.util.Collection;
  * @author Mark Hiner
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.CharArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class CharArray extends AbstractPrimitiveArray<char[], Character> {
 
 	/** The backing array. */

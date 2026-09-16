@@ -40,7 +40,13 @@ import org.scijava.util.Types;
  * 
  * @author Curtis Rueden
  * @author Barry DeZonia
+ *
+ * @deprecated Use {@code org.scijava.common3.Numbers} (scijava-common3)
+ *             instead. Several methods are renamed, and its {@code toNumber}
+ *             consults no conversion framework; see
+ *             https://github.com/scijava/scijava/blob/main/docs/migration.md
  */
+@Deprecated
 public final class NumberUtils {
 
 	private NumberUtils() {

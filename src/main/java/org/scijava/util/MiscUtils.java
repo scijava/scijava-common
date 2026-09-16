@@ -35,7 +35,11 @@ import java.util.Objects;
  * Miscellaneous utility methods. Every project needs a class like this, right?
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.common3.Comparisons} (scijava-common3)
+ *             instead.
  */
+@Deprecated
 public final class MiscUtils {
 
 	private MiscUtils() {

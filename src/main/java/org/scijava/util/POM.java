@@ -48,7 +48,10 @@ import org.xml.sax.SAXException;
  * Helper class for working with Maven POMs.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.meta.POM} (scijava-meta) instead.
  */
+@Deprecated
 public class POM extends XML implements Comparable<POM>, Versioned {
 
 	private String version;

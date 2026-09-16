@@ -42,7 +42,11 @@ import java.util.Map;
  * Useful methods for debugging programs.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.common3.Threads} (scijava-common3)
+ *             instead.
  */
+@Deprecated
 public final class DebugUtils {
 
 	private static final String NL = System.getProperty("line.separator");

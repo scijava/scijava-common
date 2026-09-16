@@ -51,7 +51,11 @@ import java.io.Serializable;
  * </p>
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.spi.Identifiable} (scijava-spi) instead,
+ *             whose {@code getIdentifier} is named {@code id()}.
  */
+@Deprecated
 public interface Identifiable {
 
 	/** Gets a string intended to function as an identifier for the object. */

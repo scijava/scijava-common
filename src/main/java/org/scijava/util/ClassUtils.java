@@ -47,7 +47,11 @@ import java.util.Set;
  * Useful methods for working with {@link Class} objects and primitive types.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.common3.Classes} (scijava-common3)
+ *             instead.
  */
+@Deprecated
 public final class ClassUtils {
 
 	private ClassUtils() {

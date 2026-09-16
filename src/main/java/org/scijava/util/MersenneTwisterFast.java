@@ -179,8 +179,12 @@ import java.util.Random;
  *
  * @author Sean Luke
  * @version 17
+ *
+ * @deprecated Use {@code org.scijava.common3.MersenneTwisterFast}
+ *             (scijava-common3) instead.
  */
 @SuppressWarnings("all")
+@Deprecated
 public strictfp class MersenneTwisterFast implements Serializable, Cloneable
     {
 

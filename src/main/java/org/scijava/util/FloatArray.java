@@ -36,7 +36,11 @@ import java.util.Collection;
  * 
  * @author Johannes Schindelin
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.collections.FloatArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public class FloatArray extends AbstractPrimitiveArray<float[], Float> {
 
 	/** The backing array. */

@@ -33,7 +33,12 @@ package org.scijava;
  * Interface for things that have names.
  * 
  * @author Lee Kamentsky
+ *
+ * @deprecated Use {@code org.scijava.spi.Named} (scijava-spi) instead, whose
+ *             method is {@code name()}. It has no setter: naming an object is
+ *             a separate contract from knowing its name.
  */
+@Deprecated
 public interface Named {
 
 	/** Gets the name of the object. */

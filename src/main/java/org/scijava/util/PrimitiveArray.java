@@ -44,7 +44,11 @@ import java.util.List;
  * @author Curtis Rueden
  * @param <ArrayType> Type of the primitive array; e.g., {@code double[]}.
  * @param <BaseType> Boxed type of the array element; e.g., {@code Double}.
+ *
+ * @deprecated Use {@code org.scijava.collections.PrimitiveArray}
+ *             (scijava-collections) instead.
  */
+@Deprecated
 public interface PrimitiveArray<ArrayType, BaseType> extends List<BaseType>,
 	Sizable
 {
