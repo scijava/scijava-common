@@ -36,6 +36,10 @@ package org.scijava.widget;
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
+ *
+ * @deprecated Use {@code org.scijava.ui3.WidgetPanel} (scijava-ui3) instead.
+ *             A panel is itself a widget there, so a group of parameters nests
+ *             inside another panel with no special case.
  */
 public interface InputPanel<P, W> extends UIComponent<P> {
 

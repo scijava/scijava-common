@@ -38,6 +38,9 @@ import java.util.Map;
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingPanel} (scijava-swing), or the
+ *             equivalent of another toolkit binding, instead.
  */
 public abstract class AbstractInputPanel<P, W> implements InputPanel<P, W> {
 

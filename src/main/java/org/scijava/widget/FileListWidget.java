@@ -30,6 +30,9 @@ package org.scijava.widget;
 
 import java.io.File;
 
+/**
+ * @deprecated Not ported yet: it earns its place when something asks for it.
+ */
 public interface FileListWidget<U> extends InputWidget<File[], U> {
 	/**
 	 * Widget style to allow file selection only

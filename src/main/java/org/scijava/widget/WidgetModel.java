@@ -40,6 +40,11 @@ import org.scijava.module.ModuleItem;
  * The backing data model for a particular {@link InputWidget}.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement: a widget reads its
+ *             {@code org.scijava.harvest.ParameterNode} for label, description,
+ *             bounds, style and resolved choices, and writes through
+ *             {@code org.scijava.harvest.ParameterModel}.
  */
 public interface WidgetModel extends Contextual {
 

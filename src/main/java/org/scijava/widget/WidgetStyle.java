@@ -30,6 +30,11 @@ package org.scijava.widget;
 
 import org.scijava.module.ModuleItem;
 
+/**
+ * @deprecated Use {@code org.scijava.ui3.Widgets.isStyle} and
+ *             {@code org.scijava.ui3.Widgets.styleValue} (scijava-ui3)
+ *             instead.
+ */
 public class WidgetStyle {
 	private WidgetStyle() {
 		// prevent instantiation of utility class

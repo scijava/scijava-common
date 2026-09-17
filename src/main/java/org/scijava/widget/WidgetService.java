@@ -40,6 +40,10 @@ import org.scijava.service.SciJavaService;
  * Interface for services that manage available {@link InputWidget}s.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement: {@code org.scijava.ui3.WidgetPanels} picks the
+ *             widget for each parameter, from the
+ *             {@code org.scijava.ui3.WidgetFactory} plugins available.
  */
 public interface WidgetService extends
 	WrapperService<WidgetModel, InputWidget<?, ?>>, SciJavaService

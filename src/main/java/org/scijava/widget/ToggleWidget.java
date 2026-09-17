@@ -33,6 +33,9 @@ package org.scijava.widget;
  * Widget interface for boolean toggles.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingToggleWidget} (scijava-swing)
+ *             instead, or the equivalent of another toolkit binding.
  */
 public interface ToggleWidget<U> extends InputWidget<Boolean, U> {
 	// NB: No changes to interface.

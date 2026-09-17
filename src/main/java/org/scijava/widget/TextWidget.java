@@ -33,6 +33,9 @@ package org.scijava.widget;
  * Widget interface for text fields and areas.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingTextWidget} (scijava-swing)
+ *             instead, or the equivalent of another toolkit binding.
  */
 public interface TextWidget<U> extends InputWidget<String, U> {
 

@@ -36,6 +36,9 @@ import org.scijava.Optional;
  * button fields.
  * 
  * @author Barry DeZonia
+ *
+ * @deprecated Not ported: a button in a dialog earns its place when something
+ *             asks for it.
  */
 public interface Button extends Optional {
 	// marker : nothing to implement

@@ -33,6 +33,11 @@ package org.scijava.widget;
  * Widget interface for multiple choice selectors.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingChoiceWidget} (scijava-swing)
+ *             instead, or the equivalent of another toolkit binding. Which
+ *             widget a parameter gets is decided by a
+ *             {@code org.scijava.ui3.WidgetFactory}, not by a marker interface.
  */
 public interface ChoiceWidget<U> extends InputWidget<String, U> {
 

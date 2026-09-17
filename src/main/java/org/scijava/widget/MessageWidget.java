@@ -33,6 +33,8 @@ package org.scijava.widget;
  * Widget interface for message labels.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Not ported yet: it earns its place when something asks for it.
  */
 public interface MessageWidget<U> extends InputWidget<String, U> {
 	// NB: No changes to interface.

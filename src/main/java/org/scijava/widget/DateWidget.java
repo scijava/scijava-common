@@ -35,6 +35,8 @@ import java.util.Date;
  * Widget interface for dates.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Not ported yet: it earns its place when something asks for it.
  */
 public interface DateWidget<U> extends InputWidget<Date, U> {
 	// NB: No changes to interface.

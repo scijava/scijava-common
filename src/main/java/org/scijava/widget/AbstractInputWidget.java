@@ -37,6 +37,9 @@ import org.scijava.plugin.AbstractWrapperPlugin;
  * @author Curtis Rueden
  * @param <T> The input type of the widget.
  * @param <W> The type of UI component housing the widget.
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingWidget} (scijava-swing), or
+ *             the equivalent base class of another toolkit binding, instead.
  */
 public abstract class AbstractInputWidget<T, W> extends
 	AbstractWrapperPlugin<WidgetModel> implements InputWidget<T, W>

@@ -33,6 +33,9 @@ package org.scijava.widget;
  * Widget interface for buttons.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Not ported: a button in a dialog earns its place when something
+ *             asks for it.
  */
 public interface ButtonWidget<U> extends InputWidget<Button, U> {
 	// NB: No changes to interface.

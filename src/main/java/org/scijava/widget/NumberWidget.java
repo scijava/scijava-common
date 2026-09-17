@@ -33,6 +33,9 @@ package org.scijava.widget;
  * Widget interface for number choosers.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingNumberWidget} (scijava-swing)
+ *             instead, or the equivalent of another toolkit binding.
  */
 public interface NumberWidget<U> extends InputWidget<Number, U> {
 

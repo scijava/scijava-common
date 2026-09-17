@@ -34,6 +34,10 @@ package org.scijava.widget;
  * 
  * @author Curtis Rueden
  * @param <C> The type of UI component housing the object.
+ *
+ * @deprecated No replacement: a toolkit binding exposes its own component
+ *             type directly, as {@code org.scijava.swing.SwingWidget.component}
+ *             does.
  */
 public interface UIComponent<C> {
 

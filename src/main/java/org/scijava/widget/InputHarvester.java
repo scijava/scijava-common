@@ -51,6 +51,11 @@ import org.scijava.module.ModuleItem;
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
+ *
+ * @deprecated Use {@code org.scijava.ui3.InputHarvester} (scijava-ui3)
+ *             instead. It is an {@code org.scijava.execute.Preprocessor}, and
+ *             a dismissed dialog calls {@code Execution.decline} rather than
+ *             setting a flag on the harvester.
  */
 public interface InputHarvester<P, W> {
 

@@ -35,6 +35,9 @@ import java.io.File;
  * Widget interface for file selectors.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.swing.SwingFileWidget} (scijava-swing)
+ *             instead, or the equivalent of another toolkit binding.
  */
 public interface FileWidget<U> extends InputWidget<File, U> {
 

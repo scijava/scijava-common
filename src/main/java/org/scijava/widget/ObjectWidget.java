@@ -33,6 +33,11 @@ package org.scijava.widget;
  * Widget interface for object selectors.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.ui3.WidgetFactory} with
+ *             {@code @Parameter(choicesFrom = ...)} instead: the candidate
+ *             objects are the parameter's resolved choices, so an ordinary
+ *             choice widget renders them.
  */
 public interface ObjectWidget<U> extends InputWidget<Object, U> {
 	// NB: No changes to interface.

@@ -53,6 +53,8 @@ import org.scijava.util.Types;
  * The backing data model for a particular {@link InputWidget}.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@code org.scijava.ui3.Widgets}.
  */
 public class DefaultWidgetModel extends AbstractContextual implements WidgetModel {
 

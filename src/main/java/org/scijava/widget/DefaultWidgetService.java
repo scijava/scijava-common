@@ -37,6 +37,8 @@ import org.scijava.service.Service;
  * Default service for managing available {@link InputWidget}s.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@code org.scijava.ui3.WidgetPanels}.
  */
 @Plugin(type = Service.class)
 public class DefaultWidgetService extends

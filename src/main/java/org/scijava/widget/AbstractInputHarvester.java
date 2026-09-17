@@ -55,6 +55,10 @@ import org.scijava.plugin.Parameter;
  * @author Curtis Rueden
  * @param <P> The type of UI component housing the input panel itself.
  * @param <W> The type of UI component housing each input widget.
+ *
+ * @deprecated Use {@code org.scijava.ui3.InputHarvester} (scijava-ui3)
+ *             instead; {@code org.scijava.ui3.WidgetPanels} does the
+ *             tree-walking this class did.
  */
 public abstract class AbstractInputHarvester<P, W> extends AbstractContextual
 	implements InputHarvester<P, W>

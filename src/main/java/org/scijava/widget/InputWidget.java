@@ -52,6 +52,11 @@ import org.scijava.plugin.WrapperPlugin;
  * @see WidgetService
  * @see InputHarvester
  * @see InputPanel
+ *
+ * @deprecated Use {@code org.scijava.ui3.Widget} (scijava-ui3) instead. A
+ *             widget is a view of an {@code org.scijava.harvest.ParameterNode}
+ *             and writes through the {@code ParameterModel}, so callbacks and
+ *             dynamic groups need nothing from the widget itself.
  */
 public interface InputWidget<T, W> extends WrapperPlugin<WidgetModel>,
 	UIComponent<W>
