@@ -38,8 +38,12 @@ import org.scijava.service.Service;
  * Default implementation of {@link DataHandleService}.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DataHandles} (scijava-io3)
+ *             instead.
  */
 @Plugin(type = Service.class)
+@Deprecated
 public class DefaultDataHandleService extends
 	AbstractWrapperService<Location, DataHandle<Location>> implements
 	DataHandleService

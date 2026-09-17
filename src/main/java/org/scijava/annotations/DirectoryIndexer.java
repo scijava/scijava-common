@@ -50,7 +50,12 @@ import java.util.Map;
  * </p>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.DirectoryIndexer} (scijava-index)
+ *             instead. The index format is unchanged, so indexes written by
+ *             either are readable by both.
  */
+@Deprecated
 public class DirectoryIndexer extends AbstractIndexWriter {
 
 	public void index(final File directory) throws IOException {

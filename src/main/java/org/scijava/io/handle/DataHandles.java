@@ -41,7 +41,14 @@ import org.scijava.task.Task;
  *
  * @author Curtis Rueden
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DataHandles} (scijava-io3)
+ *             instead. NB: its {@code copy} reports progress to a
+ *             {@link java.util.function.LongConsumer} rather than a task, and
+ *             cancellation is thread interruption: it throws
+ *             {@link java.io.InterruptedIOException} with the partial count.
  */
+@Deprecated
 public final class DataHandles {
 
 	private DataHandles() {

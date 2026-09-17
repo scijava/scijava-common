@@ -38,7 +38,10 @@ import java.util.Locale;
  * itself (since doing so could leave dangling references).
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@link org.scijava.event.EventHistory}.
  */
+@Deprecated
 public class EventDetails {
 
 	private final Date timestamp;

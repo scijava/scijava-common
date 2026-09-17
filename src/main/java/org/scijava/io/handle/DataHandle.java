@@ -49,7 +49,13 @@ import org.scijava.util.Bytes;
  * @author Curtis Rueden
  * @see DataHandleInputStream
  * @see DataHandleOutputStream
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DataHandle} (scijava-io3)
+ *             instead. It no longer extends a wrapper plugin: the contract is
+ *             {@code locationType()}, {@code supports()}, {@code set()},
+ *             {@code get()} and {@code priority()}.
  */
+@Deprecated
 public interface DataHandle<L extends Location> extends WrapperPlugin<L>,
 	DataInput, DataOutput, Closeable
 {

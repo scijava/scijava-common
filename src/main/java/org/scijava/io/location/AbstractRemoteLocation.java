@@ -33,7 +33,11 @@ package org.scijava.io.location;
  * Abstract base class for {@link RemoteLocation} implementations.
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.AbstractRemoteLocation}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractRemoteLocation extends AbstractLocation implements
 	RemoteLocation
 {

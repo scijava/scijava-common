@@ -43,7 +43,11 @@ import org.scijava.io.location.Location;
 /**
  * Read-only buffered {@link DataHandle}. It buffers the underlying handle into
  * a fixed number of pages, swapping them out when necessary.
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.ReadBufferDataHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public class ReadBufferDataHandle<L extends Location> extends AbstractHigherOrderHandle<L> {
 
 	private static final int DEFAULT_PAGE_SIZE = 10_000;

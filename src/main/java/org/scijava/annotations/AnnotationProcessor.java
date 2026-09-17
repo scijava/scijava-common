@@ -89,8 +89,13 @@ import org.scijava.annotations.AbstractIndexWriter.StreamFactory;
  * </p>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.AnnotationProcessor}
+ *             (scijava-index) instead. The index format is unchanged, so
+ *             indexes written by either are readable by both.
  */
 @SupportedAnnotationTypes("*")
+@Deprecated
 public class AnnotationProcessor extends AbstractProcessor {
 
 	private RoundEnvironment roundEnv;

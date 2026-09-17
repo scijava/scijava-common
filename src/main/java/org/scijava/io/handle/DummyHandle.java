@@ -39,8 +39,12 @@ import org.scijava.plugin.Plugin;
  * A {@link DataHandle} which reads all zeroes, and writes no actual data.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DummyHandle} (scijava-io3)
+ *             instead.
  */
 @Plugin(type = DataHandle.class)
+@Deprecated
 public class DummyHandle extends AbstractDataHandle<DummyLocation> {
 
 	// -- Fields --

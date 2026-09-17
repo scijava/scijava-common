@@ -65,7 +65,11 @@ import org.scijava.thread.ThreadService;
  *
  * @author Curtis Rueden
  * @author Nicolas Chiaruttini
+ *
+ * @deprecated Use {@code org.scijava.progress.Task} (scijava-progress)
+ *             instead.
  */
+@Deprecated
 public class DefaultTask implements Task {
 
 	private final ThreadService threadService;

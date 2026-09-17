@@ -36,7 +36,11 @@ import org.scijava.plugin.AbstractWrapperPlugin;
  * Abstract base class for {@link DataHandle} plugins.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.AbstractDataHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractDataHandle<L extends Location> extends
 	AbstractWrapperPlugin<L> implements DataHandle<L>
 {

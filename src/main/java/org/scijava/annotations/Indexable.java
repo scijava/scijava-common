@@ -42,7 +42,12 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.Indexable} (scijava-index) instead.
+ *             The index format is unchanged, so indexes written by either are
+ *             readable by both.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
+@Deprecated
 public @interface Indexable {}

@@ -33,7 +33,11 @@ package org.scijava.io.location;
  * {@link Location} backed by nothing whatsoever.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.location.DummyLocation} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class DummyLocation extends AbstractLocation {
 	// NB: No implementation needed.
 }

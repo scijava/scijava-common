@@ -39,7 +39,11 @@ import java.util.Set;
  *
  * @author Gabriel Einsdorf
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.location.BrowsableLocation}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public interface BrowsableLocation extends Location {
 
 	/**

@@ -55,7 +55,12 @@ import javax.lang.model.element.AnnotationValue;
  * </p>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.AbstractIndexWriter}
+ *             (scijava-index) instead. The index format is unchanged, so
+ *             indexes written by either are readable by both.
  */
+@Deprecated
 public abstract class AbstractIndexWriter {
 
 	private final Map<String, Map<String, Object>> map =

@@ -39,7 +39,11 @@ import org.scijava.io.location.Location;
  * 
  * @author Curtis Rueden
  * @author Melissa Linkert
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DataHandleInputStream}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public class DataHandleInputStream<L extends Location> extends InputStream {
 
 	// -- Fields --

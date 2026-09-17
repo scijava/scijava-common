@@ -47,7 +47,11 @@ import org.scijava.io.handle.DataHandle;
  * 
  * @author Curtis Rueden
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.Location} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public interface Location {
 
 	/**

@@ -39,7 +39,13 @@ import org.scijava.io.ByteBank;
  * maximal capacity of {@link Integer#MAX_VALUE}
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.ByteBufferByteBank} (scijava-io3)
+ *             instead, whose {@code direct()} factories make the off-heap case
+ *             explicit. NB: that version also fixes a bug here, where growing
+ *             a direct bank reallocated it on the heap.
  */
+@Deprecated
 public class ByteBufferByteBank implements ByteBank {
 
 	private static final int DEFAULT_CAPACITY = 10_000;

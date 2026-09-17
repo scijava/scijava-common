@@ -46,8 +46,11 @@ import org.scijava.service.Service;
  * 
  * @author Chris Allan
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@link org.scijava.io.nio.NIOService}.
  */
 @Plugin(type = Service.class)
+@Deprecated
 public class DefaultNIOService extends AbstractService implements NIOService {
 
 	// -- Fields --

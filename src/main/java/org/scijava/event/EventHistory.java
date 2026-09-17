@@ -38,7 +38,11 @@ import org.scijava.service.SciJavaService;
  * Interface for service that keeps a history of SciJava events.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement. A subscriber on {@code Object.class} reproduces
+ *             it in three lines.
  */
+@Deprecated
 public interface EventHistory extends SciJavaService {
 
 	/** Activates or deactivates event history tracking. */

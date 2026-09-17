@@ -42,7 +42,11 @@ import org.scijava.service.SciJavaService;
  * 
  * @author Chris Allan
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement. It wraps two JDK calls behind a system property;
+ *             use {@link java.nio.channels.FileChannel} directly.
  */
+@Deprecated
 public interface NIOService extends SciJavaService {
 
 	/**

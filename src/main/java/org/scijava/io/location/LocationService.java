@@ -41,7 +41,13 @@ import org.scijava.service.SciJavaService;
  * {@link LocationResolver} plugins for translation.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.Locations} (scijava-io3)
+ *             instead, which resolves through plain
+ *             {@link java.util.ServiceLoader} and so needs no application
+ *             context.
  */
+@Deprecated
 public interface LocationService extends HandlerService<URI, LocationResolver>,
 	SciJavaService
 {

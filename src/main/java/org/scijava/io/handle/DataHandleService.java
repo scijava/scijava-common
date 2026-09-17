@@ -43,7 +43,13 @@ import org.scijava.service.SciJavaService;
  * @author Curtis Rueden
  * @see IOService
  * @see Location
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.DataHandles} (scijava-io3)
+ *             instead, which creates handles through plain
+ *             {@link java.util.ServiceLoader} and so needs no application
+ *             context.
  */
+@Deprecated
 public interface DataHandleService extends
 	WrapperService<Location, DataHandle<Location>>, SciJavaService
 {

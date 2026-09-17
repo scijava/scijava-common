@@ -36,7 +36,12 @@ import org.scijava.util.DebugUtils;
  * Base class for all SciJava events.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement needed: {@code org.scijava.events.EventBus}
+ *             (scijava-events) accepts any object as an event, so no base type
+ *             is required.
  */
+@Deprecated
 public abstract class SciJavaEvent extends AbstractContextual {
 
 	/** Whether the event has been handled already. */

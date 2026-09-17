@@ -65,7 +65,10 @@ package org.scijava.util;
  * @author Curtis Rueden
  * @author Melissa Linkert
  * @author Chris Allan
+ *
+ * @deprecated Use {@code org.scijava.io3.Bytes} (scijava-io3) instead.
  */
+@Deprecated
 public final class Bytes {
 
 	private Bytes() {

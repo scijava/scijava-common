@@ -36,7 +36,11 @@ import org.scijava.service.SciJavaService;
  *
  * @author Curtis Rueden
  * @see Task
+ *
+ * @deprecated Use {@code org.scijava.progress.Progress} (scijava-progress)
+ *             instead.
  */
+@Deprecated
 public interface TaskService extends SciJavaService {
 
 	/**

@@ -37,8 +37,12 @@ import org.scijava.plugin.Plugin;
  * Implementation of {@link LocationResolver} for {@link FileLocation}.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.FileLocationResolver}
+ *             (scijava-io3) instead.
  */
 @Plugin(type = LocationResolver.class)
+@Deprecated
 public class FileLocationResolver extends AbstractLocationResolver {
 
 	public FileLocationResolver() {

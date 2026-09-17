@@ -53,7 +53,12 @@ import java.util.Set;
  * </pre>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.Index} (scijava-index) instead. The
+ *             index format is unchanged, so indexes written by either are
+ *             readable by both.
  */
+@Deprecated
 public class Index<A extends Annotation> implements Iterable<IndexItem<A>> {
 
 	/**

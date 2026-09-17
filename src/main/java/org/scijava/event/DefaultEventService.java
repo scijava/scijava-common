@@ -56,8 +56,12 @@ import org.scijava.util.ClassUtils;
  * 
  * @author Curtis Rueden
  * @author Grant Harris
+ *
+ * @deprecated Use {@code org.scijava.events.DefaultEventBus} (scijava-events)
+ *             instead.
  */
 @Plugin(type = Service.class, priority = DefaultEventService.PRIORITY)
+@Deprecated
 public class DefaultEventService extends AbstractService implements
 	EventService
 {

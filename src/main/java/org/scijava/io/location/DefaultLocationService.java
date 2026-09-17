@@ -39,8 +39,12 @@ import org.scijava.service.Service;
  * Default {@link LocationService} implementation.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.Locations} (scijava-io3)
+ *             instead.
  */
 @Plugin(type = Service.class)
+@Deprecated
 public class DefaultLocationService extends
 	AbstractHandlerService<URI, LocationResolver> implements
 	LocationService

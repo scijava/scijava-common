@@ -40,8 +40,12 @@ import org.scijava.thread.ThreadService;
  * Default implementation of {@link TaskService}.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.progress.Progress} (scijava-progress)
+ *             instead.
  */
 @Plugin(type = Service.class)
+@Deprecated
 public class DefaultTaskService extends AbstractService implements
 	TaskService
 {

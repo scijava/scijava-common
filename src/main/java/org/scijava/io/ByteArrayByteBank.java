@@ -36,7 +36,11 @@ import org.scijava.util.ByteArray;
  * up to a maximum capacity of {@link Integer#MAX_VALUE}.
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.ByteArrayByteBank} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class ByteArrayByteBank implements ByteBank {
 
 	private final ByteArray buffer;

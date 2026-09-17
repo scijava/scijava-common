@@ -41,7 +41,12 @@ import java.util.Map;
  * Allows access to individual annotations.
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated Use {@code org.scijava.index.IndexItem} (scijava-index) instead.
+ *             The index format is unchanged, so indexes written by either are
+ *             readable by both.
  */
+@Deprecated
 public class IndexItem<A extends Annotation> {
 
 	private final Class<A> annotation;

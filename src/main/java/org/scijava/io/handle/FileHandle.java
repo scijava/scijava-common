@@ -43,8 +43,12 @@ import org.scijava.plugin.Plugin;
  * {@link DataHandle} for a {@link FileLocation}.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.FileHandle} (scijava-io3)
+ *             instead.
  */
 @Plugin(type = DataHandle.class)
+@Deprecated
 public class FileHandle extends AbstractDataHandle<FileLocation> {
 
 	// -- Fields --

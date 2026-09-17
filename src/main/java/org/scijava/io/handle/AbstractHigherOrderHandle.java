@@ -38,7 +38,11 @@ import org.scijava.io.location.Location;
  * {@link DataHandle}s.
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.AbstractHigherOrderHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractHigherOrderHandle<L extends Location> extends
 	AbstractDataHandle<L>
 {

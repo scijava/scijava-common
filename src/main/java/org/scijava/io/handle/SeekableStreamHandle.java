@@ -41,7 +41,11 @@ import org.scijava.io.location.Location;
  * stream.
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.SeekableStreamHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public interface SeekableStreamHandle<L extends Location> extends
 	ResettableStreamHandle<L>
 {

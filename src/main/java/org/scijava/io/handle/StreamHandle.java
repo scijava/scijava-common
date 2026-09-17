@@ -43,7 +43,11 @@ import org.scijava.io.location.Location;
  * @author Curtis Rueden
  * @author Melissa Linkert
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.StreamHandle} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public interface StreamHandle<L extends Location> extends DataHandle<L> {
 
 	// -- StreamHandle methods --

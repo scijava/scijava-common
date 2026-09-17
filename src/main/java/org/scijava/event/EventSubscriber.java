@@ -42,7 +42,11 @@ package org.scijava.event;
  * 
  * @author Curtis Rueden
  * @param <E> Type of event for which to listen
+ *
+ * @deprecated Use a {@link java.util.function.Consumer} with
+ *             {@code org.scijava.events.EventBus} (scijava-events) instead.
  */
+@Deprecated
 public interface EventSubscriber<E extends SciJavaEvent> extends
 	org.scijava.event.bushe.EventSubscriber<E>
 {

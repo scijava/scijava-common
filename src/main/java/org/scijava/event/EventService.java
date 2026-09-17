@@ -40,7 +40,13 @@ import org.scijava.service.SciJavaService;
  * 
  * @author Curtis Rueden
  * @author Grant Harris
+ *
+ * @deprecated Use {@code org.scijava.events.EventBus} (scijava-events)
+ *             instead. Subscription takes a lambda rather than scanning
+ *             annotated methods, and returns a handle that cancels it; see
+ *             https://github.com/scijava/scijava/blob/main/docs/migration.md
  */
+@Deprecated
 public interface EventService extends SciJavaService {
 
 	/**

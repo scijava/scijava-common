@@ -42,7 +42,11 @@ import java.util.Set;
  *
  * @author Curtis Rueden
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.FileLocation} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class FileLocation extends AbstractLocation implements
 	BrowsableLocation
 {

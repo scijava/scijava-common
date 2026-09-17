@@ -38,7 +38,11 @@ import org.scijava.io.location.Location;
  * Wraps a {@link DataHandle} and acts as a write buffer.
  *
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.WriteBufferDataHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public class WriteBufferDataHandle extends AbstractHigherOrderHandle<Location> {
 
 	private static final int DEFAULT_BUFFERSIZE = 10_000;

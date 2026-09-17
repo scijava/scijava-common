@@ -40,7 +40,12 @@ import org.scijava.plugin.HandlerPlugin;
  * for easy implementation.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.LocationResolver}
+ *             (scijava-io3) instead, which no longer extends a handler plugin
+ *             and carries its own {@code priority()}.
  */
+@Deprecated
 public interface LocationResolver extends HandlerPlugin<URI> {
 
 	/**

@@ -36,7 +36,11 @@ import java.util.Objects;
  * Abstract base class for {@link Location} implementations.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.location.AbstractLocation}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractLocation implements Location {
 
 	@Override

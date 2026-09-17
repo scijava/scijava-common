@@ -34,7 +34,10 @@ package org.scijava.io;
  *
  * @author Gabriel Einsdorf
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.ByteBank} (scijava-io3) instead.
  */
+@Deprecated
 public interface ByteBank {
 
 	/**

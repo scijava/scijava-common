@@ -41,8 +41,11 @@ import org.scijava.service.Service;
  * Default service for keeping a history of SciJava events.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@link org.scijava.event.EventHistory}.
  */
 @Plugin(type = Service.class)
+@Deprecated
 public class DefaultEventHistory extends AbstractService implements
 	EventHistory
 {

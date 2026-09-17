@@ -58,7 +58,14 @@ import org.scijava.Named;
  * See also {@link TaskService}, {@link DefaultTask}
  *
  * @author Curtis Rueden, Nicolas Chiaruttini
+ *
+ * @deprecated Use {@code org.scijava.progress.Task} (scijava-progress)
+ *             instead. NB: cancellation is no longer part of this contract; it
+ *             is thread interruption, with
+ *             {@link java.util.concurrent.Future#cancel(boolean)} as the
+ *             caller-facing API.
  */
+@Deprecated
 public interface Task extends Cancelable, Named {
 
 	/**

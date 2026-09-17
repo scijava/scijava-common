@@ -48,7 +48,11 @@ import org.scijava.util.FileUtils;
  * Combines annotation indexes from all JAR files on the classpath.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement here: merging indexes for shaded JARs is build
+ *             tooling, and belongs in scijava-maven-plugin.
  */
+@Deprecated
 public class AnnotationCombiner extends AbstractIndexWriter implements Combiner
 {
 

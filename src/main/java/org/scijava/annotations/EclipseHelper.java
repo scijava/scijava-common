@@ -93,7 +93,12 @@ import org.scijava.util.FileUtils;
  * </p>
  * 
  * @author Johannes Schindelin
+ *
+ * @deprecated No replacement. Modern m2e generates the annotation processor
+ *             path itself; for indexing a directory, use
+ *             {@code org.scijava.index.DirectoryIndexer} (scijava-index).
  */
+@Deprecated
 public class EclipseHelper extends DirectoryIndexer {
 
 	private static final String FORCE_ANNOTATION_INDEX_PROPERTY = "force.annotation.index";

@@ -37,7 +37,11 @@ import java.net.URL;
  * {@link Location} backed by a {@link URL}.
  *
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.location.URLLocation} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class URLLocation extends AbstractLocation {
 
 	/** The URL backing this location. */

@@ -36,7 +36,11 @@ import org.scijava.io.location.Location;
  *
  * @author Curtis Rueden
  * @author Melissa Linkert
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.AbstractStreamHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractStreamHandle<L extends Location> extends
 	AbstractDataHandle<L> implements StreamHandle<L>
 {

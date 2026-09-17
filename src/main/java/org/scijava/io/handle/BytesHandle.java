@@ -42,8 +42,12 @@ import org.scijava.plugin.Plugin;
  * @author Curtis Rueden
  * @author Melissa Linkert
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.BytesHandle} (scijava-io3)
+ *             instead.
  */
 @Plugin(type = DataHandle.class)
+@Deprecated
 public class BytesHandle extends AbstractDataHandle<BytesLocation> {
 
 	private long offset = 0;

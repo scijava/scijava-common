@@ -33,6 +33,11 @@ import java.io.IOException;
 
 import org.scijava.io.location.Location;
 
+/**
+ * @deprecated Use {@code org.scijava.io3.handle.AbstractSeekableStreamHandle}
+ *             (scijava-io3) instead.
+ */
+@Deprecated
 public abstract class AbstractSeekableStreamHandle<L extends Location> extends
 	AbstractStreamHandle<L> implements SeekableStreamHandle<L>
 {

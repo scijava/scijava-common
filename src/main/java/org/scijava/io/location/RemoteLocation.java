@@ -33,7 +33,11 @@ package org.scijava.io.location;
  * A {@link Location} which resides on a remote machine.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.RemoteLocation}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public interface RemoteLocation extends Location {
 
 	/**

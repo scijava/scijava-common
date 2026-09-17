@@ -37,7 +37,11 @@ import org.scijava.plugin.AbstractHandlerPlugin;
  * Abstract super class for {@link LocationResolver} plugins.
  * 
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.AbstractLocationResolver}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public abstract class AbstractLocationResolver extends
 	AbstractHandlerPlugin<URI> implements LocationResolver
 {

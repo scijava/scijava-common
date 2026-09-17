@@ -39,7 +39,11 @@ import org.scijava.io.location.Location;
  * A {@link DataHandle} backed by an {@link InputStream} and/or
  * {@link OutputStream}. Supports resetting the handle to the start of the
  * internal stream(s).
+ *
+ * @deprecated Use {@code org.scijava.io3.handle.ResettableStreamHandle}
+ *             (scijava-io3) instead.
  */
+@Deprecated
 public interface ResettableStreamHandle<L extends Location> extends
 	StreamHandle<L>
 {

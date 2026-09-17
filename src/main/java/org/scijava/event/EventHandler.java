@@ -53,9 +53,15 @@ import java.lang.annotation.Target;
  * 
  * @author Curtis Rueden
  * @see EventService
+ *
+ * @deprecated Use
+ *             {@code org.scijava.events.EventBus.subscribe(Class, Consumer)}
+ *             (scijava-events) instead, which needs no reflection into the
+ *             subscriber.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Deprecated
 public @interface EventHandler {
 
 	/**

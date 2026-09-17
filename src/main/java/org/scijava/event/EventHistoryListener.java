@@ -33,7 +33,10 @@ package org.scijava.event;
  * Listener for event history changes.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated No replacement; see {@link org.scijava.event.EventHistory}.
  */
+@Deprecated
 public interface EventHistoryListener {
 
 	void eventOccurred(EventDetails details);

@@ -43,7 +43,11 @@ import org.scijava.plugin.Parameter;
  * {@link Location} backed by a {@link URI} string.
  * 
  * @author Curtis Rueden
+ *
+ * @deprecated Use {@code org.scijava.io3.location.URILocation} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class URILocation extends AbstractLocation {
 
 	@Parameter

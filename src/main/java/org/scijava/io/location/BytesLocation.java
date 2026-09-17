@@ -38,7 +38,11 @@ import org.scijava.util.ByteArray;
  *
  * @author Curtis Rueden
  * @author Gabriel Einsdorf
+ *
+ * @deprecated Use {@code org.scijava.io3.location.BytesLocation} (scijava-io3)
+ *             instead.
  */
+@Deprecated
 public class BytesLocation extends AbstractLocation {
 
 	private final ByteBank bytes;
