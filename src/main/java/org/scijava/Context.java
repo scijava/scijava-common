@@ -113,7 +113,7 @@ public class Context implements Disposable, AutoCloseable {
 	 * False if the context is currently active; true if the context
 	 * has already been disposed, or is in the process of being disposed.
 	 */
-	private boolean disposed;
+	private volatile boolean disposed;
 
 	/**
 	 * Creates a new SciJava application context with all available services.
@@ -456,7 +456,7 @@ public class Context implements Disposable, AutoCloseable {
 
 	@Override
 	public void dispose() {
-		doDispose(true);
+		if (!disposed) doDispose(true);
 	}
 
 	// -- AutoCloseable methods --
@@ -609,9 +609,11 @@ public class Context implements Disposable, AutoCloseable {
 		return msg.toString();
 	}
 
-	private synchronized void doDispose(final boolean announce) {
-		if (disposed) return;
-		disposed = true;
+	private void doDispose(final boolean announce) {
+		synchronized (this) {
+			if (disposed) return;
+			disposed = true;
+		}
 		CONTEXTS.remove(this);
 		if (announce) {
 			final EventService eventService = getService(EventService.class);
