@@ -30,13 +30,20 @@
 package org.scijava.task;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.scijava.Context;
+import org.scijava.log.LogLevel;
+import org.scijava.log.LogMessage;
+import org.scijava.log.Logger;
 
 /**
  * Tests {@link TaskService}.
@@ -70,5 +77,47 @@ public class TaskServiceTest {
 		});
 		task.waitFor();
 		assertEquals(100, result[0]);
+	}
+
+	@Test
+	public void testLogger() {
+		final Task task = taskService.createTask("chatty");
+		final Logger logger = task.log();
+		assertSame(logger, task.log());
+		assertEquals("chatty", logger.getSource().name());
+
+		final List<LogMessage> messages = new ArrayList<>();
+		logger.addLogListener(messages::add);
+		logger.debug("detail");
+		logger.warn("careful");
+		assertEquals(2, messages.size());
+		assertEquals("detail", messages.get(0).text());
+		assertEquals(LogLevel.DEBUG, messages.get(0).level());
+		assertEquals(LogLevel.WARN, messages.get(1).level());
+	}
+
+	@Test
+	public void testDefaultLoggerDiscards() {
+		final Task task = new Task() {
+			@Override public void run(final Runnable r) {}
+			@Override public void waitFor() {}
+			@Override public boolean isDone() { return false; }
+			@Override public String getStatusMessage() { return null; }
+			@Override public long getProgressValue() { return 0; }
+			@Override public long getProgressMaximum() { return 0; }
+			@Override public void setStatusMessage(final String status) {}
+			@Override public void setProgressValue(final long step) {}
+			@Override public void setProgressMaximum(final long max) {}
+			@Override public boolean isCanceled() { return false; }
+			@Override public void cancel(final String reason) {}
+			@Override public String getCancelReason() { return null; }
+			@Override public String getName() { return null; }
+			@Override public void setName(final String name) {}
+		};
+		final Logger logger = task.log();
+		final List<LogMessage> messages = new ArrayList<>();
+		logger.addLogListener(messages::add);
+		logger.error("ignored");
+		assertTrue(messages.isEmpty());
 	}
 }

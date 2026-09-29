@@ -32,6 +32,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.scijava.event.EventService;
+import org.scijava.log.DefaultLogger;
+import org.scijava.log.LogLevel;
+import org.scijava.log.LogSource;
+import org.scijava.log.Logger;
 import org.scijava.task.event.TaskEvent;
 import org.scijava.thread.ThreadService;
 
@@ -84,6 +88,8 @@ public class DefaultTask implements Task {
 	private String name;
 
 	private Runnable cancelCallBack;
+
+	private volatile Logger logger;
 
 	/**
 	 * Creates a new task.
@@ -197,6 +203,32 @@ public class DefaultTask implements Task {
 	@Override
 	public Runnable getCancelCallBack() {
 		return this.cancelCallBack;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * The logger passes messages of every level to its listeners, and retains
+	 * nothing: listeners receive only what is logged after they are added.
+	 * </p>
+	 */
+	@Override
+	public Logger log() {
+		// Note: Double-checked locking, so that logging many lines does not
+		// mean acquiring a lock for each one.
+		Logger result = logger;
+		if (result == null) {
+			synchronized (this) {
+				result = logger;
+				if (result == null) {
+					final String source = name == null ? "task" : name;
+					result = new DefaultLogger(message -> {}, LogSource.newRoot()
+						.subSource(source), LogLevel.TRACE);
+					logger = result;
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override

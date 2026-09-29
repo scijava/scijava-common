@@ -33,6 +33,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.scijava.Cancelable;
 import org.scijava.Named;
+import org.scijava.log.DefaultLogger;
+import org.scijava.log.LogLevel;
+import org.scijava.log.LogSource;
+import org.scijava.log.Logger;
 
 /**
  * A self-aware job which reports its status and progress as it runs.
@@ -149,6 +153,24 @@ public interface Task extends Cancelable, Named {
 	 */
 	default Runnable getCancelCallBack() {
 		return () -> {};
+	}
+
+	/**
+	 * Gets the logger for output produced while performing the task, such as
+	 * the lines printed by an external process it runs. Called by task
+	 * implementors to emit output, and by interested parties (e.g. a UI showing
+	 * the task) to listen for it via {@link Logger#addLogListener}.
+	 * <p>
+	 * Task output is kept separate from the application log: messages logged
+	 * here reach this logger's listeners only.
+	 * </p>
+	 * <p>
+	 * The default implementation returns a logger that discards everything.
+	 * </p>
+	 */
+	default Logger log() {
+		return new DefaultLogger(message -> {}, LogSource.newRoot(),
+			LogLevel.NONE);
 	}
 
 }
